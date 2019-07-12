@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+<toc version="2.0">
+    <tocitem text="Views">
+        <tocitem text="Analytic View" mergetype="javax.help.SortMerge">
+            <tocitem text="Analytic View" target="au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane"/>
+            <tocitem text="Questions" mergetype="javax.help.SortMerge">
+                <tocitem text="Connects the Network Best?" target="au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion"/>
+                <tocitem text="Has Closest Relationship?" target="au.gov.asd.tac.constellation.views.analyticview.questions.HasClosestRelationshipQuestion"/>
+                <tocitem text="Most Central?" target="au.gov.asd.tac.constellation.views.analyticview.questions.MostCentralQuestion"/>
+                <tocitem text="Most Communicants?" target="au.gov.asd.tac.constellation.views.analyticview.questions.MostCommunicantsQuestion"/>
+                <tocitem text="Most Easily Reached?" target="au.gov.asd.tac.constellation.views.analyticview.questions.MostEasilyReachedQuestion"/>
+                <tocitem text="Most Influential?" target="au.gov.asd.tac.constellation.views.analyticview.questions.MostInfluentialQuestion"/>
+                <tocitem text="Most Likely Correlated?" target="au.gov.asd.tac.constellation.views.analyticview.questions.MostLikelyCorrelatedQuestion"/>
+            </tocitem>
+            <tocitem text="Analytics" mergetype="javax.help.SortMerge">
+                <tocitem text="Adamic-Adar Index" target="au.gov.asd.tac.constellation.views.analyticview.analytics.AdamicAdarIndexAnalytic"/>
+                <tocitem text="Average Degree" target="au.gov.asd.tac.constellation.views.analyticview.analytics.AverageDegreeAnalytic"/>
+                <tocitem text="Betweenness Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.BetweennessCentralityAnalytic"/>
+                <tocitem text="Closeness Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.ClosenessCentralityAnalytic"/>
+                <tocitem text="Common Neighbours" target="au.gov.asd.tac.constellation.views.analyticview.analytics.CommonNeighboursAnalytic"/>
+                <tocitem text="Component Count" target="au.gov.asd.tac.constellation.views.analyticview.analytics.ComponentCountAnalytic"/>
+                <tocitem text="Connectivity Degree" target="au.gov.asd.tac.constellation.views.analyticview.analytics.ConnectivityDegreeAnalytic"/>
+                <tocitem text="Cosine Similarity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.CosineSimilarityAnalytic"/>
+                <tocitem text="Degree Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.DegreeCentralityAnalytic"/>
+                <tocitem text="Dice Similarity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.DiceSimilarityAnalytic"/>
+                <tocitem text="Eccentricity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.EccentricityAnalytic"/>
+                <tocitem text="Effective Resistance" target="au.gov.asd.tac.constellation.views.analyticview.analytics.EffectiveResistanceAnalytic"/>
+                <tocitem text="Eigenvector Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.EigenvectorCentralityAnalytic"/>
+                <tocitem text="Global Clustering Coefficient" target="au.gov.asd.tac.constellation.views.analyticview.analytics.GlobalClusteringCoefficientAnalytic"/>
+                <tocitem text="Graph Density" target="au.gov.asd.tac.constellation.views.analyticview.analyticsGraphDensityAnalytic"/>
+                <tocitem text="Graph Distance" target="au.gov.asd.tac.constellation.views.analyticview.analytics.GraphDistanceAnalytic"/>
+                <tocitem text="HITS Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.HitsCentralityAnalytic"/>
+                <tocitem text="Jaccard Index" target="au.gov.asd.tac.constellation.views.analyticview.analytics.JaccardIndexAnalytic"/>
+                <tocitem text="Katz Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.KatzCentralityAnalytic"/>
+                <tocitem text="Local Clustering Coefficient" target="au.gov.asd.tac.constellation.views.analyticview.analytics.LocalClusteringCoefficientAnalytic"/>
+                <tocitem text="Multiplexity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.MultiplexityAnalytic"/>
+                <tocitem text="Pagerank Centrality" target="au.gov.asd.tac.constellation.views.analyticview.analytics.PagerankCentralityAnalytic"/>
+                <tocitem text="Preferential Attachment" target="au.gov.asd.tac.constellation.views.analyticview.analytics.PreferentialAttachmentAnalytic"/>
+                <tocitem text="Ratio of Reciprocity" target="au.gov.asd.tac.constellation.views.analyticview.analytics.RatioOfReciprocityAnalytic"/>
+                <tocitem text="Resource Allocation Index" target="au.gov.asd.tac.constellation.views.analyticview.analytics.ResourceAllocationIndexAnalytic"/>
+                <tocitem text="Weight" target="au.gov.asd.tac.constellation.views.analyticview.analytics.WeightAnalytic"/>
+            </tocitem>
+        </tocitem>
+    </tocitem>
+</toc>

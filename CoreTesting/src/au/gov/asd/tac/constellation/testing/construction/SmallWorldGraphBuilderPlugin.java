@@ -1,0 +1,509 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.testing.construction;
+
+import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
+import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.pluginframework.PluginException;
+import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
+import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
+import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.FloatParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.visual.decorators.Decorators;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import org.openide.util.Exceptions;
+import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
+
+/**
+ * A plugin that builds a random graph using the small world model.
+ *
+ * @author canis_majoris
+ */
+@ServiceProviders({
+    @ServiceProvider(service = Plugin.class)
+})
+@Messages("SmallWorldGraphBuilderPlugin=Small World Graph Builder")
+public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
+
+    public static final String N_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "n");
+    public static final String K_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "k");
+    public static final String P_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "p");
+    public static final String T_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "t");
+    public static final String BUILD_MODE_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "build_mode");
+    public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "random_weights");
+    public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "node_types");
+    public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "transaction_types");
+
+    @Override
+    public String getDescription() {
+        return "Builds a random graph using the small world model.";
+    }
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters params = new PluginParameters();
+
+        final PluginParameter<IntegerParameterValue> n = IntegerParameterType.build(N_PARAMETER_ID);
+        n.setName("Number of nodes");
+        n.setDescription("The number of nodes on the graph");
+        n.setIntegerValue(10);
+        IntegerParameterType.setMinimum(n, 0);
+        params.addParameter(n);
+
+        final PluginParameter<IntegerParameterValue> k = IntegerParameterType.build(K_PARAMETER_ID);
+        k.setName("Nearest neighbours to attach");
+        k.setDescription("The number of nearest neighbours to connect each node to");
+        k.setIntegerValue(4);
+        IntegerParameterType.setMinimum(k, 0);
+        params.addParameter(k);
+
+        final PluginParameter<FloatParameterValue> p = FloatParameterType.build(P_PARAMETER_ID);
+        p.setName("Rewiring probability");
+        p.setDescription("Probability of re-wiring each edge (low for a long shortest paths lattice structure, high for higher clustering coefficient random graph)");
+        p.setFloatValue(0.5f);
+        FloatParameterType.setMinimum(p, 0f);
+        FloatParameterType.setMaximum(p, 1f);
+        params.addParameter(p);
+
+        ArrayList<String> modes = new ArrayList<>();
+        modes.add("Default");
+        modes.add("Newman");
+        modes.add("Connected");
+
+        final PluginParameter<SingleChoiceParameterValue> buildMode = SingleChoiceParameterType.build(BUILD_MODE_PARAMETER_ID);
+        buildMode.setName("Build mode");
+        buildMode.setDescription("Newman: Adds edges instead of rewiring. Connected: Attempts to build a connected graph.");
+        SingleChoiceParameterType.setOptions(buildMode, modes);
+        SingleChoiceParameterType.setChoice(buildMode, modes.get(0));
+        params.addParameter(buildMode);
+
+        final PluginParameter<IntegerParameterValue> t = IntegerParameterType.build(T_PARAMETER_ID);
+        t.setName("Number of attempts to build connected graph");
+        t.setDescription("Number of attempts to build a connected graph");
+        t.setIntegerValue(100);
+        IntegerParameterType.setMinimum(t, 1);
+        t.setEnabled(false);
+        params.addParameter(t);
+
+        final PluginParameter<BooleanParameterValue> randomWeights = BooleanParameterType.build(RANDOM_WEIGHTS_PARAMETER_ID);
+        randomWeights.setName("Random edge weight/direction");
+        randomWeights.setDescription("Edges have a random number of transactions going in random directions");
+        randomWeights.setBooleanValue(true);
+        params.addParameter(randomWeights);
+
+        final PluginParameter<MultiChoiceParameterValue> nodeTypes = MultiChoiceParameterType.build(NODE_TYPES_PARAMETER_ID);
+        nodeTypes.setName("Node types");
+        nodeTypes.setDescription("Node types to add to the graph");
+        params.addParameter(nodeTypes);
+
+        final PluginParameter<MultiChoiceParameterValue> transactionTypes = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID);
+        transactionTypes.setName("Transaction types");
+        transactionTypes.setDescription("Transaction types to add to the graph");
+        params.addParameter(transactionTypes);
+
+        params.addController(BUILD_MODE_PARAMETER_ID, (master, parameters, change) -> {
+            if (change == ParameterChange.VALUE) {
+                final String mode = master.getStringValue();
+                if (mode.equals("Connected")) {
+                    parameters.get(T_PARAMETER_ID).setEnabled(true);
+                } else {
+                    parameters.get(T_PARAMETER_ID).setEnabled(false);
+                }
+            }
+        });
+
+        return params;
+    }
+
+    @Override
+    public void updateParameters(final Graph graph, final PluginParameters parameters) {
+        final List<String> nAttributes = new ArrayList<>();
+        final List<String> tAttributes = new ArrayList<>();
+        final List<String> nChoices = new ArrayList<>();
+        final List<String> tChoices = new ArrayList<>();
+        if (graph != null) {
+            final ReadableGraph readableGraph = graph.getReadableGraph();
+            try {
+                final List<SchemaVertexType> nodeTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredVertexTypes();
+
+                for (int i = 0; i < nodeTypes.size(); i++) {
+                    SchemaVertexType type = nodeTypes.get(i);
+                    nAttributes.add(type.getName());
+                }
+                nAttributes.sort(String::compareTo);
+
+                final List<SchemaTransactionType> transactionTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredTransactionTypes();
+                for (int i = 0; i < transactionTypes.size(); i++) {
+                    SchemaTransactionType type = transactionTypes.get(i);
+                    tAttributes.add(type.getName());
+                }
+                tAttributes.sort(String::compareTo);
+            } finally {
+                readableGraph.release();
+            }
+            nChoices.add(nAttributes.get(0));
+            tChoices.add(tAttributes.get(0));
+        }
+
+        if (parameters != null && parameters.getParameters() != null) {
+            final PluginParameter nAttribute = parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
+            final PluginParameter tAttribute = parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+            MultiChoiceParameterType.setOptions(nAttribute, nAttributes);
+            MultiChoiceParameterType.setOptions(tAttribute, tAttributes);
+            MultiChoiceParameterType.setChoices(nAttribute, nChoices);
+            MultiChoiceParameterType.setChoices(tAttribute, tChoices);
+        }
+    }
+
+    @Override
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        interaction.setProgress(0, 0, "Building...", true);
+
+        final Random r = new Random();
+
+        final Map<String, PluginParameter<?>> params = parameters.getParameters();
+
+        final int n = params.get(N_PARAMETER_ID).getIntegerValue();
+        final int k = params.get(K_PARAMETER_ID).getIntegerValue();
+        final float p = params.get(P_PARAMETER_ID).getFloatValue();
+        final int t = params.get(T_PARAMETER_ID).getIntegerValue();
+        final String buildMode = params.get(BUILD_MODE_PARAMETER_ID).getStringValue();
+        final boolean randomWeights = params.get(RANDOM_WEIGHTS_PARAMETER_ID).getBooleanValue();
+        final List<String> nodeTypes = params.get(NODE_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
+        final List<String> transactionTypes = params.get(TRANSACTION_TYPES_PARAMETER_ID).getMultiChoiceValue().getChoices();
+
+        assert k < n : String.format("[Number of attached neighbours '%s' must be smaller than the number of nodes '%s']", k, n);
+
+        // Random countries to put in the graph
+        final List<String> countries = new ArrayList<>();
+        countries.add("Australia");
+        countries.add("Brazil");
+        countries.add("China");
+        countries.add("France");
+        countries.add("Japan");
+        countries.add("New Zealand");
+        countries.add("South Africa");
+        countries.add("United Arab Emirates");
+        countries.add("United Kingdom");
+        countries.add("United States");
+
+        final int vxIdentifierAttr = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int vxTypeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+
+        final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "isGood", null, false, null);
+        final int vxCountryAttr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
+
+        final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
+        final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+        final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
+
+        final Decorators decorators;
+        decorators = new Decorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
+        graph.setObjectValue(decoratorsAttr, 0, decorators);
+
+        // Create transactions between the nodes.
+        final Date d = new Date();
+        final int fourDays = 4 * 24 * 60 * 60 * 1000;
+
+        int initialComponents = 0;
+        if (buildMode.equals("Connected")) {
+            initialComponents = componentCount(graph);
+        }
+
+        for (int s = 1; s <= t; s++) {
+
+            final int[] vxIds = new int[n];
+            final HashSet<Integer> transactions = new HashSet<>();
+            int vx = 0;
+
+            while (vx < n) {
+                final int vxId = graph.addVertex();
+                final String label = "Node_" + vxId;
+
+                graph.setStringValue(vxIdentifierAttr, vxId, label);
+                graph.setStringValue(vxTypeAttr, vxId, nodeTypes.get(r.nextInt(nodeTypes.size())));
+                graph.setBooleanValue(vxIsGoodAttr, vxId, r.nextInt(10) == 0);
+                graph.setStringValue(vxCountryAttr, vxId, countries.get(r.nextInt(countries.size())));
+                if (graph.getSchema() != null) {
+                    graph.getSchema().completeVertex(graph, vxId);
+                }
+
+                vxIds[vx] = vxId;
+                vx++;
+
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
+            }
+
+            for (int j = 1; j < (k / 2) + 1; j++) {
+                ArrayList<Integer> destinations = new ArrayList<>();
+                for (int i = j; i < n; i++) {
+                    destinations.add(vxIds[i]);
+                }
+                for (int i = 0; i < j; i++) {
+                    destinations.add(vxIds[i]);
+                }
+                for (int z = 0; z < n; z++) {
+                    final int e = graph.addTransaction(vxIds[z], destinations.get(z), true);
+                    transactions.add(e);
+                }
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
+            }
+
+            for (int j = 1; j < (k / 2) + 1; j++) {
+                ArrayList<Integer> destinations = new ArrayList<>();
+                for (int i = j; i < n; i++) {
+                    destinations.add(vxIds[i]);
+                }
+                for (int i = 0; i < j; i++) {
+                    destinations.add(vxIds[i]);
+                }
+                for (int z = 0; z < n; z++) {
+                    final int u = vxIds[z];
+                    final int v = destinations.get(z);
+                    if (r.nextDouble() < p) {
+                        int w = vxIds[r.nextInt(n)];
+                        boolean skip = false;
+                        while (w == u || graph.getLink(u, w) != Graph.NOT_FOUND) {
+                            w = vxIds[r.nextInt(n)];
+                            if (graph.getVertexNeighbourCount(u) >= n - 1) {
+                                skip = true;
+                                break;
+                            }
+                            if (Thread.interrupted()) {
+                                throw new InterruptedException();
+                            }
+                        }
+                        if (!skip) {
+                            if (buildMode.equals("Newman")) {
+                                final int exId = graph.getLinkTransaction(graph.getLink(u, v), 0);
+                                graph.removeTransaction(exId);
+                                transactions.remove(exId);
+                            }
+                            final int e = graph.addTransaction(u, w, true);
+                            transactions.add(e);
+                        }
+                    }
+                }
+                if (Thread.interrupted()) {
+                    throw new InterruptedException();
+                }
+            }
+
+            for (int txId : transactions) {
+                final int reciprocity = r.nextInt(3);
+                int numTimes = 1;
+                if (randomWeights) {
+                    numTimes = r.nextInt(1 + r.nextInt(100));
+                }
+                for (int i = 0; i < numTimes; i++) {
+                    int sxId = graph.getTransactionSourceVertex(txId);
+                    int dxId = graph.getTransactionDestinationVertex(txId);
+                    if (randomWeights) {
+                        switch (reciprocity) {
+                            case 0: {
+                                boolean random = r.nextBoolean();
+                                if (random) {
+                                    sxId = graph.getTransactionDestinationVertex(txId);
+                                    dxId = graph.getTransactionSourceVertex(txId);
+                                }
+                                break;
+                            }
+                            case 1: {
+                                int random = r.nextInt(5);
+                                if (random == 0) {
+                                    sxId = graph.getTransactionDestinationVertex(txId);
+                                    dxId = graph.getTransactionSourceVertex(txId);
+                                }
+                                break;
+                            }
+                            default: {
+                                int random = r.nextInt(5);
+                                if (random != 0) {
+                                    sxId = graph.getTransactionDestinationVertex(txId);
+                                    dxId = graph.getTransactionSourceVertex(txId);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    final int e = graph.addTransaction(sxId, dxId, true);
+                    graph.setLongValue(txDateTimeAttr, e, d.getTime() - r.nextInt(fourDays));
+                    graph.setStringValue(txTypeAttr, e, transactionTypes.get(r.nextInt(transactionTypes.size())));
+                    graph.setIntValue(txIdAttr, e, e);
+                    if (graph.getSchema() != null) {
+                        graph.getSchema().completeTransaction(graph, e);
+                    }
+                    if (Thread.interrupted()) {
+                        throw new InterruptedException();
+                    }
+                }
+                graph.removeTransaction(txId);
+            }
+
+            if (buildMode.equals("Connected") && componentCount(graph) != initialComponents + 1) {
+                if (s == t) {
+                    break;
+                } else {
+                    for (int vxId : vxIds) {
+                        graph.removeVertex(vxId);
+                    }
+                }
+            } else {
+                break;
+            }
+        }
+
+        if (!CoreUtilities.isGraphViewFrozen()) {
+            if (n < 10000) {
+                // Do a trees layout.
+                try {
+                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES).followedBy(CorePluginRegistry.RESET).executeNow(graph);
+                } catch (PluginException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            } else {
+                // Do a grid layout.
+                try {
+                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeNow(graph);
+                } catch (PluginException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        } else {
+            PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+        }
+
+        interaction.setProgress(1, 0, "Completed successfully", true);
+    }
+
+    private static int componentCount(final GraphWriteMethods graph) {
+        final int vertexCount = graph.getVertexCount();
+        final BitSet[] traversal = new BitSet[vertexCount];
+
+        final BitSet update = new BitSet(vertexCount);
+        final BitSet[] sendFails = new BitSet[vertexCount];
+        final BitSet[] sendBuffer = new BitSet[vertexCount];
+        final BitSet[] exclusions = new BitSet[vertexCount];
+        final BitSet newUpdate = new BitSet(vertexCount);
+        final BitSet turn = new BitSet(vertexCount);
+
+        // initialise variables
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            traversal[vertexPosition] = new BitSet(vertexCount);
+
+            // only update nodes with neighbours
+            final int vxId = graph.getVertex(vertexPosition);
+            if (graph.getVertexNeighbourCount(vxId) > 0) {
+                update.set(vertexPosition);
+            }
+
+            sendFails[vertexPosition] = new BitSet(vertexCount);
+            sendBuffer[vertexPosition] = new BitSet(vertexCount);
+            exclusions[vertexPosition] = new BitSet(vertexCount);
+        }
+
+        while (!update.isEmpty()) {
+            // update the information of each node with messages
+            for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
+                traversal[vertexPosition].or(sendBuffer[vertexPosition]);
+                traversal[vertexPosition].set(vertexPosition);
+                sendFails[vertexPosition].clear();
+                sendFails[vertexPosition].or(sendBuffer[vertexPosition]);
+                sendBuffer[vertexPosition].clear();
+            }
+
+            // for each neighbour, check if there is any new information it needs to receive
+            for (int vertexPosition = update.nextSetBit(0); vertexPosition >= 0; vertexPosition = update.nextSetBit(vertexPosition + 1)) {
+                int vertexId = graph.getVertex(vertexPosition);
+
+                for (int vertexNeighbourPosition = 0; vertexNeighbourPosition < graph.getVertexNeighbourCount(vertexId); vertexNeighbourPosition++) {
+                    int neighbourId = graph.getVertexNeighbour(vertexId, vertexNeighbourPosition);
+                    int neighbourPosition = graph.getVertexPosition(neighbourId);
+                    if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
+                        turn.set(neighbourPosition, true);
+
+                        final BitSet diff = (BitSet) traversal[vertexPosition].clone();
+                        diff.andNot(traversal[neighbourPosition]);
+                        sendBuffer[neighbourPosition].or(diff);
+                        sendFails[vertexPosition].andNot(diff);
+                        newUpdate.set(neighbourPosition);
+                    }
+                }
+                for (int neighbourPosition = sendFails[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFails[vertexPosition].nextSetBit(neighbourPosition + 1)) {
+                    exclusions[neighbourPosition].set(vertexPosition, true);
+                }
+            }
+
+            turn.clear();
+            update.clear();
+            update.or(newUpdate);
+            newUpdate.clear();
+        }
+
+        final HashSet<BitSet> connectedComponents = new HashSet<>();
+        int numComponents = 0;
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            final BitSet subgraph = traversal[vertexPosition];
+            if (subgraph.cardinality() <= 1) {
+                numComponents += 1;
+            } else {
+                connectedComponents.add(subgraph);
+            }
+        }
+
+        numComponents += connectedComponents.size();
+        return numComponents;
+    }
+}

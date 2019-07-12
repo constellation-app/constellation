@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Plugin Reporter</title>
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+
+    <body>
+        <h1>Plugin Reporter</h1>
+
+        <table border="1">
+            <tr>
+                <td>
+                    <b>CONSTELLATION Action</b>
+                </td>
+                <td>
+                    <b>User Action</b>
+                </td>
+                <td>
+                    <b>Menu Icon</b>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Open Plugin Reporter
+                </td>
+                <td>
+                    Views -> Plugin Reporter<br>
+                    Keyboard Shortcut: Ctrl + Shift + P
+                </td>
+                <td>
+            <center>
+                <img src="PluginReporterIcon.png" width="16" height="16" alt=""/>
+            </center>
+        </td>
+    </tr>
+</table>
+
+<p>
+    The Plugin Reporter stores a history of any plugin run on the graph currently in focus.
+</p>
+
+<center>
+    <img src="PluginReporter.png" width="404" height="438" alt=""/>
+</center>
+
+<p>
+    A plugin report will be created whenever a plugin is run, and added to the Plugin Reporter. These reports will change their color and message based on the current status of the plugin they represent.
+</p>
+
+<ul>
+    <li>
+        <b><font color="Green">Green indicates the plugin is currently running.</font></b>
+    <center>
+        <img src="PluginReportGreen.png" width="400" height="50" alt=""/>
+    </center>
+</li>
+<li>
+    <b><font color="Blue">Blue indicates that the plugin was canceled.</font></b>
+<center>
+    <img src="PluginReportBlue.png" width="400" height="50" alt=""/>
+</center>
+</li>
+<li>
+    <b><font color="Orange">Orange indicates that an anticipated error occurred.</font></b>
+<center>
+    <img src="PluginReportOrange.png" width="400" height="50" alt=""/>
+</center>
+</li>
+<li>
+    <b><font color="Red">Red indicates that an unexpected error occurred.</font></b>
+<center>
+    <img src="PluginReportRed.png" width="400" height="50" alt=""/>
+</center>
+</li>
+<li>
+    <b><font color="Grey">Grey indicates that the plugin finished successfully.</font></b>
+<center>
+    <img src="PluginReportGrey.png" width="400" height="50" alt=""/>
+</center>
+</li>
+</ul>
+
+<p>
+    The Plugin Reporter allows filtering of the plugin history using a tag-based system. You can filter on plugin reports using by their tags using the 'Filter' drop down menu.
+</p>
+<ul>
+    <li>
+        <b>Analytic</b>
+        Plugins which perform some analytic calculation based on information on the graph.
+    </li>
+    <li>
+        <b>Import</b>
+        Plugins which add information to the graph, generally these will be found in the Data Access View.
+    </li>
+    <li>
+        <b>General</b>
+        Plugins which don't fit into any specific category.
+    </li>
+    <li>
+        <b>Low Level</b>
+        Plugins which are generally hidden from the user.
+    </li>
+    <li>
+        <b>Selection</b>
+        Plugins which change what is selected on the graph.
+    </li>
+</ul>
+
+<p>
+    The 'Clear' button will clear all currently displayed plugin reports, and only display new plugin reports for the active graph.
+</p>
+
+<p>
+    The 'Show All' button will make the Plugin Reporter display all plugin reports for the active graph.
+</p>
+
+<p>
+    The 'Help' button will open this help documentation.
+</p>
+</body>
+</html>

@@ -1,0 +1,392 @@
+/*
+    This CSS file provides a common styling for all help modules. It's a copy of
+    the default NetBeans CSS stylesheet with some changes. Why is it here? It has
+    to  be somewhere, and I didn't want to create a module for one file. From the
+    <head> section of an HTML file, link to this stylesheet using:
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences
+        /au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
+
+    - algol
+*/
+
+body {
+    /* defaults */
+    display: block;
+    margin: 8px;
+    /* custom */
+    font-size: large;
+    font-family: SansSerif, Arial, Helvetica, sans-serif;
+    margin-left: 5px;
+    margin-right: 5px;
+    color: black;
+    background-color: white;
+}
+
+body:focus {
+    /* defaults */
+    outline: none;
+}
+
+p {
+    /* defaults */
+    display: block;
+    /*margin-top: 1em;*/
+    /*margin-bottom: 1em;*/
+    margin-left: 0;
+    margin-right: 0;
+    /* custom */
+    font-size: large;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+h1 {
+    /* defaults */
+    display: block;
+    /*font-size: 2em;*/
+    /*margin-top: 0.67em;*/
+    /*margin-bottom: 0.67em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: larger;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+h2 {
+    /* defaults */
+    display: block;
+    /*font-size: 1.5em;*/
+    /*margin-top: 0.83em;*/
+    /*margin-bottom: 0.83em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: large;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+h3 {
+    /* defaults */
+    display: block;
+    /*font-size: 1.17em;*/
+    /*margin-top: 1em;*/
+    /*margin-bottom: 1em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: medium;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+h4 {
+    /* defaults */
+    display: block;
+    /*margin-top: 1.33em;*/
+    /*margin-bottom: 1.33em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: small;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+h5 {
+    /* defaults */
+    display: block;
+    /*font-size: 0.83em;*/
+    /*margin-top: 1.67em;*/
+    /*margin-bottom: 1.67em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: smaller;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+/*
+ * Use the h6 tag for the term in a glossary popup
+ * topic. The term being defined is the heading for
+ * the topic.
+*/
+h6 {
+    /* defaults */
+    display: block;
+    /*font-size: 0.67em;*/
+    /*margin-top: 2.33em;*/
+    /*margin-bottom: 2.33em;*/
+    margin-left: 0px;
+    margin-right: 0px;
+    font-weight: bold;
+    /* custom */
+    font-size: small;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+li {
+    /* defaults */
+    display: list-item;
+    /* custom */
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+li p {
+    /* custom */
+    margin-top: 5px;
+    margin-bottom: 0;
+}
+
+/* Ordered lists */
+ul {
+    /* defaults */
+    display: block;
+    list-style-type: disc;
+    /*margin-top: 1em;*/
+    /*margin-bottom: 1em;*/
+    margin-right: 0;
+    /*padding-left: 40px;*/
+    /* custom */
+    list-style-image:url(images/blue-ball-mid.gif);
+    margin-top: 5px;
+    margin-bottom: 0;
+    padding-left: 16px;
+}
+
+ul li ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif)
+}
+
+ul ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif)
+}
+
+/* Numbered lists embedded in ordered lists */
+ul li ol {
+    /* custom */
+    list-style-image:none;
+    list-style-type: decimal;
+}
+
+ul li ol li ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+ul li ol ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+ul ol {
+    /* custom */
+    list-style-image:none;
+    list-style-type: decimal;
+}
+
+ul ol li ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+ul ol ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+/* Graphics for notes and warnings */
+ul.note {
+    /* custom */
+    list-style-image:url(images/tip.gif);
+    margin-top: 5px;
+    margin-bottom: 0;
+    margin-left: 16px;
+}
+
+ul.warning {
+    /* custom */
+    list-style-image:url(images/warn.gif);
+    margin-top: 5px;
+    margin-bottom: 0;
+    margin-left: 16px;
+}
+
+/* Numbered lists */
+ol {
+    /* defaults */
+    display: block;
+    list-style-type: decimal;
+    /*margin-top: 1em;*/
+    /*margin-bottom: 1em;*/
+    margin-left: 0;
+    margin-right: 0;
+    /*padding-left: 40px;*/
+    /* custom */
+    margin-top: 5px;
+    margin-bottom: 0;
+    padding-left: 22px;
+}
+
+ol li ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+ol ol {
+    /* custom */
+    list-style-type: lower-alpha;
+}
+
+/* Ordered lists embedded in numbered lists */
+ol li ul {
+    /* custom */
+    list-style-image:url(images/blue-ball-mid.gif);
+}
+
+ol li ul li ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif);
+}
+
+ol li ul ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif);
+}
+
+ol ul {
+    /* custom */
+    list-style-image:url(images/blue-ball-mid.gif);
+}
+
+ol ul li ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif);
+}
+
+ol ul ul {
+    /* custom */
+    list-style-image:url(images/blue-sqr-mid.gif);
+}
+
+dl {
+    /* defaults */
+    display: block;
+    /*margin-top: 1em;*/
+    /*margin-bottom: 1em;*/
+    margin-left: 0;
+    margin-right: 0;
+    /* custom */
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+dt {
+    /* defaults */
+    display: block;
+    /* custom */
+    font-size: medium;
+    font-style: normal;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 0;
+    text-indent: 0;
+}
+
+dd {
+    /* defaults */
+    display: block;
+    /*margin-left: 40px;*/
+    /* custom */
+    font-size: medium;
+    font-style: normal;
+    font-weight: normal;
+    margin-top: 2px;
+    margin-left: 25px;
+}
+
+table {
+    /* defaults */
+    display: table;
+    /*border-collapse: separate;*/
+    border-spacing: 2px;
+    /*border-color: gray;*/
+    /* custom */
+    border-collapse: collapse;
+    border-width: 1px;
+    border-style: solid;
+    border-color: silver;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+td {
+    /* defaults */
+    display: table-cell;
+    /*vertical-align: inherit;*/
+    /* custom */
+    border-width: 1px;
+    border-style: solid;
+    border-color: silver;
+    vertical-align: top;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+th {
+    /* defaults */
+    display: table-cell;
+    /*vertical-align: inherit;*/
+    font-weight: bold;
+    text-align: center;
+    /* custom */
+    border-width: 1px;
+    border-style: solid;
+    border-color: silver;
+    vertical-align: top;
+    padding-left: 1px;
+    padding-right: 1px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+small {
+    /* defaults */
+    /*font-size: smaller;*/
+    /* custom */
+    font-size: small;
+}
+
+.mono {
+    /* custom */
+    font-family: Courier New, monospace;
+    background-color: #e0e0e0;
+}
+
+.tt {
+    /* custom */
+    font-family: Courier New, monospace;
+    background-color: #e0e0e0;
+}
+
+img {
+    /* defaults */
+    display: inline-block;
+    /* custom */
+    border: 0;
+    max-width: 100%;
+}

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="au.gov.asd.tac.constellation.visual.opengl" default="netbeans" basedir=".">
+    <description>Builds, tests, and runs the project au.gov.asd.tac.constellation.visual.opengl.</description>
+    <import file="nbproject/build-impl.xml"/>
+</project>

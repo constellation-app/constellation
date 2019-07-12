@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="QuickSearch">
+        <folder name="DataAccessplugins">
+            <attr name="SystemFileSystem.localizingBundle" stringvalue="au.gov.asd.tac.constellation.views.dataaccess.Bundle"/>
+            <attr name="command" stringvalue="dap"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-views-dataaccess-panes-DataAccessSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.views.dataaccess.Bundle#QuickSearch/DataAccessplugins/au-gov-asd-tac-constellation-views-dataaccess-panes-DataAccessSearchProvider.instance"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

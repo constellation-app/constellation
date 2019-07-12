@@ -1,0 +1,305 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
+
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.pluginframework.PluginException;
+import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
+import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.ServiceProvider;
+import org.openide.util.lookup.ServiceProviders;
+
+/**
+ * Select the top n based on the transaction count
+ *
+ * @author arcturus
+ */
+@ServiceProviders({
+    @ServiceProvider(service = DataAccessPlugin.class),
+    @ServiceProvider(service = Plugin.class)})
+@Messages("SelectTopNPlugin=Select Top N")
+public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
+
+    private static final Logger LOGGER = Logger.getLogger(SelectTopNPlugin.class.getName());
+
+    public static final String MODE_PARAMETER_ID = PluginParameter.buildId(SelectTopNPlugin.class, "mode");
+    public static final String TYPE_CATEGORY_PARAMETER_ID = PluginParameter.buildId(SelectTopNPlugin.class, "type_category");
+    public static final String TYPE_PARAMETER_ID = PluginParameter.buildId(SelectTopNPlugin.class, "type");
+    public static final String LIMIT_PARAMETER_ID = PluginParameter.buildId(SelectTopNPlugin.class, "limit");
+
+    public static final String NODE = "Node";
+    public static final String TRANSACTION = "Transaction";
+
+    @Override
+    public String getType() {
+        return DataAccessPluginCoreType.UTILITY;
+    }
+
+    @Override
+    public int getPosition() {
+        return 0;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Select the top N on your graph using types";
+    }
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters params = new PluginParameters();
+
+        final List<String> modes = new ArrayList<>();
+        modes.add(NODE);
+        modes.add(TRANSACTION);
+
+        final PluginParameter<SingleChoiceParameterValue> modeParameter = SingleChoiceParameterType.build(MODE_PARAMETER_ID);
+        modeParameter.setName("Mode");
+        modeParameter.setDescription("Select either the Node or Transaction mode");
+        SingleChoiceParameterType.setOptions(modeParameter, modes);
+        params.addParameter(modeParameter);
+
+        final PluginParameter<SingleChoiceParameterValue> typeCategoryParameter = SingleChoiceParameterType.build(TYPE_CATEGORY_PARAMETER_ID);
+        typeCategoryParameter.setName("Type Category");
+        typeCategoryParameter.setDescription("The high level type category");
+        params.addParameter(typeCategoryParameter);
+
+        final PluginParameter<MultiChoiceParameterValue> typeParameter = MultiChoiceParameterType.build(TYPE_PARAMETER_ID);
+        typeParameter.setName("Specific Types");
+        typeParameter.setDescription("The specific types to include when calculating the top N");
+        params.addParameter(typeParameter);
+
+        final PluginParameter<IntegerParameterValue> limitParameter = IntegerParameterType.build(LIMIT_PARAMETER_ID);
+        limitParameter.setName("Limit");
+        limitParameter.setDescription("The limit, default being 10");
+        limitParameter.setIntegerValue(10);
+        params.addParameter(limitParameter);
+
+        params.addController(MODE_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+            if (change == ParameterChange.VALUE) {
+                final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
+                if (mode != null) {
+                    final List<String> types = new ArrayList<>();
+                    switch (mode) {
+                        case NODE:
+                            for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
+                                if (type.isTopLevelType()) {
+                                    types.add(type.getName());
+                                }
+                            }
+                            break;
+                        case TRANSACTION:
+                            for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
+                                if (type.isTopLevelType()) {
+                                    types.add(type.getName());
+                                }
+                            }
+                            break;
+                        default:
+                            LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
+                    }
+
+                    final PluginParameter<SingleChoiceParameterValue> typeCategoryParamter = (PluginParameter<SingleChoiceParameterValue>) parameters.get(TYPE_CATEGORY_PARAMETER_ID);
+                    types.sort(String::compareTo);
+                    SingleChoiceParameterType.setOptions(typeCategoryParamter, types);
+                }
+            }
+        });
+
+        params.addController(TYPE_CATEGORY_PARAMETER_ID, (PluginParameter<?> master, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+            if (change == ParameterChange.VALUE) {
+                final String mode = parameters.get(MODE_PARAMETER_ID).getStringValue();
+                final String typeCategory = parameters.get(TYPE_CATEGORY_PARAMETER_ID).getStringValue();
+                if (mode != null && typeCategory != null) {
+
+                    final List<String> types = new ArrayList<>();
+                    switch (mode) {
+                        case NODE:
+                            final SchemaVertexType typeCategoryVertexType = SchemaVertexTypeUtilities.getType(typeCategory);
+                            for (final SchemaVertexType type : SchemaVertexTypeUtilities.getTypes()) {
+                                if (type.getSuperType().equals(typeCategoryVertexType)) {
+                                    types.add(type.getName());
+                                }
+                            }
+                            break;
+                        case TRANSACTION:
+                            final SchemaTransactionType typeCategoryTransactionType = SchemaTransactionTypeUtilities.getType(typeCategory);
+                            for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes()) {
+                                if (type.getSuperType().equals(typeCategoryTransactionType)) {
+                                    types.add(type.getName());
+                                }
+                            }
+                            break;
+                    }
+                    // update the sub level types
+                    final PluginParameter<MultiChoiceParameterValue> typeParamter = (PluginParameter<MultiChoiceParameterValue>) parameters.get(TYPE_PARAMETER_ID);
+                    types.sort(String::compareTo);
+                    MultiChoiceParameterType.setOptions(typeParamter, types);
+                    MultiChoiceParameterType.setChoices(typeParamter, types);
+                }
+            }
+        });
+
+        return params;
+    }
+
+    @Override
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        final String mode = parameters.getParameters().get(MODE_PARAMETER_ID).getStringValue();
+        final String typeCategory = parameters.getParameters().get(TYPE_CATEGORY_PARAMETER_ID).getStringValue();
+        final List<String> subTypes = parameters.getParameters().get(TYPE_PARAMETER_ID).getMultiChoiceValue().getChoices();
+        final int limit = parameters.getParameters().get(LIMIT_PARAMETER_ID).getIntegerValue();
+
+        if (mode == null || (!mode.equals(NODE) && !mode.equals(TRANSACTION))) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Invalid mode value provided");
+        }
+
+        if (typeCategory == null) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Select a type category");
+        }
+
+        if (subTypes.isEmpty()) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Select some types to perform the calculation");
+        }
+
+        final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
+        if (vertexLabelAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.LABEL.getName()));
+        }
+
+        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        if (vertexSelectedAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.SELECTED.getName()));
+        }
+
+        final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+        if (vertexTypeAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.VertexAttribute.TYPE.getName()));
+        }
+
+        final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
+        if (transactionTypeAttribute == Graph.NOT_FOUND) {
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.TransactionAttribute.TYPE.getName()));
+        }
+
+        // make a set of the highlighted nodes
+        final Set<Integer> selectedNodes = new HashSet<>();
+        final int vertexCount = graph.getVertexCount();
+        for (int position = 0; position < vertexCount; position++) {
+            final int vxId = graph.getVertex(position);
+            if (graph.getBooleanValue(vertexSelectedAttribute, vxId)) {
+                selectedNodes.add(vxId);
+            }
+        }
+
+        if (selectedNodes.isEmpty()) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "Select at least 1 node");
+        }
+
+        // calculate the occurrences of destination vertices
+        int txId, sourceVxId, destinationVxId, targetVxId;
+        int step = 0;
+        SchemaVertexType destinationVertexType;
+        SchemaTransactionType transactionType;
+        final Map<Integer, Integer> occurrences = new HashMap<>();
+
+        for (final Integer vxId : selectedNodes) {
+            final String label = graph.getStringValue(vertexLabelAttribute, vxId);
+            interaction.setProgress(++step, selectedNodes.size(), String.format("Calculating top %s for %s", limit, label), true);
+
+            final int transactionCount = graph.getVertexTransactionCount(vxId);
+            for (int position = 0; position < transactionCount; position++) {
+                txId = graph.getVertexTransaction(vxId, position);
+                sourceVxId = graph.getTransactionSourceVertex(txId);
+                destinationVxId = graph.getTransactionDestinationVertex(txId);
+                targetVxId = vxId == sourceVxId ? destinationVxId : sourceVxId;
+
+                switch (mode) {
+                    case NODE:
+                        destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
+                        if (subTypes.contains(destinationVertexType.getName())) {
+                            if (!occurrences.containsKey(targetVxId)) {
+                                occurrences.put(targetVxId, 0);
+                            }
+
+                            occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
+                        }
+                        break;
+                    case TRANSACTION:
+                        transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
+                        if (subTypes.contains(transactionType.getName())) {
+                            if (!occurrences.containsKey(targetVxId)) {
+                                occurrences.put(targetVxId, 0);
+                            }
+
+                            occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
+                        }
+                        break;
+                }
+            }
+
+            // make a map sorted by the count in descending order
+            final LinkedHashMap<Integer, Integer> sortedMap = occurrences.entrySet()
+                    .stream()
+                    .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                    .collect(Collectors.toMap(
+                            Map.Entry::getKey,
+                            Map.Entry::getValue,
+                            (e1, e2) -> e1,
+                            LinkedHashMap::new
+                    ));
+
+            sortedMap.keySet().stream().limit(limit).forEach(id -> {
+                graph.setBooleanValue(vertexSelectedAttribute, id, true);
+            });
+
+            interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
+        }
+
+        interaction.setProgress(1, 0, "Completed successfully", true);
+    }
+}

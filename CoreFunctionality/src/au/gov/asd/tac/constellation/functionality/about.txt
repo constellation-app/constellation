@@ -1,0 +1,11 @@
+<!--
+DO NOT REMOVE TEXT BELOW THIS LINE. YOU MUST INCLUDE THE FOLLOWING TEXT IF YOU
+CREATE YOUR OWN ABOUT LICENSES FILE.
+-->
+Constellation is a graph-focused data analysis application enabling data access,
+federation and manipulation capabilities across large and complex data sets.
+<br>
+<br>
+Constellation was originally developed at the Australian Signals Directorate in
+2012 and transitioned to CSIRO's Data61 in May 2018 as open source software under the
+Apache 2 copyright license model.

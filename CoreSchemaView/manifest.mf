@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: au.gov.asd.tac.constellation.views.schemaview
+OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/views/schemaview/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

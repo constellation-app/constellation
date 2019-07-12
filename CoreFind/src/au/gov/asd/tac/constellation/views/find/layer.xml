@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="QuickSearch">
+        <folder name="Edges">
+            <attr name="command" stringvalue="Edges"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-views-find-quicksearch-EdgeQuickSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.views.find.Bundle#QuickSearch/Edges/au-gov-asd-tac-constellation-views-find-quicksearch-EdgeQuickSearchProvider.instance"/>
+            </file>
+        </folder>
+        <folder name="Links">
+            <attr name="command" stringvalue="Links"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-views-find-quicksearch-LinkQuickSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.views.find.Bundle#QuickSearch/Links/au-gov-asd-tac-constellation-views-find-quicksearch-LinkQuickSearchProvider.instance"/>
+            </file>
+        </folder>
+        <folder name="Nodes">
+            <attr name="command" stringvalue="Nodes"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-views-find-quicksearch-NodeQuickSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.views.find.Bundle#QuickSearch/Nodes/au-gov-asd-tac-constellation-views-find-quicksearch-NodeQuickSearchProvider.instance"/>
+            </file>
+        </folder>
+        <folder name="Transactions">
+            <attr name="command" stringvalue="Transactions"/>
+            <attr name="position" intvalue="0"/>
+            <file name="au-gov-asd-tac-constellation-views-find-quicksearch-TransactionQuickSearchProvider.instance">
+                <attr name="displayName" bundlevalue="au.gov.asd.tac.constellation.views.find.Bundle#QuickSearch/Transactions/au-gov-asd-tac-constellation-views-find-quicksearch-TransactionQuickSearchProvider.instance"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

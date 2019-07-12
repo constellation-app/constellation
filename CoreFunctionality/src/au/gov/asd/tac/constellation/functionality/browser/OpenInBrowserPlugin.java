@@ -1,0 +1,75 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.functionality.browser;
+
+import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.pluginframework.PluginException;
+import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
+import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
+import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import org.openide.util.NbBundle;
+import org.openide.util.lookup.ServiceProvider;
+
+/**
+ * Open In Browser Plugin
+ *
+ * @author arcturus
+ */
+@ServiceProvider(service = Plugin.class)
+@NbBundle.Messages("OpenInBrowserPlugin=Open In Browser")
+public class OpenInBrowserPlugin extends SimplePlugin {
+
+    public static final String APPLICATION_PARAMETER_ID = PluginParameter.buildId(OpenInBrowserPlugin.class, "application");
+    public static final String URL_PARAMETER_ID = PluginParameter.buildId(OpenInBrowserPlugin.class, "url");
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<StringParameterValue> applicationParameter = StringParameterType.build(APPLICATION_PARAMETER_ID);
+        applicationParameter.setName("Application");
+        applicationParameter.setDescription("The name of the application being opened (optional)");
+        parameters.addParameter(applicationParameter);
+
+        final PluginParameter<StringParameterValue> urlParameter = StringParameterType.build(URL_PARAMETER_ID);
+        urlParameter.setName("URL");
+        urlParameter.setDescription("The url to open in the browser");
+        parameters.addParameter(urlParameter);
+
+        return parameters;
+    }
+
+    @Override
+    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        final String url = parameters.getStringValue(URL_PARAMETER_ID);
+
+        try {
+            Desktop.getDesktop().browse(new URI(url));
+        } catch (IOException | URISyntaxException ex) {
+            throw new PluginException(PluginNotificationLevel.FATAL, ex);
+        }
+    }
+
+}

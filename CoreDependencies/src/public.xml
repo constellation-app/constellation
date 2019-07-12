@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+This is used by the ProjectUpdater utility to make packages public from Core Dependencies.
+Properties -> API Versioning should show all of the packages specified here as public.
+Note: after changing this and rerunning update-dependencies-clean-build, it may be necessary to
+remove and re-add the Core Dependencies module from dependent modules.
+-->
+
+<public>
+    
+    <package>*</package>
+    
+</public>

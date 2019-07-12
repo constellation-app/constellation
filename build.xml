@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- You may freely edit this file. See harness/README in the NetBeans platform -->
+<!-- for some information on what you could do (e.g. targets to override). -->
+<!-- If you delete this file and reopen the project it will be recreated. -->
+<project name="CONSTELLATION" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+    <description>Builds the module suite CONSTELLATION.</description>
+
+    <import file="nbproject/build-impl.xml"/>
+    
+    <property name="ivy.install.version" value="2.3.0-rc1" />
+    <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
+    <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+    <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
+    <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
+    <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
+    
+    <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
+        <ant target="clean" />
+        <ant target="download-dependencies" />
+        <ant target="build">
+            <property name="update.dependencies" value="true" />
+        </ant>
+    </target>
+
+    <target name="update-dependencies-clean-build-no-debug" description="Download dependencies and build all modules in the suite and exclude debugging.">
+        <ant target="clean" />
+        <ant target="download-dependencies" />
+        <ant target="build">
+            <property name="update.dependencies" value="true" />
+            <property name="build.compiler.debug" value="false"/>
+        </ant>
+    </target>
+
+    <target name="-check-ivy">
+        <available file="${ivy.jar.file}" property="ivy.skip.download"/>
+    </target>
+
+    <target name="-download-ivy" unless="ivy.skip.download" depends="-check-ivy">
+        <mkdir dir="${ivy.jar.dir}"/>
+        <echo message="installing ivy..."/>
+        <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="-load-ivy-tasks" depends="-download-ivy">
+        <path id="ivy.lib.path">
+            <pathelement location="${ivy.jar.file}"/>
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
+    
+    <target name="-download-unfolding-maps" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing unfolding-maps..."/>
+        <get src="https://github.com/imranraza83/unfolding-maps/raw/master/unfolding-master-20171010.jar"
+             dest="${ivy.lib.dir}" usetimestamp="true"/>
+    </target>
+		
+		
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps"
+            description="Download dependent libraries.">
+        <ivy:resolve/>
+        <ivy:retrieve/>
+
+        <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
+            <path>
+                <fileset dir="${ivy.lib.dir}" includes="*.jar"/>
+            </path>
+            <map from="${basedir}${file.separator}" to=""/>
+        </pathconvert>
+
+        <propertyfile file="${basedir}/nbproject/project.properties">
+            <entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>
+        </propertyfile>
+    </target>
+
+    <target name="clean-dependencies" description="Clean downloaded libraries.">
+        <delete dir="${ivy.lib.dir}"/>
+    </target>
+
+    <target name="clean-ivy" depends="clean-dependencies" description="Clean ivy.">
+        <delete dir="${ivy.jar.dir}"/>
+        <ivy:cleancache/>
+        <propertyfile file="${basedir}/nbproject/project.properties">
+            <entry operation="=" key="ivy.classpath" value=""/>
+        </propertyfile>
+    </target>
+
+    <target name="-pre-compile" depends="download-dependencies"/>
+
+    <target name="-pre-compile-single" depends="download-dependencies"/>
+
+    <!-- Override build to add branding update: algol -->
+    <!-- Commented out because propertyfile writes a timestamp to the properties file, which is a problem for source control. -->
+    <!-- <target name="build" depends="build-brand,suite.build"/> -->
+
+    <target name="build-brand" depends="-init">
+        <propertyfile file="${basedir}/branding/core/core.jar/org/netbeans/core/startup/Bundle.properties">
+            <!-- comment="Updated by build script"> -->
+            <entry key="currentVersion" value="${app.title} ${app.version}" />
+        </propertyfile>
+
+        <propertyfile file="${basedir}/branding/modules/org-netbeans-core-windows.jar/org/netbeans/core/windows/view/ui/Bundle.properties">
+            <!-- comment="Updated by build script"> -->
+            <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
+            <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
+        </propertyfile>
+    </target>
+</project>

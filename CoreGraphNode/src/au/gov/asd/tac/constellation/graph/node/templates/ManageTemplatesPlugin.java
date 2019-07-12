@@ -1,0 +1,158 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.graph.node.templates;
+
+import au.gov.asd.tac.constellation.graph.node.NewSchemaGraphAction;
+import static au.gov.asd.tac.constellation.graph.node.NewSchemaGraphAction.TEMPLATE_DIRECTORY;
+import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.pluginframework.PluginException;
+import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
+import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
+import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.ActionParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.prefs.Preferences;
+import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
+import org.openide.util.lookup.ServiceProvider;
+
+/**
+ * Manage Templates Plugin
+ *
+ * @author twilight_sparkle
+ */
+@ServiceProvider(service = Plugin.class)
+@NbBundle.Messages("ManageTemplatesPlugin=Manage Templates")
+public class ManageTemplatesPlugin extends SimplePlugin {
+
+    public static final String TEMPLATE_NAME_PARAMETER_ID = PluginParameter.buildId(ManageTemplatesPlugin.class, "template");
+    public static final String TEMPLATE_NAME_PARAMETER_ID_NAME = "Template";
+    public static final String TEMPLATE_NAME_PARAMETER_ID_DESCRIPTION = "The name of the template";
+    public static final String DELETE_TEMPLATE_PARAMETER_ID = PluginParameter.buildId(ManageTemplatesPlugin.class, "delete");
+    public static final String DELETE_TEMPLATE_PARAMETER_ID_NAME = "Delete";
+    public static final String DEFAULT_TEMPLATE_PARAMETER_ID = PluginParameter.buildId(ManageTemplatesPlugin.class, "default");
+    public static final String DEFAULT_TEMPLATE_PARAMETER_ID_NAME = "Set Default";
+    public static final String CURRENT_DEFAULT_PARAMETER_ID = PluginParameter.buildId(ManageTemplatesPlugin.class, "current_default");
+    public static final String CURRENT_DEFAULT_PARAMETER_ID_NAME = "Current Default";
+    public static final String CLEAR_DEFAULT_PARAMETER_ID = PluginParameter.buildId(ManageTemplatesPlugin.class, "clear_default");
+    public static final String CLEAR_DEFAULT_PARAMETER_ID_NAME = "Clear Default";
+    public static final String ACTIONS_GROUP_NAME = "actions";
+
+    private static final String NO_DEFAULT = "<None>";
+
+    private final List<String> deletedTemplates = new ArrayList<>();
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters params = new PluginParameters();
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+
+        final PluginParameter<SingleChoiceParameterValue> templateParam = SingleChoiceParameterType.build(TEMPLATE_NAME_PARAMETER_ID);
+        templateParam.setName(TEMPLATE_NAME_PARAMETER_ID_NAME);
+        templateParam.setDescription(TEMPLATE_NAME_PARAMETER_ID_DESCRIPTION);
+        final List<String> templateNames = new ArrayList<>(NewSchemaGraphAction.getTemplateNames().keySet());
+        SingleChoiceParameterType.setOptions(templateParam, templateNames);
+        templateParam.setStringValue(templateNames.isEmpty() ? "" : templateNames.get(0));
+        params.addParameter(templateParam);
+
+        final PluginParameter<ParameterValue> deleteParam = ActionParameterType.build(DELETE_TEMPLATE_PARAMETER_ID);
+        params.addGroup(ACTIONS_GROUP_NAME, new PluginParametersPane.HorizontalParameterGroupLayout(false));
+        deleteParam.setName(null);
+        deleteParam.setDescription(null);
+        deleteParam.setStringValue(DELETE_TEMPLATE_PARAMETER_ID_NAME);
+        params.addParameter(deleteParam, ACTIONS_GROUP_NAME);
+        params.addController(DELETE_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
+            if (change == ParameterChange.NO_CHANGE) { // button pressed
+                final String deleteTemplateName = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
+                if (deleteTemplateName != null && !deleteTemplateName.isEmpty()) {
+                    templateNames.remove(deleteTemplateName);
+                    deletedTemplates.add(deleteTemplateName);
+                    SingleChoiceParameterType.setOptions(templateParam, templateNames);
+                    templateParam.setStringValue("");
+                    if (deleteTemplateName.equals(parameters.get(CURRENT_DEFAULT_PARAMETER_ID).getStringValue())) {
+                        parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(NO_DEFAULT);
+                    }
+                }
+            }
+        });
+
+        final PluginParameter<ParameterValue> defaultParam = ActionParameterType.build(DEFAULT_TEMPLATE_PARAMETER_ID);
+        defaultParam.setName(null);
+        defaultParam.setDescription(null);
+        defaultParam.setStringValue(DEFAULT_TEMPLATE_PARAMETER_ID_NAME);
+        params.addParameter(defaultParam, ACTIONS_GROUP_NAME);
+        params.addController(DEFAULT_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
+            if (change == ParameterChange.NO_CHANGE) { // button pressed
+                final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
+                if (chosenTemplate != null && !chosenTemplate.isEmpty()) {
+                    parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(chosenTemplate);
+                }
+            }
+        });
+
+        final PluginParameter<ParameterValue> clearParam = ActionParameterType.build(CLEAR_DEFAULT_PARAMETER_ID);
+        clearParam.setName(null);
+        clearParam.setDescription(null);
+        clearParam.setStringValue(CLEAR_DEFAULT_PARAMETER_ID_NAME);
+        params.addParameter(clearParam, ACTIONS_GROUP_NAME);
+        params.addController(CLEAR_DEFAULT_PARAMETER_ID, (master, parameters, change) -> {
+            if (change == ParameterChange.NO_CHANGE) { // button pressed
+                parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(NO_DEFAULT);
+            }
+        });
+
+        final PluginParameter<StringParameterValue> currentDefaultParam = StringParameterType.build(CURRENT_DEFAULT_PARAMETER_ID);
+        currentDefaultParam.setName(CURRENT_DEFAULT_PARAMETER_ID_NAME);
+        StringParameterType.setIsLabel(currentDefaultParam, true);
+        final String currentDefault = prefs.get(ApplicationPreferenceKeys.DEFAULT_TEMPLATE, ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT);
+        currentDefaultParam.setStringValue(Objects.equals(ApplicationPreferenceKeys.DEFAULT_TEMPLATE_DEFAULT, currentDefault) ? NO_DEFAULT : currentDefault);
+        params.addParameter(currentDefaultParam);
+
+        return params;
+    }
+
+    @Override
+    public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+
+        final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
+        deletedTemplates.forEach(template -> {
+            new File(TEMPLATE_DIRECTORY, templates.get(template) + "/" + template).delete();
+        });
+
+        final String defaultTemplate = parameters.getStringValue(CURRENT_DEFAULT_PARAMETER_ID);
+        if (NO_DEFAULT.equals(defaultTemplate)) {
+            prefs.remove(ApplicationPreferenceKeys.DEFAULT_TEMPLATE);
+        } else {
+            prefs.put(ApplicationPreferenceKeys.DEFAULT_TEMPLATE, defaultTemplate);
+        }
+    }
+
+}

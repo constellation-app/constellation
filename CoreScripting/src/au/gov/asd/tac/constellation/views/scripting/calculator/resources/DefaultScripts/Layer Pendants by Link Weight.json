@@ -1,0 +1,7 @@
+{
+    "elementType": "Node",
+    "attrToSet": "z",
+    "attrType": "float",
+    "script": "node_link_count == 1 and for_neighbours(z)[0] + log(node_transaction_count)*10 or z",
+    "description": "Layer pendants (nodes with one neighbour) in the z-axis based on the number of transactions they are incident with. Works best when used after a 2D arrangement."
+}

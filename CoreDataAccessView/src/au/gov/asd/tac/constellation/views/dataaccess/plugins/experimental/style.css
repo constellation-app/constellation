@@ -1,0 +1,20 @@
+.check-box .box
+{
+    -fx-background-color: red;
+}
+
+.check-box:selected .box
+{
+    -fx-background-color: palegreen;
+}
+
+.check-box .mark
+{
+    -fx-color: white;
+}
+
+.text-area .content
+{
+    -fx-background-color: linear-gradient(to bottom, black, derive(blue, 50%));
+
+}

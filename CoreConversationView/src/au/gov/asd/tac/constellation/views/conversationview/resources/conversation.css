@@ -1,0 +1,82 @@
+/*
+    Document   : conversation
+    Created on : 12/11/2013, 11:00:48 AM
+    Author     : sirius
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+
+.text-area .scroll-bar {
+    -fx-skin: ""; /* com.sun.javafx.scene.control.skin.ScrollBarSkin"; */
+    width: 0;
+    display: none;
+}
+
+.text-area {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane {
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .content {
+    -fx-background-color: transparent;
+}
+
+#time-label {
+    -fx-text-fill: #cccccc;
+}
+
+#translation-label {
+    -fx-font-style: italic;
+}
+
+#transparent-background {
+    -fx-background-color: transparent;
+}
+
+#text-fill-white {
+    -fx-text-fill: white;
+}
+
+#show-tool-tip {
+    -fx-text-fill: white;
+    -fx-padding: 2;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+}
+
+.selectable-label {
+    -fx-highlight-fill: transparent;
+    -fx-text-fill: black;
+}
+
+.selectable-label:focused {
+    -fx-highlight-fill: -fx-accent;
+    -fx-text-fill: black;
+}
