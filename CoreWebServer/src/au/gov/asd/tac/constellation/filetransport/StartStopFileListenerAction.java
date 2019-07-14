@@ -17,8 +17,9 @@ package au.gov.asd.tac.constellation.filetransport;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import javax.annotation.Resource;
+//import javax.annotation.Resource;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -39,10 +40,10 @@ import org.openide.util.actions.BooleanStateAction;
 @Messages("CTL_StartStopFileListenerAction=Start/Stop File Listener")
 public final class StartStopFileListenerAction extends BooleanStateAction {
 
-    @Resource
+    //@Resource
     private static final String ICON_ON = "au/gov/asd/tac/constellation/filetransport/filelistener_on.png";
 
-    @Resource
+    //@Resource
     private static final String ICON_OFF = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png";
 
     private static final long JOIN_WAIT = 1000;
@@ -64,6 +65,8 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
                 putValue(Action.SMALL_ICON, null);
 
                 setBooleanState(!listener_on);
+                setIcon(new javax.swing.ImageIcon(getClass().getResource(ICON_ON)));
+
             } catch (final IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -78,6 +81,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
                 putValue(Action.SMALL_ICON, null);
 
                 setBooleanState(!listener_on);
+                setIcon(new javax.swing.ImageIcon(getClass().getResource(ICON_OFF)));
             } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -100,9 +104,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
 
     @Override
     protected String iconResource() {
-        return listener_on
-                ? ICON_ON
-                : ICON_OFF;
+        return listener_on ? ICON_ON : ICON_OFF;
     }
 
     @Override

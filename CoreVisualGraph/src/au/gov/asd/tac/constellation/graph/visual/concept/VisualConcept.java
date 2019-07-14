@@ -34,8 +34,8 @@ import au.gov.asd.tac.constellation.graph.visual.connectionmode.ConnectionModeAt
 import au.gov.asd.tac.constellation.graph.visual.decorators.DecoratorsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.drawflags.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.icons.IconAttributeDescription;
-import au.gov.asd.tac.constellation.graph.visual.labels.TransactionGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.labels.VertexGraphLabelsAttributeDescription;
+import au.gov.asd.tac.constellation.graph.visual.labels.TransactionGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.linestyle.LineStyleAttributeDescription;
 import au.gov.asd.tac.constellation.visual.camera.Camera;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;

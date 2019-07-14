@@ -29,7 +29,7 @@ The following is a list of third-party libraries used in the development of Cons
 |commons-logging-1.1.3.jar| Apache2 | 
 |commons-math3-3.1.jar| Apache2 | 
 |commons-pool-1.5.4.jar| Apache2 | 
-|controlsfx-8.40.13.jar| BSD-3 | 
+|controlsfx-11.0.0.jar| BSD-3 | 
 |core-3.3.6.jar| LGPL, GPL 2.0 | https://github.com/processing/processing/blob/master/license.txt 
 |ecore-2.6.1.jar| EPL 1.0 | 
 |ejml-core-0.31.jar| Apache2 | 

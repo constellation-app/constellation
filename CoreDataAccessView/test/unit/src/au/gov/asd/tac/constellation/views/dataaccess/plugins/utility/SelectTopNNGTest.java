@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
@@ -26,6 +25,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoice
 import au.gov.asd.tac.constellation.pluginframework.text.TextPluginInteraction;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;

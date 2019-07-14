@@ -23,9 +23,9 @@ import au.gov.asd.tac.constellation.arrangements.gather.GatherNodesInGraphPlugin
 import au.gov.asd.tac.constellation.arrangements.gather.GatherNodesPlugin;
 import au.gov.asd.tac.constellation.arrangements.grid.ArrangeInGridComponentsPlugin;
 import au.gov.asd.tac.constellation.arrangements.grid.ArrangeInGridGeneralPlugin;
+import au.gov.asd.tac.constellation.arrangements.group.ArrangeByNodeAttributePlugin;
 import au.gov.asd.tac.constellation.arrangements.group.ArrangeByGroupPlugin;
 import au.gov.asd.tac.constellation.arrangements.group.ArrangeByLayerPlugin;
-import au.gov.asd.tac.constellation.arrangements.group.ArrangeByNodeAttributePlugin;
 import au.gov.asd.tac.constellation.arrangements.hde.HighDimensionEmbeddingPlugin;
 import au.gov.asd.tac.constellation.arrangements.hierarchical.ArrangeInHierarchyPlugin;
 import au.gov.asd.tac.constellation.arrangements.pendants.PendantsArranger;
