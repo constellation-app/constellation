@@ -418,7 +418,7 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 The existing 'Select Induced Subgraph' item has been renamed <strong>'Select Half-hop Induced Subgraph'</strong>, but is unchanged functionally.</p>
 
 == 2017-01-12 Improved Rendering and Event Handling
-<p> CONSTELLATION's visualistion and event handling framework has been re-implemented from the ground up.
+<p> CONSTELLATION's visualistion and event handling framework has been reimplemented from the ground up.
 To the user things will mostly look the same, but performance and stability should be slightly improved. The main benefit of this upgrade
 is that it should now be possible to write other visualisations for CONSTELLATION, for example a lightweight 2D renderer. </p>
 
