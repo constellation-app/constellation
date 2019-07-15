@@ -61,16 +61,12 @@
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing netbeans help files..."/>
         <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true"/>
     </target>
     
     <target name="-download-javahelp-indexfile" >
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing netbeans help index files..."/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
         <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
     </target>
