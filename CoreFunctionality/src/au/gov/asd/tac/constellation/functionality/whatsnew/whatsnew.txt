@@ -42,7 +42,7 @@ Access View has been modified based on UX feedback.</p>
 </ul>
 
 == 2019-02-11 Save All Returns
-<p>The Save All menu option has been brought back and is availabe from the File menu.</p>
+<p>The Save All menu option has been brought back and is available from the File menu.</p>
 
 == 2018-12-06 Data Access View Update
 <p>You can no longer press Go with either an invalid entry in a numeric parameter of an enabled Data Access Plugin,
@@ -135,7 +135,7 @@ changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-06 Timeline View Update
 <p>In the Timeline View, you can now toggle between Showing, Dimming, and Hiding nodes outside the Timeline View on the graph.</p>
-<p>Additionally, there is also a Zoom to Selection button, which will reframe the Timeline View to focus on the selected transactions on the graph.</p>
+<p>Additionally, there is also a Zoom to Selection button, which will re-frame the Timeline View to focus on the selected transactions on the graph.</p>
 
 == 2018-03-02 Map View Update
 <p>The Map View is now capable of clustering markers based on their geographic proximity.
@@ -156,7 +156,7 @@ This option can be enabled by selecting <i>Cluster Markers</i> in the marker vis
 == 2018-02-15 Map View Update
 <p>You can now find two new layers in the Map View:</p>
 <ul>
-<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have travelled over time</li>
+<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have traveled over time</li>
 <li><strong>Location Paths</strong> will draws lines between markers on the map representing direct connections between locations nodes on the graph</li>
 </ul>
 
@@ -418,7 +418,7 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 The existing 'Select Induced Subgraph' item has been renamed <strong>'Select Half-hop Induced Subgraph'</strong>, but is unchanged functionally.</p>
 
 == 2017-01-12 Improved Rendering and Event Handling
-<p> CONSTELLATION's visualistion and event handling framework has been reimplemented from the ground up.
+<p> CONSTELLATION's visualistion and event handling framework has been re-implemented from the ground up.
 To the user things will mostly look the same, but performance and stability should be slightly improved. The main benefit of this upgrade
 is that it should now be possible to write other visualisations for CONSTELLATION, for example a lightweight 2D renderer. </p>
 
