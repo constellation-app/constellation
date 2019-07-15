@@ -104,7 +104,6 @@
         <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1"/>
         <dependency org="commons-io" name="commons-io" rev="2.4"/>
         <dependency org="commons-lang" name="commons-lang" rev="2.6"/>
-        <dependency org="org.controlsfx" name="controlsfx" rev="8.40.13"/>
         <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1">
             <artifact name="javax.servlet-api"/>
         </dependency>
@@ -126,10 +125,16 @@
         <dependency org="org.eclipse.jetty" name="jetty-websocket" rev="8.1.9.v20130131"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.0"/>
         <dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>
-        <!--<dependency org="javax.help" name="javahelp" rev="2.0.05" />-->
-        <!--<dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE110" />-->
         <!--<dependency org="org.openjfx" name="javafx-graphics" rev="11.0.2" />-->
         <!--<dependency org="javax.media" name="jai_core" rev="1.1.3" />-->
+        <!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+        <dependency org="javax.annotation" name="javax.annotation-api" rev="1.3.2"/>
+        <dependency org="javax.xml.bind" name="jaxb-api" rev="2.3.1"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.0.0" >
+            <artifact  name="controlsfx" type="jar" ext="jar" />
+        </dependency>
+        <dependency org="javax.help" name="javahelp" rev="2.0.05" />
+        <dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE110"/>
 
         <!-- Exclusions -->
         <exclude org="com.beust" module="jcommander"/>
