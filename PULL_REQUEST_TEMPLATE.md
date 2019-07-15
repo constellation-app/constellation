@@ -1,3 +1,5 @@
+<!--
+
 ### Requirements
 
 * Filling out the template is required. Any pull request that does not include 
@@ -5,6 +7,11 @@ enough information to be reviewed in a timely manner may be closed at the
 maintainers' discretion.
 * All new code requires unit tests to ensure they work as expected and will 
 continue to work as new code is added in the future (regression testing).
+* Have you read Constellation's Code of Conduct? By filing an issue, you are 
+expected to comply with it, including treating everyone with respect: 
+https://github.com/constellation-app/constellation/master/CODE_OF_CONDUCT.md
+
+-->
 
 ### Description of the Change
 
