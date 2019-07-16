@@ -1,5 +1,80 @@
 == 3030-12-31 Getting Started
+<p>How to start building graphs in CONSTELLATION.</p>
+
+<ol>
+    <li>
+        Select File → New Graph → Analytic Graph. This will open a new window containing an empty graph.
+    </li>
+    <li>
+        Select Experimental → Build graph → Sphere Graph Builder to build a random spherical graph in the window.
+    </li>
+    <li>
+       Select OK in the dialog box to accept the default values for a small graph. The graph will be built in the active window.
+    </li>
+    <li>
+       Select Views → Attribute Editor to open the Editor window. This displays the values of graph attributes.
+    </li>
+    <li>
+       Go <a href="" helpId="au.gov.asd.tac.constellation.functionality.visual.about">here</a> to find out how navigate around the graph.
+    </li>
+    <li>
+       Go <a href="" helpId="au.gov.asd.tac.constellation.graph.about">here</a> to learn about the graph structure.
+    </li>
+</ol>
+
+<p>How to generate a graph from a CSV file.</p>
+    <ol>
+        <li>
+            Select File → New Graph → Analytic Graph. This will open a new window containing an empty graph.
+        </li>
+
+        <li>
+            Select File → Import → From Delimited File. This will open a new 'Import From Delimited File' dialogue.
+        </li>
+
+        <li>
+            Click + sign and select 'Flights.csv' to import from "constellation\samples\" directory. Under 'Run' tab you will be able to see imported data in tabular format.
+        </li>
+
+        <li>
+            Here each row representing a transaction.'fromCity' and 'toCity' are nodes, 'airline' is transaction identifier.
+        </li>
+
+        <li>Follow these steps to configure import logic.
+
+            <ul>
+              <li>
+                From 'Source Node Attributes' select and drag 'identifier' to 'fromCity' column.
+              </li>
+
+              <li>
+                From 'Destination Node Attributes' select and drag 'identifier' to 'toCity' column.
+              </li>
+
+              <li>
+                From 'Transaction Attributes' select and drag 'identifier' to 'airline' column.
+              </li>
+            </ul> 
+        </li>
+
+        <li>
+            Click 'Import' button at bottom right of 'Import From Delimited File' dialogue box. You should be able to see generated graph on the canvas.
+        </li>
+    </ol>   
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+
+<div style="text-align: center;">
+    <table>
+        <tbody>
+            <tr>
+                <td style="text-align: center;">Lorum Ispum</td>
+                <td style="text-align: center;">Lorum Ispum</td>
+                <td style="text-align: center;">Lorum Ispum</td>
+                <td style="text-align: center;">Lorum Ispum</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 == 2019-06-25 Data Access View Context Menu Update
 <p>The menu positions of the right click context menu available from the Data 
@@ -42,7 +117,7 @@ Access View has been modified based on UX feedback.</p>
 </ul>
 
 == 2019-02-11 Save All Returns
-<p>The Save All menu option has been brought back and is available from the File menu.</p>
+<p>The Save All menu option has been brought back and is availabe from the File menu.</p>
 
 == 2018-12-06 Data Access View Update
 <p>You can no longer press Go with either an invalid entry in a numeric parameter of an enabled Data Access Plugin,
@@ -135,7 +210,7 @@ changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-06 Timeline View Update
 <p>In the Timeline View, you can now toggle between Showing, Dimming, and Hiding nodes outside the Timeline View on the graph.</p>
-<p>Additionally, there is also a Zoom to Selection button, which will re-frame the Timeline View to focus on the selected transactions on the graph.</p>
+<p>Additionally, there is also a Zoom to Selection button, which will reframe the Timeline View to focus on the selected transactions on the graph.</p>
 
 == 2018-03-02 Map View Update
 <p>The Map View is now capable of clustering markers based on their geographic proximity.
@@ -156,7 +231,7 @@ This option can be enabled by selecting <i>Cluster Markers</i> in the marker vis
 == 2018-02-15 Map View Update
 <p>You can now find two new layers in the Map View:</p>
 <ul>
-<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have traveled over time</li>
+<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have travelled over time</li>
 <li><strong>Location Paths</strong> will draws lines between markers on the map representing direct connections between locations nodes on the graph</li>
 </ul>
 
