@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransact
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin;
 

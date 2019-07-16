@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction;
 
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
@@ -32,7 +33,6 @@ import au.gov.asd.tac.constellation.visual.display.VisualManager;
 import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
 import au.gov.asd.tac.constellation.visual.display.VisualProperty;
 import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.WindowAdapter;

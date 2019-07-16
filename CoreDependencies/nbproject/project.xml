@@ -1552,8 +1552,8 @@
                 <binary-origin>release/modules/ext/commons-lang-2.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/controlsfx-8.40.13.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/controlsfx-8.40.13.jar</binary-origin>
+                <runtime-relative-path>ext/controlsfx-11.0.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/controlsfx-11.0.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-api-17.1.jar</runtime-relative-path>

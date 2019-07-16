@@ -4681,7 +4681,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
          *
          *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
          *     incorrect length in some situations.
-         
+
          * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
          * get the Object implementation, which is slower but behaves correctly.
          */
@@ -10216,16 +10216,16 @@ return buffer + "    </tbody>\n  </table>\n</td>";
         }, {"../type":33}], 50:[function(require, module, exports){
         /*
          Copyright (c) jQuery Foundation, Inc. and Contributors, All Rights Reserved.
-         
+
          Redistribution and use in source and binary forms, with or without
          modification, are permitted provided that the following conditions are met:
-         
+
          * Redistributions of source code must retain the above copyright
          notice, this list of conditions and the following disclaimer.
          * Redistributions in binary form must reproduce the above copyright
          notice, this list of conditions and the following disclaimer in the
          documentation and/or other materials provided with the distribution.
-         
+
          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
          AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
          IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -24057,6 +24057,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                                                                                 var parameterContentTypeView = new SwaggerUi.Views.ParameterContentTypeView({model: contentTypeModel});
                                                                                                                                         $('.parameter-content-type', $(this.el)).append(parameterContentTypeView.render().el);
                                                                                                                                 }
+
                                                                                                                                 else {
                                                                                                                                 var responseContentTypeView = new SwaggerUi.Views.ResponseContentTypeView({model: contentTypeModel});
                                                                                                                                         $('.response-content-type', $(this.el)).append(responseContentTypeView.render().el);
