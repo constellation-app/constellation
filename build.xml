@@ -67,7 +67,7 @@
     
     <target name="-download-javahelp-indexfile" >
         <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing netbeans help index files..."/>
+        <echo message="installing netbeans help index files... ${nbplatform.default.netbeans.dest.dir}"/>
 
         <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
