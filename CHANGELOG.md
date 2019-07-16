@@ -18,7 +18,7 @@
 ## 2019-04-01 Changes in April 2019
 * Renamed NodeGraphLabelsAttributeDescription, NodeGraphLabelsAttributeInteraction, and NodeGraphLabelsIOProvider to VertexGraphLabelsAttributeDescription, VertexGraphLabelsAttributeInteraction, and VertexGraphLabelsIOProvider for consistency.
 * Updated the SchemaAttribute.ensure() method to create the attribute if it does not exist by default. This fixes a number of plugins that failed if the attribute was not defined.
-* Updated SimpleEditPlugin.edit() method to be abstract as it doesn't make sense to have an edit plugin with out any editing occuring.
+* Updated SimpleEditPlugin.edit() method to be abstract as it doesn't make sense to have an edit plugin without any editing occurring.
 
 ## 2019-03-01 Changes in March 2019
 * Added 23 new country flag icons.
@@ -545,4 +545,4 @@ final float x = xAttribute != Graph.NOT_FOUND ? readableGraph.getFloatValue(vert
 * Renamed the ResetPlugin class to ResetViewPlugin.
 
 ## 2016-02-01 Change in February 2016
-* Added an icons API so that developers can add custom icons programatically using the IconProvider class.
+* Added an icons API so that developers can add custom icons programmatically using the IconProvider class.
