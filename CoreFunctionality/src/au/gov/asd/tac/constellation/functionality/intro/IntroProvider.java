@@ -77,12 +77,15 @@ public abstract class IntroProvider {
         return StringUtils.EMPTY;
     }
 
-    private static String parse(final BufferedReader reader)
+    private static String parse(final BufferedReader reader) throws IOException
     {
         final StringBuilder text = new StringBuilder();
         while(true)
         {
             final String line = reader.readLine();
+             if (line == null) {
+                    break;
+                }
             text.append(line);
             text.append("\n");
         }
