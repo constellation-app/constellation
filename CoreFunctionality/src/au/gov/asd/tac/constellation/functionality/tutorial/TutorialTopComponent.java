@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
+import javax.swing.Action;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -201,6 +203,9 @@ public final class TutorialTopComponent extends TopComponent {
                                     final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
                                     if(actionId != null && !actionId.isEmpty()){
                                         System.out.println(actionId);
+                                        Action action=org.openide.awt.Actions.forID("File", "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction");
+                                        action.actionPerformed(new ActionEvent(panel,ActionEvent.ACTION_PERFORMED,"link_clicked"));
+                                            
                                     }
                                 }
                             }
