@@ -65,7 +65,7 @@ public abstract class IntroProvider {
      * "what's new" entries.
      * @return A {@link List} of {@link WhatsNewEntry} objects.
      */
-    public static String getWhatsNew(final Class<?> cls, final String resourceName) {
+    public static String getHtmlContent(final Class<?> cls, final String resourceName) {
         try {
             try (final BufferedReader r = new BufferedReader(new InputStreamReader(cls.getResourceAsStream(resourceName), StandardCharsets.UTF_8.name()))) {
                 return parse(r);
@@ -89,6 +89,6 @@ public abstract class IntroProvider {
             text.append(line);
             text.append("\n");
         }
-        return StringUtils.EMPTY;
+        return text.toString();
     }
 }

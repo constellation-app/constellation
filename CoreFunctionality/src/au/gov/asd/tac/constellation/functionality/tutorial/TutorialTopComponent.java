@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.functionality.tutorial;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
+import au.gov.asd.tac.constellation.functionality.intro.Intro;
+import au.gov.asd.tac.constellation.functionality.intro.IntroProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.WhatsNewEntry;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -195,6 +197,11 @@ public final class TutorialTopComponent extends TopComponent {
                                 final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
                                 if (helpId != null && !helpId.isEmpty()) {
                                     new HelpCtx(helpId).display();
+                                }else {
+                                    final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
+                                    if(actionId != null && !actionId.isEmpty()){
+                                        System.out.println(actionId);
+                                    }
                                 }
                             }
                         }
@@ -210,8 +217,9 @@ public final class TutorialTopComponent extends TopComponent {
             whatsNewView.getEngine().setUserStyleSheetLocation(TutorialTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
             whatsNewView.getStyleClass().add("web-view");
             try {
-                whatsNewView.getEngine().loadContent(getWhatsNew());
-            } catch (ParseException ex) {
+                //whatsNewView.getEngine().loadContent(getWhatsNew());
+                whatsNewView.getEngine().loadContent(getIntro());
+            } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
             right_vbox.getChildren().add(whatsNewView);
@@ -223,6 +231,13 @@ public final class TutorialTopComponent extends TopComponent {
             scene.getStylesheets().add(TutorialTopComponent.class.getResource(TUTORIAL_THEME).toExternalForm());
             panel.setScene(scene);
         });
+    }
+    
+    private String getIntro(){
+        final StringBuilder buf = new StringBuilder();
+        Intro intro = new Intro();
+        buf.append(IntroProvider.getHtmlContent(IntroProvider.class,intro.getResource() ));
+        return buf.toString();
     }
 
     private String getWhatsNew() throws ParseException {

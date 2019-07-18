@@ -6,10 +6,18 @@
 
 package au.gov.asd.tac.constellation.functionality.intro;
 
+import org.openide.util.lookup.ServiceProvider;
+
 /**
  *
- * @author 61401
+ * @author imranraza83
  */
-public class Intro {
+@ServiceProvider(service = IntroProvider.class)
+public class Intro extends IntroProvider{
+
+    @Override
+    public String getResource() {
+        return "intro.html";
+    }
 
 }
