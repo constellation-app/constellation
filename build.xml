@@ -128,6 +128,16 @@
             <arg value="/c"/>
             <arg line="mklink  ${basedir}\dist\${temp.app.name}\${app.name}\constellation32 ..\constellation\bin\constellation.exe"/>
         </exec>
-       
+        <!-- delete old zip -->
+        <delete file="${nbdist.dir}/${app.name}.zip"/>
+        <!-- zip again -->
+        <zip destfile="${nbdist.dir}/${app.name}.zip">
+            <zipfileset dir="${nbdist.dir}/${app.name}-temp" />
+        </zip>
+        
+        <!-- cleanup -->
+        <echo message=" "/>
+        <echo message="cleaning and finalizing release" />
+        <delete dir="${nbdist.dir}/${app.name}-temp"/>
     </target>
 </project>
