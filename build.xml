@@ -108,20 +108,26 @@
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
     </target>
-    
-        <target name="build-zip-new" depends="suite.build-zip">
+    <target name="build-zip-new" depends="suite.build-zip">
         <property name="nbdist.dir" value="dist"/>
         <property name="release.dir" value="${nbdist.dir}/${app.name}"/>
-
+        <property name="temp.app.name" value="${app.name}-temp"/>
         <!-- unzip the result  -->
         <unzip src="${nbdist.dir}/${app.name}.zip" dest="${nbdist.dir}/${app.name}-temp"/>
 
+        <!-- copying, deleting stuff here -->
+        <mkdir dir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
+        <copy file="../${app.name}/samples/Flights.csv" todir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
+        <!-- create shortcuts -->
+        <echo message="creating shortcuts in ${temp.app.name}..."/>
         <exec executable="cmd" os="Windows 10">
             <arg value="/c"/>
-            <arg line="mklink /D ${nbdist.dir}/${app.name}-temp ${nbdist.dir}/${app.name}-temp/${app.name}/bin/constellation64.exe"/>
+            <arg line="mklink  ${basedir}\dist\${temp.app.name}\${app.name}\constellation64 ..\constellation\bin\constellation64.exe"/>
         </exec>
-        <!-- copying, deleting stuff here -->
-        
-      
+        <exec executable="cmd" os="Windows 10">
+            <arg value="/c"/>
+            <arg line="mklink  ${basedir}\dist\${temp.app.name}\${app.name}\constellation32 ..\constellation\bin\constellation.exe"/>
+        </exec>
+       
     </target>
 </project>
