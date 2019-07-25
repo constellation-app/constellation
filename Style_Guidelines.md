@@ -1,6 +1,8 @@
+## Coding Style Guidelines
+
 When the constellation project grows and has more contributors, it's no longer possible to just tell contributors to “follow the code formatting in the code.” Ostensibly, that never worked anyway. 
 
-Here is an attempt to describe how the source code should be formatted. It's a collection of good practise, but will get better over time as it gets more organised.
+Here is an attempt to describe how the source code should be formatted. It's a collection of good practises, but will get better over time as it gets more organised.
 
 ## Indentation
 
