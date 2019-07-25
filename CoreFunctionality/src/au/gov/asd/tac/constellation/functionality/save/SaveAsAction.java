@@ -62,15 +62,18 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -94,6 +97,7 @@ import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
 import org.openide.util.Mutex;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
 import org.openide.windows.TopComponent;
@@ -144,6 +148,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
     private static String lastDir = "";
+
+    private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
     public SaveAsAction() {
         this(Utilities.actionsGlobalContext(), true);
@@ -248,6 +254,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * @return File selected by the user or null if no file was selected.
      */
     private File getNewFileName() {
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
+        boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
         File newFile = null;
         FileObject currentFileObject = getCurrentFileObject();
         if (null != currentFileObject) {
@@ -265,10 +274,18 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             chooser.setSelectedFile(newFile);
             FileUtil.preventFileChooserSymlinkTraversal(chooser, newFile.getParentFile());
         }
-        File initialFolder = getInitialFolderFrom(newFile);
-        if (null != initialFolder) {
-            chooser.setCurrentDirectory(initialFolder);
-        }
+
+        File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
+
+        //This null check is not required, Passing in null sets the file chooser to point to the user's default directory.
+        //if (null != initialFolder) {
+        chooser.setCurrentDirectory(initialFolder);
+//        }else {
+//            if(!"".equals(lastFileSaveLocation) && (new File (lastFileSaveLocation).isDirectory())){
+//                
+//                chooser.setCurrentDirectory(new File (lastFileSaveLocation));
+//            }
+//        }
         File origFile = newFile;
         while (true) {
             if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
@@ -318,6 +335,10 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         // save the curent directory if a file was selected
         if (newFile != null) {
             lastDir = chooser.getCurrentDirectory().getAbsolutePath();
+            if (!lastFileSaveLocation.equals(lastDir) && rememberSaveLocation) {
+                pcs.firePropertyChange("changed", false, true);
+                prefs.put(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, lastDir);
+            }
         }
         return newFile;
     }
@@ -339,21 +360,26 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * netbeans user dir then user's os-dependent home dir or last used folder
      * will be used instead of file's parent folder.
      */
-    private File getInitialFolderFrom(final File newFile) {
-        if (null != newFile) {
+    private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
+        if (null != newFile) {      //TODO: this null check seems unnesscerry 
             File parent = newFile.getParentFile();
             if (parent == null) {
                 if (lastDir.isEmpty()) {
-                    return new File(System.getProperty("user.home"));
+                    //Check prefferences for last saved directory
+                    if ("".equals(lastFileSaveLocation) || rememberSaveLocation == false) {
+                        return new File(System.getProperty("user.home"));
+                    } else {
+                        return new File(lastFileSaveLocation);
+                    }
+
                 } else {
                     return new File(lastDir);
                 }
             } else {
                 return parent;
             }
-        } else {
-            return new File(System.getProperty("user.home"));
         }
+        return null;
     }
 
     /**
