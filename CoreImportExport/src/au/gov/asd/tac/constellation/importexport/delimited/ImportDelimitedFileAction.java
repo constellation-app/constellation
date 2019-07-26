@@ -45,6 +45,10 @@ public final class ImportDelimitedFileAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+        openDelimitedFileImporterStage();
+    }
+    
+    public static void openDelimitedFileImporterStage(){
         Platform.runLater(() -> {
             final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
             stage.show();
