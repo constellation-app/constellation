@@ -255,7 +255,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      */
     private File getNewFileName() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
+        final String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
         final boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
         File newFile = null;
         FileObject currentFileObject = getCurrentFileObject();
@@ -360,7 +360,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (parent == null) {
                 if (lastDir.isEmpty()) {
                     //Check prefferences for last saved directory
-                    if ("".equals(lastFileSaveLocation) || rememberSaveLocation == false) {
+                    if (lastFileSaveLocation.isEmpty() || rememberSaveLocation == false) {
                         return new File(System.getProperty("user.home"));
                     } else {
                         return new File(lastFileSaveLocation);
