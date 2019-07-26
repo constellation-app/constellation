@@ -277,15 +277,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
         File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
 
-        //This null check is not required, Passing in null sets the file chooser to point to the user's default directory.
-        //if (null != initialFolder) {
+        //null check not required here, Passing in null sets the file chooser to point to the user's default directory.
         chooser.setCurrentDirectory(initialFolder);
-//        }else {
-//            if(!"".equals(lastFileSaveLocation) && (new File (lastFileSaveLocation).isDirectory())){
-//                
-//                chooser.setCurrentDirectory(new File (lastFileSaveLocation));
-//            }
-//        }
+
         File origFile = newFile;
         while (true) {
             if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
@@ -361,7 +355,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * will be used instead of file's parent folder.
      */
     private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
-        if (null != newFile) {      //TODO: this null check seems unnesscerry 
+        if (null != newFile) {      
             File parent = newFile.getParentFile();
             if (parent == null) {
                 if (lastDir.isEmpty()) {
