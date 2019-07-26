@@ -256,7 +256,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private File getNewFileName() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         String lastFileSaveLocation = prefs.get(ApplicationPreferenceKeys.FILE_SAVE_LOCATION, "");
-        boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
+        final boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
         File newFile = null;
         FileObject currentFileObject = getCurrentFileObject();
         if (null != currentFileObject) {
@@ -266,7 +266,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             }
         }
 
-        JFileChooser chooser = new FileChooser();
+        final JFileChooser chooser = new FileChooser();
         chooser.setFileFilter(new FileNameExtensionFilter("CONSTELLATION graphs [.star]", "star"));
         chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
         chooser.setMultiSelectionEnabled(false);
@@ -275,12 +275,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             FileUtil.preventFileChooserSymlinkTraversal(chooser, newFile.getParentFile());
         }
 
-        File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
+        final File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
 
         //null check not required here, Passing in null sets the file chooser to point to the user's default directory.
         chooser.setCurrentDirectory(initialFolder);
 
-        File origFile = newFile;
+        final File origFile = newFile;
         while (true) {
             if (JFileChooser.APPROVE_OPTION != chooser.showSaveDialog(WindowManager.getDefault().getMainWindow())) {
                 return null;
