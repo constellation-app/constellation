@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.filetransport;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
-import javax.annotation.Resource;
 import javax.swing.Action;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -32,17 +31,17 @@ import org.openide.util.actions.BooleanStateAction;
  * Start and stop the file listener.
  *
  * @author algol
+ * @author rsabhi modified
  */
+
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.filetransport.StartStopFileListenerAction")
-@ActionRegistration(displayName = "#CTL_StartStopFileListenerAction", surviveFocusChange = true, lazy = false)
+@ActionRegistration(displayName = "#CTL_StartStopFileListenerAction", iconBase = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png", surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
 @Messages("CTL_StartStopFileListenerAction=Start/Stop File Listener")
 public final class StartStopFileListenerAction extends BooleanStateAction {
 
-    @Resource
     private static final String ICON_ON = "au/gov/asd/tac/constellation/filetransport/filelistener_on.png";
 
-    @Resource
     private static final String ICON_OFF = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png";
 
     private static final long JOIN_WAIT = 1000;
@@ -53,6 +52,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
+        super.actionPerformed(ev);
         if (!listener_on) {
             try {
                 fileListener = new FileListener();
@@ -60,7 +60,6 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
                 listenerRunner.start();
 
                 // This will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null.
-                //
                 putValue(Action.SMALL_ICON, null);
 
                 setBooleanState(!listener_on);
@@ -74,7 +73,6 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
                 listenerRunner.join(JOIN_WAIT);
 
                 // This will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null.
-                //
                 putValue(Action.SMALL_ICON, null);
 
                 setBooleanState(!listener_on);
@@ -84,6 +82,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
         }
 
         listener_on = !listener_on;
+        
     }
 
     @Override
@@ -100,9 +99,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
 
     @Override
     protected String iconResource() {
-        return listener_on
-                ? ICON_ON
-                : ICON_OFF;
+        return listener_on ? ICON_ON : ICON_OFF;
     }
 
     @Override
