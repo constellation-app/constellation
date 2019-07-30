@@ -37,13 +37,17 @@ import java.util.Collections;
 import java.util.Date;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,6 +55,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -67,7 +75,7 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
-
+import au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction;
 /**
  *
  * WelcomeTopComponent is designed to inform users of news about Constellation.
@@ -176,70 +184,127 @@ public final class WelcomelTopComponent extends TopComponent {
 //            HBox.setHgrow(right_vbox, Priority.ALWAYS);
 //            VBox.setVgrow(right_vbox, Priority.ALWAYS);
 
-            final WebView whatsNewView = new WebView();
-            VBox.setVgrow(whatsNewView, Priority.ALWAYS);
-            whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends State> observable, final State oldValue, final State newValue) -> {
-                if (newValue == Worker.State.SUCCEEDED) {
-                    // Add a click listener for <a> tags.
-                    // If there's a valid href attribute, open the default browser at that URL.
-                    // If there's a valid helpId attribute, open NetBeans help using the helpId.
-                    // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
-                    final EventListener listener = (final Event event) -> {
-                        final String eventType = event.getType();
-                        if (eventType.equals("click")) {
-                            event.preventDefault();
+//            final WebView whatsNewView = new WebView();
+//            VBox.setVgrow(whatsNewView, Priority.ALWAYS);
+//            whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends State> observable, final State oldValue, final State newValue) -> {
+//                if (newValue == Worker.State.SUCCEEDED) {
+//                    // Add a click listener for <a> tags.
+//                    // If there's a valid href attribute, open the default browser at that URL.
+//                    // If there's a valid helpId attribute, open NetBeans help using the helpId.
+//                    // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
+//                    final EventListener listener = (final Event event) -> {
+//                        final String eventType = event.getType();
+//                        if (eventType.equals("click")) {
+//                            event.preventDefault();
+//
+//                            final String href = ((Element) event.getTarget()).getAttribute("href");
+//                            if (href != null && !href.isEmpty()) {
+//                                PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
+//                                        .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
+//                                        .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
+//                                        .executeLater(null);
+//                            } else {
+//                                final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
+//                                if (helpId != null && !helpId.isEmpty()) {
+//                                    new HelpCtx(helpId).display();
+//                                } else {
+//                                    final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
+//                                    if (actionId != null && !actionId.isEmpty()) {
+//                                        System.out.println(actionId);
+//                                        //TODO: Invoke Action here
+//                                        //Action action=org.openide.awt.Actions.forID("File", "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction");
+//                                        //action.actionPerformed(new ActionEvent(panel,ActionEvent.ACTION_PERFORMED,"link_clicked"));
+//                                        switch (actionId) {
+//                                            case "actionid1":
+////                                                Platform.runLater(() -> {
+////                                                    final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
+////                                                    stage.show();
+////                                                });
+//                                                ImportDelimitedFileAction.openDelimitedFileImporterStage();
+//                                                break;
+//                                            default:
+//                                                throw new AssertionError();
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    };
+//
+//                    final Document doc = whatsNewView.getEngine().getDocument();
+//                    final NodeList nodeList = doc.getElementsByTagName("a");
+//                    for (int i = 0; i < nodeList.getLength(); i++) {
+//                        ((EventTarget) nodeList.item(i)).addEventListener("click", listener, true);
+//                    }
+//                }
+//            });
+//            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomelTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+//            whatsNewView.getStyleClass().add("web-view");
+//            try {
+//                //whatsNewView.getEngine().loadContent(getWhatsNew());
+//                whatsNewView.getEngine().loadContent(getIntro());
+//            } catch (Exception ex) {
+//                Exceptions.printStackTrace(ex);
+//            }
+//            right_vbox.getChildren().add(whatsNewView);
+            //Creating text objects  
+            Text text1 = new Text("Welcome to Constellation ");
 
-                            final String href = ((Element) event.getTarget()).getAttribute("href");
-                            if (href != null && !href.isEmpty()) {
-                                PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
-                                        .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
-                                        .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
-                                        .executeLater(null);
-                            } else {
-                                final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
-                                if (helpId != null && !helpId.isEmpty()) {
-                                    new HelpCtx(helpId).display();
-                                } else {
-                                    final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
-                                    if (actionId != null && !actionId.isEmpty()) {
-                                        System.out.println(actionId);
-                                        //TODO: Invoke Action here
-                                        //Action action=org.openide.awt.Actions.forID("File", "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction");
-                                        //action.actionPerformed(new ActionEvent(panel,ActionEvent.ACTION_PERFORMED,"link_clicked"));
-                                        switch (actionId) {
-                                            case "actionid1":
-//                                                Platform.runLater(() -> {
-//                                                    final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
-//                                                    stage.show();
-//                                                });
-                                                ImportDelimitedFileAction.openDelimitedFileImporterStage();
-                                                break;
-                                            default:
-                                                throw new AssertionError();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    };
+            //Setting font to the text 
+            text1.setFont(new Font(15));
 
-                    final Document doc = whatsNewView.getEngine().getDocument();
-                    final NodeList nodeList = doc.getElementsByTagName("a");
-                    for (int i = 0; i < nodeList.getLength(); i++) {
-                        ((EventTarget) nodeList.item(i)).addEventListener("click", listener, true);
-                    }
+            //Setting color to the text  
+            text1.setFill(Color.WHITE);
+
+            Text text2 = new Text("How to start building graphs in CONSTELLATION.  ");
+
+            //Setting font to the text 
+            text2.setFont(new Font(15));
+
+            //Setting color to the text 
+            text2.setFill(Color.WHITE);
+            Text text3 = new Text("\n Select File &rarr; New Graph &rarr; Analytic Graph. This will open a new window containing an empty graph. ");
+
+            //Setting font to the text 
+            text3.setFont(new Font(15));
+
+            //Setting color to the text 
+            text3.setFill(Color.WHITE);
+
+            Text text4 = new Text("Select Experimental &rarr; Build graph &rarr; Sphere Graph Builder to build a random spherical graph in the window.");
+
+            //Setting font to the text 
+            text4.setFont(new Font(15));
+            text4.setFill(Color.WHITE);
+
+            //Creating the text flow plane 
+            TextFlow textFlowPane = new TextFlow();
+
+            //Setting the line spacing between the text objects 
+            textFlowPane.setTextAlignment(TextAlignment.JUSTIFY);
+
+            //Setting the width  
+            textFlowPane.setPrefSize(600, 300);
+
+            //Setting the line spacing  
+            textFlowPane.setLineSpacing(5.0);
+
+            //Retrieving the observable list of the TextFlow Pane 
+            ObservableList list = textFlowPane.getChildren();
+
+            //Adding cylinder to the pane  
+            list.addAll(text1, text2, text3, text4);
+            Button button1 = new Button("Button Number 1");
+            button1.setOnAction(new EventHandler<ActionEvent>(){
+                @Override
+                public void handle(ActionEvent t) {
+                    System.out.println(" button pressed");
+                    ImportDelimitedFileAction.openDelimitedFileImporterStage();
                 }
+                
             });
-            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomelTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
-            whatsNewView.getStyleClass().add("web-view");
-            try {
-                //whatsNewView.getEngine().loadContent(getWhatsNew());
-                whatsNewView.getEngine().loadContent(getIntro());
-            } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            right_vbox.getChildren().add(whatsNewView);
-
+            right_vbox.getChildren().add(textFlowPane);
+            right_vbox.getChildren().add(button1);
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
             final Scene scene = new Scene(root, Color.web("1d1d1d"));
@@ -255,7 +320,7 @@ public final class WelcomelTopComponent extends TopComponent {
         Intro intro = new Intro();
         buf
                 .append(IntroProvider.getHtmlContent(IntroProvider.class,
-                         intro.getResource()));
+                        intro.getResource()));
         return buf.toString();
 
     }
