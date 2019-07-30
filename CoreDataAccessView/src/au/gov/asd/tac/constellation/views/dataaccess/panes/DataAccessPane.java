@@ -334,16 +334,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
         });
 
-        final Button searchButton = new Button("", new ImageView(UserInterfaceIconProvider.SEARCH.buildImage(16)));
-        searchButton.setTooltip(new Tooltip("Search plugins"));
-        searchButton.setOnAction((ActionEvent t) -> {
-            searchPluginTextField.setVisible(!searchPluginTextField.isVisible());
-            searchPluginTextField.requestFocus();
-        });
-
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
-        searchPluginTextField.setVisible(false);
         searchPluginTextField.textProperty().addListener((ov, oldValue, newValue) -> {
             final QueryPhasePane queryPhasePane = getQueryPhasePane(getCurrentTab());
             queryPhasePane.showMatchingPlugins(newValue);
@@ -370,7 +362,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         final HBox options = new HBox();
         options.setSpacing(10.0);
-        options.getChildren().addAll(helpButton, addButton, searchButton, favouriteButton);
+        options.getChildren().addAll(helpButton, addButton, favouriteButton);
 
         final QualityControlAutoButton rab = Lookup.getDefault().lookup(QualityControlAutoButton.class);
         if (rab != null) {
