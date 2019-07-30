@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2019-06-25 Data Access View Plugin Search
+<p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
+
 == 2019-06-25 Data Access View Context Menu Update
 <p>The menu positions of the right click context menu available from the Data 
 Access View has been modified based on UX feedback.</p>
