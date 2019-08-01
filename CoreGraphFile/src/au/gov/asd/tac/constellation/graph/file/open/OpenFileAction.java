@@ -92,10 +92,10 @@ public class OpenFileAction implements ActionListener {
      *
      * @return the initialized file chooser
      */
-    protected JFileChooser prepareFileChooser() {
+    protected static JFileChooser prepareFileChooser() {
         JFileChooser chooser = new FileChooser();
         chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
+        //HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
 
         return chooser;
     }
@@ -149,6 +149,20 @@ public class OpenFileAction implements ActionListener {
         } finally {
             running = false;
         }
+    }
+    
+    public static void executeFileOpenAction(){
+        JFileChooser chooser = prepareFileChooser();
+            File[] files;
+            try {
+                files = chooseFilesToOpen(chooser);
+                currentDirectory = chooser.getCurrentDirectory();
+            } catch (UserCancelException ex) {
+                return;
+            }
+            for (int i = 0; i < files.length; i++) {
+                OpenFile.openFile(files[i], -1);
+            }
     }
 
     private static File getCurrentDirectory() {

@@ -76,6 +76,8 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction;
+import au.gov.asd.tac.constellation.graph.file.open.OpenFileAction;
+import javafx.scene.layout.HBox;
 /**
  *
  * WelcomeTopComponent is designed to inform users of news about Constellation.
@@ -111,7 +113,7 @@ import au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAc
     "CTL_WelcomeTopComponentTopComponent=Welcome",
     "HINT_WelcomeTopComponentTopComponent=Welcome"
 })
-public final class WelcomelTopComponent extends TopComponent {
+public final class WelcomeTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
     private static final String TUTORIAL_THEME = "resources/tutorialStylesheet.css";
@@ -137,7 +139,7 @@ public final class WelcomelTopComponent extends TopComponent {
      */
     public static final int ARCHIVE_DAYS = -180; // 6 months
 
-    public WelcomelTopComponent() {
+    public WelcomeTopComponent() {
         setName(Bundle.CTL_WelcomeTopComponentTopComponent());
         setToolTipText(Bundle.HINT_WelcomeTopComponentTopComponent());
         setLayout(new BorderLayout());
@@ -166,11 +168,11 @@ public final class WelcomelTopComponent extends TopComponent {
             left_vbox.setAlignment(Pos.TOP_CENTER);
 
             //Create images for Left VBox
-            ImageView menu_image = new ImageView(new Image(WelcomelTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            ImageView menu_image = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(MENU_IMAGE)));
             menu_image.setFitWidth(300);
             menu_image.setPreserveRatio(true);
             left_vbox.getChildren().add(menu_image);
-            ImageView mouse_image = new ImageView(new Image(WelcomelTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            ImageView mouse_image = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
             mouse_image.setFitWidth(300);
             mouse_image.setPreserveRatio(true);
             left_vbox.getChildren().add(mouse_image);
@@ -181,73 +183,76 @@ public final class WelcomelTopComponent extends TopComponent {
             splitPane.getItems().add(right_vbox);
 
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-//            HBox.setHgrow(right_vbox, Priority.ALWAYS);
-//            VBox.setVgrow(right_vbox, Priority.ALWAYS);
+            HBox.setHgrow(right_vbox, Priority.ALWAYS);
+            VBox.setVgrow(right_vbox, Priority.ALWAYS);
 
-//            final WebView whatsNewView = new WebView();
-//            VBox.setVgrow(whatsNewView, Priority.ALWAYS);
-//            whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends State> observable, final State oldValue, final State newValue) -> {
-//                if (newValue == Worker.State.SUCCEEDED) {
-//                    // Add a click listener for <a> tags.
-//                    // If there's a valid href attribute, open the default browser at that URL.
-//                    // If there's a valid helpId attribute, open NetBeans help using the helpId.
-//                    // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
-//                    final EventListener listener = (final Event event) -> {
-//                        final String eventType = event.getType();
-//                        if (eventType.equals("click")) {
-//                            event.preventDefault();
-//
-//                            final String href = ((Element) event.getTarget()).getAttribute("href");
-//                            if (href != null && !href.isEmpty()) {
-//                                PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
-//                                        .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
-//                                        .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
-//                                        .executeLater(null);
-//                            } else {
-//                                final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
-//                                if (helpId != null && !helpId.isEmpty()) {
-//                                    new HelpCtx(helpId).display();
-//                                } else {
-//                                    final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
-//                                    if (actionId != null && !actionId.isEmpty()) {
-//                                        System.out.println(actionId);
-//                                        //TODO: Invoke Action here
-//                                        //Action action=org.openide.awt.Actions.forID("File", "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction");
-//                                        //action.actionPerformed(new ActionEvent(panel,ActionEvent.ACTION_PERFORMED,"link_clicked"));
-//                                        switch (actionId) {
-//                                            case "actionid1":
-////                                                Platform.runLater(() -> {
-////                                                    final DelimitedFileImporterStage stage = new DelimitedFileImporterStage();
-////                                                    stage.show();
-////                                                });
-//                                                ImportDelimitedFileAction.openDelimitedFileImporterStage();
-//                                                break;
-//                                            default:
-//                                                throw new AssertionError();
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    };
-//
-//                    final Document doc = whatsNewView.getEngine().getDocument();
-//                    final NodeList nodeList = doc.getElementsByTagName("a");
-//                    for (int i = 0; i < nodeList.getLength(); i++) {
-//                        ((EventTarget) nodeList.item(i)).addEventListener("click", listener, true);
-//                    }
-//                }
-//            });
-//            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomelTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
-//            whatsNewView.getStyleClass().add("web-view");
-//            try {
-//                //whatsNewView.getEngine().loadContent(getWhatsNew());
-//                whatsNewView.getEngine().loadContent(getIntro());
-//            } catch (Exception ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//            right_vbox.getChildren().add(whatsNewView);
+            final WebView whatsNewView = new WebView();
+            VBox.setVgrow(whatsNewView, Priority.ALWAYS);
+            whatsNewView.getEngine().getLoadWorker().stateProperty().addListener((final ObservableValue<? extends State> observable, final State oldValue, final State newValue) -> {
+                if (newValue == Worker.State.SUCCEEDED) {
+                    // Add a click listener for <a> tags.
+                    // If there's a valid href attribute, open the default browser at that URL.
+                    // If there's a valid helpId attribute, open NetBeans help using the helpId.
+                    // An <a> without an href doesn't get underlined, so use href="" in addition to helpId="...".
+                    final EventListener listener = (final Event event) -> {
+                        final String eventType = event.getType();
+                        if (eventType.equals("click")) {
+                            event.preventDefault();
+
+                            final String href = ((Element) event.getTarget()).getAttribute("href");
+                            if (href != null && !href.isEmpty()) {
+                                PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
+                                        .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
+                                        .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
+                                        .executeLater(null);
+                            } else {
+                                final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
+                                if (helpId != null && !helpId.isEmpty()) {
+                                    new HelpCtx(helpId).display();
+                                } else {
+                                    final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
+                                    if (actionId != null && !actionId.isEmpty()) {
+                                        System.out.println(actionId);
+  
+                                        switch (actionId) {
+                                            case "actionid1":
+                                                ImportDelimitedFileAction.openDelimitedFileImporterStage();
+                                                break;
+                                            case "actionid2":
+                                                break;
+                                            case "actionid3":
+                                                break;
+                                            case "actionid4":
+                                                OpenFileAction.executeFileOpenAction();
+                                                break;
+                                            default:
+                                                throw new AssertionError();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    final Document doc = whatsNewView.getEngine().getDocument();
+                    final NodeList nodeList = doc.getElementsByTagName("a");
+                    for (int i = 0; i < nodeList.getLength(); i++) {
+                        ((EventTarget) nodeList.item(i)).addEventListener("click", listener, true);
+                    }
+                }
+            });
+            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomeTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+            whatsNewView.getStyleClass().add("web-view");
+            try {
+                //whatsNewView.getEngine().loadContent(getWhatsNew());
+                whatsNewView.getEngine().loadContent(getIntro());
+            } catch (Exception ex) {
+                Exceptions.printStackTrace(ex);
+            }
+            right_vbox.getChildren().add(whatsNewView);
+
             //Creating text objects  
+            /*
             Text text1 = new Text("Welcome to Constellation ");
 
             //Setting font to the text 
@@ -305,11 +310,12 @@ public final class WelcomelTopComponent extends TopComponent {
             });
             right_vbox.getChildren().add(textFlowPane);
             right_vbox.getChildren().add(button1);
+            */
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
             final Scene scene = new Scene(root, Color.web("1d1d1d"));
             scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add(WelcomelTopComponent.class.getResource(TUTORIAL_THEME).toExternalForm());
+            scene.getStylesheets().add(WelcomeTopComponent.class.getResource(TUTORIAL_THEME).toExternalForm());
             panel.setScene(scene);
         }
         );
@@ -434,7 +440,7 @@ public final class WelcomelTopComponent extends TopComponent {
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(66, 66, 66));
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(WelcomelTopComponent.class, "WelcomelTopComponent.jLabel1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(WelcomeTopComponent.class, "WelcomeTopComponent.jLabel1.text")); // NOI18N
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 1;
