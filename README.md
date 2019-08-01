@@ -2,6 +2,7 @@
 Constellation is a graph-focused data visualisation and interactive analysis application enabling data access, federation and manipulation capabilities across large and complex data sets.
 
 ## Vision Statement
+
 Constellation is a first class, domain agnostic data visualisation and analysis application 
 enabling the user to solve large and complex data problems in a simple and intuitive way.
 
@@ -17,6 +18,7 @@ enabling the user to solve large and complex data problems in a simple and intui
 OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
 
 ## Download Constellation
+
 Download Constellation by going to the [release page](https://github.com/constellation-app/constellation/releases).
 
 ## Run Constellation
@@ -39,6 +41,7 @@ To build Constellation from source code do the following:
 * Right click -> Run
 
 ## Package Constellation
+
 To package Constellation in a zip bundle do the following:
 
 * In NetBeans, expand Constellation_Core -> Important Files
@@ -71,4 +74,4 @@ For more information please see the [contributing guide](CONTRIBUTING.md).
 
 ## Acknowledgments
 
-Third party libraries and assets were used in development of Constellation, please view [attribution list](ATTRIBUTION.md)for details. 
+Third party libraries and assets were used in development of Constellation, please view [attribution list](ATTRIBUTION.md) for details. 
