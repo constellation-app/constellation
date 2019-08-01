@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.visual.InfoTextPanel;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
@@ -47,7 +48,8 @@ public class GLInfo {
     public static void respondToIncompatibleHardwareOrGL(final GLAutoDrawable drawable) {
         final String basicInfo = drawable == null ? "Not available" : (new GLInfo(drawable.getGL())).getBasicInfo();
         final String errorMessage
-                = "CONSTELLATION requires a minimum of OpenGL version " + MINIMUM_OPEN_GL_VERSION + "\n\n"
+                = BrandingUtilities.APPLICATION_NAME + " requires a minimum of "
+                + "OpenGL version " + MINIMUM_OPEN_GL_VERSION + "\n\n"
                 + "This PC has an incompatible graphics card.\n"
                 + "Please contact CONSTELLATION support, or use a different PC.\n\n"
                 + "This PC's details:\n\n" + basicInfo;

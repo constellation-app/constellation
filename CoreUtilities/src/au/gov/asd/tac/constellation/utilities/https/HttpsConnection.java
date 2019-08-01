@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.https;
 
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -74,7 +75,7 @@ public class HttpsConnection {
             ((HttpsURLConnection) httpConnection).setSSLSocketFactory(ConstellationSecurityManager.getCurrentSecurityContext().getSSLContext().getSocketFactory());
         }
         httpConnection.setUseCaches(false);
-        httpConnection.setRequestProperty("User-Agent", "CONSTELLATION");
+        httpConnection.setRequestProperty("User-Agent", BrandingUtilities.APPLICATION_NAME);
         httpConnection.setRequestProperty("Accept-Encoding", "gzip, deflate");
     }
 
