@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.nifi.rest;
 
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;
@@ -95,7 +96,7 @@ public class NifiClient extends RestClient {
 
     public NifiFileSubmitResponse postToNifi(final String filePath, final Map<String, String> flowfileAttributes) throws IOException {
         final Instant now = Instant.now();
-        flowfileAttributes.put("adds.source.system", "Constellation");
+        flowfileAttributes.put("adds.source.system", BrandingUtilities.APPLICATION_NAME);
         LOGGER.log(Level.INFO, "Posting to NiFi: {0}, {1}", new Object[]{filePath, flowfileAttributes});
 
         // package the flowfile

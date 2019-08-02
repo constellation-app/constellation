@@ -63,6 +63,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -267,7 +268,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         }
 
         final JFileChooser chooser = new FileChooser();
-        chooser.setFileFilter(new FileNameExtensionFilter("CONSTELLATION graphs [.star]", "star"));
+        chooser.setFileFilter(new FileNameExtensionFilter(String.format("%s graphs [.star]", BrandingUtilities.APPLICATION_NAME), "star"));
         chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
         chooser.setMultiSelectionEnabled(false);
         if (null != newFile) {

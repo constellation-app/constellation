@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema;
 
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -39,7 +40,7 @@ public abstract class SchemaConcept {
 
         @Override
         public String getName() {
-            return "Constellation Views";
+            return String.format("%s Views", BrandingUtilities.APPLICATION_NAME);
         }
 
         @Override

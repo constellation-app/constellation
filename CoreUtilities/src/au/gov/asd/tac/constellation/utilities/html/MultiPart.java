@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.html;
 
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -147,7 +148,7 @@ public class MultiPart {
         conn.setDoOutput(true);
         conn.setUseCaches(false);
         conn.setRequestMethod("POST");
-        conn.setRequestProperty("User-Agent", "CONSTELLATION");
+        conn.setRequestProperty("User-Agent", BrandingUtilities.APPLICATION_NAME);
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Connection", "keep-alive");
         conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + getBoundary());
