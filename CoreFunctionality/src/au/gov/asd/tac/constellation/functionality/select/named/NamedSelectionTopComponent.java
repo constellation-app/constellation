@@ -144,7 +144,6 @@ public final class NamedSelectionTopComponent extends TopComponent {
 
         setName(Bundle.CTL_NamedSelectionTopComponent());
         setToolTipText(Bundle.HINT_NamedSelectionTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         // Create label and container to show user when no active graph selected:
         panelNoGraph.setLayout(new BorderLayout());

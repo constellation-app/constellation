@@ -76,7 +76,6 @@ public final class PluginReporterTopComponent extends TopComponent implements Gr
         initComponents();
         setName(Bundle.CTL_PluginReporterTopComponent());
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         setPreferredSize(new Dimension(400, 800));
 

@@ -119,7 +119,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         initComponents();
         setName(Bundle.CTL_PlaneManagerTopComponent());
         setToolTipText(Bundle.HINT_PlaneManagerTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         planesAttr = Graph.NOT_FOUND;
         planesModificationCounter = -1;

@@ -146,7 +146,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         // initialise top component
         setName(Bundle.CTL_MapViewTopComponent());
         setToolTipText(Bundle.HINT_MapViewTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         initComponents();
         initContent();
 

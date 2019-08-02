@@ -62,7 +62,6 @@ public final class MemoryManagerTopComponent extends TopComponent implements Mem
         initComponents();
         setName(Bundle.CTL_MemoryManagerTopComponent());
         setToolTipText(Bundle.HINT_MemoryManagerTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
     }
 
     /**
