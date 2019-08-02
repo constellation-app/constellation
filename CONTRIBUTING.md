@@ -26,7 +26,7 @@ feel free to propose changes to this document in a pull request.
   * [Your First Code Contribution](#your-first-code-contribution)
   * [Pull Requests](#pull-requests)
 
-[Style Guides](#style-guides)
+[Style Guides](Style_Guidelines.md)
   * [Git Commit Messages](#git-commit-messages)
 
 ## Code of Conduct
@@ -282,7 +282,7 @@ on how to do this, see the ***Build Constellation*** section in the
 * Format your code using the default NetBeans formatter settings.
 * Ensure that new ***leaks*** or ***code smells*** are not introduced by parsing
 you code using `sonar-scanner` and checking via [Sonar Qube](#https://sonarcloud.io)
-* Document new code based on the [Documentation Styleguide](#documentation-styleguide)
+* Document new code based on the [Documentation Styleguide](Style_Guidelines.md)
 * Avoid platform-dependent code
 * Utility methods should end with the word Utilities (i.e not Util or Utility)
 * Update the [change log](CHANGELOG.md) as a means to notify developers or 
