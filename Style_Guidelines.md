@@ -46,18 +46,6 @@ not
 if (condition){
 ```
 
-* An empty block should be `{ }` not `{}` or
-```
-if (emptyBlock) {
-}
-```
-...unless there's a `//` comment to be made inside the empty block:
-```
-if (emptyBlock) {
-  // a useful comment here about why this case is skipped
-}
-```
-
 * Use spaces before/after commas:
  * `someFunction(apple,bear,cat); //bad`
  * `someFunction(apple, bear, cat);  // correct`
