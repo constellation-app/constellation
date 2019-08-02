@@ -45,7 +45,12 @@ not
 ```
 if (condition){
 ```
-
+* For an empty block add a `//` comment to be made inside:
+```
+if (emptyBlock) {
+  // a useful comment here about why this case is skipped
+}
+```
 * Use spaces before/after commas:
  * `someFunction(apple,bear,cat); //bad`
  * `someFunction(apple, bear, cat);  // correct`
