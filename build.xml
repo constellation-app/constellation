@@ -108,29 +108,5 @@
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
     </target>
-    <target name="build-zip-new" depends="suite.build-zip">
-        <property name="nbdist.dir" value="dist"/>
-        <property name="release.dir" value="${nbdist.dir}/${app.name}"/>
-        <property name="temp.app.name" value="${app.name}-temp"/>
-        <!-- unzip the result  -->
-        <echo message="un-zipping to temp"/>
-        <unzip src="${nbdist.dir}/${app.name}.zip" dest="${nbdist.dir}/${app.name}-temp"/>
-
-        <!-- copying, deleting stuff here -->
-        <echo message="copying sample file and hosrtcuts"/>
-        <mkdir dir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
-        <copy file="../${app.name}/samples/Flights.csv" todir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
-        <copy file="../${app.name}/samples/constellation.bat" todir="${nbdist.dir}/${app.name}-temp/${app.name}/"/>
-        <copy file="../${app.name}/samples/constellation64.bat" todir="${nbdist.dir}/${app.name}-temp/${app.name}/"/>
-        <!-- delete old zip -->
-        <delete file="${nbdist.dir}/${app.name}.zip"/>
-        <!-- zip again -->
-        <zip destfile="${nbdist.dir}/${app.name}.zip">
-            <zipfileset dir="${nbdist.dir}/${app.name}-temp" />
-        </zip>
-        
-        <!-- cleanup -->
-        <echo message="cleaning and finalizing release" />
-        <delete dir="${nbdist.dir}/${app.name}-temp"/>
-    </target>
+   
 </project>
