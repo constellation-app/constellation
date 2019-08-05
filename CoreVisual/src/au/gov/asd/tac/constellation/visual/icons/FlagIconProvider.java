@@ -914,14 +914,20 @@ public class FlagIconProvider implements ConstellationIconProvider {
 
     @Override
     public List<ConstellationIcon> getIcons() {
-        List<ConstellationIcon> flagIcons = new ArrayList<>();
+        final List<ConstellationIcon> flagIcons = new ArrayList<>();
+
         flagIcons.add(AFGHANISTAN);
+        flagIcons.add(ALAND);
+        flagIcons.add(ALAND_ISLANDS);
         flagIcons.add(ALBANIA);
         flagIcons.add(ALGERIA);
         flagIcons.add(ANDORRA);
+        flagIcons.add(ANGOLA);
+        flagIcons.add(ANGUILLA);
         flagIcons.add(ANTIGUA_AND_BARBUDA);
         flagIcons.add(ARGENTINA);
         flagIcons.add(ARMENIA);
+        flagIcons.add(ARUBA);
         flagIcons.add(AUSTRALIA);
         flagIcons.add(AUSTRIA);
         flagIcons.add(AZERBAIJAN);
@@ -933,6 +939,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(BELGIUM);
         flagIcons.add(BELIZE);
         flagIcons.add(BENIN);
+        flagIcons.add(BERMUDA);
         flagIcons.add(BHUTAN);
         flagIcons.add(BOLIVIA);
         flagIcons.add(BOSNIA_AND_HERZEGOVINA);
@@ -946,6 +953,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(CAMEROON);
         flagIcons.add(CANADA);
         flagIcons.add(CAPE_VERDE);
+        flagIcons.add(CAYMAN_ISLANDS);
         flagIcons.add(CENTRAL_AFRICAN_REPUBLIC);
         flagIcons.add(CHAD);
         flagIcons.add(CHILE);
@@ -954,10 +962,12 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(COMOROS);
         flagIcons.add(CONGO_DEMOCRATIC);
         flagIcons.add(CONGO_REPUBLIC);
+        flagIcons.add(COOK_ISLANDS);
         flagIcons.add(COSTA_RICA);
         flagIcons.add(COTE_DIVOIRE);
         flagIcons.add(CROATIA);
         flagIcons.add(CUBA);
+        flagIcons.add(CURACAO);
         flagIcons.add(CYPRUS);
         flagIcons.add(CZECH_REPUBLIC);
         flagIcons.add(DENMARK);
@@ -972,6 +982,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(ERITREA);
         flagIcons.add(ESTONIA);
         flagIcons.add(ETHIOPIA);
+        flagIcons.add(FALKLAND_ISLANDS);
         flagIcons.add(FIJI);
         flagIcons.add(FINLAND);
         flagIcons.add(FRANCE);
@@ -980,14 +991,17 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(GEORGIA);
         flagIcons.add(GERMANY);
         flagIcons.add(GHANA);
+        flagIcons.add(GIBRALTAR);
         flagIcons.add(GREECE);
         flagIcons.add(GRENADA);
         flagIcons.add(GUATEMALA);
+        flagIcons.add(GUERNSEY);
         flagIcons.add(GUINEA);
         flagIcons.add(GUINEA_BISSAU);
         flagIcons.add(GUYANA);
         flagIcons.add(HAITI);
         flagIcons.add(HONDURAS);
+        flagIcons.add(HONG_KONG);
         flagIcons.add(HUNGARY);
         flagIcons.add(ICELAND);
         flagIcons.add(INDIA);
@@ -995,14 +1009,18 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(IRAN);
         flagIcons.add(IRAQ);
         flagIcons.add(IRELAND);
+        flagIcons.add(ISLE_OF_MAN);
         flagIcons.add(ISRAEL);
         flagIcons.add(ITALY);
         flagIcons.add(JAMAICA);
         flagIcons.add(JAPAN);
+        flagIcons.add(JERSEY);
         flagIcons.add(JORDAN);
         flagIcons.add(KAZAKHSTAN);
         flagIcons.add(KENYA);
         flagIcons.add(KIRIBATI);
+        flagIcons.add(KOREA_NORTH);
+        flagIcons.add(KOREA_SOUTH);
         flagIcons.add(KOSOVO);
         flagIcons.add(KUWAIT);
         flagIcons.add(KYRGYZSTAN);
@@ -1015,6 +1033,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(LIECHTENSTEIN);
         flagIcons.add(LITHUANIA);
         flagIcons.add(LUXEMBOURG);
+        flagIcons.add(MACAU);
         flagIcons.add(MACEDONIA);
         flagIcons.add(MADAGASCAR);
         flagIcons.add(MALAWI);
@@ -1031,6 +1050,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(MONACO);
         flagIcons.add(MONGOLIA);
         flagIcons.add(MONTENEGRO);
+        flagIcons.add(MONTSERRAT);
         flagIcons.add(MOROCCO);
         flagIcons.add(MOZAMBIQUE);
         flagIcons.add(MYANMAR);
@@ -1038,14 +1058,18 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(NAURU);
         flagIcons.add(NEPAL);
         flagIcons.add(NETHERLANDS);
+        flagIcons.add(NEW_CALEDONIA);
         flagIcons.add(NEW_ZEALAND);
         flagIcons.add(NICARAGUA);
         flagIcons.add(NIGER);
         flagIcons.add(NIGERIA);
+        flagIcons.add(NIUE);
+        flagIcons.add(NORTHERN_MARIANA_ISLANDS);
         flagIcons.add(NORWAY);
         flagIcons.add(OMAN);
         flagIcons.add(PAKISTAN);
         flagIcons.add(PALAU);
+        flagIcons.add(PALESTINE);
         flagIcons.add(PANAMA);
         flagIcons.add(PAPUA_NEW_GUINEA);
         flagIcons.add(PARAGUAY);
@@ -1053,6 +1077,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(PHILIPPINES);
         flagIcons.add(POLAND);
         flagIcons.add(PORTUGAL);
+        flagIcons.add(PUERTO_RICO);
         flagIcons.add(QATAR);
         flagIcons.add(ROMANIA);
         flagIcons.add(RUSSIA);
@@ -1088,6 +1113,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(TANZANIA);
         flagIcons.add(THAILAND);
         flagIcons.add(TOGO);
+        flagIcons.add(TOKELAU);
         flagIcons.add(TONGA);
         flagIcons.add(TRINIDAD_AND_TOBAGO);
         flagIcons.add(TUNISIA);
@@ -1105,33 +1131,11 @@ public class FlagIconProvider implements ConstellationIconProvider {
         flagIcons.add(VATICAN_CITY);
         flagIcons.add(VENEZUELA);
         flagIcons.add(VIETNAM);
+        flagIcons.add(VIRGIN_ISLANDS_BRITISH);
         flagIcons.add(YEMEN);
         flagIcons.add(ZAMBIA);
         flagIcons.add(ZIMBABWE);
 
-        flagIcons.add(ALAND_ISLANDS);
-        flagIcons.add(ANGOLA);
-        flagIcons.add(ANGUILLA);
-        flagIcons.add(ARUBA);
-        flagIcons.add(BERMUDA);
-        flagIcons.add(VIRGIN_ISLANDS_BRITISH);
-        flagIcons.add(CAYMAN_ISLANDS);
-        flagIcons.add(COOK_ISLANDS);
-        flagIcons.add(CURACAO);
-        flagIcons.add(FALKLAND_ISLANDS);
-        flagIcons.add(GIBRALTAR);
-        flagIcons.add(GUERNSEY);
-        flagIcons.add(HONG_KONG);
-        flagIcons.add(ISLE_OF_MAN);
-        flagIcons.add(JERSEY);
-        flagIcons.add(MACAU);
-        flagIcons.add(MONTSERRAT);
-        flagIcons.add(NEW_CALEDONIA);
-        flagIcons.add(NIUE);
-        flagIcons.add(NORTHERN_MARIANA_ISLANDS);
-        flagIcons.add(PALESTINE);
-        flagIcons.add(PUERTO_RICO);
-        flagIcons.add(TOKELAU);
         return flagIcons;
     }
 }
