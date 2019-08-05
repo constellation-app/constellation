@@ -817,10 +817,7 @@ public class FlagIconProvider implements ConstellationIconProvider {
 
     public static final ConstellationIcon ALAND_ISLANDS = new ConstellationIcon.Builder("Aland Islands", new FileIconData("modules/ext/icons/aland.png", "au.gov.asd.tac.constellation.visual"))
             .addAlias(Country.ALAND_ISLANDS.getDigraph())
-            .addCategory("Flag")
-            .build();
-    public static final ConstellationIcon ALAND = new ConstellationIcon.Builder("Aland", new FileIconData("modules/ext/icons/aland.png", "au.gov.asd.tac.constellation.visual"))
-            .addAlias(Country.ALAND_ISLANDS.getDigraph())
+            .addAlias("Aland")
             .addCategory("Flag")
             .build();
     public static final ConstellationIcon ANGOLA = new ConstellationIcon.Builder("Angola", new FileIconData("modules/ext/icons/angola.png", "au.gov.asd.tac.constellation.visual"))
@@ -917,7 +914,6 @@ public class FlagIconProvider implements ConstellationIconProvider {
         final List<ConstellationIcon> flagIcons = new ArrayList<>();
 
         flagIcons.add(AFGHANISTAN);
-        flagIcons.add(ALAND);
         flagIcons.add(ALAND_ISLANDS);
         flagIcons.add(ALBANIA);
         flagIcons.add(ALGERIA);
