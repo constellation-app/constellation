@@ -108,5 +108,5 @@
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
     </target>
-   
+    
 </project>
