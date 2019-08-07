@@ -146,4 +146,39 @@
         <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
     
+    <target name="-download-linux-jre" >
+        <echo message="downloading JRE..."/>
+        <get src="${jre.url.linux}"
+             dest="${basedir}" usetimestamp="true"/>
+        <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
+    </target>
+    
+    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for linux.">
+        <mkdir dir="${dist.dir}"/>
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
+        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
+        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${temp.dir.rest}"/>
+            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+        <zip destfile="${dist.dir}/${app.name}.tar.gz">
+            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
+            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
+            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+            
+            <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
+            <zipfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre"/>
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+        </zip>
+        <delete dir="${basedir}/${jre.filename.linux}/"/>
+        <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
+    </target>
+    
 </project>
