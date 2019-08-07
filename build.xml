@@ -14,6 +14,10 @@
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
+    <property name="jre.filename.windows" value="zulu8.38.0.13-ca-fx-jre8.0.212-win_x64" />
+    <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
+    <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
+    <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
     
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
         <ant target="clean" />
@@ -49,8 +53,8 @@
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
-    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
     
+    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
     <target name="-download-unfolding-maps" >
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
@@ -58,9 +62,7 @@
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
 		
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps"
-            description="Download dependent libraries.">
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
 
@@ -109,18 +111,16 @@
         </propertyfile>
     </target>
     
-     <target name="-download-jre" >
-        
+    <target name="-download-windows-jre" >
         <echo message="downloading JRE..."/>
-        <get src="https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jre8.0.212-win_x64.zip"
+        <get src="${jre.url.windows}"
              dest="${basedir}" usetimestamp="true"/>
-        <unzip src="${basedir}/zulu8.38.0.13-ca-fx-jre8.0.212-win_x64.zip" dest="${basedir}"/>
+        <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
     </target>
     
-    <target name="build-zip-new" depends="build,build-launchers,-download-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform.">
+    <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
         <mkdir dir="${dist.dir}"/>
-        <!-- pathfileset does not support 'prefix' and 'filemode' parameters,
-             we have to copy them to temp location -->
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
         <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
         <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
         <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
@@ -136,13 +136,14 @@
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
             
             <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
-            <zipfileset dir="${basedir}/zulu8.38.0.13-ca-fx-jre8.0.212-win_x64/" prefix="${app.name}/jre"/>
+            <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
             <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
                 <exclude name="config/Modules/*.xml_hidden"/>
             </zipfileset>
-            
         </zip>
+        <delete dir="${basedir}/${jre.filename.windows}/"/>
+        <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
     
 </project>
