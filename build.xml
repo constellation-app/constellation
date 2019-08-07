@@ -116,6 +116,7 @@
         <get src="${jre.url.windows}"
              dest="${basedir}" usetimestamp="true"/>
         <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
+        <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
     
     <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
@@ -143,17 +144,19 @@
             </zipfileset>
         </zip>
         <delete dir="${basedir}/${jre.filename.windows}/"/>
-        <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
     
+    <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
     <target name="-download-linux-jre" >
         <echo message="downloading JRE..."/>
         <get src="${jre.url.linux}"
              dest="${basedir}" usetimestamp="true"/>
         <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
+        <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
     </target>
     
-    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for linux.">
+    <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
+    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
         <mkdir dir="${dist.dir}"/>
         <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
         <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
@@ -178,7 +181,6 @@
             </zipfileset>
         </zip>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
-        <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
     </target>
     
 </project>
