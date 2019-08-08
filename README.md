@@ -26,14 +26,14 @@ Download Constellation by going to the [release page](https://github.com/constel
 Unzip the constellation.zip bundle and double click the `bin/constellation64.exe` for Windows or
 run the `bin\constellation` shell script for Linux.
 
-There is currently no support for Mac and the feature request is tracked by [Issue #40](https://github.com/constellation-app/constellation/issues/40).
+There is currently no support for Mac and the feature request is tracked by [Issue #21](https://github.com/constellation-app/constellation/issues/21).
 
 ## Build Constellation
 
 To build Constellation from source code do the following:
 
 * Download NetBeans 8.2
-* Download the Open JDK 8 with JFX 8 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.33.0.1-ca-fx-jdk8.0.192-linux_x64.tar.gz)
+* Download the Open JDK 8 with JFX 8 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-linux_x64.tar.gz)
 * Clone this repository
 * Update the netbeans.conf file's netbeans_jdkhome entry (The file can be found under <C:\Program Files\NetBeans 8.2\etc> folder)
 * Open the Constellation_Core module suite from NetBeans

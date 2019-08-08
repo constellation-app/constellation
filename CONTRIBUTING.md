@@ -57,7 +57,7 @@ is in your own module suite.
 Note that if some of the functionality you develop can be developed in a domain 
 agnostic approach then you can contribute that functionality to Core and develop
 the domain specific functionality in your own module. Refer to the 
-[developer guide](https://github.com/constellation-app/constellation/developer-guide)
+[developer guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf)
 for information on how this is achieved.
 
 ### Constellation Modules and Repositories
@@ -85,7 +85,7 @@ module suite and would need to be hosted on a separate repository to Core.
 
 A list of repositories containing modules that can be used by Constellation is 
 available in the 
-[Repositories Catalog](https://github.com/constellation-app/constellation/repositories-catalog).
+[Repositories Catalog](CATALOG_OF_REPOSITORIES.md).
 If you have created a module suite dependant on Core then feel free to send a 
 pull request to have your repository included in the catalog.
 
@@ -275,14 +275,43 @@ on how to do this, see the ***Build Constellation*** section in the
 
 * Fill in [the required template](PULL_REQUEST_TEMPLATE.md)
 * Make sure your code compiles
-* Include the [copyright header](https://github.com/constellation-app/constellation/adding-copyright-header)
+* Include the copyright header
+    * In NetBeans click on Tools -> Templates -> Settings
+    ```
+    user=PUT_YOUR_USER_HERE
+    licenseFirst=/*
+    licensePrefix=*
+    licenseLast=*/
+    ```
+    * In NetBeans click on Tools -> Templates -> Licenses -> Default License -> Open in Editor
+    ```
+    <#if licenseFirst??>
+    ${licenseFirst}
+    </#if>
+    ${licensePrefix}Copyright 2010-2019 Australian Signals Directorate
+    ${licensePrefix}
+    ${licensePrefix}Licensed under the Apache License, Version 2.0 (the "License");
+    ${licensePrefix}you may not use this file except in compliance with the License.
+    ${licensePrefix}You may obtain a copy of the License at
+    ${licensePrefix}
+    ${licensePrefix}    http://www.apache.org/licenses/LICENSE-2.0
+    ${licensePrefix}
+    ${licensePrefix}Unless required by applicable law or agreed to in writing, software
+    ${licensePrefix}distributed under the License is distributed on an "AS IS" BASIS,
+    ${licensePrefix}WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    ${licensePrefix}See the License for the specific language governing permissions and
+    ${licensePrefix}limitations under the License.
+    <#if licenseLast??>
+    ${licenseLast}
+    </#if>
+    ```
 * Javadoc classes and methods
 * All changes are unit tested
 * Include screenshots and animated GIFs in your pull request whenever possible.
-* Format your code using the default NetBeans formatter settings.
+* Format your code using the default NetBeans formatter settings. For specifics see the [style guide](STYLE_GUIDELINES.md).
 * Ensure that new ***leaks*** or ***code smells*** are not introduced by parsing
 you code using `sonar-scanner` and checking via [Sonar Qube](#https://sonarcloud.io)
-* Document new code based on the [Documentation Styleguide](Style_Guidelines.md)
+* Document code based on the [Documentation Style Guide](STYLE_GUIDELINES.md)
 * Avoid platform-dependent code
 * Utility methods should end with the word Utilities (i.e not Util or Utility)
 * Update the [change log](CHANGELOG.md) as a means to notify developers or 
