@@ -12,4 +12,3 @@ We are excited to find out what the community will do with Constellation!
 |---------------------------------------------------------------------------------------------------|------------------------------------------------------------------|
 | [Constellation Training](https://github.com/constellation-app/constellation-training)             | A Constellation developer training guide.                        |
 | [Constellation Module Example](https://github.com/constellation-app/constellation-module-example) | A how-to example for creating a plugin module for Constellation. |
-|     

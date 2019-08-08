@@ -93,7 +93,7 @@ pull request to have your repository included in the catalog.
 
 When we make a significant decision in how we maintain the project and what we 
 can or cannot support, we document the 
-[design decisions](https://github.com/constellation-app/constellation/design-decisions).
+[design decisions](DESIGN_DECISIONS.md).
 If you have a question about how we do things, check if it is documented there. 
 If it is *not* documented there, please open an 
 [issue](https://github.com/constellation-app/constellation) and ask your question.
@@ -121,9 +121,8 @@ issue in the body of your new issue.
 
 * Check whether the issue has already been reported in the 
 [issues](https://github.com/constellation-app/constellation/issues) page.
-* Double check whether the issue is a bug in this repository or from a module from
-[another repository](https://github.com/constellation-app/constellation/repositories-catalog)
-you have installed.
+* Double check whether the issue is a bug in this repository or from a module 
+from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
 
 #### How Do I Submit A (Good) Bug Report?
 
@@ -204,8 +203,8 @@ existing functionality. Following these guidelines helps maintainers and the
 community understand your suggestion and find related suggestions.
 
 Before creating enhancement suggestions, please check the
-[issue tracker](https://github.com/constellation-app/constellation) as you might find
-that you don't need to create one. When you are creating an enhancement 
+[issue tracker](https://github.com/constellation-app/constellation) as you might 
+find that you don't need to create one. When you are creating an enhancement 
 suggestion, please 
 [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion).
 Fill in [the template](ISSUE_TEMPLATE.md), including the steps you imagine 
@@ -215,9 +214,8 @@ you would take if the feature you're requesting existed.
 
 * Check whether the enhancement has already been reported in the 
 [issues](https://github.com/constellation-app/constellation/issues) page.
-* Double check whether the enhancement is a feature in this repository or from a module from
-[another repository](https://github.com/constellation-app/constellation/repositories-catalog)
-you have installed.
+* Double check whether the enhancement is a feature in this repository or from 
+a module from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
 
 #### How Do I Submit A (Good) Enhancement Suggestion?
 
@@ -263,7 +261,7 @@ number of comments is a reasonable proxy for impact a given change will have.
 
 If you want to read about developing modules for Constellation, please make sure
 you complete the self-paced
-[Constellation Developer Guide](https://github.com/constellation-app/constellation/docs).
+[Constellation Developer Guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf).
 
 #### Local development
 
