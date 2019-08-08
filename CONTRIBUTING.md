@@ -96,7 +96,8 @@ can or cannot support, we document the
 [design decisions](DESIGN_DECISIONS.md).
 If you have a question about how we do things, check if it is documented there. 
 If it is *not* documented there, please open an 
-[issue](https://github.com/constellation-app/constellation) and ask your question.
+[issue](https://github.com/constellation-app/constellation/issues) and ask your 
+question.
 
 ## How Can I Contribute?
 
@@ -107,8 +108,8 @@ Following these guidelines helps maintainers and the community understand your
 report, reproduce the behaviour and find related reports.
 
 Before creating bug reports, please check the
-[issue tracker](https://github.com/constellation-app/constellation) as it may 
-already be reported. When you are creating a bug report, please
+[issue tracker](https://github.com/constellation-app/constellation/issues) as it 
+may already be reported. When you are creating a bug report, please
 [include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill 
 out [the required template](ISSUE_TEMPLATE.md), the information it asks helps us 
 resolve issues faster.
@@ -152,8 +153,7 @@ what exactly is the problem with that behaviour.
 * **Include screenshots and animated GIFs** which show you following the 
 described steps and clearly demonstrate the problem. You can use 
 [this tool](https://www.cockos.com/licecap) to record GIFs on macOS and Windows,
-and [this tool](https://github.com/colinkeenan/silentcast) or 
-[this tool](https://github.com/GNOME/byzanz) for Linux.
+and [this tool](https://github.com/colinkeenan/silentcast) for Linux.
 * **If you're reporting Constellation crashing**, include a stack trace from
 the operating system. Include the crash report in the issue in a 
 [code block](https://help.github.com/articles/markdown-basics/#multiple-lines),
@@ -190,7 +190,7 @@ version by looking at the version on the top left of the application title
 * **Are you running Constellation in a virtual machine?** If so, which VM 
 software are you using and which operating systems and versions are used for the
 host and the guest?
-* **Which [packages](#Constellation-and-packages) do you have installed?** You 
+* **Which [packages](CATALOG_OF_REPOSITORIES.md) do you have installed?** You 
 can get that list by running `Help` > `Module Versions`.
 * **Are you using Constellation with multiple monitors?** If so, can you
 reproduce the problem when you use a single monitor?
@@ -203,10 +203,9 @@ existing functionality. Following these guidelines helps maintainers and the
 community understand your suggestion and find related suggestions.
 
 Before creating enhancement suggestions, please check the
-[issue tracker](https://github.com/constellation-app/constellation) as you might 
-find that you don't need to create one. When you are creating an enhancement 
-suggestion, please 
-[include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion).
+[issue tracker](https://github.com/constellation-app/constellation/issues) as 
+you might find that you don't need to create one. When you are creating an 
+enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion).
 Fill in [the template](ISSUE_TEMPLATE.md), including the steps you imagine 
 you would take if the feature you're requesting existed.
 
@@ -221,7 +220,7 @@ a module from [another repository](CATALOG_OF_REPOSITORIES.md) you have installe
 
 Enhancement suggestions are tracked as
 [GitHub issues](https://guides.github.com/features/issues). After you've 
-determined [which repository](#Constellation-and-packages) your enhancement 
+determined [which repository](CATALOG_OF_REPOSITORIES.md) your enhancement 
 suggestion is related to, create an issue on that repository and provide the 
 following information:
 
@@ -236,11 +235,10 @@ see instead** and why.
 * **Include screenshots and animated GIFs** which show you following the 
 described steps and clearly demonstrate the problem. You can use 
 [this tool](https://www.cockos.com/licecap) to record GIFs on macOS and Windows,
-and [this tool](https://github.com/colinkeenan/silentcast) or 
-[this tool](https://github.com/GNOME/byzanz) on Linux.
+and [this tool](https://github.com/colinkeenan/silentcast) on Linux.
 * **Explain why this enhancement would be useful** to most Constellation users 
 and isn't something that can or should be implemented as a
-[community package](#Constellation-and-packages).
+[community package](CATALOG_OF_REPOSITORIES.md).
 * **List some other applications where this enhancement exists.**
 * **Which version of Constellation are you using?** You can get the exact 
 version by looking at the version on the top left of the application title
@@ -309,8 +307,8 @@ on how to do this, see the ***Build Constellation*** section in the
 * Format your code using the default NetBeans formatter settings. For specifics see the [style guide](STYLE_GUIDELINES.md).
 * Ensure that new ***leaks*** or ***code smells*** are not introduced by parsing
 you code using `sonar-scanner` and checking via [Sonar Qube](#https://sonarcloud.io)
-* Document code based on the [Documentation Style Guide](STYLE_GUIDELINES.md)
-* Avoid platform-dependent code
+* Document code based on the [style guide](STYLE_GUIDELINES.md)
+* Avoid OS dependant code (e.g. Windows or Linux)
 * Utility methods should end with the word Utilities (i.e not Util or Utility)
 * Update the [change log](CHANGELOG.md) as a means to notify developers or 
 important improvements or changes
