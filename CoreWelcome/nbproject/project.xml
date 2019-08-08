@@ -112,7 +112,10 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>au.gov.asd.tac.constellation.welcome</package>
+                <package>au.gov.asd.tac.constellation.welcome.resources</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

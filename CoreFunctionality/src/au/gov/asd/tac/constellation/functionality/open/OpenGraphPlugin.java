@@ -5,8 +5,9 @@
  */
 package au.gov.asd.tac.constellation.functionality.open;
 
-import au.gov.asd.tac.constellation.functionality.save.SaveGraphPlugin;
+
 import au.gov.asd.tac.constellation.graph.file.open.FileChooser;
+import au.gov.asd.tac.constellation.graph.file.open.OpenFileAction;
 
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
@@ -27,7 +28,7 @@ import org.openide.windows.WindowManager;
  * @author imranraz83
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("SaveGraphPlugin=Save Graph")
+@NbBundle.Messages("OpenGraphPlugin=Open Graph")
 public class OpenGraphPlugin extends SimplePlugin{
     public static final String GRAPH_PARAMETER = PluginParameter.buildId(OpenGraphPlugin.class, "graphId");
     /**
@@ -42,7 +43,11 @@ public class OpenGraphPlugin extends SimplePlugin{
     }
     @Override
     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        final String gp = parameters.getStringValue(GRAPH_PARAMETER);
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        OpenFileAction action = new OpenFileAction();
+        action.actionPerformed(null);
+        return;
     }
     
     protected static JFileChooser prepareFileChooser() {

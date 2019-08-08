@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.functionality.intro.Intro;
 import au.gov.asd.tac.constellation.functionality.intro.IntroProvider;
+import au.gov.asd.tac.constellation.functionality.open.OpenGraphPlugin;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.WhatsNewEntry;
 import au.gov.asd.tac.constellation.importexport.delimited.DelimitedFileImporterStage;
@@ -223,7 +224,10 @@ public final class WelcomeTopComponent extends TopComponent {
                                             case "actionid3":
                                                 break;
                                             case "actionid4":
-                                                OpenFileAction.executeFileOpenAction();
+                                                //OpenFileAction.executeFileOpenAction();
+                                                PluginExecution.withPlugin(CorePluginRegistry.OPEN_EXISTING_GRAPH)
+                                                        .withParameter(OpenGraphPlugin.GRAPH_PARAMETER, "Open Existing Graph")
+                                                        .executeLater(null);
                                                 break;
                                             default:
                                                 throw new AssertionError();

@@ -286,6 +286,7 @@
                 <package>au.gov.asd.tac.constellation.functionality.email</package>
                 <package>au.gov.asd.tac.constellation.functionality.intro</package>
                 <package>au.gov.asd.tac.constellation.functionality.merge</package>
+                <package>au.gov.asd.tac.constellation.functionality.open</package>
                 <package>au.gov.asd.tac.constellation.functionality.placeholder</package>
                 <package>au.gov.asd.tac.constellation.functionality.select</package>
                 <package>au.gov.asd.tac.constellation.functionality.select.named</package>

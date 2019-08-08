@@ -73,7 +73,7 @@ import au.gov.asd.tac.constellation.functionality.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToVerticesPlugin;
-
+import au.gov.asd.tac.constellation.functionality.open.OpenGraphPlugin;
 /**
  * List of all core actions/plugins
  *
@@ -141,4 +141,5 @@ public final class CorePluginRegistry {
     public static final String UPDATE_BLAZE_SIZE_OPACITY = UpdateBlazeSizeOpacityPlugin.class.getName();
     public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
     public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
+    public static final String OPEN_EXISTING_GRAPH = OpenGraphPlugin.class.getName();
 }
