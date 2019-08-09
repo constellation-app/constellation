@@ -1,7 +1,7 @@
 # Constellation Catalog of Repositories
 
-A list of Constellation repositories is below. These repositories depend on 
-Constellation, also called "Core" which can be treated like a framework you 
+A list of Constellation repositories are given below. These repositories depend 
+on Constellation, also called "Core" which can be treated like a framework you 
 develop functionality on top. Functionality that is domain agnostic should be 
 in Core but anything else should live in its own module which is in its own 
 repository.
