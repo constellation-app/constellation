@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.importexport.geospatial;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.util.Objects;
-import org.opengis.referencing.FactoryException;
 
 /**
  * Spatial Reference Parameter Value
@@ -82,14 +81,20 @@ public class SpatialReferenceParameterValue extends ParameterValue {
 
     @Override
     public String toString() {
-        if (spatialReference == null) {
-            return "No Value";
-        } else {
-            try {
-                return spatialReference.getSrs();
-            } catch (FactoryException ex) {
-                return "No Value";
-            }
-        }
+        String stringSRS = "No Value";
+        // TODO: there is a known bug while extracting srs value from CRS.
+        // Ref: #83  
+        return stringSRS;
+//        if (spatialReference == null) {
+//            return stringSRS;
+//        } else {
+//            
+//            try {
+//                stringSRS = spatialReference.getSrs();
+//            } catch (FactoryException ex) {
+//                Exceptions.printStackTrace(ex);
+//            }
+//            return stringSRS;
+//        }
     }
 }
