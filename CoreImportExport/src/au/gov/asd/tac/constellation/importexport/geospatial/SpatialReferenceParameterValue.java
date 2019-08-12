@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.importexport.geospatial;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.util.Objects;
-import org.opengis.referencing.FactoryException;
-import org.openide.util.Exceptions;
 
 /**
  * Spatial Reference Parameter Value
