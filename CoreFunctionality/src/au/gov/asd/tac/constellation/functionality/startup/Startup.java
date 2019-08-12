@@ -48,7 +48,8 @@ public class Startup implements Runnable {
         WindowManager.getDefault().invokeWhenUIReady(() -> {
             String mostRecentVersion = MostRecentModules.getMostRecentVersion();
             if (mostRecentVersion == null) {
-                mostRecentVersion = UNDER_DEVELOPMENT;
+                // once issue #86 is fixed this should change back to "(under development)"
+                mostRecentVersion = "";
             }
 
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
