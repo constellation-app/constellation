@@ -84,15 +84,19 @@ public class SpatialReferenceParameterValue extends ParameterValue {
     @Override
     public String toString() {
         String stringSRS = "No Value";
-        if (spatialReference == null) {
-            return stringSRS;
-        } else {
-            try {
-                stringSRS = spatialReference.getSrs();
-            } catch (FactoryException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-            return stringSRS;
-        }
+        // TODO: there is a known bug while extracting srs value from CRS.
+        // Ref: #83  
+        return stringSRS;
+//        if (spatialReference == null) {
+//            return stringSRS;
+//        } else {
+//            
+//            try {
+//                stringSRS = spatialReference.getSrs();
+//            } catch (FactoryException ex) {
+//                Exceptions.printStackTrace(ex);
+//            }
+//            return stringSRS;
+//        }
     }
 }
