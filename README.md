@@ -2,6 +2,7 @@
 Constellation is a graph-focused data visualisation and interactive analysis application enabling data access, federation and manipulation capabilities across large and complex data sets.
 
 ## Vision Statement
+
 Constellation is a first class, domain agnostic data visualisation and analysis application 
 enabling the user to solve large and complex data problems in a simple and intuitive way.
 
@@ -17,6 +18,7 @@ enabling the user to solve large and complex data problems in a simple and intui
 OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
 
 ## Download Constellation
+
 Download Constellation by going to the [release page](https://github.com/constellation-app/constellation/releases).
 
 ## Run Constellation
@@ -24,7 +26,7 @@ Download Constellation by going to the [release page](https://github.com/constel
 Unzip the constellation.zip bundle and double click the `bin/constellation64.exe` for Windows or
 run the `bin\constellation` shell script for Linux.
 
-There is currently no support for Mac and the feature request is tracked by [Issue #40](https://github.com/constellation-app/constellation/issues/40).
+There is currently no support for Mac and the feature request is tracked by [Issue #21](https://github.com/constellation-app/constellation/issues/21).
 
 ## Build Constellation
 
@@ -39,6 +41,7 @@ To build Constellation from source code do the following:
 * Right click -> Run
 
 ## Package Constellation
+
 To package Constellation in a zip bundle do the following:
 
 * In NetBeans, expand Constellation_Core -> Important Files
@@ -69,5 +72,6 @@ the JRE folder.
 
 For more information please see the [contributing guide](CONTRIBUTING.md).
 
-## Acknowledgments 
-Third party libraries and assets were used in development of Constellation, please view [attribution list ](https://github.com/constellation-app/constellation/blob/master/ATTRIBUTION.md)for details. 
+## Acknowledgments
+
+Third party libraries and assets were used in development of Constellation, please view [attribution list](ATTRIBUTION.md) for details.

@@ -38,7 +38,6 @@
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
         </dependency>
         
         <dependency org="org.jogamp.jocl" name="jocl" rev="2.3.2">

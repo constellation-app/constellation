@@ -105,7 +105,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         initComponents();
         setName(Bundle.CTL_KTrussControllerTopComponent());
         setToolTipText(Bundle.HINT_KTrussControllerTopComponent());
-        this.putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
         isAdjusting = false;

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.OpenFileDialogFilter;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,7 +34,7 @@ public class GraphOpenFileDialogFilter extends OpenFileDialogFilter {
 
     @Override
     public String getDescriptionString() {
-        return "CONSTELLATION files";
+        return String.format("%s Files", BrandingUtilities.APPLICATION_NAME);
     }
 
     @Override

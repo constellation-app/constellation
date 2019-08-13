@@ -88,7 +88,6 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         initComponents();
         setName(Bundle.CTL_PerspectiveBookmarkTopComponent());
         setToolTipText(Bundle.HINT_PerspectiveBookmarkTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         perspectiveModel = new PerspectiveModel();
         perspectivesList.setModel(perspectiveModel);

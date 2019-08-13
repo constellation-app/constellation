@@ -124,7 +124,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         initComponents();
         setName(Bundle.CTL_FindTopComponent());
         setToolTipText(Bundle.HINT_FindTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         // Setup the single column / vertical row layout:
         final BoxLayout findLayout = new BoxLayout(panelFind, BoxLayout.Y_AXIS);

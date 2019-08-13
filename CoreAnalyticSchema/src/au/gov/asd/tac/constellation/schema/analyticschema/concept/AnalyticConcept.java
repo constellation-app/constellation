@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import au.gov.asd.tac.constellation.visual.icons.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.visual.icons.CharacterIconProvider;
@@ -133,8 +134,8 @@ public class AnalyticConcept extends SchemaConcept {
 
     public static class VertexType {
 
-        public static final SchemaVertexType CONSTELLATION_GRAPH = new SchemaVertexType.Builder("Constellation Graph")
-                .setDescription("A node representing a Constellation Graph")
+        public static final SchemaVertexType GRAPH = new SchemaVertexType.Builder(String.format("%s Graph", BrandingUtilities.APPLICATION_NAME))
+                .setDescription(String.format("A node representing a %s Graph", BrandingUtilities.APPLICATION_NAME))
                 .setColor(ConstellationColor.AZURE)
                 .setForegroundIcon(AnalyticIconProvider.STAR)
                 .build();
@@ -314,7 +315,7 @@ public class AnalyticConcept extends SchemaConcept {
     @Override
     public List<SchemaVertexType> getSchemaVertexTypes() {
         final List<SchemaVertexType> schemaVertexTypes = new ArrayList<>();
-        schemaVertexTypes.add(VertexType.CONSTELLATION_GRAPH);
+        schemaVertexTypes.add(VertexType.GRAPH);
         schemaVertexTypes.add(VertexType.TELEPHONE_IDENTIFIER);
         schemaVertexTypes.add(VertexType.MACHINE_IDENTIFIER);
         schemaVertexTypes.add(VertexType.NETWORK_IDENTIFIER);

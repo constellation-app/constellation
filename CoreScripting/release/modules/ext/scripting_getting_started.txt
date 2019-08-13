@@ -101,10 +101,10 @@ with graph.writableGraph('<graph_edit_name>') as wg:
     transactionCountBeforePlugin = wg.transactionCount()
 
     pluginParameters = {\
-        'MergeTransactions.lead': 'Earliest Time',\
-        'MergeTransactions.mergeType': 'DateTime',\
-        'MergeTransactions.selected': 'false',\
-        'MergeTransactions.threshold': '60'}
+        'MergeTransactionsPlugin.lead': 'Earliest Time',\
+        'MergeTransactionsPlugin.mergeType': 'DateTime',\
+        'MergeTransactionsPlugin.selected': 'false',\
+        'MergeTransactionsPlugin.threshold': '60'}
         
     utilities.executePlugin(graph, 'MergeTransactions', pluginParameters)
         
