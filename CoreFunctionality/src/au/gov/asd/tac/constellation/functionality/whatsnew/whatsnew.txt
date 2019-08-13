@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2019-07-30 Data Access View Plugin Search
+<p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
+
 == 2019-06-25 Data Access View Context Menu Update
 <p>The menu positions of the right click context menu available from the Data 
 Access View has been modified based on UX feedback.</p>
@@ -42,7 +45,7 @@ Access View has been modified based on UX feedback.</p>
 </ul>
 
 == 2019-02-11 Save All Returns
-<p>The Save All menu option has been brought back and is availabe from the File menu.</p>
+<p>The Save All menu option has been brought back and is available from the File menu.</p>
 
 == 2018-12-06 Data Access View Update
 <p>You can no longer press Go with either an invalid entry in a numeric parameter of an enabled Data Access Plugin,
@@ -135,7 +138,7 @@ changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-06 Timeline View Update
 <p>In the Timeline View, you can now toggle between Showing, Dimming, and Hiding nodes outside the Timeline View on the graph.</p>
-<p>Additionally, there is also a Zoom to Selection button, which will reframe the Timeline View to focus on the selected transactions on the graph.</p>
+<p>Additionally, there is also a Zoom to Selection button, which will re-frame the Timeline View to focus on the selected transactions on the graph.</p>
 
 == 2018-03-02 Map View Update
 <p>The Map View is now capable of clustering markers based on their geographic proximity.
@@ -156,7 +159,7 @@ This option can be enabled by selecting <i>Cluster Markers</i> in the marker vis
 == 2018-02-15 Map View Update
 <p>You can now find two new layers in the Map View:</p>
 <ul>
-<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have travelled over time</li>
+<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have traveled over time</li>
 <li><strong>Location Paths</strong> will draws lines between markers on the map representing direct connections between locations nodes on the graph</li>
 </ul>
 

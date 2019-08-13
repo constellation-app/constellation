@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.What
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
 import java.awt.BorderLayout;
 import java.text.ParseException;
@@ -106,7 +107,7 @@ public final class TutorialTopComponent extends TopComponent {
     private static final String WEBENGINE_CSS_INJECTION = "resources/webengine.css";
     public static final String MOUSE_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/mouse3.png";
     public static final String MENU_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/sidebar.png";
-    public static final String ERROR_BUTTON_MESSAGE = "CONSTELLATION Information";
+    public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;
 

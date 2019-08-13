@@ -57,6 +57,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
+import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.io.File;
@@ -132,6 +133,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
     @StaticResource
     private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/alien.png";
+    
+    public TestParametersPlugin(){
+        addValidator(new QueryNameValidator());
+    }
 
     @Override
     public String getType() {

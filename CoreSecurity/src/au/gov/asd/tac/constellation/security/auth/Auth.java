@@ -31,7 +31,7 @@ public class Auth {
     private static void getAuth() {
         if (username == null) {
             final AuthPanel ap = new AuthPanel();
-            final DialogDescriptor dd = new DialogDescriptor(ap, "CONSTELLATION Authentication");
+            final DialogDescriptor dd = new DialogDescriptor(ap, "Application Authentication");
             final Object result = DialogDisplayer.getDefault().notify(dd);
             if (result == DialogDescriptor.OK_OPTION) {
                 username = ap.getUsername();

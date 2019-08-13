@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -130,7 +131,7 @@ public class CopyDataToExcelFile implements ActionListener, Action {
 
         // create the file in mem and set up one sheet.
         try (final SXSSFWorkbook wb = new SXSSFWorkbook(100)) {
-            final Sheet sh = wb.createSheet("CONSTELLATION Table View Export");
+            final Sheet sh = wb.createSheet(String.format("%s Table View Export", BrandingUtilities.APPLICATION_NAME));
 
             int columnModelIdx;
             int rowIndex = 0;

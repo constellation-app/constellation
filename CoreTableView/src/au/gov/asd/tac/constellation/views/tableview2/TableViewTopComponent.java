@@ -79,7 +79,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());
         setToolTipText(Bundle.HINT_TableView2TopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         initComponents();
 
         this.currentState = null;

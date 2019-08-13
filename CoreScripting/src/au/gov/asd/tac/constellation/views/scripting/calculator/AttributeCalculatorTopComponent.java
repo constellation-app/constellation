@@ -60,7 +60,6 @@ public final class AttributeCalculatorTopComponent extends JavaFxTopComponent<At
     public AttributeCalculatorTopComponent() {
         setName(Bundle.CTL_AttributeCalculatorTopComponent());
         setToolTipText(Bundle.HINT_AttributeCalculatorTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         initComponents();
 
         attributeCalculatorController = new AttributeCalculatorController(AttributeCalculatorTopComponent.this);
