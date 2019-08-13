@@ -226,7 +226,7 @@ public final class WelcomeTopComponent extends TopComponent {
                                             case "actionid4":
                                                 //OpenFileAction.executeFileOpenAction();
                                                 PluginExecution.withPlugin(CorePluginRegistry.OPEN_EXISTING_GRAPH)
-                                                        .withParameter(OpenGraphPlugin.GRAPH_PARAMETER, "Open Existing Graph")
+                                                        .withParameter(OpenGraphPlugin.GRAPH_PARAMETER_ID, "Open Existing Graph")
                                                         .executeLater(null);
                                                 break;
                                             default:

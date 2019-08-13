@@ -15,9 +15,15 @@ import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
 import java.io.File;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.UserCancelException;
 import org.openide.util.lookup.ServiceProvider;
@@ -30,23 +36,28 @@ import org.openide.windows.WindowManager;
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("OpenGraphPlugin=Open Graph")
 public class OpenGraphPlugin extends SimplePlugin{
-    public static final String GRAPH_PARAMETER = PluginParameter.buildId(OpenGraphPlugin.class, "graphId");
+    public static final String GRAPH_PARAMETER_ID = PluginParameter.buildId(OpenGraphPlugin.class, "graphId");
     /**
      * stores the last current directory of the file chooser
      */
     private static File currentDirectory = null;
     @Override
     public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-        
+                final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER_ID);
+        graphIdParameter.setName("graphId");
+        graphIdParameter.setDescription("The Id of the graph");
+        parameters.addParameter(graphIdParameter);
         return parameters;
     }
     @Override
     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        final String gp = parameters.getStringValue(GRAPH_PARAMETER);
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        OpenFileAction action = new OpenFileAction();
+        SwingUtilities.invokeLater(() -> {
+            OpenFileAction action = new OpenFileAction();
         action.actionPerformed(null);
+        });
+        
         return;
     }
     
