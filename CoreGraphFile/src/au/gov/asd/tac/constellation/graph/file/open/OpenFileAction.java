@@ -92,7 +92,7 @@ public class OpenFileAction implements ActionListener {
      *
      * @return the initialized file chooser
      */
-    protected static JFileChooser prepareFileChooser() {
+    protected JFileChooser prepareFileChooser() {
         JFileChooser chooser = new FileChooser();
         //chooser.setCurrentDirectory(getCurrentDirectory());
         //HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
@@ -150,20 +150,7 @@ public class OpenFileAction implements ActionListener {
             running = false;
         }
     }
-    
-    public static void executeFileOpenAction(){
-        JFileChooser chooser = prepareFileChooser();
-            File[] files;
-            try {
-                files = chooseFilesToOpen(chooser);
-                currentDirectory = chooser.getCurrentDirectory();
-            } catch (UserCancelException ex) {
-                return;
-            }
-            for (int i = 0; i < files.length; i++) {
-                OpenFile.openFile(files[i], -1);
-            }
-    }
+
 
     private static File getCurrentDirectory() {
         if (Boolean.getBoolean("netbeans.openfile.197063")) {
