@@ -55,7 +55,6 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
         // initialise top component
         setName(Bundle.CTL_SchemaViewTopComponent());
         setToolTipText(Bundle.HINT_SchemaViewTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         initComponents();
 
         this.schemaViewPane = new SchemaViewPane();

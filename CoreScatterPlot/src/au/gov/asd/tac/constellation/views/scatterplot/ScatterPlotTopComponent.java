@@ -77,7 +77,6 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     public ScatterPlotTopComponent() {
         setName(Bundle.CTL_ScatterPlotTopComponent());
         setToolTipText(Bundle.HINT_ScatterPlotTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         initComponents();
 
         currentState = null;

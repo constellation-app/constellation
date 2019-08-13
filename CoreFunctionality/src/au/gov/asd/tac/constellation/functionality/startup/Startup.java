@@ -16,31 +16,44 @@
 package au.gov.asd.tac.constellation.functionality.startup;
 
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
+import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
 import javax.swing.JFrame;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
 
 /**
+ * Application Bootstrap on start up
  *
  * @author cygnus_x-1
+ * @author arcturus2
  */
 @OnShowing()
 public class Startup implements Runnable {
+
+    private static final String SYSTEM_ENVIRONMENT = "constellation.environment";
+    private static final String UNDER_DEVELOPMENT = "(under development)";
 
     @Override
     public void run() {
         ConstellationSecurityManager.startSecurityLater(null);
 
+        // application environment
+        final String environment = System.getProperty(SYSTEM_ENVIRONMENT);
+        final String name = environment != null
+                ? String.format("%s %s", BrandingUtilities.APPLICATION_NAME, environment)
+                : BrandingUtilities.APPLICATION_NAME;
+
         // Change the main window title to reflect the most recent module version as the application version.
         WindowManager.getDefault().invokeWhenUIReady(() -> {
             String mostRecentVersion = MostRecentModules.getMostRecentVersion();
             if (mostRecentVersion == null) {
-                mostRecentVersion = "(under development)";
+                // once issue #86 is fixed this should go back to UNDER_DEVELOPMENT"
+                mostRecentVersion = "1.20190812.163552";
             }
 
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            final String title = String.format("CONSTELLATION - %s", mostRecentVersion);
+            final String title = String.format("%s - %s", name, mostRecentVersion);
             frame.setTitle(title);
         });
 

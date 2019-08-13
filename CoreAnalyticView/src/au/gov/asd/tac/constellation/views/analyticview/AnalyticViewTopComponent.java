@@ -81,7 +81,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         initComponents();
         setName(Bundle.CTL_AnalyticViewTopComponent());
         setToolTipText(Bundle.HINT_AnalyticViewTopComponent());
-        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
         super.initContent();
 
         // analytic view specific listeners

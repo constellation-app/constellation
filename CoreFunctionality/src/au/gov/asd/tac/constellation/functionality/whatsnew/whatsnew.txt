@@ -1,3 +1,268 @@
+== 3030-12-31 Getting Started
+<p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+
+== 2019-07-30 Data Access View Plugin Search
+<p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
+
+== 2019-06-25 Data Access View Context Menu Update
+<p>The menu positions of the right click context menu available from the Data 
+Access View has been modified based on UX feedback.</p>
+
+== 2019-05-30 New graph icons
+<p>The Constellation new graph icons have been redone.</p>
+
+== 2019-05-06 Analytic Schema Update
+<p>Added support for HASH types like MD5, SHA1 and SHA256. The HASH icon background colour is now cyan.</p>
+
+== 2019-05-01 Gather Nodes Bug Fix
+<p>Gathered nodes will now maintain their depth instead of being moved forward</p>
+
+== 2019-03-27 Table View Update
+<p>The Table View will now remember your column selection and ordering no matter how much you change it.</p>
+
+== 2019-03-27 Added Deselect Blazes option
+<p>Added Deselect Blazes option in Selection menu.</p>
+
+== 2019-03-22 New Country Flag Icons
+<p>Added 23 new country flag icons.</p>
+
+== 2019-03-22 Arrange by Node Attribute
+<p>Arrange by Node Attribute (found under the Arrange Menu) combines the function of Arrange by Group and Arrange by Layer into a single plugin.</p>
+
+== 2019-03-12 Help added for Histogram
+<p>A help topics entry for the Histogram View has been added.</p>
+
+== 2019-03-07 Performance Improvement
+<p>A performance improvement has been made to how icons and images were created resulting in reduced memory usage.</p>
+
+== 2019-03-01 Map View Update
+<p>A few minor improvements have been made to the map view:</p>
+<ul>
+<li>The draw tool in the Map View will now display distances as you are drawing.</li>
+<li>There is a new button beside the draw tool which allows you to copy drawn markers onto your graph.</li>
+<li>The KML export option will now include attribute data in the kml.</li>
+<li>A bug was fixed which allowed you to be in both draw mode and measure mode at the same time.</li>
+</ul>
+
+== 2019-02-11 Save All Returns
+<p>The Save All menu option has been brought back and is available from the File menu.</p>
+
+== 2018-12-06 Data Access View Update
+<p>You can no longer press Go with either an invalid entry in a numeric parameter of an enabled Data Access Plugin,
+or an invalid date-time range set in the Global Parameters (i.e. the 'From' date-time is later than the 'To' date-time).</p>
+
+== 2018-12-04 New Analytic Plugins
+<p>Under Experimental -> Build Graph, there are plugins for creating structured graphs that more closely resemble real social networks.</p>
+<ul>
+<li><strong>Preferential Attachment Graph</strong> creates networks that follow the degree power law that is expected in real networks.</li>
+<li><strong>Small World Graph</strong> creates lattices/random networks depending on a rewiring probability</li>
+<li><strong>Complete Graph</strong> creates a complete graph.</li>
+</ul>
+<p>In the Analytic View -> Similarity, there are four new plugins that assist in link prediction.</p>
+<ul>
+<li><strong>Common Neighbours</strong> calculates the number of common neighbours between a pair of nodes.</li>
+<li><strong>Preferential Attachment</strong> calculates the product of the degrees of a pair of nodes.</li>
+<li><strong>Resource Allocation Index</strong> determines the fraction of a "resource" a node can send to another through common neighbours.</li>
+<li><strong>Adamic-Adar Index</strong> is similar to Resource Allocation Index but is calculated using the log sum.</li>
+</ul>
+
+== 2018-12-03 New Plugins
+<p>The actions of saving and closing (including force closing) graphs can now be performed programmatically using plugins.
+Refer to the Schema View for more information on how to use these new plugins.</p>
+
+== 2018-11-22 Scatter Plot Update
+<p>There is now an option in Scatter Plot to set a number axis to a logarithmic scale.</p>
+
+== 2018-11-20 Directed Transactions
+<p>You can now change whether a transaction is directed or not in schema. It is now also reflected visually on the graph by updating the transaction visual (arrow/s if directed, no arrows if not).</p>
+
+== 2018-11-19 Histogram Update
+<p>The Histogram now has column headers to help identify what the values in each column represent.</p>
+
+== 2018-11-05 Layer by Time Update
+<p>The parameters for 'Layer by Time' found under the Arrange menu item now have clearer descriptions.</p>
+
+== 2018-11-02 Data Access View Update
+<p>The plugin 'Split Nodes Based on Identifier' found under the clean section of Data Access View now has the option to split on all occurrences of a given character(s) instead of just the first occurrence.</p>
+
+== 2018-10-19 Table View Update
+<p>A performance issue exporting to Excel from the table view has been resolved.</p>
+
+== 2018-10-17 Data Access View Update
+<p>All global parameters in the Data Access View will now be saved along with your graph. There is also a new plugin under the
+Clean section of the Data Access View, 'Removed Unused Attributes', which removes unused (non-key) attributes from the graph.</p>
+
+== 2018-09-26 Data Access View Update
+<p>The favourite icon has changed from a heart to a star to adopt the standard icon used by other applications.</p>
+
+== 2018-09-04 Table View Update
+<p>Performance issues identified with the table view have been resolved.</p>
+
+== 2018-06-14 Levenshtein Distance Analytic
+<p>In the Analytic View, the Levenshtein Distance Similarity analytic can be used to measure the distance between node string attributes.</p>
+
+== 2018-08-15 Data Access View Update
+<p>Added the ability to query 24 months as a date time range in the Data Access View.</p>
+
+== 2018-05-21 Data Access View Update
+<p>A new button called <strong>Use maximum Time Range</strong> has been added to set the custom time range to start at 00:00:00 and end at 23:59:59.</p>
+
+== 2018-05-15 Rename Graphs
+<p>The right click -> rename option retains the current graph name.</p>
+
+== 2018-04-30 Data Access View Update
+<p>Added extra padding before the Go button to avoid accidentally clicking.</p>
+
+== 2018-04-06 Analytic View Update
+<p>There are new three new analytics available in the Analytic View:</p>
+<ul>
+<li><strong>Effective Resistance</strong> treats the graph as an electrical network in order to measure the resistance of links.</li>
+<li><strong>Dice Similarity</strong> measures how similar pairs of nodes as the ratio of their common neighbours to the median of their neighbours.</li>
+<li><strong>Graph Distance</strong>, in addition to the diameter and radius of the graph, will now also calculate the average path distance.</li>
+</ul>
+
+== 2018-04-05 Table View Update
+<p>The Table View now has a column visibility option for only Key Attributes, and this is now the default setting.</p>
+
+== 2018-04-05 Proxy Settings
+<p>The interface for customising proxy settings (Setup > Options > CONSTELLATION > Proxies) has been
+overhauled to provide a more intuitive experience. In particular, descriptions have been added to each option
+detailing how to use it, default settings are visible when you select the 'Use Default Settings' option, and
+changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
+
+== 2018-03-29 Default Decorators
+<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each vertex with country information.</p>
+
+== 2018-03-07 Zoom to Selection
+<p>Added the animation back in when zooming to a selection (Ctrl+Up) so that you have context to where on the graph you are zooming to.</p>
+
+== 2018-03-06 Timeline View Update
+<p>In the Timeline View, you can now toggle between Showing, Dimming, and Hiding nodes outside the Timeline View on the graph.</p>
+<p>Additionally, there is also a Zoom to Selection button, which will re-frame the Timeline View to focus on the selected transactions on the graph.</p>
+
+== 2018-03-02 Map View Update
+<p>The Map View is now capable of clustering markers based on their geographic proximity.
+This option can be enabled by selecting <i>Cluster Markers</i> in the marker visibility menu.</p>
+<p>Additionally, there are now two new layers available in the Map View:</p>
+<ul>
+<li><strong>Day / Night</strong> will shade the map where it is currently night time</li>
+<li><strong>Thiessen Polygons</strong> will color the map based on which marker is closest</li>
+</ul>
+
+== 2018-02-26 Analytic View Update
+<p>The Analytic View now has a documentation window which will tell you about any analytic you click on.</p>
+<p>This can activated/deactivated by clicking <i>Options &gt; Show Documentation</i>.</p>
+
+== 2018-02-15 Compare Graphs
+<p>The Compare Graph plugin has been completed and moved into the Tools menu.</p>
+
+== 2018-02-15 Map View Update
+<p>You can now find two new layers in the Map View:</p>
+<ul>
+<li><strong>Entity Paths</strong> will draws lines between markers on the map representing the paths that entities on the graph have traveled over time</li>
+<li><strong>Location Paths</strong> will draws lines between markers on the map representing direct connections between locations nodes on the graph</li>
+</ul>
+
+== 2018-02-07 Table View 2.0
+<p>The Table View has been completely redesigned to allow for some more advanced functionality such as
+multi-column sorting, column filtering and more flexible styling. For details on usage of the new
+Table View, refer to <a href="" helpId="au.gov.asd.tac.constellation.views.tableview2">this</a>
+help page.</p>
+
+== 2018-01-30 External Scripting Update
+<p>The external scripting client has a new method to list the open graphs called <tt>list_graphs()</tt>.
+This in conjuction with <tt>set_current_graph</tt> will allow you to easily switch graphs.</p>
+<p>Another new method is <tt>open_graph</tt> which will allow you to open a graph by specifying the
+filename.</p>
+
+== 2018-01-29 Merge Transactions
+<p>A bug with merging transactions has been resolved by excluding the transaction identifier in the
+comparison.</p>
+
+== 2018-01-29 Save All
+<p>The button to save all open graphs has been removed based on feedback from users.</p>
+
+== 2018-01-29 Copy to New Graph
+<p>A toolbar button has been added for Copy Selection to New Graph (Ctrl+U) plugin.</p>
+
+== 2017-12-22 Map View Update
+<p>A few new features have been added to the Map View:</p>
+<ul>
+<li>The Map View now has support for rendering layers over the map. The first layer, a live heatmap
+is now available and can be activated from the layers menu.</li>
+<li>A new overlay has been added which will display an overview of the map, including a viewport of
+the area currently in focus.</li>
+<li>Overlays can now be switched on and off using the overlays menu.</li>
+<li>'Zoom to Location' will now create a marker at the specified location as well as zoom to it.</li>
+</ul>
+
+== 2017-10-26 Freeze Graph View
+<p>The freeze graph view feature has been revised to allow the reset view animation to be performed. This
+ensures the camera zooms to show the entire graph as new nodes are added and removed.</p>
+
+== 2017-10-23 New Analytics
+<p>New analytics have been added to the Analytic View, and can be found under categories:</p>
+<ul>
+<li>Under Importance, the Connected Component Analytic will tell you the size of each node's graph component, and also indicates how many components there would be if the node was deleted.</li>
+</ul>
+<p>There's also a new category - Global, with several analytics that will add Graph Attributes:</p>
+<ul>
+<li>Average Degree - Calculates the average degree of the graph. This metric can be used to detect high
+degree nodes.</li>
+<li>Graph Density - Calculates the density of the graph.</li>
+<li>Component Count - Counts the number of connected components on the graph.</li>
+<li>Global Clustering Coefficient - Calculates the global clustering coefficient using the number of
+triangles and triplets on the graph.</li>
+<li>Graph Distance - Calculates the diameter and radius of the graph.</li>
+</ul>
+
+== 2017-10-17 Schema View
+<p>The Plugins tab on the Schema View allows you to download a copy of the plugin details into a CSV file.</p>
+
+== 2017-10-13 Schemas
+<p>The <strong>Simple Graph</strong> has been renamed to <strong>Visual Graph</strong>.</p>
+
+== 2017-10-12 Map View Update
+<p>A few new features have been added to the Map View:</p>
+<ul>
+<li>You can add custom labels and colours to markers in the Map View using the new label and color menus.</li>
+<li>Markers on the map now respond to the 'dim' and 'visibility' attributes. This allows you to, for example, use the
+'Dim Other Events' option in the Timeline to visualise locations within a sliding time window.</li>
+<li>The draw and measure tools now have support for circles by holding <i>shift</i> as you click. Note that the measure
+tool can also measure paths by holding the 'control' key as you click.</li>
+<li>The measure tool now supports measurements in nautical miles. The current measurement unit is displayed beside the
+measurement tool, and clicking it will cycle through available measurement systems.</li>
+<li>You can search for a location on the map by coordinate, geohash or MGRS using the 'Search by Location' option in the
+zoom menu.</li>
+</ul>
+
+== 2017-10-11 Plugin and parameter names
+<p>All plugin names and their parameters have been reviewed and standardised. If you are using the scripting or web server Rest API then please note the following:</p>
+<ul>
+<li>Plugin names now end with the <strong>Plugin</strong> suffix</li>
+<li>Plugin parameters now follow the naming convention of ExamplePlugin.parameter_name</li>
+</ul>
+
+== 2017-09-28 CONSTELLATION Upgrade
+<p>CONSTELLATION has been upgraded to work on NetBeans 8.2 and Java 8u144 allowing CONSTELLATION to benefit from the latest security and bug fixes.
+We have also re-organised modules and done some house keeping to make it easier to develop and maintain.</p>
+
+== 2017-09-21 Jupyter notebooks may require manual authentication
+<p>Until now, starting a Jupyter notebook from Tools &rarr; Start Jupyter Notebook has used the <tt>--NotebookApp.token=""</tt>
+flag for ease of use. However, this disables notebook authentication, which is not desirable.</p>
+<p>Jupyter is now started using just <tt>jupyter-notebook</tt>, so manual authentication may be required. If it is, follow the
+instructions displayed in the notebook's output window.</p>
+<p>This now works in exactly the same as manually entering <tt>jupyter-notebook</tt> at a command prompt in the notebook directory
+(by default, your home directory).</p>
+
+== 2017-08-29 More Geospatial Export Options
+<p>You can now export geospatial data in your graph to a GeoPackage file. This is an OGC defined, GIS compliant SQLite database which is
+supported by ArcGIS (and most other GIS tools) and is significantly more flexible than a Shapefile. This export option is available under
+File > Export as well as in the toolbar of the Map View</p>
+
+== 2017-08-23 Blaze Menu Changes
+<p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default colour options.</p>
+
 
 <p>How to start building graphs in CONSTELLATION.</p>
 

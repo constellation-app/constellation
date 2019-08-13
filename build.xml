@@ -14,6 +14,10 @@
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
+    <property name="jre.filename.windows" value="zulu8.38.0.13-ca-fx-jre8.0.212-win_x64" />
+    <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
+    <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
+    <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
     
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
         <ant target="clean" />
@@ -49,8 +53,8 @@
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
-    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
     
+    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
     <target name="-download-unfolding-maps" >
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
@@ -58,9 +62,7 @@
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
 		
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps"
-            description="Download dependent libraries.">
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
 
@@ -108,27 +110,77 @@
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
     </target>
-    <target name="build-zip-new" depends="suite.build-zip">
-        <property name="nbdist.dir" value="dist"/>
-        <property name="release.dir" value="${nbdist.dir}/${app.name}"/>
 
-        <!-- unzip the result  -->
-        <unzip src="${nbdist.dir}/${app.name}.zip" dest="${nbdist.dir}/${app.name}-temp"/>
-
-        <!-- copying, deleting stuff here -->
-        <mkdir dir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
-        <copy file="../${app.name}/samples/Flights.csv" todir="${nbdist.dir}/${app.name}-temp/${app.name}/samples"/>
-        <!-- delete old zip -->
-        <delete file="${nbdist.dir}/${app.name}.zip"/>
-        <!-- zip again -->
-        <zip destfile="${nbdist.dir}/${app.name}.zip">
-            <zipfileset dir="${nbdist.dir}/${app.name}-temp" />
-        </zip>
-        
-        <!-- cleanup -->
-        <echo message=" "/>
-        <echo message="cleaning and finalizing release" />
-        <delete dir="${nbdist.dir}/${app.name}-temp"/>
-      
+    
+    <target name="-download-windows-jre" >
+        <echo message="downloading JRE..."/>
+        <get src="${jre.url.windows}"
+             dest="${basedir}" usetimestamp="true"/>
+        <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
+        <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
+    
+    <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
+        <mkdir dir="${dist.dir}"/>
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
+        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
+        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${temp.dir.rest}"/>
+            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+        <zip destfile="${dist.dir}/${app.name}.zip">
+            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
+            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
+            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+            
+            <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
+            <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+        </zip>
+        <delete dir="${basedir}/${jre.filename.windows}/"/>
+    </target>
+    
+    <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
+    <target name="-download-linux-jre" >
+        <echo message="downloading JRE..."/>
+        <get src="${jre.url.linux}"
+             dest="${basedir}" usetimestamp="true"/>
+        <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
+        <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
+    </target>
+    
+    <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
+    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
+        <mkdir dir="${dist.dir}"/>
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
+        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
+        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${temp.dir.rest}"/>
+            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+        <zip destfile="${dist.dir}/${app.name}.tar.gz">
+            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
+            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
+            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+            
+            <zipfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre"/>
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </zipfileset>
+        </zip>
+        <delete dir="${basedir}/${jre.filename.linux}/"/>
+    </target>
+    
 </project>

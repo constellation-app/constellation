@@ -1,0 +1,1 @@
+start "" bin/constellation64.exe

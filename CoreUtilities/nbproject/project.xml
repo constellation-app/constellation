@@ -124,6 +124,7 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.utilities</package>
+                <package>au.gov.asd.tac.constellation.utilities.branding</package>
                 <package>au.gov.asd.tac.constellation.utilities.csv</package>
                 <package>au.gov.asd.tac.constellation.utilities.datastructure</package>
                 <package>au.gov.asd.tac.constellation.utilities.file</package>
