@@ -263,81 +263,277 @@ File > Export as well as in the toolbar of the Map View</p>
 == 2017-08-23 Blaze Menu Changes
 <p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default colour options.</p>
 
+== 2017-08-15 Scripting View
+<p>Removed support for Groovy and Javascript in the Scripting View. We are mandating that all scripts be written in Python.</p>
 
-<p>How to start building graphs in CONSTELLATION.</p>
+== 2017-08-03 Extract from Content
+<p>The Extract From Content data access view plugin has been updated with the following options:</p>
+<ul>
+<li>Case Insensitive</li>
+<li>Incoming Transactions</li>
+<li>Selected Only</li>
+</ul>
+<p>Refer to <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractFromContent">this</a> help page for more information.</p>
 
-<ol>
-    <li>
-        Select File → New Graph → Analytic Graph. This will open a new window containing an empty graph.
-    </li>
-    <li>
-        Select Experimental → Build graph → Sphere Graph Builder to build a random spherical graph in the window.
-    </li>
-    <li>
-       Select OK in the dialog box to accept the default values for a small graph. The graph will be built in the active window.
-    </li>
-    <li>
-       Select Views → Attribute Editor to open the Editor window. This displays the values of graph attributes.
-    </li>
-    <li>
-       Go <a href="" helpId="au.gov.asd.tac.constellation.functionality.visual.about">here</a> to find out how navigate around the graph.
-    </li>
-    <li>
-       Go <a href="" helpId="au.gov.asd.tac.constellation.graph.about">here</a> to learn about the graph structure.
-    </li>
-</ol>
+== 2017-08-01 Select Blazes
+<p>You can now select all blazed nodes on the graph using Selection > Select Blazes. This option is also available in the toolbar menu.</p>
 
-<p>How to generate a graph from a CSV file.</p>
-    <ol>
-        <li>
-            Select File → New Graph → Analytic Graph. This will open a new window containing an empty graph.
-        </li>
+== 2017-07-28 Map View Update
+<p>You can now toggle between metric and imperial measurements in the Map View using the button beside the measure tool.</p>
 
-        <li>
-            Select File → Import → From Delimited File. This will open a new 'Import From Delimited File' dialogue.
-        </li>
+== 2017-07-28 Half Hop Induced Subgraph
+<p>The half hop induced subgraph button has been added back onto the quick access toolbar.</p>
 
-        <li>
-            Click + sign and select 'Flights.csv' to import from "constellation\samples\" directory. Under 'Run' tab you will be able to see imported data in tabular format.
-        </li>
+== 2017-07-28 Attribute Editor
+<p>The following bugs with the attribute editor have been fixed:</p>
+<ul>
+<li>Fixed a bug preventing setting an icon when multiple nodes are selected.</li>
+<li>Fixed a bug with changing colours in Options &gt; Attribute Editor Colours.</li>
+</ul>
 
-        <li>
-            Here each row representing a transaction.'fromCity' and 'toCity' are nodes, 'airline' is transaction identifier.
-        </li>
+== 2017-07-25 Extract Words from Content
+<p>In the Data Access View, under Import, the plugin Extract Words from Content is now available. If there are transactions with Content on the graph,
+words will be extracted and represented as nodes. It also works with regular expressions and can extract known schema types.</p>
 
-        <li>Follow these steps to configure import logic.
+== 2017-07-25 REST server Python client is downloaded automatically
+<p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match CONSTELLATION's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
 
-            <ul>
-              <li>
-                From 'Source Node Attributes' select and drag 'identifier' to 'fromCity' column.
-              </li>
+== 2017-07-18 Geospatial Export
+<p>You can now export geospatial data in your graph to GeoJSON or Shapefile using the File > Export menu or the toolbar options in the Map View.</p>
 
-              <li>
-                From 'Destination Node Attributes' select and drag 'identifier' to 'toCity' column.
-              </li>
+== 2017-07-17 REST server requires a secret
+<p>The external scripting server now requires a secret to be used, which requires a new Python client.</p>
 
-              <li>
-                From 'Transaction Attributes' select and drag 'identifier' to 'airline' column.
-              </li>
-            </ul> 
-        </li>
+== 2017-05-29 Support for Old Graphs
+<p>The logic to support old graphs has been changed so that old graphs will get the updated look and feel when you run Tools -> Complete with Schema or press F5.</p>
+<p>This has allowed graphs to load faster and more efficiently maintain the update code logic.</p>
 
-        <li>
-            Click 'Import' button at bottom right of 'Import From Delimited File' dialogue box. You should be able to see generated graph on the canvas.
-        </li>
-    </ol>   
-<p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+== 2017-05-28 Improved Analytics
+<p>Many of the structural graph analytics available to Constellation have been rewritten as native plugins, meaning
+they have been optimised to run efficiently on large graphs and include more customisation options. These include:</p>
+<ul>
+<li>Degree Centrality (also calculates in-degree / out-degree)</li>
+<li>Eigenvector Centrality</li>
+<li>Katz Centrality</li>
+<li>Pagerank Centrality</li>
+<li>Betweenness Centrality</li>
+<li>Closeness Centrality (also calculates harmonic closeness)</li>
+<li>Ratio of Reciprocity</li>
+<li>Jaccard Index</li>
+<li>Cosine Similiarity</li>
+</ul>
+<p>In addition to this, several new analytics are now available:</p>
+<ul>
+<li>HITS Centrality: scores each node based on its ability to act as both a hub and as an authority</li>
+<li>Local Clustering Coefficient: scores each node on its willingness to cluster</li>
+<li>Eccentricity: scores each node on its furthest distance to any other node</li>
+</ul>
 
-<div style="text-align: center;">
-    <table>
-        <tbody>
-            <tr>
-                <td style="text-align: center;">Lorum Ispum</td>
-                <td style="text-align: center;">Lorum Ispum</td>
-                <td style="text-align: center;">Lorum Ispum</td>
-                <td style="text-align: center;">Lorum Ispum</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+== 2017-05-25 Default Font Change
+<p>The default font has been changed from <strong>Arial Unicode MS</strong> to <strong>Dialog</strong> because it has better support for unicode characters.</p>
 
+== 2017-05-18 Attribute Changes
+<p>There have been some changes to the attributes you might be used to seeing on graphs.</p>
+<ul>
+<li>The 'Name' attribute for nodes is now called 'Label'</li>
+<li>The 'Name' attribute for transactions is now called 'Label'</li>
+<li>The 'UniqueID' attribute for transactions is now called 'Identifier'</li>
+</ul>
+<p>These changes have been made to help keep the core attributes consistent and intuitive.
+Old graphs will be automatically updated with these new attributes.</p>
+
+== 2017-05-09 Top-n Selection
+<p>You can now select the top-n n nodes based on the transaction count and type to save you time having to do it manually. It is available under the Utility section in the Data Access View.
+Click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopN">here</a> for the help page.</p>
+
+== 2017-05-04 Improved Stability
+<p>A bug causing CONSTELLATION to crash due to running out of memory has been fixed.</p>
+
+== 2017-05-04 Data Access View Favorites Update
+<p>Plugins in the Favourites category are sorted in the order respective to their category.</p>
+
+== 2017-04-28 Split Nodes
+<p>You can now split nodes based on a specified character which is located in the Clean category. For more information click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin">here</a>.</p>
+
+== 2017-04-21 Merge Nodes by Location
+<p>You can now merge nodes by their geospatial proximity. Nodes which are found to be located within a specified distance of each other will be merged into a single 'geospatial cluster' node.
+Each cluster node will be given a shape attribute representing the area it represents which is viewable in the Map View. This functionality can be accessed by selecting the 'Merge Nodes' plugin
+within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
+
+== 2017-04-18 Compare Graphs
+<p>You can now compare differences between 2 graphs and see the differences. This is available from Tools -> Compare Graphs. More information is available in <a href="" helpId="au.gov.asd.tac.constellation.functionality.compare.CompareGraphPlugin">this</a> help page.</p>
+
+== 2017-04-03 Improved Quick Search
+<p>Fixed bugs with the quick search and recent search not returning results.</p>
+
+== 2017-03-24 Flexible Schema Types
+<p>While you could always create custom types on a graph by simply entering a name as a string, you can now specify the place of a custom type in the type hierarchy (as seen in the Schema View) by entering the desired hierarchy as a string of form:</p>
+<ul><li><i>schemaTypeName.customTypeName</i></li></ul>
+<p>This will create a custom type called 'customTypeName' with the parent 'schemaTypeName' from which it will inherit its visual properties. This hierarchy string can extend as far back or forward as you like. For example:</p>
+<ul><li><i>Online Location.URL.Host.Owner</i></li></ul>
+<p>If both 'Online Location' and 'URL' are valid in the type hierarchy (which they would be for an Analytic Graph), this will create a custom type named 'Owner' whose parent is another custom type named 'Host', whose parent is the schema type 'URL' and both custom types will inherit their visual properties from the 'URL' type.</p>
+
+== 2017-03-23 Improved Find
+<p>Fixed a bug with the advanced find not adding results to the current selection.</p>
+
+== 2017-03-21 Improved Data Access View
+<p>The following improvements have been made:</p>
+<ul>
+<li>You can now save commonly used plugins in the Data Access View as favourites. For more information click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent">here</a>.</li>
+<li>You can filter plugins by clicking on the magnifying icon and typing the plugin name which will filter the categories to make it easier to find the plugin your looking for.</li>
+<li>If you want to expand, collapse or deselect all plugins then you can right click anywhere on the Data Access View and use the right click menu options.</li>
+<li>The layout of the Data Access View has been optimised to minimise the width required, leaving more room for the graph.</li>
+</ul>
+
+== 2017-03-08 Improved Table View
+<p>Fixed a major performance bug with the table view causing CONSTELLATION to lock up.</p>
+
+== 2017-03-03 Import Excel Spreadsheets
+<p>You can now import Excel spreadsheets using the Delimited File Importer. It will work for both xls and xlsx files. Note that it will only import the first sheet in a file.</p>
+
+== 2017-03-01 Improved Freeze Graph View
+<p>The bugs with the freeze graph view have been fixed.</p>
+
+== 2017-02-22 Map View Update
+<p>The following new features have been added to the Map View:</p>
+<ul>
+<li>Improved the speed of the box selection feature</li>
+<li>You can now click the middle mouse button and drag to select an area to zoom to</li>
+<li>Polygon markers can now be queried by the Data Access View</li>
+<li>Custom (drawn) markers are now visually distinct from markers representing data on the graph</li>
+</ul>
+
+== 2017-02-16 Scripting View API Changes
+<p>The following changes have been made to the scripting API so please update your scripts:</p>
+<ul>
+<li>Renamed au.gov.asd.tac.constellation.graph.hl.HLGraph to au.gov.asd.tac.constellation.scripting.graph.SGraph.</li>
+<li>HLReadableGraph and HLWriteableGraph have been renamed to SReadableGraph and SWritableGraph respectively.</li>
+<li>Attribute, Collection, Vertex, Transaction, Edge and Link have been renamed to SAttribute, SCollection, SVertex, STransaction, SEdge and SLink respectively.</li>
+<li>SubgraphUtilities has moved to au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities.</li>
+</ul>
+<p>Note that documentation for the scripting API is now available from Scripting View > Actions > API Documentation.</p>
+
+== 2017-02-16 Workflow Plugins
+<p>A bug has been fixed related to workflow plugins where not all selected nodes were being passed to the workflow query.</p>
+
+== 2017-02-10 One-hop Induced Subgraph
+<p> Selecting the <strong>Select One-hop Induced Subgraph</strong> item in the selection menu will add to the selection any transactions and nodes which connect currently selected nodes upto one hop out.
+The existing 'Select Induced Subgraph' item has been renamed <strong>'Select Half-hop Induced Subgraph'</strong>, but is unchanged functionally.</p>
+
+== 2017-01-12 Improved Rendering and Event Handling
+<p> CONSTELLATION's visualistion and event handling framework has been reimplemented from the ground up.
+To the user things will mostly look the same, but performance and stability should be slightly improved. The main benefit of this upgrade
+is that it should now be possible to write other visualisations for CONSTELLATION, for example a lightweight 2D renderer. </p>
+
+== 2017-01-11 Improved Plugin Reporter
+<p>Fixed a bug with the plugin reporter where the filters were misbehaving.</p>
+
+== 2016-12-15 A New and Improved Map View
+<p>A complete redesign of the <strong>Map View</strong> is now available. This view is pure Java (as opposed to its Javascript-based predecessor), making it far easier to extend
+with new features, and is rendered using OpenGL, making it far more responsive than its predecessor. The new Map View also contains the following improvements:</p>
+<ul>
+<li>Ability to switch base maps on the fly. A default base map comes pre-loaded, meaning it can be used immediately without developer effort, but a developer can also add new base maps as desired.</li>
+<li>An information overlay which displays the latitude and longitude of the mouse and the current zoom level. A developer can also use this overlay to report debug information about the map.</li>
+<li>A tool overlay which offers various tools for interacting with the map. Currently these consist of a measurement tool, and a draw mode toggle allowing the ability to draw your own markers.</li>
+<li>Support for the representation of point, line, polygon, and multi markers on the map, including selection which interacts with the graph.</li>
+<li>Ability to toggle marker visibility independently for each marker type using the <strong>Marker Visibility</strong> button.</li>
+<li>Ability to reset the focus of the map to the extent of all visible markers using the <strong>Reset View</strong> button.</li>
+<li>Ability for a developer to access the map's markers from other views, for example, you could query the locations represented by selected markers using the Data Access View.</li>
+</ul>
+<p>Note: the control scheme for the new Map View is the inverse of the control scheme for the graph. The left mouse button handles panning and drawing instead of selection,
+the right mouse button handles selection instead of panning and drawing, however the middle mouse button still handles zooming. This will be changed in a future update
+so that the map controls and graph controls are consistent.</p>
+
+== 2016-11-10 Icons Refresh
+<p>Icons used for visualisation of nodes on a CONSTELLATION graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
+be smaller icons with transparency filling the rest of the image space. In addition to this, the default background icon for all nodes is now the 'Flat Square' icon as it has a
+larger surface area, making it stand out more, and it more accurately represents the colour assigned to it. These changes will allow us to make better use of icons in an analytic
+context by allowing us to visually differentiate nodes using background icons.</p>
+
+== 2016-11-04 Freeze Graph View Shortcut
+<p>The freeze graph view button has been moved to the top tool bar.</p>
+
+== 2016-09-07 Default Arrangement Update
+<p>The default arrangement after any plugin is executed is to arrange by grid because it is the fastest arrangement.</p>
+
+== 2016-08-29 Framework Upgraded
+<p>A minor framework upgrade has been completed so that CONSTELLATION now uses Netbeans 8.0.2 and Java 8u92.</p>
+
+== 2016-08-04 Analytic View 2.0
+<p>The new and improved Analytic View 2.0 is now available! It has been completely redesigned around a more flexible and robust framework which allows
+for it to manage any type of analytic functionality. The initial release supports all the same analytics as the original Analytic View, but over time
+we will transition the currently available 'Clustering' and 'Content' features into this new view, as well as add several new analytics we are currently
+working on. For details on usage of the new Analytic View, refer to <a href="" helpId="au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent">this</a>
+help page.</p>
+
+== 2016-08-03 Memory Leaks
+<p>A number of memory leaks have been fixed resulting in unused memory being properly released as you close graphs.</p>
+
+== 2016-07-06 Improved Performance
+<p>Large graphs should now open more quickly as an optimisation was added to pre-calculate the string representation of types.</p>
+
+== 2016-07-05 Complete with Schema
+<p>You can now press the F5 key to 'Complete with Schema'.</p>
+
+== 2016-06-20 Delimited File Importer
+<p>Improvements to the delimited file importer mean it will now better handle CSV files containing complex data.</p>
+
+== 2016-06-06 Visual Attributes and Templates
+<p>A number of visual properties, such as labels and decorators, have been exposed as graph attributes so that they can be edited in the attribute editor like everything else (rather than through obscure menu items).</p>
+<p>Default values of visual attributes have been removed from preferences too - if you had a custom default background colour or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
+<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_colour, bottom_labels, and top_labels), then choose "File > Save Template" and enter a name.</p>
+<p>You can then make your template the default new graph (that is opened with Control+N) by choosing "File > Manage Templates", selecting your template name, and then pressing the "Set Default" button.</p>
+<p>You can have as many templates as you like - the options will be listed in the "File > New Graph" menu beneath the schema graphs.</p>
+
+== 2016-06-06 Performance Improvement
+<p>There is a significant performance improvement overall to CONSTELLATION after adding caching to the new Icon provider implementation.</p>
+
+== 2016-06-01 Directed Shortest Paths
+<p>The directed shortest paths search algorithm has been added to the selection menu. You need to set a source node and this dictates the direction.</p>
+
+== 2016-05-30 OpenGL
+<p>A dormant bug related to OpenGL trying to render a disposed batch operation has been fixed.</p>
+
+== 2016-05-19 Composite Nodes
+<p>A minor bug fix when merging nodes using the right click menu.</p>
+
+== 2016-05-09 Updated zoom to selection and reset view keyboard shortcuts
+<p>The shortcuts to zoom to selection and reset view have been changed to Ctrl-Up and Ctrl-Down respectively.</p>
+
+== 2016-04-27 DateTime and Time Zones
+<p>There is no longer a concept of a "graph time zone", rather each transaction attribute is individually time zoned.
+This removes any ambiguity because you know exactly what time zone each transaction is in.</p>
+<p>To update the time zone, select the transactions and right click on the "DateTime" property from the Attribute Editor and select "Update time-zone of selection"</p>
+<p>Time zones have been re-worked from the ground up which makes use of Java 8's new time zone capabilities.</p>
+
+== 2016-04-07 Composite Nodes
+<p>We've identified issues with composite nodes on large graphs (especially those with a lot of transactions) and unexpected behaviours when you
+copy composite nodes between graphs. The existing version will remain an experimental feature and we plan to create a newer version from lessons learned.</p>
+
+== 2016-03-17 Graph Visibility Threshold
+<p>You can configure a threshold to automatically hide all nodes on the graph. The idea is that you would instead use table view or the histogram to
+clean up the graph before you visualise it in the graph view. The threshold can be set in Tools -> Options -> CONSTELLATION -> Graph Drawing.
+A new button is available in the graph toolbar than will enable/disable the threshold. For more information refer to
+<a href="" helpId="au.gov.asd.tac.constellation.visual.about">this</a> help page.</p>
+
+== 2016-03-17 Freeze Graph View
+<p>When enabled, animations do not run during plugin executions so you graph structure does not change. The button is available in the graph toolbar.
+When enabled, the snow flake icon will change from grey to blue. This feature is smart enough to allow you to execute arrangements manually so you can
+ keep it on all the time if you like.</p>
+
+== 2016-02-26 Icons Update
+<p>All icons have been reviewed and some duplicates have been removed. Note that Unknown types will be rendered as a white ? icon in front of a grey sphere.
+Unsupported types will be rendered as a white ! icon in front of a yellow sphere.</p>
+
+== 2015-09-18 A New Way to Merge Nodes
+<p>Nodes can now be merged based on types known to CONSTELLATION, meaning that preference will be given to types known by the graph over custom types.
+For more information click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.merge.MergeNodes">here</a>.</p>
+
+== 2015-09-30 Memory Usage Improvement
+<p>CONSTELLATION will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
+you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, CONSTELLATION might try and cleanup
+unused memory. This is still an experimental feature. Similar to clearing memory on graph close, the option is under
+Tools > Options > CONSTELLATION > Application and is enabled by default.</p>
+
+== 2015-09-01 Label Rendering Improvements
+<p>The rendering of labels has been improved to display text more accurately (including right-to-left text) and improve compatibility with more graphics cards.</p>
