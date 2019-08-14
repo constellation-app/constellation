@@ -45,25 +45,13 @@ public abstract class IntroProvider {
     public abstract String getResource();
 
       /**
-     * Parse a given "what's new" text file into a list of {@link WhatsNewEntry}
-     * objects.
-     * <p>
-     * This file should be of the form:
-     * <pre>
-     * == yyyy-mm-dd Header Text 1
-     * Message 1.
-     * == yyyy-mm-dd Header Text 2
-     * Message 2.
-     * ...
-     * </pre>
-     *
+    
      * @param cls A {@link Class} object from which to call
      * {@link Class#getResourceAsStream} on the given resource name.
      * @param resourceName A {@link String} representing the name of the
      * resource to load as a {@link WhatsNewEntry}.
-     * @param section A {@link String} representing the section to place these
-     * "what's new" entries.
-     * @return A {@link List} of {@link WhatsNewEntry} objects.
+    
+     * @return A String containing HTML content.
      */
     public static String getHtmlContent(final Class<?> cls, final String resourceName) {
         try {
