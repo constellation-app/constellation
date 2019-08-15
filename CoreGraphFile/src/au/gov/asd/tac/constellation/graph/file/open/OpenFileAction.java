@@ -94,8 +94,8 @@ public class OpenFileAction implements ActionListener {
      */
     protected JFileChooser prepareFileChooser() {
         JFileChooser chooser = new FileChooser();
-        //chooser.setCurrentDirectory(getCurrentDirectory());
-        //HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
+        chooser.setCurrentDirectory(getCurrentDirectory());
+        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
 
         return chooser;
     }

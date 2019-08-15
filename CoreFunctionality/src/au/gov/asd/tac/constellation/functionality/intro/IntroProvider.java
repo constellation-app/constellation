@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.functionality.intro;
 
-import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

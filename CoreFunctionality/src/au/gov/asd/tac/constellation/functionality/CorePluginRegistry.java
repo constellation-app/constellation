@@ -106,6 +106,7 @@ public final class CorePluginRegistry {
     public static final String HOP_OUT = HopOutPlugin.class.getName();
     public static final String INVERT_SELECTION = InvertSelectionPlugin.class.getName();
     public static final String OPEN_IN_BROWSER = OpenInBrowserPlugin.class.getName();
+    public static final String OPEN_EXISTING_GRAPH = OpenGraphPlugin.class.getName();
     public static final String PASTE = PasteFromClipboardPlugin.class.getName();
     public static final String PASTE_GRAPH = PasteGraphPlugin.class.getName();
     public static final String PASTE_TEXT = PasteTextPlugin.class.getName();
@@ -141,5 +142,4 @@ public final class CorePluginRegistry {
     public static final String UPDATE_BLAZE_SIZE_OPACITY = UpdateBlazeSizeOpacityPlugin.class.getName();
     public static final String ZOOM_TO_SELECTION = ZoomToSelectionPlugin.class.getName();
     public static final String ZOOM_TO_VERTICES = ZoomToVerticesPlugin.class.getName();
-    public static final String OPEN_EXISTING_GRAPH = OpenGraphPlugin.class.getName();
 }

@@ -117,7 +117,7 @@ import javafx.scene.layout.HBox;
 public final class WelcomeTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
-    private static final String TUTORIAL_THEME = "resources/tutorialStylesheet.css";
+    private static final String TUTORIAL_THEME = "resources/welcomeStylesheet.css";
     private static final String WEBENGINE_CSS_INJECTION = "resources/webengine.css";
     public static final String MOUSE_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/mouse3.png";
     public static final String MENU_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/sidebar.png";

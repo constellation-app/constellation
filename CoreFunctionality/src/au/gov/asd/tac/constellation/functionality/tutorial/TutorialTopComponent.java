@@ -202,13 +202,7 @@ public final class TutorialTopComponent extends TopComponent {
                                     new HelpCtx(helpId).display();
                                 }else {
                                     final String actionId = ((Element) event.getTarget()).getAttribute("actionId");
-                                    if(actionId != null && !actionId.isEmpty()){
-                                        System.out.println(actionId);
-                                        //TODO: Invoke Action here
-                                        //Action action=org.openide.awt.Actions.forID("File", "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction");
-                                        //action.actionPerformed(new ActionEvent(panel,ActionEvent.ACTION_PERFORMED,"link_clicked"));
-                                            
-                                    }
+                                   
                                 }
                             }
                         }
