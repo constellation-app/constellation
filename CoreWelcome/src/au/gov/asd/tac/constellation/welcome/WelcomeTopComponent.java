@@ -244,7 +244,7 @@ public final class WelcomeTopComponent extends TopComponent {
                     }
                 }
             });
-            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomeTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
+            whatsNewView.getEngine().setUserStyleSheetLocation(WelcomeTopComponent.class.getResource("resources/welcomeStylesheet.css").toExternalForm());
             whatsNewView.getStyleClass().add("web-view");
             try {
                 //whatsNewView.getEngine().loadContent(getWhatsNew());
