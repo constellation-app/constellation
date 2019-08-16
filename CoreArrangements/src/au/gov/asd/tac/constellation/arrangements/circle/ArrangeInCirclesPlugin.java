@@ -67,11 +67,13 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
             if (cycles[vertex] == 0) {
                 int parent = parents[vertex];
-                int[] parentChildren = children[parent];
-                if (parentChildren == null) {
-                    parentChildren = children[parent] = new int[graph.getVertexNeighbourCount(parent) + 1];
+                if (parent > 0) {
+                    int[] parentChildren = children[parent];
+                    if (parentChildren == null) {
+                        parentChildren = children[parent] = new int[graph.getVertexNeighbourCount(parent) + 1];
+                    }
+                    parentChildren[++parentChildren[0]] = vertex;
                 }
-                parentChildren[++parentChildren[0]] = vertex;
             } else {
                 cycleCount++;
             }
