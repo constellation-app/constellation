@@ -3,6 +3,7 @@
 ## 2019-08-01 Changes in August 2019
 * Added BrandingUtilities to Core Utilities to hold the application name "Constellation"
     * You can pass `constellation.environment` to set the version of Constellation which will appear in the title. This is useful if you have a "Development", "QA" and "Production" version for instance.
+    * Fixed a Null Pointer Exception when selecting Circle arrangements
 
 ## 2019-06-01 Changes in June 2019
 * Added a Content.URL attribute to represent a URL link in the ContentConcept.
