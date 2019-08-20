@@ -54,7 +54,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Exceptions;
 
@@ -221,7 +221,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
                 final Object o = dataModel.getValueAt(i, columnModelIdx);
                 final String s = o == null ? "" : o.toString();
                 sb.append("<td>");
-                sb.append(StringEscapeUtils.escapeHtml(s));
+                sb.append(StringEscapeUtils.escapeHtml4(s));
                 sb.append("</td>");
             }
             sb.append("</tr>");

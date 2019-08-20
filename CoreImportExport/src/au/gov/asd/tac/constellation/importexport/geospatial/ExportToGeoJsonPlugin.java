@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MapExporter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,16 +28,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 
 /**
  * Export a graph to a GeoJSON file.
  *
  * @author cygnus_x-1
  */
-@ServiceProviders({
-    @ServiceProvider(service = Plugin.class),
-    @ServiceProvider(service = MapExporter.class)})
+@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 @Messages("ExportToGeoJsonPlugin=Export to GeoJSON")
 public class ExportToGeoJsonPlugin extends AbstractGeoExportPlugin {
@@ -54,15 +50,5 @@ public class ExportToGeoJsonPlugin extends AbstractGeoExportPlugin {
         try (final FileWriter writer = new FileWriter(output)) {
             writer.write(geoJson);
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "GeoJSON";
-    }
-
-    @Override
-    public String getPluginReference() {
-        return this.getClass().getName();
     }
 }

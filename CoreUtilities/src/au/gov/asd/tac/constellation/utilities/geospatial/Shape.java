@@ -17,13 +17,13 @@ package au.gov.asd.tac.constellation.utilities.geospatial;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.LineString;
-import com.vividsolutions.jts.geom.MultiLineString;
-import com.vividsolutions.jts.geom.MultiPoint;
-import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import com.vividsolutions.jts.geom.Polygon;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,7 +59,7 @@ import org.geotools.geopkg.GeoPackage;
 import org.geotools.kml.v22.KML;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
-import org.geotools.xml.Encoder;
+import org.geotools.xsd.Encoder;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
@@ -162,7 +162,6 @@ public class Shape {
         }
 
         public String getSrs() throws FactoryException {
-             
             return CRS.toSRS(CRS.decode("EPSG:" + srid));
         }
     }

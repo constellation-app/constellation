@@ -15,32 +15,24 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.exporters;
 
+import au.gov.asd.tac.constellation.importexport.ImportExportPluginRegistry;
+import org.openide.util.lookup.ServiceProvider;
+
 /**
- * An interface for an export plugin which should be available to the Map View.
+ * Export a graph to an ArcGIS compatible Shapefile file from the Map View.
  *
  * @author cygnus_x-1
  */
-public interface MapExporter {
+@ServiceProvider(service = MapExporter.class)
+public class ShapefileExporter implements MapExporter {
 
-    public abstract String getDisplayName();
+    @Override
+    public String getDisplayName() {
+        return "Shapefile";
+    }
 
-    public abstract String getPluginReference();
-
-    public static class MapExporterWrapper {
-
-        private final MapExporter exporter;
-
-        public MapExporterWrapper(final MapExporter exporter) {
-            this.exporter = exporter;
-        }
-
-        public final MapExporter getExporter() {
-            return exporter;
-        }
-
-        @Override
-        public final String toString() {
-            return exporter.getDisplayName();
-        }
+    @Override
+    public String getPluginReference() {
+        return ImportExportPluginRegistry.EXPORT_SHAPEFILE;
     }
 }
