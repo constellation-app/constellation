@@ -92,6 +92,12 @@
                 <package>com.google.errorprone.annotations.concurrent</package>
                 <package>com.google.j2objc.annotations</package>
                 <package>com.google.thirdparty.publicsuffix</package>
+                <package>com.graphbuilder.curve</package>
+                <package>com.graphbuilder.geom</package>
+                <package>com.graphbuilder.math</package>
+                <package>com.graphbuilder.math.func</package>
+                <package>com.graphbuilder.org.apache.harmony.awt.gl</package>
+                <package>com.graphbuilder.struc</package>
                 <package>com.jhlabs.composite</package>
                 <package>com.jhlabs.image</package>
                 <package>com.jhlabs.math</package>
@@ -170,6 +176,14 @@
                 <package>com.kenai.constantine.platform</package>
                 <package>com.kenai.jffi</package>
                 <package>com.kenai.jffi.internal</package>
+                <package>com.microsoft.schemas.compatibility</package>
+                <package>com.microsoft.schemas.compatibility.impl</package>
+                <package>com.microsoft.schemas.office.excel</package>
+                <package>com.microsoft.schemas.office.excel.impl</package>
+                <package>com.microsoft.schemas.office.office</package>
+                <package>com.microsoft.schemas.office.office.impl</package>
+                <package>com.microsoft.schemas.office.visio.x2012.main</package>
+                <package>com.microsoft.schemas.office.visio.x2012.main.impl</package>
                 <package>com.microsoft.schemas.office.x2006.digsig</package>
                 <package>com.microsoft.schemas.office.x2006.digsig.impl</package>
                 <package>com.microsoft.schemas.office.x2006.encryption</package>
@@ -178,6 +192,8 @@
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.certificate.impl</package>
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.password</package>
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.password.impl</package>
+                <package>com.microsoft.schemas.vml</package>
+                <package>com.microsoft.schemas.vml.impl</package>
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
@@ -729,6 +745,35 @@
                 <package>org.apache.commons.collections4.splitmap</package>
                 <package>org.apache.commons.collections4.trie</package>
                 <package>org.apache.commons.collections4.trie.analyzer</package>
+                <package>org.apache.commons.compress</package>
+                <package>org.apache.commons.compress.archivers</package>
+                <package>org.apache.commons.compress.archivers.ar</package>
+                <package>org.apache.commons.compress.archivers.arj</package>
+                <package>org.apache.commons.compress.archivers.cpio</package>
+                <package>org.apache.commons.compress.archivers.dump</package>
+                <package>org.apache.commons.compress.archivers.examples</package>
+                <package>org.apache.commons.compress.archivers.jar</package>
+                <package>org.apache.commons.compress.archivers.sevenz</package>
+                <package>org.apache.commons.compress.archivers.tar</package>
+                <package>org.apache.commons.compress.archivers.zip</package>
+                <package>org.apache.commons.compress.changes</package>
+                <package>org.apache.commons.compress.compressors</package>
+                <package>org.apache.commons.compress.compressors.brotli</package>
+                <package>org.apache.commons.compress.compressors.bzip2</package>
+                <package>org.apache.commons.compress.compressors.deflate</package>
+                <package>org.apache.commons.compress.compressors.deflate64</package>
+                <package>org.apache.commons.compress.compressors.gzip</package>
+                <package>org.apache.commons.compress.compressors.lz4</package>
+                <package>org.apache.commons.compress.compressors.lz77support</package>
+                <package>org.apache.commons.compress.compressors.lzma</package>
+                <package>org.apache.commons.compress.compressors.lzw</package>
+                <package>org.apache.commons.compress.compressors.pack200</package>
+                <package>org.apache.commons.compress.compressors.snappy</package>
+                <package>org.apache.commons.compress.compressors.xz</package>
+                <package>org.apache.commons.compress.compressors.z</package>
+                <package>org.apache.commons.compress.compressors.zstandard</package>
+                <package>org.apache.commons.compress.parallel</package>
+                <package>org.apache.commons.compress.utils</package>
                 <package>org.apache.commons.csv</package>
                 <package>org.apache.commons.dbcp</package>
                 <package>org.apache.commons.dbcp.cpdsadapter</package>
@@ -890,7 +935,6 @@
                 <package>org.apache.poi.common.usermodel</package>
                 <package>org.apache.poi.common.usermodel.fonts</package>
                 <package>org.apache.poi.ddf</package>
-                <package>org.apache.poi.dev</package>
                 <package>org.apache.poi.extractor</package>
                 <package>org.apache.poi.hpsf</package>
                 <package>org.apache.poi.hpsf.extractor</package>
@@ -913,13 +957,15 @@
                 <package>org.apache.poi.hssf.usermodel</package>
                 <package>org.apache.poi.hssf.usermodel.helpers</package>
                 <package>org.apache.poi.hssf.util</package>
+                <package>org.apache.poi.ooxml</package>
+                <package>org.apache.poi.ooxml.dev</package>
+                <package>org.apache.poi.ooxml.extractor</package>
+                <package>org.apache.poi.ooxml.util</package>
                 <package>org.apache.poi.openxml4j.exceptions</package>
                 <package>org.apache.poi.openxml4j.opc</package>
                 <package>org.apache.poi.openxml4j.opc.internal</package>
                 <package>org.apache.poi.openxml4j.opc.internal.marshallers</package>
-                <package>org.apache.poi.openxml4j.opc.internal.signature</package>
                 <package>org.apache.poi.openxml4j.opc.internal.unmarshallers</package>
-                <package>org.apache.poi.openxml4j.opc.signature</package>
                 <package>org.apache.poi.openxml4j.util</package>
                 <package>org.apache.poi.poifs.common</package>
                 <package>org.apache.poi.poifs.crypt</package>
@@ -930,6 +976,7 @@
                 <package>org.apache.poi.poifs.crypt.dsig.facets</package>
                 <package>org.apache.poi.poifs.crypt.dsig.services</package>
                 <package>org.apache.poi.poifs.crypt.standard</package>
+                <package>org.apache.poi.poifs.crypt.temp</package>
                 <package>org.apache.poi.poifs.crypt.xor</package>
                 <package>org.apache.poi.poifs.dev</package>
                 <package>org.apache.poi.poifs.eventfilesystem</package>
@@ -963,13 +1010,26 @@
                 <package>org.apache.poi.ss.util.cellwalk</package>
                 <package>org.apache.poi.util</package>
                 <package>org.apache.poi.wp.usermodel</package>
-                <package>org.apache.poi.xslf</package>
+                <package>org.apache.poi.xddf.usermodel</package>
+                <package>org.apache.poi.xddf.usermodel.chart</package>
+                <package>org.apache.poi.xddf.usermodel.text</package>
+                <package>org.apache.poi.xdgf.exceptions</package>
+                <package>org.apache.poi.xdgf.extractor</package>
+                <package>org.apache.poi.xdgf.geom</package>
+                <package>org.apache.poi.xdgf.usermodel</package>
+                <package>org.apache.poi.xdgf.usermodel.section</package>
+                <package>org.apache.poi.xdgf.usermodel.section.geometry</package>
+                <package>org.apache.poi.xdgf.usermodel.shape</package>
+                <package>org.apache.poi.xdgf.usermodel.shape.exceptions</package>
+                <package>org.apache.poi.xdgf.util</package>
+                <package>org.apache.poi.xdgf.xml</package>
+                <package>org.apache.poi.xslf.draw</package>
                 <package>org.apache.poi.xslf.extractor</package>
                 <package>org.apache.poi.xslf.model</package>
                 <package>org.apache.poi.xslf.usermodel</package>
                 <package>org.apache.poi.xslf.util</package>
                 <package>org.apache.poi.xssf</package>
-                <package>org.apache.poi.xssf.dev</package>
+                <package>org.apache.poi.xssf.binary</package>
                 <package>org.apache.poi.xssf.eventusermodel</package>
                 <package>org.apache.poi.xssf.extractor</package>
                 <package>org.apache.poi.xssf.model</package>
@@ -1004,10 +1064,8 @@
                 <package>org.apache.xmlbeans.impl.jam.provider</package>
                 <package>org.apache.xmlbeans.impl.jam.visitor</package>
                 <package>org.apache.xmlbeans.impl.jam.xml</package>
-                <package>org.apache.xmlbeans.impl.piccolo.io</package>
-                <package>org.apache.xmlbeans.impl.piccolo.util</package>
-                <package>org.apache.xmlbeans.impl.piccolo.xml</package>
                 <package>org.apache.xmlbeans.impl.regex</package>
+                <package>org.apache.xmlbeans.impl.repackage</package>
                 <package>org.apache.xmlbeans.impl.richParser</package>
                 <package>org.apache.xmlbeans.impl.schema</package>
                 <package>org.apache.xmlbeans.impl.soap</package>
@@ -1028,7 +1086,9 @@
                 <package>org.apache.xmlbeans.impl.xb.xsdownload.impl</package>
                 <package>org.apache.xmlbeans.impl.xb.xsdschema</package>
                 <package>org.apache.xmlbeans.impl.xb.xsdschema.impl</package>
+                <package>org.apache.xmlbeans.impl.xpath.saxon</package>
                 <package>org.apache.xmlbeans.impl.xpathgen</package>
+                <package>org.apache.xmlbeans.impl.xquery.saxon</package>
                 <package>org.apache.xmlbeans.impl.xsd2inst</package>
                 <package>org.apache.xmlbeans.soap</package>
                 <package>org.apache.xmlbeans.xml.stream</package>
@@ -1660,8 +1720,6 @@
                 <package>org.openxmlformats.schemas.wordprocessingml.x2006.main.impl</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.digitalSignature</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.digitalSignature.impl</package>
-                <package>org.openxmlformats.schemas.xpackage.x2006.relationships</package>
-                <package>org.openxmlformats.schemas.xpackage.x2006.relationships.impl</package>
                 <package>org.picocontainer</package>
                 <package>org.picocontainer.alternatives</package>
                 <package>org.picocontainer.defaults</package>
@@ -2077,19 +2135,12 @@
                 <package>processing.event</package>
                 <package>processing.javafx</package>
                 <package>processing.opengl</package>
-                <package>repackage</package>
-                <package>schemaorg_apache_xmlbeans.system.s0B482D0B338CC9641C1543C3510577FE</package>
-                <package>schemaorg_apache_xmlbeans.system.sE130CAA0A01A7CDE5A2B4FEB8B311707</package>
+                <package>schemaorg_apache_xmlbeans.system.s8C3F193EE11A2F798ACF65489B9E6078</package>
+                <package>schemaorg_apache_xmlbeans.system.sD023D6490046BA0250A839A9AD24C443</package>
                 <package>schemaorg_apache_xmlbeans.system.sXMLCONFIG</package>
                 <package>schemaorg_apache_xmlbeans.system.sXMLLANG</package>
                 <package>schemaorg_apache_xmlbeans.system.sXMLSCHEMA</package>
                 <package>schemaorg_apache_xmlbeans.system.sXMLTOOLS</package>
-                <package>schemasMicrosoftComOfficeExcel</package>
-                <package>schemasMicrosoftComOfficeExcel.impl</package>
-                <package>schemasMicrosoftComOfficeOffice</package>
-                <package>schemasMicrosoftComOfficeOffice.impl</package>
-                <package>schemasMicrosoftComVml</package>
-                <package>schemasMicrosoftComVml.impl</package>
                 <package>si.uom</package>
                 <package>si.uom.impl</package>
                 <package>si.uom.impl.quantity</package>
@@ -2117,6 +2168,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-ddense-0.38.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-ddense-0.38.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/xmlbeans-3.1.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xmlbeans-3.1.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/j2objc-annotations-1.3.jar</runtime-relative-path>
@@ -2175,10 +2230,6 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/xmlbeans-2.6.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xmlbeans-2.6.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/ejml-simple-0.38.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-simple-0.38.jar</binary-origin>
             </class-path-extension>
@@ -2225,10 +2276,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-solaris-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/stax-api-1.0.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\stax-api-1.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-colorindexer-1.1.10.jar</runtime-relative-path>
@@ -2309,6 +2356,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/worldwind-2.0.0.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\worldwind-2.0.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-compress-1.18.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-compress-1.18.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.6.jar</runtime-relative-path>
@@ -2487,16 +2538,16 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-jxpath-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/curvesapi-1.06.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\curvesapi-1.06.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-databind-2.9.9.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jackson-databind-2.9.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-utilities-1.2.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-utilities-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/poi-ooxml-3.13.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-3.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
@@ -2513,6 +2564,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.fes-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\net.opengis.fes-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/poi-ooxml-schemas-4.1.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-schemas-4.1.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/asm-tree-7.1.jar</runtime-relative-path>
@@ -2597,10 +2652,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jogl-all-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-windows-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/poi-ooxml-schemas-3.13.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-schemas-3.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
@@ -2725,6 +2776,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandmerge-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-bandmerge-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/poi-ooxml-4.1.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-4.1.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jsr305-3.0.2.jar</runtime-relative-path>

@@ -26,17 +26,6 @@
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
         
-<!--        <dependency org="org.jogamp.jogl" name="jogl" rev="2.3.2">
-            <artifact name="jogl" type="jar" ext="jar"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jogl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>-->
-        
         <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.3.2">
             <artifact name="jogl-all" type="jar" ext="jar"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
@@ -97,8 +86,8 @@
             <artifact name="worldwind"/>
         </dependency>
         <dependency org="org.apache.poi" name="poi" rev="4.1.0"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="3.13"/>
-        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="3.13"/>
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.0"/>
+        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.0"/>
         <dependency org="org.controlsfx" name="controlsfx" rev="8.40.15"/>
         <dependency org="org.ejml" name="ejml-core" rev="0.38"/>
         <dependency org="org.ejml" name="ejml-ddense" rev="0.38"/>
