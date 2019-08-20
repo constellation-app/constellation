@@ -37,12 +37,7 @@
                 <package>Lib.xml.parsers</package>
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
-                <package>au.com.bytecode.opencsv</package>
-                <package>au.com.bytecode.opencsv.bean</package>
                 <package>au.com.objectix.jgridshift</package>
-                <package>com.conversantmedia.util.collection</package>
-                <package>com.conversantmedia.util.concurrent</package>
-                <package>com.conversantmedia.util.estimation</package>
                 <package>com.fasterxml.jackson.annotation</package>
                 <package>com.fasterxml.jackson.core</package>
                 <package>com.fasterxml.jackson.core.async</package>
@@ -183,20 +178,9 @@
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.certificate.impl</package>
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.password</package>
                 <package>com.microsoft.schemas.office.x2006.keyEncryptor.password.impl</package>
-                <package>com.sun.activation.registries</package>
-                <package>com.sun.activation.viewers</package>
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
-                <package>com.sun.mail.auth</package>
-                <package>com.sun.mail.handlers</package>
-                <package>com.sun.mail.iap</package>
-                <package>com.sun.mail.imap</package>
-                <package>com.sun.mail.imap.protocol</package>
-                <package>com.sun.mail.pop3</package>
-                <package>com.sun.mail.smtp</package>
-                <package>com.sun.mail.util</package>
-                <package>com.sun.mail.util.logging</package>
                 <package>com.sun.media.imageio.plugins.bmp</package>
                 <package>com.sun.media.imageio.plugins.jpeg2000</package>
                 <package>com.sun.media.imageio.plugins.pnm</package>
@@ -286,8 +270,6 @@
                 <package>de.fhpotsdam.unfolding.ui</package>
                 <package>de.fhpotsdam.unfolding.utils</package>
                 <package>de.fhpotsdam.utils</package>
-                <package>gnu.trove</package>
-                <package>gnu.trove.decorator</package>
                 <package>gov.nasa.worldwind</package>
                 <package>gov.nasa.worldwind.animation</package>
                 <package>gov.nasa.worldwind.avlist</package>
@@ -446,19 +428,41 @@
                 <package>javax.annotation</package>
                 <package>javax.annotation.concurrent</package>
                 <package>javax.annotation.meta</package>
+                <package>javax.annotation.security</package>
+                <package>javax.ejb</package>
+                <package>javax.ejb.spi</package>
+                <package>javax.enterprise.deploy.model</package>
+                <package>javax.enterprise.deploy.model.exceptions</package>
+                <package>javax.enterprise.deploy.shared</package>
+                <package>javax.enterprise.deploy.shared.factories</package>
+                <package>javax.enterprise.deploy.spi</package>
+                <package>javax.enterprise.deploy.spi.exceptions</package>
+                <package>javax.enterprise.deploy.spi.factories</package>
+                <package>javax.enterprise.deploy.spi.status</package>
+                <package>javax.interceptor</package>
                 <package>javax.jms</package>
+                <package>javax.jws</package>
+                <package>javax.jws.soap</package>
                 <package>javax.mail</package>
                 <package>javax.mail.event</package>
                 <package>javax.mail.internet</package>
                 <package>javax.mail.search</package>
                 <package>javax.mail.util</package>
+                <package>javax.management.j2ee</package>
+                <package>javax.management.j2ee.statistics</package>
                 <package>javax.measure</package>
-                <package>javax.measure.converter</package>
                 <package>javax.measure.format</package>
                 <package>javax.measure.quantity</package>
                 <package>javax.measure.spi</package>
-                <package>javax.measure.unit</package>
-                <package>javax.realtime</package>
+                <package>javax.persistence</package>
+                <package>javax.persistence.spi</package>
+                <package>javax.resource</package>
+                <package>javax.resource.cci</package>
+                <package>javax.resource.spi</package>
+                <package>javax.resource.spi.endpoint</package>
+                <package>javax.resource.spi.security</package>
+                <package>javax.resource.spi.work</package>
+                <package>javax.security.jacc</package>
                 <package>javax.servlet</package>
                 <package>javax.servlet.annotation</package>
                 <package>javax.servlet.descriptor</package>
@@ -472,28 +476,26 @@
                 <package>javax.xml.bind.attachment</package>
                 <package>javax.xml.bind.helpers</package>
                 <package>javax.xml.bind.util</package>
-                <package>javax.xml.datatype</package>
                 <package>javax.xml.namespace</package>
-                <package>javax.xml.parsers</package>
+                <package>javax.xml.registry</package>
+                <package>javax.xml.registry.infomodel</package>
+                <package>javax.xml.rpc</package>
+                <package>javax.xml.rpc.encoding</package>
+                <package>javax.xml.rpc.handler</package>
+                <package>javax.xml.rpc.handler.soap</package>
+                <package>javax.xml.rpc.holders</package>
+                <package>javax.xml.rpc.server</package>
+                <package>javax.xml.rpc.soap</package>
+                <package>javax.xml.soap</package>
                 <package>javax.xml.stream</package>
                 <package>javax.xml.stream.events</package>
                 <package>javax.xml.stream.util</package>
-                <package>javax.xml.transform</package>
-                <package>javax.xml.transform.dom</package>
-                <package>javax.xml.transform.sax</package>
-                <package>javax.xml.transform.stream</package>
-                <package>javax.xml.validation</package>
-                <package>javax.xml.xpath</package>
-                <package>javolution</package>
-                <package>javolution.context</package>
-                <package>javolution.io</package>
-                <package>javolution.lang</package>
-                <package>javolution.testing</package>
-                <package>javolution.text</package>
-                <package>javolution.util</package>
-                <package>javolution.xml</package>
-                <package>javolution.xml.sax</package>
-                <package>javolution.xml.stream</package>
+                <package>javax.xml.ws</package>
+                <package>javax.xml.ws.handler</package>
+                <package>javax.xml.ws.handler.soap</package>
+                <package>javax.xml.ws.http</package>
+                <package>javax.xml.ws.soap</package>
+                <package>javax.xml.ws.spi</package>
                 <package>jj2000.j2k</package>
                 <package>jj2000.j2k.codestream</package>
                 <package>jj2000.j2k.codestream.reader</package>
@@ -662,6 +664,10 @@
                 <package>jogamp.opengl.windows.wgl</package>
                 <package>jogamp.opengl.windows.wgl.awt</package>
                 <package>jogamp.opengl.x11.glx</package>
+                <package>junit.extensions</package>
+                <package>junit.framework</package>
+                <package>junit.runner</package>
+                <package>junit.textui</package>
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -857,9 +863,8 @@
                 <package>org.apache.commons.text.matcher</package>
                 <package>org.apache.commons.text.similarity</package>
                 <package>org.apache.commons.text.translate</package>
-                <package>org.apache.felix.resolver</package>
-                <package>org.apache.felix.resolver.reason</package>
-                <package>org.apache.felix.resolver.util</package>
+                <package>org.apache.geronimo.mail.handlers</package>
+                <package>org.apache.geronimo.mail.util</package>
                 <package>org.apache.log4j</package>
                 <package>org.apache.log4j.chainsaw</package>
                 <package>org.apache.log4j.config</package>
@@ -1029,7 +1034,6 @@
                 <package>org.apache.xmlbeans.xml.stream</package>
                 <package>org.apache.xmlbeans.xml.stream.events</package>
                 <package>org.apache.xmlbeans.xml.stream.utils</package>
-                <package>org.apache.xmlcommons</package>
                 <package>org.checkerframework.checker.compilermsgs.qual</package>
                 <package>org.checkerframework.checker.fenum.qual</package>
                 <package>org.checkerframework.checker.formatter</package>
@@ -1093,53 +1097,6 @@
                 <package>org.controlsfx.tools</package>
                 <package>org.controlsfx.validation</package>
                 <package>org.controlsfx.validation.decoration</package>
-                <package>org.eclipse.core.expressions</package>
-                <package>org.eclipse.core.filesystem</package>
-                <package>org.eclipse.core.filesystem.provider</package>
-                <package>org.eclipse.core.internal.adapter</package>
-                <package>org.eclipse.core.internal.boot</package>
-                <package>org.eclipse.core.internal.content</package>
-                <package>org.eclipse.core.internal.dtree</package>
-                <package>org.eclipse.core.internal.events</package>
-                <package>org.eclipse.core.internal.expressions</package>
-                <package>org.eclipse.core.internal.expressions.propertytester</package>
-                <package>org.eclipse.core.internal.expressions.util</package>
-                <package>org.eclipse.core.internal.filesystem</package>
-                <package>org.eclipse.core.internal.filesystem.local</package>
-                <package>org.eclipse.core.internal.filesystem.local.nio</package>
-                <package>org.eclipse.core.internal.filesystem.local.unix</package>
-                <package>org.eclipse.core.internal.jobs</package>
-                <package>org.eclipse.core.internal.localstore</package>
-                <package>org.eclipse.core.internal.preferences</package>
-                <package>org.eclipse.core.internal.preferences.exchange</package>
-                <package>org.eclipse.core.internal.preferences.legacy</package>
-                <package>org.eclipse.core.internal.properties</package>
-                <package>org.eclipse.core.internal.propertytester</package>
-                <package>org.eclipse.core.internal.refresh</package>
-                <package>org.eclipse.core.internal.registry</package>
-                <package>org.eclipse.core.internal.registry.osgi</package>
-                <package>org.eclipse.core.internal.registry.spi</package>
-                <package>org.eclipse.core.internal.resources</package>
-                <package>org.eclipse.core.internal.resources.mapping</package>
-                <package>org.eclipse.core.internal.resources.projectvariables</package>
-                <package>org.eclipse.core.internal.resources.refresh.win32</package>
-                <package>org.eclipse.core.internal.runtime</package>
-                <package>org.eclipse.core.internal.utils</package>
-                <package>org.eclipse.core.internal.watson</package>
-                <package>org.eclipse.core.resources</package>
-                <package>org.eclipse.core.resources.filtermatchers</package>
-                <package>org.eclipse.core.resources.mapping</package>
-                <package>org.eclipse.core.resources.refresh</package>
-                <package>org.eclipse.core.resources.team</package>
-                <package>org.eclipse.core.resources.variableresolvers</package>
-                <package>org.eclipse.core.runtime</package>
-                <package>org.eclipse.core.runtime.adaptor</package>
-                <package>org.eclipse.core.runtime.content</package>
-                <package>org.eclipse.core.runtime.dynamichelpers</package>
-                <package>org.eclipse.core.runtime.internal.adaptor</package>
-                <package>org.eclipse.core.runtime.jobs</package>
-                <package>org.eclipse.core.runtime.preferences</package>
-                <package>org.eclipse.core.runtime.spi</package>
                 <package>org.eclipse.emf.common</package>
                 <package>org.eclipse.emf.common.archive</package>
                 <package>org.eclipse.emf.common.command</package>
@@ -1162,10 +1119,6 @@
                 <package>org.eclipse.emf.ecore.xml.type.impl</package>
                 <package>org.eclipse.emf.ecore.xml.type.internal</package>
                 <package>org.eclipse.emf.ecore.xml.type.util</package>
-                <package>org.eclipse.equinox.app</package>
-                <package>org.eclipse.equinox.events</package>
-                <package>org.eclipse.equinox.internal.app</package>
-                <package>org.eclipse.equinox.log</package>
                 <package>org.eclipse.jetty.continuation</package>
                 <package>org.eclipse.jetty.http</package>
                 <package>org.eclipse.jetty.http.pathmap</package>
@@ -1199,57 +1152,6 @@
                 <package>org.eclipse.jetty.util.thread</package>
                 <package>org.eclipse.jetty.util.thread.strategy</package>
                 <package>org.eclipse.jetty.websocket</package>
-                <package>org.eclipse.osgi.container</package>
-                <package>org.eclipse.osgi.container.builders</package>
-                <package>org.eclipse.osgi.container.namespaces</package>
-                <package>org.eclipse.osgi.framework.console</package>
-                <package>org.eclipse.osgi.framework.eventmgr</package>
-                <package>org.eclipse.osgi.framework.internal.reliablefile</package>
-                <package>org.eclipse.osgi.framework.log</package>
-                <package>org.eclipse.osgi.framework.util</package>
-                <package>org.eclipse.osgi.internal.cds</package>
-                <package>org.eclipse.osgi.internal.container</package>
-                <package>org.eclipse.osgi.internal.debug</package>
-                <package>org.eclipse.osgi.internal.framework</package>
-                <package>org.eclipse.osgi.internal.framework.legacy</package>
-                <package>org.eclipse.osgi.internal.hookregistry</package>
-                <package>org.eclipse.osgi.internal.hooks</package>
-                <package>org.eclipse.osgi.internal.loader</package>
-                <package>org.eclipse.osgi.internal.loader.buddy</package>
-                <package>org.eclipse.osgi.internal.loader.classpath</package>
-                <package>org.eclipse.osgi.internal.loader.sources</package>
-                <package>org.eclipse.osgi.internal.location</package>
-                <package>org.eclipse.osgi.internal.log</package>
-                <package>org.eclipse.osgi.internal.messages</package>
-                <package>org.eclipse.osgi.internal.permadmin</package>
-                <package>org.eclipse.osgi.internal.provisional.service.security</package>
-                <package>org.eclipse.osgi.internal.provisional.verifier</package>
-                <package>org.eclipse.osgi.internal.service.security</package>
-                <package>org.eclipse.osgi.internal.serviceregistry</package>
-                <package>org.eclipse.osgi.internal.signedcontent</package>
-                <package>org.eclipse.osgi.internal.url</package>
-                <package>org.eclipse.osgi.internal.util</package>
-                <package>org.eclipse.osgi.internal.weaving</package>
-                <package>org.eclipse.osgi.launch</package>
-                <package>org.eclipse.osgi.report.resolution</package>
-                <package>org.eclipse.osgi.service.datalocation</package>
-                <package>org.eclipse.osgi.service.debug</package>
-                <package>org.eclipse.osgi.service.environment</package>
-                <package>org.eclipse.osgi.service.localization</package>
-                <package>org.eclipse.osgi.service.pluginconversion</package>
-                <package>org.eclipse.osgi.service.resolver</package>
-                <package>org.eclipse.osgi.service.runnable</package>
-                <package>org.eclipse.osgi.service.security</package>
-                <package>org.eclipse.osgi.service.urlconversion</package>
-                <package>org.eclipse.osgi.signedcontent</package>
-                <package>org.eclipse.osgi.storage</package>
-                <package>org.eclipse.osgi.storage.bundlefile</package>
-                <package>org.eclipse.osgi.storage.url</package>
-                <package>org.eclipse.osgi.storage.url.bundleentry</package>
-                <package>org.eclipse.osgi.storage.url.bundleresource</package>
-                <package>org.eclipse.osgi.storage.url.reference</package>
-                <package>org.eclipse.osgi.storagemanager</package>
-                <package>org.eclipse.osgi.util</package>
                 <package>org.eclipse.xsd</package>
                 <package>org.eclipse.xsd.ecore</package>
                 <package>org.eclipse.xsd.impl</package>
@@ -1431,8 +1333,6 @@
                 <package>org.geotools.kml.bindings</package>
                 <package>org.geotools.kml.v22</package>
                 <package>org.geotools.kml.v22.bindings</package>
-                <package>org.geotools.map</package>
-                <package>org.geotools.map.legend</package>
                 <package>org.geotools.measure</package>
                 <package>org.geotools.metadata</package>
                 <package>org.geotools.metadata.i18n</package>
@@ -1472,17 +1372,7 @@
                 <package>org.geotools.referencing.operation.transform</package>
                 <package>org.geotools.referencing.util</package>
                 <package>org.geotools.referencing.wkt</package>
-                <package>org.geotools.renderer</package>
-                <package>org.geotools.renderer.composite</package>
                 <package>org.geotools.renderer.crs</package>
-                <package>org.geotools.renderer.i18n</package>
-                <package>org.geotools.renderer.label</package>
-                <package>org.geotools.renderer.lite</package>
-                <package>org.geotools.renderer.lite.gridcoverage2d</package>
-                <package>org.geotools.renderer.style</package>
-                <package>org.geotools.renderer.style.markwkt</package>
-                <package>org.geotools.renderer.style.windbarbs</package>
-                <package>org.geotools.renderer.util</package>
                 <package>org.geotools.styling</package>
                 <package>org.geotools.styling.visitor</package>
                 <package>org.geotools.temporal</package>
@@ -1516,6 +1406,9 @@
                 <package>org.geotools.xsd.impl</package>
                 <package>org.geotools.xsd.impl.jxpath</package>
                 <package>org.geotools.xsd.ows</package>
+                <package>org.hamcrest</package>
+                <package>org.hamcrest.core</package>
+                <package>org.hamcrest.internal</package>
                 <package>org.hsqldb</package>
                 <package>org.hsqldb.auth</package>
                 <package>org.hsqldb.dbinfo</package>
@@ -1535,7 +1428,6 @@
                 <package>org.hsqldb.rowio</package>
                 <package>org.hsqldb.scriptio</package>
                 <package>org.hsqldb.server</package>
-                <package>org.hsqldb.trigger</package>
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
@@ -1576,16 +1468,20 @@
                 <package>org.jdesktop.swingx.painter.effects</package>
                 <package>org.jdesktop.swingx.plaf</package>
                 <package>org.jdesktop.swingx.plaf.basic</package>
+                <package>org.jdesktop.swingx.plaf.basic.core</package>
                 <package>org.jdesktop.swingx.plaf.linux</package>
                 <package>org.jdesktop.swingx.plaf.macosx</package>
                 <package>org.jdesktop.swingx.plaf.metal</package>
                 <package>org.jdesktop.swingx.plaf.misc</package>
                 <package>org.jdesktop.swingx.plaf.motif</package>
                 <package>org.jdesktop.swingx.plaf.nimbus</package>
+                <package>org.jdesktop.swingx.plaf.synth</package>
                 <package>org.jdesktop.swingx.plaf.windows</package>
+                <package>org.jdesktop.swingx.prompt</package>
                 <package>org.jdesktop.swingx.renderer</package>
                 <package>org.jdesktop.swingx.rollover</package>
                 <package>org.jdesktop.swingx.search</package>
+                <package>org.jdesktop.swingx.sort</package>
                 <package>org.jdesktop.swingx.table</package>
                 <package>org.jdesktop.swingx.tips</package>
                 <package>org.jdesktop.swingx.tree</package>
@@ -1606,18 +1502,34 @@
                 <package>org.jdom2.xpath</package>
                 <package>org.jdom2.xpath.jaxen</package>
                 <package>org.jdom2.xpath.util</package>
-                <package>org.jscience</package>
-                <package>org.jscience.economics.money</package>
-                <package>org.jscience.geography.coordinates</package>
-                <package>org.jscience.geography.coordinates.crs</package>
-                <package>org.jscience.mathematics.function</package>
-                <package>org.jscience.mathematics.number</package>
-                <package>org.jscience.mathematics.structure</package>
-                <package>org.jscience.mathematics.vector</package>
-                <package>org.jscience.physics.amount</package>
-                <package>org.jscience.physics.model</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
+                <package>org.junit</package>
+                <package>org.junit.experimental</package>
+                <package>org.junit.experimental.categories</package>
+                <package>org.junit.experimental.max</package>
+                <package>org.junit.experimental.results</package>
+                <package>org.junit.experimental.runners</package>
+                <package>org.junit.experimental.theories</package>
+                <package>org.junit.experimental.theories.internal</package>
+                <package>org.junit.experimental.theories.suppliers</package>
+                <package>org.junit.internal</package>
+                <package>org.junit.internal.builders</package>
+                <package>org.junit.internal.matchers</package>
+                <package>org.junit.internal.requests</package>
+                <package>org.junit.internal.runners</package>
+                <package>org.junit.internal.runners.model</package>
+                <package>org.junit.internal.runners.rules</package>
+                <package>org.junit.internal.runners.statements</package>
+                <package>org.junit.matchers</package>
+                <package>org.junit.rules</package>
+                <package>org.junit.runner</package>
+                <package>org.junit.runner.manipulation</package>
+                <package>org.junit.runner.notification</package>
+                <package>org.junit.runners</package>
+                <package>org.junit.runners.model</package>
+                <package>org.junit.runners.parameterized</package>
+                <package>org.junit.validator</package>
                 <package>org.jvnet.fastinfoset</package>
                 <package>org.jvnet.fastinfoset.sax</package>
                 <package>org.jvnet.fastinfoset.sax.helpers</package>
@@ -1719,8 +1631,6 @@
                 <package>org.opengis.referencing.cs</package>
                 <package>org.opengis.referencing.datum</package>
                 <package>org.opengis.referencing.operation</package>
-                <package>org.opengis.spatialschema.geometry</package>
-                <package>org.opengis.spatialschema.geometry.geometry</package>
                 <package>org.opengis.style</package>
                 <package>org.opengis.temporal</package>
                 <package>org.opengis.util</package>
@@ -1752,32 +1662,6 @@
                 <package>org.openxmlformats.schemas.xpackage.x2006.digitalSignature.impl</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.relationships</package>
                 <package>org.openxmlformats.schemas.xpackage.x2006.relationships.impl</package>
-                <package>org.osgi.dto</package>
-                <package>org.osgi.framework</package>
-                <package>org.osgi.framework.dto</package>
-                <package>org.osgi.framework.hooks.bundle</package>
-                <package>org.osgi.framework.hooks.resolver</package>
-                <package>org.osgi.framework.hooks.service</package>
-                <package>org.osgi.framework.hooks.weaving</package>
-                <package>org.osgi.framework.launch</package>
-                <package>org.osgi.framework.namespace</package>
-                <package>org.osgi.framework.startlevel</package>
-                <package>org.osgi.framework.startlevel.dto</package>
-                <package>org.osgi.framework.wiring</package>
-                <package>org.osgi.framework.wiring.dto</package>
-                <package>org.osgi.resource</package>
-                <package>org.osgi.resource.dto</package>
-                <package>org.osgi.service.application</package>
-                <package>org.osgi.service.condpermadmin</package>
-                <package>org.osgi.service.log</package>
-                <package>org.osgi.service.log.admin</package>
-                <package>org.osgi.service.packageadmin</package>
-                <package>org.osgi.service.permissionadmin</package>
-                <package>org.osgi.service.prefs</package>
-                <package>org.osgi.service.resolver</package>
-                <package>org.osgi.service.startlevel</package>
-                <package>org.osgi.service.url</package>
-                <package>org.osgi.util.tracker</package>
                 <package>org.picocontainer</package>
                 <package>org.picocontainer.alternatives</package>
                 <package>org.picocontainer.defaults</package>
@@ -2186,20 +2070,7 @@
                 <package>org.w3.xlink</package>
                 <package>org.w3.xlink.impl</package>
                 <package>org.w3.xlink.util</package>
-                <package>org.w3c.dom</package>
-                <package>org.w3c.dom.bootstrap</package>
-                <package>org.w3c.dom.css</package>
-                <package>org.w3c.dom.events</package>
                 <package>org.w3c.dom.html</package>
-                <package>org.w3c.dom.ls</package>
-                <package>org.w3c.dom.ranges</package>
-                <package>org.w3c.dom.stylesheets</package>
-                <package>org.w3c.dom.traversal</package>
-                <package>org.w3c.dom.views</package>
-                <package>org.w3c.dom.xpath</package>
-                <package>org.xml.sax</package>
-                <package>org.xml.sax.ext</package>
-                <package>org.xml.sax.helpers</package>
                 <package>processing.awt</package>
                 <package>processing.core</package>
                 <package>processing.data</package>
@@ -2244,32 +2115,68 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jaxb-api-2.4.0-b180830.0359.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/ejml-ddense-0.38.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-ddense-0.38.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/j2objc-annotations-1.3.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\j2objc-annotations-1.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-vectorbin-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-vectorbin-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/failureaccess-1.0.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\failureaccess-1.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-windows-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\picocontainer-1.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/swingx-1.6.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\swingx-1.6.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-dsparse-0.38.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-dsparse-0.38.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.expressions-3.6.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.expressions-3.6.400.jar</binary-origin>
+                <runtime-relative-path>ext/hamcrest-core-1.3.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\hamcrest-core-1.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\stax-ex-1.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-geojson-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-geojson-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/commons-codec-1.13.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-codec-1.13.jar</binary-origin>
+                <runtime-relative-path>ext/jt-utils-1.5.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-utils-1.5.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-linux-i586.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-linux-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-main-2.3.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-main-2.3.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/xmlbeans-2.6.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xmlbeans-2.6.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-simple-0.38.jar</runtime-relative-path>
@@ -2280,16 +2187,52 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\error_prone_annotations-2.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/gt-epsg-wkt-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-epsg-wkt-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-rlookup-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-rlookup-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-cql-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-cql-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-solaris-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-servlet-9.4.20.v20190813.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-servlet-9.4.20.v20190813.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jetty-util-9.4.20.v20190813.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-util-9.4.20.v20190813.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-main-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-main-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-opengis-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-opengis-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-solaris-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/stax-api-1.0.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\stax-api-1.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-colorindexer-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-colorindexer-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/unit-api-1.0.jar</runtime-relative-path>
@@ -2312,6 +2255,14 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-scale-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/uom-lib-common-1.0.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\uom-lib-common-1.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/log4j-1.2.17.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\log4j-1.2.17.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/poi-4.1.0.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-4.1.0.jar</binary-origin>
             </class-path-extension>
@@ -2320,396 +2271,12 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-iterators-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/org.eclipse.emf.common-2.15.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.emf.common-2.15.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-stats-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-stats-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-solaris-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/hsqldb-2.5.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\hsqldb-2.5.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-ows-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-ows-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-buffer-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-buffer-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-csv-1.7.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-csv-1.7.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-math3-3.6.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-math3-3.6.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\filters-2.0.235.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/ejml-core-0.38.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-core-0.38.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.w3.xlink-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.w3.xlink-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-gml3-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-gml3-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/rsyntaxtextarea-3.0.3.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\rsyntaxtextarea-3.0.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jdom2-2.0.6.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jdom2-2.0.6.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.emf.ecore-2.18.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.emf.ecore-2.18.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/imageio-ext-streams-1.2.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-streams-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/geronimo-jta_1.1_spec-1.1.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\geronimo-jta_1.1_spec-1.1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-shapefile-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-shapefile-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.resources-3.13.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.resources-3.13.400.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\istack-commons-runtime-3.0.7.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.xsd-2.12.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.xsd-2.12.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/xml-commons-resolver-1.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xml-commons-resolver-1.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-epsg-hsql-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-epsg-hsql-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/imageio-ext-utilities-1.2.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-utilities-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/poi-ooxml-3.13.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-3.13.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-7.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\asm-7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/asm-tree-7.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\asm-tree-7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-linux-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/xml-apis-1.3.04.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xml-apis-1.3.04.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-zonal-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-zonal-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/mail-1.4.3.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\mail-1.4.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jetty-io-9.4.20.v20190813.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-io-9.4.20.v20190813.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/activation-1.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\activation-1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-translate-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-translate-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.jobs-3.10.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.jobs-3.10.400.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-coverage-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-coverage-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jackson-annotations-2.9.9.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jackson-annotations-2.9.9.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.equinox.common-3.10.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.equinox.common-3.10.400.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.equinox.app-1.4.200.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.equinox.app-1.4.200.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-fes-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-fes-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/sqlite-jdbc-3.28.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\sqlite-jdbc-3.28.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-render-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-render-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-binarize-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-binarize-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-mosaic-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-mosaic-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/imageio-ext-tiff-1.2.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-tiff-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-collections-3.2.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-collections-3.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-io-2.6.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-io-2.6.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/geronimo-jms_1.1_spec-1.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\geronimo-jms_1.1_spec-1.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-referencing-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-referencing-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-windows-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\bigint-0.7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/swingx-1.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\swingx-1.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/si-units-java8-0.7.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\si-units-java8-0.7.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\nativewindow-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jts-core-1.16.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jts-core-1.16.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/core-3.3.6.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\core-3.3.6.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-gml2-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-gml2-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/uom-se-1.0.8.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\uom-se-1.0.8.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.runtime-3.15.300.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.runtime-3.15.300.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/newt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\newt-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-orderdither-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-orderdither-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jai_imageio-1.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jai_imageio-1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/net.opengis.ows-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\net.opengis.ows-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-linux-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-collections4-4.4.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-collections4-4.4.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xml-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xml-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/swing-worker-1.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\swing-worker-1.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-core-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-core-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/unfolding-master-20171010.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\unfolding-master-20171010.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-lang3-3.9.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-lang3-3.9.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/trove4j-2.0.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\trove4j-2.0.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/commons-dbcp-1.4.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-dbcp-1.4.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/checker-qual-2.8.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\checker-qual-2.8.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-classifier-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-classifier-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-lookup-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-lookup-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.osgi-3.14.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.osgi-3.14.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/ejml-ddense-0.38.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-ddense-0.38.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/j2objc-annotations-1.3.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\j2objc-annotations-1.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/failureaccess-1.0.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\failureaccess-1.0.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-windows-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\picocontainer-1.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\stax-ex-1.8.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-utils-1.5.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-utils-1.5.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/xmlbeans-2.6.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xmlbeans-2.6.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-epsg-wkt-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-epsg-wkt-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-linux-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-cql-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-cql-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-solaris-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jetty-util-9.4.20.v20190813.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-util-9.4.20.v20190813.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gt-main-21.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-main-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-solaris-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/stax-api-1.0.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\stax-api-1.0.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jt-colorindexer-1.1.10.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-colorindexer-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/uom-lib-common-1.0.2.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\uom-lib-common-1.0.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/log4j-1.2.17.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\log4j-1.2.17.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-server-9.4.20.v20190813.jar</runtime-relative-path>
@@ -2724,6 +2291,14 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\controlsfx-8.40.15.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/junit-4.12.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\junit-4.12.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-solaris-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jogl-all-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-solaris-amd64.jar</binary-origin>
             </class-path-extension>
@@ -2736,16 +2311,20 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\worldwind-2.0.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/disruptor-1.2.13.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\disruptor-1.2.13.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.6.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-text-1.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-linux-i586.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-linux-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/sqlite-jdbc-3.27.2.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\sqlite-jdbc-3.27.2.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-xsd-ows-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-ows-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-security-9.4.20.v20190813.jar</runtime-relative-path>
@@ -2760,12 +2339,24 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-geopkg-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-buffer-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-buffer-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-csv-1.7.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-csv-1.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jscience-4.3.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jscience-4.3.1.jar</binary-origin>
+                <runtime-relative-path>ext/commons-math3-3.6.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-math3-3.6.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\filters-2.0.235.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-crop-1.1.10.jar</runtime-relative-path>
@@ -2776,12 +2367,20 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-utilities-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javolution-5.2.3.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\javolution-5.2.3.jar</binary-origin>
+                <runtime-relative-path>ext/ejml-core-0.38.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-core-0.38.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/hsqldb-2.4.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\hsqldb-2.4.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-warp-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-warp-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/core-3.3.7.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\core-3.3.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/slf4j-api-1.7.25.jar</runtime-relative-path>
@@ -2800,12 +2399,28 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\ejml-cdense-0.38.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-2.3.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/org.w3.xlink-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.w3.xlink-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-xsd-gml3-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-gml3-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\json-simple-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.filesystem-1.7.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.filesystem-1.7.400.jar</binary-origin>
+                <runtime-relative-path>ext/rsyntaxtextarea-3.0.3.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\rsyntaxtextarea-3.0.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jdom2-2.0.6.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jdom2-2.0.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-main-2.3.2.jar</runtime-relative-path>
@@ -2816,12 +2431,20 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-2.3.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/nativewindow-main-2.3.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\nativewindow-main-2.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-0.7.1.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\si-quantity-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/imageio-ext-streams-1.2.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-streams-1.2.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
@@ -2832,8 +2455,32 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\animal-sniffer-annotations-1.17.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/geronimo-jta_1.1_spec-1.1.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\geronimo-jta_1.1_spec-1.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-shapefile-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-shapefile-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-1.0.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jgridshift-1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\istack-commons-runtime-3.0.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/org.eclipse.xsd-2.12.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.xsd-2.12.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/xml-commons-resolver-1.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\xml-commons-resolver-1.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-epsg-hsql-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-epsg-hsql-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-jxpath-1.3.jar</runtime-relative-path>
@@ -2844,6 +2491,14 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jackson-databind-2.9.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/imageio-ext-utilities-1.2.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-utilities-1.2.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/poi-ooxml-3.13.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\poi-ooxml-3.13.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\javax.activation-api-1.2.0.jar</binary-origin>
             </class-path-extension>
@@ -2852,12 +2507,24 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-zonalstats-1.5.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/asm-7.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\asm-7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.fes-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\net.opengis.fes-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/asm-tree-7.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\asm-tree-7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-core-2.9.9.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jackson-core-2.9.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jogl-all-2.3.2-natives-windows-i586.jar</runtime-relative-path>
@@ -2868,12 +2535,16 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-algebra-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/opencsv-2.3.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\opencsv-2.3.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jogl-all-2.3.2-natives-linux-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-http-9.4.20.v20190813.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-http-9.4.20.v20190813.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-zonal-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-zonal-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/asm-analysis-7.1.jar</runtime-relative-path>
@@ -2892,12 +2563,32 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\txw2-2.4.0-b180830.0438.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jetty-io-9.4.20.v20190813.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-io-9.4.20.v20190813.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-codec-1.12.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-codec-1.12.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jetty-continuation-9.4.20.v20190813.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jetty-continuation-9.4.20.v20190813.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-translate-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-translate-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-coverage-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-coverage-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jackson-annotations-2.9.9.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jackson-annotations-2.9.9.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-logging-1.2.jar</runtime-relative-path>
@@ -2924,12 +2615,36 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\asm-util-7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/javax.servlet-api-4.0.1.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\javax.servlet-api-4.0.1.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-fes-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-fes-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-binarize-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-binarize-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-mosaic-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-mosaic-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/imageio-ext-tiff-1.2.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-tiff-1.2.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-collections-3.2.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-collections-3.2.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-io-2.6.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-io-2.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jython-standalone-2.7.1.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jython-standalone-2.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-referencing-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-referencing-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-format-1.1.10.jar</runtime-relative-path>
@@ -2938,6 +2653,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/FastInfoset-1.2.15.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\FastInfoset-1.2.15.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-windows-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\bigint-0.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-zdense-0.38.jar</runtime-relative-path>
@@ -2952,6 +2675,14 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-border-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/si-units-java8-0.7.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\si-units-java8-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nativewindow-2.3.2-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\nativewindow-2.3.2-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-filter-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-filter-21.2.jar</binary-origin>
             </class-path-extension>
@@ -2960,16 +2691,36 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-imagefunction-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jts-core-1.16.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jts-core-1.16.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-colorconvert-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-colorconvert-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-xsd-gml2-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-gml2-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-jdbc-21.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-jdbc-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/uom-se-1.0.8.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\uom-se-1.0.8.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/cglib-3.2.12.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\cglib-3.2.12.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javax.servlet-api-3.1.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\javax.servlet-api-3.1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/newt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\newt-2.3.2-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandmerge-1.1.10.jar</runtime-relative-path>
@@ -2984,10 +2735,6 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-shadedrelief-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.equinox.preferences-3.7.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.equinox.preferences-3.7.400.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jt-affine-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-affine-1.1.10.jar</binary-origin>
             </class-path-extension>
@@ -2998,6 +2745,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jt-errordiffusion-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-errordiffusion-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-orderdither-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-orderdither-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jai_imageio-1.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jai_imageio-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-nullop-1.1.10.jar</runtime-relative-path>
@@ -3012,32 +2767,72 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-scale2-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.emf.common-2.16.0.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.emf.common-2.16.0.jar</binary-origin>
+                <runtime-relative-path>ext/net.opengis.ows-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\net.opengis.ows-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-dbcp2-2.7.0.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-dbcp2-2.7.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javaee-api-5.0-2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\javaee-api-5.0-2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-solaris-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jocl-2.3.2-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-collections4-4.4.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-collections4-4.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-xml-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xml-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/swing-worker-1.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\swing-worker-1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gt-xsd-core-21.2.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gt-xsd-core-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/newt-main-2.3.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\newt-main-2.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.core.contenttype-3.7.300.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.core.contenttype-3.7.300.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/unfolding-master-20171010.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\unfolding-master-20171010.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-geocore-1.2.2.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\imageio-ext-geocore-1.2.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/commons-lang3-3.9.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-lang3-3.9.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-bandselect-1.1.10.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-bandselect-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/commons-dbcp-1.4.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\commons-dbcp-1.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/checker-qual-2.8.1.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\checker-qual-2.8.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-websocket-8.2.0.v20160908.jar</runtime-relative-path>
@@ -3048,12 +2843,20 @@
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\systems-common-java8-0.7.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/org.eclipse.equinox.registry-3.8.400.jar</runtime-relative-path>
-                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.equinox.registry-3.8.400.jar</binary-origin>
+                <runtime-relative-path>ext/jt-classifier-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-classifier-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-lookup-1.1.10.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\jt-lookup-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
                 <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\gluegen-rt-2.3.2-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0.jar</runtime-relative-path>
+                <binary-origin>D:\projects\constellation-fork\CoreDependencies\release\modules\ext\org.eclipse.emf.ecore-2.15.0.jar</binary-origin>
             </class-path-extension>
         </data>
     </configuration>
