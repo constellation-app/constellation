@@ -29,7 +29,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SupportHandler.class, position = 1000)
 public class DefaultSupportAction implements SupportHandler {
 
-    private static final String GITHUB_URL = "https://github.com/data61/constellation";
+    private static final String GITHUB_URL = "https://github.com/constellation-app/constellation/issues";
 
     @Override
     public void supportAction() {

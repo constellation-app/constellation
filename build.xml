@@ -54,11 +54,10 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
     
-    <!-- TODO: #122 git URL needs to be updated to a repo under constellation-app -->
     <target name="-download-unfolding-maps" >
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
-        <get src="https://github.com/imranraza83/unfolding-maps/raw/master/unfolding-master-20171010.jar"
+        <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
     <target name="-download-javahelp-file" >
@@ -182,18 +181,25 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <zip destfile="${dist.dir}/${app.name}.tar.gz">
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
-            <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
-            <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
-            <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+        <tar destfile="${dist.dir}/${app.name}.tar">
+            <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
+            <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
+            <tarfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
             
-            <zipfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre"/>
+            <!-- Make sure the files in jre/bin are executable -->
+            <tarfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre">
+                <exclude name="bin/*"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}/${jre.filename.linux}/bin/" filemode="755" prefix="${app.name}/jre/bin"/>
+            
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
-            <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
+            <tarfileset dir="${cluster}" prefix="${app.name}/${app.name}">
                 <exclude name="config/Modules/*.xml_hidden"/>
-            </zipfileset>
-        </zip>
+            </tarfileset>
+        </tar>
+        <gzip src="${dist.dir}/${app.name}.tar" destfile="${dist.dir}/${app.name}.tar.gz"/>
+        <delete file="${dist.dir}/${app.name}.tar"/>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
     
