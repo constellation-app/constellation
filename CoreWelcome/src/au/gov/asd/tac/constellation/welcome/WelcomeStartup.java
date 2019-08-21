@@ -33,12 +33,12 @@ public class WelcomeStartup implements Runnable {
     @Override
     public void run() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        if(prefs.getBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN,true))
+        if(prefs.getBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN,ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN_DEFAULT))
         SwingUtilities.invokeLater(() -> {
             final TopComponent welcome = WindowManager.getDefault().findTopComponent(WelcomeTopComponent.class.getSimpleName());
             welcome.open();
             welcome.requestActive();
-            prefs.putBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN, false);
+            //prefs.putBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN, false);
         });
     }
     

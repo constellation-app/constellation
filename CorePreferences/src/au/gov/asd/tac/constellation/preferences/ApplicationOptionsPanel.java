@@ -127,6 +127,14 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     public void setRememberSaveLocation(final boolean rememberSaveLocation) {
         this.rememberSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
+    
+    public boolean getStartupWelcomeCheckbox(){
+        return startupWelcomeCheckbox.isSelected();
+    }
+    
+    public void setStartupWelcomeCheckbox(final boolean startupWelcomeCheckbox){
+        this.startupWelcomeCheckbox.setSelected(startupWelcomeCheckbox);
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -147,6 +155,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveLabel = new JLabel();
         startupPanel = new JPanel();
         startupTutorialCheckbox = new JCheckBox();
+        startupWelcomeCheckbox = new JCheckBox();
         displayPanel = new JPanel();
         freezeGraphCheckBox = new JCheckBox();
         webserverPanel = new JPanel();
@@ -214,19 +223,24 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
         Mnemonics.setLocalizedText(startupTutorialCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupTutorialCheckbox.text")); // NOI18N
 
+        Mnemonics.setLocalizedText(startupWelcomeCheckbox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.startupWelcomeCheckbox.text")); // NOI18N
+
         GroupLayout startupPanelLayout = new GroupLayout(startupPanel);
         startupPanel.setLayout(startupPanelLayout);
         startupPanelLayout.setHorizontalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(startupTutorialCheckbox)
+                .addGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(startupWelcomeCheckbox)
+                    .addComponent(startupTutorialCheckbox))
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(startupTutorialCheckbox)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 2, Short.MAX_VALUE)
+                .addComponent(startupWelcomeCheckbox))
         );
 
         displayPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.displayPanel.border.title"))); // NOI18N
@@ -412,7 +426,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(saveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         displayPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.displayPanel.AccessibleContext.accessibleName")); // NOI18N
@@ -494,6 +508,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JPanel saveLocationPanel;
     private JPanel startupPanel;
     private JCheckBox startupTutorialCheckbox;
+    private JCheckBox startupWelcomeCheckbox;
     private JButton userDirectoryButton;
     private JLabel userDirectoryLabel;
     private JTextField userDirectoryText;

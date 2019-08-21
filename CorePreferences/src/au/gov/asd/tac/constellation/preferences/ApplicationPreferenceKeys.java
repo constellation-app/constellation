@@ -119,6 +119,7 @@ public final class ApplicationPreferenceKeys {
      * Show Welcome Screen
      */
     public static final String SHOW_WELCOME_SCREEN = "showWelcomeScreen";
+    public static final boolean SHOW_WELCOME_SCREEN_DEFAULT = true;
     /**
      * A directory where the webserver can write files to emulate REST requests.
      *

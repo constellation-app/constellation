@@ -59,6 +59,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setRestDirectory(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT));
         applicationOptionsPanel.setDownloadPythonClient(prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT));
         applicationOptionsPanel.setRememberSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
+        applicationOptionsPanel.setStartupWelcomeCheckbox(prefs.getBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN, ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN_DEFAULT));
     }
 
     @Override
@@ -82,6 +83,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.put(ApplicationPreferenceKeys.REST_DIR, applicationOptionsPanel.getRestDirectory());
                 prefs.putBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, applicationOptionsPanel.getDownloadPythonClient());
                 prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, applicationOptionsPanel.getRememberSaveLocation());
+                prefs.putBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN, applicationOptionsPanel.getStartupWelcomeCheckbox());
             }
         }
     }
@@ -116,7 +118,8 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
+                && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT)
+                && applicationOptionsPanel.getStartupWelcomeCheckbox() == prefs.getBoolean(ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN, ApplicationPreferenceKeys.SHOW_WELCOME_SCREEN_DEFAULT));
 
         return changed;
     }
