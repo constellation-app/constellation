@@ -114,7 +114,11 @@ public final class ApplicationPreferenceKeys {
      * File Save location.
      */
     public static final String FILE_SAVE_LOCATION = "fileSaveLocation";
-
+    
+    /**
+     * Show Welcome Screen
+     */
+    public static final String SHOW_WELCOME_SCREEN = "showWelcomeScreen";
     /**
      * A directory where the webserver can write files to emulate REST requests.
      *

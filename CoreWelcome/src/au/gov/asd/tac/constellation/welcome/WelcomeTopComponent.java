@@ -20,35 +20,21 @@ import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.functionality.intro.Intro;
 import au.gov.asd.tac.constellation.functionality.intro.IntroProvider;
 import au.gov.asd.tac.constellation.functionality.open.OpenGraphPlugin;
-import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
-import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.WhatsNewEntry;
-import au.gov.asd.tac.constellation.importexport.delimited.DelimitedFileImporterStage;
-import au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
 import java.awt.BorderLayout;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -56,10 +42,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import javafx.scene.web.WebView;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -67,7 +49,6 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 import org.w3c.dom.Document;
@@ -77,7 +58,6 @@ import org.w3c.dom.events.Event;
 import org.w3c.dom.events.EventListener;
 import org.w3c.dom.events.EventTarget;
 import au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction;
-import au.gov.asd.tac.constellation.graph.file.open.OpenFileAction;
 import javafx.scene.layout.HBox;
 /**
  *
@@ -86,7 +66,7 @@ import javafx.scene.layout.HBox;
  * @author aquila
  */
 @ConvertAsProperties(
-        dtd = "-//au.gov.asd.tac.constellation.visual.tutorial//Tutorial//EN",
+        dtd = "-//au.gov.asd.tac.constellation.welcome/Welcome//EN",
         autostore = false
 )
 @TopComponent.Description(
@@ -117,11 +97,11 @@ import javafx.scene.layout.HBox;
 public final class WelcomeTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
-    private static final String TUTORIAL_THEME = "resources/welcomeStylesheet.css";
+    private static final String WELCOME_THEME = "resources/welcomeStylesheet.css";
     public static final String MOUSE_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/mouse3.png";
     public static final String MENU_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = "CONSTELLATION Information";
-    public static final String WELCOME_TEXT = "Welcome to Constellation";
+    
     public static final double SPLIT_POS = 0.2;
 
     /**
@@ -254,71 +234,12 @@ public final class WelcomeTopComponent extends TopComponent {
             }
             right_vbox.getChildren().add(whatsNewView);
 
-            //Creating text objects  
-            /*
-            Text text1 = new Text("Welcome to Constellation ");
-
-            //Setting font to the text 
-            text1.setFont(new Font(15));
-
-            //Setting color to the text  
-            text1.setFill(Color.WHITE);
-
-            Text text2 = new Text("How to start building graphs in CONSTELLATION.  ");
-
-            //Setting font to the text 
-            text2.setFont(new Font(15));
-
-            //Setting color to the text 
-            text2.setFill(Color.WHITE);
-            Text text3 = new Text("\n Select File &rarr; New Graph &rarr; Analytic Graph. This will open a new window containing an empty graph. ");
-
-            //Setting font to the text 
-            text3.setFont(new Font(15));
-
-            //Setting color to the text 
-            text3.setFill(Color.WHITE);
-
-            Text text4 = new Text("Select Experimental &rarr; Build graph &rarr; Sphere Graph Builder to build a random spherical graph in the window.");
-
-            //Setting font to the text 
-            text4.setFont(new Font(15));
-            text4.setFill(Color.WHITE);
-
-            //Creating the text flow plane 
-            TextFlow textFlowPane = new TextFlow();
-
-            //Setting the line spacing between the text objects 
-            textFlowPane.setTextAlignment(TextAlignment.JUSTIFY);
-
-            //Setting the width  
-            textFlowPane.setPrefSize(600, 300);
-
-            //Setting the line spacing  
-            textFlowPane.setLineSpacing(5.0);
-
-            //Retrieving the observable list of the TextFlow Pane 
-            ObservableList list = textFlowPane.getChildren();
-
-            //Adding cylinder to the pane  
-            list.addAll(text1, text2, text3, text4);
-            Button button1 = new Button("Button Number 1");
-            button1.setOnAction(new EventHandler<ActionEvent>(){
-                @Override
-                public void handle(ActionEvent t) {
-                    System.out.println(" button pressed");
-                    ImportDelimitedFileAction.openDelimitedFileImporterStage();
-                }
-                
-            });
-            right_vbox.getChildren().add(textFlowPane);
-            right_vbox.getChildren().add(button1);
-            */
+            
             //Finally, insert the root object into a scene, and insert the
             //scene into the JavaFX panel.
             final Scene scene = new Scene(root, Color.web("1d1d1d"));
             scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add(WelcomeTopComponent.class.getResource(TUTORIAL_THEME).toExternalForm());
+            scene.getStylesheets().add(WelcomeTopComponent.class.getResource(WELCOME_THEME).toExternalForm());
             panel.setScene(scene);
         }
         );
@@ -334,76 +255,7 @@ public final class WelcomeTopComponent extends TopComponent {
 
     }
 
-    private String getWhatsNew() throws ParseException {
-        Collection<? extends WhatsNewProvider> whatsNew = Lookup.getDefault().lookupAll(WhatsNewProvider.class
-        );
-        final ArrayList<WhatsNewEntry> wnList = new ArrayList<>();
-        whatsNew.stream().forEach(wnp -> {
-            wnList.addAll(WhatsNewProvider.getWhatsNew(wnp.getClass(), wnp.getResource(), wnp.getSection()));
-        });
-
-        Collections.sort(wnList);
-
-        final Date now = new Date();
-        final Calendar cal = Calendar.getInstance();
-        cal.setTime(now);
-        cal.add(Calendar.DATE, RECENT_DAYS);
-        final Date twoWeeksOld = cal.getTime();
-
-        cal.setTime(now);
-        cal.add(Calendar.DATE, ARCHIVE_DAYS);
-        final Date archiveLimit = cal.getTime();
-
-        boolean headerDone = false;
-        final StringBuilder buf = new StringBuilder();
-        buf.append("<!DOCTYPE html><html><body>\n");
-        buf.append(String.format("<style>body{font-size:%spx;}</style>", FontUtilities.getOutputFontSize()));
-
-        for (final WhatsNewEntry wne : wnList) {
-            // Use a far-future date to indicate an undated fixed position at the top.
-            final String dt;
-            if (wne.date.compareTo("3000") == -1) {
-                if (!headerDone) {
-                    buf.append("<hr>\n<h2>What's New</h2>\n");
-                    headerDone = true;
-                }
-
-                final Date whatsNewDate = DATE_FORMATTER.parse(wne.date);
-                if (whatsNewDate.after(twoWeeksOld) && whatsNewDate.before(now)) {
-                    // display date, header, recent badge and section.
-                    dt = String.format("%s <strong>%s</strong> <span class=\"badge badge-recent\">Recent</span> <span class=\"section badge badge-section\">%s</span>", wne.date, wne.header, wne.section);
-                } else if (whatsNewDate.before(archiveLimit)) {
-                    dt = null;
-                } else {
-                    // The "normal" case: display date, header and section.
-                    dt = String.format("%s <strong>%s</strong> <span class=\"section badge badge-section\">%s</span>", wne.date, wne.header, wne.section);
-                }
-
-            } else {
-                // Display a pegged entry without the date.
-                dt = String.format("<strong>%s</strong> <span class=\"section badge badge-section\">%s</span>", wne.header, wne.section);
-            }
-
-            if (dt != null) {
-                buf.append(String.format("<dl><dt>%s</dt>\n<dd>", dt));
-                buf.append(wne.text);
-                buf.append("</dd></dl>\n");
-            }
-        }
-
-        buf.append("</body></html>");
-
-        // validate the html
-//        try {
-//            File createTempFile = File.createTempFile("whatsnew", ".html");
-//            FileWriter fileWriter = new FileWriter(createTempFile);
-//            fileWriter.write(buf.toString());
-//            fileWriter.close();
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
-        return buf.toString();
-    }
+   
 
     void writeProperties(final java.util.Properties p) {
     }

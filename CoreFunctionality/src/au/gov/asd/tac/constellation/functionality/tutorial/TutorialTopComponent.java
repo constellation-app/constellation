@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.functionality.tutorial;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.functionality.intro.Intro;
-import au.gov.asd.tac.constellation.functionality.intro.IntroProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.WhatsNewEntry;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -27,7 +25,6 @@ import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
 import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,7 +49,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebView;
-import javax.swing.Action;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -108,7 +104,7 @@ public final class TutorialTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
     private static final String TUTORIAL_THEME = "resources/tutorialStylesheet.css";
-    private static final String WEBENGINE_CSS_INJECTION = "resources/webengine.css";
+    //private static final String WEBENGINE_CSS_INJECTION = "resources/webengine.css";
     public static final String MOUSE_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/mouse3.png";
     public static final String MENU_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
@@ -218,8 +214,8 @@ public final class TutorialTopComponent extends TopComponent {
             whatsNewView.getEngine().setUserStyleSheetLocation(TutorialTopComponent.class.getResource("resources/whatsnew.css").toExternalForm());
             whatsNewView.getStyleClass().add("web-view");
             try {
-                //whatsNewView.getEngine().loadContent(getWhatsNew());
-                whatsNewView.getEngine().loadContent(getIntro());
+                whatsNewView.getEngine().loadContent(getWhatsNew());
+                
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -234,12 +230,7 @@ public final class TutorialTopComponent extends TopComponent {
         });
     }
     
-    private String getIntro(){
-        final StringBuilder buf = new StringBuilder();
-        Intro intro = new Intro();
-        buf.append(IntroProvider.getHtmlContent(IntroProvider.class,intro.getResource() ));
-        return buf.toString();
-    }
+   
 
     private String getWhatsNew() throws ParseException {
         Collection<? extends WhatsNewProvider> whatsNew = Lookup.getDefault().lookupAll(WhatsNewProvider.class);
