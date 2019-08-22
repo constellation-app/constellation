@@ -81,7 +81,7 @@ public class PluginImpl {
                 for (final Iterator<Map.Entry<String, JsonNode>> it = json.fields(); it.hasNext();) {
                     final Map.Entry<String, JsonNode> entry = it.next();
                     final String parameterName = entry.getKey();
-                    if (parameters.getParameters().containsKey(parameterName)) {
+                    if (parameters.hasParameter(parameterName)) {
                         // Set the parameter with error checking.
                         //
                         final PluginParameter<?> param = parameters.getParameters().get(parameterName);

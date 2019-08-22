@@ -533,7 +533,7 @@ public class AnalyticConfigurationPane extends VBox {
         public final PluginParameters getPluginSpecificParameters() {
             PluginParameters pluginParameters = new PluginParameters();
             parameters.getParameters().entrySet().forEach((parameter) -> {
-                if (!globalAnalyticParameters.getParameters().containsKey(parameter.getKey())) {
+                if (!globalAnalyticParameters.hasParameter(parameter.getKey())) {
                     pluginParameters.addParameter(parameter.getValue());
                 }
             });
