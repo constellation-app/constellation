@@ -84,8 +84,6 @@ public class SpatialReferenceParameterValue extends ParameterValue {
     @Override
     public String toString() {
         String stringSRS = "No Value";
-        // TODO: there is a known bug while extracting srs value from CRS.
-        // Ref: #83
         if (spatialReference == null) {
             return stringSRS;
         } else {
