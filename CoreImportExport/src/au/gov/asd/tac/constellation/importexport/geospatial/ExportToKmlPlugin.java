@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MapExporter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -29,16 +28,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 
 /**
  * Export a graph as a Google Earth compatible KML file.
  *
  * @author cygnus_x-1
  */
-@ServiceProviders({
-    @ServiceProvider(service = Plugin.class),
-    @ServiceProvider(service = MapExporter.class)})
+@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 @NbBundle.Messages("ExportToKmlPlugin=Export to KML")
 public class ExportToKmlPlugin extends AbstractGeoExportPlugin {
@@ -54,15 +50,5 @@ public class ExportToKmlPlugin extends AbstractGeoExportPlugin {
         try (final FileWriter writer = new FileWriter(output)) {
             writer.write(kml);
         }
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "KML";
-    }
-
-    @Override
-    public String getPluginReference() {
-        return this.getClass().getName();
     }
 }

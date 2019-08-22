@@ -2,34 +2,9 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
     <info organisation="au.gov.asd.tac" module="tac-utilities" revision="working"/>
     <dependencies>
-        <!-- Constellation Dependencies -->
-        <dependency org="commons-collections" name="commons-collections" rev="3.2.2"/>
-        <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4"/>
-        <dependency org="commons-pool" name="commons-pool" rev="1.5.4"/>
-        <dependency org="org.eclipse.emf" name="common" rev="2.6.0"/>
-        <dependency org="org.eclipse.emf" name="org.eclipse.emf.ecore" rev="2.6.0.v20100614-1136"/>
-        <dependency org="org.ejml" name="ejml-core" rev="0.31"/>
-        <dependency org="org.ejml" name="ejml-ddense" rev="0.31"/>
-        <dependency org="org.ejml" name="ejml-simple" rev="0.31"/>
-        <dependency org="org.geotools" name="gt-api" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-cql" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-data" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-geojson" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-geopkg" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-jdbc" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-main" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-metadata" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-opengis" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-referencing" rev="17.1"/>
-        <dependency org="org.geotools" name="gt-shapefile" rev="17.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="17.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="17.1"/>
-        
-        <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" />
-        <dependency org="org.jogamp.gluegen" name="gluegen-rt-main" rev="2.3.2" />
+
+        <!-- OpenGL -->
         <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" >
-            <!--include main jar-->
             <artifact name="gluegen-rt" type="jar" ext="jar"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
@@ -41,115 +16,134 @@
         </dependency>
         
         <dependency org="org.jogamp.jocl" name="jocl" rev="2.3.2">
-            <!--include main jar-->
             <artifact name="jocl" type="jar" ext="jar"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact  name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-            
-        </dependency>
-        
-        <dependency org="org.jogamp.jogl" name="jogl" rev="2.3.2">
-            <!--include main jar-->
-            <artifact name="jogl" type="jar" ext="jar"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact  name="jogl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-            
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
+            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
         
         <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.3.2">
-            <!--include main jar-->
             <artifact name="jogl-all" type="jar" ext="jar"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact  name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-            
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
+            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
-       
         
-        <dependency org="org.python" name="jython-standalone" rev="2.7-b3"/>
-        <!--<dependency org="jython" name="jyni" rev="2.7-alpha3"/>-->
-        <dependency org="org.jscience" name="jscience" rev="4.3.1"/>
-        <dependency org="org.hsqldb" name="hsqldb" rev="2.3.0"/>
-        <dependency org="org.xerial" name="sqlite-jdbc" rev="3.14.2.1"/>
-        <dependency org="picocontainer" name="picocontainer" rev="1.2"/>
-        <dependency org="org.processing" name="core" rev="3.3.6"/>
-        <!--        <dependency org="unfolding" name="json4processing" rev="0.9.6"/>
-        <dependency org="unfolding" name="unfolding" rev="master-20171010"/>-->
-        <dependency org="com.vividsolutions" name="jts" rev="1.13"/>
-        <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986">
+        <!-- Geotools -->
+        <!--<dependency org="org.geotools" name="gt-coverage" rev="21.2"/>-->
+        <dependency org="org.geotools" name="gt-cql" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-jdbc" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-main" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-metadata" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-opengis" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-referencing" rev="21.2"/>
+        <!--<dependency org="org.geotools" name="gt-render" rev="21.2"/>-->
+        <dependency org="org.geotools" name="gt-xml" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-geopkg" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-shapefile" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-geojson" rev="21.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="21.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="21.2"/>
+        
+        <!-- Jetty -->
+        <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-http" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-security" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.4.20.v20190813"/>
+        <dependency org="org.eclipse.jetty" name="jetty-websocket" rev="8.2.0.v20160908"/>
+        
+        <!-- Apache Commons -->
+        <dependency org="org.apache.commons" name="commons-collections4" rev="4.4"/>
+        <dependency org="org.apache.commons" name="commons-csv" rev="1.7"/>
+        <dependency org="org.apache.commons" name="commons-dbcp2" rev="2.7.0"/>
+        <!--<dependency org="org.apache.commons" name="commons-imaging" rev="1.0-alpha1"/>-->
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.9"/>
+        <dependency org="org.apache.commons" name="commons-math3" rev="3.5"/>
+        <dependency org="org.apache.commons" name="commons-pool2" rev="2.7.0"/>
+        <!--<dependency org="org.apache.commons" name="commons-text" rev="1.7"/>-->
+        <!--<dependency org="commons-codec" name="commons-codec" rev="1.13"/>-->
+        <dependency org="commons-io" name="commons-io" rev="2.6"/>
+        
+        <!-- Other -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.9"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.9"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.9"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.0.3"/>
+        <dependency org="com.google.guava" name="guava" rev="28.0-jre" />
+        <dependency org="gov.nasa" name="worldwind" rev="2.0.0">
             <artifact name="worldwind"/>
         </dependency>
-        <dependency org="org.eclipse.xsd" name="xsd" rev="2.6.0"/>
-        <dependency org="xml-apis" name="xml-apis" rev="1.3.04"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.4.0-rc3"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.4.0-rc3"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.4.0-rc3"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="2.5.1"/>
-        <dependency org="com.google.guava" name="guava" rev="23.0" />
-        <dependency org="com.googlecode.json-simple" name="json-simple" rev="1.1.1"/>
-        <dependency org="commons-io" name="commons-io" rev="2.4"/>
-        <dependency org="commons-lang" name="commons-lang" rev="2.6"/>
-        <dependency org="org.controlsfx" name="controlsfx" rev="8.40.13"/>
-        <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1">
-            <artifact name="javax.servlet-api"/>
-        </dependency>
-        <dependency org="log4j" name="log4j" rev="1.2.17"/>
-        <dependency org="net.sf.opencsv" name="opencsv" rev="2.3"/>
-        <dependency org="org.apache.commons" name="commons-csv" rev="1.0"/>
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.7"/>
-        <dependency org="org.apache.commons" name="commons-math3" rev="3.1"/>
-        <dependency org="org.apache.poi" name="poi" rev="3.13"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="3.13"/>
-        <dependency org="org.codehaus.groovy" name="groovy-all" rev="2.3.1"/>
-        <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-http" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-io" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-security" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-util" rev="8.1.9.v20130131"/>
-        <dependency org="org.eclipse.jetty" name="jetty-websocket" rev="8.1.9.v20130131"/>
-        <dependency org="org.swinglabs" name="swingx" rev="1.0"/>
-        <dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>
+        <dependency org="org.apache.poi" name="poi" rev="4.1.0"/>
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.0"/>
+        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.0"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="8.40.15"/>
+        <dependency org="org.ejml" name="ejml-core" rev="0.38"/>
+        <dependency org="org.ejml" name="ejml-ddense" rev="0.38"/>
+        <dependency org="org.ejml" name="ejml-simple" rev="0.38"/>
+        <dependency org="org.processing" name="core" rev="3.3.7"/>
+        <dependency org="org.python" name="jython-standalone" rev="2.7.1"/>
+        <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
+        
+        <!-- To Be Added -->
         <!--<dependency org="javax.help" name="javahelp" rev="2.0.05" />-->
+        <!--<dependency org="javax.media" name="jai_core" rev="1.1.3" />-->
         <!--<dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE110" />-->
         <!--<dependency org="org.openjfx" name="javafx-graphics" rev="11.0.2" />-->
-        <!--<dependency org="javax.media" name="jai_core" rev="1.1.3" />-->
-
+        <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
+        <!--<dependency org="unfolding" name="unfolding" rev="master-20171010"/>-->
+        <!--<dependency org="unfolding" name="json4processing" rev="0.9.6"/>-->
+                
         <!-- Exclusions -->
-        <exclude org="com.beust" module="jcommander"/>
-        <exclude org="commons-codec" module="commons-codec"/>
-        <exclude org="org.apache.ant" module="ant"/>
-        <exclude org="org.apache.ant" module="ant-antlr"/>
-        <exclude org="org.apache.ant" module="ant-junit"/>
-        <exclude org="org.apache.ant" module="ant-launcher"/>
-        <exclude org="org.apache.openejb" module="javaee-api"/>
-        <exclude org="org.codehaus.gpars" module="gpars"/>
-        <exclude org="org.fusesource.jansi" module="jansi"/>
-        <exclude org="org.testng" module="testng"/>
-        <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
-        <exclude org="junit" module="junit" />
         <exclude org="com.apple" module="AppleJavaExtensions" />
         <exclude org="javax.media" module="jai_core"/>
+        <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
+        <exclude org="org.jogamp.jogl" module="jogl"/>
 
         <exclude type="src" ext="jar"/>
         <exclude type="source" ext="jar"/>
         <exclude type="sources" ext="jar"/>
         <exclude type="javadoc" ext="jar"/>
         <exclude type="license" ext="txt"/>
+        
+        <!-- To Be Removed -->
+        <!--<dependency org="com.vividsolutions" name="jts" rev="1.13"/>-->
+        <!--<dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1">-->
+            <!--<artifact name="javax.servlet-api"/>-->
+        <!--</dependency>-->
+        <!--<dependency org="log4j" name="log4j" rev="1.2.17"/>-->
+        <!--<dependency org="net.sf.opencsv" name="opencsv" rev="2.3"/>-->
+        <!--<dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>-->
+        <!--<dependency org="org.codehaus.groovy" name="groovy-all" rev="2.3.1"/>-->
+        <!--<dependency org="org.eclipse.emf" name="org.eclipse.emf.common" rev="2.16.0"/>-->
+        <!--<dependency org="org.eclipse.emf" name="org.eclipse.emf.ecore" rev="2.18.0"/>-->
+        <!--<dependency org="org.eclipse.xsd" name="org.eclipse.xsd" rev="2.12.0"/>-->
+        <!--<dependency org="org.hsqldb" name="hsqldb" rev="2.5.0"/>-->
+        <!--<dependency org="org.jscience" name="jscience" rev="4.3.1"/>-->
+        <!--<dependency org="org.xerial" name="sqlite-jdbc" rev="3.28.0"/>-->
+        <!--<dependency org="picocontainer" name="picocontainer" rev="1.2"/>-->
+        <!--<dependency org="xml-apis" name="xml-apis" rev="1.3.04"/>-->
+        <!--<exclude org="com.beust" module="jcommander"/>-->
+        <!--<exclude org="org.apache.ant" module="ant"/>-->
+        <!--<exclude org="org.apache.ant" module="ant-antlr"/>-->
+        <!--<exclude org="org.apache.ant" module="ant-junit"/>-->
+        <!--<exclude org="org.apache.ant" module="ant-launcher"/>-->
+        <!--<exclude org="org.apache.openejb" module="javaee-api"/>-->
+        <!--<exclude org="org.codehaus.gpars" module="gpars"/>-->
+        <!--<exclude org="org.fusesource.jansi" module="jansi"/>-->
+        <!--<exclude org="org.testng" module="testng"/>-->
+        <!--<exclude org="junit" module="junit" />-->
+        
     </dependencies>
 </ivy-module>
