@@ -125,7 +125,7 @@ public class ScriptingUtilities implements ScriptingModule {
         parameters.appendParameters(plugin.createParameters());
         try {
             pluginParameters.forEach((parameterName, parameterValue) -> {
-                if (parameters.getParameters().containsKey(parameterName)) {
+                if (parameters.hasParameter(parameterName)) {
                     parameters.getParameters().get(parameterName).setStringValue(parameterValue);
                 }
             });

@@ -146,7 +146,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             if (pluginParameters != null && !pluginParameters.getParameters().isEmpty() && !parameters.hasGroup(pluginName)) {
                 parameters.addGroup(pluginName, new PluginParametersPane.TitledSeparatedParameterLayout(String.format("%s Parameters", PluginRegistry.get(pluginName).getName()), 12, false));
                 pluginParameters.getParameters().entrySet().forEach(parameter -> {
-                    if (!parameters.getParameters().containsKey(parameter.getKey())) {
+                    if (!parameters.hasParameter(parameter.getKey())) {
                         if (globalParameterIds.contains(parameter.getKey())) {
                             parameters.addParameter(parameter.getValue());
                         } else {
@@ -232,7 +232,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
                 PluginParameters pluginSpecificParameters = plugin.createParameters();
                 if (pluginSpecificParameters != null) {
                     parameters.getParameters().values().forEach(param -> {
-                        if (pluginSpecificParameters.getParameters().containsKey(param.getId())) {
+                        if (pluginSpecificParameters.hasParameter(param.getId())) {
                             pluginSpecificParameters.setObjectValue(param.getId(), param.getObjectValue());
                         }
                     });
