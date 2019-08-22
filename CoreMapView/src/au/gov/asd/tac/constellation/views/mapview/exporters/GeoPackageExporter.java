@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Export a graph to a GeoPackage file from the Map View.
  * 
- * @author limowreck11
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = MapExporter.class)
 public class GeoPackageExporter implements MapExporter {
