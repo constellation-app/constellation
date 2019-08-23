@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.views;
 
+import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLogger;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
 
@@ -28,11 +29,6 @@ import org.openide.windows.TopComponent;
 public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
-
-    @Override
-    public final HelpCtx getHelpCtx() {
-        return new HelpCtx(getClass().getName());
-    }
 
     /**
      * Builds and initialises the content for this top component. You should
@@ -56,5 +52,46 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
      */
     public P getContent() {
         return content;
+    }
+
+    @Override
+    protected void componentOpened() {
+        super.componentOpened();
+        ConstellationLogger.getDefault().viewOpened(this);
+    }
+
+    @Override
+    protected void componentClosed() {
+        super.componentClosed();
+        ConstellationLogger.getDefault().viewClosed(this);
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        ConstellationLogger.getDefault().viewShowing(this);
+    }
+
+    @Override
+    protected void componentHidden() {
+        super.componentHidden();
+        ConstellationLogger.getDefault().viewHidden(this);
+    }
+
+    @Override
+    protected void componentActivated() {
+        super.componentActivated();
+        ConstellationLogger.getDefault().viewActivated(this);
+    }
+
+    @Override
+    protected void componentDeactivated() {
+        super.componentDeactivated();
+        ConstellationLogger.getDefault().viewDeactivated(this);
+    }
+
+    @Override
+    public final HelpCtx getHelpCtx() {
+        return new HelpCtx(getClass().getName());
     }
 }

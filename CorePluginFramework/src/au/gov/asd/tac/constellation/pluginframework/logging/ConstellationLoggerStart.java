@@ -24,11 +24,10 @@ import org.openide.windows.OnShowing;
  * @author sirius
  */
 @OnShowing
-public class ConstellationLoggerStartup implements Runnable {
+public class ConstellationLoggerStart implements Runnable {
 
     @Override
     public void run() {
-        ConstellationLogger.getDefault().applicationStart();
+        ConstellationLogger.getDefault().applicationStarted();
     }
-
 }

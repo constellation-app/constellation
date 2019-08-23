@@ -19,7 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
 
 /**
  * A default implementation of a ConstellationLogger that ignores all logging
@@ -31,32 +34,71 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationLogger.class, position = Integer.MAX_VALUE)
 public class DefaultConstellationLogger implements ConstellationLogger {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultConstellationLogger.class.getName());
 
     @Override
-    public void applicationStart() {
+    public void applicationStarted() {
+        LOGGER.log(Level.INFO, "Application Started");
     }
 
     @Override
-    public void applicationStop() {
+    public void applicationStopped() {
+        LOGGER.log(Level.INFO, "Application Stopped");
     }
 
     @Override
-    public void pluginStart(final Graph graph, final Plugin plugin, final PluginParameters parameters) {
+    public void viewOpened(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Opened: {0}", view.getName());
     }
 
     @Override
-    public void pluginStop(final Plugin plugin, final PluginParameters parameters) {
+    public void viewClosed(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Closed: {0}", view.getName());
+    }
+    
+    @Override
+    public void viewShowing(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Showing: {0}", view.getName());
+    }
+    
+    @Override
+    public void viewHidden(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Hidden: {0}", view.getName());
+    }
+    
+    @Override
+    public void viewActivated(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Activated: {0}", view.getName());
+    }
+    
+    @Override
+    public void viewDeactivated(final TopComponent view) {
+        LOGGER.log(Level.INFO, "View Deactivated: {0}", view.getName());
+    }
+
+    @Override
+    public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
+        LOGGER.log(Level.INFO, "Plugin Started: {0}", plugin.getName());
+    }
+
+    @Override
+    public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
+        LOGGER.log(Level.INFO, "Plugin Stopped: {0}", plugin.getName());
     }
 
     @Override
     public void pluginInfo(final Plugin plugin, final String info) {
+        LOGGER.log(Level.INFO, "Plugin Info: {0}\n\t{1}", new Object[]{plugin.getName(), info});
     }
 
     @Override
     public void pluginError(final Plugin plugin, final Throwable error) {
+        LOGGER.log(Level.INFO, "Plugin Error: {0}\n\t{1}", new Object[]{plugin.getName(), error.getMessage()});
     }
 
     @Override
     public void pluginProperties(final Plugin plugin, final Properties properties) {
+        LOGGER.log(Level.INFO, "Plugin Properties: {0}\n\t{1}", new Object[]{plugin.getName(), properties.toString()});
     }
 }
