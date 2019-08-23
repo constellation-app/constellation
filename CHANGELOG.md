@@ -1,10 +1,11 @@
 # CONSTELLATION Changes
 
 ## 2019-08-01 Changes in August 2019
-* Added BrandingUtilities to Core Utilities to hold the application name "Constellation".
-    * You can pass `constellation.environment` to set the version of Constellation which will appear in the title. This is useful if you have a "Development", "QA" and "Production" version for instance.
+* Added BrandingUtilities to Core Utilities to maintain the application name "Constellation".
+    * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.
 * Added PluginParameters.hasParameter() to the Core Plugin Framework module as a convenient way to check if a parameter exists.
 * Fixed a Null Pointer Exception when selecting Circle arrangements.
+* Fixed the GitHub url used by Help -> Submit a ticket.
 * Removed several unused dependencies, including JOGL, JTS, OpenCSV, Trove4j, JScience, and XML-APIs.
 * Updated several dependencies to the latest versions, including Geotools, Jetty, Apache Commons, Jackson, RSyntaxArea, Google Guava, Apache POI, EJML, Processing, Jython, and SwingX.
 
