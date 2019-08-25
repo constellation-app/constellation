@@ -58,12 +58,35 @@ public interface ConstellationLogger {
      */
     public void viewClosed(final TopComponent view);
 
+    /**
+     * Called to indicate that a Constellation View has been made visible. This
+     * occurs when a view is opened, or expanded from a minimised state.
+     *
+     * @param view the view that was closed.
+     */
     public void viewShowing(final TopComponent view);
 
+    /**
+     * Called to indicate that a Constellation View has been hidden. This occurs
+     * when a view is closed, or minimised.
+     *
+     * @param view the view that was closed.
+     */
     public void viewHidden(final TopComponent view);
 
+    /**
+     * Called to indicate that a Constellation View was made the active view.
+     *
+     * @param view the view that was closed.
+     */
     public void viewActivated(final TopComponent view);
 
+    /**
+     * Called to indicate that a Constellation View was made not the active
+     * view.
+     *
+     * @param view the view that was closed.
+     */
     public void viewDeactivated(final TopComponent view);
 
     /**
