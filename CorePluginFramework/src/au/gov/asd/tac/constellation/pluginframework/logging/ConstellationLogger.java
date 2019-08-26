@@ -27,6 +27,7 @@ import org.openide.windows.TopComponent;
  * record these details in the desired manner.
  *
  * @author sirius
+ * @author cygnus_x-1
  */
 public interface ConstellationLogger {
 
@@ -49,45 +50,23 @@ public interface ConstellationLogger {
      *
      * @param view the view that was opened.
      */
-    public void viewOpened(final TopComponent view);
+    public void viewStarted(final TopComponent view);
 
     /**
      * Called to indicate that a Constellation View was closed.
      *
      * @param view the view that was closed.
      */
-    public void viewClosed(final TopComponent view);
-
+    public void viewStopped(final TopComponent view);
+    
     /**
-     * Called to indicate that a Constellation View has been made visible. This
-     * occurs when a view is opened, or expanded from a minimised state.
+     * Called to provide information about the state of a view.
      *
-     * @param view the view that was closed.
-     */
-    public void viewShowing(final TopComponent view);
-
-    /**
-     * Called to indicate that a Constellation View has been hidden. This occurs
-     * when a view is closed, or minimised.
-     *
-     * @param view the view that was closed.
-     */
-    public void viewHidden(final TopComponent view);
-
-    /**
-     * Called to indicate that a Constellation View was made the active view.
-     *
-     * @param view the view that was closed.
-     */
-    public void viewActivated(final TopComponent view);
-
-    /**
-     * Called to indicate that a Constellation View was made not the active
+     * @param view the view providing the information.
+     * @param info a {@link String} conveying customized information about the
      * view.
-     *
-     * @param view the view that was closed.
      */
-    public void viewDeactivated(final TopComponent view);
+    public void viewInfo(final TopComponent view, final String info);
 
     /**
      * Called to indicate that a plugin has started execution.

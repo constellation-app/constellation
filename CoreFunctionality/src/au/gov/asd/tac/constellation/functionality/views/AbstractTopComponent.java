@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.functionality.views;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLogger;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * A generic top component.
@@ -57,37 +58,61 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentOpened() {
         super.componentOpened();
-        ConstellationLogger.getDefault().viewOpened(this);
+        ConstellationLogger.getDefault().viewStarted(this);
     }
 
     @Override
     protected void componentClosed() {
         super.componentClosed();
-        ConstellationLogger.getDefault().viewClosed(this);
+        ConstellationLogger.getDefault().viewStopped(this);
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        ConstellationLogger.getDefault().viewShowing(this);
+        if (WindowManager.getDefault().isTopComponentFloating(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
+        } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Showing / Minimised");
+        } else {
+            ConstellationLogger.getDefault().viewInfo(this, "Showing / Docked");
+        }
     }
 
     @Override
     protected void componentHidden() {
         super.componentHidden();
-        ConstellationLogger.getDefault().viewHidden(this);
+        if (WindowManager.getDefault().isTopComponentFloating(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
+        } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Hidden / Minimised");
+        } else {
+            ConstellationLogger.getDefault().viewInfo(this, "Hidden / Docked");
+        }
     }
 
     @Override
     protected void componentActivated() {
         super.componentActivated();
-        ConstellationLogger.getDefault().viewActivated(this);
+        if (WindowManager.getDefault().isTopComponentFloating(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
+        } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
+        } else {
+            ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
+        }
     }
 
     @Override
     protected void componentDeactivated() {
         super.componentDeactivated();
-        ConstellationLogger.getDefault().viewDeactivated(this);
+        if (WindowManager.getDefault().isTopComponentFloating(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");
+        } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
+            ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Minimised");
+        } else {
+            ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Docked");
+        }
     }
 
     @Override

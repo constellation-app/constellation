@@ -33,6 +33,7 @@ import org.openide.windows.TopComponent;
  * relays the information it receives to each of these loggers.
  *
  * @author arcturus
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = ConstellationLogger.class, position = 0)
 public class DelegatingConstellationLogger implements ConstellationLogger {
@@ -63,50 +64,26 @@ public class DelegatingConstellationLogger implements ConstellationLogger {
     }
 
     @Override
-    public void viewOpened(final TopComponent view) {
+    public void viewStarted(final TopComponent view) {
         init();
         loggers.forEach(logger -> {
-            logger.viewOpened(view);
+            logger.viewStarted(view);
         });
     }
 
     @Override
-    public void viewClosed(final TopComponent view) {
+    public void viewStopped(final TopComponent view) {
         init();
         loggers.forEach(logger -> {
-            logger.viewClosed(view);
+            logger.viewStopped(view);
         });
     }
     
     @Override
-    public void viewShowing(final TopComponent view) {
+    public void viewInfo(final TopComponent view, final String info) {
         init();
         loggers.forEach(logger -> {
-            logger.viewShowing(view);
-        });
-    }
-    
-    @Override
-    public void viewHidden(final TopComponent view) {
-        init();
-        loggers.forEach(logger -> {
-            logger.viewHidden(view);
-        });
-    }
-    
-    @Override
-    public void viewActivated(final TopComponent view) {
-        init();
-        loggers.forEach(logger -> {
-            logger.viewActivated(view);
-        });
-    }
-    
-    @Override
-    public void viewDeactivated(final TopComponent view) {
-        init();
-        loggers.forEach(logger -> {
-            logger.viewDeactivated(view);
+            logger.viewInfo(view, info);
         });
     }
 
