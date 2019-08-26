@@ -21,20 +21,16 @@ import processing.core.PImage;
 
 /**
  * A tiled base map being served by an ArcGIS Server. This class will ensure
- * tiles are exported in the Web Mercator projection with the correct alignment.
+ * tiles are exported in the Web Mercator projection with the correct alignment
+ * by exporting tiles as images.
  *
  * @author cygnus_x-1
  */
-public abstract class ArcgisMapProvider extends MapProvider {
+public abstract class EsriMapProvider extends MapProvider {
 
-    @Override
-    public int tileWidth() {
-        return 256;
-    }
-
-    @Override
-    public int tileHeight() {
-        return 256;
+    public static enum MapServerType {
+        TILE,
+        EXPORT
     }
 
     @Override
@@ -44,9 +40,23 @@ public abstract class ArcgisMapProvider extends MapProvider {
 
     @Override
     public String[] getTileUrls(final Coordinate coordinate) {
-        final String url = String.format(
-                "%s/export?f=image&format=png&size=256,256&imagesr=3857&bbox=%s",
-                getMapServer(), getBoundingBox(coordinate));
+        final String url;
+        switch (getMapServerType()) {
+            case TILE:
+                url = String.format(
+                        "%s/tile/%s",
+                        getMapServer(), getZoomString(coordinate));
+                break;
+            case EXPORT:
+                url = String.format(
+                        "%s/export?f=image&format=png&size=256,256&imagesr=3857&bbox=%s",
+                        getMapServer(), getBoundingBox(coordinate));
+                break;
+            default:
+                url = null;
+                break;
+        }
+
         return new String[]{url};
     }
 
@@ -59,5 +69,9 @@ public abstract class ArcgisMapProvider extends MapProvider {
         return String.format("%f,%f,%f,%f", minLon, minLat, maxLon, maxLat);
     }
 
-    public abstract String getMapServer();
+    protected MapServerType getMapServerType() {
+        return MapServerType.TILE;
+    }
+
+    protected abstract String getMapServer();
 }

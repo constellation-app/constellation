@@ -49,8 +49,8 @@ public abstract class MapProvider extends AbstractMapProvider {
 
     public String getZoomString(final Coordinate coordinate) {
         return (int) coordinate.zoom
-                + "/" + (int) coordinate.column
-                + "/" + (int) coordinate.row;
+                + "/" + (int) coordinate.row
+                + "/" + (int) coordinate.column;
     }
 
     public boolean isDebug() {
