@@ -75,6 +75,7 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
         BiConsumer<Graph, DropInfo> dropHandler = null;
 
         // Accept the drop, work out whether any graph dropper will handle it, and if so mark the drop as complete.
+        if (dropHandler != null){
         dtde.acceptDrop(dtde.getDropAction());
         final Collection<? extends GraphDropper> droppers = Lookup.getDefault().lookupAll(GraphDropper.class);
         for (final GraphDropper dropper : droppers) {
@@ -84,7 +85,7 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
             }
         }
         dtde.dropComplete(dropHandler != null);
-
+        }
         // If a dropper did provide a handler for this drop event, process it in a new thread, providing it with the information obtained from hit testing the graph for the drop location.
         // (Note this has to be in a new thread because hit testing is done on the EDT, which we need to wait for the results of, but we are already on the EDT).
         if (dropHandler != null) {
