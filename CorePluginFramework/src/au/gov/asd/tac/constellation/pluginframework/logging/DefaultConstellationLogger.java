@@ -37,61 +37,53 @@ public class DefaultConstellationLogger implements ConstellationLogger {
 
     private static final Logger LOGGER = Logger.getLogger(DefaultConstellationLogger.class.getName());
 
-    private static final boolean VERBOSE = false;
-
-    static {
-        if (!VERBOSE) {
-            LOGGER.setLevel(Level.OFF);
-        }
-    }
-
     @Override
     public void applicationStarted() {
-        LOGGER.log(Level.INFO, "Application Started");
+        LOGGER.log(Level.FINE, "Application Started");
     }
 
     @Override
     public void applicationStopped() {
-        LOGGER.log(Level.INFO, "Application Stopped");
+        LOGGER.log(Level.FINE, "Application Stopped");
     }
 
     @Override
     public void viewStarted(final TopComponent view) {
-        LOGGER.log(Level.INFO, "View Started: {0}", view.getName());
+        LOGGER.log(Level.FINE, "View Started: {0}", view.getName());
     }
 
     @Override
     public void viewStopped(final TopComponent view) {
-        LOGGER.log(Level.INFO, "View Stopped: {0}", view.getName());
+        LOGGER.log(Level.FINE, "View Stopped: {0}", view.getName());
     }
 
     @Override
     public void viewInfo(final TopComponent view, final String info) {
-        LOGGER.log(Level.INFO, "View Info: {0}: {1}", new Object[]{view.getName(), info});
+        LOGGER.log(Level.FINE, "View Info: {0}: {1}", new Object[]{view.getName(), info});
     }
 
     @Override
     public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
-        LOGGER.log(Level.INFO, "Plugin Started: {0}", plugin.getName());
+        LOGGER.log(Level.FINE, "Plugin Started: {0}", plugin.getName());
     }
 
     @Override
     public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
-        LOGGER.log(Level.INFO, "Plugin Stopped: {0}", plugin.getName());
+        LOGGER.log(Level.FINE, "Plugin Stopped: {0}", plugin.getName());
     }
 
     @Override
     public void pluginInfo(final Plugin plugin, final String info) {
-        LOGGER.log(Level.INFO, "Plugin Info: {0}: {1}", new Object[]{plugin.getName(), info});
+        LOGGER.log(Level.FINE, "Plugin Info: {0}: {1}", new Object[]{plugin.getName(), info});
     }
 
     @Override
     public void pluginError(final Plugin plugin, final Throwable error) {
-        LOGGER.log(Level.INFO, "Plugin Error: {0}: {1}", new Object[]{plugin.getName(), error.getMessage()});
+        LOGGER.log(Level.FINE, "Plugin Error: {0}: {1}", new Object[]{plugin.getName(), error.getMessage()});
     }
 
     @Override
     public void pluginProperties(final Plugin plugin, final Properties properties) {
-        LOGGER.log(Level.INFO, "Plugin Properties: {0}: {1}", new Object[]{plugin.getName(), properties.toString()});
+        LOGGER.log(Level.FINE, "Plugin Properties: {0}: {1}", new Object[]{plugin.getName(), properties.toString()});
     }
 }
