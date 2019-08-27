@@ -8,7 +8,7 @@
 * Fixed the GitHub url used by Help -> Submit a ticket.
 * Removed several unused dependencies, including JOGL, JTS, OpenCSV, Trove4j, JScience, and XML-APIs.
 * Updated several dependencies to the latest versions, including Geotools, Jetty, Apache Commons, Jackson, RSyntaxArea, Google Guava, Apache POI, EJML, Processing, Jython, and SwingX.
-* Updated ConstellationLogger new methods viewStarted, viewStopped and viewInfo to support logging of Views.
+* Updated ConstellationLogger with new methods viewStarted, viewStopped and viewInfo to support logging of Views.
 * Updated DefaultConstellationLogger with a VERBOSE flag to switch between no-op and logging to standard out.
 * Updated AbstractTopComponent to log when the view is opened, closed, showing, hidden, activated and deactivated.
 
