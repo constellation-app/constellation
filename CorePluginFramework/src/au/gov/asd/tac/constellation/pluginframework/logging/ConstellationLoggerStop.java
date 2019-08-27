@@ -28,7 +28,6 @@ public class ConstellationLoggerStop implements Runnable {
 
     @Override
     public void run() {
-        ConstellationLogger.getDefault().applicationStop();
+        ConstellationLogger.getDefault().applicationStopped();
     }
-
 }

@@ -88,6 +88,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
 
     @Override
     public final void componentOpened() {
+        super.componentOpened();
         LOGGER.finer("ComponentOpened");
         preferenceMonitors.keySet().forEach(preference -> CoreUtilities.addPreferenceChangeListener(preference, this));
         GraphManager.getDefault().addGraphManagerListener(ListeningTopComponent.this);
@@ -97,6 +98,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
 
     @Override
     public final void componentClosed() {
+        super.componentClosed();
         LOGGER.finer("ComponentClosed");
         preferenceMonitors.keySet().forEach(preference -> CoreUtilities.removePreferenceChangeListener(preference, this));
         GraphManager.getDefault().removeGraphManagerListener(ListeningTopComponent.this);
