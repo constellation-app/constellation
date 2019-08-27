@@ -43,6 +43,40 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected Scene scene;
     protected ScrollPane scrollPane;
 
+    /**
+     * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
+     * the expected layout of the given pane. If you wish to remove the
+     * horizontal scroll bar, you can override this method to return
+     * ScrollBarPolicy.NEVER.
+     *
+     * @return a {@link ScrollBarPolicy} representing the desired horizontal
+     * scroll bar policy.
+     */
+    protected ScrollBarPolicy getHorizontalScrollPolicy() {
+        return ScrollBarPolicy.NEVER;
+    }
+
+    /**
+     * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
+     * the expected layout of the given pane. If you wish to remove the vertical
+     * scroll bar, you can override this method to return ScrollBarPolicy.NEVER.
+     *
+     * @return a {@link ScrollBarPolicy} representing the desired vertical
+     * scroll bar policy.
+     */
+    protected ScrollBarPolicy getVerticalScrollPolicy() {
+        return ScrollBarPolicy.NEVER;
+    }
+
+    /**
+     * This is where you pass in a custom Java FX stylesheet, or null if you
+     * don't have one.
+     *
+     * @return a {@link String} representing the path to a stylesheet relative
+     * to this class.
+     */
+    protected abstract String createStyle();
+
     @Override
     protected final void initContent() {
         this.setLayout(new BorderLayout());
@@ -99,38 +133,4 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             });
         }
     }
-
-    /**
-     * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
-     * the expected layout of the given pane. If you wish to remove the
-     * horizontal scroll bar, you can override this method to return
-     * ScrollBarPolicy.NEVER.
-     *
-     * @return a {@link ScrollBarPolicy} representing the desired horizontal
-     * scroll bar policy.
-     */
-    protected ScrollBarPolicy getHorizontalScrollPolicy() {
-        return ScrollBarPolicy.NEVER;
-    }
-
-    /**
-     * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
-     * the expected layout of the given pane. If you wish to remove the vertical
-     * scroll bar, you can override this method to return ScrollBarPolicy.NEVER.
-     *
-     * @return a {@link ScrollBarPolicy} representing the desired vertical
-     * scroll bar policy.
-     */
-    protected ScrollBarPolicy getVerticalScrollPolicy() {
-        return ScrollBarPolicy.NEVER;
-    }
-
-    /**
-     * This is where you pass in a custom Java FX stylesheet, or null if you
-     * don't have one.
-     *
-     * @return a {@link String} representing the path to a stylesheet relative
-     * to this class.
-     */
-    protected abstract String createStyle();
 }
