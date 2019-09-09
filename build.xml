@@ -18,9 +18,12 @@
     <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
     <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
+    <property name="dist.filename.linux" value="constellation-linux" />
+    <property name="dist.filename.windows" value="constellation-win" />
     
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
         <ant target="clean" />
+        <ant target="clean-dependencies" />
         <ant target="download-dependencies" />
         <ant target="build">
             <property name="update.dependencies" value="true" />
@@ -29,6 +32,7 @@
 
     <target name="update-dependencies-clean-build-no-debug" description="Download dependencies and build all modules in the suite and exclude debugging.">
         <ant target="clean" />
+        <ant target="clean-dependencies" />
         <ant target="download-dependencies" />
         <ant target="build">
             <property name="update.dependencies" value="true" />
@@ -129,7 +133,7 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <zip destfile="${dist.dir}/${app.name}.zip">
+        <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
             <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
@@ -166,7 +170,7 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <tar destfile="${dist.dir}/${app.name}.tar">
+        <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
             <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
@@ -183,8 +187,8 @@
                 <exclude name="config/Modules/*.xml_hidden"/>
             </tarfileset>
         </tar>
-        <gzip src="${dist.dir}/${app.name}.tar" destfile="${dist.dir}/${app.name}.tar.gz"/>
-        <delete file="${dist.dir}/${app.name}.tar"/>
+        <gzip src="${dist.dir}/${dist.filename.linux}.tar" destfile="${dist.dir}/${dist.filename.linux}.tar.gz"/>
+        <delete file="${dist.dir}/${dist.filename.linux}.tar"/>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
     
