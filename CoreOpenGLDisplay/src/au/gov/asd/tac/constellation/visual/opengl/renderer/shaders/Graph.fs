@@ -6,5 +6,5 @@ uniform sampler2D graphTexture;
 out vec4 fragColor;
 
 void main(void) {
-    fragColor = texture2D(graphTexture, textureCoordinate) /*vec4(0.0, 1.0, 1.0, 1.0)*/;
+    fragColor = texture(graphTexture, textureCoordinate) /*vec4(0.0, 1.0, 1.0, 1.0)*/;
 }
