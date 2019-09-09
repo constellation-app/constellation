@@ -17,27 +17,41 @@ package au.gov.asd.tac.constellation.views.mapview.providers;
 
 import de.fhpotsdam.unfolding.core.Coordinate;
 import org.openide.util.lookup.ServiceProvider;
+import processing.core.PImage;
 
 /**
- * ArcGIS Online map.
- * 
+ * Stamen map.
+ *
  * @author cygnus_x-1
  */
-@ServiceProvider(service = MapProvider.class, position = Integer.MAX_VALUE - 6)
-public class ArcgisOnlineMapProvider extends EsriMapProvider {
+@ServiceProvider(service = MapProvider.class, position = Integer.MAX_VALUE - 1)
+public class StamanMapProvider extends MapProvider {
+    
+    private static final String LAYER_TONER = "toner";
+    private static final String LAYER_TONER_BACKGROUND = "toner-background";
+    private static final String LAYER_TONER_LITE = "toner-lite";
+    private static final String LAYER_WATERCOLOR = "watercolor";
 
     @Override
     public String getName() {
-        return "ArcGIS Online";
+        return "Stamen Maps";
     }
 
     @Override
     public int zoomLevels() {
-        return 19;
+        return 16;
+    }
+    
+    @Override
+    public PImage getTile(Coordinate coordinate) {
+        return null;
     }
 
     @Override
-    public String getMapServer() {
-        return "https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer";
+    public String[] getTileUrls(Coordinate coordinate) {
+        final String url = String.format(
+                "http://tile.stamen.com/%s/%s.png",
+                LAYER_TONER, getZoomString(coordinate));
+        return new String[]{url};
     }
 }

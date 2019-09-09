@@ -17,27 +17,37 @@ package au.gov.asd.tac.constellation.views.mapview.providers;
 
 import de.fhpotsdam.unfolding.core.Coordinate;
 import org.openide.util.lookup.ServiceProvider;
+import processing.core.PImage;
 
 /**
- * ArcGIS Online map.
+ * OpenTopoMap map.
  * 
  * @author cygnus_x-1
  */
-@ServiceProvider(service = MapProvider.class, position = Integer.MAX_VALUE - 6)
-public class ArcgisOnlineMapProvider extends EsriMapProvider {
-
+@ServiceProvider(service = MapProvider.class, position = Integer.MAX_VALUE - 3)
+public class OpenTopoMapProvider extends MapProvider {
+    
     @Override
     public String getName() {
-        return "ArcGIS Online";
+        return "OpenTopoMap";
     }
 
     @Override
     public int zoomLevels() {
-        return 19;
+        return 17;
+    }
+    
+    @Override
+    public PImage getTile(Coordinate coordinate) {
+        return null;
     }
 
     @Override
-    public String getMapServer() {
-        return "https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer";
+    public String[] getTileUrls(Coordinate coordinate) {
+        // TODO: supply a special user agent string or this will be blocked
+        final String url = String.format(
+                "https://tile.opentopomap.org/%s.png", 
+                getZoomString(coordinate));
+        return new String[]{url};
     }
 }

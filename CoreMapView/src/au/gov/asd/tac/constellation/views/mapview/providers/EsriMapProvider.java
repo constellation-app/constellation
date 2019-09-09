@@ -32,6 +32,13 @@ public abstract class EsriMapProvider extends MapProvider {
         TILE,
         EXPORT
     }
+    
+    @Override
+    public String getZoomString(final Coordinate coordinate) {
+        return (int) coordinate.zoom
+                + "/" + (int) coordinate.row
+                + "/" + (int) coordinate.column;
+    }
 
     @Override
     public PImage getTile(final Coordinate coordinate) {
