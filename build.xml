@@ -10,7 +10,7 @@
     <property name="ivy.install.version" value="2.5.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
     <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
