@@ -7,7 +7,7 @@
 
     <import file="nbproject/build-impl.xml"/>
     
-    <property name="ivy.install.version" value="2.3.0-rc1" />
+    <property name="ivy.install.version" value="2.5.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
     <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
@@ -58,16 +58,14 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
     
-    <target name="-download-unfolding-maps" >
-        <mkdir dir="${ivy.lib.dir}"/>
+    <target name="download-dependencies" depends="-load-ivy-tasks" description="Download dependent libraries.">
+        <ivy:resolve/>
+        <ivy:retrieve sync="true"/>
+ 
+        <!-- download unfolding-maps from the third-party-dependencies repository -->
         <echo message="installing unfolding-maps..."/>
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
-    </target>
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
-        <ivy:resolve/>
-        <ivy:retrieve/>
 
         <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
             <path>
@@ -192,4 +190,21 @@
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
     
+    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
+        <delete dir="${suite.build.dir}/ivy-reports"/>
+        <mkdir dir="${suite.build.dir}/ivy-reports" />
+        
+        <ivy:resolve type="${ivy.resolve.types}"/>
+        <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
+    </target>
+    
+    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+        <ivy:resolve/>
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
+    
+    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies ina tree layout to the console.">
+        <ivy:dependencytree/>
+    </target>
+
 </project>

@@ -9,8 +9,6 @@
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
@@ -20,8 +18,6 @@
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
@@ -31,8 +27,6 @@
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-solaris-i586"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
@@ -47,7 +41,7 @@
         <dependency org="org.geotools" name="gt-referencing" rev="21.2"/>
         <!--<dependency org="org.geotools" name="gt-render" rev="21.2"/>-->
         <dependency org="org.geotools" name="gt-xml" rev="21.2"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>
+        <!--<dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>-->
         <dependency org="org.geotools" name="gt-geopkg" rev="21.2"/>
         <dependency org="org.geotools" name="gt-shapefile" rev="21.2"/>
         <dependency org="org.geotools" name="gt-geojson" rev="21.2"/>
@@ -107,43 +101,17 @@
                 
         <!-- Exclusions -->
         <exclude org="com.apple" module="AppleJavaExtensions" />
-        <exclude org="javax.media" module="jai_core"/>
+        <exclude org="org.apache.openejb" module="javaee-api"/>
         <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
         <exclude org="org.jogamp.jogl" module="jogl"/>
+        <exclude org="javax.media" module="jai_core"/>
+        <exclude org="junit" module="junit" />
 
         <exclude type="src" ext="jar"/>
         <exclude type="source" ext="jar"/>
         <exclude type="sources" ext="jar"/>
         <exclude type="javadoc" ext="jar"/>
         <exclude type="license" ext="txt"/>
-        
-        <!-- To Be Removed -->
-        <!--<dependency org="com.vividsolutions" name="jts" rev="1.13"/>-->
-        <!--<dependency org="javax.servlet" name="javax.servlet-api" rev="4.0.1">-->
-            <!--<artifact name="javax.servlet-api"/>-->
-        <!--</dependency>-->
-        <!--<dependency org="log4j" name="log4j" rev="1.2.17"/>-->
-        <!--<dependency org="net.sf.opencsv" name="opencsv" rev="2.3"/>-->
-        <!--<dependency org="net.sf.trove4j" name="trove4j" rev="2.0.2"/>-->
-        <!--<dependency org="org.codehaus.groovy" name="groovy-all" rev="2.3.1"/>-->
-        <!--<dependency org="org.eclipse.emf" name="org.eclipse.emf.common" rev="2.16.0"/>-->
-        <!--<dependency org="org.eclipse.emf" name="org.eclipse.emf.ecore" rev="2.18.0"/>-->
-        <!--<dependency org="org.eclipse.xsd" name="org.eclipse.xsd" rev="2.12.0"/>-->
-        <!--<dependency org="org.hsqldb" name="hsqldb" rev="2.5.0"/>-->
-        <!--<dependency org="org.jscience" name="jscience" rev="4.3.1"/>-->
-        <!--<dependency org="org.xerial" name="sqlite-jdbc" rev="3.28.0"/>-->
-        <!--<dependency org="picocontainer" name="picocontainer" rev="1.2"/>-->
-        <!--<dependency org="xml-apis" name="xml-apis" rev="1.3.04"/>-->
-        <!--<exclude org="com.beust" module="jcommander"/>-->
-        <!--<exclude org="org.apache.ant" module="ant"/>-->
-        <!--<exclude org="org.apache.ant" module="ant-antlr"/>-->
-        <!--<exclude org="org.apache.ant" module="ant-junit"/>-->
-        <!--<exclude org="org.apache.ant" module="ant-launcher"/>-->
-        <!--<exclude org="org.apache.openejb" module="javaee-api"/>-->
-        <!--<exclude org="org.codehaus.gpars" module="gpars"/>-->
-        <!--<exclude org="org.fusesource.jansi" module="jansi"/>-->
-        <!--<exclude org="org.testng" module="testng"/>-->
-        <!--<exclude org="junit" module="junit" />-->
-        
+
     </dependencies>
 </ivy-module>
