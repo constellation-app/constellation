@@ -203,7 +203,7 @@
         <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>
     
-    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies ina tree layout to the console.">
+    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>
 
