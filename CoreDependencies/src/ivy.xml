@@ -32,6 +32,12 @@
         </dependency>
         
         <!-- Geotools -->
+        <!--
+        The Geotools core libraries are typically imported together but we've 
+        included the modules separately so that we can include what we actually 
+        need. The commented libraries remain here to save time so you don't have 
+        to research which core libraries we have left out.
+        -->
         <!--<dependency org="org.geotools" name="gt-coverage" rev="21.2"/>-->
         <dependency org="org.geotools" name="gt-cql" rev="21.2"/>
         <dependency org="org.geotools" name="gt-jdbc" rev="21.2"/>
