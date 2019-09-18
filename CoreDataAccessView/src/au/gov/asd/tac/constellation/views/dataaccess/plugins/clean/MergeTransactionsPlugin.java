@@ -54,6 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
+ * Merge Transactions Plugin
  *
  * @author cygnus_x-1
  * @author arcturus
@@ -65,16 +66,20 @@ import org.openide.util.lookup.ServiceProviders;
 @Messages("MergeTransactionsPlugin=Merge Transactions")
 public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
-    private static final String REMOVE_TYPE_TIME = "DateTime";
     private static final Map<String, Comparator<Long>> LEAD_TRANSACTION_CHOOSERS = new LinkedHashMap<>();
     private static final Map<String, MergeTransactionType> MERGE_TYPES = new LinkedHashMap<>();
     private static final Map<String, GraphElementMerger> MERGERS = new LinkedHashMap<>();
 
+    // plugin parameter ID's
     public static final String SELECTED_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "selected");
     public static final String LEAD_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "lead");
     public static final String MERGER_PARAMETER_ID = PluginParameter.buildId(MergeNodesPlugin.class, "merger");
     public static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "threshold");
     public static final String MERGE_TYPE_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "merge_type");
+    
+    // lead transaction choices
+    public static final String LATEST_TIME = "Latest Time";
+    public static final String EARLIEST_TIME = "Earliest Time";
 
     @Override
     public String getType() {
@@ -118,8 +123,8 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
     });
 
     static {
-        LEAD_TRANSACTION_CHOOSERS.put("Latest Time", LATEST_TRANSACTION_CHOOSER);
-        LEAD_TRANSACTION_CHOOSERS.put("Earliest Time", EARLIEST_TRANSACTION_CHOOSER);
+        LEAD_TRANSACTION_CHOOSERS.put(LATEST_TIME, LATEST_TRANSACTION_CHOOSER);
+        LEAD_TRANSACTION_CHOOSERS.put(EARLIEST_TIME, EARLIEST_TRANSACTION_CHOOSER);
 
         MERGERS.put("Retain lead transaction attributes if present", new PrioritySurvivingGraphElementMerger());
         MERGERS.put("Retain lead transaction attributes always", new IgnoreMergedGraphElementMerger());
