@@ -2814,10 +2814,6 @@
                 <binary-origin>release/modules/ext/javaee-api-5.0-2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-solaris-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jocl-2.3.2-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
