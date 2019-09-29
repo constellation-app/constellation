@@ -133,6 +133,10 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
             <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
@@ -170,6 +174,10 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
             <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
