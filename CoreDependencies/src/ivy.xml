@@ -47,7 +47,7 @@
         <dependency org="org.geotools" name="gt-referencing" rev="21.2"/>
         <!--<dependency org="org.geotools" name="gt-render" rev="21.2"/>-->
         <dependency org="org.geotools" name="gt-xml" rev="21.2"/>
-        <!--<dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>-->
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>
         <dependency org="org.geotools" name="gt-geopkg" rev="21.2"/>
         <dependency org="org.geotools" name="gt-shapefile" rev="21.2"/>
         <dependency org="org.geotools" name="gt-geojson" rev="21.2"/>
@@ -107,11 +107,9 @@
                 
         <!-- Exclusions -->
         <exclude org="com.apple" module="AppleJavaExtensions" />
-        <exclude org="org.apache.openejb" module="javaee-api"/>
+        <exclude org="javax.media" module="jai_core"/>
         <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
         <exclude org="org.jogamp.jogl" module="jogl"/>
-        <exclude org="javax.media" module="jai_core"/>
-        <exclude org="junit" module="junit" />
 
         <exclude type="src" ext="jar"/>
         <exclude type="source" ext="jar"/>

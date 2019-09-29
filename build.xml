@@ -7,7 +7,7 @@
 
     <import file="nbproject/build-impl.xml"/>
     
-    <property name="ivy.install.version" value="2.5.0-rc1" />
+    <property name="ivy.install.version" value="2.3.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
     <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
@@ -58,14 +58,16 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
     
-    <target name="download-dependencies" depends="-load-ivy-tasks" description="Download dependent libraries.">
-        <ivy:resolve/>
-        <ivy:retrieve sync="true"/>
- 
-        <!-- download unfolding-maps from the third-party-dependencies repository -->
+    <target name="-download-unfolding-maps" >
+        <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
+    </target>
+		
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
+        <ivy:resolve/>
+        <ivy:retrieve/>
 
         <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
             <path>
