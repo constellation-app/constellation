@@ -415,7 +415,7 @@ class Constellation:
         # We can't create a DataFrame if there is no data.
         #
         if data:
-            df = pd.read_json(data, orient='split', convert_dates=False)
+            df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
 
             self.types = self._fix_types(df)
             return df
@@ -466,7 +466,7 @@ class Constellation:
 
         r = self.rest_request(endpoint='/v1/graph', path='get')
 
-        df = pd.read_json(r.text, orient='split', convert_dates=False)
+        df = pd.read_json(r.text, orient='split', dtype=False, convert_dates=False)
 
         self._fix_types(df)
 
