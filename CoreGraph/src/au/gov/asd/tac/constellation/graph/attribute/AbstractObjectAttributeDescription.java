@@ -89,7 +89,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
 
     @Override
     public String getString(final int id) {
-        return String.valueOf((T) data[id]);
+        return data[id]!=null ? String.valueOf((T) data[id]) : null;
     }
 
     @Override
