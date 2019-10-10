@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
@@ -70,7 +71,7 @@ public class RecordStoreImpl {
      *
      * @throws IOException
      */
-    public static void get_get(final boolean vx, final boolean tx, final boolean selected, final Set<String> attrs, final OutputStream out) throws IOException {
+    public static void get_get(final String graphId, final boolean vx, final boolean tx, final boolean selected, final Set<String> attrs, final OutputStream out) throws IOException {
         // Build the JSON in a form suitable for passing to pandas.DataFrame.from_items().
         // This includes the datatypes with the names, so the client can do transforms
         // where required (for example, converting strings to timestamps).
@@ -78,7 +79,8 @@ public class RecordStoreImpl {
         ioph.start();
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;
-        final Graph graph = RestUtilities.getActiveGraph();
+//        final Graph graph = RestUtilities.getActiveGraph();
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             if ((vx && tx) || !(vx || tx)) {
@@ -175,10 +177,11 @@ public class RecordStoreImpl {
      *
      * @throws IOException
      */
-    public static void post_add(final boolean completeWithSchema, final String arrange, final boolean resetView, final InputStream in) throws IOException {
+    public static void post_add(final String graphId, final boolean completeWithSchema, final String arrange, final boolean resetView, final InputStream in) throws IOException {
         // Add data to a new store, and add the store to the graph.
         // If any transaction does not specify a source, add our own.
-        RestUtilities.getActiveGraph();
+//        RestUtilities.getActiveGraph();
+
         final RecordStore rs = new GraphRecordStore();
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
@@ -224,7 +227,7 @@ public class RecordStoreImpl {
             }
         }
 
-        addToGraph(rs, completeWithSchema, arrange, resetView);
+        addToGraph(graphId, rs, completeWithSchema, arrange, resetView);
     }
 
     /**
@@ -241,8 +244,8 @@ public class RecordStoreImpl {
         return attrWithType.substring(0, ix) + "|" + attrWithType.substring(ix + 1, attrWithType.length() - 1);
     }
 
-    private static void addToGraph(final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Graph graph = RestUtilities.getActiveGraph();
+    private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final Plugin p = new SimpleEditPlugin("Import from REST API") {
             @Override

@@ -217,6 +217,7 @@ public class FileListener implements Runnable {
      * @throws Exception because of AutoCloseable
      */
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
+        final String graphId = getString(args, "graph_id");
         switch (endpoint) {
             case "/v1/graph":
                 switch (verb) {
@@ -224,7 +225,7 @@ public class FileListener implements Runnable {
                         switch (path) {
                             case "get":
                                 try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_get(out);
+                                    GraphImpl.get_get(graphId, out);
                                 }
                                 break;
                             case "image":
@@ -250,7 +251,7 @@ public class FileListener implements Runnable {
                         switch (path) {
                             case "set":
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    GraphImpl.post_set(in.in);
+                                    GraphImpl.post_set(graphId, in.in);
                                 }
                                 break;
                             case "new":
@@ -272,9 +273,9 @@ public class FileListener implements Runnable {
                     case "put":
                         switch (path) {
                             case "current":
-                                final String graphId = getString(args, "id");
-                                if (graphId != null) {
-                                    GraphImpl.put_current(graphId);
+                                final String gid = getString(args, "id");
+                                if (gid != null) {
+                                    GraphImpl.put_current(gid);
                                 } else {
                                     throw new EndpointException("Must specify id");
                                 }
@@ -338,7 +339,7 @@ public class FileListener implements Runnable {
                                 }
 
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    PluginImpl.post_run(pluginName, in.in);
+                                    PluginImpl.post_run(graphId, pluginName, in.in);
                                 }
                                 break;
                             default:
@@ -370,7 +371,7 @@ public class FileListener implements Runnable {
                                 }
 
                                 try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    RecordStoreImpl.get_get(vx, tx, selected, attrs, out);
+                                    RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
                                 }
                                 break;
                             default:
@@ -390,7 +391,7 @@ public class FileListener implements Runnable {
                                 final boolean resetView = resetViewParam == null ? true : resetViewParam;
 
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    RecordStoreImpl.post_add(completeWithSchema, arrange, resetView, in.in);
+                                    RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
                                 }
                                 break;
                             default:

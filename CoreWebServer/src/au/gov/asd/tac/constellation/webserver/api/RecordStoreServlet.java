@@ -48,6 +48,9 @@ public class RecordStoreServlet extends ConstellationApiServlet {
         switch (request.getPathInfo()) {
             case "/get":
                 // Get (parts of) the currently active graph as a RecordStore.
+                //
+                final String graphId = request.getParameter("graph_id");
+
                 final boolean selected = Boolean.parseBoolean(request.getParameter("selected"));
                 final boolean vx = Boolean.parseBoolean(request.getParameter("vx"));
                 final boolean tx = Boolean.parseBoolean(request.getParameter("tx"));
@@ -62,7 +65,7 @@ public class RecordStoreServlet extends ConstellationApiServlet {
                     attrs.add(k);
                 }
 
-                RecordStoreImpl.get_get(vx, tx, selected, attrs, response.getOutputStream());
+                RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, response.getOutputStream());
 
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -80,6 +83,9 @@ public class RecordStoreServlet extends ConstellationApiServlet {
             case "/add":
                 // Add data to a new store, and add the store to the graph.
                 // If any transaction does not specify a source, add our own.
+                //
+                final String graphId = request.getParameter("graph_id");
+
                 final String completeWithSchemaParam = request.getParameter("complete_with_schema");
                 final boolean completeWithSchema = completeWithSchemaParam == null ? true : Boolean.parseBoolean(completeWithSchemaParam);
 
@@ -89,7 +95,7 @@ public class RecordStoreServlet extends ConstellationApiServlet {
                 final String resetViewParam = request.getParameter("reset_view");
                 final boolean resetView = resetViewParam == null ? true : Boolean.parseBoolean(resetViewParam);
 
-                RecordStoreImpl.post_add(completeWithSchema, arrange, resetView, request.getInputStream());
+                RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, request.getInputStream());
 
                 break;
             default:

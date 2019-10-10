@@ -461,10 +461,14 @@ class Constellation:
         j = df.to_json(orient='split', date_format='iso')
         self.rest_request(verb='post', endpoint='/v1/recordstore', path='add', data=j.encode('utf-8'), params=params)
 
-    def get_graph_attributes(self):
+    def get_graph_attributes(self, graph_id=None):
         """Get the graph attributes."""
 
-        r = self.rest_request(endpoint='/v1/graph', path='get')
+        params = {}
+        if graph_id:
+            params = {'graph_id':graph_id}
+
+        r = self.rest_request(endpoint='/v1/graph', path='get', params=params)
 
         df = pd.read_json(r.text, orient='split', dtype=False, convert_dates=False)
 
@@ -472,9 +476,15 @@ class Constellation:
 
         return df
 
-    def set_graph_attributes(self, df):
+    def set_graph_attributes(self, df, graph_id=None):
+        """Set graph attributes."""
+
+        params = {}
+        if graph_id:
+            params = {'graph_id':graph_id}
+
         j = df.to_json(orient='split', date_format='iso')
-        self.rest_request(verb='post', endpoint='/v1/graph', path='set', data=j.encode('utf-8'))
+        self.rest_request(verb='post', endpoint='/v1/graph', path='set', params=params, data=j.encode('utf-8'))
 
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
@@ -513,7 +523,7 @@ class Constellation:
         return id
 
     def get_graph_image(self):
-        """Get the graph visualisation as an image encoded in PNG format.
+        """Get the visualisation of the current active graph as an image encoded in PNG format.
 
         :returns: The PNG-encoded bytes.
         """
@@ -522,7 +532,7 @@ class Constellation:
 
         return r.content
 
-    def run_plugin(self, name, args=None, **plugin_params):
+    def run_plugin(self, name, args=None, *, graph_id=None):
         """Run the specified plugin.
 
         Plugin names are case-insensitive.
@@ -530,23 +540,16 @@ class Constellation:
         :param name: The name of the plugin to run
         :param args: The arguments to be passed to the plugin; a dictionary
             in the form {parameter_name:value, ...}.
-        :param plugin_params: Deprecated; the plugin parameters.
+        :param graph_id: The id of the graph to run the plugin on,
+            or the active graph if not specified.
         """
 
         if args is None:
             args = {}
         if not isinstance(args, dict):
             raise ValueError('args must be a dictionary')
-        if plugin_params:
-            args.update(plugin_params)
-            msg = f'''
-Passing plugin parameters directly is deprecated; pass a {{parameter_name:value}} dictionary to the args parameter instead.
-For example: cc.run_plugin('{name}', args={args})
-            '''.strip()
-            import logging
-            logging.warn(msg)
 
-        self.rest_request(verb='post', endpoint='/v1/plugin', path='run', params={'name': name}, json_=args)
+        self.rest_request(verb='post', endpoint='/v1/plugin', path='run', params={'name': name, 'graph_id':graph_id}, json_=args)
 
     def list_plugins(self, alias=True):
         """List the available plugins.
