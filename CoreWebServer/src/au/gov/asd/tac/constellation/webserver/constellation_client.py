@@ -373,7 +373,7 @@ class Constellation:
         return json.loads(data)
 
     def get_dataframe(self, **kwargs):
-        """Get a Pandas DataFrame from the current graph.
+        """Get a Pandas DataFrame from the current or specified graph.
 
         By default, all vertices and transactions, and all attributes
         of those elements, will be fetched. The vx and tx boolean parameters
@@ -406,6 +406,7 @@ class Constellation:
         :param tx: If True, include only transactions.
         :param attrs: A list of attribute names. If specified, only the
             listed attributes will be fetched.
+        :param graph_id: The id of the graph to get data from.
 
         :returns: A DataFrame containing the requested data.
         """
@@ -444,7 +445,7 @@ class Constellation:
         return types
 
     def put_dataframe(self, df, **params):
-        """Add the contents of a Pandas DataFrame to the current graph.
+        """Add the contents of a Pandas DataFrame to the current or specified graph.
 
         :param df: The DataFrame to send to CONSTELLATION.
         :param complete_with_schema: By default, CONSTELLATION will update
@@ -456,6 +457,7 @@ class Constellation:
         to not perform an arrangement.
         :param reset_view: By default, CONSTELLATION will reset the view.
         Specify False to not do this.
+        :param graph_id: The id of the graph to be updated.
         """
 
         j = df.to_json(orient='split', date_format='iso')
@@ -477,7 +479,11 @@ class Constellation:
         return df
 
     def set_graph_attributes(self, df, graph_id=None):
-        """Set graph attributes."""
+        """Set graph attributes.
+
+        :param graph_id: If specified, the graph to get attributes from,
+            or the active graph if not specified.
+        """
 
         params = {}
         if graph_id:
@@ -489,7 +495,7 @@ class Constellation:
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
 
-        self.rest_request(verb='put', endpoint='/v1/graph', path='current', params={'id':graph_id})
+        self.rest_request(verb='put', endpoint='/v1/graph', path='current', params={'graph_id':graph_id})
 
     def open_graph(self, filename):
         """Open a graph from the file system"""

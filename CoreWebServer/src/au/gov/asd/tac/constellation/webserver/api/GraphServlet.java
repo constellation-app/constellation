@@ -131,14 +131,16 @@ public class GraphServlet extends ConstellationApiServlet {
 
     @Override
     protected void put(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+
+        final String graphId = request.getParameter("graph_id");
+
         switch (request.getPathInfo()) {
             case "/current":
                 // Make the specified graph the current graph.
-                final String graphId = request.getParameter("id");
                 if (graphId != null) {
                     GraphImpl.put_current(graphId);
                 } else {
-                    throw new ServletException("Must specify id");
+                    throw new ServletException("Must specify graph_id");
                 }
                 break;
         }
