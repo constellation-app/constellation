@@ -73,7 +73,6 @@ public class GraphImpl {
      */
     public static void get_get(final String graphId, final OutputStream out) throws IOException {
         final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-        System.out.printf("GRAPHID %s %s\n", graphId, graph);
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         final ArrayNode columns = root.putArray("columns");

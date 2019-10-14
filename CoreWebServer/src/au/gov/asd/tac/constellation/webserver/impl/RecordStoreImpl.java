@@ -79,7 +79,6 @@ public class RecordStoreImpl {
         ioph.start();
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;
-//        final Graph graph = RestUtilities.getActiveGraph();
         final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -180,7 +179,6 @@ public class RecordStoreImpl {
     public static void post_add(final String graphId, final boolean completeWithSchema, final String arrange, final boolean resetView, final InputStream in) throws IOException {
         // Add data to a new store, and add the store to the graph.
         // If any transaction does not specify a source, add our own.
-//        RestUtilities.getActiveGraph();
 
         final RecordStore rs = new GraphRecordStore();
         final ObjectMapper mapper = new ObjectMapper();
