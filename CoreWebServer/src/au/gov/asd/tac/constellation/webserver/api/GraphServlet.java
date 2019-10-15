@@ -41,10 +41,12 @@ public class GraphServlet extends ConstellationApiServlet {
     @Override
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 
+        final String graphId = request.getParameter("graph_id");
+
         switch (request.getPathInfo()) {
             case "/get": {
                 // Return the graph attributes in DataFrame format.
-                GraphImpl.get_get(response.getOutputStream());
+                GraphImpl.get_get(graphId, response.getOutputStream());
 
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -90,6 +92,9 @@ public class GraphServlet extends ConstellationApiServlet {
 
     @Override
     protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+
+        final String graphId = request.getParameter("graph_id");
+
         switch (request.getPathInfo()) {
             case "/set":
                 // We want to read a JSON document that looks like:
@@ -98,7 +103,7 @@ public class GraphServlet extends ConstellationApiServlet {
                 //
                 // which is what is output by pandas.to_json(..., orient="split').
                 // (We ignore the index array.)
-                GraphImpl.post_set(request.getInputStream());
+                GraphImpl.post_set(graphId, request.getInputStream());
 
                 break;
             case "/new":
@@ -126,14 +131,16 @@ public class GraphServlet extends ConstellationApiServlet {
 
     @Override
     protected void put(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+
+        final String graphId = request.getParameter("graph_id");
+
         switch (request.getPathInfo()) {
             case "/current":
                 // Make the specified graph the current graph.
-                final String graphId = request.getParameter("id");
                 if (graphId != null) {
                     GraphImpl.put_current(graphId);
                 } else {
-                    throw new ServletException("Must specify id");
+                    throw new ServletException("Must specify graph_id");
                 }
                 break;
         }

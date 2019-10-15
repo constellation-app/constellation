@@ -71,8 +71,8 @@ public class GraphImpl {
      *
      * @throws IOException
      */
-    public static void get_get(final OutputStream out) throws IOException {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
+    public static void get_get(final String graphId, final OutputStream out) throws IOException {
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         final ArrayNode columns = root.putArray("columns");
@@ -99,6 +99,8 @@ public class GraphImpl {
 
     /**
      * Return a screenshot of the graph.
+     * <p>
+     * This must be done on the active graph, so there's no graphId parameter.
      *
      * @param out An OutputStream to write the response to.
      *
@@ -198,7 +200,7 @@ public class GraphImpl {
      *
      * @throws IOException
      */
-    public static void post_set(final InputStream in) throws IOException {
+    public static void post_set(final String graphId, final InputStream in) throws IOException {
         // We want to read a JSON document that looks like:
         //
         // {"columns":["A","B"],"data":[[1,"a"]]}
@@ -230,7 +232,7 @@ public class GraphImpl {
             throw new EndpointException("Column names do not match data row");
         }
 
-        setGraphAttributes(columns, row);
+        setGraphAttributes(graphId, columns, row);
     }
 
     /**
@@ -338,8 +340,8 @@ public class GraphImpl {
         }
     }
 
-    private static void setGraphAttributes(final ArrayNode columns, final ArrayNode row) {
-        final Graph graph = RestUtilities.getActiveGraph();
+    private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
             @Override

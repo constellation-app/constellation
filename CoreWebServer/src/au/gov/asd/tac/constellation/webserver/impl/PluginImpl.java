@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.webserver.impl;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -70,8 +71,8 @@ public class PluginImpl {
      *
      * @throws IOException
      */
-    public static void post_run(final String pluginName, final InputStream in) throws IOException {
-        final Graph graph = RestUtilities.getActiveGraph();
+    public static void post_run(final String graphId, final String pluginName, final InputStream in) throws IOException {
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode json = mapper.readTree(in);
