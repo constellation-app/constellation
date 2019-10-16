@@ -44,8 +44,16 @@ public class GraphServlet extends ConstellationApiServlet {
         final String graphId = request.getParameter("graph_id");
 
         switch (request.getPathInfo()) {
+            case "/getattrs": {
+                // Return the graph, vertex, and transaction attributes as a map.
+                GraphImpl.get_attributes(graphId, response.getOutputStream());
+
+                response.setContentType("application/json");
+                response.setStatus(HttpServletResponse.SC_OK);
+                break;
+            }
             case "/get": {
-                // Return the graph attributes in DataFrame format.
+                // Return the graph attribute values in DataFrame format.
                 GraphImpl.get_get(graphId, response.getOutputStream());
 
                 response.setContentType("application/json");

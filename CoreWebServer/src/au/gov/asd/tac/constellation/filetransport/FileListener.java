@@ -223,6 +223,11 @@ public class FileListener implements Runnable {
                 switch (verb) {
                     case "get":
                         switch (path) {
+                            case "getattrs":
+                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                    GraphImpl.get_attributes(graphId, out);
+                                }
+                                break;
                             case "get":
                                 try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
                                     GraphImpl.get_get(graphId, out);
