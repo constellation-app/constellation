@@ -77,10 +77,33 @@
                 ]
             }
         },
+        "/v1/graph/getattrs": {
+            "get": {
+                "tags": ["graph"],
+                "description": "The graph, vertex, and transaction attributes.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
+                    {
+                        "name": "X-CONSTELLATION-SECRET",
+                        "in": "header",
+                        "type": "string",
+                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/v1/graph/get": {
             "get": {
                 "tags": ["graph"],
-                "description": "The graph attributes.",
+                "description": "The graph attribute values.",
                 "produces": ["application/json"],
                 "parameters": [
                     {

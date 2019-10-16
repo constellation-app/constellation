@@ -65,7 +65,53 @@ public class GraphImpl {
     private static final String IMAGE_TYPE = "png";
 
     /**
-     * Return the graph attributes in DataFrame format.
+     * Return the graph, vertex, and transaction attributes as a map of
+     * name:type items.
+     * <p>
+     * Names are prefixed with "graph.", "source.", or "transaction".
+     */
+    public static void get_attributes(final String graphId, final OutputStream out) throws IOException {
+        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectNode root = mapper.createObjectNode();
+
+        final ReadableGraph rg = graph.getReadableGraph();
+        try {
+            final int gCount = rg.getAttributeCount(GraphElementType.GRAPH);
+            for (int i = 0; i < gCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.GRAPH, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("graph.%s", label), type);
+            }
+
+            final int vCount = rg.getAttributeCount(GraphElementType.VERTEX);
+            for (int i = 0; i < vCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.VERTEX, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("source.%s", label), type);
+            }
+
+            final int tCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
+            for (int i = 0; i < tCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("transaction.%s", label), type);
+            }
+        } finally {
+            rg.release();
+        }
+
+        mapper.writeValue(out, root);
+    }
+
+    /**
+     * Return the graph attribute values in DataFrame format.
      *
      * @param out An OutputStream to write the response to.
      *

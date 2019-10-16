@@ -463,8 +463,23 @@ class Constellation:
         j = df.to_json(orient='split', date_format='iso')
         self.rest_request(verb='post', endpoint='/v1/recordstore', path='add', data=j.encode('utf-8'), params=params)
 
+    def get_attributes(self, graph_id=None):
+        """Get the graph, node, and transaction attributes of the current or specified graph.
+
+        :param graph_id: If specified, the id of the graph from which to get the
+            attributes.
+        """
+
+        params = {}
+        if graph_id:
+            params = {'graph_id':graph_id}
+
+        r = self.rest_request(endpoint='/v1/graph', path='getattrs', params=params)
+
+        return r.json()
+
     def get_graph_attributes(self, graph_id=None):
-        """Get the graph attributes."""
+        """Get the graph attribute values."""
 
         params = {}
         if graph_id:
