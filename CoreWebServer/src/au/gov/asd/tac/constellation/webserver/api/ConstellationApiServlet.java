@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,6 +32,8 @@ import org.openide.awt.StatusDisplayer;
  */
 public class ConstellationApiServlet extends ConstellationHttpServlet {
 
+    private static final Logger LOGGER = Logger.getLogger(ConstellationApiServlet.class.getName());
+
     @Override
     protected final void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
@@ -38,7 +42,34 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
-            get(request, response);
+            try {
+                get(request, response);
+            }
+            catch(final Exception ex) {
+                response.reset();
+
+                try {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+
+                    // Write the error to the response body as well.
+                    // Swagger shows this but not the status phrase.
+                    //
+                    response.getWriter().print(ex.getMessage());
+                }
+                catch(final Throwable ee) {
+                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
+                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
+                    // This indicates mismatched jars: see for example:
+                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
+                    //
+                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
+                    //
+                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
+                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
+                }
+
+                response.flushBuffer();
+            }
         }
     }
 
@@ -54,7 +85,35 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
-            post(request, response);
+            try {
+                post(request, response);
+            }
+            catch(final Exception ex) {
+                response.reset();
+
+                try {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+
+                    // Write the error to the response body as well.
+                    // Swagger shows this but not the status phrase.
+                    //
+                    response.getWriter().print(ex.getMessage());
+                }
+                catch(final Throwable ee) {
+                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
+                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
+                    // This indicates mismatched jars: see for example:
+                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
+                    //
+                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
+                    //
+//                    LOGGER.log(Level.SEVERE, "While calling response.sendError()", ee);
+                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
+                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
+                }
+
+                response.flushBuffer();
+            }
         }
     }
 
@@ -70,7 +129,35 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
-            put(request, response);
+            try {
+                put(request, response);
+            }
+            catch(final Exception ex) {
+                response.reset();
+
+                try {
+                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+
+                    // Write the error to the response body as well.
+                    // Swagger shows this but not the status phrase.
+                    //
+                    response.getWriter().print(ex.getMessage());
+                }
+                catch(final Throwable ee) {
+                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
+                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
+                    // This indicates mismatched jars: see for example:
+                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
+                    //
+                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
+                    //
+//                    LOGGER.log(Level.SEVERE, "While calling response.sendError()", ee);
+                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
+                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
+                }
+
+                response.flushBuffer();
+            }
         }
     }
 
