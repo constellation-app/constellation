@@ -12,7 +12,7 @@
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
-        
+
         <dependency org="org.jogamp.jocl" name="jocl" rev="2.3.2">
             <artifact name="jocl" type="jar" ext="jar"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
@@ -21,7 +21,7 @@
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
-        
+
         <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.3.2">
             <artifact name="jogl-all" type="jar" ext="jar"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
@@ -30,12 +30,12 @@
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
-        
+
         <!-- Geotools -->
         <!--
-        The Geotools core libraries are typically imported together but we've 
-        included the modules separately so that we can include what we actually 
-        need. The commented libraries remain here to save time so you don't have 
+        The Geotools core libraries are typically imported together but we've
+        included the modules separately so that we can include what we actually
+        need. The commented libraries remain here to save time so you don't have
         to research which core libraries we have left out.
         -->
         <!--<dependency org="org.geotools" name="gt-coverage" rev="21.2"/>-->
@@ -53,7 +53,7 @@
         <dependency org="org.geotools" name="gt-geojson" rev="21.2"/>
         <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="21.2"/>
         <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="21.2"/>
-        
+
         <!-- Jetty -->
         <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="9.4.20.v20190813"/>
         <dependency org="org.eclipse.jetty" name="jetty-http" rev="9.4.20.v20190813"/>
@@ -63,7 +63,7 @@
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.20.v20190813"/>
         <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.4.20.v20190813"/>
         <dependency org="org.eclipse.jetty" name="jetty-websocket" rev="8.2.0.v20160908"/>
-        
+
         <!-- Apache Commons -->
         <dependency org="org.apache.commons" name="commons-collections4" rev="4.4"/>
         <dependency org="org.apache.commons" name="commons-csv" rev="1.7"/>
@@ -75,7 +75,7 @@
         <!--<dependency org="org.apache.commons" name="commons-text" rev="1.7"/>-->
         <!--<dependency org="commons-codec" name="commons-codec" rev="1.13"/>-->
         <dependency org="commons-io" name="commons-io" rev="2.6"/>
-        
+
         <!-- Other -->
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.9"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.9"/>
@@ -95,7 +95,7 @@
         <dependency org="org.processing" name="core" rev="3.3.7"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.1"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        
+
         <!-- To Be Added -->
         <!--<dependency org="javax.help" name="javahelp" rev="2.0.05" />-->
         <!--<dependency org="javax.media" name="jai_core" rev="1.1.3" />-->
@@ -104,12 +104,21 @@
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <!--<dependency org="unfolding" name="unfolding" rev="master-20171010"/>-->
         <!--<dependency org="unfolding" name="json4processing" rev="0.9.6"/>-->
-                
+
         <!-- Exclusions -->
         <exclude org="com.apple" module="AppleJavaExtensions" />
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
         <exclude org="org.jogamp.jogl" module="jogl"/>
+
+        <!--
+        This seems to be a maven dependency of log4j-1.2.17.
+        However, javaee-api-5.0-2.jar (servlet API 2.5) clashes with
+        javax.servlet-api-3.1.0.jar (servlet API 3.1), which breaks Jetty
+        (in particular API 2.5 doesn't have HttpServletResponse.getStatus()).
+        Therefore, we exclude this.
+        -->
+        <exclude org="org.apache.openejb" module="javaee-api"/>
 
         <exclude type="src" ext="jar"/>
         <exclude type="source" ext="jar"/>

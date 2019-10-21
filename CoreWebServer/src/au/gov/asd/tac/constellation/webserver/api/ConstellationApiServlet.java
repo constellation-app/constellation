@@ -27,6 +27,14 @@ import org.openide.awt.StatusDisplayer;
 /**
  * A web service which makes up part of the Constellation REST API. The use of a
  * secret is enforced for this type of web service.
+ * <p>
+ * Any exceptions thrown while executing a servlet call are caught and converted
+ * to an HttpServletResponse.sendError() response, as well as being logged
+ * at Level.INFO (to avoid an error dialog box being displayed).
+ * <p>
+ * Note that servlet API 3.x is required for HttpServletResponse.getStatus()
+ * (which is called by HttpServletResponse.sendError()). See CoreDependencies
+ * ivy.xml for more info.
  *
  * @author cygnus_x-1
  */
@@ -48,27 +56,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             catch(final Exception ex) {
                 response.reset();
 
-                try {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                    // Write the error to the response body as well.
-                    // Swagger shows this but not the status phrase.
-                    //
-                    response.getWriter().print(ex.getMessage());
-                }
-                catch(final Throwable ee) {
-                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
-                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
-                    // This indicates mismatched jars: see for example:
-                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
-                    //
-                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
-                    //
-                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
-                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
-                }
-
-                response.flushBuffer();
+                LOGGER.log(Level.INFO, "in doGet",  ex);
             }
         }
     }
@@ -91,28 +81,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             catch(final Exception ex) {
                 response.reset();
 
-                try {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                    // Write the error to the response body as well.
-                    // Swagger shows this but not the status phrase.
-                    //
-                    response.getWriter().print(ex.getMessage());
-                }
-                catch(final Throwable ee) {
-                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
-                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
-                    // This indicates mismatched jars: see for example:
-                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
-                    //
-                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
-                    //
-//                    LOGGER.log(Level.SEVERE, "While calling response.sendError()", ee);
-                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
-                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
-                }
-
-                response.flushBuffer();
+                LOGGER.log(Level.INFO, "in doPost",  ex);
             }
         }
     }
@@ -135,28 +106,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             catch(final Exception ex) {
                 response.reset();
 
-                try {
-                    response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
+                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                    // Write the error to the response body as well.
-                    // Swagger shows this but not the status phrase.
-                    //
-                    response.getWriter().print(ex.getMessage());
-                }
-                catch(final Throwable ee) {
-                    // The call to response.SendError sort of works: it sets the status and status phrase, but then errors
-                    // with "java.lang.NoSuchMethodError: javax.servlet.http.HttpServletResponse.getStatus()I".
-                    // This indicates mismatched jars: see for example:
-                    // https://stackoverflow.com/questions/44730096/javax-servlet-http-httpservletresponse-getstatus-not-found .
-                    //
-                    // When the jars are sorted out, the inner try and this catch can be removed (and the LOGGER).
-                    //
-//                    LOGGER.log(Level.SEVERE, "While calling response.sendError()", ee);
-                    LOGGER.log(Level.SEVERE, String.format("While calling response.sendError(): %s", ee.getMessage()));
-                    LOGGER.log(Level.SEVERE, "This indicates mismatched servlet API jars, ");
-                }
-
-                response.flushBuffer();
+                LOGGER.log(Level.INFO, "in doPut",  ex);
             }
         }
     }
