@@ -26,7 +26,7 @@ import org.openide.windows.WindowManager;
  * Application Bootstrap on start up
  *
  * @author cygnus_x-1
- * @author arcturus2
+ * @author arcturus
  */
 @OnShowing()
 public class Startup implements Runnable {
