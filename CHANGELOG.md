@@ -1,5 +1,8 @@
 # CONSTELLATION Changes
 
+## 2019-10-01 Changes in October 2019
+* Added `DevOpsNotificationPlugin` to Core Functionality to track messages from plugins for developers and administrators attention. This is only going to be useful if you have setup a `ConstellationLogger` that sends information to a database or elastic search.
+
 ## 2019-08-01 Changes in August 2019
 * Added BrandingUtilities to Core Utilities to maintain the application name "Constellation".
     * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.
