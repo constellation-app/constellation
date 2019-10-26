@@ -2254,10 +2254,6 @@
                 <binary-origin>release/modules/ext/gt-cql-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-solaris-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jetty-servlet-9.4.20.v20190813.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-servlet-9.4.20.v20190813.jar</binary-origin>
             </class-path-extension>
@@ -2272,10 +2268,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gt-opengis-21.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-opengis-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-solaris-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-colorindexer-1.1.10.jar</runtime-relative-path>
@@ -2340,14 +2332,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/junit-4.12.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/junit-4.12.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-solaris-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-solaris-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-solaris-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jogl-all-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
@@ -2496,10 +2480,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-streams-1.2.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/imageio-ext-streams-1.2.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-solaris-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/animal-sniffer-annotations-1.17.jar</runtime-relative-path>
@@ -2828,14 +2808,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/commons-dbcp2-2.7.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-dbcp2-2.7.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/javaee-api-5.0-2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/javaee-api-5.0-2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-solaris-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-solaris-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jocl-2.3.2-natives-linux-amd64.jar</runtime-relative-path>

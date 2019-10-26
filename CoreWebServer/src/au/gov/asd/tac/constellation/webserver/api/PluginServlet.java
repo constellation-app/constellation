@@ -61,11 +61,18 @@ public class PluginServlet extends ConstellationApiServlet {
         switch (request.getPathInfo()) {
             case "/run":
                 // Run a plugin, optionally with parameters.
+                final String graphId = request.getParameter("graph_id");
                 final String pluginName = request.getParameter("name");
                 if (pluginName == null) {
                     throw new ServletException("No plugin specified!");
                 } else {
-                    PluginImpl.post_run(pluginName, request.getInputStream());
+                    try {
+                        PluginImpl.post_run(graphId, pluginName, request.getInputStream());
+                    }
+                    catch(final Exception ex) {
+                        ex.printStackTrace();
+                        throw new ServletException(ex);
+                    }
                 }
                 break;
             default:

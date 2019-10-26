@@ -9,8 +9,8 @@
     
     <property name="ivy.install.version" value="2.3.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
-    <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
@@ -133,6 +133,10 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
             <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
@@ -170,6 +174,10 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
             <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
@@ -192,4 +200,21 @@
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
     
+    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
+        <delete dir="${suite.build.dir}/ivy-reports"/>
+        <mkdir dir="${suite.build.dir}/ivy-reports" />
+        
+        <ivy:resolve type="${ivy.resolve.types}"/>
+        <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
+    </target>
+    
+    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+        <ivy:resolve/>
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
+    
+    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
+        <ivy:dependencytree/>
+    </target>
+
 </project>

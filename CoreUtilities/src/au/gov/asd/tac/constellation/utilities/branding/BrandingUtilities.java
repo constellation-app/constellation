@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.utilities.branding;
 /**
  * Branding Utilities
  *
- * @author arcturus2
+ * @author arcturus
  */
 public class BrandingUtilities {
 
