@@ -1,5 +1,11 @@
 # CONSTELLATION Changes
 
+## 2019-11-01 Changes in November 2019
+* Remove deprecated jai libraries.
+
+## 2019-10-01 Changes in October 2019
+* Fixed a bug with the Restful service caused by multiple servlet libraries used that created a clash.
+
 ## 2019-08-01 Changes in August 2019
 * Added BrandingUtilities to Core Utilities to maintain the application name "Constellation".
     * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.

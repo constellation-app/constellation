@@ -93,7 +93,6 @@
         <dependency org="org.processing" name="core" rev="3.3.7"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.1"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        <dependency org="javax.media" name="jai_imageio" rev="1.1"/> 
 
         <!-- To Be Added -->
         <!--<dependency org="javax.help" name="javahelp" rev="2.0.05" />-->
@@ -106,11 +105,15 @@
         <!-- Exclusions -->
         <exclude org="com.apple" module="AppleJavaExtensions" />
         <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
+        <exclude org="org.jogamp.gluegen" module="gluegen-rt-main"/>
         <exclude org="org.jogamp.jogl" module="jogl"/>
-        <!--
-        Unable to download jai_core.jar, see issue #150 for more information
-        -->
+        <exclude org="org.jogamp.jogl" module="jogl-all-main"/>
+        <!-- Prevent the use of deprecated jai libraries -->
         <exclude org="javax.media" module="jai_core"/>
+        <exclude org="javax.media" module="jai_codec"/>
+        <exclude org="javax.media" module="jai_imageio"/>
+        <!-- Prevent the use of another deprecated jai library -->
+        <exclude org="it.geosolutions.imageio-ext" module="imageio-ext-tiff"/>
 
         <!--
         This seems to be a maven dependency of log4j-1.2.17.
