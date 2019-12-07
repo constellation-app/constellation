@@ -77,9 +77,9 @@
         <dependency org="commons-io" name="commons-io" rev="2.6"/>
 
         <!-- Other -->
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.9"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.9.9"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.9"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.9.9"/>
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.0.3"/>
         <dependency org="com.google.guava" name="guava" rev="28.0-jre" />
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0"/>
@@ -90,6 +90,7 @@
         <dependency org="org.ejml" name="ejml-core" rev="0.38"/>
         <dependency org="org.ejml" name="ejml-ddense" rev="0.38"/>
         <dependency org="org.ejml" name="ejml-simple" rev="0.38"/>
+        <dependency org="org.json" name="json" rev="20190722"/>
         <dependency org="org.processing" name="core" rev="3.3.7"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.1"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
