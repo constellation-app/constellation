@@ -71,6 +71,7 @@ import au.gov.asd.tac.constellation.functionality.select.structure.SelectSinksPl
 import au.gov.asd.tac.constellation.functionality.select.structure.SelectSourcesPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ResetViewPlugin;
+import au.gov.asd.tac.constellation.functionality.zoom.RotateCameraPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToVerticesPlugin;
 
@@ -113,6 +114,7 @@ public final class CorePluginRegistry {
     public static final String PREVIOUS_VIEW = PreviousViewPlugin.class.getName();
     public static final String REMOVE_BLAZE = RemoveBlazePlugin.class.getName();
     public static final String RESET = ResetViewPlugin.class.getName();
+    public static final String ROTATE_GRAPH = RotateCameraPlugin.class.getName();
     public static final String SAVE_GRAPH = SaveGraphPlugin.class.getName();
     public static final String SELECT_ALL = SelectAllPlugin.class.getName();
     public static final String SELECT_BACKBONE = SelectBackbonePlugin.class.getName();
