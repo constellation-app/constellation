@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.functionality.admin.DevOpsNotificationPlugin;
 import au.gov.asd.tac.constellation.functionality.autosave.AutosaveGraphPlugin;
 import au.gov.asd.tac.constellation.functionality.blaze.AddBlazePlugin;
 import au.gov.asd.tac.constellation.functionality.blaze.AddCustomBlazePlugin;
@@ -97,9 +98,11 @@ public final class CorePluginRegistry {
     public static final String CUT = CutToClipboardPlugin.class.getName();
     public static final String DELETE_SELECTION = DeleteSelectionPlugin.class.getName();
     public static final String DESELECT_ALL = DeselectAllPlugin.class.getName();
+    public static final String DESELECT_BLAZES = DeSelectBlazesPlugin.class.getName();
     public static final String DESELECT_TRANSACTIONS = DeselectTransactionsPlugin.class.getName();
     public static final String DESELECT_VERTICES = DeselectVerticesPlugin.class.getName();
     public static final String DESTROY_ALL_COMPOSITES = DestroyAllCompositesPlugin.class.getName();
+    public static final String DEV_OPS_NOTIFICATION = DevOpsNotificationPlugin.class.getName();
     public static final String DIM_ALL = DimAllPlugin.class.getName();
     public static final String DIM_SELECTED = DimSelectedPlugin.class.getName();
     public static final String DIM_UNSELECTED = DimUnselectedPlugin.class.getName();
@@ -119,7 +122,6 @@ public final class CorePluginRegistry {
     public static final String SELECT_ALL = SelectAllPlugin.class.getName();
     public static final String SELECT_BACKBONE = SelectBackbonePlugin.class.getName();
     public static final String SELECT_BLAZES = SelectBlazesPlugin.class.getName();
-    public static final String DESELECT_BLAZES = DeSelectBlazesPlugin.class.getName();
     public static final String SELECT_DIMMED = SelectDimmedPlugin.class.getName();
     public static final String SELECT_INDUCED_HALF_HOP = SelectHalfHopInducedSubgraphPlugin.class.getName();
     public static final String SELECT_INDUCED_ONE_HOP = SelectOneHopInducedSubgraphPlugin.class.getName();

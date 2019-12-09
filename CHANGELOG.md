@@ -4,6 +4,7 @@
 * Remove deprecated jai libraries.
 
 ## 2019-10-01 Changes in October 2019
+* Added `DevOpsNotificationPlugin` to Core Functionality to track messages from plugins for developers and administrators attention. This is only going to be useful if you have setup a `ConstellationLogger` that sends information to a database or elastic search.
 * Fixed a bug with the Restful service caused by multiple servlet libraries used that created a clash.
 
 ## 2019-08-01 Changes in August 2019
