@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.utilities.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.visual.blaze.Blaze;
 import au.gov.asd.tac.constellation.visual.camera.Camera;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.openide.util.NbPreferences;
 
 /**
  * The standard implementation of {@link VisualAccess} for a single
@@ -769,7 +771,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public float getBlazeOpacity() {
-        return graphBlazeOpacity != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphBlazeOpacity, 0) : VisualDefaults.DEFAULT_BLAZE_OPACITY;
+        return graphBlazeOpacity != Graph.NOT_FOUND ? (NbPreferences.forModule(GraphPreferenceKeys.class).getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100) : VisualDefaults.DEFAULT_BLAZE_OPACITY;
     }
 
     @Override
