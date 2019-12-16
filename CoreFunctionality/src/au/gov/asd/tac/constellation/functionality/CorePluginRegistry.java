@@ -73,6 +73,7 @@ import au.gov.asd.tac.constellation.functionality.select.structure.SelectSources
 import au.gov.asd.tac.constellation.functionality.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ResetViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.RotateCameraPlugin;
+import au.gov.asd.tac.constellation.functionality.zoom.SetCameraVisibilityRange;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToVerticesPlugin;
 
@@ -132,6 +133,7 @@ public final class CorePluginRegistry {
     public static final String SELECT_SOURCES = SelectSourcesPlugin.class.getName();
     public static final String SELECT_UNDIMMED = SelectUndimmedPlugin.class.getName();
     public static final String SEND_TO_EMAIL_CLIENT = SendToEmailClientPlugin.class.getName();
+    public static final String SET_CAMERA_VISIBILITY_RANGE = SetCameraVisibilityRange.class.getName();
     public static final String SET_CONNECTION_MODE = SetConnectionModePlugin.class.getName();
     public static final String SET_DRAW_FLAG = SetDrawFlagPlugin.class.getName();
     public static final String SET_VISIBLE_ABOVE_THRESHOLD = SetVisibleAboveThresholdPlugin.class.getName();

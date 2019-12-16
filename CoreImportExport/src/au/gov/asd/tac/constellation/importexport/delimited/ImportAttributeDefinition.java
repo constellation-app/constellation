@@ -37,6 +37,7 @@ public class ImportAttributeDefinition {
     private final PluginParameters parameters;
 
     private static int ATTRIBUTE_NOT_DEFINED = -93459;
+    private static int ROWID_COLUMN_INDEX = -1;
 
     /**
      * Immutable attributes are defined in {@code ImportController} as mockup
@@ -138,12 +139,14 @@ public class ImportAttributeDefinition {
         this.overriddenAttributeId = overriddenAttributeId;
     }
 
-    public void setValue(GraphWriteMethods graph, int elementId, String[] row) {
+    public void setValue(GraphWriteMethods graph, int elementId, String[] row, int rowIndex) {
         if (columnIndex == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN && defaultValue != null) {
             graph.setStringValue(getOverriddenAttributeId(), elementId, translator.translate(defaultValue, parameters));
         } else if (columnIndex >= 0) {
             final String cell = columnIndex < row.length ? row[columnIndex] : "";
             graph.setStringValue(getOverriddenAttributeId(), elementId, translator.translate(cell, parameters));
+        } else if (columnIndex == ROWID_COLUMN_INDEX) {
+            graph.setStringValue(getOverriddenAttributeId(), elementId, Integer.toString(rowIndex));
         }
     }
 
