@@ -180,7 +180,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 newVertices.add(vertexId);
 
                 for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
-                    attributeDefinition.setValue(graph, vertexId, row);
+                    attributeDefinition.setValue(graph, vertexId, row, (i - 1));
                 }
 
                 if (initialiseWithSchema && graph.getSchema() != null) {
@@ -220,7 +220,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (filter == null || filter.passesFilter(i, row)) {
                 final int sourceVertexId = graph.addVertex();
                 for (final ImportAttributeDefinition attributeDefinition : sourceVertexDefinitions) {
-                    attributeDefinition.setValue(graph, sourceVertexId, row);
+                    attributeDefinition.setValue(graph, sourceVertexId, row, (i - 1));
                 }
                 if (initialiseWithSchema && graph.getSchema() != null) {
                     graph.getSchema().completeVertex(graph, sourceVertexId);
@@ -228,7 +228,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
                 final int destinationVertexId = graph.addVertex();
                 for (final ImportAttributeDefinition attributeDefinition : destinationVertexDefinitions) {
-                    attributeDefinition.setValue(graph, destinationVertexId, row);
+                    attributeDefinition.setValue(graph, destinationVertexId, row, (i - 1));
                 }
                 if (initialiseWithSchema && graph.getSchema() != null) {
                     graph.getSchema().completeVertex(graph, destinationVertexId);
@@ -238,7 +238,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
                 for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                     if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {
-                        attributeDefinition.setValue(graph, transactionId, row);
+                        attributeDefinition.setValue(graph, transactionId, row, (i - 1));
                     }
                 }
                 if (initialiseWithSchema && graph.getSchema() != null) {
