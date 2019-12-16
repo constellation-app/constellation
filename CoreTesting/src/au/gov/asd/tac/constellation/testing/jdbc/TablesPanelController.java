@@ -73,8 +73,6 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
     public void readSettings(final WizardDescriptorData settings) {
         data = settings.data;
         panel.setTables(data.tables, data.vxTable, data.txTable);
-//        panel.setVxTable(data.vxTable);
-//        panel.setTxTable(data.txTable);
     }
 
     @Override

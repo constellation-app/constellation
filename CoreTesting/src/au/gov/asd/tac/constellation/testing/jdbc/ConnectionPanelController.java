@@ -27,6 +27,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
@@ -42,7 +43,9 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
     private ConnectionPanel panel = null;
     private JdbcData data;
     private final List<ChangeListener> listeners = new ArrayList<>();
-
+    
+    private static final Logger LOGGER = Logger.getLogger(ConnectionPanelController.class.getName());
+    
     public ConnectionPanelController(final Graph graph) {
         this.graph = graph;
         data = null;
@@ -142,16 +145,6 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
         // Attempt a JDBC connection here.
         try {
-//            final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
-//            final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
-//            System.out.printf("@@CPC sp %s\n", searchPath[0]);
-//            System.out.printf("@@CPC driver '%s'\n", panel.getDriverName());
-//            final Driver driver = (Driver)Class.forName(panel.getDriverName(), true, clloader).newInstance();
-//            final Properties props = new Properties();
-//            props.put("user", panel.getUsername());
-//            props.put("password", new String(panel.getPassword()));
-//            final Connection conn = driver.connect(panel.getConnectionUrl(), props);
-
             final ArrayList<String> tables = new ArrayList<>();
             try (final Connection conn = JdbcUtilities.getConnection(jarFile, panel.getDriverName(), panel.getConnectionUrl(), panel.getUsername(), panel.getPassword())) {
                 // Nothing to do, we're just checking to see if we can get a connection.
@@ -170,7 +163,7 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
             Collections.sort(tables);
             data.tables = tables;
         } catch (final MalformedURLException | ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            LOGGER.severe(ex.getLocalizedMessage());
             final String msg = String.format("%s: %s", ex.getClass().getSimpleName(), ex.getMessage());
             throw new WizardValidationException(panel, msg, msg);
         }

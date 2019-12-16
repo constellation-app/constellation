@@ -65,10 +65,7 @@ public final class ImportFromJdbcAction implements ActionListener {
         final WizardDescriptorData wd = new WizardDescriptorData(panels);
         wd.setTitleFormat(new MessageFormat("{0}"));
         wd.setTitle(Bundle.MSG_ImportFromJdbc());
-        System.out.printf("@@ETJA wd=%s\n", wd);
-//        wd.setTitle("Export to JDBC");
         final Object result = DialogDisplayer.getDefault().notify(wd);
-        System.out.printf("@@ETJA result %s\n", result);
         if (result == DialogDescriptor.OK_OPTION) {
             final ImportFromJdbcPlugin exporter = new ImportFromJdbcPlugin(wd.data);
             PluginExecution.withPlugin(exporter).executeLater(graph);

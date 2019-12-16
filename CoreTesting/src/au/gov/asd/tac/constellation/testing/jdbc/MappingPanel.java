@@ -242,13 +242,11 @@ public class MappingPanel extends javax.swing.JPanel {
                 if (showTableColumns) {
                     attrLabels.stream().forEach((label) -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
-                        System.out.printf("@@MP attr '%s' -> '%s'\n", label, clabel);
                         canonical.put(clabel, label);
                     });
 
                     columnLabels.stream().forEach((label) -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
-                        System.out.printf("@@MP cols '%-20s' -> '%-20s' %s\n", label, clabel, canonical.containsKey(clabel));
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
                         }
@@ -284,8 +282,6 @@ public class MappingPanel extends javax.swing.JPanel {
                 values[0][i] = label0;
                 values[1][i] = label1;
             }
-
-//            listeners = new ArrayList<>();
         }
 
         @Override

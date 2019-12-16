@@ -447,7 +447,6 @@ public class ConnectionPanel extends JPanel {
             final Attribute attr = new GraphAttribute(rg, attrId);
             final String line = String.format("    %-16s %s,\n", JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
             lines.add(line);
-//            buf.append(line);
         }
 
         lines.sort(String::compareTo);
