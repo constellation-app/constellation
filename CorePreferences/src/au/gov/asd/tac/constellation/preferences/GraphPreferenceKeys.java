@@ -32,28 +32,6 @@ public final class GraphPreferenceKeys {
     public static final String BLAZE_SIZE = "blazeSize";
     public static final String BLAZE_OPACITY = "blazeOpacity";
     
-    /**
-     * Output window preferences including font family, size and style.
-     */
-    public static final String OUTPUT2_PREFERENCE = "org/netbeans/core/output2";
-    public static final String OUTPUT2_FONT_SIZE = "output.settings.font.size";
-    public static final String OUTPUT2_FONT_SIZE_DEFAULT = "12";
-    public static final String OUTPUT2_FONT_FAMILY = "output.settings.font.family";
-    public static final String OUTPUT2_FONT_FAMILY_DEFAULT = "Dialog";
-
-    /**
-     * Charts.
-     */
-    public static final String CHART_DISPLAY = "chartDisplay";
-    public static final String CHART_DISPLAY_CONSTELLATION = "constellation";
-    public static final String CHART_DISPLAY_BROWSER = "browser";
-    public static final String CHART_DISPLAY_DEFAULT = CHART_DISPLAY_CONSTELLATION;
-    /**
-     * Scripting.
-     */
-    public static final String DEFAULT_TEMPLATE = "defaultTemplate";
-    public static final String DEFAULT_TEMPLATE_DEFAULT = null;
-
     private GraphPreferenceKeys() {
     }
 }

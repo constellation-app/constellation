@@ -86,12 +86,12 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")
                 .setDescription("The opacity of blazes on the graph")
-                .setDefaultValue(((float) ((float)(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100.0))))
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100f)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_SIZE = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_size")
                 .setDescription("The size of blazes on the graph")
-                .setDefaultValue(((float) ((float)(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)/100.0))))
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)/100f)
                 .create()
                 .build();
         public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_labels_bottom")
