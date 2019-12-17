@@ -61,30 +61,9 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
                 final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
                 final GraphOptionsPanel graphOptionsPanel = getPanel();
-                //50 and 50 (initial values upon startup)
-                final int prevBlazeSize = prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT);
-                final int prevBlazeopacity = prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT);
                 
                 prefs.putInt(GraphPreferenceKeys.BLAZE_SIZE, graphOptionsPanel.getBlazeSize());
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
-                
-                GraphPreferenceKeys.setDefaultBlazeSize(graphOptionsPanel.getBlazeSize());
-                // new value and new value
-                final float storedBlazeSize = GraphPreferenceKeys.getDefaultBlazeSize();
-                final int storedBlazeopacity = prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT);
-                
-                // Sync did not refresh anything in the store. Can delete because it did not change operation of the system
-//                try {
-//                    if(NbPreferences.forModule(GraphPreferenceKeys.class).parent()!=null){
-//                        NbPreferences.forModule(GraphPreferenceKeys.class).parent().flush();
-//                        NbPreferences.forModule(GraphPreferenceKeys.class).parent().sync();
-//                    }
-//                    prefs.flush();
-//                    prefs.sync();
-//                } catch (BackingStoreException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                }
-
             }
         }
     }

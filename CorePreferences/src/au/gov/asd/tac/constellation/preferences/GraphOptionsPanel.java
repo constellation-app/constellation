@@ -36,6 +36,18 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
     public GraphOptionsPanel(final GraphOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
+        
+        /**
+         * REMOVE this section when implementing custom blaze colours
+         * Introduced with fix for issue #158
+         * FROM HERE
+         */
+        BlazeColourPanel.setVisible(false);
+        BlazeColourPlaceholder.setVisible(false);
+        BlazeColourDescription.setVisible(false);
+        /**
+         * TO HERE
+         */
     }
     
     public void setBlazeSize(final int value){
@@ -98,6 +110,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         );
         blazeSizePanelLayout.setVerticalGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(blazeSizePanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(BlazeSizeDescription)
                     .addComponent(blazeSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -105,7 +118,7 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
                 .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(blazeOpacitySlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                     .addComponent(BlazeSizeDescription1))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         BlazeColourPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourPanel.border.title"))); // NOI18N
@@ -147,10 +160,10 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
-                .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE)
+                .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(BlazeColourPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(371, Short.MAX_VALUE))
+                .addContainerGap(346, Short.MAX_VALUE))
         );
 
         blazeSizePanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.AccessibleContext.accessibleName")); // NOI18N

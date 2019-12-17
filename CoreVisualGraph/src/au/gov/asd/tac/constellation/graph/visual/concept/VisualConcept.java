@@ -77,6 +77,7 @@ public class VisualConcept extends SchemaConcept {
     }
 
     public static class GraphAttribute {
+        static final Preferences PREFERENCES = NbPreferences.forModule(GraphPreferenceKeys.class);
 
         public static final SchemaAttribute BACKGROUND_COLOR = new SchemaAttribute.Builder(GraphElementType.GRAPH, ColorAttributeDescription.ATTRIBUTE_NAME, "background_color")
                 .setDescription("The background color of the graph")
@@ -85,12 +86,12 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")
                 .setDescription("The opacity of blazes on the graph")
-                .setDefaultValue(((float) ((float)(NbPreferences.forModule(GraphPreferenceKeys.class).getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100.0))))
+                .setDefaultValue(((float) ((float)(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100.0))))
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_SIZE = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_size")
                 .setDescription("The size of blazes on the graph")
-                .setDefaultValue((float)(GraphPreferenceKeys.getDefaultBlazeSize()/100))
+                .setDefaultValue(((float) ((float)(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)/100.0))))
                 .create()
                 .build();
         public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_labels_bottom")

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import org.openide.util.NbPreferences;
-
 
 /**
  * Keys used to access graph preferences.
@@ -29,17 +27,10 @@ public final class GraphPreferenceKeys {
     /**
      * Blaze settings
      */
-    public static int BLAZE_SIZE_DEFAULT = 50;
-    public static final int BLAZE_OPACITY_DEFAULT = 50;
+    public static int BLAZE_SIZE_DEFAULT = 30;
+    public static final int BLAZE_OPACITY_DEFAULT = 100;
     public static final String BLAZE_SIZE = "blazeSize";
     public static final String BLAZE_OPACITY = "blazeOpacity";
-
-    public static float getDefaultBlazeSize(){
-        return (float)BLAZE_SIZE_DEFAULT;
-    }
-    public static void setDefaultBlazeSize(int newValue){
-        BLAZE_SIZE_DEFAULT = newValue;
-    }
     
     /**
      * Output window preferences including font family, size and style.

@@ -771,7 +771,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public float getBlazeOpacity() {
-        return graphBlazeOpacity != Graph.NOT_FOUND ? (NbPreferences.forModule(GraphPreferenceKeys.class).getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)/100) : VisualDefaults.DEFAULT_BLAZE_OPACITY;
+        return graphBlazeOpacity != Graph.NOT_FOUND ? accessGraph.getObjectValue(graphBlazeOpacity, 0) : VisualDefaults.DEFAULT_BLAZE_OPACITY;
     }
 
     @Override
