@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview.providers;
 
 import de.fhpotsdam.unfolding.core.Coordinate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -27,12 +29,22 @@ import processing.core.PImage;
  * @author cygnus_x-1
  */
 public abstract class EsriMapProvider extends MapProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(EsriMapProvider.class.getName());
 
     public static enum MapServerType {
+        /**
+         * The {@link MapServerType#TILE} type supports ESRI tile-based mapping
+         * services, this is the default.
+         */
         TILE,
+        /**
+         * The {@link MapServerType#EXPORT} type supports ESRI mapping services
+         * which allow image exports.
+         */
         EXPORT
     }
-    
+
     @Override
     public String getZoomString(final Coordinate coordinate) {
         return (int) coordinate.zoom
@@ -60,13 +72,24 @@ public abstract class EsriMapProvider extends MapProvider {
                         getMapServer(), getBoundingBox(coordinate));
                 break;
             default:
-                url = null;
+                url = "";
                 break;
+        }
+        
+        if (url == null || url.isEmpty()) {
+            LOGGER.log(Level.WARNING, "Tile URL, %s, is invalid", url);
         }
 
         return new String[]{url};
     }
 
+    /**
+     * Calculate a bounding box to emulate tile boundaries when using the
+     * {@link MapServerType#EXPORT} option.
+     *
+     * @param coordinate the requested tile coordinate.
+     * @return a {@link String} representing a bounding box.
+     */
     protected String getBoundingBox(final Coordinate coordinate) {
         final float n = PApplet.pow(2, coordinate.zoom);
         final double minLon = (coordinate.column / n) * 360 - 180;
@@ -76,9 +99,19 @@ public abstract class EsriMapProvider extends MapProvider {
         return String.format("%f,%f,%f,%f", minLon, minLat, maxLon, maxLat);
     }
 
+    /**
+     * Get the type of map server this provider is working with.
+     *
+     * @return a {@link MapServerType} specifying the map server type.
+     */
     protected MapServerType getMapServerType() {
         return MapServerType.TILE;
     }
 
+    /**
+     * Get the map server address.
+     *
+     * @return a {@link String} representing the URL of the map server.
+     */
     protected abstract String getMapServer();
 }
