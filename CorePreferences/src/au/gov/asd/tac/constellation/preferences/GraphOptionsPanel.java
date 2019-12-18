@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.awt.Color;
+import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
@@ -77,106 +79,138 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        blazeSizePanel = new JPanel();
-        blazeSlider = new JSlider();
-        BlazeSizeDescription = new JLabel();
-        blazeOpacitySlider = new JSlider();
-        BlazeSizeDescription1 = new JLabel();
-        BlazeColourPanel = new JPanel();
-        BlazeColourDescription = new JLabel();
-        BlazeColourPlaceholder = new JLabel();
+        blazeSizePanel = new javax.swing.JPanel();
+        blazeSlider = new javax.swing.JSlider();
+        BlazeSizeDescription = new javax.swing.JLabel();
+        blazeOpacitySlider = new javax.swing.JSlider();
+        BlazeSizeDescription1 = new javax.swing.JLabel();
+        BlazeColourPanel = new javax.swing.JPanel();
+        BlazeColourDescription = new javax.swing.JLabel();
+        BlazeColourPlaceholder = new javax.swing.JLabel();
+        notePanel = new javax.swing.JPanel();
+        noteLabel = new javax.swing.JLabel();
 
-        blazeSizePanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.border.title"))); // NOI18N
+        blazeSizePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.border.title"))); // NOI18N
 
-        Mnemonics.setLocalizedText(BlazeSizeDescription, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeSizeDescription.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(BlazeSizeDescription, org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeSizeDescription.text")); // NOI18N
 
-        Mnemonics.setLocalizedText(BlazeSizeDescription1, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeSizeDescription1.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(BlazeSizeDescription1, org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeSizeDescription1.text")); // NOI18N
 
-        GroupLayout blazeSizePanelLayout = new GroupLayout(blazeSizePanel);
+        javax.swing.GroupLayout blazeSizePanelLayout = new javax.swing.GroupLayout(blazeSizePanel);
         blazeSizePanel.setLayout(blazeSizePanelLayout);
-        blazeSizePanelLayout.setHorizontalGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        blazeSizePanelLayout.setHorizontalGroup(
+            blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(blazeSizePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(blazeSizePanelLayout.createSequentialGroup()
-                        .addComponent(BlazeSizeDescription1)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(blazeOpacitySlider, GroupLayout.PREFERRED_SIZE, 253, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(blazeSizePanelLayout.createSequentialGroup()
-                        .addComponent(BlazeSizeDescription)
-                        .addGap(46, 46, 46)
-                        .addComponent(blazeSlider, GroupLayout.PREFERRED_SIZE, 253, GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25)
+                .addGroup(blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(BlazeSizeDescription1)
+                    .addComponent(BlazeSizeDescription, javax.swing.GroupLayout.Alignment.LEADING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(blazeOpacitySlider, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blazeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(39, 39, 39))
         );
-        blazeSizePanelLayout.setVerticalGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        blazeSizePanelLayout.setVerticalGroup(
+            blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(blazeSizePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                .addGroup(blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(BlazeSizeDescription)
-                    .addComponent(blazeSlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(blazeSizePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(blazeOpacitySlider, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(blazeSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(blazeSizePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(blazeOpacitySlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BlazeSizeDescription1))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        BlazeColourPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourPanel.border.title"))); // NOI18N
+        BlazeColourPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeColourPanel.border.title"))); // NOI18N
 
-        Mnemonics.setLocalizedText(BlazeColourDescription, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeColourDescription.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(BlazeColourDescription, org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeColourDescription.text")); // NOI18N
 
-        Mnemonics.setLocalizedText(BlazeColourPlaceholder, NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeColourPlaceholder.text")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(BlazeColourPlaceholder, org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.BlazeColourPlaceholder.text")); // NOI18N
 
-        GroupLayout BlazeColourPanelLayout = new GroupLayout(BlazeColourPanel);
+        javax.swing.GroupLayout BlazeColourPanelLayout = new javax.swing.GroupLayout(BlazeColourPanel);
         BlazeColourPanel.setLayout(BlazeColourPanelLayout);
-        BlazeColourPanelLayout.setHorizontalGroup(BlazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+        BlazeColourPanelLayout.setHorizontalGroup(
+            BlazeColourPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(BlazeColourPanelLayout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(BlazeColourDescription)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
+                .addComponent(BlazeColourPlaceholder)
+                .addGap(94, 94, 94))
+        );
+        BlazeColourPanelLayout.setVerticalGroup(
+            BlazeColourPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(BlazeColourPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(BlazeColourDescription)
-                .addGap(115, 115, 115)
-                .addComponent(BlazeColourPlaceholder)
-                .addContainerGap(587, Short.MAX_VALUE))
-        );
-        BlazeColourPanelLayout.setVerticalGroup(BlazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(BlazeColourPanelLayout.createSequentialGroup()
-                .addGroup(BlazeColourPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addGroup(BlazeColourPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(BlazeColourDescription)
                     .addComponent(BlazeColourPlaceholder))
-                .addGap(0, 12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        GroupLayout layout = new GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(blazeSizePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(BlazeColourPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+        notePanel.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.notePanel.border.title"))); // NOI18N
+
+        noteLabel.setFont(new java.awt.Font("Dialog", 2, 11)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(noteLabel, org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.noteLabel.text")); // NOI18N
+
+        javax.swing.GroupLayout notePanelLayout = new javax.swing.GroupLayout(notePanel);
+        notePanel.setLayout(notePanelLayout);
+        notePanelLayout.setHorizontalGroup(
+            notePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(notePanelLayout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addComponent(noteLabel)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        notePanelLayout.setVerticalGroup(
+            notePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, notePanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(noteLabel)
                 .addContainerGap())
         );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(blazeSizePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(BlazeColourPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(346, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(blazeSizePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(BlazeColourPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(notePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(notePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(blazeSizePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(BlazeColourPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
-        blazeSizePanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.AccessibleContext.accessibleName")); // NOI18N
+        blazeSizePanel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(GraphOptionsPanel.class, "GraphOptionsPanel.blazeSizePanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JLabel BlazeColourDescription;
-    private JPanel BlazeColourPanel;
-    private JLabel BlazeColourPlaceholder;
-    private JLabel BlazeSizeDescription;
-    private JLabel BlazeSizeDescription1;
-    private JSlider blazeOpacitySlider;
-    private JPanel blazeSizePanel;
-    private JSlider blazeSlider;
+    private javax.swing.JLabel BlazeColourDescription;
+    private javax.swing.JPanel BlazeColourPanel;
+    private javax.swing.JLabel BlazeColourPlaceholder;
+    private javax.swing.JLabel BlazeSizeDescription;
+    private javax.swing.JLabel BlazeSizeDescription1;
+    private javax.swing.JSlider blazeOpacitySlider;
+    private javax.swing.JPanel blazeSizePanel;
+    private javax.swing.JSlider blazeSlider;
+    private javax.swing.JLabel noteLabel;
+    private javax.swing.JPanel notePanel;
     // End of variables declaration//GEN-END:variables
 }
