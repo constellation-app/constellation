@@ -322,7 +322,10 @@ public final class QualityControlViewPane extends BorderPane {
     public static String qualityStyle(final int quality, final float alpha) {
         final int intensity = 255 - (255 * quality) / 100;
         final String style;
-        if (quality >= 95) {
+        
+        if(quality >= 60 && quality < 90) {
+            style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+        } else if (quality >= 95) {
             style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
         } else if (quality >= 90) {
             style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
