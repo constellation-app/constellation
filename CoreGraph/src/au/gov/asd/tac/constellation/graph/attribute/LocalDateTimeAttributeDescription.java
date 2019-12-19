@@ -47,11 +47,11 @@ import org.openide.util.lookup.ServiceProvider;
 public final class LocalDateTimeAttributeDescription extends AbstractAttributeDescription {
 
     private static final Logger LOGGER = Logger.getLogger(LocalDateTimeAttributeDescription.class.getName());
-    private long[] data = new long[0];
-    public static final long NULL_VALUE = Long.MIN_VALUE;
-    public static final long DEFAULT_VALUE = NULL_VALUE;
-    private long defaultValue = DEFAULT_VALUE;
     public static final String ATTRIBUTE_NAME = "local_datetime";
+    public static final long NULL_VALUE = Long.MIN_VALUE;
+    
+    private long[] data = new long[0];
+    private long defaultValue = NULL_VALUE;
 
     @Override
     public String getName() {
@@ -204,7 +204,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractAttributeDe
     @Override
     public void setDefault(final Object value) {
         final long parsedValue = parseObject(value);
-        defaultValue = parsedValue != NULL_VALUE ? parsedValue : DEFAULT_VALUE;
+        defaultValue = parsedValue != NULL_VALUE ? parsedValue : NULL_VALUE;
     }
 
     @Override

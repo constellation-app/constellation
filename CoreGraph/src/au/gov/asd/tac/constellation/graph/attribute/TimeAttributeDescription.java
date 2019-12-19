@@ -43,18 +43,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class TimeAttributeDescription extends AbstractAttributeDescription {
 
-    private static final int DESCRIPTION_VERSION = 1;
     private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescription.class.getName());
-    /**
-     * An array of primitives doesn't have a null equivalent, and the default
-     * value of 0 for int is a valid time, so we use an otherwise invalid value
-     * to indicate that a value has not been set. See setCapacity().
-     */
-    public static final int NULL_VALUE = Integer.MIN_VALUE;
-    private static final int DEFAULT_VALUE = NULL_VALUE;
-    private int[] data = new int[0];
-    private int defaultValue = DEFAULT_VALUE;
+    private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "time";
+    public static final int NULL_VALUE = Integer.MIN_VALUE;
+    
+    private int[] data = new int[0];
+    private int defaultValue = NULL_VALUE;
 
     private static final DateTimeFormatter FORMATTER = TemporalFormatting.TIME_FORMATTER;
 
@@ -210,12 +205,12 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     @Override
     public void setDefault(final Object value) {
         final int parsedValue = parseObject(value);
-        defaultValue = parsedValue != NULL_VALUE ? parsedValue : DEFAULT_VALUE;
+        defaultValue = parsedValue != NULL_VALUE ? parsedValue : NULL_VALUE;
     }
 
     @Override
     public Object getDefault() {
-        return defaultValue == DEFAULT_VALUE ? null : LocalTime.ofNanoOfDay(((long) defaultValue) * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+        return defaultValue == NULL_VALUE ? null : LocalTime.ofNanoOfDay(((long) defaultValue) * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
     }
 
     @Override
