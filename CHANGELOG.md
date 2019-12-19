@@ -1,5 +1,9 @@
 # CONSTELLATION Changes
 
+## 2019-12-01 Changes in December 2019
+* Renamed ArcgisMap Provider to EsriMapProvider.
+* Updated EsriMapProvider to support both regular tile-based services, as well as image export. This can be specified by overriding the new getMapServerType method.
+
 ## 2019-11-01 Changes in November 2019
 * Remove deprecated jai libraries.
 
