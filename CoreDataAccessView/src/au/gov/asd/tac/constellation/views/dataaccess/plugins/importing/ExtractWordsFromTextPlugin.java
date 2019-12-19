@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -429,7 +429,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             }
         }
 
-        if (!CoreUtilities.isGraphViewFrozen()) {
+        if (!PreferenceUtilites.isGraphViewFrozen()) {
             // complete with schema, arrange in trees, and reset view
             PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
                     .followedBy(ArrangementPluginRegistry.TREES)
