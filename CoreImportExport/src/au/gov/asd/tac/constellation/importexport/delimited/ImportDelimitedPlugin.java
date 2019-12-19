@@ -184,7 +184,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             return true;
         }
         // Check if destAttributeDefintions contain positional attributes
-        return destAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> ("x".equals(name) || "y".equals(name) || "z".equals(name)));
+        return destAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
     private static void processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType, boolean initialiseWithSchema, PluginInteraction interaction, String source, final List<Integer> newVertices) throws InterruptedException {
