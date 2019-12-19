@@ -180,7 +180,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     private static boolean attributeDefintionIsPositional(List<ImportAttributeDefinition> srcAttributeDefinitions, List<ImportAttributeDefinition> destAttributeDefinitions) {
 
         // Check if srcAttributeDefintions contain positional attributes
-        if (srcAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> ("x".equals(name) || "y".equals(name) || "z".equals(name)))) {
+        if (srcAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)))) {
             return true;
         }
         // Check if destAttributeDefintions contain positional attributes
