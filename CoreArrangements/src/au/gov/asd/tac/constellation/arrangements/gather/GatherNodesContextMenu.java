@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.arrangements.gather;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -65,13 +65,13 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
             case GRAPH:
                 PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.GatherNodesContextMenu()) {
                     @Override
-                    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final BitSet gathers = CoreUtilities.selectedVertexBits(wg);
+                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                        final BitSet gathers = selectedVertexBits(graph);
 
                         PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES_IN_GRAPH)
                                 .withParameter(GatherNodesInGraphPlugin.XYZ_PARAMETER_ID, unprojected)
                                 .withParameter(GatherNodesInGraphPlugin.GATHERS_PARAMETER_ID, gathers)
-                                .executeNow(wg);
+                                .executeNow(graph);
                     }
                 }).executeLater(graph);
                 break;
@@ -79,16 +79,38 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
             case VERTEX:
                 PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.GatherNodesContextMenu()) {
                     @Override
-                    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final BitSet gathers = CoreUtilities.selectedVertexBits(wg);
+                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                        final BitSet gathers = selectedVertexBits(graph);
 
                         PluginExecution.withPlugin(ArrangementPluginRegistry.GATHER_NODES)
                                 .withParameter(GatherNodesPlugin.VXID_PARAMETER_ID, element)
                                 .withParameter(GatherNodesPlugin.GATHERS_PARAMETER_ID, gathers)
-                                .executeNow(wg);
+                                .executeNow(graph);
                     }
                 }).executeLater(graph);
                 break;
         }
+    }
+    
+    /**
+     * Gather a graph's selected vertex ids into a BitSet.
+     *
+     * @param graph The graph.
+     *
+     * @return A BitSet where selected vertex ids in the graph are set.
+     */
+    private BitSet selectedVertexBits(final GraphReadMethods graph) {
+        final int selectedAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int vertexCount = graph.getVertexCount();
+        final BitSet vertexBits = new BitSet();
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            final int vertexId = graph.getVertex(vertexPosition);
+
+            if (graph.getBooleanValue(selectedAttributeId, vertexId)) {
+                vertexBits.set(vertexId);
+            }
+        }
+
+        return vertexBits;
     }
 }

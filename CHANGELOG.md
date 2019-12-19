@@ -1,6 +1,7 @@
 # CONSTELLATION Changes
 
 ## 2019-12-01 Changes in December 2019
+* Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.
 * Renamed ArcgisMap Provider to EsriMapProvider.
 * Updated EsriMapProvider to support both regular tile-based services, as well as image export. This can be specified by overriding the new getMapServerType method.
 
