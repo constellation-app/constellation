@@ -1,5 +1,8 @@
 # CONSTELLATION Changes
 
+## 2019-12-01 Changes in December 2019
+* Add methods [setPropertyWithoutEvent | setOptionsWithoutEvent] to PluginParameter and SingleChoiceParameterType which allow setting of properties/options without firing change events.
+
 ## 2019-11-01 Changes in November 2019
 * Remove deprecated jai libraries.
 

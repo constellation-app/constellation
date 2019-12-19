@@ -131,6 +131,20 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         parameterValue.setOptions(options);
         parameter.setProperty(CHOICES, new Object());
     }
+    
+     /**
+     * Set the collection of options for the given parameter from a list of
+     * strings. Will not fire a {@link ParameterChange} event.
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @param options A list of Strings to set as the options for the given
+     * parameter.
+     */
+    public static void setOptionsWithoutEvent(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
+        final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+        parameterValue.setOptions(options);
+        parameter.setPropertyWithoutEvent(CHOICES, new Object());
+    }
 
     /**
      * Set the collection of options for the given parameter from a list of
@@ -170,6 +184,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
 
     /**
      * Set the current selected choice from a string.
+     * This will fire a {@link ParameterChange} event if successful.
      *
      * @param parameter A {@link PluginParameter} of this type.
      * @param choice A {@link String} object to set as the chosen value for the
@@ -180,6 +195,19 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         if (parameterValue.setChoice(choice)) {
             parameter.fireChangeEvent(ParameterChange.VALUE);
         }
+    }
+        /**
+     * Set the current selected choice from a string without firing a 
+     * {@link ParameterChange} event.
+     * Useful for initialization of menu items determined at graph creation.
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @param choice A {@link String} object to set as the chosen value for the
+     * given parameter.
+     */
+    public static void setChoiceWithoutEvent(final PluginParameter<SingleChoiceParameterValue> parameter, final String choice) {
+        final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+        parameterValue.setChoice(choice);
     }
 
     /**

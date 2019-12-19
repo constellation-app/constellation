@@ -209,6 +209,27 @@ public class PluginParameter<V extends ParameterValue> {
             }
         }
     }
+    
+     /**
+     * Set the named property of this parameter to the specified value.
+     * <p>
+     * This will not fire a {@link ParameterChange} event.
+     *
+     * @param key The String name of the property to set.
+     * @param value the value of the property to set.
+     */
+    public void setPropertyWithoutEvent(String key, Object value) {
+        Object currentObject = properties.get(key);
+        if (value == null) {
+            if (currentObject != null) {
+                properties.remove(key);
+            }
+        } else {
+            if (!value.equals(currentObject)) {
+                properties.put(key, value);
+            }
+        }
+    }
 
     /**
      * Get the {@link PluginParameterType} of this parameter used to control the
