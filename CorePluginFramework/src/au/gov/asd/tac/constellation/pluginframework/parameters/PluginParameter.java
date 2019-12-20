@@ -129,7 +129,7 @@ public class PluginParameter<V extends ParameterValue> {
     public final void setName(String name) {
         if (!Objects.equals(name, this.name)) {
             this.name = name == null ? "" : name;
-            fireChangeEvent(eventIsSuppressed(ParameterChange.NAME) ? ParameterChange.NO_EVENT : ParameterChange.NAME);
+            fireChangeEvent(ParameterChange.NAME);
         }
     }
 
@@ -153,7 +153,7 @@ public class PluginParameter<V extends ParameterValue> {
         if (this.visible != visible) {
 
             this.visible = visible;
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VISIBLE) ? ParameterChange.NO_EVENT : ParameterChange.VISIBLE);
+            fireChangeEvent(ParameterChange.VISIBLE);
         }
     }
     
@@ -211,7 +211,7 @@ public class PluginParameter<V extends ParameterValue> {
     public void setEnabled(boolean enabled) {
         if (this.enabled != enabled) {
             this.enabled = enabled;
-            fireChangeEvent(eventIsSuppressed(ParameterChange.ENABLED) ? ParameterChange.NO_EVENT : ParameterChange.ENABLED);
+            fireChangeEvent(ParameterChange.ENABLED);
         }
     }
 
@@ -238,12 +238,12 @@ public class PluginParameter<V extends ParameterValue> {
         if (value == null) {
             if (currentObject != null) {
                 properties.remove(key);
-                fireChangeEvent(eventIsSuppressed(ParameterChange.PROPERTY) ? ParameterChange.NO_EVENT : ParameterChange.PROPERTY);
+                fireChangeEvent(ParameterChange.PROPERTY);
             }
         } else {
             if (!value.equals(currentObject)) {
                 properties.put(key, value);
-                fireChangeEvent(eventIsSuppressed(ParameterChange.PROPERTY) ? ParameterChange.NO_EVENT : ParameterChange.PROPERTY);
+                fireChangeEvent(ParameterChange.PROPERTY);
             }
         }
     }
@@ -291,7 +291,7 @@ public class PluginParameter<V extends ParameterValue> {
     public void setDescription(String description) {
         if (!Objects.equals(description, this.description)) {
             this.description = description;
-            fireChangeEvent(eventIsSuppressed(ParameterChange.DESCRIPTION) ? ParameterChange.NO_EVENT : ParameterChange.DESCRIPTION);
+            fireChangeEvent(ParameterChange.DESCRIPTION);
         }
     }
 
@@ -315,7 +315,7 @@ public class PluginParameter<V extends ParameterValue> {
     public void setIcon(final String icon) {
         if (!Objects.equals(icon, this.icon)) {
             this.icon = icon;
-            fireChangeEvent(eventIsSuppressed(ParameterChange.ICON) ? ParameterChange.NO_EVENT : ParameterChange.ICON);
+            fireChangeEvent(ParameterChange.ICON);
         }
     }
 
@@ -387,7 +387,7 @@ public class PluginParameter<V extends ParameterValue> {
             }
             this.error = error;
             if (errorChange) {
-                fireChangeEvent(eventIsSuppressed(ParameterChange.ERROR) ? ParameterChange.NO_EVENT : ParameterChange.ERROR);
+                fireChangeEvent(ParameterChange.ERROR);
             }
         }
     }
@@ -469,10 +469,10 @@ public class PluginParameter<V extends ParameterValue> {
 //        if (!equals(value.getObjectValue(), objectValue)) {
 ////            value = objectValue;
 //            value.setObjectValue(objectValue);
-//            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+//            fireChangeEvent(ParameterChange.VALUE);
 //        }
         if (value.setObjectValue(objectValue)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -480,7 +480,7 @@ public class PluginParameter<V extends ParameterValue> {
      * Fire a {@link ParameterChange} event without changing the object value.
      */
     public void fireNoChange() {
-        fireChangeEvent(eventIsSuppressed(ParameterChange.NO_CHANGE) ? ParameterChange.NO_EVENT : ParameterChange.NO_CHANGE);
+        fireChangeEvent(ParameterChange.NO_CHANGE);
     }
 
     /**
@@ -522,7 +522,7 @@ public class PluginParameter<V extends ParameterValue> {
         }
 
         if (value.setStringValue(stringValue)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -582,7 +582,7 @@ public class PluginParameter<V extends ParameterValue> {
      * NO_EVENT will not fire an event
      */
     public void fireChangeEvent(ParameterChange change) {
-        if(change != ParameterChange.NO_EVENT){
+        if(!eventIsSuppressed(change)){
             listeners.stream().forEach((listener) -> {
                 listener.parameterChanged(this, change);
             });
@@ -612,7 +612,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setBooleanValue(final boolean b) {
         if (((BooleanParameterValue) value).set(b)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -636,7 +636,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setColorValue(final ConstellationColor c) {
         if (((ColorParameterValue) value).set(c)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -660,7 +660,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setDateTimeRangeValue(final DateTimeRange dtr) {
         if (((DateTimeRangeParameterValue) value).set(dtr)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -684,7 +684,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setIntegerValue(final int i) {
         if (((IntegerParameterValue) value).set(i)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -708,7 +708,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setFloatValue(final float f) {
         if (((FloatParameterValue) value).set(f)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -754,7 +754,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setParameterListValue(final ParameterList paramListValue) {
         if (((ParameterListParameterValue) value).set(paramListValue)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -779,7 +779,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setLocalDateValue(final LocalDate ld) {
         if (((LocalDateParameterValue) value).set(ld)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 
@@ -803,7 +803,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setNumberValue(final Number n) {
         if (((NumberParameterValue) value).setNumberValue(n)) {
-            fireChangeEvent(eventIsSuppressed(ParameterChange.VALUE) ? ParameterChange.NO_EVENT : ParameterChange.VALUE);
+            fireChangeEvent(ParameterChange.VALUE);
         }
     }
 

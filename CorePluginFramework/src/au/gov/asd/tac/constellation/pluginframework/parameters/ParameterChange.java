@@ -64,10 +64,5 @@ public enum ParameterChange {
     // Therefore, even though it used a new object to fire its change event (and cause the controller action to be executed),
     // we don't want to propagate the change any further.
     // In particular, we don't want a plugin being turned on just because of a button press.
-    NO_CHANGE,
-    /**
-     * The parameter change event will not fire an event at all. 
-     * Differs from NO_CHANGE as it does not fire an event at all.
-     */
-    NO_EVENT
+    NO_CHANGE
 }
