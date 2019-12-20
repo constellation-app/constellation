@@ -1,7 +1,7 @@
 # CONSTELLATION Changes
 
 ## 2019-12-01 Changes in December 2019
-* Added methods [setPropertyWithoutEvent | setOptionsWithoutEvent] to PluginParameter and SingleChoiceParameterType which allow setting of properties/options without firing change events.
+* Added method suppressEvent(boolean, ArrayList<>) to PluginParameter which allow setting of properties/options without firing change events.
 * Renamed ArcgisMap Provider to EsriMapProvider.
 * Updated EsriMapProvider to support both regular tile-based services, as well as image export. This can be specified by overriding the new getMapServerType method.
 
