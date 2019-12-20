@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,11 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean visible = true;
     private boolean enabled = true;
     private String helpID;
+    private boolean isSuppressed = false;
+    
+    private ArrayList<ParameterChange> suppressedEvents = new ArrayList<>();
+    
+    private static final ArrayList<ParameterChange> PARAMETER_EVENTS = new ArrayList<>(Arrays.asList(ParameterChange.values()));
 
     private Map<String, Object> properties = new HashMap<>();
 
@@ -149,6 +155,38 @@ public class PluginParameter<V extends ParameterValue> {
             this.visible = visible;
             fireChangeEvent(ParameterChange.VISIBLE);
         }
+    }
+    
+    /**
+     * suppressEvent allows a call to the parameter to stop firing a {@link ParameterChange} event. 
+     * <p>
+     * Specify {@link ParameterChange} event enums as well as a boolean to engage
+     * or disengage them. 
+     * NOTE: passing suppress as false will enable all events.
+     * 
+     * @param suppress if true, the listed events will not fire. if no events are listed, 
+     * all events will not fire. If false, all events are enabled.
+     * @param eventsToSuppress the events to suppress. pass an empty {@link ArrayList}
+     * when specifying all events or enabling events. Pass {@link ParameterChange} 
+     * enums when specifying certain events to suppress.
+     */
+    public void suppressEvent(final boolean suppress, final ArrayList<ParameterChange> eventsToSuppress){
+        if(suppress){
+            suppressedEvents.addAll(eventsToSuppress.isEmpty() ? PARAMETER_EVENTS : eventsToSuppress );
+        }else{
+            suppressedEvents.clear();
+        }
+        isSuppressed = suppress;
+    }
+    
+    /**
+     * Checks whether the event passed is enabled or disabled
+     * 
+     * @param event the {@link ParameterChange} event to check
+     * @return true if the event is suppressed, false otherwise
+     */
+    public boolean eventIsSuppressed(ParameterChange event){
+        return suppressedEvents.contains(event) ? isSuppressed : false;
     }
 
     /**
