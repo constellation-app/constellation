@@ -73,9 +73,9 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     
-    private ArrayList<ParameterChange> suppressedEvents = new ArrayList<>();
+    private final List<ParameterChange> suppressedEvents = new ArrayList<>();
     
-    private static final ArrayList<ParameterChange> PARAMETER_EVENTS = new ArrayList<>(Arrays.asList(ParameterChange.values()));
+    private static final List<ParameterChange> ALL_PARAMETER_EVENTS = new ArrayList<>(Arrays.asList(ParameterChange.values()));
 
     private Map<String, Object> properties = new HashMap<>();
 
@@ -166,13 +166,13 @@ public class PluginParameter<V extends ParameterValue> {
      * 
      * @param suppress if true, the listed events will not fire. if no events are listed, 
      * all events will not fire. If false, all events are enabled.
-     * @param eventsToSuppress the events to suppress. pass an empty {@link ArrayList}
+     * @param eventsToSuppress the events to suppress. pass an empty {@link List}
      * when specifying all events or enabling events. Pass {@link ParameterChange} 
      * enumerated types when specifying certain events to suppress.
      */
-    public void suppressEvent(final boolean suppress, final ArrayList<ParameterChange> eventsToSuppress){
+    public void suppressEvent(final boolean suppress, final List<ParameterChange> eventsToSuppress){
         if(suppress){
-            suppressedEvents.addAll(eventsToSuppress.isEmpty() ? PARAMETER_EVENTS : eventsToSuppress );
+            suppressedEvents.addAll(eventsToSuppress.isEmpty() ? ALL_PARAMETER_EVENTS : eventsToSuppress );
         }else{
             suppressedEvents.clear();
         }

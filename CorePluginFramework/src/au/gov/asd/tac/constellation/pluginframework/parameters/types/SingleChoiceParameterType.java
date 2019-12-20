@@ -170,7 +170,6 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
 
     /**
      * Set the current selected choice from a string.
-     * This will fire a {@link ParameterChange} event if successful.
      *
      * @param parameter A {@link PluginParameter} of this type.
      * @param choice A {@link String} object to set as the chosen value for the
