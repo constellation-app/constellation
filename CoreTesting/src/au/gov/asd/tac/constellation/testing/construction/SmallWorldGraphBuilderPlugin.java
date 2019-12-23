@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -405,7 +405,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        if (!CoreUtilities.isGraphViewFrozen()) {
+        if (!PreferenceUtilites.isGraphViewFrozen()) {
             if (n < 10000) {
                 // Do a trees layout.
                 try {
