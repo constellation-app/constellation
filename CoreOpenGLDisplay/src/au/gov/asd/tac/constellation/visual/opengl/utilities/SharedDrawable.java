@@ -104,7 +104,7 @@ public final class SharedDrawable {
             iconTextureName = textureName[0];
 
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
-            glyphManager = new GlyphManager(FONT_NAME, 64, 2048, 2048);
+            glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
             labelBackgroundGlyphPosition = glyphManager.createBackgroundGlyph(0.5f);
             glyphTextureController.init(gl);
