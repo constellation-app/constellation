@@ -90,10 +90,12 @@ public class MultiplexityPlugin extends SimpleEditPlugin {
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                     final int transactionId = graph.getLinkTransaction(linkId, transactionPosition);
                     SchemaTransactionType type = graph.getObjectValue(typeAttribute, transactionId);
-                    if (topLevelType) {
-                        type = (SchemaTransactionType) type.getTopLevelType();
+                    if (type != null) {
+                        if (topLevelType) {
+                            type = (SchemaTransactionType) type.getTopLevelType();
+                        }
+                        types.add(type);
                     }
-                    types.add(type);
                 }
 
                 final float multiplexity = (float) types.size();

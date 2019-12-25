@@ -77,12 +77,42 @@
                 ]
             }
         },
+        "/v1/graph/getattrs": {
+            "get": {
+                "tags": ["graph"],
+                "description": "The graph, vertex, and transaction attributes.",
+                "produces": ["application/json"],
+                "parameters": [
+                    {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
+                    {
+                        "name": "X-CONSTELLATION-SECRET",
+                        "in": "header",
+                        "type": "string",
+                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
+                        "required": true
+                    }
+                ]
+            }
+        },
         "/v1/graph/get": {
             "get": {
                 "tags": ["graph"],
-                "description": "The graph attributes.",
+                "description": "The graph attribute values.",
                 "produces": ["application/json"],
                 "parameters": [
+                    {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
                     {
                         "name": "X-CONSTELLATION-SECRET",
                         "in": "header",
@@ -105,6 +135,13 @@
                         "type": "string",
                         "description": "The graph attributes to set, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso'). Note that any custom attributes will be added to as 'string' type attributes.",
                         "required": true
+                    },
+                    {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
                     },
                     {
                         "name": "X-CONSTELLATION-SECRET",
@@ -217,6 +254,13 @@
                 "description": "Run the named plugin on the active graph. (Currently, parameters cannot be passed to the plugin.)",
                 "parameters": [
                     {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
+                    {
                         "name": "name",
                         "in": "query",
                         "type": "string",
@@ -278,6 +322,13 @@
                         "required": true
                     },
                     {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
+                    {
                         "name": "complete_with_schema",
                         "in": "query",
                         "type": "boolean",
@@ -317,6 +368,13 @@
                 "description": "Get a JSON representation of a RecordStore from the active graph.",
                 "produces": ["application/json"],
                 "parameters": [
+                    {
+                        "name": "graph_id",
+                        "in": "query",
+                        "type": "string",
+                        "description": "The id of the associated graph",
+                        "required": false
+                    },
                     {
                         "name": "selected",
                         "in": "query",

@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.pluginframework.logging;
+package au.gov.asd.tac.constellation.views.mapview.exporters;
 
-import org.openide.windows.OnShowing;
+import au.gov.asd.tac.constellation.importexport.ImportExportPluginRegistry;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Code run when Constellation is starting that sends an "application start"
- * message to the default Constellation Logger.
+ * Export a graph to an ArcGIS compatible Shapefile file from the Map View.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
-@OnShowing
-public class ConstellationLoggerStartup implements Runnable {
+@ServiceProvider(service = MapExporter.class)
+public class ShapefileExporter implements MapExporter {
 
     @Override
-    public void run() {
-        ConstellationLogger.getDefault().applicationStart();
+    public String getDisplayName() {
+        return "Shapefile";
     }
 
+    @Override
+    public String getPluginReference() {
+        return ImportExportPluginRegistry.EXPORT_SHAPEFILE;
+    }
 }

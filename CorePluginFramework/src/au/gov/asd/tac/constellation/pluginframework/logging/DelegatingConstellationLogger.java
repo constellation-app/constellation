@@ -26,12 +26,14 @@ import java.util.Map;
 import java.util.Properties;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
+import org.openide.windows.TopComponent;
 
 /**
  * This ConstellationLogger holds a number of other ConstellationLoggers and
  * relays the information it receives to each of these loggers.
  *
  * @author arcturus
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = ConstellationLogger.class, position = 0)
 public class DelegatingConstellationLogger implements ConstellationLogger {
@@ -46,66 +48,90 @@ public class DelegatingConstellationLogger implements ConstellationLogger {
     }
 
     @Override
-    public void applicationStart() {
+    public void applicationStarted() {
         init();
-        for (ConstellationLogger logger : loggers) {
-            logger.applicationStart();
-        }
+        loggers.forEach(logger -> {
+            logger.applicationStarted();
+        });
     }
 
     @Override
-    public void applicationStop() {
+    public void applicationStopped() {
         init();
-        for (ConstellationLogger logger : loggers) {
-            logger.applicationStop();
-        }
+        loggers.forEach(logger -> {
+            logger.applicationStopped();
+        });
     }
 
     @Override
-    public void pluginStart(final Graph graph, final Plugin plugin, final PluginParameters parameters) {
+    public void viewStarted(final TopComponent view) {
         init();
-        for (ConstellationLogger logger : loggers) {
-            logger.pluginStart(graph, plugin, sanitiseParameters(parameters));
-        }
+        loggers.forEach(logger -> {
+            logger.viewStarted(view);
+        });
     }
 
     @Override
-    public void pluginStop(final Plugin plugin, final PluginParameters parameters) {
+    public void viewStopped(final TopComponent view) {
         init();
-        for (ConstellationLogger logger : loggers) {
-            logger.pluginStop(plugin, sanitiseParameters(parameters));
-        }
+        loggers.forEach(logger -> {
+            logger.viewStopped(view);
+        });
+    }
+    
+    @Override
+    public void viewInfo(final TopComponent view, final String info) {
+        init();
+        loggers.forEach(logger -> {
+            logger.viewInfo(view, info);
+        });
+    }
+
+    @Override
+    public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph) {
+        init();
+        loggers.forEach(logger -> {
+            logger.pluginStarted(plugin, sanitiseParameters(parameters), graph);
+        });
+    }
+
+    @Override
+    public void pluginStopped(final Plugin plugin, final PluginParameters parameters) {
+        init();
+        loggers.forEach(logger -> {
+            logger.pluginStopped(plugin, sanitiseParameters(parameters));
+        });
     }
 
     @Override
     public void pluginInfo(final Plugin plugin, final String info) {
         init();
-        for (ConstellationLogger logger : loggers) {
+        loggers.forEach(logger -> {
             logger.pluginInfo(plugin, info);
-        }
+        });
     }
 
     @Override
     public void pluginError(final Plugin plugin, final Throwable error) {
         init();
-        for (ConstellationLogger logger : loggers) {
+        loggers.forEach(logger -> {
             logger.pluginError(plugin, error);
-        }
+        });
     }
 
     @Override
     public void pluginProperties(final Plugin plugin, final Properties properties) {
         init();
-        for (ConstellationLogger logger : loggers) {
+        loggers.forEach(logger -> {
             logger.pluginProperties(plugin, properties);
-        }
+        });
     }
 
     /**
-     * Sanitise the parameters like hashing out passwords
+     * Sanitise parameters, including removing passwords.
      *
-     * @param parameters The parameters to sanitise
-     * @return A sanitised copy of the parameters
+     * @param parameters The parameters to sanitise.
+     * @return a sanitised copy of the parameters.
      */
     private static PluginParameters sanitiseParameters(final PluginParameters parameters) {
         if (parameters == null) {
@@ -113,13 +139,10 @@ public class DelegatingConstellationLogger implements ConstellationLogger {
         }
 
         final PluginParameters sanitisedParameters = parameters.copy();
-
         final Map<String, PluginParameter<?>> parametersMap = sanitisedParameters.getParameters();
-        for (final String key : parametersMap.keySet()) {
-            if (parametersMap.get(key).getType().getId().equals(PasswordParameterType.ID)) {
-                parametersMap.get(key).setStringValue("*****");
-            }
-        }
+        parametersMap.keySet().stream()
+                .filter(key -> (parametersMap.get(key).getType().getId().equals(PasswordParameterType.ID)))
+                .forEachOrdered(key -> parametersMap.get(key).setStringValue("*******"));
 
         return sanitisedParameters;
     }

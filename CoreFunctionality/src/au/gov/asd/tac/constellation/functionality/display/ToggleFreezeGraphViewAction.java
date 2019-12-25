@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.display;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.event.ActionEvent;
 import java.util.prefs.Preferences;
@@ -46,7 +46,7 @@ public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        final boolean freezeGraphView = CoreUtilities.isGraphViewFrozen();
+        final boolean freezeGraphView = PreferenceUtilites.isGraphViewFrozen();
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
         // update the preference and icon
@@ -55,13 +55,13 @@ public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
         // this will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null
         putValue(Action.SMALL_ICON, null);
 
-        setBooleanState(CoreUtilities.isGraphViewFrozen());
+        setBooleanState(PreferenceUtilites.isGraphViewFrozen());
     }
 
     @Override
     protected void initialize() {
         super.initialize();
-        setBooleanState(CoreUtilities.isGraphViewFrozen());
+        setBooleanState(PreferenceUtilites.isGraphViewFrozen());
     }
 
     @Override
@@ -71,7 +71,7 @@ public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
 
     @Override
     protected String iconResource() {
-        return CoreUtilities.isGraphViewFrozen()
+        return PreferenceUtilites.isGraphViewFrozen()
                 ? "au/gov/asd/tac/constellation/functionality/display/snowflake.png"
                 : "au/gov/asd/tac/constellation/functionality/display/snowflake_alternate.png";
     }

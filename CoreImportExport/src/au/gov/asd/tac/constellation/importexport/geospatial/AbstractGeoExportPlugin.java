@@ -49,7 +49,6 @@ import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MapExporter;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  *
  * @author cygnus_x-1
  */
-public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin implements MapExporter {
+public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
     public static final String OUTPUT_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "output");
     public static final String SPATIAL_REFERENCE_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "spatial_reference");
@@ -454,5 +453,4 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin implement
                 ConstellationLoggerHelper.SUCCESS
         );
     }
-
 }

@@ -27,6 +27,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -225,23 +226,23 @@ public class ExcelImportFileParser extends ImportFileParser {
 
     private String getCellStringValue(final Cell cell) {
         String result;
-        int type = cell.getCellType();
+        final CellType type = cell.getCellType();
 
         try {
             switch (type) {
-                case Cell.CELL_TYPE_STRING:
+                case STRING:
                     result = cell.getStringCellValue();
                     break;
-                case Cell.CELL_TYPE_NUMERIC:
+                case NUMERIC:
                     result = Double.toString(cell.getNumericCellValue());
                     break;
-                case Cell.CELL_TYPE_BLANK:
+                case BLANK:
                     result = "";
                     break;
-                case Cell.CELL_TYPE_FORMULA:
+                case FORMULA:
                     result = Double.toString(cell.getNumericCellValue());
                     break;
-                case Cell.CELL_TYPE_BOOLEAN:
+                case BOOLEAN:
                     result = Boolean.toString(cell.getBooleanCellValue());
                     break;
                 default:

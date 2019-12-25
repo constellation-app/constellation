@@ -27,19 +27,34 @@ import java.util.List;
 public class BlazePluginUtilities {
 
     /**
+     * Convert a String or Integer to an int.
+     * <p>
+     * The vertex ids should be strings, but we need to accept integers
+     * for backwards compatibility.
+     *
+     * @param o A String or Integer.
+     *
+     * @return The int corresponding to the input parameter.
+     */
+    private static int toInt(final Object o) {
+        return o instanceof Integer ? (Integer)o : Integer.parseInt((String)o);
+    }
+
+    /**
      * A helper function to get vertex ids from both a BitSet and a
-     * List<Integer>.
+     * List<String>.
      * <p>
      * The VERTEX_IDS_PARAMETER_ID parameter was originally BitSet, but we want
-     * to allow List<Integer>, so handle both.
+     * to allow List<String> (and List<Integer> for backward compatibility),
+     * so handle both.
      *
-     * @param parameters Plugin paramters.
+     * @param parameters Plugin parameters.
      *
      * @return A BitSet containing vertex ids, or null if the parameter wasn't
      * specified.
      */
     static BitSet verticesParam(final PluginParameters parameters) {
-        // The VERTEX_IDS_PARAMETER_ID parameter was originally BitSet, but we want to allow List<Integer>, so handle both.
+        // The VERTEX_IDS_PARAMETER_ID parameter was originally BitSet, but we want to allow List<String>, so handle both.
         //
         final Object vParam = parameters.getObjectValue(VERTEX_IDS_PARAMETER_ID);
         final BitSet vertices;
@@ -48,12 +63,11 @@ public class BlazePluginUtilities {
         } else if (vParam.getClass() == BitSet.class) {
             vertices = (BitSet) vParam;
         } else {
-            final List<Integer> vertexList = (List<Integer>) vParam;
+            final List<Object> vertexList = (List<Object>) vParam;
             vertices = new BitSet(vertexList.size());
-            vertexList.stream().forEach(ix -> vertices.set(ix));
+            vertexList.stream().forEach(ix -> vertices.set(toInt(ix)));
         }
 
         return vertices;
     }
-
 }

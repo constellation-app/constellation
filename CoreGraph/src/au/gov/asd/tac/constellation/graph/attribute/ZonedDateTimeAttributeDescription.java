@@ -40,12 +40,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDescription {
 
-    private static final int DESCRIPTION_VERSION = 1;
     private static final Logger LOGGER = Logger.getLogger(ZonedDateTimeAttributeDescription.class.getName());
+    private static final int DESCRIPTION_VERSION = 1;
+    public static final String ATTRIBUTE_NAME = "datetime";
+    public static final long NULL_VALUE = Long.MIN_VALUE;
+    
     private ZonedDateTime[] data = new ZonedDateTime[0];
     private ZonedDateTime defaultValue = null;
-    public static final String ATTRIBUTE_NAME = "datetime";
-    public static final long LONG_NULL_VALUE = Long.MIN_VALUE;
 
     @Override
     public String getName() {
@@ -107,7 +108,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDe
     @Override
     public long getLong(final int id) {
         if (data[id] == null) {
-            return LONG_NULL_VALUE;
+            return NULL_VALUE;
         }
         return data[id].toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
     }

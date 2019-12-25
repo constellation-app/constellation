@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
@@ -33,6 +34,7 @@ import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
@@ -100,6 +102,11 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private static final String LIGHT_THEME = "resources/Style-Container-Light.css";
     private static final String DARK_THEME = "resources/Style-Container-Dark.css";
     private static final String UPDATE_TIMELINE_THREAD_NAME = "Update Timeline from Graph";
+    public static final List<String> SUPPORTED_DATETIME_ATTRIBUTE_TYPES = Arrays.asList(
+            ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME,
+            LocalDateTimeAttributeDescription.ATTRIBUTE_NAME,
+            DateAttributeDescription.ATTRIBUTE_NAME);
+    
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
     private TimelineState state;
@@ -121,8 +128,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     //private long currentVertHideModificationCount = Long.MIN_VALUE;
     private long currentTemporalAttributeModificationCount = Long.MIN_VALUE;
     private volatile double splitPanePosition = DEFAULT_DIVIDER_LOCATION;
-    private List<String> attrs;
-    private String currentDatetimeAttr = null;
+    private List<String> datetimeAttributes;
+    private String currentDatetimeAttribute = null;
 
     public TimelineTopComponent() {
         initComponents();
@@ -223,7 +230,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             final ReadableGraph graph = graphNode.getGraph().getReadableGraph();
             final int txCount = graph.getTransactionCount();
-            final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttr);
+            final int txTimAttrId = graph.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
             final int txSelAttrId = graph.getAttribute(GraphElementType.TRANSACTION,
                     VisualConcept.TransactionAttribute.SELECTED.getName());
 
@@ -338,7 +345,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             persistStateToGraph();
 
             // We no longer have a datetime as we are moving away from the current graph:
-            currentDatetimeAttr = null;
+            currentDatetimeAttribute = null;
 
             GraphManager.getDefault().setDatetimeAttr(null);
 
@@ -423,43 +430,41 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         final Thread t = new Thread() {
             @Override
             public void run() {
-                attrs = new ArrayList<>();
+                datetimeAttributes = new ArrayList<>();
                 final ReadableGraph rg = graph.getReadableGraph();
                 try {
-                    final int attrCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
-                    final String dtAttrDesc = new ZonedDateTimeAttributeDescription().getName();
-                    final String dAttrDesc = new DateAttributeDescription().getName();
-                    for (int i = 0; i < attrCount; i++) {
+                    final int attributeCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
+                    for (int i = 0; i < attributeCount; i++) {
                         final int attrID = rg.getAttribute(GraphElementType.TRANSACTION, i);
-                        final Attribute attr = new GraphAttribute(rg, attrID);
-                        final String currentType = attr.getAttributeType();
+                        final Attribute attribute = new GraphAttribute(rg, attrID);
+                        final String attributeType = attribute.getAttributeType();
 
-                        if (currentType.equals(dtAttrDesc) || currentType.equals(dAttrDesc)) {
-                            attrs.add(attr.getName());
+                        if (SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(attributeType)) {
+                            datetimeAttributes.add(attribute.getName());
                         }
                     }
 
-                    if (!attrs.isEmpty()) {
-                        if (state != null && attrs.contains(state.getDateTimeAttr())) {
-                            currentDatetimeAttr = state.getDateTimeAttr();
+                    if (!datetimeAttributes.isEmpty()) {
+                        if (state != null && datetimeAttributes.contains(state.getDateTimeAttr())) {
+                            currentDatetimeAttribute = state.getDateTimeAttr();
 
-                            GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttr);
+                            GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttribute);
                         } else {
                             // Set the current datetime to the first found datetime attribute from the graph:
-                            currentDatetimeAttr = attrs.get(0);
-                            GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttr);
+                            currentDatetimeAttribute = datetimeAttributes.get(0);
+                            GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttribute);
                         }
                     } else {
                         // There are no datetime attributes on the graph:
-                        currentDatetimeAttr = null;
-                        GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttr);
+                        currentDatetimeAttribute = null;
+                        GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttribute);
                         hideTimeline(Bundle.NoTemporal());
 
                         return;
                     }
 
-                    if (currentDatetimeAttr != null) {
-                        currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttr));
+                    if (currentDatetimeAttribute != null) {
+                        currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
                         Platform.runLater(new Runnable() {
                             @Override
@@ -481,7 +486,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 //                                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
 
                                     // Add the datetime attributes:
-                                    timelinePanel.setDateTimeAttributes(attrs, currentDatetimeAttr);
+                                    timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
 
                                     timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
 
@@ -494,11 +499,11 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                     if (state != null && state.getNodeLabelsAttr() != null) {
                                         timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
                                         timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
-                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttr, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
+                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
                                     } else {
-                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttr, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
                                     }
-                                    overviewPanel.populateHistogram(rg, currentDatetimeAttr,
+                                    overviewPanel.populateHistogram(rg, currentDatetimeAttribute,
                                             getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
                                             isFullRefresh,
                                             selectedOnly
@@ -518,7 +523,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 } else {
                                     // There is no state, so lets create a new one:
                                     state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
-                                            0, false, currentDatetimeAttr, false, null, TimeZoneUtilities.UTC);
+                                            0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
                                 }
                                 setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
                             }
@@ -534,7 +539,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     public void setCurrentDatetimeAttr(final String currentDatetimeAttr) {
-        this.currentDatetimeAttr = currentDatetimeAttr;
+        this.currentDatetimeAttribute = currentDatetimeAttr;
         if (state != null) {
             state.setDateTimeAttr(currentDatetimeAttr);
         }
@@ -714,7 +719,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 if (vertSelectedAttr != Graph.NOT_FOUND) {
                     currentVertSelectedModificationCount = rg.getValueModificationCounter(vertSelectedAttr);
                 }
-                final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttr);
+                final int temporalAttrId = rg.getAttribute(GraphElementType.TRANSACTION, this.currentDatetimeAttribute);
                 if (temporalAttrId != Graph.NOT_FOUND) {
                     currentTemporalAttributeModificationCount = rg.getValueModificationCounter(temporalAttrId);
                 }

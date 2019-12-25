@@ -9,8 +9,8 @@
     
     <property name="ivy.install.version" value="2.3.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
-    <property name="ivy.cache.dir" value="${user.home}/.ivy2/cache" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
@@ -18,9 +18,12 @@
     <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
     <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
+    <property name="dist.filename.linux" value="constellation-linux" />
+    <property name="dist.filename.windows" value="constellation-win" />
     
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
         <ant target="clean" />
+        <ant target="clean-dependencies" />
         <ant target="download-dependencies" />
         <ant target="build">
             <property name="update.dependencies" value="true" />
@@ -29,6 +32,7 @@
 
     <target name="update-dependencies-clean-build-no-debug" description="Download dependencies and build all modules in the suite and exclude debugging.">
         <ant target="clean" />
+        <ant target="clean-dependencies" />
         <ant target="download-dependencies" />
         <ant target="build">
             <property name="update.dependencies" value="true" />
@@ -144,7 +148,11 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <zip destfile="${dist.dir}/${app.name}.zip">
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="crlf" />
+        <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
             <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
@@ -181,7 +189,11 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <tar destfile="${dist.dir}/${app.name}.tar">
+        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
+                 destdir="${build.launcher.dir}/etc/" 
+                 preservelastmodified="true"
+                 eol="lf" />
+        <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
             <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
@@ -198,9 +210,26 @@
                 <exclude name="config/Modules/*.xml_hidden"/>
             </tarfileset>
         </tar>
-        <gzip src="${dist.dir}/${app.name}.tar" destfile="${dist.dir}/${app.name}.tar.gz"/>
-        <delete file="${dist.dir}/${app.name}.tar"/>
+        <gzip src="${dist.dir}/${dist.filename.linux}.tar" destfile="${dist.dir}/${dist.filename.linux}.tar.gz"/>
+        <delete file="${dist.dir}/${dist.filename.linux}.tar"/>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
     
+    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
+        <delete dir="${suite.build.dir}/ivy-reports"/>
+        <mkdir dir="${suite.build.dir}/ivy-reports" />
+        
+        <ivy:resolve type="${ivy.resolve.types}"/>
+        <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
+    </target>
+    
+    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+        <ivy:resolve/>
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
+    
+    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
+        <ivy:dependencytree/>
+    </target>
+
 </project>

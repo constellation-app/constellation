@@ -35,6 +35,30 @@ public abstract class SwingTopComponent<P extends Component> extends ListeningTo
 
     protected JScrollPane scrollPane;
 
+    /**
+     * A SwingTopComponent will have a JScrollPane by default, as it cannot know
+     * the expected layout of the given content. If you wish to remove the
+     * horizontal scroll bar, you can override this method to return
+     * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER.
+     *
+     * @return an integer representing the desired horizontal scroll bar policy.
+     */
+    protected int getHorizontalScrollPolicy() {
+        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+    }
+
+    /**
+     * A SwingTopComponent will have a JScrollPane by default, as it cannot know
+     * the expected layout of the given content. If you wish to remove the
+     * vertical scroll bar, you can override this method to return
+     * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER.
+     *
+     * @return an integer representing the desired vertical scroll bar policy.
+     */
+    protected int getVerticalScrollPolicy() {
+        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
+    }
+
     @Override
     protected final void initContent() {
         this.setLayout(new BorderLayout());
@@ -60,29 +84,5 @@ public abstract class SwingTopComponent<P extends Component> extends ListeningTo
                 content.setFont(FontUtilities.getOutputFont());
             });
         }
-    }
-
-    /**
-     * A SwingTopComponent will have a JScrollPane by default, as it cannot know
-     * the expected layout of the given content. If you wish to remove the
-     * horizontal scroll bar, you can override this method to return
-     * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER.
-     *
-     * @return an integer representing the desired horizontal scroll bar policy.
-     */
-    protected int getHorizontalScrollPolicy() {
-        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
-    }
-
-    /**
-     * A SwingTopComponent will have a JScrollPane by default, as it cannot know
-     * the expected layout of the given content. If you wish to remove the
-     * vertical scroll bar, you can override this method to return
-     * JScrollPane.HORIZONTAL_SCROLLBAR_NEVER.
-     *
-     * @return an integer representing the desired vertical scroll bar policy.
-     */
-    protected int getVerticalScrollPolicy() {
-        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
     }
 }

@@ -20,12 +20,14 @@ import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import java.util.Properties;
 import org.openide.util.Lookup;
+import org.openide.windows.TopComponent;
 
 /**
  * An interface for listening to the life cycle of plugins. Implementations can
  * record these details in the desired manner.
  *
  * @author sirius
+ * @author cygnus_x-1
  */
 public interface ConstellationLogger {
 
@@ -34,47 +36,71 @@ public interface ConstellationLogger {
     }
 
     /**
-     * Called to indicate that Constellation is starting.
+     * Called to indicate that Constellation was started.
      */
-    public void applicationStart();
+    public void applicationStarted();
 
     /**
-     * Called to indicate that Constellation is shutting down.
+     * Called to indicate that Constellation was shut down.
      */
-    public void applicationStop();
+    public void applicationStopped();
 
     /**
-     * Called to indicate that a plugin is starting execution.
+     * Called to indicate that a Constellation View was opened.
      *
-     * @param graph the graph that the plugin is running on. May be null.
+     * @param view the view that was opened.
+     */
+    public void viewStarted(final TopComponent view);
+
+    /**
+     * Called to indicate that a Constellation View was closed.
+     *
+     * @param view the view that was closed.
+     */
+    public void viewStopped(final TopComponent view);
+    
+    /**
+     * Called to provide information about the state of a view.
+     *
+     * @param view the view providing the information.
+     * @param info a {@link String} conveying customized information about the
+     * view.
+     */
+    public void viewInfo(final TopComponent view, final String info);
+
+    /**
+     * Called to indicate that a plugin has started execution.
+     *
      * @param plugin the plugin that is starting execution.
      * @param parameters the parameters that have been used to configure the
+     * @param graph the graph that the plugin is running on (may be null).
      * plugin.
      */
-    public void pluginStart(final Graph graph, final Plugin plugin, final PluginParameters parameters);
+    public void pluginStarted(final Plugin plugin, final PluginParameters parameters, final Graph graph);
 
     /**
-     * Called to indicate that a plugin is stopping execution.
+     * Called to indicate that a plugin has stopped execution.
      *
      * @param plugin the plugin that is stopping execution.
      * @param parameters the parameters that have been used to configure the
      * plugin.
      */
-    public void pluginStop(final Plugin plugin, final PluginParameters parameters);
+    public void pluginStopped(final Plugin plugin, final PluginParameters parameters);
 
     /**
-     * Called to provide customized information about the plugin.
+     * Called to provide information about a plugin execution.
      *
-     * @param plugin the plugin.
-     * @param info a string conveying customized information about the plugin.
+     * @param plugin the plugin being executed.
+     * @param info a {@link String} conveying customized information about the
+     * plugin.
      */
     public void pluginInfo(final Plugin plugin, final String info);
 
     /**
-     * Called to indicate that an error occurred during plugin execution.
+     * Called to indicate that an error occurred during a plugin execution.
      *
-     * @param plugin the plugin that was running when the error occurred.
-     * @param error a Throwable that describes the error that occurred.
+     * @param plugin the plugin being executed.
+     * @param error a {@link Throwable} that describes the error that occurred.
      */
     public void pluginError(final Plugin plugin, final Throwable error);
 
@@ -85,7 +111,8 @@ public interface ConstellationLogger {
      * were selected. The keys are completely up to the plugin author.
      *
      * @param plugin the plugin being executed.
-     * @param properties the properties to associate with this plugin execution.
+     * @param properties a {@link Properties} to associate with this plugin
+     * execution.
      */
     public void pluginProperties(final Plugin plugin, final Properties properties);
 }

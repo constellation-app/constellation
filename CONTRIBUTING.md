@@ -249,9 +249,9 @@ version by looking at the version on the top left of the application title
 Unsure where to begin contributing to Constellation? You can start by looking
 through these `beginner` and `help-wanted` issues:
 
-* [Beginner issues][beginner] - issues which should only require a few lines of
+* [Beginner issues][beginner-issues] - issues which should only require a few lines of
 code, and a test or two.
-* [Help wanted issues][help-wanted] - issues which should be a bit more involved
+* [Help wanted issues][help-wanted-issues] - issues which should be a bit more involved
 than `beginner` issues.
 
 Both issue lists are sorted by total number of comments. While not perfect, the
@@ -306,7 +306,7 @@ on how to do this, see the ***Build Constellation*** section in the
 * Include screenshots and animated GIFs in your pull request whenever possible.
 * Format your code using the default NetBeans formatter settings. For specifics see the [style guide](STYLE_GUIDELINES.md).
 * Ensure that new ***leaks*** or ***code smells*** are not introduced by parsing
-you code using `sonar-scanner` and checking via [Sonar Qube](#https://sonarcloud.io)
+you code using `sonar-scanner` and checking via [Sonar Qube](https://sonarcloud.io)
 * Document code based on the [style guide](STYLE_GUIDELINES.md)
 * Avoid OS dependant code (e.g. Windows or Linux)
 * Utility methods should end with the word Utilities (i.e not Util or Utility)
@@ -429,3 +429,5 @@ filter issues by your author name and date range.
 This contributing guide is adapted from the [Atom Contributing Guide][atom-contributing-guide].
 
 [atom-contributing-guide]: https://github.com/atom/atom/blob/master/CONTRIBUTING.md
+[beginner-issues]: https://github.com/constellation-app/constellation/labels/good%20first%20issue
+[help-wanted-issues]: https://github.com/constellation-app/constellation/labels/help%20wanted
