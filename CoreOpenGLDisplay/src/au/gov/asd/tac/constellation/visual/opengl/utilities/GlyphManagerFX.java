@@ -37,8 +37,10 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
@@ -393,7 +395,6 @@ public class GlyphManagerFX implements GlyphManager {
      * @param glyphStream the glyph stream to output the characters to.
      */
     public synchronized void renderTextAsLigatures(String text, GlyphStream glyphStream) {
-        System.out.printf("@@RENDER [%s]\n", text);
 
         if (text.contains("\n")) {
             throw new RuntimeException("Cannot render a line of text containing '\n'");
@@ -563,6 +564,22 @@ public class GlyphManagerFX implements GlyphManager {
      */
     public void readGlyphTexturePage(int page, ByteBuffer buffer) {
 
+        CountDownLatch latch = new CountDownLatch(1);
+        Platform.runLater(() -> {
+            readGlyphTexturePageFX(page, buffer);
+            latch.countDown();
+        });
+        boolean waiting = true;
+        while (waiting) {
+            try {
+                latch.await();
+                waiting = false;
+            } catch (InterruptedException ex) {
+            }
+        }
+    }
+
+    private void readGlyphTexturePageFX(int page, ByteBuffer buffer) {
         // Get the glyph texture page to be written to the buffer
         Canvas glyphTexture = glyphTextures.get(page);
 

@@ -23,7 +23,18 @@ public interface GlyphManager {
      */
     public void renderTextAsLigatures(String text, GlyphManager.GlyphStream glyphStream);
 
+    /**
+     * Returns the number of glyphs.
+     *
+     * @return the number of glyphs.
+     */
     public int getGlyphCount();
+
+    /**
+     * Returns the number of glyph pages.
+     *
+     * @return the number of glyph pages.
+     */
     public int getGlyphPageCount();
     public int getTextureWidth();
     public int getTextureHeight();
@@ -45,9 +56,35 @@ public interface GlyphManager {
      */
     public float getHeightScalingFactor();
 
+    /**
+     * Returns an array holding the texture coordinates of each glyph. The
+     * coordinates of each glyph (x, y, width, height) are stored in 4
+     * continuous entries in the array starting at glyphPosition * 4. The
+     * returned array can be of any size but only the first glyphCount * 4
+     * entries are defined. As texture coordinates are always in the range 0..1,
+     * the whole number part of the x value is used to store the page that holds
+     * the glyph.
+     *
+     * @return an array holding the texture coordinates of each glyph.
+     */
     public float[] getGlyphTextureCoordinates();
+
+    /**
+     * Reads the pixel data from a specified glyph texture page into a specified
+     * byte buffer.
+     *
+     * @param page the glyph texture page to read.
+     * @param buffer the buffer to store the pixel data in.
+     */
     public void readGlyphTexturePage(int page, ByteBuffer buffer);
 
+    /**
+     * Create a glyph to be drawn as a background for the other glyphs.
+     *
+     * @param alpha The intensity of the background in the range 0.0 to 1.0.
+     *
+     * @return
+     */
     public int createBackgroundGlyph(float alpha);
 
     /**
