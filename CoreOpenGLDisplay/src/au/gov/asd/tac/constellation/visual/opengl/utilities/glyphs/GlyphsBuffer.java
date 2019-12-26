@@ -33,6 +33,7 @@ import javax.imageio.ImageIO;
  * @author algol
  */
 public final class GlyphsBuffer implements GlyphManager {
+    public static final float SCALING_FACTOR = 7f;
 
     // Where do we draw the text?
     //
@@ -47,6 +48,8 @@ public final class GlyphsBuffer implements GlyphManager {
     public static final String DEFAULT_FONT = Font.SANS_SERIF;
     public static final int DEFAULT_FONT_SIZE = 64;
 
+    public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
+
     /**
      * The size of the rectangle buffer.
      * An arbitrary number, not too small that we need lots of buffers,
@@ -55,6 +58,11 @@ public final class GlyphsBuffer implements GlyphManager {
     public static final int DEFAULT_TEXTURE_BUFFER_SIZE = 512 + 256;
 
     private Font[] fonts;
+
+    /**
+     * The glyphs must be scaled down to be rendered at a reasonable size.
+     * The font height seems to be a reasonable scale.
+     */
     private int maxFontHeight;
     private String line;
 
@@ -80,18 +88,23 @@ public final class GlyphsBuffer implements GlyphManager {
     };
 
     public GlyphsBuffer() {
-        this(null, Font.PLAIN, DEFAULT_FONT_SIZE, DEFAULT_TEXTURE_BUFFER_SIZE);
+        this(null, Font.PLAIN, DEFAULT_FONT_SIZE, DEFAULT_TEXTURE_BUFFER_SIZE, DEFAULT_BUFFER_TYPE);
     }
 
-    public GlyphsBuffer(final String[] fontNames, final int style, final int fontSize, final int textureBufferSize) {
+    public GlyphsBuffer(final String[] fontNames) {
+        this(fontNames, Font.PLAIN, DEFAULT_FONT_SIZE, DEFAULT_TEXTURE_BUFFER_SIZE, DEFAULT_BUFFER_TYPE);
+    }
+
+    public GlyphsBuffer(final String[] fontNames, final int style, final int fontSize, final int textureBufferSize, final int bufferType) {
 
         // TODO Ensure that the BufferedImage is wide enough to draw into.
         // TODO Can we get away with using BufferedImage.TYPE_BYTE_GRAY?
         //
 //        drawing = new BufferedImage(2048, 256, BufferedImage.TYPE_INT_ARGB);
-        drawing = new BufferedImage(2048, 256, BufferedImage.TYPE_BYTE_GRAY);
+//        drawing = new BufferedImage(2048, 256, BufferedImage.TYPE_BYTE_GRAY);
+        drawing = new BufferedImage(2048, 256, bufferType);
 
-        textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize);
+        textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize, bufferType);
 
         if(fontNames!=null && fontNames.length>0) {
             setFonts(fontNames, style, fontSize);
@@ -155,14 +168,14 @@ public final class GlyphsBuffer implements GlyphManager {
         maxFontHeight = Arrays.stream(fonts).map(f -> {
                 final Graphics2D g2d = drawing.createGraphics();
                 final FontMetrics fm = g2d.getFontMetrics(f);
-                final int height = fm.getMaxAscent() + fm.getMaxDescent();
+                final int height = fm.getHeight();
                 System.out.printf("@@font %s height %d\n", f, height);
                 g2d.dispose();
                 return height;
             }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
         textureBuffer.reset();
 
-        createBackgroundGlyph(0.5f);
+//        createBackgroundGlyph(0.5f);
 
         renderTextAsLigatures(line, null);
     }
@@ -282,9 +295,9 @@ public final class GlyphsBuffer implements GlyphManager {
                 final String spart = frun.string;
                 final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;
                 final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags);
-                final int ng = gv.getNumGlyphs();
-                System.out.printf("* %s %s\n", gv.getClass(), gv);
-                System.out.printf("* numGlyphs %d\n", gv.getNumGlyphs());
+//                final int ng = gv.getNumGlyphs();
+//                System.out.printf("* %s %s\n", gv.getClass(), gv);
+//                System.out.printf("* numGlyphs %d\n", gv.getNumGlyphs());
 
                 // Some fonts are shaped such that the left edge of the pixel bounds is
                 // to the left of the starting point, and the right edge of the pixel
@@ -350,11 +363,11 @@ public final class GlyphsBuffer implements GlyphManager {
                 // Remember the texture position and rectangle (see below).
                 //
                 final FontMetrics fm = g2d.getFontMetrics(frun.font);
-                for(final Rectangle r : merged) {
+                merged.forEach(r -> {
                     final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, r.y, r.width, r.height));
                     glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
 //                    glyphStream.addGlyph(position, x/maxFontHeight, (y0-fm.getAscent())/maxFontHeight);
-                }
+                });
 
                 if(drawRuns) {
                     g2d.setColor(Color.RED);
@@ -402,16 +415,19 @@ public final class GlyphsBuffer implements GlyphManager {
 
         g2d.dispose();
 
+        // Add the background for this text.
+        //
+        glyphStream.newLine((right-left)/(float)maxFontHeight);
+
         // The glyphRectangles list contains the absolute positions of each glyph rectangle
         // in pixels as drawn above.
         // Our OpenGL shaders expect x in world units, where x is relative to the centre
         // of the entire line rather than the left.
         //
         final float centre = (left+right)/2f;
-        Collections.reverse(glyphRectangles);
         for(final GlyphRectangle gr : glyphRectangles) {
             final float cx = (gr.rect.x-centre)/(float)maxFontHeight;
-            final float cy = (gr.rect.y + gr.ascent)/(float)maxFontHeight-2;
+            final float cy = (gr.rect.y + gr.ascent)/(float)maxFontHeight - 1.5f;//maxFontHeight/SCALING_FACTOR;
 //            System.out.printf("GlyphRectangle: %s %f %f\n", gr, cx, cy);
             glyphStream.addGlyph(gr.position, cx, cy);
         }
@@ -449,12 +465,12 @@ public final class GlyphsBuffer implements GlyphManager {
 
     @Override
     public float getWidthScalingFactor() {
-        return 12f;//maxFontHeight / textureBuffer.width;
+        return SCALING_FACTOR;
     }
 
     @Override
     public float getHeightScalingFactor() {
-        return 12f;//maxFontHeight / textureBuffer.height;
+        return SCALING_FACTOR;
     }
 
     BufferedImage getTextureBuffer() {
@@ -463,16 +479,16 @@ public final class GlyphsBuffer implements GlyphManager {
 
     @Override
     public int createBackgroundGlyph(float alpha) {
-        final BufferedImage bg = new BufferedImage(maxFontHeight, maxFontHeight, BufferedImage.TYPE_BYTE_GRAY);
+        final BufferedImage bg = new BufferedImage(maxFontHeight, maxFontHeight, DEFAULT_BUFFER_TYPE);
         final Graphics2D g2d = bg.createGraphics();
         final int intensity = (int) (alpha * 255);
         g2d.setColor(new Color((intensity<<16) | (intensity<<8) | intensity));
         g2d.fillRect(0, 0, maxFontHeight, maxFontHeight);
         g2d.dispose();
 
-        textureBuffer.addRectImage(bg);
+        final int position = textureBuffer.addRectImage(bg);
 
-        return 0;
+        return position;
     }
 
     @Override

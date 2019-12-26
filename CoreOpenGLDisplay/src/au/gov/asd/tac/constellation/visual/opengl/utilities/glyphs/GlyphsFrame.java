@@ -51,7 +51,7 @@ public class GlyphsFrame extends JFrame {
         imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         textLines.setModel(new DefaultComboBoxModel<>(text));
-        glyphComponent = new GlyphsBuffer(fonts, Font.PLAIN, GlyphsBuffer.DEFAULT_FONT_SIZE, GlyphsBuffer.DEFAULT_TEXTURE_BUFFER_SIZE);
+        glyphComponent = new GlyphsBuffer(fonts, Font.PLAIN, GlyphsBuffer.DEFAULT_FONT_SIZE, GlyphsBuffer.DEFAULT_TEXTURE_BUFFER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         final String[] availablefonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
@@ -316,6 +316,7 @@ public class GlyphsFrame extends JFrame {
         final int style = cbBold.isSelected() ? Font.BOLD : Font.PLAIN;
 
         glyphComponent.setFonts(fontNames, style, fontSize);
+        glyphComponent.createBackgroundGlyph(0.5f);
         showTextureBuffer();
 
         repaint();

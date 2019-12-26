@@ -27,6 +27,8 @@ final class GlyphRectangleBuffer {
     //
     private final List<BufferedImage> rectBuffers;
 
+    private final int bufferType;
+
     // The current rectangle buffer and its graphics (a reference to
     // the end item in rectBuffers).
     //
@@ -68,9 +70,17 @@ final class GlyphRectangleBuffer {
     public final int width;
     public final int height;
 
-    GlyphRectangleBuffer(final int width, final int height) {
+    /**
+     *
+     * @param width
+     * @param height
+     * @param bufferType Use BufferedImage.TYPE_BYTE_GRAY for CONSTELLATION (we only need grayscale).
+     *  Use BufferedImage.TYPE_INT_ARGB for standalone to see the pretty colors.
+     */
+    GlyphRectangleBuffer(final int width, final int height, final int bufferType) {
         this.width = width;
         this.height = height;
+        this.bufferType = bufferType;
         rectBuffers = new ArrayList<>();
         memory = new HashMap<>();
 
@@ -175,7 +185,6 @@ final class GlyphRectangleBuffer {
                 rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length*2);
             }
 
-            // TODO fill in the right numbers (see the FX version of addTextureCoordinates).
             // Texture coordinates are in units of texture buffer size;
             // each coordinate ranges from 0 to 1. The x coordinate also encodes
             // the texture page.
@@ -209,8 +218,7 @@ final class GlyphRectangleBuffer {
 //    }
 
     private void newRectBuffer() {
-//        rectBuffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        rectBuffer = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        rectBuffer = new BufferedImage(width, height, bufferType);
 
         if(g2d!=null) {
             g2d.dispose();
