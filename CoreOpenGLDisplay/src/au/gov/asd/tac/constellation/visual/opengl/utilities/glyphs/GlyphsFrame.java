@@ -31,16 +31,16 @@ import javax.swing.UnsupportedLookAndFeelException;
  */
 public class GlyphsFrame extends JFrame {
 
-    private final GlyphsBuffer glyphComponent;
+    private final GlyphManagerBI glyphComponent;
     private final JFrame imageFrame;
 
-    public GlyphsFrame(final String[] fonts, final String[] text) {
+    public GlyphsFrame(final String[] fontNames, final String[] text) {
 
         initComponents();
 
         imageFrame = new JFrame("Texture buffer (highest page)");
         imageFrame.getContentPane().setBackground(Color.DARK_GRAY);
-        imageFrame.getContentPane().setPreferredSize(new Dimension(GlyphsBuffer.DEFAULT_TEXTURE_BUFFER_SIZE, GlyphsBuffer.DEFAULT_TEXTURE_BUFFER_SIZE));
+        imageFrame.getContentPane().setPreferredSize(new Dimension(GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE));
         imageFrame.getContentPane().setLayout(new BorderLayout());
 //        imageFrame.getContentPane().setBackground(Color.BLACK);
 //        imageFrame.setPreferredSize(new Dimension(TEXTURE_BUFFER_SIZE*2, TEXTURE_BUFFER_SIZE*2));
@@ -51,15 +51,15 @@ public class GlyphsFrame extends JFrame {
         imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         textLines.setModel(new DefaultComboBoxModel<>(text));
-        glyphComponent = new GlyphsBuffer(fonts, Font.PLAIN, GlyphsBuffer.DEFAULT_FONT_SIZE, GlyphsBuffer.DEFAULT_TEXTURE_BUFFER_SIZE, BufferedImage.TYPE_INT_ARGB);
+        glyphComponent = new GlyphManagerBI(fontNames, Font.PLAIN, GlyphManagerBI.DEFAULT_FONT_SIZE, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE, BufferedImage.TYPE_INT_ARGB);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         final String[] availablefonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
         Arrays.sort(availablefonts);
         fontNameSp.setModel(new DefaultComboBoxModel<>(availablefonts));
-        fontNameSp.getModel().setSelectedItem(fonts[0]);
+        fontNameSp.getModel().setSelectedItem(fontNames.length>0 ? fontNames[0] : GlyphManagerBI.DEFAULT_FONT_NAME);
 
-        fontSizeSp.setValue(GlyphsBuffer.DEFAULT_FONT_SIZE);
+        fontSizeSp.setValue(GlyphManagerBI.DEFAULT_FONT_SIZE);
         cbActionPerformed();
 
         final BufferedImage img = glyphComponent.getImage();
@@ -309,13 +309,16 @@ public class GlyphsFrame extends JFrame {
 
     private void fontActionPerformed() {
         final String[] fontNames = glyphComponent.getFonts();
+//        final String[] fontNames = Arrays.stream(fonts).map(f -> f.getFontName()).toArray(String[]::new);
         final String fontName = (String)fontNameSp.getSelectedItem();
         fontNames[0] = fontName;
 
+        final int fontStyle = cbBold.isSelected() ? Font.BOLD : Font.PLAIN;
         final int fontSize = ((SpinnerNumberModel)fontSizeSp.getModel()).getNumber().intValue();
-        final int style = cbBold.isSelected() ? Font.BOLD : Font.PLAIN;
+//        final Font[] newFonts = Arrays.stream(fontNames).map(fn -> new Font(fn, style, fontSize)).toArray(Font[]::new);
 
-        glyphComponent.setFonts(fontNames, style, fontSize);
+        glyphComponent.setFonts(fontNames, fontStyle, fontSize);
+
         glyphComponent.createBackgroundGlyph(0.5f);
         showTextureBuffer();
 
@@ -327,6 +330,10 @@ public class GlyphsFrame extends JFrame {
             final List<String> ls = in.lines().filter(line -> line.length()>0 && !line.startsWith("#")).collect(Collectors.toList());
             final String[] text = ls.toArray(new String[ls.size()]);
 
+            for(final String t : text) {
+                System.out.printf("loadText %s [%s]\n", fnam, t);
+            }
+
             return text;
         }
     }
@@ -336,7 +343,7 @@ public class GlyphsFrame extends JFrame {
      */
     public static void main(String args[]) throws IOException {
 
-        final String[] fonts = loadText("fonts.txt");
+        final String[] fontNames = loadText("fonts.txt");
         final String[] text = loadText("text.txt");
 
         try {
@@ -350,7 +357,7 @@ public class GlyphsFrame extends JFrame {
 
         /* Create and display the form */
         EventQueue.invokeLater(() -> {
-            new GlyphsFrame(fonts, text).setVisible(true);
+            new GlyphsFrame(fontNames, text).setVisible(true);
         });
     }
 

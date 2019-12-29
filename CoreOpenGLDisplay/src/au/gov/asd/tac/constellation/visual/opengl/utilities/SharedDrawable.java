@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphsBuffer;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -106,7 +106,8 @@ public final class SharedDrawable {
 
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
 //            glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
-            glyphManager = new GlyphsBuffer(new String[]{"Consolas", "Noto Naskh Arabic", "Noto Sans CJK SC Regular"});
+            glyphManager = new GlyphManagerBI(new String[]{"Arial", "Noto Naskh Arabic", "Noto Serif CJK SC"}, 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
             labelBackgroundGlyphPosition = glyphManager.createBackgroundGlyph(0.5f);
             glyphTextureController.init(gl);

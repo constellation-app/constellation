@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
 /**
@@ -32,7 +34,18 @@ import javax.imageio.ImageIO;
  *
  * @author algol
  */
-public final class GlyphsBuffer implements GlyphManager {
+public final class GlyphManagerBI implements GlyphManager {
+    private static final Logger LOGGER = Logger.getLogger(GlyphManagerBI.class.getName());
+
+    /**
+     * This logical font is always present.
+     */
+    public static final String DEFAULT_FONT_NAME = "Arial";//Font.SANS_SERIF;
+    public static final int DEFAULT_FONT_SIZE = 64;
+    public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
+
+    public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
+
     public static final float SCALING_FACTOR = 7f;
 
     // Where do we draw the text?
@@ -41,14 +54,6 @@ public final class GlyphsBuffer implements GlyphManager {
     public static final int BASEY = 180;
 
     private final BufferedImage drawing;
-
-    /**
-     * This logical font is always present.
-     */
-    public static final String DEFAULT_FONT = Font.SANS_SERIF;
-    public static final int DEFAULT_FONT_SIZE = 64;
-
-    public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
     /**
      * The size of the rectangle buffer.
@@ -87,29 +92,22 @@ public final class GlyphsBuffer implements GlyphManager {
         }
     };
 
-    public GlyphsBuffer() {
-        this(null, Font.PLAIN, DEFAULT_FONT_SIZE, DEFAULT_TEXTURE_BUFFER_SIZE, DEFAULT_BUFFER_TYPE);
+    public GlyphManagerBI(final String[] fontNames, final int fontSize, final int textureSize) {
+        this(fontNames, Font.PLAIN, fontSize, textureSize, DEFAULT_BUFFER_TYPE);
     }
 
-    public GlyphsBuffer(final String[] fontNames) {
-        this(fontNames, Font.PLAIN, DEFAULT_FONT_SIZE, DEFAULT_TEXTURE_BUFFER_SIZE, DEFAULT_BUFFER_TYPE);
-    }
-
-    public GlyphsBuffer(final String[] fontNames, final int style, final int fontSize, final int textureBufferSize, final int bufferType) {
+    public GlyphManagerBI(final String[] fontNames, final int fontStyle, final int fontSize, final int textureBufferSize, final int bufferType) {
 
         // TODO Ensure that the BufferedImage is wide enough to draw into.
-        // TODO Can we get away with using BufferedImage.TYPE_BYTE_GRAY?
         //
-//        drawing = new BufferedImage(2048, 256, BufferedImage.TYPE_INT_ARGB);
-//        drawing = new BufferedImage(2048, 256, BufferedImage.TYPE_BYTE_GRAY);
         drawing = new BufferedImage(2048, 256, bufferType);
 
         textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize, bufferType);
 
         if(fontNames!=null && fontNames.length>0) {
-            setFonts(fontNames, style, fontSize);
+            setFonts(fontNames, fontStyle, fontSize);
         } else {
-            setFonts(new String[]{DEFAULT_FONT}, style, fontSize);
+            setFonts(new String[]{DEFAULT_FONT_NAME}, fontStyle, fontSize);
         }
 
         drawRuns = false;
@@ -159,17 +157,32 @@ public final class GlyphsBuffer implements GlyphManager {
      * the existing texture buffers are reset, so all strings have to be
      * rebuilt.
      *
-     * @param fontNames An array of Font instances.
-     * @param style The style to be used to render the fonts (Font.PLAIN, Font.BOLD).
-     * @param fontSize The font size.
+     * @param fontNames
+     * @param fontStyle
+     * @param fontSize
      */
-    public void setFonts(final String[] fontNames, final int style, final int fontSize) {
-        fonts = Arrays.stream(fontNames).map(fn -> new Font(fn, style, fontSize)).toArray(Font[]::new);
+    public void setFonts(final String[] fontNames, final int fontStyle, final int fontSize) {
+        // If the fontName array does not contain the default font, ad it to the end.
+        //
+        final String[] tempNames;
+        final Optional<String> hasDefault = Arrays.stream(fontNames).filter(fn -> fn.toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
+        if(hasDefault.isPresent()) {
+            tempNames = Arrays.copyOf(fontNames, fontNames.length);
+        } else {
+            tempNames = Arrays.copyOf(fontNames, fontNames.length+1);
+            tempNames[fontNames.length] = DEFAULT_FONT_NAME;
+        }
+
+        fonts = Arrays.stream(tempNames).map(fn -> new Font(fn, fontStyle, fontSize)).toArray(Font[]::new);
+
+        for(int i=0; i<this.fonts.length; i++) {
+            LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
+        }
+
         maxFontHeight = Arrays.stream(fonts).map(f -> {
                 final Graphics2D g2d = drawing.createGraphics();
                 final FontMetrics fm = g2d.getFontMetrics(f);
                 final int height = fm.getHeight();
-                System.out.printf("@@font %s height %d\n", f, height);
                 g2d.dispose();
                 return height;
             }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
@@ -253,7 +266,6 @@ public final class GlyphsBuffer implements GlyphManager {
             return;
         }
 
-        System.out.printf("@@render [%s] %s\n", text, glyphStream);
         if(glyphStream==null) {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }

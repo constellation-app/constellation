@@ -25,8 +25,13 @@ class FontRun {
             }
         }
 
-        System.out.printf("**** Font not found for codepoint %d\n", codepoint);
-        return -1;
+//        System.out.printf("**** Font not found for codepoint %d\n", codepoint);
+//        return -1;
+
+        // If no font could display this codepoint, return the default font anyway.
+        // TODO Figure out a way of displaying the missing glyph (U+FFFD) instead of a box.
+        //
+        return fonts.length-1;
     }
 
     /**
@@ -55,7 +60,6 @@ class FontRun {
             final int codepoint = s.codePointAt(offset);
             final int cc = Character.charCount(codepoint);
 
-//            final int fontIx = whichFont(fonts, codepoint);
             // If this is a space, make it the same font as the previous codepoint.
             // This keeps words of the same font together.
             //

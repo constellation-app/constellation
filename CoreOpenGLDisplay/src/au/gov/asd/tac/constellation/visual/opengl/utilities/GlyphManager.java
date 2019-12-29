@@ -3,9 +3,6 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.WritableImage;
-import javax.imageio.ImageIO;
 
 /**
  *
@@ -36,7 +33,17 @@ public interface GlyphManager {
      * @return the number of glyph pages.
      */
     public int getGlyphPageCount();
+
+    /**
+     * Returns The width of the texture buffer.
+     * @return The width of the texture buffer.
+     */
     public int getTextureWidth();
+
+    /**
+     * Returns The height of the texture buffer.
+     * @return The height of the texture buffer.
+     */
     public int getTextureHeight();
     /**
      * Returns the scaling factor that should be applied to glyph texture widths
@@ -83,7 +90,7 @@ public interface GlyphManager {
      *
      * @param alpha The intensity of the background in the range 0.0 to 1.0.
      *
-     * @return
+     * @return The position of the background glyph
      */
     public int createBackgroundGlyph(float alpha);
 
@@ -131,5 +138,4 @@ public interface GlyphManager {
          */
         public void addGlyph(int glyphPosition, float x, float y);
     }
-
 }
