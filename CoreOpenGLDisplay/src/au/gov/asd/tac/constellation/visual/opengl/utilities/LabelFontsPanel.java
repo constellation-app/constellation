@@ -8,6 +8,8 @@ import java.util.Locale;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.openide.util.NbPreferences;
 
 final class LabelFontsPanel extends javax.swing.JPanel {
@@ -29,7 +31,23 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         Arrays.sort(availableFonts);
 
         cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
-//        cbFonts.getModel().setSelectedItem(fontNames.length>0 ? fontNames[0] : GlyphManagerBI.DEFAULT_FONT_NAME);
+
+        taFontList.getDocument().addDocumentListener(new DocumentListener(){
+            @Override
+            public void insertUpdate(final DocumentEvent e) {
+                controller.changed();
+            }
+
+            @Override
+            public void removeUpdate(final DocumentEvent e) {
+                controller.changed();
+            }
+
+            @Override
+            public void changedUpdate(final DocumentEvent e) {
+                controller.changed();
+            }
+        });
     }
 
     /**
