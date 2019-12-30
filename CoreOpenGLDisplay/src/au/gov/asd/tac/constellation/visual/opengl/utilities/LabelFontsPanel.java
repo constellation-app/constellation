@@ -1,9 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
+
+import java.awt.GraphicsEnvironment;
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.prefs.Preferences;
+import java.util.stream.Collectors;
+import javax.swing.DefaultComboBoxModel;
+import org.openide.util.NbPreferences;
 
 final class LabelFontsPanel extends javax.swing.JPanel {
 
@@ -13,6 +18,45 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         this.controller = controller;
         initComponents();
         // TODO listen to changes in form fields and call controller.changed()
+
+        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
+        final String os = System.getProperty("os.name");
+        if(os.toLowerCase().contains("win")) {
+            availableFonts = otfFontFilesWindows(availableFonts);
+        }
+
+        Arrays.sort(availableFonts);
+
+        cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
+//        cbFonts.getModel().setSelectedItem(fontNames.length>0 ? fontNames[0] : GlyphManagerBI.DEFAULT_FONT_NAME);
+    }
+
+    /**
+     * Look in the user's local profile's fonts directory for OTF fontfiles.
+     *
+     * @param existing The existing list of font names.
+     *
+     * @return The existing list of font names, possibly extended with the names of OTF font files.
+     */
+    private static String[] otfFontFilesWindows(final String[] existing) {
+        final String local = System.getenv("LOCALAPPDATA");
+        if(local!=null) {
+            final File fontDir = new File(local, "Microsoft/Windows/Fonts");
+            if(fontDir.isDirectory()) {
+                final File[] files = fontDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".otf"));
+                if(files.length>0) {
+                    final List<String> names = Arrays.stream(existing).collect(Collectors.toList());
+                    for(final File f : files) {
+                        names.add(f.getName());
+                    }
+
+                    return names.toArray(new String[names.size()]);
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -24,17 +68,37 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        taFontList = new javax.swing.JTextArea();
+        cbFonts = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        jTextArea2 = new javax.swing.JTextArea();
+        addFontButton = new javax.swing.JButton();
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        taFontList.setColumns(20);
+        taFontList.setRows(5);
+        jScrollPane1.setViewportView(taFontList);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbFonts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.jLabel1.text")); // NOI18N
+
+        jTextArea2.setEditable(false);
+        jTextArea2.setBackground(java.awt.SystemColor.control);
+        jTextArea2.setColumns(20);
+        jTextArea2.setFont(new java.awt.Font("Dialog", 0, 13)); // NOI18N
+        jTextArea2.setLineWrap(true);
+        jTextArea2.setRows(5);
+        jTextArea2.setText(org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.jTextArea2.text")); // NOI18N
+        jTextArea2.setWrapStyleWord(true);
+        jTextArea2.setBorder(null);
+        jTextArea2.setFocusable(false);
+
+        org.openide.awt.Mnemonics.setLocalizedText(addFontButton, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.addFontButton.text")); // NOI18N
+        addFontButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFontButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -43,27 +107,53 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addFontButton)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextArea2)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 2, Short.MAX_VALUE)
+                        .addComponent(jTextArea2, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
+                    .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(addFontButton))
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addFontButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFontButtonActionPerformed
+        // Add the selected font name to the text area.
+        //
+        final String fontName = (String)cbFonts.getSelectedItem();
+        String text = taFontList.getText().trim();
+        text = String.format("%s\n%s", text, fontName);
+        if(!text.endsWith("\n")) {
+            text += "\n";
+        }
+
+        taFontList.setText(text);
+    }//GEN-LAST:event_addFontButtonActionPerformed
+
     void load() {
+        final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
+        taFontList.setText(prefs.get(LabelFontsPreferenceKeys.FONT_LIST, ""));
         // TODO read settings and initialize GUI
         // Example:
         // someCheckBox.setSelected(Preferences.userNodeForPackage(LabelFontsPanel.class).getBoolean("someFlag", false));
@@ -74,6 +164,8 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     }
 
     void store() {
+        final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
+        prefs.put(LabelFontsPreferenceKeys.FONT_LIST, taFontList.getText());
         // TODO store modified settings
         // Example:
         // Preferences.userNodeForPackage(LabelFontsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
@@ -89,9 +181,11 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JButton addFontButton;
+    private javax.swing.JComboBox<String> cbFonts;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JTextArea taFontList;
     // End of variables declaration//GEN-END:variables
 }

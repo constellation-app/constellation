@@ -57,9 +57,11 @@ public final class GlyphManagerBI implements GlyphManager {
 
     // Where do we draw the text?
     //
-    public static final int BASEX = 60;
-    public static final int BASEY = 180;
+    private static final int BASEX = 60;
+//    public static final int BASEY = 180;
+    private final int basey;
 
+    private final int bufferType;
     private final BufferedImage drawing;
 
     /**
@@ -110,10 +112,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
     public GlyphManagerBI(final String[] fontNames, final int fontStyle, final int fontSize, final int textureBufferSize, final int bufferType) {
 
-        // TODO Ensure that the BufferedImage is wide enough to draw into.
-        //
-        drawing = new BufferedImage(2048, 256, bufferType);
-
+        this.bufferType = bufferType;
         textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize, bufferType);
 
         if(fontNames!=null && fontNames.length>0) {
@@ -121,6 +120,13 @@ public final class GlyphManagerBI implements GlyphManager {
         } else {
             setFonts(new String[]{DEFAULT_FONT_NAME}, fontStyle, fontSize);
         }
+
+        // Make the drawing buffer twice the max font height.
+        // Draw text at the mid y point.
+        // TODO Ensure that the BufferedImage is wide enough to draw into.
+        //
+        drawing = new BufferedImage(4096, maxFontHeight*2, bufferType);
+        basey = maxFontHeight;
 
         drawRuns = false;
         drawIndividual = false;
@@ -149,7 +155,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
     public final void setLine(final String line) {
         this.line = cleanString(line);
-        renderTextAsLigatures(line, null);
+        renderTextAsLigatures(this.line, null);
     }
 
     public void setBoundaries(final boolean drawRuns, final boolean drawIndividual, final boolean drawCombined) {
@@ -196,19 +202,23 @@ public final class GlyphManagerBI implements GlyphManager {
         fonts = Arrays.stream(tempNames).map(fn -> {
             fn = fn.trim();
             if(fn.toLowerCase().endsWith(".otf")) {
+                File otfFile = new File(fn);
                 try {
-                    if(fn.toUpperCase().startsWith(LOCAL_APP_DATA)) {
+                    // This appears to be an OTF font file.
+                    // If it is relative, look in the user's local profile for
+                    // the font file and create the font.
+                    //
+                    if(!otfFile.isAbsolute()) {
                         final String lap = System.getenv(LOCAL_APP_DATA);
                         if(lap!=null) {
-                            fn = String.format("%s%s", lap, fn.substring(LOCAL_APP_DATA.length()));
+                            otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, fn));
                         }
                     }
-                    LOGGER.info(String.format("Reading OTF font from %s", fn));
-                    final Font otf = Font.createFont(Font.TRUETYPE_FONT, new File(fn));
-                    final Font otf2 = otf.deriveFont(fontStyle, fontSize);
-                    return otf2;
+                    LOGGER.info(String.format("Reading OTF font from %s", otfFile));
+                    final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
+                    return otf.deriveFont(fontStyle, fontSize);
                 } catch (final FontFormatException | IOException ex) {
-                    LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s", fn), ex);
+                    LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
                     return null;
                 }
             } else {
@@ -220,18 +230,25 @@ public final class GlyphManagerBI implements GlyphManager {
             LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
         }
 
+        // Create a temporary BufferedImage so we can get the metrics we need.
+        // Should we use getMaxCharBounds()?
+        //
+        final BufferedImage tmpBI = new BufferedImage(1, 1, bufferType);
+        final Graphics2D g2d = tmpBI.createGraphics();
+//        final FontRenderContext frc = g2d.getFontRenderContext();
         maxFontHeight = Arrays.stream(fonts).map(f -> {
-                final Graphics2D g2d = drawing.createGraphics();
+//                System.out.printf("max char size %s %s\n", f.getFontName(), f.getMaxCharBounds(frc));
                 final FontMetrics fm = g2d.getFontMetrics(f);
                 final int height = fm.getHeight();
-                g2d.dispose();
                 return height;
             }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
+        g2d.dispose();
+
         textureBuffer.reset();
 
 //        createBackgroundGlyph(0.5f);
 
-        renderTextAsLigatures(line, null);
+//        renderTextAsLigatures(line, null);
     }
 
     /**
@@ -335,7 +352,7 @@ public final class GlyphManagerBI implements GlyphManager {
 //        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
 
         int x = BASEX;
-        final int y0 = BASEY;
+        final int y0 = basey;
 
         final FontRenderContext frc = g2d.getFontRenderContext();
 
@@ -459,6 +476,11 @@ public final class GlyphManagerBI implements GlyphManager {
                     merged.forEach(r -> {g2d.drawRect(r.x, r.y, r.width, r.height);});
                 }
 
+                if(drawRuns || drawIndividual || drawCombined) {
+                    g2d.setColor(Color.LIGHT_GRAY);
+                    g2d.drawRect(0, 0, drawing.getWidth()-1, drawing.getHeight()-1);
+                }
+
 //                g2d.setColor(Color.LIGHT_GRAY);
 //                g2d.drawLine(x, y0-2, (int)(x + layout.getAdvance()), y0+2);
 
@@ -482,10 +504,14 @@ public final class GlyphManagerBI implements GlyphManager {
         // Our OpenGL shaders expect x in world units, where x is relative to the centre
         // of the entire line rather than the left.
         //
+        // TODO Figure out why "- 0.8f" is required.
+        // This centers the text vertically within the background glyph. Where does 0.8 come from???
+        // It seems to be related to basey.
+        //
         final float centre = (left+right)/2f;
         for(final GlyphRectangle gr : glyphRectangles) {
             final float cx = (gr.rect.x-centre)/(float)maxFontHeight;
-            final float cy = (gr.rect.y + gr.ascent)/(float)maxFontHeight - 1.5f;//maxFontHeight/SCALING_FACTOR;
+            final float cy = (gr.rect.y + gr.ascent)/(float)maxFontHeight - 0.8f;
 //            System.out.printf("GlyphRectangle: %s %f %f\n", gr, cx, cy);
             glyphStream.addGlyph(gr.position, cx, cy);
         }

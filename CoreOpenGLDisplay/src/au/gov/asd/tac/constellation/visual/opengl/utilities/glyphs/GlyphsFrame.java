@@ -38,9 +38,11 @@ public class GlyphsFrame extends JFrame {
 
         initComponents();
 
+        final int textureBufferSize = GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE / 4;
+
         imageFrame = new JFrame("Texture buffer (highest page)");
         imageFrame.getContentPane().setBackground(Color.DARK_GRAY);
-        imageFrame.getContentPane().setPreferredSize(new Dimension(GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE));
+        imageFrame.getContentPane().setPreferredSize(new Dimension(textureBufferSize, textureBufferSize));
         imageFrame.getContentPane().setLayout(new BorderLayout());
 //        imageFrame.getContentPane().setBackground(Color.BLACK);
 //        imageFrame.setPreferredSize(new Dimension(TEXTURE_BUFFER_SIZE*2, TEXTURE_BUFFER_SIZE*2));
@@ -51,7 +53,7 @@ public class GlyphsFrame extends JFrame {
         imageFrame.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         textLines.setModel(new DefaultComboBoxModel<>(text));
-        glyphComponent = new GlyphManagerBI(fontNames, Font.PLAIN, GlyphManagerBI.DEFAULT_FONT_SIZE, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE, BufferedImage.TYPE_INT_ARGB);
+        glyphComponent = new GlyphManagerBI(fontNames, Font.PLAIN, GlyphManagerBI.DEFAULT_FONT_SIZE, textureBufferSize, BufferedImage.TYPE_INT_ARGB);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         final String[] availablefonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
