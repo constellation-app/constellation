@@ -3,6 +3,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GlyphManager;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -12,6 +13,7 @@ import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -24,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
@@ -44,6 +47,12 @@ public final class GlyphManagerBI implements GlyphManager {
     public static final int DEFAULT_FONT_SIZE = 64;
     public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
 
+    /**
+     * For Windows user-installed fonts (typically "%LOCALAPPDATA%/Microsoft/Windows/Fonts").
+     * TODO Figure out something for non-Windows systems.
+     */
+    private static final String LOCAL_APP_DATA = "LOCALAPPDATA";
+
     public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
     // Where do we draw the text?
@@ -60,6 +69,11 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     public static final int DEFAULT_TEXTURE_BUFFER_SIZE = 2048;
 
+    // The fonts being used.
+    // We can't derive the names from the fonts, because a .otf font may have been specified
+    // (see setFonts()).
+    //
+    private String[] fontNames;
     private Font[] fonts;
 
     /**
@@ -154,16 +168,22 @@ public final class GlyphManagerBI implements GlyphManager {
      * Because setting new fonts implies a complete redraw,
      * the existing texture buffers are reset, so all strings have to be
      * rebuilt.
+     * <p>
+     * Java doesn't recognise OTF fonts; they have to be created and derived,
+     * rather than just "new Font()". This means fonts such as Google's Noto
+     * CJK fonts need special treatment.
+     * Names ending in ".otf" are treated as filenames. If such names start with
+     * "LOCALAPPDATA", replace it with the relevant Windows directory.
      *
-     * @param fontNames
-     * @param fontStyle
-     * @param fontSize
+     * @param fontNames An array of font names or .otf files.
+     * @param fontStyle The font style (typically Font.PLAIN or Font.BOLD).
+     * @param fontSize The font size.
      */
     public void setFonts(final String[] fontNames, final int fontStyle, final int fontSize) {
-        // If the fontName array does not contain the default font, ad it to the end.
+        // If the fontName array does not contain the default font, add it to the end.
         //
         final String[] tempNames;
-        final Optional<String> hasDefault = Arrays.stream(fontNames).filter(fn -> fn.toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
+        final Optional<String> hasDefault = Arrays.stream(fontNames).filter(fn -> fn.trim().toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
         if(hasDefault.isPresent()) {
             tempNames = Arrays.copyOf(fontNames, fontNames.length);
         } else {
@@ -171,7 +191,30 @@ public final class GlyphManagerBI implements GlyphManager {
             tempNames[fontNames.length] = DEFAULT_FONT_NAME;
         }
 
-        fonts = Arrays.stream(tempNames).map(fn -> new Font(fn, fontStyle, fontSize)).toArray(Font[]::new);
+        this.fontNames = tempNames;
+
+        fonts = Arrays.stream(tempNames).map(fn -> {
+            fn = fn.trim();
+            if(fn.toLowerCase().endsWith(".otf")) {
+                try {
+                    if(fn.toUpperCase().startsWith(LOCAL_APP_DATA)) {
+                        final String lap = System.getenv(LOCAL_APP_DATA);
+                        if(lap!=null) {
+                            fn = String.format("%s%s", lap, fn.substring(LOCAL_APP_DATA.length()));
+                        }
+                    }
+                    LOGGER.info(String.format("Reading OTF font from %s", fn));
+                    final Font otf = Font.createFont(Font.TRUETYPE_FONT, new File(fn));
+                    final Font otf2 = otf.deriveFont(fontStyle, fontSize);
+                    return otf2;
+                } catch (final FontFormatException | IOException ex) {
+                    LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s", fn), ex);
+                    return null;
+                }
+            } else {
+                return new Font(fn, fontStyle, fontSize);
+            }
+        }).filter(f -> f!=null).toArray(Font[]::new);
 
         for(int i=0; i<this.fonts.length; i++) {
             LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
@@ -191,8 +234,13 @@ public final class GlyphManagerBI implements GlyphManager {
         renderTextAsLigatures(line, null);
     }
 
+    /**
+     * Return the names of the fonts being used (including the extra default font).
+     *
+     * @return The names of the fonts being used (including the extra default font).
+     */
     public String[] getFonts() {
-        return Arrays.stream(fonts).map(f -> f.getFontName()).toArray(String[]::new);
+        return Arrays.copyOf(fontNames, fontNames.length);
     }
 
     /**

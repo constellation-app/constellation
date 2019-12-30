@@ -1,5 +1,6 @@
 # Fonts used to draw glyphs.
 # Put more specific fonts first.
+# Note that OTF fonts must be specified by filenames ending with ".otf".
 #
 # Use a leading # to comment out lines.
 # Blank lines are allowed.
@@ -14,4 +15,5 @@
 Arial
 #Courier New
 Noto Naskh Arabic
-Noto Sans CJK SC Regular
+#LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSerifCJKtc-Regular.otf
+LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSansCJKsc-Regular.otf

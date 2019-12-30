@@ -106,7 +106,8 @@ public final class SharedDrawable {
 
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
 //            glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
-            glyphManager = new GlyphManagerBI(new String[]{"Arial", "Noto Naskh Arabic", "Noto Serif CJK SC"}, 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+            glyphManager = new GlyphManagerBI(new String[]{"Arial", "Noto Naskh Arabic", "LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSansCJKsc-Regular.otf"}, 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+//            glyphManager = new GlyphManagerBI(new String[]{"Arial", "Noto Naskh Arabic", "Noto Serif CJK SC"}, 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
 
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
             labelBackgroundGlyphPosition = glyphManager.createBackgroundGlyph(0.5f);
