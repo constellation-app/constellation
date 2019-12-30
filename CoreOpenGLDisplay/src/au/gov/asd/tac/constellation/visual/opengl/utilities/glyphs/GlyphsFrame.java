@@ -68,7 +68,8 @@ public class GlyphsFrame extends JFrame {
         imageLabel.setIcon(new ImageIcon(glyphComponent.getImage()));
         glyphPanel.setPreferredSize(new Dimension(img.getWidth(), img.getHeight()));
 
-        glyphComponent.setLine((String)textLines.getModel().getSelectedItem());
+        final String line = (String)textLines.getModel().getSelectedItem();
+        glyphComponent.renderTextAsLigatures(line, null);
 
         showTextureBuffer();
     }
@@ -260,7 +261,7 @@ public class GlyphsFrame extends JFrame {
 
     private void textLinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textLinesActionPerformed
         final String line = (String)textLines.getModel().getSelectedItem();
-        glyphComponent.setLine(line);
+        glyphComponent.renderTextAsLigatures(line, null);
         repaint();
         showTextureBuffer();
     }//GEN-LAST:event_textLinesActionPerformed
@@ -320,9 +321,11 @@ public class GlyphsFrame extends JFrame {
 //        final Font[] newFonts = Arrays.stream(fontNames).map(fn -> new Font(fn, style, fontSize)).toArray(Font[]::new);
 
         glyphComponent.setFonts(fontNames, fontStyle, fontSize);
-
         glyphComponent.createBackgroundGlyph(0.5f);
+
         showTextureBuffer();
+        final String line = (String)textLines.getModel().getSelectedItem();
+        glyphComponent.renderTextAsLigatures(line, null);
 
         repaint();
     }

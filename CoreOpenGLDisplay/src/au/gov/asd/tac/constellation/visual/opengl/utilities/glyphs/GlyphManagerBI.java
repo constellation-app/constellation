@@ -83,7 +83,6 @@ public final class GlyphManagerBI implements GlyphManager {
      * The font height seems to be a reasonable scale.
      */
     private int maxFontHeight;
-    private String line;
 
     // Which boundaries do we draw?
     //
@@ -153,16 +152,10 @@ public final class GlyphManagerBI implements GlyphManager {
         ;
     }
 
-    public final void setLine(final String line) {
-        this.line = cleanString(line);
-        renderTextAsLigatures(this.line, null);
-    }
-
     public void setBoundaries(final boolean drawRuns, final boolean drawIndividual, final boolean drawCombined) {
         this.drawRuns = drawRuns;
         this.drawIndividual = drawIndividual;
         this.drawCombined = drawCombined;
-        renderTextAsLigatures(line, null);
     }
 
     /**
@@ -247,8 +240,6 @@ public final class GlyphManagerBI implements GlyphManager {
         textureBuffer.reset();
 
 //        createBackgroundGlyph(0.5f);
-
-//        renderTextAsLigatures(line, null);
     }
 
     /**
