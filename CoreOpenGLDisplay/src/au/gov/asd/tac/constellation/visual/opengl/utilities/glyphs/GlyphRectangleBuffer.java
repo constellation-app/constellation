@@ -35,6 +35,13 @@ final class GlyphRectangleBuffer {
     private BufferedImage rectBuffer;
     private Graphics2D g2d;
 
+    /**
+     * If we draw the rectangles immediately next to each other, pixels from
+     * one image can bleed through to a neighbouring image, resulting in visible
+     * artifacts. Therefore we add some space between rectangles.
+     */
+    private static final int PADDING = 2;
+
     // The next position to draw a rectangle at.
     //
     private int x;
@@ -163,10 +170,10 @@ final class GlyphRectangleBuffer {
         } else {
             // This is a new image. Add it to the buffer, creating a new buffer if necessary.
             //
-            if((x+w) > width) {
+            if((x+w+PADDING) >= width) {
                 newRectLine();
             }
-            if((y+h)>height) {
+            if((y+h+PADDING) >= height) {
                 newRectBuffer();
             }
 
@@ -194,7 +201,7 @@ final class GlyphRectangleBuffer {
             rectTextureCoordinates[ptr+2] = w/(float)width;
             rectTextureCoordinates[ptr+3] = h/(float)height;
 
-            x += w;
+            x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
 
             rectangleCount++;
@@ -239,8 +246,8 @@ final class GlyphRectangleBuffer {
 
         rectBuffers.add(rectBuffer);
 
-        x = 0;
-        y = 0;
+        x = PADDING;
+        y = PADDING;
         maxHeight = 0;
 
         // Start with room for an arbitrary number of rectangles
@@ -250,8 +257,8 @@ final class GlyphRectangleBuffer {
     }
 
     private void newRectLine() {
-        x = 0;
-        y += maxHeight;
+        x = PADDING;
+        y += maxHeight + PADDING;
         maxHeight = 0;
     }
 

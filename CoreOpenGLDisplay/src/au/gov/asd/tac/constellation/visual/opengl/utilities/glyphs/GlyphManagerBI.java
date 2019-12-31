@@ -43,7 +43,7 @@ public final class GlyphManagerBI implements GlyphManager {
     /**
      * This logical font is always present.
      */
-    public static final String DEFAULT_FONT_NAME = "Arial";//Font.SANS_SERIF;
+    public static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
     public static final int DEFAULT_FONT_SIZE = 64;
     public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
 

@@ -1,6 +1,5 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
-
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
@@ -122,8 +121,8 @@ class DirectionRun {
             Collections.reverse(runs);
         }
 
-        System.out.printf("* dir runs %d %s\n", runs.size(), runs.get(0).direction);
-        runs.stream().forEach(s -> System.out.printf("* dir  run  %d %d [%s]\n", s.run.length(), s.run.codePointAt(0), s));
+//        System.out.printf("* dir runs %d %s\n", runs.size(), runs.get(0).direction);
+//        runs.stream().forEach(s -> System.out.printf("* dir  run  %d %d [%s]\n", s.run.length(), s.run.codePointAt(0), s));
 
         return runs;
     }
