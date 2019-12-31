@@ -228,9 +228,7 @@ public final class GlyphManagerBI implements GlyphManager {
         //
         final BufferedImage tmpBI = new BufferedImage(1, 1, bufferType);
         final Graphics2D g2d = tmpBI.createGraphics();
-//        final FontRenderContext frc = g2d.getFontRenderContext();
         maxFontHeight = Arrays.stream(fonts).map(f -> {
-//                System.out.printf("max char size %s %s\n", f.getFontName(), f.getMaxCharBounds(frc));
                 final FontMetrics fm = g2d.getFontMetrics(f);
                 final int height = fm.getHeight();
                 return height;
@@ -293,11 +291,12 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     /**
-     * Draw a String that may contain multiple directions and scripts.
+     * Draw codepoints that may contain multiple directions and scripts.
      * <p>
      * This is not a general purpose text drawer. Instead, it caters to the
      * kind of string that are likely to be found in a CONSTELLLATION label;
-     * short, lacking punctuation,but possibly containing multi-language characters.
+     * short, lacking punctuation, but possibly containing
+     * multi-language, multi-script, multi-directional characters.
      * <p>
      * A String is first broken up into sub-strings that consist of codepoints
      * of the same direction. These sub-strings are further broken into
@@ -305,14 +304,20 @@ public final class GlyphManagerBI implements GlyphManager {
      * be drawn using TextLayout.draw(), and the associated glyphs can be
      * determined using Font.layoutGlyphVector().
      * <p>
-     * The glyph images can then be drawn into an image buffer for use by OpenGL
-     * to draw node and connection labels. Some glyphs (such as those used in
-     * cursive Arabic script) will overlap: any overlapping glyphs will be
-     * treated as a unit.
+     * The bounding box of each glyph is determined. Some glyphs (for example,
+     * those used in cursive script such as Arabic and fancy Latin fonts) will
+     * overlap; these bounding boxes are merged. From here on it's all about
+     * rectangles that happen to contain useful images.
      * <p>
-     * Hashes of the glyph images are used to determine if the image has already
-     * been
-     * @param text
+     * The rectangles can then be drawn into an image buffer that can be copied
+     * directly to a texture buffer for use by OpenGL to draw node and
+     * connection labels.
+     * <p>
+     * Hashes of the contents of the rectangles are used to determine if the
+     * glyph image has already been drawn. If it has, the same rectangle is
+     * reused.
+     *
+     * @param text The text top be rendered.
      */
     @Override
     public void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
@@ -329,7 +334,7 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.clearRect(0, 0, drawing.getWidth(), drawing.getHeight());
         g2d.setColor(Color.WHITE);
 
-//        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -349,6 +354,8 @@ public final class GlyphManagerBI implements GlyphManager {
 
         int left = Integer.MAX_VALUE;
         int right = Integer.MIN_VALUE;
+        int top = Integer.MAX_VALUE;
+        int bottom = Integer.MIN_VALUE;
         final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
 
         for(final DirectionRun drun : DirectionRun.getDirectionRuns(text)) {
@@ -361,9 +368,6 @@ public final class GlyphManagerBI implements GlyphManager {
                 final String spart = frun.string;
                 final int flags = drun.getFontLayoutDirection() | Font.LAYOUT_NO_START_CONTEXT | Font.LAYOUT_NO_LIMIT_CONTEXT;
                 final GlyphVector gv = frun.font.layoutGlyphVector(frc, spart.toCharArray(), 0, spart.length(), flags);
-//                final int ng = gv.getNumGlyphs();
-//                System.out.printf("* %s %s\n", gv.getClass(), gv);
-//                System.out.printf("* numGlyphs %d\n", gv.getNumGlyphs());
 
                 // Some fonts are shaped such that the left edge of the pixel bounds is
                 // to the left of the starting point, and the right edge of the pixel
@@ -373,11 +377,11 @@ public final class GlyphManagerBI implements GlyphManager {
                 //
                 final Rectangle pixelBounds = gv.getPixelBounds(null, x, y0);
                 if(pixelBounds.x<x) {
-                    System.out.printf("adjust %s %s %s\n", x, pixelBounds.x, x-pixelBounds.x);
+//                    System.out.printf("adjust %s %s %s\n", x, pixelBounds.x, x-pixelBounds.x);
                     x += x-pixelBounds.x;
                 }
 
-                System.out.printf("* font run %s %d->%s\n", frun, x, pixelBounds);
+//                System.out.printf("* font run %s %d->%s\n", frun, x, pixelBounds);
                 g2d.setColor(Color.WHITE);
                 g2d.setFont(frun.font);
 
@@ -386,7 +390,6 @@ public final class GlyphManagerBI implements GlyphManager {
                 attrs.put(TextAttribute.FONT, frun.font);
                 final TextLayout layout = new TextLayout(spart, attrs, frc);
 
-//                System.out.printf("* isLTR %s\n", layout.isLeftToRight());
                 layout.draw(g2d, x, y0);
 
 //                // The font glyphs are drawn such that the reference point is at (x,y).
@@ -411,6 +414,8 @@ public final class GlyphManagerBI implements GlyphManager {
 
                             left = Math.min(left, gr.x);
                             right = Math.max(right, gr.x+gr.width);
+                            top = Math.min(top, gr.y);
+                            bottom = Math.max(bottom, gr.y+gr.height);
                         }
                     }
 //                    else {
@@ -445,19 +450,10 @@ public final class GlyphManagerBI implements GlyphManager {
                         final int gc = gv.getGlyphCode(glyphIx);
                         if(gc!=0) {
                             final Rectangle gr = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-    //                        final Point2D pos = gv.getGlyphPosition(glyphIx);
-//                            System.out.printf("* GV  %d %s %s %s\n", glyphIx, gv.getGlyphCode(glyphIx), gr, spart);
                             if(gr.width!=0 && gr.height!=0) {
                                 g2d.setColor(Color.GREEN);
                                 g2d.drawRect(gr.x, gr.y, gr.width, gr.height);
                             }
-
-//                                final Shape shape = gv.getGlyphOutline(glyphIx, x, y0);
-//                                g2d.setColor(Color.MAGENTA);
-//                                g2d.fill(shape);
-                        }
-                        else {
-                            System.out.printf("glyphcode %d\n", gc);
                         }
                     }
                 }
@@ -471,9 +467,6 @@ public final class GlyphManagerBI implements GlyphManager {
                     g2d.setColor(Color.LIGHT_GRAY);
                     g2d.drawRect(0, 0, drawing.getWidth()-1, drawing.getHeight()-1);
                 }
-
-//                g2d.setColor(Color.LIGHT_GRAY);
-//                g2d.drawLine(x, y0-2, (int)(x + layout.getAdvance()), y0+2);
 
                 // Just like some fonts draw to the left of their start points (see above),
                 // some fonts draw after their advance.
@@ -492,18 +485,22 @@ public final class GlyphManagerBI implements GlyphManager {
 
         // The glyphRectangles list contains the absolute positions of each glyph rectangle
         // in pixels as drawn above.
-        // Our OpenGL shaders expect x in world units, where x is relative to the centre
-        // of the entire line rather than the left.
+        // The OpenGL shaders expect x,y in world units, where x is relative to the centre
+        // of the entire line rather than the left. See NodeLabel.vs etc.
+        // [0] the index of the glyph in the glyphInfoTexture
+        // [1..2] x and y offsets of this glyph from the top centre of the line of text
         //
-        // TODO Figure out why "- 0.8f" is required.
-        // This centers the text vertically within the background glyph. Where does 0.8 come from???
-        // It seems to be related to basey.
+        // cx centers the text horizontally. Subtracting 0.1f aligns the text
+        //      with the background (which subtracts 0.2 for some reason, see
+        //      ConnectionLabelBatcher and NodeLabelBatcher).
+        // cy centers the top and bottom vertically
         //
         final float centre = (left+right)/2f;
         for(final GlyphRectangle gr : glyphRectangles) {
-            final float cx = (gr.rect.x-centre)/(float)maxFontHeight;
-            final float cy = (gr.rect.y + gr.ascent)/(float)maxFontHeight - 0.8f;
-//            System.out.printf("GlyphRectangle: %s %f %f\n", gr, cx, cy);
+            final float cx = (gr.rect.x-centre)/(float)maxFontHeight - 0.1f;
+//            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
+//            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
+            final float cy = (gr.rect.y-(top+bottom)/2f)/(float)(maxFontHeight) + 0.5f;
             glyphStream.addGlyph(gr.position, cx, cy);
         }
     }
