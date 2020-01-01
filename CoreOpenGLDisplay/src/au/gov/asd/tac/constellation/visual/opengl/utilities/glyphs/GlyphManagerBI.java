@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.text.AttributedCharacterIterator;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -198,6 +199,9 @@ public final class GlyphManagerBI implements GlyphManager {
         this.fontNames = tempNames;
 
         fonts = Arrays.stream(tempNames).map(fn -> {
+            final AbstractMap.SimpleImmutableEntry<String,Integer> fs = parseFontName(fn);
+            fn = fs.getKey();
+            final int explicitStyle = fs.getValue()==-1 ? fontStyle : fs.getValue();
             fn = fn.trim();
             if(fn.toLowerCase().endsWith(".otf")) {
                 File otfFile = getOtfFont(fn);
@@ -205,7 +209,7 @@ public final class GlyphManagerBI implements GlyphManager {
                     LOGGER.info(String.format("Reading OTF font from %s", otfFile));
                     try {
                         final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
-                        return otf.deriveFont(fontStyle, fontSize);
+                        return otf.deriveFont(explicitStyle, fontSize);
                     }
                     catch(final FontFormatException | IOException ex) {
                         LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
@@ -216,7 +220,7 @@ public final class GlyphManagerBI implements GlyphManager {
                     return null;
                 }
             } else {
-                return new Font(fn, fontStyle, fontSize);
+                return new Font(fn, explicitStyle, fontSize);
             }
         }).filter(f -> f!=null).toArray(Font[]::new);
 
@@ -619,5 +623,17 @@ public final class GlyphManagerBI implements GlyphManager {
         }
 
         return null;
+    }
+
+    private AbstractMap.SimpleImmutableEntry<String,Integer> parseFontName(final String fn) {
+        final int comma = fn.indexOf(',');
+        if(comma==-1) {
+            return new AbstractMap.SimpleImmutableEntry<>(fn, -1);
+        } else {
+            final String s1 = fn.substring(0, comma).trim();
+            final String s2 = fn.substring(comma+1).trim().toLowerCase();
+            final int fontStyle = s2.equals("bold") ? Font.BOLD : s2.equals("plain") ? Font.PLAIN : -1;
+            return new AbstractMap.SimpleImmutableEntry<>(s1, fontStyle);
+        }
     }
 }
