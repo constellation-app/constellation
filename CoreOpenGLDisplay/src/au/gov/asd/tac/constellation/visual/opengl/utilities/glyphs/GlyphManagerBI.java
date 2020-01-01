@@ -32,8 +32,6 @@ import javax.imageio.ImageIO;
 
 /**
  * Convert text into images that can be passed to OpenGL.
- * <p>
- * TODO Reset everything when the font changes.
  *
  * @author algol
  */
@@ -46,12 +44,6 @@ public final class GlyphManagerBI implements GlyphManager {
     public static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
     public static final int DEFAULT_FONT_SIZE = 64;
     public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
-
-    /**
-     * For Windows user-installed fonts (typically "%LOCALAPPDATA%/Microsoft/Windows/Fonts").
-     * TODO Figure out something for non-Windows systems.
-     */
-    private static final String LOCAL_APP_DATA = "LOCALAPPDATA";
 
     public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
@@ -208,23 +200,19 @@ public final class GlyphManagerBI implements GlyphManager {
         fonts = Arrays.stream(tempNames).map(fn -> {
             fn = fn.trim();
             if(fn.toLowerCase().endsWith(".otf")) {
-                File otfFile = new File(fn);
-                try {
-                    // This appears to be an OTF font file.
-                    // If it is relative, look in the user's local profile for
-                    // the font file and create the font.
-                    //
-                    if(!otfFile.isAbsolute()) {
-                        final String lap = System.getenv(LOCAL_APP_DATA);
-                        if(lap!=null) {
-                            otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, fn));
-                        }
-                    }
+                File otfFile = getOtfFont(fn);
+                if(otfFile!=null) {
                     LOGGER.info(String.format("Reading OTF font from %s", otfFile));
-                    final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
-                    return otf.deriveFont(fontStyle, fontSize);
-                } catch (final FontFormatException | IOException ex) {
-                    LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
+                    try {
+                        final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
+                        return otf.deriveFont(fontStyle, fontSize);
+                    }
+                    catch(final FontFormatException | IOException ex) {
+                        LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
+                        return null;
+                    }
+                } else {
+                    LOGGER.info(String.format("OTF file %s not found", otfFile));
                     return null;
                 }
             } else {
@@ -589,5 +577,47 @@ public final class GlyphManagerBI implements GlyphManager {
         public String toString() {
             return String.format("[GlyphRectangle p=%d r=%s a=%d]", position, rect, ascent);
         }
+    }
+
+    /**
+     * Find the File specified by the given OTF font name.
+     *
+     * @param otfName An OTF font name ending with ".otf".
+     *
+     * @return A File specifying the font file, or null if it doesn't exist.
+     */
+    private static File getOtfFont(final String otfName) {
+        File otfFile = new File(otfName);
+        if(otfFile.isAbsolute()) {
+            return otfFile.canRead() ? otfFile : null;
+        } else {
+            // If it is relative, look in operating system specific places for
+            // the font file.
+            //
+            final String osName = System.getProperty("os.name");
+            if(osName.toLowerCase().contains("win")) {
+                // Look in the user's local profile, then the system font directory.
+                //
+                final String lap = System.getenv("LOCALAPPDATA");
+                if(lap!=null) {
+                    otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
+                    if(otfFile.canRead()) {
+                        return otfFile;
+                    } else {
+                        final String windir = System.getenv("windir");
+                        otfFile = new File(String.format("%s/Fonts/%s", windir, otfName));
+                        if(otfFile.canRead()) {
+                            return otfFile;
+                        }
+                    }
+                }
+            } else {
+                // Figure out something for Linux etc.
+                //
+                return null;
+            }
+        }
+
+        return null;
     }
 }
