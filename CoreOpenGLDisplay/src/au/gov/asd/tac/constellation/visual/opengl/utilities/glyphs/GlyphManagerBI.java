@@ -56,11 +56,14 @@ public final class GlyphManagerBI implements GlyphManager {
     public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
     // Where do we draw the text?
+    // BASEX is arbitrary, but hopefully allows for glyphs that draw to the left
+    // of the starting point.
     //
     private static final int BASEX = 60;
-//    public static final int BASEY = 180;
     private final int basey;
 
+    // The buffer that we draw text into to get glyph boundaries and images.
+    //
     private final int bufferType;
     private final BufferedImage drawing;
 
@@ -72,8 +75,8 @@ public final class GlyphManagerBI implements GlyphManager {
     public static final int DEFAULT_TEXTURE_BUFFER_SIZE = 2048;
 
     // The fonts being used.
-    // We can't derive the names from the fonts, because a .otf font may have been specified
-    // (see setFonts()).
+    // We can't derive the names from the fonts, because a .otf font may have
+    // been specified (see setFonts()).
     //
     private String[] fontNames;
     private Font[] fonts;
@@ -85,6 +88,7 @@ public final class GlyphManagerBI implements GlyphManager {
     private int maxFontHeight;
 
     // Which boundaries do we draw?
+    // These are only used in the standalone context.
     //
     private boolean drawRuns, drawIndividual, drawCombined;
 
@@ -120,11 +124,20 @@ public final class GlyphManagerBI implements GlyphManager {
             setFonts(new String[]{DEFAULT_FONT_NAME}, fontStyle, fontSize);
         }
 
-        // Make the drawing buffer twice the max font height.
+        // Make the drawing buffer height twice the max font height.
         // Draw text at the mid y point.
-        // TODO Ensure that the BufferedImage is wide enough to draw into.
         //
-        drawing = new BufferedImage(4096, maxFontHeight*2, bufferType);
+        // The width of the buffer needs to be long enough to hold the longest
+        // string. Fortunately, the label batchers use
+        // LabelUtilities.splitTextIntoLines() to split long strings into
+        // multiple lines, so we only need to accomodate
+        // LabelUtilities.MAX_LINE_LENGTH_PER_ATTRIBUTE characters. Since we're
+        // dealing with variable width glyphs, we'll take a guess.
+        //
+        final int drawingWidth = 50 * maxFontHeight;
+        final int drawingHeight = 2 * maxFontHeight;
+        LOGGER.info(String.format("Drawing buffer size: width=%d height=%d", drawingWidth,drawingHeight));
+        drawing = new BufferedImage(drawingWidth, drawingHeight, bufferType);
         basey = maxFontHeight;
 
         drawRuns = false;
@@ -392,30 +405,24 @@ public final class GlyphManagerBI implements GlyphManager {
 
                 layout.draw(g2d, x, y0);
 
-//                // The font glyphs are drawn such that the reference point is at (x,y).
-//                // (See the javadoc for FontMetrics.) However, the pixelBounds
-//                // are where the glyphs are actually drawn. To place the glyphs
-//                // accurately within the bounding box, we need to know the difference.
-//                //
-//                final int frontDiff = pixelBounds.x - x;
-//                final int topDiff = pixelBounds.y - y0;
-//                textureBuffer.drawGlyph(layout, pixelBounds, frun.font, frontDiff, topDiff);
-
                 // Iterate through the glyphs to get the bounding boxes.
+                // Don't include bounding boxes that exceed the width of the
+                // drawing buffer; there's no point processing a glyph that we
+                // didn't draw. (Also, drawing.getSubImage() will throw
+                // an exception below.)
                 //
                 final List<Rectangle> boxes = new ArrayList<>();
                 for(int glyphIx=0; glyphIx<gv.getNumGlyphs(); glyphIx++) {
                     final int gc = gv.getGlyphCode(glyphIx);
                     if(gc!=0) {
-                        final Rectangle gr = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-                        if(gr.width>0) {
-//                            System.out.printf("rec %s\n", gr);
-                            boxes.add(gr);
+                        final Rectangle r = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
+                        if(r.width>0 && (r.x+r.width<drawing.getWidth())) {
+                            boxes.add(r);
 
-                            left = Math.min(left, gr.x);
-                            right = Math.max(right, gr.x+gr.width);
-                            top = Math.min(top, gr.y);
-                            bottom = Math.max(bottom, gr.y+gr.height);
+                            left = Math.min(left, r.x);
+                            right = Math.max(right, r.x+r.width);
+                            top = Math.min(top, r.y);
+                            bottom = Math.max(bottom, r.y+r.height);
                         }
                     }
 //                    else {
@@ -428,7 +435,6 @@ public final class GlyphManagerBI implements GlyphManager {
                 Collections.sort(boxes, (Rectangle r0, Rectangle r1) -> r0.x - r1.x);
 
                 final List<Rectangle> merged = mergeBoxes(boxes);
-//                System.out.printf("merged: %s\n", merged);
 
                 // Add each merged glyph rectangle to the texture buffer.
                 // Remember the texture position and rectangle (see below).
@@ -437,7 +443,6 @@ public final class GlyphManagerBI implements GlyphManager {
                 merged.forEach(r -> {
                     final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, r.y, r.width, r.height));
                     glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
-//                    glyphStream.addGlyph(position, x/maxFontHeight, (y0-fm.getAscent())/maxFontHeight);
                 });
 
                 if(drawRuns) {
@@ -472,8 +477,8 @@ public final class GlyphManagerBI implements GlyphManager {
                 // some fonts draw after their advance.
                 // Figure that out here.
                 //
-                final int width = (int)Math.max(layout.getAdvance(), pixelBounds.width);
-                x += width;
+                final int maxAdvance = (int)Math.max(layout.getAdvance(), pixelBounds.width);
+                x += maxAdvance;
             }
         }
 
@@ -490,10 +495,10 @@ public final class GlyphManagerBI implements GlyphManager {
         // [0] the index of the glyph in the glyphInfoTexture
         // [1..2] x and y offsets of this glyph from the top centre of the line of text
         //
-        // cx centers the text horizontally. Subtracting 0.1f aligns the text
-        //      with the background (which subtracts 0.2 for some reason, see
-        //      ConnectionLabelBatcher and NodeLabelBatcher).
-        // cy centers the top and bottom vertically
+        // * cx centers the text horizontally. Subtracting 0.1f aligns the text
+        //   with the background (which subtracts 0.2 for some reason, see
+        //   ConnectionLabelBatcher and NodeLabelBatcher).
+        // * cy centers the top and bottom vertically.
         //
         final float centre = (left+right)/2f;
         for(final GlyphRectangle gr : glyphRectangles) {
