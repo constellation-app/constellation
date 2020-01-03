@@ -72,7 +72,7 @@
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.9"/>
         <dependency org="org.apache.commons" name="commons-math3" rev="3.5"/>
         <dependency org="org.apache.commons" name="commons-pool2" rev="2.7.0"/>
-        <!--<dependency org="org.apache.commons" name="commons-text" rev="1.7"/>-->
+        <dependency org="org.apache.commons" name="commons-text" rev="1.7"/>
         <!--<dependency org="commons-codec" name="commons-codec" rev="1.13"/>-->
         <dependency org="commons-io" name="commons-io" rev="2.6"/>
 

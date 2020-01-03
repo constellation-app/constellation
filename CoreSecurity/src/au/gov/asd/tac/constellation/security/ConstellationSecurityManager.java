@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.security;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,7 +66,7 @@ public class ConstellationSecurityManager {
 
             LOGGER.log(LEVEL, "Starting security");
 
-            final List<ConstellationSecurityProvider> providers = new ArrayList<>((Collection<ConstellationSecurityProvider>) Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
+            final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
             LOGGER.log(LEVEL, "Found {0} security provider{1}", new Object[]{providers.size(), providers.size() == 1 ? "" : "s"});
             providers.stream().forEach((provider) -> {
                 LOGGER.log(LEVEL, "  {0}", provider);
