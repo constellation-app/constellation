@@ -33,7 +33,6 @@ import org.openide.util.actions.BooleanStateAction;
  * @author algol
  * @author rsabhi modified
  */
-
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.filetransport.StartStopFileListenerAction")
 @ActionRegistration(displayName = "#CTL_StartStopFileListenerAction", iconBase = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png", surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
@@ -82,7 +81,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
         }
 
         listener_on = !listener_on;
-        
+
     }
 
     @Override

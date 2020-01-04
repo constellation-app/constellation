@@ -78,7 +78,7 @@ public class DelegatingConstellationLogger implements ConstellationLogger {
             logger.viewStopped(view);
         });
     }
-    
+
     @Override
     public void viewInfo(final TopComponent view, final String info) {
         init();

@@ -133,8 +133,8 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
     @StaticResource
     private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/alien.png";
-    
-    public TestParametersPlugin(){
+
+    public TestParametersPlugin() {
         addValidator(new QueryNameValidator());
     }
 

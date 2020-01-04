@@ -72,22 +72,22 @@ public class ClusteringManager {
                 final String datetimeAttributeType = graph.getAttributeType(datetimeAttributeId);
                 final Object datetimeAttributeDefault = graph.getAttributeDefaultValue(datetimeAttributeId);
                 final Object datetimeAttributeValue = graph.getObjectValue(datetimeAttributeId, transactionID);
-                
-                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType) 
+
+                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType)
                         && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)) {
                     final int vertexA = graph.getTransactionSourceVertex(transactionID);
                     final int vertexB = graph.getTransactionDestinationVertex(transactionID);
-                    
+
                     final int lowerY = Math.min(vertexA, vertexB);
                     final int upperY = Math.max(vertexA, vertexB);
 
                     long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
-                    
+
                     // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
                     if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
                         transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;
                     }
-                        
+
                     final boolean isSelected = graph.getBooleanValue(selectedTransAttributeId, transactionID);
                     if (isSelected || !selectedOnly) {
                         final boolean nodesSelected = graph.getBooleanValue(selectedNodeAttributeId, vertexA) || graph.getBooleanValue(selectedNodeAttributeId, vertexB);

@@ -105,8 +105,8 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
 
             CameraUtilities.rotate(camera, xrot, yrot, zrot);
 
-            if(animate) {
-                    Animation.startAnimation(new PanAnimation("Rotate camera", oldCamera, camera, true));
+            if (animate) {
+                Animation.startAnimation(new PanAnimation("Rotate camera", oldCamera, camera, true));
             } else {
                 // Don't do an animation; we don't want to be asynchronous.
                 // Just set the camera value back on the graph.

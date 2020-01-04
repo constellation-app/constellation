@@ -29,15 +29,15 @@ public class BlazePluginUtilities {
     /**
      * Convert a String or Integer to an int.
      * <p>
-     * The vertex ids should be strings, but we need to accept integers
-     * for backwards compatibility.
+     * The vertex ids should be strings, but we need to accept integers for
+     * backwards compatibility.
      *
      * @param o A String or Integer.
      *
      * @return The int corresponding to the input parameter.
      */
     private static int toInt(final Object o) {
-        return o instanceof Integer ? (Integer)o : Integer.parseInt((String)o);
+        return o instanceof Integer ? (Integer) o : Integer.parseInt((String) o);
     }
 
     /**
@@ -45,8 +45,8 @@ public class BlazePluginUtilities {
      * List<String>.
      * <p>
      * The VERTEX_IDS_PARAMETER_ID parameter was originally BitSet, but we want
-     * to allow List<String> (and List<Integer> for backward compatibility),
-     * so handle both.
+     * to allow List<String> (and List<Integer> for backward compatibility), so
+     * handle both.
      *
      * @param parameters Plugin parameters.
      *
