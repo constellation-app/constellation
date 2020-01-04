@@ -55,7 +55,6 @@ public class BlazePluginUtilities {
      */
     static BitSet verticesParam(final PluginParameters parameters) {
         // The VERTEX_IDS_PARAMETER_ID parameter was originally BitSet, but we want to allow List<String>, so handle both.
-        //
         final Object vParam = parameters.getObjectValue(VERTEX_IDS_PARAMETER_ID);
         final BitSet vertices;
         if (vParam == null) {

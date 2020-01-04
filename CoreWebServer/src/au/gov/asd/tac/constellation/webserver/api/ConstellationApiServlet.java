@@ -46,7 +46,6 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
@@ -70,7 +69,6 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
@@ -94,7 +92,6 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 

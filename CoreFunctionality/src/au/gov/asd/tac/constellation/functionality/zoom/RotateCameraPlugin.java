@@ -97,7 +97,6 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
         final boolean animate = parameters.getBooleanValue(ANIMATE_PARAMETER_ID);
 
         // Get a copy of the graph's current camera.
-        //
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
         if (cameraAttribute != Graph.NOT_FOUND) {
             final Camera oldCamera = graph.getObjectValue(cameraAttribute, 0);
@@ -110,7 +109,6 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
             } else {
                 // Don't do an animation; we don't want to be asynchronous.
                 // Just set the camera value back on the graph.
-                //
                 graph.setObjectValue(cameraAttribute, 0, camera);
             }
         }

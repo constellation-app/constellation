@@ -40,9 +40,7 @@ import org.openide.util.actions.BooleanStateAction;
 public final class StartStopFileListenerAction extends BooleanStateAction {
 
     private static final String ICON_ON = "au/gov/asd/tac/constellation/filetransport/filelistener_on.png";
-
     private static final String ICON_OFF = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png";
-
     private static final long JOIN_WAIT = 1000;
 
     private boolean listener_on;
@@ -105,5 +103,4 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
     }
-
 }
