@@ -3,7 +3,6 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GlyphManager;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -13,7 +12,6 @@ import java.awt.font.GlyphVector;
 import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
@@ -27,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
@@ -43,8 +40,9 @@ public final class GlyphManagerBI implements GlyphManager {
      * This logical font is always present.
      */
     public static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
+    public static final int DEFAULT_FONT_STYLE = Font.PLAIN;
     public static final int DEFAULT_FONT_SIZE = 64;
-    public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
+//    public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
 
     public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
@@ -71,8 +69,8 @@ public final class GlyphManagerBI implements GlyphManager {
     // We can't derive the names from the fonts, because a .otf font may have
     // been specified (see setFonts()).
     //
-    private String[] fontNames;
-    private Font[] fonts;
+    private FontInfo[] fontsInfo;
+//    private Font[] fonts;
 
     /**
      * The glyphs must be scaled down to be rendered at a reasonable size.
@@ -102,20 +100,16 @@ public final class GlyphManagerBI implements GlyphManager {
         }
     };
 
-    public GlyphManagerBI(final String[] fontNames, final int fontSize, final int textureSize) {
-        this(fontNames, Font.PLAIN, fontSize, textureSize, DEFAULT_BUFFER_TYPE);
+    public GlyphManagerBI(final FontInfo[] fontsInfo, final int fontSize, final int textureSize) {
+        this(fontsInfo, fontSize, textureSize, DEFAULT_BUFFER_TYPE);
     }
 
-    public GlyphManagerBI(final String[] fontNames, final int fontStyle, final int fontSize, final int textureBufferSize, final int bufferType) {
+    public GlyphManagerBI(final FontInfo[] fontsInfo, final int fontSize, final int textureBufferSize, final int bufferType) {
 
         this.bufferType = bufferType;
         textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize, bufferType);
 
-        if(fontNames!=null && fontNames.length>0) {
-            setFonts(fontNames, fontStyle, fontSize);
-        } else {
-            setFonts(new String[]{DEFAULT_FONT_NAME}, fontStyle, fontSize);
-        }
+        setFonts(fontsInfo, fontSize);
 
         // Make the drawing buffer height twice the max font height.
         // Draw text at the mid y point.
@@ -177,64 +171,62 @@ public final class GlyphManagerBI implements GlyphManager {
      * Java doesn't recognise OTF fonts; they have to be created and derived,
      * rather than just "new Font()". This means fonts such as Google's Noto
      * CJK fonts need special treatment.
-     * Names ending in ".otf" are treated as filenames. If such names start with
-     * "LOCALAPPDATA", replace it with the relevant Windows directory.
+     * Names ending in ".otf" are treated as filenames.
      *
-     * @param fontNames An array of font names or .otf files.
-     * @param fontStyle The font style (typically Font.PLAIN or Font.BOLD).
+     * @param fontsInfo
      * @param fontSize The font size.
      */
-    public void setFonts(final String[] fontNames, final int fontStyle, final int fontSize) {
+    public void setFonts(final FontInfo[] fontsInfo, final int fontSize) {
         // If the fontName array does not contain the default font, add it to the end.
         //
-        final String[] tempNames;
-        final Optional<String> hasDefault = Arrays.stream(fontNames).filter(fn -> fn.trim().toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
-        if(hasDefault.isPresent()) {
-            tempNames = Arrays.copyOf(fontNames, fontNames.length);
+        final Optional<FontInfo> hasDefault = Arrays.stream(fontsInfo).filter(fil -> fil.fontName.trim().toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
+        if(!hasDefault.isPresent()) {
+            this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length+1);
+            this.fontsInfo[this.fontsInfo.length-1] = new FontInfo(DEFAULT_FONT_NAME, DEFAULT_FONT_STYLE, DEFAULT_FONT_SIZE, null, null);
         } else {
-            tempNames = Arrays.copyOf(fontNames, fontNames.length+1);
-            tempNames[fontNames.length] = DEFAULT_FONT_NAME;
+            this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length);
         }
 
-        this.fontNames = tempNames;
-
-        fonts = Arrays.stream(tempNames).map(fn -> {
-            final AbstractMap.SimpleImmutableEntry<String,Integer> fs = parseFontName(fn);
-            fn = fs.getKey();
-            final int explicitStyle = fs.getValue()==-1 ? fontStyle : fs.getValue();
-            fn = fn.trim();
-            if(fn.toLowerCase().endsWith(".otf")) {
-                File otfFile = getOtfFont(fn);
-                if(otfFile!=null) {
-                    LOGGER.info(String.format("Reading OTF font from %s", otfFile));
-                    try {
-                        final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
-                        return otf.deriveFont(explicitStyle, fontSize);
-                    }
-                    catch(final FontFormatException | IOException ex) {
-                        LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
-                        return null;
-                    }
-                } else {
-                    LOGGER.info(String.format("OTF file %s not found", otfFile));
-                    return null;
-                }
-            } else {
-                return new Font(fn, explicitStyle, fontSize);
-            }
-        }).filter(f -> f!=null).toArray(Font[]::new);
-
-        for(int i=0; i<this.fonts.length; i++) {
-            LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
+        for(int i=0; i<this.fontsInfo.length; i++) {
+            LOGGER.info(String.format("Font %d: %s", i, this.fontsInfo[i]));
         }
+
+//        fonts = fontInfoList.stream().map(fi -> {
+//            String fn = fi.fontName;// fs.getKey();
+//            final int explicitStyle = fi.fontStyle; //fs.getValue()==-1 ? fontStyle : fs.getValue();
+//            fn = fn.trim();
+//            if(fn.toLowerCase().endsWith(".otf")) {
+//                File otfFile = getOtfFont(fn);
+//                if(otfFile!=null) {
+//                    LOGGER.info(String.format("Reading OTF font from %s", otfFile));
+//                    try {
+//                        final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
+//                        return otf.deriveFont(explicitStyle, fontSize);
+//                    }
+//                    catch(final FontFormatException | IOException ex) {
+//                        LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
+//                        return null;
+//                    }
+//                } else {
+//                    LOGGER.info(String.format("OTF file %s not found", otfFile));
+//                    return null;
+//                }
+//            } else {
+//                return new Font(fn, explicitStyle, fontSize);
+//            }
+//        }).filter(f -> f!=null && !f.getFamily(Locale.US).equals("Dialog")).toArray(Font[]::new);
+//
+//        for(int i=0; i<this.fonts.length; i++) {
+//            LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
+//        }
 
         // Create a temporary BufferedImage so we can get the metrics we need.
         // Should we use getMaxCharBounds()?
         //
         final BufferedImage tmpBI = new BufferedImage(1, 1, bufferType);
         final Graphics2D g2d = tmpBI.createGraphics();
-        maxFontHeight = Arrays.stream(fonts).map(f -> {
-                final FontMetrics fm = g2d.getFontMetrics(f);
+        maxFontHeight = Arrays.stream(fontsInfo).map(fil -> {
+                final FontMetrics fm = g2d.getFontMetrics(fil.font);
                 final int height = fm.getHeight();
                 return height;
             }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
@@ -250,8 +242,9 @@ public final class GlyphManagerBI implements GlyphManager {
      *
      * @return The names of the fonts being used (including the extra default font).
      */
-    public String[] getFonts() {
-        return Arrays.copyOf(fontNames, fontNames.length);
+    public FontInfo[] getFonts() {
+//        return Arrays.copyOf(fontNames, fontNames.length);
+        return fontsInfo;
     }
 
     /**
@@ -364,7 +357,7 @@ public final class GlyphManagerBI implements GlyphManager {
         final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
 
         for(final DirectionRun drun : DirectionRun.getDirectionRuns(text)) {
-            for(final FontRun frun : FontRun.getFontRuns(drun.run, fonts)) {
+            for(final FontRun frun : FontRun.getFontRuns(drun.run, fontsInfo)) {
 //                // Draw an indicator line to show where the font run starts.
 //                //
 //                g2d.setColor(Color.LIGHT_GRAY);
@@ -583,47 +576,47 @@ public final class GlyphManagerBI implements GlyphManager {
         }
     }
 
-    /**
-     * Find the File specified by the given OTF font name.
-     *
-     * @param otfName An OTF font name ending with ".otf".
-     *
-     * @return A File specifying the font file, or null if it doesn't exist.
-     */
-    private static File getOtfFont(final String otfName) {
-        File otfFile = new File(otfName);
-        if(otfFile.isAbsolute()) {
-            return otfFile.canRead() ? otfFile : null;
-        } else {
-            // If it is relative, look in operating system specific places for
-            // the font file.
-            //
-            final String osName = System.getProperty("os.name");
-            if(osName.toLowerCase().contains("win")) {
-                // Look in the user's local profile, then the system font directory.
-                //
-                final String lap = System.getenv("LOCALAPPDATA");
-                if(lap!=null) {
-                    otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
-                    if(otfFile.canRead()) {
-                        return otfFile;
-                    } else {
-                        final String windir = System.getenv("windir");
-                        otfFile = new File(String.format("%s/Fonts/%s", windir, otfName));
-                        if(otfFile.canRead()) {
-                            return otfFile;
-                        }
-                    }
-                }
-            } else {
-                // Figure out something for Linux etc.
-                //
-                return null;
-            }
-        }
-
-        return null;
-    }
+//    /**
+//     * Find the File specified by the given OTF font name.
+//     *
+//     * @param otfName An OTF font name ending with ".otf".
+//     *
+//     * @return A File specifying the font file, or null if it doesn't exist.
+//     */
+//    private static File getOtfFont(final String otfName) {
+//        File otfFile = new File(otfName);
+//        if(otfFile.isAbsolute()) {
+//            return otfFile.canRead() ? otfFile : null;
+//        } else {
+//            // If it is relative, look in operating system specific places for
+//            // the font file.
+//            //
+//            final String osName = System.getProperty("os.name");
+//            if(osName.toLowerCase().contains("win")) {
+//                // Look in the user's local profile, then the system font directory.
+//                //
+//                final String lap = System.getenv("LOCALAPPDATA");
+//                if(lap!=null) {
+//                    otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
+//                    if(otfFile.canRead()) {
+//                        return otfFile;
+//                    } else {
+//                        final String windir = System.getenv("windir");
+//                        otfFile = new File(String.format("%s/Fonts/%s", windir, otfName));
+//                        if(otfFile.canRead()) {
+//                            return otfFile;
+//                        }
+//                    }
+//                }
+//            } else {
+//                // Figure out something for Linux etc.
+//                //
+//                return null;
+//            }
+//        }
+//
+//        return null;
+//    }
 
     private AbstractMap.SimpleImmutableEntry<String,Integer> parseFontName(final String fn) {
         final int comma = fn.indexOf(',');

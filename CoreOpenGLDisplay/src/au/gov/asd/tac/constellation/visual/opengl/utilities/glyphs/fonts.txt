@@ -16,4 +16,6 @@ Arial
 #Courier New
 Noto Naskh Arabic
 #LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSerifCJKtc-Regular.otf
-LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSansCJKsc-Regular.otf
+#LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSansCJKsc-Regular.otf
+NotoSansCJKsc-Regular.otf
+Noto Sans Kannada

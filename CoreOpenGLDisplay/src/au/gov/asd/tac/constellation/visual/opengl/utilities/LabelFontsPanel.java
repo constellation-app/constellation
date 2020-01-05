@@ -1,5 +1,8 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
+import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.util.Arrays;
@@ -19,7 +22,9 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     LabelFontsPanel(LabelFontsOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
-        // TODO listen to changes in form fields and call controller.changed()
+
+        final NumberedTextArea numberedTextArea = new NumberedTextArea(taFontList);
+        jScrollPane1.setRowHeaderView(numberedTextArea);
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
@@ -29,22 +34,31 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         }
 
         Arrays.sort(availableFonts);
-
         cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
+
+        final String[] scripts = Arrays.stream(Character.UnicodeScript.class.getEnumConstants())
+                .map(s -> s.toString())
+                .sorted()
+                .toArray(String[]::new);
+        Arrays.sort(scripts);
+        cbScripts.setModel(new DefaultComboBoxModel<>(scripts));
 
         taFontList.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(final DocumentEvent e) {
+                numberedTextArea.updateLineNumbers();
                 controller.changed();
             }
 
             @Override
             public void removeUpdate(final DocumentEvent e) {
+                numberedTextArea.updateLineNumbers();
                 controller.changed();
             }
 
             @Override
             public void changedUpdate(final DocumentEvent e) {
+                numberedTextArea.updateLineNumbers();
                 controller.changed();
             }
         });
@@ -89,8 +103,14 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         taFontList = new javax.swing.JTextArea();
         cbFonts = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
-        jTextArea2 = new javax.swing.JTextArea();
         addFontButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTextArea2 = new javax.swing.JTextArea();
+        checkButton = new javax.swing.JButton();
+        msgLabel = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        cbScripts = new javax.swing.JComboBox<>();
+        addScriptButton = new javax.swing.JButton();
 
         taFontList.setColumns(20);
         taFontList.setRows(5);
@@ -99,6 +119,13 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         cbFonts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.jLabel1.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(addFontButton, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.addFontButton.text")); // NOI18N
+        addFontButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addFontButtonActionPerformed(evt);
+            }
+        });
 
         jTextArea2.setEditable(false);
         jTextArea2.setBackground(java.awt.SystemColor.control);
@@ -109,12 +136,28 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         jTextArea2.setText(org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.jTextArea2.text")); // NOI18N
         jTextArea2.setWrapStyleWord(true);
         jTextArea2.setBorder(null);
+        jTextArea2.setCaretPosition(0);
         jTextArea2.setFocusable(false);
+        jScrollPane2.setViewportView(jTextArea2);
 
-        org.openide.awt.Mnemonics.setLocalizedText(addFontButton, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.addFontButton.text")); // NOI18N
-        addFontButton.addActionListener(new java.awt.event.ActionListener() {
+        org.openide.awt.Mnemonics.setLocalizedText(checkButton, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.checkButton.text")); // NOI18N
+        checkButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addFontButtonActionPerformed(evt);
+                checkButtonActionPerformed(evt);
+            }
+        });
+
+        msgLabel.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
+        org.openide.awt.Mnemonics.setLocalizedText(msgLabel, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.msgLabel.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.jLabel2.text")); // NOI18N
+
+        cbScripts.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        org.openide.awt.Mnemonics.setLocalizedText(addScriptButton, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.addScriptButton.text")); // NOI18N
+        addScriptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addScriptButtonActionPerformed(evt);
             }
         });
 
@@ -126,52 +169,92 @@ final class LabelFontsPanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addFontButton)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextArea2)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 494, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(addScriptButton)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(cbScripts, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(addFontButton)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(checkButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(msgLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 2, Short.MAX_VALUE)
-                        .addComponent(jTextArea2, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel1)
-                    .addComponent(addFontButton))
-                .addContainerGap())
+                    .addComponent(msgLabel))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(addFontButton)
+                    .addComponent(checkButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(cbScripts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(addScriptButton)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void addFontButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFontButtonActionPerformed
-        // Add the selected font name to the text area.
+        // Add the selected font name to the end of the text area.
         //
         final String fontName = (String)cbFonts.getSelectedItem();
-        String text = taFontList.getText().trim();
-        text = String.format("%s\n%s", text, fontName);
-        if(!text.endsWith("\n")) {
-            text += "\n";
-        }
-
-        taFontList.setText(text);
+        taFontList.insert(fontName + "\n", taFontList.getCaretPosition());
+//        String text = taFontList.getText();
+//        text = String.format("%s\n%s", text, fontName);
+//        if(!text.endsWith("\n")) {
+//            text += "\n";
+//        }
+//
+//        taFontList.setText(text);
     }//GEN-LAST:event_addFontButtonActionPerformed
+
+    private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
+        final String text = taFontList.getText();
+        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
+        if(pfi.messages.isEmpty()) {
+            msgLabel.setText("OK");
+            msgLabel.setForeground(Color.BLACK);
+        } else {
+            msgLabel.setText(pfi.messages.get(0));
+            msgLabel.setForeground(Color.RED.darker());
+        }
+    }//GEN-LAST:event_checkButtonActionPerformed
+
+    private void addScriptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addScriptButtonActionPerformed
+        final String scriptName = (String)cbScripts.getSelectedItem();
+        taFontList.insert("," + scriptName, taFontList.getCaretPosition());
+    }//GEN-LAST:event_addScriptButtonActionPerformed
 
     void load() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
         taFontList.setText(prefs.get(LabelFontsPreferenceKeys.FONT_LIST, ""));
+        msgLabel.setText("");
         // TODO read settings and initialize GUI
         // Example:
         // someCheckBox.setSelected(Preferences.userNodeForPackage(LabelFontsPanel.class).getBoolean("someFlag", false));
@@ -200,10 +283,16 @@ final class LabelFontsPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addFontButton;
+    private javax.swing.JButton addScriptButton;
     private javax.swing.JComboBox<String> cbFonts;
+    private javax.swing.JComboBox<String> cbScripts;
+    private javax.swing.JButton checkButton;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextArea jTextArea2;
+    private javax.swing.JLabel msgLabel;
     private javax.swing.JTextArea taFontList;
     // End of variables declaration//GEN-END:variables
 }

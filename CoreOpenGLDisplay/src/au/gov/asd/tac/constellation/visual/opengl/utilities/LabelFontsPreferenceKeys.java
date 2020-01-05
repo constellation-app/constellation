@@ -1,6 +1,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import java.util.Arrays;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
@@ -11,13 +12,12 @@ import org.openide.util.NbPreferences;
 public class LabelFontsPreferenceKeys {
     public static final String FONT_LIST = "render.font.list";
 
-    public static String[] getFontNames() {
+    public static FontInfo[] getFontNames() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
         final String text = prefs.get(LabelFontsPreferenceKeys.FONT_LIST, "");
-        return Arrays.stream(text.split("\n")).filter(line -> {
-            line = line.trim();
-            return line.length()>0 && !line.startsWith("#");
-        }).toArray(String[]::new);
+        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
+
+        return pfi.fontsInfo;
     }
 
     private LabelFontsPreferenceKeys() {}

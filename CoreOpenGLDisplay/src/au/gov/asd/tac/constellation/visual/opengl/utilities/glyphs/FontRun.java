@@ -37,37 +37,40 @@ class FontRun {
      *  If no font can display the codepoint, use the final font (which
      *  is a default fallback font anyway).
      */
-    private static int whichFont(final Font[] fonts, final int codepoint) {
-        for(int i=0; i<fonts.length; i++) {
-            System.out.printf("Font: (%d) %s\n", i, fonts[i].getFontName());
-            if(fonts[i].canDisplay(codepoint)) {
-                if(i==0) {
-                    // Controversy here.
-                    // If the first font is Arial for example, it includes Arabic characters,
-                    // so we don't get to use a subsequent Arabic font.
-                    // Therefore, we only use the first font if the codepoint is LATIN or COMMON.
-                    // To use the rest of the codepoints in the font, specify it again.
-                    //
-                    // TODO allow the user to specify which font displays which script?
-                    //
-                    final Character.UnicodeScript script = Character.UnicodeScript.of(codepoint);
-                    if(script.equals(Character.UnicodeScript.LATIN) || script.equals(Character.UnicodeScript.COMMON)) {
-//                        System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
-                        return i;
-                    }
-                } else {
-//                    System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
-                    return i;
-                }
+    private static int whichFont(final FontInfo[] fontsInfo, final int codepoint) {
+        for(int i=0; i<fontsInfo.length; i++) {
+//            System.out.printf("Font: (%d) %s\n", i, fonts[i].getFontName());
+//            if(fontsInfo[i].font.canDisplay(codepoint)) {
+//                if(i==0) {
+//                    // Controversy here.
+//                    // If the first font is Arial for example, it includes Arabic characters,
+//                    // so we don't get to use a subsequent Arabic font.
+//                    // Therefore, we only use the first font if the codepoint is LATIN or COMMON.
+//                    // To use the rest of the codepoints in the font, specify it again.
+//                    //
+//                    // TODO allow the user to specify which font displays which script?
+//                    //
+//                    final Character.UnicodeScript script = Character.UnicodeScript.of(codepoint);
+//                    if(script.equals(Character.UnicodeScript.LATIN) || script.equals(Character.UnicodeScript.COMMON)) {
+////                        System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
+//                        return i;
+//                    }
+//                } else {
+////                    System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
+//                    return i;
+//                }
+//            }
+            if(fontsInfo[i].canDisplay(codepoint)) {
+                return i;
             }
         }
 
-        LOGGER.warning(String.format("Font not found for codepoint %d", codepoint));
+        LOGGER.warning(String.format("Font not found for codepoint U+%04X (%d.)", codepoint, codepoint));
 
         // If no font could display this codepoint, return the default font anyway.
         // TODO Figure out a way of displaying the missing glyph (U+FFFD) instead of a box.
         //
-        return fonts.length-1;
+        return fontsInfo.length-1;
     }
 
     /**
@@ -85,7 +88,7 @@ class FontRun {
      *
      * @return A List<FontRun> font runs.
      */
-    static List<FontRun> getFontRuns(final String s, final Font[] fonts) {
+    static List<FontRun> getFontRuns(final String s, final FontInfo[] fontsInfo) {
         final int length = s.length();
 
         int currFontIx = -1;
@@ -99,16 +102,16 @@ class FontRun {
             // If this is a space, make it the same font as the previous codepoint.
             // This keeps words of the same font together.
             //
-            final int fontIx = codepoint==32 && currFontIx!=-1 ? currFontIx : whichFont(fonts, codepoint);
+            final int fontIx = codepoint==32 && currFontIx!=-1 ? currFontIx : whichFont(fontsInfo, codepoint);
             if(fontIx==-1) {
-                final String t = new String(new int[]{fonts[0].getMissingGlyphCode()}, 0, 1);
-                frs.add(new FontRun(t, fonts[0]));
+                final String t = new String(new int[]{fontsInfo[0].font.getMissingGlyphCode()}, 0, 1);
+                frs.add(new FontRun(t, fontsInfo[0].font));
 //                currFontIx = -1;
             } else {
                 if(fontIx!=currFontIx) {
                     if(currFontIx!=-1) {
                         final String t = s.substring(start, offset);
-                        frs.add(new FontRun(t, fonts[currFontIx]));
+                        frs.add(new FontRun(t, fontsInfo[currFontIx].font));
                     }
                     start = offset;
                     currFontIx = fontIx;
@@ -123,7 +126,7 @@ class FontRun {
         // Add the end of the final run.
         //
         final String t = s.substring(start, length);
-        frs.add(new FontRun(t, fonts[currFontIx]));
+        frs.add(new FontRun(t, fontsInfo[currFontIx].font));
 //        System.out.printf("%d %d - [%s]\n", runs.get(runs.size()-2), length, text.subSequence(runs.get(runs.size()-2), length));
 
         return frs;
