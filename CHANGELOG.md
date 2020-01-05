@@ -1,5 +1,11 @@
 # CONSTELLATION Changes
 
+## 2019-12-01 Changes in December 2019
+* Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
+* Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.
+* Renamed ArcgisMap Provider to EsriMapProvider.
+* Updated EsriMapProvider to support both regular tile-based services, as well as image export. This can be specified by overriding the new getMapServerType method.
+
 ## 2019-11-01 Changes in November 2019
 * Remove deprecated jai libraries.
 
