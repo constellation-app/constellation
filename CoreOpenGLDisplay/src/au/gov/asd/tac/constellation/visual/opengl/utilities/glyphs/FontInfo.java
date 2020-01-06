@@ -133,6 +133,21 @@ public class FontInfo {
     }
 
     /**
+     * Is this font a suitable font of last resort?
+     * <p>
+     * The font must not exclude any Unicode scripts.
+     *
+     * @param defaultName The name of the default font used when all other fonts aren't suitable.
+     *
+     * @return True if this is a suitable default font, otherwise false.
+     */
+    public boolean isDefault(final String defaultName) {
+        return fontName.trim().toLowerCase().equals(defaultName.toLowerCase())
+                && mustHave.isEmpty()
+                && mustNotHave.isEmpty();
+    }
+
+    /**
      * Find the File specified by the given OTF font name.
      *
      * @param otfName An OTF font name ending with ".otf".

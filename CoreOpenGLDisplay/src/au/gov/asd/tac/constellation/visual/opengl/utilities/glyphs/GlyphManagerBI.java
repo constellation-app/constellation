@@ -183,7 +183,7 @@ public final class GlyphManagerBI implements GlyphManager {
     public void setFonts(final FontInfo[] fontsInfo, final int fontSize) {
         // If the fontName array does not contain the default font, add it to the end.
         //
-        final Optional<FontInfo> hasDefault = Arrays.stream(fontsInfo).filter(fil -> fil.fontName.trim().toLowerCase().equals(DEFAULT_FONT_NAME.toLowerCase())).findFirst();
+        final Optional<FontInfo> hasDefault = Arrays.stream(fontsInfo).filter(fi -> fi.isDefault(DEFAULT_FONT_NAME)).findFirst();
         if(!hasDefault.isPresent()) {
             this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length+1);
             this.fontsInfo[this.fontsInfo.length-1] = new FontInfo(DEFAULT_FONT_NAME, DEFAULT_FONT_STYLE, DEFAULT_FONT_SIZE, null, null);
@@ -434,8 +434,11 @@ public final class GlyphManagerBI implements GlyphManager {
                     //
                     final int y = Math.max(r.y, 0);
                     final int height = Math.min(r.height, drawing.getHeight()-y);
-                    final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height));
-                    glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+//                    System.out.printf("r.y=%d y=%d h=%d H=%d\n", r.y, y, height, drawing.getHeight());
+                    if(height>0) {
+                        final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height));
+                        glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
+                    }
                 });
 
                 if(drawRuns) {
