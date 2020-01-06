@@ -121,6 +121,10 @@ public final class GlyphManagerBI implements GlyphManager {
         // LabelUtilities.MAX_LINE_LENGTH_PER_ATTRIBUTE characters. Since we're
         // dealing with variable width glyphs, we'll take a guess.
         //
+        // The height is arbitrary. Just because a font has a maximum height
+        // doesn't mean that something can't be drawn beyond that height: see
+        // Zalgo text. We'll choose a reasonable height.
+        //
         final int drawingWidth = 50 * maxFontHeight;
         final int drawingHeight = 2 * maxFontHeight;
         LOGGER.info(String.format("Drawing buffer size: width=%d height=%d", drawingWidth,drawingHeight));
@@ -426,7 +430,11 @@ public final class GlyphManagerBI implements GlyphManager {
                 //
                 final FontMetrics fm = g2d.getFontMetrics(frun.font);
                 merged.forEach(r -> {
-                    final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, r.y, r.width, r.height));
+                    // Check that the glyph doesn't extend outside the drawing texture.
+                    //
+                    final int y = Math.max(r.y, 0);
+                    final int height = Math.min(r.height, drawing.getHeight()-y);
+                    final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height));
                     glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
                 });
 
