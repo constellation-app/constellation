@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -80,13 +80,13 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     public void handleComponentOpened() {
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
-        CoreUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override
     public void handleComponentClosed() {
         QualityControlAutoVetter.getInstance().removeListener(this);
-        CoreUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override

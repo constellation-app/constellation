@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -34,6 +35,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.BitSet;
+import java.util.prefs.Preferences;
 import javafx.util.Pair;
 import javax.swing.AbstractAction;
 import javax.swing.JMenu;
@@ -53,6 +55,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.ImageUtilities;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.NbPreferences;
 import org.openide.util.actions.Presenter;
 
 /*
@@ -155,12 +158,15 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         removeBlazeItem.addActionListener(BlazeActions.this);
         menu.add(removeBlazeItem);
 
+        
         this.sizeSlider = new SliderMenuItem("Size");
-        sizeSlider.setValue(30);
+        sizeSlider.setValue((NbPreferences.forModule(GraphPreferenceKeys.class)
+                .getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)));
         menu.add(sizeSlider);
 
         this.opacitySlider = new SliderMenuItem("Opacity");
-        opacitySlider.setValue(100);
+        opacitySlider.setValue((NbPreferences.forModule(GraphPreferenceKeys.class)
+                .getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)));
         menu.add(opacitySlider);
 
         this.sliderChangeListener = e
@@ -186,10 +192,18 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private void updateSliders(final Graph graph) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
+            Preferences preferences = NbPreferences.forModule(GraphPreferenceKeys.class);
+            
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
-            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND ? 0.3f : rg.getFloatValue(blazeSizeAttributeId, 0);
+            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND ? 
+                    (preferences.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f :
+                    rg.getFloatValue(blazeSizeAttributeId, 0);
+            
             final int blazeOpacityAttributeId = VisualConcept.GraphAttribute.BLAZE_OPACITY.get(rg);
-            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND ? 1.0f : rg.getFloatValue(blazeOpacityAttributeId, 0);
+            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND ? 
+                    (preferences.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f :
+                    rg.getFloatValue(blazeOpacityAttributeId, 0);
+            
             sizeSlider.removeChangeListener(sliderChangeListener);
             sizeSlider.setValue((int) (blazeSize * 100));
             sizeSlider.addChangeListener(sliderChangeListener);

@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.arrangements.AbstractInclusionGraph.Connecti
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -199,7 +199,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                     final float[] zOriginal = new float[wg.getVertexCount()];
 
                     // save original positions
-                    if (CoreUtilities.isGraphViewFrozen() && wg.isRecordingEdit()) {
+                    if (PreferenceUtilites.isGraphViewFrozen() && wg.isRecordingEdit()) {
                         saveOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
                     }
 
@@ -209,7 +209,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                     vlGraph.retrieveCoords();
 
                     // restore the original positions
-                    if (CoreUtilities.isGraphViewFrozen() && wg.isRecordingEdit()) {
+                    if (PreferenceUtilites.isGraphViewFrozen() && wg.isRecordingEdit()) {
                         restoreOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
                     }
                 }
