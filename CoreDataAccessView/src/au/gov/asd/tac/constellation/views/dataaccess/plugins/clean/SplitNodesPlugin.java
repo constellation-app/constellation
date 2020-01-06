@@ -151,6 +151,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, leftVertexTypesMatches.get(0));
         }
         result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, right);
+        result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, result.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
         if (ordered_types.size() > 1 && rightVertexTypesMatches.size() > 0) {
             result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, rightVertexTypesMatches.get(0));
         }
