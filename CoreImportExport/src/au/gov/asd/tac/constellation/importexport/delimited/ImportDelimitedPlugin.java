@@ -47,6 +47,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -60,6 +62,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @NbBundle.Messages("ImportDelimitedPlugin=Import Delimited Data")
 public class ImportDelimitedPlugin extends SimpleEditPlugin {
+
+    private static final Logger LOGGER = Logger.getLogger(ImportDelimitedPlugin.class.getName());
 
     /**
      * When an attribute is not assigned to a column, the value is -145355 so
@@ -117,6 +121,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
         final List<Integer> newVertices = new ArrayList<>();
+        boolean positionalAtrributesExist = false;
 
         for (final File file : files) {
             interaction.setProgress(0, 0, "Reading File: " + file.getName(), true);
@@ -137,6 +142,10 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 } else {
                     processTransactions(definition, graph, data, initialiseWithSchema, interaction, file.getName());
                 }
+
+                // Determine if a positional attribute has been defined, if so update the overall flag
+                final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
+                positionalAtrributesExist = (positionalAtrributesExist || isPositional);
             }
         }
 
@@ -146,19 +155,36 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 files,
                 ConstellationLoggerHelper.SUCCESS
         );
+        LOGGER.log(Level.INFO, "Auto arrangement use={0}", (!positionalAtrributesExist));
 
-        interaction.setProgress(1, 1, "Arranging", true);
+        // If at least one positional attribute has been received for either the src or destination vertex we will assume that the user is trying to import positions and won't auto arrange
+        // the graph. This does mean some nodes could sit on top of each other if multiple nodes have the same coordinates.
+        if (!positionalAtrributesExist) {
+            interaction.setProgress(1, 1, "Arranging", true);
 
-        graph.validateKey(GraphElementType.VERTEX, true);
-        graph.validateKey(GraphElementType.TRANSACTION, true);
+            graph.validateKey(GraphElementType.VERTEX, true);
+            graph.validateKey(GraphElementType.TRANSACTION, true);
 
-        // unfortunately need to arrange with pendants and uncollide because grid arranger works based on selection
-        final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
-        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                .followedBy(ArrangementPluginRegistry.PENDANTS)
-                .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
-                .executeNow(vlGraph.getInclusionGraph());
-        vlGraph.retrieveCoords();
+            // unfortunately need to arrange with pendants and uncollide because grid arranger works based on selection
+            final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
+            PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                    .followedBy(ArrangementPluginRegistry.PENDANTS)
+                    .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                    .executeNow(vlGraph.getInclusionGraph());
+            vlGraph.retrieveCoords();
+        }
+    }
+
+    // If src or destination attribute definitions have been supplied, check them and return true if any of the positional attributes ('x', 'y', or 'z') are included. Positional
+    // arguments allow the import to define where nodes will be placed on graph. If src or destination definitons do not exist then an empty list should be supplied.
+    private static boolean attributeDefintionIsPositional(List<ImportAttributeDefinition> srcAttributeDefinitions, List<ImportAttributeDefinition> destAttributeDefinitions) {
+
+        // Check if srcAttributeDefintions contain positional attributes
+        if (srcAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)))) {
+            return true;
+        }
+        // Check if destAttributeDefintions contain positional attributes
+        return destAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
     private static void processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType, boolean initialiseWithSchema, PluginInteraction interaction, String source, final List<Integer> newVertices) throws InterruptedException {

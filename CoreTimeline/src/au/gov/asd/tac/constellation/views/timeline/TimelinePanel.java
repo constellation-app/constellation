@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.timeline;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
@@ -201,11 +200,11 @@ public class TimelinePanel extends Region {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Populate and De-Populate Timeline">
-    public void populateFromGraph(final GraphReadMethods graph, final String dateTimeAttrLabel,
+    public void populateFromGraph(final GraphReadMethods graph, final String dateTimeAttribute,
             final String nodeLabelAttr, final boolean selectedOnly, final ZoneId zoneId) {
         this.nodeLabelAttr = nodeLabelAttr;
 
-        final TimeExtents te = clusteringManager.generateTree(graph, dateTimeAttrLabel, selectedOnly);
+        final TimeExtents te = clusteringManager.generateTree(graph, dateTimeAttribute, selectedOnly);
 
         if (te != null) {
             final double paddingFactor = 0.05;
@@ -240,103 +239,100 @@ public class TimelinePanel extends Region {
         long lowestObservedY = Long.MAX_VALUE;
         long highestObservedY = Long.MIN_VALUE;
 
-        for (TreeElement element : clusteringManager.getElementsToDraw()) {
+        for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
             if (nodeItem == null) {
                 if (element instanceof TreeLeaf) {
                     final TreeLeaf leaf = (TreeLeaf) element;
                     final int transactionID = leaf.getId();
 
-                    // Ensure that we are adding only true datetimes:
-                    if (leaf.getDatetime() != ZonedDateTimeAttributeDescription.LONG_NULL_VALUE) {
-                        // Get the color for this transaction:
-                        ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                        final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    // Get the color for this transaction:
+                    ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
+                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
 
-                        // Get the selection status for the transaction:
-                        final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
+                    // Get the selection status for the transaction:
+                    final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
 
-                        // Get the source and destination vertices, and their respective colors:
-                        final int sourceA = graph.getTransactionSourceVertex(transactionID);
-                        final int sourceB = graph.getTransactionDestinationVertex(transactionID);
+                    // Get the source and destination vertices, and their respective colors:
+                    final int sourceA = graph.getTransactionSourceVertex(transactionID);
+                    final int sourceB = graph.getTransactionDestinationVertex(transactionID);
 
-                        // Get the color for each vertex:
-                        col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
-                        final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
-                        col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
-                        final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    // Get the color for each vertex:
+                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
+                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
+                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
 
-                        // Get the selection state for each vertex:
-                        final boolean sourceASelected = graph.getBooleanValue(selectedVertAttr, sourceA);
-                        final boolean sourceBSelected = graph.getBooleanValue(selectedVertAttr, sourceB);
+                    // Get the selection state for each vertex:
+                    final boolean sourceASelected = graph.getBooleanValue(selectedVertAttr, sourceA);
+                    final boolean sourceBSelected = graph.getBooleanValue(selectedVertAttr, sourceB);
 
-                        // Get the label for each vertex:
-                        String sourceALabel = null;
-                        String sourceBLabel = null;
-                        if (labelVertAttr != Graph.NOT_FOUND) {
-                            sourceALabel = graph.getStringValue(labelVertAttr, sourceA);
-                            sourceBLabel = graph.getStringValue(labelVertAttr, sourceB);
-                        }
-
-                        boolean isElementSelected = GraphManager.getDefault().isElementSelected();
-                        isElementSelected |= sourceASelected || sourceBSelected || transSelected;
-                        GraphManager.getDefault().setElementSelected(isElementSelected);
-
-                        // Get the directionality of the transaction:
-                        final int directionality = graph.getTransactionDirection(transactionID);
-
-                        final Vertex vertexA;
-                        final Vertex vertexB;
-                        final Transaction transaction;
-
-                        if (sourceA > sourceB) {
-                            vertexA = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
-                                    sourceASelected, transSelected, btnShowLabels.isSelected());
-                            vertexB = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
-                                    sourceBSelected, transSelected, btnShowLabels.isSelected());
-
-                            if (directionality == Graph.DOWNHILL) {
-                                final String label = labelMaker(sourceALabel, '→', sourceBLabel);
-                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                            } else if (directionality == Graph.UPHILL) {
-                                throw new IllegalArgumentException("source > dest is always downhill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                            } else { // Undirected / Bi-directional
-                                final String label = labelMaker(sourceALabel, '-', sourceBLabel);
-                                transaction = new Transaction(transactionID, transColor, label, transSelected);
-                            }
-                        } else if (sourceA < sourceB) {
-                            vertexA = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
-                                    sourceBSelected, transSelected, btnShowLabels.isSelected());
-                            vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
-                                    sourceASelected, transSelected, btnShowLabels.isSelected());
-
-                            if (directionality == Graph.DOWNHILL) {
-                                throw new IllegalArgumentException("source < dest is always uphill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                            } else if (directionality == Graph.UPHILL) {
-                                final String label = labelMaker(sourceALabel, '→', sourceBLabel);
-                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
-                            } else { // Undirected / Bi-directional
-                                final String label = labelMaker(sourceBLabel, '-', sourceALabel);
-                                transaction = new Transaction(transactionID, transColor, label, transSelected);
-                            }
-                        } else {
-                            // Same source and destination: a loop.
-                            vertexA = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
-                                    sourceASelected, transSelected, btnShowLabels.isSelected());
-                            vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
-                                    sourceASelected, transSelected, btnShowLabels.isSelected());
-                            transaction = new Transaction(transactionID, transColor, sourceALabel, transSelected);
-                        }
-
-                        nodeItem = new XYChart.Data<>(leaf.getDatetime(),
-                                (Math.max(sourceA, sourceB) - Math.min(sourceA, sourceB)),
-                                new Interaction(vertexA, vertexB, transaction, btnShowLabels.isSelected()));
-                        element.setNodeItem(nodeItem);
+                    // Get the label for each vertex:
+                    String sourceALabel = null;
+                    String sourceBLabel = null;
+                    if (labelVertAttr != Graph.NOT_FOUND) {
+                        sourceALabel = graph.getStringValue(labelVertAttr, sourceA);
+                        sourceBLabel = graph.getStringValue(labelVertAttr, sourceB);
                     }
+
+                    boolean isElementSelected = GraphManager.getDefault().isElementSelected();
+                    isElementSelected |= sourceASelected || sourceBSelected || transSelected;
+                    GraphManager.getDefault().setElementSelected(isElementSelected);
+
+                    // Get the directionality of the transaction:
+                    final int directionality = graph.getTransactionDirection(transactionID);
+
+                    final Vertex vertexA;
+                    final Vertex vertexB;
+                    final Transaction transaction;
+
+                    if (sourceA > sourceB) {
+                        vertexA = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
+                                sourceASelected, transSelected, btnShowLabels.isSelected());
+                        vertexB = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
+                                sourceBSelected, transSelected, btnShowLabels.isSelected());
+
+                        if (directionality == Graph.DOWNHILL) {
+                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
+                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
+                        } else if (directionality == Graph.UPHILL) {
+                            throw new IllegalArgumentException("source > dest is always downhill");
+//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
+//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
+                        } else { // Undirected / Bi-directional
+                            final String label = labelMaker(sourceALabel, '-', sourceBLabel);
+                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                        }
+                    } else if (sourceA < sourceB) {
+                        vertexA = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
+                                sourceBSelected, transSelected, btnShowLabels.isSelected());
+                        vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
+                                sourceASelected, transSelected, btnShowLabels.isSelected());
+
+                        if (directionality == Graph.DOWNHILL) {
+                            throw new IllegalArgumentException("source < dest is always uphill");
+//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
+//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
+                        } else if (directionality == Graph.UPHILL) {
+                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
+                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
+                        } else { // Undirected / Bi-directional
+                            final String label = labelMaker(sourceBLabel, '-', sourceALabel);
+                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                        }
+                    } else {
+                        // Same source and destination: a loop.
+                        vertexA = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
+                                sourceASelected, transSelected, btnShowLabels.isSelected());
+                        vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
+                                sourceASelected, transSelected, btnShowLabels.isSelected());
+                        transaction = new Transaction(transactionID, transColor, sourceALabel, transSelected);
+                    }
+
+                    nodeItem = new XYChart.Data<>(leaf.getDatetime(),
+                            (Math.max(sourceA, sourceB) - Math.min(sourceA, sourceB)),
+                            new Interaction(vertexA, vertexB, transaction, btnShowLabels.isSelected()));
+                    element.setNodeItem(nodeItem);
                 } else {
                     nodeItem = new XYChart.Data<>(element.getLowerTimeExtent(), element.getLowerDisplayPos(),
                             new Cluster(element.getLowerTimeExtent(), element.getUpperTimeExtent(),
@@ -345,6 +341,7 @@ public class TimelinePanel extends Region {
                     element.setNodeItem(nodeItem);
                 }
             }
+            
             if (nodeItem != null) {
                 series.getData().add(nodeItem);
 
