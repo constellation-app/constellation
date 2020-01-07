@@ -37,34 +37,7 @@ public class FontInfo {
 
     public FontInfo(final String fontName, final int fontStyle, final int fontSize, final Set<Character.UnicodeScript> mustHave, final Set<Character.UnicodeScript> mustNotHave) {
         this(fontName, fontStyle, mustHave, mustNotHave, getFont(fontName, fontStyle, fontSize));
-//        this.fontName = fontName;
-//        this.fontStyle = fontStyle;
-//        this.mustHave = mustHave!=null ? mustHave : Collections.emptySet();
-//        this.mustNotHave = mustNotHave!=null ? mustNotHave : Collections.emptySet();
-//        this.font = getFont(fontName, fontStyle, fontSize);
     }
-
-//    public void setFont(final int fontSize) {
-//        if(fontName.toLowerCase().endsWith(".otf")) {
-//            File otfFile = getOtfFont(fontName);
-//            if(otfFile!=null) {
-//                LOGGER.info(String.format("Reading OTF font from %s", otfFile));
-//                try {
-//                    final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
-//                    font = otf.deriveFont(fontStyle, fontSize);
-//                }
-//                catch(final FontFormatException | IOException ex) {
-//                    LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fontName, otfFile), ex);
-//                    font = null;
-//                }
-//            } else {
-//                LOGGER.info(String.format("OTF file %s not found", otfFile));
-//                font = null;
-//            }
-//        } else {
-//            font = new Font(fontName, fontStyle, fontSize);
-//        }
-//    }
 
     private static Font getFont(final String fontName, final int fontStyle, final int fontSize) {
         Font font = null;

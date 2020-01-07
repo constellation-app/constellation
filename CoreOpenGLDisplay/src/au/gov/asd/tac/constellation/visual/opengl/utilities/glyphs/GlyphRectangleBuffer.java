@@ -210,20 +210,6 @@ final class GlyphRectangleBuffer {
         return rectIndex;
     }
 
-//    private int addTextureCoordinates(float width, float height, float buffer) {
-//        if (glyphCount * 4 == glyphTextureCoordinates.length) {
-//            glyphTextureCoordinates = Arrays.copyOf(glyphTextureCoordinates, glyphTextureCoordinates.length * 2);
-//        }
-//
-//        int glyphBoundsPointer = glyphCount << 2;
-//        glyphTextureCoordinates[glyphBoundsPointer++] = currentGlyphPage + (currentGlyphLocationX - buffer) / textureWidth;
-//        glyphTextureCoordinates[glyphBoundsPointer++] = (currentGlyphLocationY - buffer) / textureHeight;
-//        glyphTextureCoordinates[glyphBoundsPointer++] = (width + buffer * 2) / textureWidth;
-//        glyphTextureCoordinates[glyphBoundsPointer++] = (height + buffer * 2) / textureHeight;
-//
-//        return glyphCount++;
-//    }
-
     private void newRectBuffer() {
         rectBuffer = new BufferedImage(width, height, bufferType);
 
@@ -242,8 +228,6 @@ final class GlyphRectangleBuffer {
         g2d.drawRect(0, 0, width-1, height-1);
         g2d.setColor(Color.WHITE);
 
-//        g2d.fillRect(0, 0, width, height); // @@
-
         rectBuffers.add(rectBuffer);
 
         x = PADDING;
@@ -261,19 +245,4 @@ final class GlyphRectangleBuffer {
         y += maxHeight + PADDING;
         maxHeight = 0;
     }
-
-//    private static final class RectData {
-//        final int page;
-//        final Rectangle r;
-//
-//        RectData(final int page, final Rectangle r) {
-//            this.page = page;
-//            this.r = r;
-//        }
-//
-//        @Override
-//        public String toString() {
-//            return String.format("[page %s %s]", page, r);
-//        }
-//    }
 }

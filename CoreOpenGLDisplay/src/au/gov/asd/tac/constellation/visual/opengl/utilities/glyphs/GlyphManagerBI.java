@@ -70,7 +70,6 @@ public final class GlyphManagerBI implements GlyphManager {
     // been specified (see setFonts()).
     //
     private FontInfo[] fontsInfo;
-//    private Font[] fonts;
 
     /**
      * The glyphs must be scaled down to be rendered at a reasonable size.
@@ -195,35 +194,6 @@ public final class GlyphManagerBI implements GlyphManager {
             LOGGER.info(String.format("Font %d: %s", i, this.fontsInfo[i]));
         }
 
-//        fonts = fontInfoList.stream().map(fi -> {
-//            String fn = fi.fontName;// fs.getKey();
-//            final int explicitStyle = fi.fontStyle; //fs.getValue()==-1 ? fontStyle : fs.getValue();
-//            fn = fn.trim();
-//            if(fn.toLowerCase().endsWith(".otf")) {
-//                File otfFile = getOtfFont(fn);
-//                if(otfFile!=null) {
-//                    LOGGER.info(String.format("Reading OTF font from %s", otfFile));
-//                    try {
-//                        final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
-//                        return otf.deriveFont(explicitStyle, fontSize);
-//                    }
-//                    catch(final FontFormatException | IOException ex) {
-//                        LOGGER.log(Level.SEVERE, String.format("Can't load OTF font %s from %s", fn, otfFile), ex);
-//                        return null;
-//                    }
-//                } else {
-//                    LOGGER.info(String.format("OTF file %s not found", otfFile));
-//                    return null;
-//                }
-//            } else {
-//                return new Font(fn, explicitStyle, fontSize);
-//            }
-//        }).filter(f -> f!=null && !f.getFamily(Locale.US).equals("Dialog")).toArray(Font[]::new);
-//
-//        for(int i=0; i<this.fonts.length; i++) {
-//            LOGGER.info(String.format("Font %d: %s", i, this.fonts[i]));
-//        }
-
         // Create a temporary BufferedImage so we can get the metrics we need.
         // Should we use getMaxCharBounds()?
         //
@@ -341,11 +311,6 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
-//        if(text==null){
-//            g2d.dispose();
-//            return;
-//        }
-
 //        g2d.setColor(Color.ORANGE);
 //        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
 
@@ -414,9 +379,6 @@ public final class GlyphManagerBI implements GlyphManager {
                             bottom = Math.max(bottom, r.y+r.height);
                         }
                     }
-//                    else {
-//                        System.out.printf("glyphcode %d\n", gc);
-//                    }
                 }
 
                 // Sort them by x position.
@@ -584,60 +546,6 @@ public final class GlyphManagerBI implements GlyphManager {
         @Override
         public String toString() {
             return String.format("[GlyphRectangle p=%d r=%s a=%d]", position, rect, ascent);
-        }
-    }
-
-//    /**
-//     * Find the File specified by the given OTF font name.
-//     *
-//     * @param otfName An OTF font name ending with ".otf".
-//     *
-//     * @return A File specifying the font file, or null if it doesn't exist.
-//     */
-//    private static File getOtfFont(final String otfName) {
-//        File otfFile = new File(otfName);
-//        if(otfFile.isAbsolute()) {
-//            return otfFile.canRead() ? otfFile : null;
-//        } else {
-//            // If it is relative, look in operating system specific places for
-//            // the font file.
-//            //
-//            final String osName = System.getProperty("os.name");
-//            if(osName.toLowerCase().contains("win")) {
-//                // Look in the user's local profile, then the system font directory.
-//                //
-//                final String lap = System.getenv("LOCALAPPDATA");
-//                if(lap!=null) {
-//                    otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
-//                    if(otfFile.canRead()) {
-//                        return otfFile;
-//                    } else {
-//                        final String windir = System.getenv("windir");
-//                        otfFile = new File(String.format("%s/Fonts/%s", windir, otfName));
-//                        if(otfFile.canRead()) {
-//                            return otfFile;
-//                        }
-//                    }
-//                }
-//            } else {
-//                // Figure out something for Linux etc.
-//                //
-//                return null;
-//            }
-//        }
-//
-//        return null;
-//    }
-
-    private AbstractMap.SimpleImmutableEntry<String,Integer> parseFontName(final String fn) {
-        final int comma = fn.indexOf(',');
-        if(comma==-1) {
-            return new AbstractMap.SimpleImmutableEntry<>(fn, -1);
-        } else {
-            final String s1 = fn.substring(0, comma).trim();
-            final String s2 = fn.substring(comma+1).trim().toLowerCase();
-            final int fontStyle = s2.equals("bold") ? Font.BOLD : s2.equals("plain") ? Font.PLAIN : -1;
-            return new AbstractMap.SimpleImmutableEntry<>(s1, fontStyle);
         }
     }
 }

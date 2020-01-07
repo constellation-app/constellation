@@ -7,14 +7,19 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -34,6 +39,10 @@ public class GlyphsFrame extends JFrame {
 
     private final GlyphManagerBI glyphManager;
     private final JFrame imageFrame;
+
+    // For copying to the clipboard.
+    //
+    private String copyText;
 
     public GlyphsFrame(final FontInfo[] fontsInfo, final String[] text) {
 
@@ -76,7 +85,7 @@ public class GlyphsFrame extends JFrame {
         imageLabel.setIcon(new ImageIcon(glyphManager.getImage()));
         glyphPanel.setPreferredSize(new Dimension(img.getWidth()+1, img.getHeight()+1));
 
-        final String line = (String)textLines.getModel().getSelectedItem();
+        final String line = getLine();
         glyphManager.renderTextAsLigatures(line, null);
 
         showTextureBuffer();
@@ -112,6 +121,8 @@ public class GlyphsFrame extends JFrame {
         imageLabel = new javax.swing.JLabel();
         textField = new javax.swing.JTextField();
         addTextButton = new javax.swing.JButton();
+        cbZalgo = new javax.swing.JCheckBox();
+        copyTextButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Glyph rendering example");
@@ -196,6 +207,15 @@ public class GlyphsFrame extends JFrame {
             }
         });
 
+        cbZalgo.setText("Zalgo");
+
+        copyTextButton.setText("Copy text");
+        copyTextButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                copyTextButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -209,33 +229,35 @@ public class GlyphsFrame extends JFrame {
                     .addComponent(jLabel4))
                 .addGap(10, 10, 10)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(textLines, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(fontNameSp, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(fontSizeSp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbBold)
-                                .addGap(38, 38, 38))
-                            .addComponent(textField, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(addTextButton, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cbRuns)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cbIGlyphs)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(cbCGlyphs)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(cbCGlyphs)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(copyTextButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(fontNameSp, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbBold)
+                        .addGap(62, 62, 62)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(fontSizeSp, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cbZalgo))
+                    .addComponent(textLines, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(textField, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addTextButton)))
+                .addContainerGap(42, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(textLines, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -250,13 +272,15 @@ public class GlyphsFrame extends JFrame {
                     .addComponent(jLabel3)
                     .addComponent(fontNameSp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4)
-                    .addComponent(cbBold))
+                    .addComponent(cbBold)
+                    .addComponent(cbZalgo))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
                     .addComponent(cbRuns)
                     .addComponent(cbIGlyphs)
-                    .addComponent(cbCGlyphs))
+                    .addComponent(cbCGlyphs)
+                    .addComponent(copyTextButton))
                 .addContainerGap())
         );
 
@@ -268,7 +292,7 @@ public class GlyphsFrame extends JFrame {
     }//GEN-LAST:event_cbRunsActionPerformed
 
     private void textLinesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textLinesActionPerformed
-        final String line = (String)textLines.getModel().getSelectedItem();
+        final String line = getLine();
         glyphManager.renderTextAsLigatures(line, null);
         repaint();
         showTextureBuffer();
@@ -302,6 +326,12 @@ public class GlyphsFrame extends JFrame {
         textActionPerformed();
     }//GEN-LAST:event_textFieldActionPerformed
 
+    private void copyTextButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyTextButtonActionPerformed
+        final StringSelection stringSelection = new StringSelection(copyText);
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(stringSelection, null);
+    }//GEN-LAST:event_copyTextButtonActionPerformed
+
     @SuppressWarnings("unchecked")
     private void textActionPerformed() {
         final String text = textField.getText().trim();
@@ -315,31 +345,52 @@ public class GlyphsFrame extends JFrame {
         final boolean drawIndividual = cbIGlyphs.isSelected();
         final boolean drawCombined = cbCGlyphs.isSelected();
         glyphManager.setBoundaries(drawRuns, drawIndividual, drawCombined);
-        final String line = (String)textLines.getModel().getSelectedItem();
+        final String line = getLine();
         glyphManager.renderTextAsLigatures(line, null);
         repaint();
     }
 
     private void fontActionPerformed() {
         final FontInfo[] fontsInfo = glyphManager.getFonts();
-//        final String[] fontNames = Arrays.stream(fonts).map(f -> f.getFontName()).toArray(String[]::new);
         final String fontName = (String)fontNameSp.getSelectedItem();
         final int fontStyle = cbBold.isSelected() ? Font.BOLD : Font.PLAIN;
         final int fontSize = ((SpinnerNumberModel)fontSizeSp.getModel()).getNumber().intValue();
-//        fontNames[0] = fontName;
-        final FontInfo fi = fontsInfo[0];//.get(0);
+        final FontInfo fi = fontsInfo[0];
         fontsInfo[0] = new FontInfo(fontName, fontStyle, fontSize, fi.mustHave, fi.mustNotHave);
-
-//        final Font[] newFonts = Arrays.stream(fontNames).map(fn -> new Font(fn, style, fontSize)).toArray(Font[]::new);
 
         glyphManager.setFonts(fontsInfo, fontSize);
         glyphManager.createBackgroundGlyph(0.5f);
 
         showTextureBuffer();
-        final String line = (String)textLines.getModel().getSelectedItem();
+        final String line = getLine();
         glyphManager.renderTextAsLigatures(line, null);
 
         repaint();
+    }
+
+    private String getLine() {
+        String line = (String)textLines.getModel().getSelectedItem();
+        final boolean isZalgo = cbZalgo.isSelected();
+        if(isZalgo) {
+            final List<Integer> codepoints = new ArrayList<>();
+            final Random random = new Random();
+            final int length = line.length();
+            for(int offset = 0; offset < length;) {
+                final int codepoint = line.codePointAt(offset);
+                final int cc = Character.charCount(codepoint);
+
+                codepoints.add(codepoint);
+                random.ints(random.nextInt(6), 0, 7*16).forEach(r -> codepoints.add(0x300 + r));
+
+                offset += cc;
+            }
+            final int[] cpi = codepoints.stream().mapToInt(i->i).toArray();
+            line = new String(cpi, 0, cpi.length);
+        }
+
+        copyText = line;
+
+        return line;
     }
 
     private static String[] loadText(final String fnam, final boolean raw) throws IOException {
@@ -365,15 +416,11 @@ public class GlyphsFrame extends JFrame {
 //            System.out.printf("font: %s\n", ff);
 //        }
 
-//        final Font ffont = new Font("jdhldslfslslkfgskdgsfgsfgs", Font.PLAIN, 64);
-//        System.out.printf("font= %s\n", ffont);
-
         final String[] fontNames = loadText("fonts.txt", true);
         final String[] text = loadText("text.txt", false);
 
         final ParsedFontInfo pfi = FontInfo.parseFontInfo(fontNames, GlyphManagerBI.DEFAULT_FONT_SIZE);
 
-//        Arrays.stream(pfi.fontsInfo).forEach(fi -> {System.out.printf("%s\n", fi);});
         if(!pfi.messages.isEmpty()) {
             System.out.printf("ParsedFontInfo message: %s\n", pfi.getMessages());
         }
@@ -399,6 +446,8 @@ public class GlyphsFrame extends JFrame {
     private javax.swing.JCheckBox cbCGlyphs;
     private javax.swing.JCheckBox cbIGlyphs;
     private javax.swing.JCheckBox cbRuns;
+    private javax.swing.JCheckBox cbZalgo;
+    private javax.swing.JButton copyTextButton;
     private javax.swing.JComboBox<String> fontNameSp;
     private javax.swing.JSpinner fontSizeSp;
     private javax.swing.JPanel glyphPanel;

@@ -4,18 +4,21 @@
 #
 # Use a leading # to comment out lines.
 # Blank lines are allowed.
-#
-# TODO Fix non-displayable codepoints when a font doesn't exist.
 
+#Consolas
 #Malgun Gothic
 #Montez
 #Lobster
 #Impact
-#Ink Free
-Arial
+#Ink Free,bold
+Arial,!ARABIC
+#Arial
 #Courier New
-Noto Naskh Arabic
-#LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSerifCJKtc-Regular.otf
-#LOCALAPPDATA/Microsoft/Windows/Fonts/NotoSansCJKsc-Regular.otf
-NotoSansCJKsc-Regular.otf
-Noto Sans Kannada
+#Scheherazade
+#Noto Naskh Arabic
+#Noto Sans Arabic
+#NotoSerifCJKtc-Regular.otf
+#NotoSansCJKsc-Regular.otf
+NotoSansKannada-Regular.ttf
+NotoSansEgyptianHieroglyphs-Regular.ttf,BOLD
+#NotoEmoji-Regular.ttf

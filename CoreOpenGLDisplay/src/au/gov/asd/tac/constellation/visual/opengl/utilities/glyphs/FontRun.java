@@ -39,27 +39,6 @@ class FontRun {
      */
     private static int whichFont(final FontInfo[] fontsInfo, final int codepoint) {
         for(int i=0; i<fontsInfo.length; i++) {
-//            System.out.printf("Font: (%d) %s\n", i, fonts[i].getFontName());
-//            if(fontsInfo[i].font.canDisplay(codepoint)) {
-//                if(i==0) {
-//                    // Controversy here.
-//                    // If the first font is Arial for example, it includes Arabic characters,
-//                    // so we don't get to use a subsequent Arabic font.
-//                    // Therefore, we only use the first font if the codepoint is LATIN or COMMON.
-//                    // To use the rest of the codepoints in the font, specify it again.
-//                    //
-//                    // TODO allow the user to specify which font displays which script?
-//                    //
-//                    final Character.UnicodeScript script = Character.UnicodeScript.of(codepoint);
-//                    if(script.equals(Character.UnicodeScript.LATIN) || script.equals(Character.UnicodeScript.COMMON)) {
-////                        System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
-//                        return i;
-//                    }
-//                } else {
-////                    System.out.printf("Font: %s %d script:%s block:%s\n", fonts[i].getFontName(), codepoint, Character.UnicodeScript.of(codepoint), Character.UnicodeBlock.of(codepoint));
-//                    return i;
-//                }
-//            }
             if(fontsInfo[i].canDisplay(codepoint)) {
                 return i;
             }
@@ -68,7 +47,6 @@ class FontRun {
         LOGGER.warning(String.format("Font not found for codepoint U+%04X (%d.)", codepoint, codepoint));
 
         // If no font could display this codepoint, return the default font anyway.
-        // TODO Figure out a way of displaying the missing glyph (U+FFFD) instead of a box.
         //
         return fontsInfo.length-1;
     }
@@ -106,7 +84,6 @@ class FontRun {
             if(fontIx==-1) {
                 final String t = new String(new int[]{fontsInfo[0].font.getMissingGlyphCode()}, 0, 1);
                 frs.add(new FontRun(t, fontsInfo[0].font));
-//                currFontIx = -1;
             } else {
                 if(fontIx!=currFontIx) {
                     if(currFontIx!=-1) {
