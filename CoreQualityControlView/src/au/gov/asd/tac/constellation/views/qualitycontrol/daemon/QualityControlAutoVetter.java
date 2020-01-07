@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -192,7 +193,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             thread.start();
 
             try {
-                countDownLatch.await();
+                countDownLatch.await(1, TimeUnit.SECONDS);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
             }
