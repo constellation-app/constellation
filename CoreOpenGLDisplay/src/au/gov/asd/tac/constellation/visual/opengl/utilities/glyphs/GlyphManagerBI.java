@@ -125,7 +125,7 @@ public final class GlyphManagerBI implements GlyphManager {
         //
         final int drawingWidth = 50 * maxFontHeight;
         final int drawingHeight = 2 * maxFontHeight;
-        LOGGER.info(String.format("Drawing buffer size: width=%d height=%d", drawingWidth,drawingHeight));
+        LOGGER.info(String.format("Drawing buffer size: width=%d height=%d type=%d", drawingWidth, drawingHeight, bufferType));
         drawing = new BufferedImage(drawingWidth, drawingHeight, bufferType);
         basey = maxFontHeight;
 
@@ -516,7 +516,7 @@ public final class GlyphManagerBI implements GlyphManager {
         final BufferedImage bg = new BufferedImage(maxFontHeight, maxFontHeight, DEFAULT_BUFFER_TYPE);
         final Graphics2D g2d = bg.createGraphics();
         final int intensity = (int) (alpha * 255);
-        g2d.setColor(new Color((intensity<<16) | (intensity<<8) | intensity));
+        g2d.setColor(new Color((0xFF << 24) | (intensity<<16) | (intensity<<8) | intensity));
         g2d.fillRect(0, 0, maxFontHeight, maxFontHeight);
         g2d.dispose();
 

@@ -224,8 +224,7 @@ final class GlyphRectangleBuffer {
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
         g2d.setBackground(Color.BLACK);
-        g2d.setColor(Color.RED);
-        g2d.drawRect(0, 0, width-1, height-1);
+        g2d.clearRect(0, 0, width, height);
         g2d.setColor(Color.WHITE);
 
         rectBuffers.add(rectBuffer);
