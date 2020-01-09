@@ -105,8 +105,12 @@ public final class SharedDrawable {
             iconTextureName = textureName[0];
 
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
-//            glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
-            glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontNames(), 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+            final boolean useMultiFonts = LabelFontsPreferenceKeys.useMultiFontLabels();
+            if(useMultiFonts) {
+                glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontNames(), 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+            } else {
+                glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
+            }
 
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
             labelBackgroundGlyphPosition = glyphManager.createBackgroundGlyph(0.5f);

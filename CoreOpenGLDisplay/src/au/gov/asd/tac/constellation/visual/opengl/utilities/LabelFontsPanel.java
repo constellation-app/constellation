@@ -111,6 +111,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         cbScripts = new javax.swing.JComboBox<>();
         addScriptButton = new javax.swing.JButton();
+        cbMultiFont = new javax.swing.JCheckBox();
 
         taFontList.setColumns(20);
         taFontList.setRows(5);
@@ -161,6 +162,8 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(cbMultiFont, org.openide.util.NbBundle.getMessage(LabelFontsPanel.class, "LabelFontsPanel.cbMultiFont.text")); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -168,10 +171,11 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cbMultiFont)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 456, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(addScriptButton)
@@ -198,9 +202,11 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2))
+                .addComponent(cbMultiFont)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbFonts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -210,13 +216,13 @@ final class LabelFontsPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(addFontButton)
                     .addComponent(checkButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(cbScripts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(addScriptButton)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -252,8 +258,8 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_addScriptButtonActionPerformed
 
     void load() {
-        final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
-        taFontList.setText(prefs.get(LabelFontsPreferenceKeys.FONT_LIST, ""));
+        cbMultiFont.setSelected(LabelFontsPreferenceKeys.useMultiFontLabels());
+        taFontList.setText(LabelFontsPreferenceKeys.getFontText());
         taFontList.setCaretPosition(0);
         msgLabel.setText("");
         // TODO read settings and initialize GUI
@@ -267,6 +273,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
 
     void store() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
+        prefs.putBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, cbMultiFont.isSelected());
         prefs.put(LabelFontsPreferenceKeys.FONT_LIST, taFontList.getText());
         // TODO store modified settings
         // Example:
@@ -286,6 +293,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     private javax.swing.JButton addFontButton;
     private javax.swing.JButton addScriptButton;
     private javax.swing.JComboBox<String> cbFonts;
+    private javax.swing.JCheckBox cbMultiFont;
     private javax.swing.JComboBox<String> cbScripts;
     private javax.swing.JButton checkButton;
     private javax.swing.JLabel jLabel1;
