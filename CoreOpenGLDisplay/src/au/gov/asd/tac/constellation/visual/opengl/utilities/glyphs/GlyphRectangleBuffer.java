@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 import java.awt.image.DataBufferByte;
+import java.awt.image.RescaleOp;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +44,10 @@ final class GlyphRectangleBuffer {
      */
     private static final int PADDING = 2;
 
+    // An identity operation (unchanged copy) for copying image buffers.
+    //
+    private static final BufferedImageOp IDENTITY_OP = new RescaleOp(1f, 0f, null);
+
     // The next position to draw a rectangle at.
     //
     private int x;
@@ -72,7 +78,7 @@ final class GlyphRectangleBuffer {
      */
     private int rectangleCount;
 
-    // The width and height of each BufferedImage.
+    // The width and height of each (texture buffer) BufferedImage.
     //
     public final int width;
     public final int height;
@@ -151,9 +157,12 @@ final class GlyphRectangleBuffer {
      * rectangle is returned.
      *
      * @param img A BufferedImage containing an image.
+     * @param extra The number of extra pixels drawn around the edges of this image
+     *      to avoid interpolation problems later. Store the actual image but
+     *      only record the size-extra.
      * @return
      */
-    int addRectImage(final BufferedImage img) {
+    int addRectImage(final BufferedImage img, final int extra) {
         final int w = img.getWidth();
         final int h = img.getHeight();
 
@@ -177,9 +186,11 @@ final class GlyphRectangleBuffer {
                 newRectBuffer();
             }
 
-            // Copy the image to the current buffer.
+            // Copy the image to the current buffer using the identity (unchanged) op.
+            // (The obvious drawImage() variation is technically asynchronous, so don't use it.)
             //
             g2d.drawImage(img, x, y, null);
+//            g2d.drawImage(img, IDENTITY_OP, x, y);
 
             rectIndex = memory.size();
             memory.put(hashCode, rectIndex);
@@ -196,10 +207,10 @@ final class GlyphRectangleBuffer {
             // each coordinate ranges from 0 to 1. The x coordinate also encodes
             // the texture page.
             //
-            rectTextureCoordinates[ptr+0] = (size()-1) + x/(float)width;
-            rectTextureCoordinates[ptr+1] = y/(float)height;
-            rectTextureCoordinates[ptr+2] = w/(float)width;
-            rectTextureCoordinates[ptr+3] = h/(float)height;
+            rectTextureCoordinates[ptr+0] = (size()-1) + (x+extra)/(float)width;
+            rectTextureCoordinates[ptr+1] = (y+extra)/(float)height;
+            rectTextureCoordinates[ptr+2] = (w-extra*2)/(float)width;
+            rectTextureCoordinates[ptr+3] = (h-extra*2)/(float)height;
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);

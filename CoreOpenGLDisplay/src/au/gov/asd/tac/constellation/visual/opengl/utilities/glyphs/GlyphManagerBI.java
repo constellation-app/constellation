@@ -397,7 +397,7 @@ public final class GlyphManagerBI implements GlyphManager {
                     final int height = Math.min(r.height, drawing.getHeight()-y);
 //                    System.out.printf("r.y=%d y=%d h=%d H=%d\n", r.y, y, height, drawing.getHeight());
                     if(height>0) {
-                        final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height));
+                        final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
                         glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
                     }
                 });
@@ -513,14 +513,30 @@ public final class GlyphManagerBI implements GlyphManager {
 
     @Override
     public int createBackgroundGlyph(float alpha) {
-        final BufferedImage bg = new BufferedImage(maxFontHeight, maxFontHeight, DEFAULT_BUFFER_TYPE);
+        // In theory, it doesn't matter how big the background glyph is:
+        // It could be 1 pixel in size, but because it's a uniform color,
+        // OpenGL could just extrapolate it to any size.
+        // However, the rest of the label rendering machanism works in units
+        // of maxFontHeight, so that's how big we'll make the background glyph.
+        //
+        // Furthermore, the rendering mechanism (in particular the shader code
+        // that draws the connection indicator triangles) is sensitive to the
+        // edges of the background image texture: it uses the image color, and if
+        // we're near an edge the color will be interpolated incorrectly.
+        // Therefore, we need to draw the glyph an extra pixel larger on each side,
+        // then tell the texture buffer to only record the original size so
+        // the rest of the labelling mechanism works as expected.
+        //
+        final int extra = 1;
+        final int size = maxFontHeight + extra*2;
+        final BufferedImage bg = new BufferedImage(size, size, DEFAULT_BUFFER_TYPE);
         final Graphics2D g2d = bg.createGraphics();
         final int intensity = (int) (alpha * 255);
-        g2d.setColor(new Color((0xFF << 24) | (intensity<<16) | (intensity<<8) | intensity));
-        g2d.fillRect(0, 0, maxFontHeight, maxFontHeight);
+        g2d.setColor(new Color((intensity<<16) | (intensity<<8) | intensity));
+        g2d.fillRect(0, 0, size, size);
         g2d.dispose();
 
-        final int position = textureBuffer.addRectImage(bg);
+        final int position = textureBuffer.addRectImage(bg, extra);
 
         return position;
     }
