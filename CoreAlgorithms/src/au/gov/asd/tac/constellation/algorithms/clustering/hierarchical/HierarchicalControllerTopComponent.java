@@ -727,9 +727,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     while (group.mergeStep <= state.currentStep) {
                         group = group.parent;
                     }
-                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
-                        graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
-                        graph.setObjectValue(vxOverlayColorAttr, vertex, group.color);
+                    graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
+                    graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
+                    graph.setObjectValue(vxOverlayColorAttr, vertex, group.color);
                         
                     if (state.clusterSeenBefore[group.vertex] < state.redrawCount) {
                         state.clusterSeenBefore[group.vertex] = state.redrawCount;
