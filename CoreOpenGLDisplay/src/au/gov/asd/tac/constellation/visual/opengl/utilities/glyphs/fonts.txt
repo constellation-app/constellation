@@ -1,0 +1,24 @@
+# Fonts used to draw glyphs.
+# Put more specific fonts first.
+# Note that OTF fonts must be specified by filenames ending with ".otf".
+#
+# Use a leading # to comment out lines.
+# Blank lines are allowed.
+
+#Consolas
+#Malgun Gothic
+#Montez
+#Lobster
+#Impact
+#Ink Free,bold
+Arial,!ARABIC
+#Arial
+#Courier New
+#Scheherazade
+#Noto Naskh Arabic
+#Noto Sans Arabic
+#NotoSerifCJKtc-Regular.otf
+#NotoSansCJKsc-Regular.otf
+NotoSansKannada-Regular.ttf
+NotoSansEgyptianHieroglyphs-Regular.ttf,BOLD
+#NotoEmoji-Regular.ttf
