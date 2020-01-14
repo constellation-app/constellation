@@ -446,9 +446,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     @Override
     public void componentClosed() {
 
-        // If interactive wasd enabled when componet closed, clear this state so that
-        // graph doesnt render with interactive visuals, also store this fact so that
-        // if the compoent is reopened it can revert to previous state. This is stored in
+        // If interactive was enabled when component closed, clear this state so that
+        // graph doesn't render with interactive visuals. Also store this fact so that
+        // if the component is reopened it can revert to previous state. This is stored in
         // a variable on this class rather than in state as state is cleared on close.
         if (state != null) {
             closedWhileInteractive = state.getInteractive();
@@ -749,9 +749,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
-        // Determine if interactive is enabled, if it isn't, then overlay colors need to be removed.
-        // This is primarially used to revert the graph display when the component is closed and was
-        // previously set to interactive.
+        // Determine if interactive is enabled, if it isn't, then overlay colours need to be removed.
+        // This is used to revert the graph display when the component is closed and was previously
+        // set to interactive.
         boolean interactive = state.getInteractive();
         if (!interactive) {
             final RemoveOverlayColors removeColors = new RemoveOverlayColors();
