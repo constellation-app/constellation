@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.ip;
 
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import com.google.common.base.Strings;
 import java.net.InetAddress;
-import org.python.google.common.base.Strings;
 
 /**
  * IP Address Utilities

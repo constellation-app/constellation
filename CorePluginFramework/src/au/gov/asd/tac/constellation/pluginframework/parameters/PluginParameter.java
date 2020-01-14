@@ -72,9 +72,9 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
-    
+
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
-    
+
     private static final List<ParameterChange> ALL_PARAMETER_EVENTS = new ArrayList<>(Arrays.asList(ParameterChange.values()));
 
     private Map<String, Object> properties = new HashMap<>();
@@ -156,36 +156,38 @@ public class PluginParameter<V extends ParameterValue> {
             fireChangeEvent(ParameterChange.VISIBLE);
         }
     }
-    
+
     /**
-     * suppressEvent allows a call to the parameter to stop firing a {@link ParameterChange} event. 
+     * suppressEvent allows a call to the parameter to stop firing a
+     * {@link ParameterChange} event.
      * <p>
-     * Specify {@link ParameterChange} event enumerated types as well as a boolean to engage
-     * or disengage them. 
-     * NOTE: passing suppress as false will enable all events.
-     * 
-     * @param suppress if true, the listed events will not fire. if no events are listed, 
-     * all events will not fire. If false, all events are enabled.
-     * @param eventsToSuppress the events to suppress. pass an empty {@link List}
-     * when specifying all events or enabling events. Pass {@link ParameterChange} 
-     * enumerated types when specifying certain events to suppress.
+     * Specify {@link ParameterChange} event enumerated types as well as a
+     * boolean to engage or disengage them. NOTE: passing suppress as false will
+     * enable all events.
+     *
+     * @param suppress if true, the listed events will not fire. if no events
+     * are listed, all events will not fire. If false, all events are enabled.
+     * @param eventsToSuppress the events to suppress. pass an empty
+     * {@link List} when specifying all events or enabling events. Pass
+     * {@link ParameterChange} enumerated types when specifying certain events
+     * to suppress.
      */
-    public void suppressEvent(final boolean suppress, final List<ParameterChange> eventsToSuppress){
-        if(suppress){
-            suppressedEvents.addAll(eventsToSuppress.isEmpty() ? ALL_PARAMETER_EVENTS : eventsToSuppress );
-        }else{
+    public void suppressEvent(final boolean suppress, final List<ParameterChange> eventsToSuppress) {
+        if (suppress) {
+            suppressedEvents.addAll(eventsToSuppress.isEmpty() ? ALL_PARAMETER_EVENTS : eventsToSuppress);
+        } else {
             suppressedEvents.clear();
         }
         isSuppressed = suppress;
     }
-    
+
     /**
      * Checks whether the event passed is enabled or disabled
-     * 
+     *
      * @param event the {@link ParameterChange} event to check
      * @return true if the event is suppressed, false otherwise
      */
-    public boolean eventIsSuppressed(ParameterChange event){
+    public boolean eventIsSuppressed(ParameterChange event) {
         return suppressedEvents.contains(event) ? isSuppressed : false;
     }
 
@@ -575,14 +577,14 @@ public class PluginParameter<V extends ParameterValue> {
 
     /**
      * Fire the specified {@link ParameterChange} event by notifying all of this
-     * parameter's listeners about it.
-     * No event is fired when the {@link ParameterChange} NO_EVENT is passed
+     * parameter's listeners about it. No event is fired when the
+     * {@link ParameterChange} NO_EVENT is passed
      *
-     * @param change The {@link ParameterChange} event to fire. 
-     * NO_EVENT will not fire an event
+     * @param change The {@link ParameterChange} event to fire. NO_EVENT will
+     * not fire an event
      */
     public void fireChangeEvent(ParameterChange change) {
-        if(!eventIsSuppressed(change)){
+        if (!eventIsSuppressed(change)) {
             listeners.stream().forEach((listener) -> {
                 listener.parameterChanged(this, change);
             });

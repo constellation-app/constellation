@@ -786,13 +786,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final boolean queryIsRunning = currentGraphState != null && currentGraphState.queriesRunning;
         /**
          * TODO: The below IF statement should be removed upon implementation of
-         * a translucent view guiding the user towards the issue found
-         * Related to Issue Comment https://github.com/constellation-app/constellation/issues/158#issuecomment-566027132 
+         * a translucent view guiding the user towards the issue found Related
+         * to Issue Comment
+         * https://github.com/constellation-app/constellation/issues/158#issuecomment-566027132
          */
-        
+
         // When there is not a graph, and a plugin selected with valid parameters, create a new graph
         // Enhancement following : https://github.com/constellation-app/constellation/issues/158
-        if (!graphPresent && pluginSelected && selectedPluginsValid){
+        if (!graphPresent && pluginSelected && selectedPluginsValid) {
             NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
             graphAction.actionPerformed(null);
         }

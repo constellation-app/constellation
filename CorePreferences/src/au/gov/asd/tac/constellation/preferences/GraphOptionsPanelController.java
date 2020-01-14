@@ -24,10 +24,9 @@ import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
-
 /**
  * UI controller for the graph preferences panel
- * 
+ *
  * @author aldebaran30701
  */
 @OptionsPanelController.SubRegistration(
@@ -50,7 +49,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     public void update() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
         final GraphOptionsPanel graphOptionsPanel = getPanel();
-        
+
         // grabbing blaze size from preferences file, reverting to default if none found
         graphOptionsPanel.setBlazeSize(prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT));
         graphOptionsPanel.setBlazeOpacity(prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
@@ -68,7 +67,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
                 final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
                 final GraphOptionsPanel graphOptionsPanel = getPanel();
-                
+
                 prefs.putInt(GraphPreferenceKeys.BLAZE_SIZE, graphOptionsPanel.getBlazeSize());
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
             }

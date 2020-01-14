@@ -24,7 +24,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * Various helper methods for handling preferences.
- * 
+ *
  * @author algol
  */
 public class PreferenceUtilites {

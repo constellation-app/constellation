@@ -158,7 +158,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         removeBlazeItem.addActionListener(BlazeActions.this);
         menu.add(removeBlazeItem);
 
-        
         this.sizeSlider = new SliderMenuItem("Size");
         sizeSlider.setValue((NbPreferences.forModule(GraphPreferenceKeys.class)
                 .getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)));
@@ -193,17 +192,17 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             Preferences preferences = NbPreferences.forModule(GraphPreferenceKeys.class);
-            
+
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
-            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND ? 
-                    (preferences.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f :
-                    rg.getFloatValue(blazeSizeAttributeId, 0);
-            
+            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
+                    ? (preferences.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f
+                    : rg.getFloatValue(blazeSizeAttributeId, 0);
+
             final int blazeOpacityAttributeId = VisualConcept.GraphAttribute.BLAZE_OPACITY.get(rg);
-            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND ? 
-                    (preferences.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f :
-                    rg.getFloatValue(blazeOpacityAttributeId, 0);
-            
+            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND
+                    ? (preferences.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f
+                    : rg.getFloatValue(blazeOpacityAttributeId, 0);
+
             sizeSlider.removeChangeListener(sliderChangeListener);
             sizeSlider.setValue((int) (blazeSize * 100));
             sizeSlider.addChangeListener(sliderChangeListener);
