@@ -92,6 +92,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     private KTrussState state;
     private boolean isAdjusting;
     private boolean nestedPanelIsVisible;
+    private boolean closedWhileInteractive;  // Store whether the form was closed while interactive was set
 
     // The panel to display the nesting of the connected components of k-trusses as rectangles.
     private NestedKTrussDisplayPanel dp;
@@ -444,6 +445,18 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     @Override
     public void componentClosed() {
+
+        // If interactive wasd enabled when componet closed, clear this state so that
+        // graph doesnt render with interactive visuals, also store this fact so that
+        // if the compoent is reopened it can revert to previous state. This is stored in
+        // a variable on this class rather than in state as state is cleared on close.
+        if (state != null) {
+            closedWhileInteractive = state.getInteractive();
+            if (state.getInteractive()) {
+                state.setInteractive(!state.getInteractive());
+                updateGraph();
+            }
+        }
         result.removeLookupListener(this);
         setNode(null);
     }
@@ -567,6 +580,12 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                     showNestedTrussesPanel();
                 }
                 if (state != null) {
+                    // If closedWhileInteractive is true then the component was last closed with interactive
+                    // enabled, restore this fact.
+                    if (closedWhileInteractive) {
+                        state.setInteractive(true);
+                        closedWhileInteractive = false;
+                    }
                     colorNestedTrussesCheckBox.setSelected(state.getNestedTrussesColored());
                     interactiveButton.setSelected(state.getInteractive());
                 } else {
@@ -730,9 +749,18 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
+        // Determine if interactive is enabled, if it isn't, then overlay colors need to be removed.
+        // This is primarially used to revert the graph display when the component is closed and was
+        // previously set to interactive.
+        boolean interactive = state.getInteractive();
+        if (!interactive) {
+            final RemoveOverlayColors removeColors = new RemoveOverlayColors();
+            PluginExecution.withPlugin(removeColors).interactively(true).executeLater(graph);
+        }
+
         final Update update = new Update(state);
         PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
-        if (state.getNestedTrussesColored()) {
+        if (state.getNestedTrussesColored() && interactive) {
             final ColorTrusses color = new ColorTrusses(state);
             PluginExecution.withPlugin(color).interactively(true).executeLater(graph);
         }
@@ -916,13 +944,15 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             int currentK = state.getInteractive() ? state.getCurrentK() : 0;
             boolean dim = state.getExcludedElementsDimmed();
             boolean displayOptionHasToggled = state.hasDisplayOptionToggled();
+            boolean interactive = state.getInteractive();
 
             // Update the display of the graph's nodes
             for (int i = 0; i < graph.getVertexCount(); i++) {
                 // Determine if we should display the current vertex based on its own k-truss attribute
                 int vxID = graph.getVertex(i);
                 int k = graph.getIntValue(vxKTrussAttr, vxID);
-                boolean displayCurrentVertex = k >= currentK;
+                // Only display K-Truss visuals if interactive is set
+                boolean displayCurrentVertex = ((k >= currentK) || (!interactive));
 
                 // Update the relevant attributes which affect the display of the vertex
                 if (dim) {
@@ -943,7 +973,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 // Determine if we should display the current transaction based on its own k-truss attribute
                 int txID = graph.getTransaction(i);
                 int k = graph.getIntValue(txKTrussAttr, txID);
-                boolean displayCurrentTransaction = k >= currentK;
+                // Only display K-Truss visuals if interactive is set
+                boolean displayCurrentTransaction = ((k >= currentK) || (!interactive));
 
                 // Update the relevant attributes which affect the display of the transaction
                 if (dim) {
