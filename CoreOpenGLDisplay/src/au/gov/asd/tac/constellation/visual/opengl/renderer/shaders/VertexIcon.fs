@@ -2,7 +2,6 @@
 //
 // If drawHitTest is false, draw a texture using pointColor[3].
 // If drawHitTest is true, convert pointColor[2] to unique color to be used for hit testing.
-//
 
 #version 330 core
 
@@ -10,7 +9,6 @@ uniform sampler2DArray images;
 
 // If non-zero, use the texture to color the icon.
 // Otherwise, use a unique color for hit testing.
-//
 uniform int drawHitTest;
 
 flat in vec4 hitBufferValue;

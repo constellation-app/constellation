@@ -79,7 +79,7 @@ public class RecordStoreImpl {
         ioph.start();
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             if ((vx && tx) || !(vx || tx)) {
@@ -243,7 +243,7 @@ public class RecordStoreImpl {
     }
 
     private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final Plugin p = new SimpleEditPlugin("Import from REST API") {
             @Override

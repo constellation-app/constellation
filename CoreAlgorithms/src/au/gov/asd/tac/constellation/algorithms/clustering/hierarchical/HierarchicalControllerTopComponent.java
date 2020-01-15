@@ -490,6 +490,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     @Override
     public void componentClosed() {
         result.removeLookupListener(this);
+        if (state != null && state.interactive) {
+            updateInteractivity();
+        }
         setNode(null);
     }
 
@@ -548,6 +551,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 dp.setState(null);
                 revalidateParents(dp);
             }
+            if (doUpdate) {
+                updateGraph();
+            }
         }
     }
 
@@ -558,7 +564,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         final Update update = new Update(state);
         Future<?> f = PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
-        if (state.colored) {
+        if (state.colored && state.interactive) {
             final ColorClusters color = new ColorClusters(true);
             PluginExecution.withPlugin(color).interactively(true).waitingFor(f).executeLater(graph);
         }
@@ -705,18 +711,26 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             for (int pos = 0; pos < vertexCount; pos++) {
                 int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
+                // When excluding single vertices
                 if (state.excludeSingleVertices && group.singleStep > state.currentStep) {
-                    graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
-                    graph.setFloatValue(vertexVisibilityAttribute, vertex, state.excludedElementsDimmed ? 2.0f : -2.0f);
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
-                } else {
+                    if (state.interactive) {
+                        graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, state.excludedElementsDimmed ? 2.0f : -2.0f);
+                    } else {
+                        graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
+                        graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
+                    }
+                } else { 
+                    // when keeping all vertices, do not dim, and show all.
+                    // assign all nodes to a group/cluster
                     while (group.mergeStep <= state.currentStep) {
                         group = group.parent;
                     }
                     graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                     graph.setObjectValue(vxOverlayColorAttr, vertex, group.color);
-
+                        
                     if (state.clusterSeenBefore[group.vertex] < state.redrawCount) {
                         state.clusterSeenBefore[group.vertex] = state.redrawCount;
                         state.clusterNumbers[group.vertex] = nextCluster++;
@@ -735,27 +749,37 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 boolean highDimmed = graph.getBooleanValue(vertexDimmedAttribute, highVertex);
                 boolean lowDimmed = graph.getBooleanValue(vertexDimmedAttribute, lowVertex);
 
-                if (highVertexColor == lowVertexColor && !highDimmed && !lowDimmed) {
+                if (state.interactive) {
+                    // if transaction is between a cluster, do not dim or hide
+                    if (highVertexColor == lowVertexColor && !highDimmed && !lowDimmed) {
+                        int transactionCount = graph.getLinkTransactionCount(link);
+                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                            int transaction = graph.getLinkTransaction(link, transactionPosition);
+                            graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
+                            graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
+                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
+                        }
+                    } else { // dim or hide transaction depending on state selected.
+                        int transactionCount = graph.getLinkTransactionCount(link);
+                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                            int transaction = graph.getLinkTransaction(link, transactionPosition);
+                            if (state.excludedElementsDimmed) {
+                                graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
+                                graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
+                            } else {
+                                graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
+                                graph.setFloatValue(transactionVisibilityAttribute, transaction, -2.0f);
+                            }
+                        }
+                    }
+                } else { // when not interactive, don't dim or hide transactions
                     int transactionCount = graph.getLinkTransactionCount(link);
                     for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                         int transaction = graph.getLinkTransaction(link, transactionPosition);
                         graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                         graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
                         graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
-
-                    }
-                } else {
-                    int transactionCount = graph.getLinkTransactionCount(link);
-                    for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                        int transaction = graph.getLinkTransaction(link, transactionPosition);
-                        if (state.excludedElementsDimmed) {
-                            graph.setBooleanValue(transactionDimmedAttribute, transaction, true);
-                            graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
-                        } else {
-                            graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
-                            graph.setFloatValue(transactionVisibilityAttribute, transaction, -1.0f);
-                        }
-                    }
+                    }  
                 }
             }
         }

@@ -81,7 +81,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     public void updateColorsAndBar() {
-        progress_x = (state.currentStep * getWidth()) / stepLimit;
+        progress_x = (state.currentStep * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
 
         for (LinePositioning line : lines) {
             GroupTreeNode node = line.n;
