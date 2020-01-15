@@ -124,8 +124,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
                                 && markerPosition.y < bottomRight.y;
 
                         if (drawPathsToOffscreenMarkers() || onScreen) {
-                            final Set<GraphElement> elementsAtMarker = renderer.getMarkerCache()
-                                    .get((ConstellationAbstractMarker) marker);
+                            final Set<GraphElement> elementsAtMarker = renderer.getMarkerCache().get(marker);
                             if (elementsAtMarker != null) {
                                 elementsAtMarker.forEach(element -> {
                                     paths.addAll(getPathsForElement(readableGraph, element));

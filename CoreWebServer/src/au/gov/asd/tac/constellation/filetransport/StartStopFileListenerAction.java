@@ -33,7 +33,6 @@ import org.openide.util.actions.BooleanStateAction;
  * @author algol
  * @author rsabhi modified
  */
-
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.filetransport.StartStopFileListenerAction")
 @ActionRegistration(displayName = "#CTL_StartStopFileListenerAction", iconBase = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png", surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
@@ -41,9 +40,7 @@ import org.openide.util.actions.BooleanStateAction;
 public final class StartStopFileListenerAction extends BooleanStateAction {
 
     private static final String ICON_ON = "au/gov/asd/tac/constellation/filetransport/filelistener_on.png";
-
     private static final String ICON_OFF = "au/gov/asd/tac/constellation/filetransport/filelistener_off.png";
-
     private static final long JOIN_WAIT = 1000;
 
     private boolean listener_on;
@@ -82,7 +79,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
         }
 
         listener_on = !listener_on;
-        
+
     }
 
     @Override
@@ -106,5 +103,4 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
     }
-
 }

@@ -29,8 +29,8 @@ import org.openide.awt.StatusDisplayer;
  * secret is enforced for this type of web service.
  * <p>
  * Any exceptions thrown while executing a servlet call are caught and converted
- * to an HttpServletResponse.sendError() response, as well as being logged
- * at Level.INFO (to avoid an error dialog box being displayed).
+ * to an HttpServletResponse.sendError() response, as well as being logged at
+ * Level.INFO (to avoid an error dialog box being displayed).
  * <p>
  * Note that servlet API 3.x is required for HttpServletResponse.getStatus()
  * (which is called by HttpServletResponse.sendError()). See CoreDependencies
@@ -46,19 +46,17 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
             try {
                 get(request, response);
-            }
-            catch(final Exception ex) {
+            } catch (final Exception ex) {
                 response.reset();
 
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                LOGGER.log(Level.INFO, "in doGet",  ex);
+                LOGGER.log(Level.INFO, "in doGet", ex);
             }
         }
     }
@@ -71,19 +69,17 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doPost(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
             try {
                 post(request, response);
-            }
-            catch(final Exception ex) {
+            } catch (final Exception ex) {
                 response.reset();
 
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                LOGGER.log(Level.INFO, "in doPost",  ex);
+                LOGGER.log(Level.INFO, "in doPost", ex);
             }
         }
     }
@@ -96,19 +92,17 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     protected final void doPut(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         if (ConstellationHttpServlet.checkSecret(request, response)) {
             // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-            //
             final String msg = String.format("HTTP REST API: %s %s %s", request.getMethod(), request.getServletPath(), request.getPathInfo());
             StatusDisplayer.getDefault().setStatusText(msg);
 
             try {
                 put(request, response);
-            }
-            catch(final Exception ex) {
+            } catch (final Exception ex) {
                 response.reset();
 
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
 
-                LOGGER.log(Level.INFO, "in doPut",  ex);
+                LOGGER.log(Level.INFO, "in doPut", ex);
             }
         }
     }

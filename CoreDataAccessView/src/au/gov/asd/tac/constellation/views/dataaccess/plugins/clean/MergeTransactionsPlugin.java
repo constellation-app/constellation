@@ -76,7 +76,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
     public static final String MERGER_PARAMETER_ID = PluginParameter.buildId(MergeNodesPlugin.class, "merger");
     public static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "threshold");
     public static final String MERGE_TYPE_PARAMETER_ID = PluginParameter.buildId(MergeTransactionsPlugin.class, "merge_type");
-    
+
     // lead transaction choices
     public static final String LATEST_TIME = "Latest Time";
     public static final String EARLIEST_TIME = "Earliest Time";

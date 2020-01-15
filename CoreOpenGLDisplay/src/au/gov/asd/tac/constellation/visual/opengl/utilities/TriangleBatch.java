@@ -73,11 +73,6 @@ public class TriangleBatch {
         return nNumVerts;
     }
 
-    ////////////////////////////////////////////////////////////
-    // Start assembling a mesh. You need to specify a maximum amount
-    // of indexes that you expect. The EndMesh will clean up any uneeded
-    // memory. This is far better than shreading your heap with STL containers...
-    // At least that's my humble opinion.
     /**
      * Start assembling a mesh.
      * <p>
