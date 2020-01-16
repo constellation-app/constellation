@@ -106,7 +106,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME,
             LocalDateTimeAttributeDescription.ATTRIBUTE_NAME,
             DateAttributeDescription.ATTRIBUTE_NAME);
-    
+
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
     private TimelineState state;

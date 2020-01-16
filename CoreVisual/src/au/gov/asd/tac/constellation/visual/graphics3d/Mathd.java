@@ -213,9 +213,15 @@ public final class Mathd {
         m.a[index33(2, 2)] = (one_c * zz) + c;
     }
 
-///////////////////////////////////////////////////////////////////////////////
-// Creates a 4x4 rotation matrix, takes radians NOT degrees
-//void m3dRotationMatrix44(M3DMatrix44d m, double angle, double x, double y, double z)
+    /**
+     * Creates a 4x4 rotation matrix, takes radians NOT degrees.
+     *
+     * @param m
+     * @param angle
+     * @param x
+     * @param y
+     * @param z
+     */
     public static void makeRotationMatrix(final Matrix44d m, final double angle, double x, double y, double z) {
         double mag, s, c;
         double xx, yy, zz, xy, yz, zx, xs, ys, zs, one_c;
@@ -433,8 +439,14 @@ public final class Mathd {
         return (Math.abs(candidate - compare) < epsilon);
     }
 
-////////////////////////////////////////////////////////////////////////////
-// Smoothly step between 0 and 1 between edge1 and edge 2
+    /**
+     * Smoothly step between 0 and 1 between edge1 and edge 2
+     *
+     * @param edge1
+     * @param edge2
+     * @param x
+     * @return
+     */
     public static double m3dSmoothStep(final double edge1, final double edge2, final double x) {
         double t;
         t = (x - edge1) / (edge2 - edge1);
@@ -449,11 +461,14 @@ public final class Mathd {
         return t * t * (3.0 - 2.0 * t);
     }
 
-/////////////////////////////////////////////////////////////////////////////
-// Planar shadow Matrix
-// Creae a projection to "squish" an object into the plane.
-// Use m3dGetPlaneEquationd(planeEq, point1, point2, point3);
-//    void m3dMakePlanarShadowMatrix(M3DMatrix44d proj, final M3DVector4d planeEq, final double[] vLightPos);
+    /**
+     * Planar shadow Matrix - Create a projection to "squish" an object into the
+     * plane.
+     *
+     * @param proj
+     * @param planeEq
+     * @param vLightPos
+     */
     public static void m3dMakePlanarShadowMatrix(final double[] proj, final double[] planeEq, final double[] vLightPos) {
         // These just make the code below easier to read. They will be
         // removed by the optimizer.

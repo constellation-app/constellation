@@ -71,7 +71,7 @@ public class GraphImpl {
      * Names are prefixed with "graph.", "source.", or "transaction".
      */
     public static void get_attributes(final String graphId, final OutputStream out) throws IOException {
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 
@@ -118,7 +118,7 @@ public class GraphImpl {
      * @throws IOException
      */
     public static void get_get(final String graphId, final OutputStream out) throws IOException {
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         final ArrayNode columns = root.putArray("columns");
@@ -387,7 +387,7 @@ public class GraphImpl {
     }
 
     private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
             @Override

@@ -139,7 +139,7 @@ public class GraphWrapper extends GraphElement {
 
     @Override
     public boolean equals(Object o) {
-        throw new UnsupportedOperationException("You compare graphs.");
+        throw new UnsupportedOperationException("You cannot compare graphs.");
     }
 
     @Override
@@ -150,5 +150,4 @@ public class GraphWrapper extends GraphElement {
         hash = 79 * hash + Objects.hashCode(this.deferredRemoval);
         return hash;
     }
-
 }

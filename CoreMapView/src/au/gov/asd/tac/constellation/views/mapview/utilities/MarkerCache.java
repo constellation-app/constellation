@@ -48,9 +48,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
-import org.apache.commons.math3.stat.clustering.Cluster;
-import org.apache.commons.math3.stat.clustering.DBSCANClusterer;
-import org.apache.commons.math3.stat.clustering.EuclideanDoublePoint;
+import org.apache.commons.math3.ml.clustering.Cluster;
+import org.apache.commons.math3.ml.clustering.DBSCANClusterer;
+import org.apache.commons.math3.ml.clustering.DoublePoint;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -182,9 +182,9 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
         final Set<ConstellationClusterMarker> clusterMarkers = new HashSet<>();
         if (markerState.isShowClusterMarkers()) {
             // generate points for clusters
-            final Map<EuclideanDoublePoint, List<ConstellationAbstractMarker>> markerPoints = new HashMap<>();
+            final Map<DoublePoint, List<ConstellationAbstractMarker>> markerPoints = new HashMap<>();
             CACHE.keySet().forEach(marker -> {
-                final EuclideanDoublePoint point = new EuclideanDoublePoint(
+                final DoublePoint point = new DoublePoint(
                         new double[]{
                             map.getScreenPosition(marker.getLocation()).x,
                             map.getScreenPosition(marker.getLocation()).y});
@@ -195,8 +195,8 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
             });
 
             // calculate new clusters
-            final DBSCANClusterer<EuclideanDoublePoint> clusterer = new DBSCANClusterer<>(CLUSTER_DISTANCE, 0);
-            final List<Cluster<EuclideanDoublePoint>> clusters = clusterer.cluster(markerPoints.keySet());
+            final DBSCANClusterer<DoublePoint> clusterer = new DBSCANClusterer<>(CLUSTER_DISTANCE, 0);
+            final List<Cluster<DoublePoint>> clusters = clusterer.cluster(markerPoints.keySet());
 
             // build new cluster markers
             clusters.forEach(cluster -> {

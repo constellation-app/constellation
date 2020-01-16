@@ -76,7 +76,6 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
             return new int[]{vxId};
         } else {
             // The vertices parameter was originally int[], but we want to allow List<Integer>, so handle both.
-            //
             final Object vParam = parameters.getObjectValue(VERTICES_PARAMETER_ID);
             final int[] vertices;
             if (vParam.getClass() == int[].class) {

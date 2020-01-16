@@ -723,7 +723,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
 
         // An action that renames the topcomponent without saving the (possibly modified) graph.
-        //
         final Action rename = new AbstractAction("Rename") {
             @Override
             public void actionPerformed(final ActionEvent e) {
