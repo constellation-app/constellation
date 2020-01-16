@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.NewDefaultSchemaGraphAction;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -208,10 +209,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         executeButton.setStyle(GO_STYLE);
         executeButton.setOnAction((ActionEvent event) -> {
-            
             boolean pluginSelected = false;
             boolean selectedPluginsValid = true;
-
+            
+            // check for activated plugins and their validity.
             for (Tab tab : dataAccessTabPane.getTabs()) {
                 if (tabHasEnabledPlugins(tab)) {
                     pluginSelected = true;
@@ -220,20 +221,20 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     }
                 } 
             }
-
+            // when no graph present, create new graph
             if(graphId == null){
-                // no graph
                 if (pluginSelected && selectedPluginsValid) {
                     NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
                     graphAction.actionPerformed(null);
+                    while(GraphManager.getDefault().getActiveGraph() == null){
+                        // Wait and do nothing while graph is getting made
+                    }
+                    graphId = GraphManager.getDefault().getActiveGraph().getId();
                 }
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
             if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
-                
-
-                
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
