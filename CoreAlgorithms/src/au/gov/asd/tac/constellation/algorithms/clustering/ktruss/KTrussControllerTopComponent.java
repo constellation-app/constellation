@@ -92,7 +92,6 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     private KTrussState state;
     private boolean isAdjusting;
     private boolean nestedPanelIsVisible;
-    private boolean closedWhileInteractive;  // Store whether the form was closed while interactive was set
 
     // The panel to display the nesting of the connected components of k-trusses as rectangles.
     private NestedKTrussDisplayPanel dp;
@@ -451,11 +450,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         // if the component is reopened it can revert to previous state. This is stored in
         // a variable on this class rather than in state as state is cleared on close.
         if (state != null) {
-            closedWhileInteractive = state.getInteractive();
-            if (state.getInteractive()) {
-                state.setInteractive(!state.getInteractive());
-                updateGraph();
-            }
+            state.setInteractive(false);
+            updateGraph();
         }
         result.removeLookupListener(this);
         setNode(null);
@@ -580,16 +576,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                     showNestedTrussesPanel();
                 }
                 if (state != null) {
-                    // If closedWhileInteractive is true then the component was last closed with interactive
-                    // enabled, restore this fact.
-                    if (closedWhileInteractive) {
-                        state.setInteractive(true);
-                        closedWhileInteractive = false;
-                    }
                     colorNestedTrussesCheckBox.setSelected(state.getNestedTrussesColored());
                     interactiveButton.setSelected(state.getInteractive());
                 } else {
-                    interactiveButton.setSelected(true);
+                    interactiveButton.setSelected(false);
                     colorNestedTrussesCheckBox.setSelected(false);
                 }
             } finally {
@@ -644,6 +634,9 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             state.modificationCounter = mc;
             reclusterButton.setEnabled(smc != state.strucModificationCount);
         }
+
+        // Interactive button should only be available if state is available
+        interactiveButton.setEnabled(state != null);
     }
 
     private void setGroups(final boolean doUpdate) {
@@ -736,7 +729,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             if (state == null) {
                 reclusterButton.setEnabled(true);
             }
-            interactiveButton.setEnabled(true);
+            // Interactive button should only be available if state is available
+            interactiveButton.setEnabled(state != null);
         }
 
         if ((state != null) && doUpdate) {
