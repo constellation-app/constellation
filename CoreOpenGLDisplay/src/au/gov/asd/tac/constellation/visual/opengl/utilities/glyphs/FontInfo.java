@@ -44,18 +44,18 @@ public class FontInfo {
         if(fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
             File otfFile = getOtfFont(fontName);
             if(otfFile!=null) {
-                LOGGER.info(String.format("Reading OTF font from %s", otfFile));
+                LOGGER.info(String.format("Reading font from %s", otfFile));
                 try {
                     final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
                     font = otf.deriveFont(fontStyle, fontSize);
                 }
                 catch(final FontFormatException | IOException ex) {
-                    final String msg = String.format("Can't load OTF font %s from %s", fontName, otfFile);
+                    final String msg = String.format("Can't load font %s from %s", fontName, otfFile);
                     LOGGER.log(Level.SEVERE, msg, ex);
                     throw new IllegalArgumentException(msg);
                 }
             } else {
-                final String msg = String.format("OTF file %s not found", otfFile);
+                final String msg = String.format("Font file %s not found", fontName);
                 LOGGER.info(msg);
                 throw new IllegalArgumentException(msg);
             }
@@ -123,7 +123,7 @@ public class FontInfo {
     /**
      * Find the File specified by the given OTF font name.
      *
-     * @param otfName An OTF font name ending with ".otf".
+     * @param otfName A font file (probably ending with ".otf" or ".ttf".
      *
      * @return A File specifying the font file, or null if it doesn't exist.
      */

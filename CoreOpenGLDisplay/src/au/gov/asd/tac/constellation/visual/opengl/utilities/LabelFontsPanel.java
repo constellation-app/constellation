@@ -26,16 +26,6 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         final NumberedTextArea numberedTextArea = new NumberedTextArea(taFontList);
         jScrollPane1.setRowHeaderView(numberedTextArea);
 
-        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
-        final String os = System.getProperty("os.name");
-        if(os.toLowerCase().contains("win")) {
-            availableFonts = otfFontFilesWindows(availableFonts);
-        }
-
-        Arrays.sort(availableFonts);
-        cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
-
         final String[] scripts = Arrays.stream(Character.UnicodeScript.class.getEnumConstants())
                 .map(s -> s.toString())
                 .sorted()
@@ -66,6 +56,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
 
     /**
      * Look in the user's local profile's fonts directory for OTF fontfiles.
+     * TODO Should we look in %windir% as well?
      *
      * @param existing The existing list of font names.
      *
@@ -88,7 +79,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             }
         }
 
-        return null;
+        return existing;
     }
 
     /**
@@ -262,6 +253,21 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         taFontList.setText(LabelFontsPreferenceKeys.getFontText());
         taFontList.setCaretPosition(0);
         msgLabel.setText("");
+
+        // Put the font loading here (rather than the constructor) so the user
+        // can install a new font and see it without restarting.
+        // TODO Look for UNIX fonts.
+        //
+        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.getDefault());
+        final String os = System.getProperty("os.name");
+        if(os.toLowerCase().contains("win")) {
+            availableFonts = otfFontFilesWindows(availableFonts);
+        }
+
+        Arrays.sort(availableFonts);
+        cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
+
         // TODO read settings and initialize GUI
         // Example:
         // someCheckBox.setSelected(Preferences.userNodeForPackage(LabelFontsPanel.class).getBoolean("someFlag", false));
