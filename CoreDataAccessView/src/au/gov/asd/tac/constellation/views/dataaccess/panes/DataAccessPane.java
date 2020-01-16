@@ -209,9 +209,32 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         executeButton.setStyle(GO_STYLE);
         executeButton.setOnAction((ActionEvent event) -> {
+            
+            boolean pluginSelected = false;
+            boolean selectedPluginsValid = true;
+
+            for (Tab tab : dataAccessTabPane.getTabs()) {
+                if (tabHasEnabledPlugins(tab)) {
+                    pluginSelected = true;
+                    if (!validateTabEnabledPlugins(tab)) {
+                        selectedPluginsValid = false;
+                    }
+                } 
+            }
+
+            if(graphId == null){
+                // no graph
+                if (pluginSelected && selectedPluginsValid) {
+                    NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+                    graphAction.actionPerformed(null);
+                }
+            }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
-            if (!tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+            if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+                
+
+                
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
@@ -292,10 +315,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 waiting.start();
                 LOGGER.info("Plugins run.");
             } else { // Button is a stop button
-                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
-                    running.cancel(true);
-                }
+                if(currentGraphState != null){
+                    for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                        running.cancel(true);
+                    }
                 setExecuteButtonToGo();
+                }
             }
         });
         updateForPlugins(false);
@@ -793,13 +818,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         // When there is not a graph, and a plugin selected with valid parameters, create a new graph
         // Enhancement following : https://github.com/constellation-app/constellation/issues/158
-        if (!graphPresent && pluginSelected && selectedPluginsValid) {
-            NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
-            graphAction.actionPerformed(null);
-        }
+//        if (!graphPresent && pluginSelected && selectedPluginsValid) {
+//            NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+//            graphAction.actionPerformed(null);
+//        }
         // The button cannot be disabled if a query is running.
         // Otherwise, disable if there is no graph, no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
-        final boolean disable = !queryIsRunning && (!graphPresent || !pluginSelected || !validTimeRange || !selectedPluginsValid);
+        final boolean disable = !queryIsRunning && (!pluginSelected || !validTimeRange || !selectedPluginsValid);
         executeButton.setDisable(disable);
     }
 
