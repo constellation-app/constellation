@@ -85,10 +85,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
+            //analyticViewPane.getConfigurationPane().refreshState();
             // TODO: recalculate the result using the current state when the graph changes
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             // TODO: listen for changes to the state, which describes current gui parameters
+            analyticViewPane.getConfigurationPane().refreshState();
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
@@ -120,6 +122,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             });
         });
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -160,6 +163,16 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.reset();
         }
         manualUpdate();
+    }
+    
+    @Override
+    protected void handleGraphOpened(final Graph graph) {
+        analyticViewPane.getConfigurationPane().refreshState();
+    }
+    
+    @Override
+    protected void handleComponentOpened() {
+        analyticViewPane.getConfigurationPane().refreshState();
     }
 
     public class AnalyticController {

@@ -72,7 +72,12 @@ public class AnalyticViewState {
         activeSelectablePlugins.remove(activeAnalyticQuestions.indexOf(question));
         activeAnalyticQuestions.remove(question);
     }
-
+    
+    public void removeAnalyticQuestions(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
+        activeSelectablePlugins.removeAll(selectablePlugins);
+        activeAnalyticQuestions.remove(question);
+    }
+    
     public void clearAnalyticQuestions() {
         activeAnalyticQuestions.clear();
         activeSelectablePlugins.clear();
