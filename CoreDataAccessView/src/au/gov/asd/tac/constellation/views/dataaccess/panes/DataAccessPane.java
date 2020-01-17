@@ -811,7 +811,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final boolean queryIsRunning = currentGraphState != null && currentGraphState.queriesRunning;
 
         // The button cannot be disabled if a query is running.
-        // Otherwise, disable if there is no graph, no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
+        // Otherwise, disable if there is no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
         final boolean disable = !queryIsRunning && (!pluginSelected || !validTimeRange || !selectedPluginsValid);
         executeButton.setDisable(disable);
     }
