@@ -209,7 +209,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             stateLock = null;
         }
 
-        if (stateLock == null) {
+        if (stateLock != null) {
             try {
                 stateLock.get();
             } catch (final ExecutionException | InterruptedException ex) {

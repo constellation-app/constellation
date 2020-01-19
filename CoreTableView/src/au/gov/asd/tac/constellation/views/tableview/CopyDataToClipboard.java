@@ -42,7 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.StringBufferInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -54,7 +54,7 @@ import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.Exceptions;
 
@@ -234,13 +234,13 @@ public class CopyDataToClipboard implements ActionListener, Action {
 
     private static class HtmlSelection implements Transferable {
 
-        private static ArrayList<DataFlavor> htmlFlavors = new ArrayList<>();
+        private static final ArrayList<DataFlavor> HTML_FLAVORS = new ArrayList<>();
 
         static {
             try {
-                htmlFlavors.add(new DataFlavor("text/html;class=java.lang.String"));
-                htmlFlavors.add(new DataFlavor("text/html;class=java.io.Reader"));
-                htmlFlavors.add(new DataFlavor("text/html;charset=unicode;class=java.io.InputStream"));
+                HTML_FLAVORS.add(new DataFlavor("text/html;class=java.lang.String"));
+                HTML_FLAVORS.add(new DataFlavor("text/html;class=java.io.Reader"));
+                HTML_FLAVORS.add(new DataFlavor("text/html;charset=unicode;class=java.io.InputStream"));
             } catch (ClassNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -255,12 +255,12 @@ public class CopyDataToClipboard implements ActionListener, Action {
         @Override
         public DataFlavor[] getTransferDataFlavors() {
 
-            return (DataFlavor[]) htmlFlavors.toArray(new DataFlavor[htmlFlavors.size()]);
+            return (DataFlavor[]) HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
         }
 
         @Override
         public boolean isDataFlavorSupported(DataFlavor flavor) {
-            return htmlFlavors.contains(flavor);
+            return HTML_FLAVORS.contains(flavor);
         }
 
         @Override
@@ -270,7 +270,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
             } else if (Reader.class.equals(flavor.getRepresentationClass())) {
                 return new StringReader(html);
             } else if (InputStream.class.equals(flavor.getRepresentationClass())) {
-                return new StringBufferInputStream(html);
+                return new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
             }
             throw new UnsupportedFlavorException(flavor);
         }

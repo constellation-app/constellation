@@ -15,12 +15,10 @@ flat out float nradius;
 
 void main(void) {
     // Pass the color to the fragment shader.
-    //
     vpointColor = vColor;
     gData = data;
 
     // Get the index into the xyzTexture.
-    //
     int vxIndex = gData.t;
 
     int offset = vxIndex * 2;
@@ -32,6 +30,5 @@ void main(void) {
 
     // Get the side radius of the associated vertex and pass that through
     // so the text is drawn relative to the node size.
-    //
     nradius = mix(texelFetch(xyzTexture, offset).q, texelFetch(xyzTexture, offset + 1).q, morphMix);
 }

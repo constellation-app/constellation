@@ -44,7 +44,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDe
     private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "datetime";
     public static final long NULL_VALUE = Long.MIN_VALUE;
-    
+
     private ZonedDateTime[] data = new ZonedDateTime[0];
     private ZonedDateTime defaultValue = null;
 

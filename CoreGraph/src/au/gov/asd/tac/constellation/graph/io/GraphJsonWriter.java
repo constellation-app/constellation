@@ -236,7 +236,7 @@ public final class GraphJsonWriter implements Cancellable {
             //write version number
             jg.writeNumberField("version", VERSION);
 
-            //
+            //write versioned items
             jg.writeObjectFieldStart("versionedItems");
             for (Entry<String, Integer> itemVersion : UpdateProviderManager.getLatestVersions().entrySet()) {
                 jg.writeNumberField(itemVersion.getKey(), itemVersion.getValue());
