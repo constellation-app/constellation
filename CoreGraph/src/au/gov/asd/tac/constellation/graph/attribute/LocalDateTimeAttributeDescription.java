@@ -49,7 +49,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractAttributeDe
     private static final Logger LOGGER = Logger.getLogger(LocalDateTimeAttributeDescription.class.getName());
     public static final String ATTRIBUTE_NAME = "local_datetime";
     public static final long NULL_VALUE = Long.MIN_VALUE;
-    
+
     private long[] data = new long[0];
     private long defaultValue = NULL_VALUE;
 

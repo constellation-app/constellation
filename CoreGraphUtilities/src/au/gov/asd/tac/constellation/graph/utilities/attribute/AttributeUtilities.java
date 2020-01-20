@@ -107,5 +107,4 @@ public class AttributeUtilities {
 
         return types != null ? new TreeSet<>(types) : new TreeSet<>();
     }
-
 }

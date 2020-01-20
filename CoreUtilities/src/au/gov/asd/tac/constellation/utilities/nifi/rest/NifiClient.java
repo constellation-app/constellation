@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;
 import au.gov.asd.tac.constellation.utilities.rest.RestClient;
 import static au.gov.asd.tac.constellation.utilities.rest.RestClient.generateUrl;
+import com.google.common.hash.Hashing;
+import com.google.common.io.Files;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,8 +39,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
 import org.openide.util.Lookup;
-import org.python.google.common.hash.Hashing;
-import org.python.google.common.io.Files;
 
 /**
  * A Niagara Files Client.
@@ -103,7 +103,7 @@ public class NifiClient extends RestClient {
         final File file = new File(filePath);
         if (DEFAULT_CONFIG.duplicateFilterEnabled()) {
             final String hashString;
-            hashString = Files.hash(file, Hashing.md5()).toString();
+            hashString = Files.asByteSource(file).hash(Hashing.md5()).toString();
             if (SUBMIT_CACHE.containsKey(hashString)) {
                 LOGGER.log(Level.SEVERE, "A file with matching contents has already been submitted (original: {0}).", SUBMIT_CACHE.get(hashString));
                 return null;

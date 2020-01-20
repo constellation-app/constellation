@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.geospatial;
 
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
+import com.google.common.util.concurrent.AtomicDouble;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,10 +39,13 @@ import org.geotools.styling.Stroke;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleBuilder;
 import org.geotools.styling.StyleFactory;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.FilterFactory;
 import org.opengis.filter.FilterFactory2;
-import org.python.google.common.util.concurrent.AtomicDouble;
 
 /**
  * Style Generator.
