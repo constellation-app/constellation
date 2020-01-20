@@ -341,7 +341,7 @@ public class TimelinePanel extends Region {
                     element.setNodeItem(nodeItem);
                 }
             }
-            
+
             if (nodeItem != null) {
                 series.getData().add(nodeItem);
 

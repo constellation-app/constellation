@@ -61,8 +61,9 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
         super.setDefault(value);
 
         // Ensure that the default is a registered type.
-        if (defaultValue != null && defaultValue instanceof SchemaVertexType
-                && ((SchemaVertexType) defaultValue).isIncomplete()) {
+        if (defaultValue != null
+                && defaultValue instanceof SchemaVertexType
+                && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }
     }

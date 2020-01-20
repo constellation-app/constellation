@@ -68,8 +68,7 @@ public class PluginServlet extends ConstellationApiServlet {
                 } else {
                     try {
                         PluginImpl.post_run(graphId, pluginName, request.getInputStream());
-                    }
-                    catch(final Exception ex) {
+                    } catch (final Exception ex) {
                         ex.printStackTrace();
                         throw new ServletException(ex);
                     }

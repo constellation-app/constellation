@@ -356,7 +356,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * will be used instead of file's parent folder.
      */
     private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
-        if (null != newFile) {      
+        if (null != newFile) {
             File parent = newFile.getParentFile();
             if (parent == null) {
                 if (lastDir.isEmpty()) {

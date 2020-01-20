@@ -29,7 +29,7 @@ import processing.core.PImage;
  * @author cygnus_x-1
  */
 public abstract class EsriMapProvider extends MapProvider {
-    
+
     private static final Logger LOGGER = Logger.getLogger(EsriMapProvider.class.getName());
 
     public static enum MapServerType {
@@ -75,7 +75,7 @@ public abstract class EsriMapProvider extends MapProvider {
                 url = "";
                 break;
         }
-        
+
         if (url == null || url.isEmpty()) {
             LOGGER.log(Level.WARNING, "Tile URL, %s, is invalid", url);
         }
