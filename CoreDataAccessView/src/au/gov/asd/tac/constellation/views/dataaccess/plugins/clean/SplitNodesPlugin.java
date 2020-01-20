@@ -152,7 +152,25 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, leftVertexTypesMatches.get(0));
         }
         result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, right);
-        result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, result.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
+        
+        //Loops through all of the Node attributes and copies them to the new node
+        query.reset();
+        while(query.next()){
+            for (final String key : query.keys()){
+                if(SOURCE_ID.replace("<string>", "").equals(key) || SOURCE_IDENTIFIER.replace("<string>", "").equals(key)) {
+                     //Skips the id and Identifier to make the new node unique
+                } else if ((GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X).equals(key) 
+                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y).equals(key) 
+                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z).equals(key)){ 
+                    //The coordinates are also skipped so that the second node is not created in the exact same location
+                    //as the first node
+                } else {
+                     result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), 
+                     query.get(key));
+                }
+            }
+        }
+        
         if (ordered_types.size() > 1 && rightVertexTypesMatches.size() > 0) {
             result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, rightVertexTypesMatches.get(0));
         }
