@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
+import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,7 +66,12 @@ public class AnalyticViewState {
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
         activeAnalyticQuestions.add(question);
-        activeSelectablePlugins.add(selectablePlugins);
+        for(int i = 0; i < selectablePlugins.size();i++){
+            List<SelectableAnalyticPlugin> plugin = new ArrayList<>();
+            plugin.add(selectablePlugins.get(i));
+            activeSelectablePlugins.add(plugin);
+        }
+        
     }
 
     public void removeAnalyticQuestion(final AnalyticQuestionDescription<?> question) {
@@ -74,12 +80,38 @@ public class AnalyticViewState {
     }
     
     public void removeAnalyticQuestions(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
-        activeSelectablePlugins.removeAll(selectablePlugins);
+        
+        List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
+        
+        for(int i = 0; i < selectablePlugins.size();i++){
+            for(int j = 0; j < activeSelectablePlugins.size();j++){
+                if(selectablePlugins.get(i).getClass().getName().equals(activeSelectablePlugins.get(i).get(0).getClass().getName())){
+                    // when the plugins are the same name
+                    removearray.add(activeSelectablePlugins.get(i));
+                }
+            }
+        }
+        
+        activeSelectablePlugins.removeAll(removearray);
         activeAnalyticQuestions.remove(question);
     }
     
     public void clearAnalyticQuestions() {
         activeAnalyticQuestions.clear();
         activeSelectablePlugins.clear();
+    }
+
+    public void removePluginsMatchingCategory(String currentCategory) {
+        List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
+        for(int i = 0; i < activeSelectablePlugins.size();i++){
+            //if(currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
+            if(activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)){
+                // when same catelog
+                removearray.add(activeSelectablePlugins.get(i));
+            }
+        }
+        activeSelectablePlugins.removeAll(removearray);
+        
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

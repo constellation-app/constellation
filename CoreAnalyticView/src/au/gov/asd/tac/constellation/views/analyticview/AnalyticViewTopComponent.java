@@ -90,7 +90,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             // TODO: listen for changes to the state, which describes current gui parameters
-            analyticViewPane.getConfigurationPane().refreshState();
+            //analyticViewPane.getConfigurationPane().refreshState();
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
@@ -167,12 +167,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        analyticViewPane.getConfigurationPane().refreshState();
+        analyticViewPane.getConfigurationPane().updateState(true);
     }
     
     @Override
     protected void handleComponentOpened() {
-        analyticViewPane.getConfigurationPane().refreshState();
+        analyticViewPane.getConfigurationPane().updateState(true);
     }
 
     public class AnalyticController {

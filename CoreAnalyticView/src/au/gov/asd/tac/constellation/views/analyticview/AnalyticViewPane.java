@@ -82,7 +82,7 @@ public class AnalyticViewPane extends BorderPane {
         final Menu optionsMenu = new Menu("Options");
         final MenuItem saveMenuItem = new MenuItem("Save Question");
         saveMenuItem.setOnAction(event -> {
-            this.getConfigurationPane().refreshState();
+            this.getConfigurationPane().updateState(false);
             // TODO: handle saving analytic questions, then add this to the menu
         });
         optionsMenu.getItems().add(saveMenuItem);
