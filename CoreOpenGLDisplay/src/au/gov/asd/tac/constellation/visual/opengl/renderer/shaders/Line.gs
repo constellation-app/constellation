@@ -1,17 +1,13 @@
 // LINE geometry shader.
 // Points that are marked with the hidden indicator (color.a<0) are not emitted.
-//
-//
 
 #version 330 core
 
 // Keep this in sync with SceneBatchStore.
-//
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
 
 // Keep this in sync with LineArrow.gs.
-//
 const float EDGE_SEPARATION_SCALE = 32;
 const float VISIBLE_ARROW_DISTANCE = 100;
 
@@ -40,17 +36,14 @@ flat out float lineLength;
 void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
-    //
     float visibility = vpointColor[0][3];
     if(visibility > max(visibilityLow, 0) && (visibility <= visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
-        //
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
 
         // If the line is selected then move it slightly forward so
         // that it is drawn in front of unselected lines.
-        //
         int seldim = gData[0][2];
         bool isSelected = (seldim & 1) != 0;
         bool isDim = (seldim & 2) != 0;
@@ -64,7 +57,6 @@ void main() {
 
         // Always draw full lines and arrows if the width is greater than normal.
         // (There's probably some optimisation at a further distance, but this will do for now.)
-        //
         if(lineDistance <= VISIBLE_ARROW_DISTANCE || width > 1) {
             float lineStyle = gData[1].q & 0x3;
 
@@ -72,7 +64,6 @@ void main() {
             // We want to end them on the surface of a 1-radius sphere around the centre,
             // so we subtract 1 from each end of the line.
             // As the ends of the line approach each other, the ends should move towards the centres of the points.
-            //
             lineLength = distance(end0, end1);
             vec4 lineDirection = normalize(end1 - end0);
             float arrowLength = (clamp(lineLength, 0.0, 3.0)) * 0.29167;
@@ -98,14 +89,12 @@ void main() {
 
 
             // Adjust the width as specified by the graph attribute.
-            //
             halfWidth *= width;
             arrowVector *= width * 0.75;
 
             // If this line is selected and we're not drawing into the hit test buffer,
             // or we've been told to draw it fatter (presumably to indicate many transactions in this edge),
             // draw it fatter.
-            //
             if((isSelected && drawHitTest == 0) || (lineInfo0 & LINE_INFO_OVERFLOW) != 0 || (lineInfo1 & LINE_INFO_OVERFLOW) != 0) {
                 halfWidth *= 2;
                 arrowVector *= 1.5;
@@ -115,7 +104,6 @@ void main() {
             // stored in the alpha of the color.
             // If we're drawing into the display buffer, vary the alpha depending on the distance of the line from the camera.
             // We use the nearest end of the line for the distance.
-            //
             vec4 color0;
             vec4 color1;
 
@@ -132,9 +120,7 @@ void main() {
                 }
 
                 // This overwrites the visibility value in vpointcolor[][3].
-                //
-                // TODO The fade-out distance should depend on the current bounding box / camera distance.
-                //
+                // TODO: The fade-out distance should depend on the current bounding box / camera distance.
                 float alphaFade = 1 - smoothstep(10, 500000, lineDistance);
                 color0.a = alphaFade * alpha;
                 color1.a = alphaFade * alpha;
@@ -148,10 +134,8 @@ void main() {
             // However, the arrowheads must always be drawn, so their line style must always be solid.
             // We'll pass the lineStyle in fData.q (rather than a variable) so it can be primitive specific.
             //
-
             // If end1 has an outgoing arrow and end0 is not
             // too far away then draw an arrow at end0.
-            //
             if(outgoing1 && (end0.z>-100 || width>1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color0;
@@ -175,7 +159,6 @@ void main() {
                 end0 += arrowVector;
 
                 // If both ends have arrows then convert the triangle into a diamond.
-                //
                 if (outgoing0) {
                     pointColor = color0;
                     gl_Position = pMatrix * (end0 + arrowVector * 0.5);
@@ -191,7 +174,6 @@ void main() {
 
             // If end0 has an outgoing arrow and end1 is not
             // too far away then draw an arrow at end1.
-            //
             if(outgoing0 && (end1.z > -100 || width > 1)) {
                 // Draw a triangle to represent the arrow
                 pointColor = color1;
@@ -215,7 +197,6 @@ void main() {
                 end1 -= arrowVector;
 
                 // If both ends have arrows then convert the triangle into a diamond.
-                //
                 if (outgoing1) {
                     pointColor = color1;
                     gl_Position = pMatrix * (end1 - arrowVector * 0.5);
@@ -258,10 +239,6 @@ void main() {
             EmitVertex();
 
             EndPrimitive();
-
-
-
-
 
             // Draw the motion bars
             if(drawHitTest == 0 && directionMotion != -1 && lineLength > 1 && outgoing0 != outgoing1) {
@@ -318,7 +295,6 @@ void main() {
 
                 EndPrimitive();
             }
-
         }
     }
 }

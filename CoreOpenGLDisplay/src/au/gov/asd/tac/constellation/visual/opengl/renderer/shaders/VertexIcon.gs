@@ -2,7 +2,6 @@
 // Icons that are marked with the hidden indicator (color.a<0) are not emitted.
 //
 // The [gf]DisplayColor passes the highlight color through to the fragment shader.
-//
 
 #version 330 core
 
@@ -93,7 +92,6 @@ void main() {
 
     // Nodes are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task.NodeHider.java.
-    //
     float sideRadius = gRadius[0];
     if (sideRadius > 0) {
 
@@ -115,7 +113,6 @@ void main() {
         // that it is drawn in front of unselected vertices.
         if((fd & SELECTED_MASK) != 0) {
             // Set a minimum size for selected vertices.
-            //
             float ddist = 800;
             if(v.z < -ddist) {
                 sideRadius *= 1 - ((ddist+v.z)/ddist);

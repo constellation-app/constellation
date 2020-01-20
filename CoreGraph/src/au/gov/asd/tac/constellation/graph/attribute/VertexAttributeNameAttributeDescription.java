@@ -39,7 +39,7 @@ public final class VertexAttributeNameAttributeDescription extends AbstractObjec
     }
 
     @Override
-    protected String convertFromString(String string) throws IllegalArgumentException {
-        return (String) string;
+    protected String convertFromString(final String string) throws IllegalArgumentException {
+        return string;
     }
 }

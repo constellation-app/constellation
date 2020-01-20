@@ -5,8 +5,9 @@ The following is a list of assets used in the Constellation project and their pr
    - material-design-icons-master.zip - (https://github.com/google/material-design-icons) © Google Material design icons is the official icon set from Google. The icons are designed under the material design guidelines. Google made these icons available under the Apache License Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt).
    - 70-Social-Icons.zip - (https://www.sketchappsources.com/resource/download-2010.html) Sketch App Sources provides free and premium design resources for Sketch App
    - 110893-computer-icons.zip - (http://www.iconarchive.com/category/computer-icons.html)
-   - flat-flat-2.zip - (https://www.flaticon.com/packs/countrys-flags) under the license (https://file000.flaticon.com/downloads/license/license.pdf)
-   - map_markers.zip - (https://www.flaticon.com/packs/countrys-flags) under the license (https://file000.flaticon.com/downloads/license/license.pdf)
+   - 206589-international-flags.zip - (https://www.flaticon.com/packs/international-flags/2) under the license (https://file000.flaticon.com/downloads/license/license.pdf)
+   - 940113-flags.zip - (https://www.flaticon.com/packs/flags-15) under the license (https://file000.flaticon.com/downloads/license/license.pdf)
+   - Flag_of_FLNKS.svg - (https://upload.wikimedia.org/wikipedia/commons/6/66/Flag_of_FLNKS.svg)
    - (https://github.com/google/material-design-icons) © Google Material design icons is the official icon set from Google. The icons are designed under the material design guidelines. Google made these icons available under the Apache License Version 2.0 (https://www.apache.org/licenses/LICENSE-2.0.txt).
    - (https://www.sketchappsources.com/resource/download-2010.html) Sketch App Sources provides free and premium design resources for Sketch App
    - (http://www.iconarchive.com/category/computer-icons.html)
