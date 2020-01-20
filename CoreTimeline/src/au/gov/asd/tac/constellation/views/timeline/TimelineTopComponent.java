@@ -429,6 +429,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         final Thread t = new Thread() {
             @Override
             public void run() {
+                if (graph == null) {
+                    // with no graph to populate from there's no point continuing
+                    return;
+                }
                 datetimeAttributes = new ArrayList<>();
                 final ReadableGraph rg = graph.getReadableGraph();
                 try {
@@ -633,7 +637,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void persistStateToGraph() {
-        PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
+        if (graphNode != null) {
+            // Ensure there is a graph to persist state to
+            PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
+        }
     }
 
     private void retrieveStateFromGraph() {
