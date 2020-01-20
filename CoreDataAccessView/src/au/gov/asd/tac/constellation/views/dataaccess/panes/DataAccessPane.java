@@ -230,6 +230,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         // Wait and do nothing while graph is getting made
                     }
                     graphId = GraphManager.getDefault().getActiveGraph().getId();
+                    if (!graphState.containsKey(graphId)) {
+                        graphState.put(graphId, new GraphState());
+                    }
+                    currentGraphState = graphState.get(graphId);
                 }
             }
             // run the selected queries
