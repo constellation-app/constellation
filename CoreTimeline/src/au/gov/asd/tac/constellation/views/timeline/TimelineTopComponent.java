@@ -429,6 +429,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         final Thread t = new Thread() {
             @Override
             public void run() {
+                if (graph == null) {
+                    // with no graph to populate from there's no point continuing
+                    return;
+                }
                 datetimeAttributes = new ArrayList<>();
                 final ReadableGraph rg = graph.getReadableGraph();
                 try {
@@ -537,6 +541,14 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         t.start();
     }
 
+    // Wrapper call around populateFromGraph for cases where populateFromGraph is using graphNode.getGraph()
+    // as the graph. This wrapper validates that graphNode is non null.
+    private void populateFromGraphNode(final boolean isFullRefresh) {
+        if (graphNode != null) {
+            populateFromGraph(graphNode.getGraph(), isFullRefresh);
+        }
+    }
+
     public void setCurrentDatetimeAttr(final String currentDatetimeAttr) {
         this.currentDatetimeAttribute = currentDatetimeAttr;
         if (state != null) {
@@ -558,7 +570,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         });
 
         // Call for repopulation:
-        populateFromGraph(graphNode.getGraph(), true);
+        populateFromGraphNode(true);
     }
 
     void updateTimeZone(final ZoneId timeZone) {
@@ -574,7 +586,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 timelinePanel.setExclusionState(0);
             });
 
-            populateFromGraph(graphNode.getGraph(), true);
+            populateFromGraphNode(true);
         }
     }
 
@@ -602,7 +614,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         });
 
         // Call for repopulation.
-        populateFromGraph(graphNode.getGraph(), true);
+        populateFromGraphNode(true);
     }
 
     protected void setIsShowingNodeLabels(final boolean isShowingNodeLabels) {
@@ -611,7 +623,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             persistStateToGraph();
 
             if (!isShowingNodeLabels || state.getNodeLabelsAttr() != null) {
-                populateFromGraph(graphNode.getGraph(), false);
+                populateFromGraphNode(false);
             }
 
             timelinePanel.setIsShowingNodeLabelAttributes(isShowingNodeLabels);
@@ -624,7 +636,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             persistStateToGraph();
 
             // Do only a partial update, ie the timeline and selection area for histogram:
-            populateFromGraph(graphNode.getGraph(), false);
+            populateFromGraphNode(false);
         }
     }
 
@@ -633,7 +645,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void persistStateToGraph() {
-        PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
+        if (graphNode != null) {
+            // Ensure there is a graph to persist state to
+            PluginExecution.withPlugin(new TimelineStatePlugin(state)).executeLater(graphNode.getGraph());
+        }
     }
 
     private void retrieveStateFromGraph() {
@@ -750,21 +765,21 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         public void run() {
                             // Re-populate charts:
                             timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                            populateFromGraph(graphNode.getGraph(), true);
+                            populateFromGraphNode(true);
                         }
                     });
                 } //Detect value change on the temporal attribute
                 else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {
-                    populateFromGraph(graphNode.getGraph(), true);
+                    populateFromGraphNode(true);
                 } // Detect graph structural changes (such as adding and removal of nodes etc):
                 else if (currentStructureModificationCount != oldStructureModificationCount) {
                     // Re-populate charts:
-                    populateFromGraph(graphNode.getGraph(), true);
+                    populateFromGraphNode(true);
                 } // Detect changes of selection to transactions or vertices:
                 else if (currentTransSelectedModificationCount != oldTransSelectedModificationCount
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
-                    populateFromGraph(graphNode.getGraph(), false);
+                    populateFromGraphNode(false);
                 } // Detect changes of dim to transactions and vertices:
                 /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {
