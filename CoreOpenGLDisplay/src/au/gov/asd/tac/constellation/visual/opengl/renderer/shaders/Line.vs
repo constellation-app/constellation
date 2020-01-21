@@ -13,12 +13,10 @@ flat out ivec4 gData;
 
 void main(void) {
     // Pass the color to the fragment shader.
-    //
     vpointColor = vColor;
     gData = data;
 
     // Decode the index into the xyzTexture and the LINE_INFO from each other and put the LINE_INFO back.
-    //
     int vxIndex = gData[1] / 4;
     gData[1] = gData[1] - vxIndex * 4;
 

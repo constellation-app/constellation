@@ -199,7 +199,6 @@ public class DateTimeRange {
                 final Period period = Period.parse(split[0]);
 
                 // If no zone was specified, use UTC.
-                //
                 final String zone = split.length > 1 ? split[1] : "UTC";
                 final ZoneId zi = ZoneId.of(zone);
 

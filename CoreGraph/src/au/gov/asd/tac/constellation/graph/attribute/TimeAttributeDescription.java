@@ -47,7 +47,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "time";
     public static final int NULL_VALUE = Integer.MIN_VALUE;
-    
+
     private int[] data = new int[0];
     private int defaultValue = NULL_VALUE;
 

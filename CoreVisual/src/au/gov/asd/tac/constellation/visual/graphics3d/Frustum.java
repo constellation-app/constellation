@@ -305,7 +305,6 @@ public final class Frustum {
         final Vector3f vCross = new Vector3f();
         final Vector3f vOrigin = new Vector3f();
 
-        ///////////////////////////////////////////////////////////////////
         // Create the transformation matrix. This was the trickiest part
         // for me. The default view from OpenGL is down the negative Z
         // axis. However, building a transformation axis from these

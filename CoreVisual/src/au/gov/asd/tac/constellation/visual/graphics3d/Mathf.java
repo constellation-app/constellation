@@ -233,12 +233,17 @@ public final class Mathf {
         return dRet;
     }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//// Faster (and one shortcut) replacements for gluProject
-//// Get Window coordinates, discard Z...
-////    void m3dProjectXY(M3DVector2f vPointOut, final M3DMatrix44f mModelView, final M3DMatrix44f mProjection, final int iViewPort[4], final float[] vPointIn);
-//    public static void projectXYZ(Vector2f vPointOut, Matrix44f mModelView, Matrix44f mProjection, int[] iViewPort, Vector3f vPointIn)
-//    {
+//    /**
+//     * Faster (and one shortcut) replacements for gluProject. Get Window
+//     * coordinates, discard Z.
+//     *
+//     * @param vPointOut
+//     * @param mModelView
+//     * @param mProjection
+//     * @param iViewPort
+//     * @param vPointIn
+//     */
+//    public static void projectXYZ(Vector2f vPointOut, Matrix44f mModelView, Matrix44f mProjection, int[] iViewPort, Vector3f vPointIn) {
 //        Vector4f vBack = new Vector4f();
 //        Vector4f vForth = new Vector4f();
 ////	memcpy(vBack, vPointIn, sizeof(float)*3);
@@ -248,26 +253,25 @@ public final class Mathf {
 ////        transformVector(vBack, vForth, mProjection);
 //        vForth.transform(vBack, mModelView);
 //        vBack.transform(vForth, mProjection);
-//        if(!closeEnough(vBack.a[3], 0.0f, 0.000001f))
-//        {
-//            float div = 1.0f/vBack.a[3];
+//        if (!closeEnough(vBack.a[3], 0.0f, 0.000001f)) {
+//            float div = 1.0f / vBack.a[3];
 //            vBack.a[0] *= div;
 //            vBack.a[1] *= div;
 //            //vBack[2] *= div;
 //        }
-//        vPointOut.a[0] = (float)(iViewPort[0])+(1.0f+(float)(vBack.a[0]))*(float)(iViewPort[2])/2.0f;
-//        vPointOut.a[1] = (float)(iViewPort[1])+(1.0f+(float)(vBack.a[1]))*(float)(iViewPort[3])/2.0f;
+//        vPointOut.a[0] = (float) (iViewPort[0]) + (1.0f + (float) (vBack.a[0])) * (float) (iViewPort[2]) / 2.0f;
+//        vPointOut.a[1] = (float) (iViewPort[1]) + (1.0f + (float) (vBack.a[1])) * (float) (iViewPort[3]) / 2.0f;
 //        // This was put in for Grand Tour... I think it's right.
 //        // .... please report any bugs
-//        if(iViewPort[0]!=0)     // Cast to float is expensive... avoid if posssible
+//        if (iViewPort[0] != 0) // Cast to float is expensive... avoid if posssible
 //        {
-//            vPointOut.a[0] -= (float)iViewPort[0];
+//            vPointOut.a[0] -= (float) iViewPort[0];
 //        }
-//        if(iViewPort[1]!=0)
-//        {
-//            vPointOut.a[1] -= (float)iViewPort[1];
+//        if (iViewPort[1] != 0) {
+//            vPointOut.a[1] -= (float) iViewPort[1];
 //        }
 //    }
+//
     /**
      * This function does a three dimensional Catmull-Rom "spline" interpolation
      * between p1 and p2.

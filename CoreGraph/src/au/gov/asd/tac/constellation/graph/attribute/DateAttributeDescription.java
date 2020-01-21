@@ -49,7 +49,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public static final String ATTRIBUTE_NAME = "date";
     public static final long NULL_VALUE = Long.MIN_VALUE;
     public static final DateTimeFormatter FORMATTER = TemporalFormatting.DATE_FORMATTER;
-    
+
     private long[] data = new long[0];
     private long defaultValue = NULL_VALUE;
 
