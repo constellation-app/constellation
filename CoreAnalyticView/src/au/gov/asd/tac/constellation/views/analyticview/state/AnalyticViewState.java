@@ -67,11 +67,29 @@ public class AnalyticViewState {
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
         activeAnalyticQuestions.add(question);
         for(int i = 0; i < selectablePlugins.size();i++){
-            List<SelectableAnalyticPlugin> plugin = new ArrayList<>();
+            final List<SelectableAnalyticPlugin> plugin = new ArrayList<>();
             plugin.add(selectablePlugins.get(i));
             activeSelectablePlugins.add(plugin);
+        }       
+        List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
+        int removeIndex = -1;
+        for(int i = 0; i < activeSelectablePlugins.size();i++){
+            for(int j = i+1; j < activeSelectablePlugins.size();j++){
+                if(!activeSelectablePlugins.get(i).isEmpty() && isSamePluginName(activeSelectablePlugins.get(i).get(0),activeSelectablePlugins.get(j).get(0))){
+                    System.out.println("same name found here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    removeIndex = i;
+                }
+            }
         }
-        
+        if(removeIndex != -1){
+            activeSelectablePlugins.remove(removeIndex);
+        }    
+    }
+    
+    // shallow compare two plugins if they are the same type (not the exact same object)
+    private boolean isSamePluginName(final SelectableAnalyticPlugin p1, final SelectableAnalyticPlugin p2){
+        System.out.println("p1 :" + p1.getPlugin().getClass().getName() + " p2 : " + p2.getPlugin().getClass().getName());
+        return p1.getPlugin().getClass().getName().equals(p2.getPlugin().getClass().getName());
     }
 
     public void removeAnalyticQuestion(final AnalyticQuestionDescription<?> question) {
@@ -105,13 +123,11 @@ public class AnalyticViewState {
         List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
         for(int i = 0; i < activeSelectablePlugins.size();i++){
             //if(currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
-            if(activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)){
+            if(!activeSelectablePlugins.get(i).isEmpty() && activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)){
                 // when same catelog
                 removearray.add(activeSelectablePlugins.get(i));
             }
         }
         activeSelectablePlugins.removeAll(removearray);
-        
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

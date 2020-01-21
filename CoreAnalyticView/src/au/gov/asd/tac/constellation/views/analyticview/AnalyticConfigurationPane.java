@@ -90,7 +90,6 @@ public class AnalyticConfigurationPane extends VBox {
     private final Tab parametersTab;
     private final Tab documentationTab;
     private WebView documentationView;
-    private static boolean uncheckFlag = false;
     private static boolean suppressed = false;
 
     private AnalyticQuestionDescription currentQuestion = null;
@@ -263,25 +262,17 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if(!suppressed){
                 if (newValue != null) {
-                populateDocumentationPane(newValue);
-                populateParameterPane(newValue.getAllParameters());
-                if(newValue.isSelected()){
-                    // set flag to say update
-                    uncheckFlag = false;
-                    
-                }else{
-                    // set flag to delete
-                    uncheckFlag = true;
+                    populateDocumentationPane(newValue);
+                    populateParameterPane(newValue.getAllParameters());
+                    // only update state when the categories are expanded
+                    if(categoryListPane.isExpanded()){  
+                        updateState(false);
+                    }
+                } else {
+                    populateDocumentationPane(null);
+                    populateParameterPane(globalAnalyticParameters);
                 }
-                // TODO: update state attribute here
-                updateState(false);
-            } else {
-                populateDocumentationPane(null);
-                populateParameterPane(globalAnalyticParameters);
             }
-            
-            }
-            
         });
 
         // build the pane holding the list of analytic plugins
@@ -660,177 +651,6 @@ public class AnalyticConfigurationPane extends VBox {
             return "Analytic View: Update State";
         }
     }
-    /**
-     * Reads the state attribute and updates the display.
-     */
-    private static final class AnalyticViewStateReader extends SimpleEditPlugin {
-
-        private final AnalyticConfigurationPane analyticConfigurationPane;
-
-        public AnalyticViewStateReader(final AnalyticConfigurationPane analyticConfigurationPane) {
-            this.analyticConfigurationPane = analyticConfigurationPane;
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            
-            // fetch current state
-            AnalyticViewState currentState;
-            
-            // get state attribute id
-            int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            
-            // if no state currently, make a new state and use defaults for setting.
-            currentState = graph.getObjectValue(stateAttributeId, 0);
-            if(currentState == null){
-                currentState = new AnalyticViewState();
-            }
-            currentState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
-                    : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
-//            if(currentState.getActiveAnalyticQuestions() == null){
-//                //default value??
-//            }else{
-//                analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().get(0);
-//            }
-            
-            
-            // get questions, set them as selected
-            if(!currentState.getActiveSelectablePlugins().isEmpty() && !currentState.getActiveAnalyticQuestions().isEmpty()){
-                currentState.getActiveSelectablePlugins();
-                currentState.getActiveAnalyticQuestions();
-                analyticConfigurationPane.setQuestion(currentState.getActiveAnalyticQuestions(), currentState.getActiveSelectablePlugins());
-            }
-        }
-
-        @Override
-        protected boolean isSignificant() {
-            return false;
-        }
-
-        @Override
-        public String getName() {
-            return "Analytic View: Read State";
-        }
-    }
-    
-    /**
-     * Update the state attribute using the parameters displayed.
-     */
-    private static final class AnalyticViewStateUpdater extends SimpleEditPlugin {
-
-        private final AnalyticConfigurationPane analyticConfigurationPane;
-
-        public AnalyticViewStateUpdater(final AnalyticConfigurationPane analyticConfigurationPane) {
-            this.analyticConfigurationPane = analyticConfigurationPane;
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            
-            // fetch current state
-            AnalyticViewState currentState;
-            
-            // get state attribute id
-            int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            
-            // if no state currently, make a new state and use defaults for setting.
-            currentState = graph.getObjectValue(stateAttributeId, 0);
-            if(currentState == null){
-                currentState = new AnalyticViewState();
-            }
-            
-            
-
-            
-            List<SelectableAnalyticPlugin> selectedAndChecked = new ArrayList<>();
-            List<SelectableAnalyticPlugin> uncheckedPlugins = new ArrayList<>();
-            
-            // adding items to selectedAndChecked array. if not, adding to array of items not selected
-            analyticConfigurationPane.pluginList.getSelectionModel().getSelectedItems().forEach(selectablePlugin -> {
-                if(selectablePlugin.isSelected()){
-                    SelectableAnalyticPlugin temp = selectablePlugin;
-                    selectedAndChecked.add(temp);
-                }else{
-                    SelectableAnalyticPlugin temp = selectablePlugin;
-                    uncheckedPlugins.add(temp); // items deselected but still in focus
-                }
-            });
-            
-            
-            List<SelectableAnalyticPlugin> uniqueList = new ArrayList<>();
-            //take out overlapping values
-            
-            List<String> checkedPluginNames = new ArrayList<>();
-            for(int j=0; j<selectedAndChecked.size();j++){
-                checkedPluginNames.add(selectedAndChecked.get(j).plugin.getClass().getName());
-            }
-            
-             //TODO : compare single item from selection model .get0 with the selections held in the state
-            boolean isUnique = true;
-             // for all values not in the r
-             for(int i=0;i<currentState.getActiveSelectablePlugins().size();i++){
-                 if(checkedPluginNames.size() > 0){
-                     System.out.println("name in state: " + currentState.getActiveSelectablePlugins().get(i).get(0).plugin.getClass().getName());
-                     System.out.println("name in state: " + checkedPluginNames.get(0));
-                     
-                     if(!checkedPluginNames.get(0).equals(currentState.getActiveSelectablePlugins().get(i).get(0).plugin.getClass().getName())){
-                        // not same plugin
-                        System.out.println("not the same");
-                        isUnique=false;
-                     //removearray.add(currentState.getActiveSelectablePlugins().get(i));
-                    }
-                 }
-                 
-             }
-             if(isUnique){
-                 if(selectedAndChecked.size() > 0){
-                     uniqueList.add(selectedAndChecked.get(0));
-                 }
-                 
-             }
-            
-//            List<SelectableAnalyticPlugin> removearray = new ArrayList<>();
-//            currentState.getActiveSelectablePlugins().forEach(selectablePlugin -> {
-//                if(!selectablePlugin.isEmpty()){
-//                    if(uniqueList.contains(selectablePlugin.get(0))){
-//                        removearray.add(selectablePlugin.get(0));
-//                    }
-//                }
-//                
-//            });
-//            uniqueList.removeAll(removearray);
-            //removePluginArray.removeAll(valsToRemove);
-            
-            // remove all plugins which are selected but not checked
-            if(uncheckFlag){
-                
-            } // THIS WORKS TOO WELL, REMOVES ALL CHECKED BOXES
-            currentState.removeAnalyticQuestions(analyticConfigurationPane.currentQuestion, uncheckedPlugins);
-            // add question to state and store to graph's state attribute.
-            if(uniqueList.size() != 0){
-                currentState.addAnalyticQuestion(analyticConfigurationPane.currentQuestion, uniqueList);
-                
-            }
-            
-            // TODO: save plugin parameters here 
-            graph.setObjectValue(stateAttributeId, 0, currentState);
-        }
-        
-        // shallow compare two plugins if they are the same type (not the exact same object)
-        private boolean isSamePluginName(final SelectableAnalyticPlugin p1, final SelectableAnalyticPlugin p2){
-            return p1.getClass().getName().equals(p2.getClass().getName());
-        }
-
-        @Override
-        protected boolean isSignificant() {
-            return false;
-        }
-
-        @Override
-        public String getName() {
-            return "Analytic View: Update State";
-        }
-    }
     
     /**
      * TODO : REFACTOR THIS CLASS NAME
@@ -847,29 +667,38 @@ public class AnalyticConfigurationPane extends VBox {
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             
             // fetch current state
-            AnalyticViewState currentState;
+            AnalyticViewState fetchedState;
             // grab currently expanded category (Centrality, Global, Metrics, Similarity)
             String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
+            System.out.println("current category: " + currentCategory);
             // get state attribute id
             int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
             
             // if no state currently, make a new state and use defaults for setting.
-            currentState = graph.getObjectValue(stateAttributeId, 0);
+            fetchedState = graph.getObjectValue(stateAttributeId, 0);
             
-            if(currentState == null){
-                currentState = new AnalyticViewState();
+            if(fetchedState == null){
+                fetchedState = new AnalyticViewState();
             }
             
             // TODO: this line may not be necessary
-            currentState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
+            fetchedState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
                     : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
             
 
             // updates the state with a selection or deselection of the currently opened category
             if(!analyticConfigurationPane.onLoad){
+                final AnalyticViewState currentState = fetchedState;
+                final Runnable task = () -> {
+                    // remove all plugins matching category
+                    currentState.removePluginsMatchingCategory(currentCategory);                    
+                };
+                task.run();
+
+                Thread thread = new Thread(task);
+                thread.start();
                 
-                // remove all plugins matching category
-                currentState.removePluginsMatchingCategory(currentCategory);
+
                 
                 // grab all plugins from currently selected category
                 List<SelectableAnalyticPlugin> checkedPlugins = new ArrayList<>();
@@ -884,80 +713,34 @@ public class AnalyticConfigurationPane extends VBox {
                 // add all plugins to state attribute
                 if(checkedPlugins.size() != 0){
                     currentState.addAnalyticQuestion(analyticConfigurationPane.currentQuestion, checkedPlugins);
+                    graph.setObjectValue(stateAttributeId, 0, currentState); // save - move thi location
                 }
             }
             
             // only this section when the user first loads the category
             
-        // get question only if one exists
-        analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null : currentState.getActiveAnalyticQuestions().get(0);
-        
-        // on load
-        
-        List<SelectableAnalyticPlugin> checkedWithinCategory = new ArrayList<>();
-        
-        // for each list of plugins
-        for(List<SelectableAnalyticPlugin> selectedPluginList : currentState.getActiveSelectablePlugins()){
-            // if the first index is the same category as the current category.
-            if(currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
-                // add plugin to selection
-                checkedWithinCategory.add(selectedPluginList.get(0));
-                /**
-                Platform.runLater(
-                () -> {
-                    //when plugin is the same category as the selected category
-                    if(analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem().equals(currentCategory)){
-                        analyticConfigurationPane.categoryList.getSelectionModel().select(analyticConfigurationPane.categoryList.getItems().indexOf(currentCategory));
-                        analyticConfigurationPane.categoryListPane.setExpanded(true);
-                    }     
-                });
-                */
-                analyticConfigurationPane.suppressed = true;
-                Platform.runLater(
-                () -> {  
-                    //setting plugin enabled (DOES NOT KEEP STATE)??
-                    //selectedPlugin.checkbox.setSelected(true);
-                    selectedPluginList.get(0).setSelected(true);
-                });
-                analyticConfigurationPane.suppressed = false;
-            }
-            
-        }
-        /**
-            for(SelectableAnalyticPlugin selectedPlugin : selectedPluginList){
-            
-                // get the selected plugin and its category
-                final SelectableAnalyticPlugin temp = selectedPlugin;
-                final String category = temp.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory();
+            // get question only if one exists
+            analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null : currentState.getActiveAnalyticQuestions().get(0);
 
-                // run on different thread to update the UI items
-                Platform.runLater(
-                () -> {
-                    //when plugin is the same category as the selected category
-                    if(analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem().equals(category)){
-                        analyticConfigurationPane.categoryList.getSelectionModel().select(analyticConfigurationPane.categoryList.getItems().indexOf(category));
-                        analyticConfigurationPane.categoryListPane.setExpanded(true);
-                    }     
-                });
-                
-                Platform.runLater(
-                () -> {  
-                    //setting plugin enabled (DOES NOT KEEP STATE)??
-                    //selectedPlugin.checkbox.setSelected(true);
-                    selectedPlugin.setSelected(true);
-                });
+            // on load
 
+            List<SelectableAnalyticPlugin> checkedWithinCategory = new ArrayList<>();
+
+            // for each list of plugins
+            for(List<SelectableAnalyticPlugin> selectedPluginList : currentState.getActiveSelectablePlugins()){
+                // if the first index is the same category as the current category.
+                if(!selectedPluginList.isEmpty() && currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
+                    // add plugin to selection
+                    checkedWithinCategory.add(selectedPluginList.get(0));
+
+                    Platform.runLater(
+                    () -> {
+                        analyticConfigurationPane.suppressed = true;
+                        selectedPluginList.get(0).setSelected(true);
+                        analyticConfigurationPane.suppressed = false;
+                    });
+                }
             }
-        }
-            
-        */  
-        
-//        
-//            if(!currentState.getActiveSelectablePlugins().isEmpty() && !currentState.getActiveAnalyticQuestions().isEmpty()){
-//                currentState.getActiveSelectablePlugins();
-//                currentState.getActiveAnalyticQuestions();
-//                analyticConfigurationPane.setQuestion(currentState.getActiveAnalyticQuestions(), currentState.getActiveSelectablePlugins());
-//            }
         }
 
         @Override
