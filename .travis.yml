@@ -18,6 +18,14 @@ jobs:
     script:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
+      - sonar-scanner -Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} -Dsonar.pullrequest.provider=github
+    addons:
+      sonarcloud:
+        organization: "constellation-app"
+        token:
+          secure: DnRbfCnDVJzuHJdOWLDabXrXXY+DnzOdn8zbzOD6RTmLlEawI+kdjKgVxnFPA4vbJVEYqUrzNcyksGKVosbxcpGLqc61X88tvxfPmziqS/lLpsluHQjh4Eeg/TN8Z4ImVdMqqMXl8shyqAwcg99DU+QAver4RMZZO+C0b79p2OkWbeBKkFQeKDEkqOLMn0u48OjovNH9tIhxwL+189LxZkwAFpX53hcTaPDf1lriCOtL1diFOUSdifOwO52hu/iyiKVO/zcb55FIFhWcVRh3ACQOqUluZyh8V1erSRQlMvyJLzVnf2Q3ujSe4toPjScIx+TOF4E0mDix+axKWFAaqirTD+HSSnb6lCwarOvEXSBgVwyHUf02VrjakkzN8GfiELh5Rb4DKY+Mp0+G4ZYI5jgUDSvuZB0xE2OtDX1Blm0m++/2NaTpd//zPnqU2dcRBSlXpkhf8bJ24O0d6VUvFTMsgT1cJFIxG2gg+IzBYCx83mc2Oc2FB0chuEL+OlhMOgxWXuG3oPxsMc9fyhYHeNTiEdljU5dQ44vFgk5RreDLfCeO01GdJBKke+NA29kiqhrJ1NTJ5tPHMHOBLRvl501vFRkKV3v1o8gD+4ljEOsyUaTpDgQzR0iVkgLMqOGJivoub8O41uVWic562ibThiJbD8OIPCl1MpK0nl7Gj1s=
+    script:
+      - sonar-scanner
 
   - stage: Build zip
     dist: trusty
@@ -37,11 +45,3 @@ deploy:
     repo: constellation-app/constellation
     branch: master
     tags: true
-
-addons:
-  sonarcloud:
-    organization: "constellation-app"
-    token:
-      secure: DnRbfCnDVJzuHJdOWLDabXrXXY+DnzOdn8zbzOD6RTmLlEawI+kdjKgVxnFPA4vbJVEYqUrzNcyksGKVosbxcpGLqc61X88tvxfPmziqS/lLpsluHQjh4Eeg/TN8Z4ImVdMqqMXl8shyqAwcg99DU+QAver4RMZZO+C0b79p2OkWbeBKkFQeKDEkqOLMn0u48OjovNH9tIhxwL+189LxZkwAFpX53hcTaPDf1lriCOtL1diFOUSdifOwO52hu/iyiKVO/zcb55FIFhWcVRh3ACQOqUluZyh8V1erSRQlMvyJLzVnf2Q3ujSe4toPjScIx+TOF4E0mDix+axKWFAaqirTD+HSSnb6lCwarOvEXSBgVwyHUf02VrjakkzN8GfiELh5Rb4DKY+Mp0+G4ZYI5jgUDSvuZB0xE2OtDX1Blm0m++/2NaTpd//zPnqU2dcRBSlXpkhf8bJ24O0d6VUvFTMsgT1cJFIxG2gg+IzBYCx83mc2Oc2FB0chuEL+OlhMOgxWXuG3oPxsMc9fyhYHeNTiEdljU5dQ44vFgk5RreDLfCeO01GdJBKke+NA29kiqhrJ1NTJ5tPHMHOBLRvl501vFRkKV3v1o8gD+4ljEOsyUaTpDgQzR0iVkgLMqOGJivoub8O41uVWic562ibThiJbD8OIPCl1MpK0nl7Gj1s=
-script:
-  - sonar-scanner
