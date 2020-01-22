@@ -19,13 +19,6 @@ jobs:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
       - sonar-scanner -Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} -Dsonar.pullrequest.provider=github
-    addons:
-      sonarcloud:
-        organization: "constellation-app"
-        token:
-          secure: "AjRVndWZPE0NFtcZHmIN+wdKSA191LxItRlARIbiixh48uuxcbPAcNUQsMzEwlHlwUMrpzTw3Oym7m3fMFqXqv7NAic6lIk3vgBF6Wk+L/fvAf40AH0quJRyzvufW3EzSxi0IOcPzy9U3VCFZk9J7Dv28G6OTMp/nlI0X3+1U7IqKCe9gxWjzEcQzz0GZyPtbPDuPZQmpwyXPLuFIR3W2G8WwNGgLX5J1YVb3KOjx4mPkCHHzBRDjLJJ9DhiIRlBb5NMj1sH4JwQ5pUtOfmAMM0z+QOhsj21wFKmBXBSc2acgRHJe472F3SEmviNbX4j722y4RxKMNj/3aatEL1T14uc/VLxCGhbM2t1a2pzIXYARRCMyjZcugx6T/N7ry1X8s/ZWmIMYCn2Go9LeXRasTbAItRO2glqgeb7l2hJefkmq7MmJF/8Pgc+VX/qzFrsJJ0OkLu0/D9pwUpcLRup8v1os4Iyt1WFd4Hlivf7fBDTBcEIxvYpPqaeX5GUT7+sZd2DmLVfNzpzf35DgNxnhGUeAPJA1DTRFBeFqvCd7qCR0wwSdwk1NI3rueZaVNYCRw8MNtaGoz5LHXr/nZs05qwT8RFrHvLETqddNFxgi+TLZVpYksevzUAe16xT6jg4vWb/82Kg9I2OWAJmPomZONoebiggfblICNJdgncWJhE="
-    script:
-      - sonar-scanner
 
   - stage: Build zip
     dist: trusty
