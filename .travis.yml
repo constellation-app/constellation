@@ -12,7 +12,8 @@ jobs:
 
   - stage: Run Tests
     dist: trusty
-    language: generic
+    language: java
+    jdk: oraclejdk8
     services:
       - docker
     script:
