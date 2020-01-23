@@ -65,30 +65,58 @@ public class AnalyticViewState {
     }
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
+        System.out.println("start add analyticquestion");
+        System.out.println("size: " + activeSelectablePlugins.size());
         activeAnalyticQuestions.add(question);
         for(int i = 0; i < selectablePlugins.size();i++){
             final List<SelectableAnalyticPlugin> plugin = new ArrayList<>();
-            plugin.add(selectablePlugins.get(i));
+            final SelectableAnalyticPlugin sap = selectablePlugins.get(i);
+            plugin.add(sap);
             activeSelectablePlugins.add(plugin);
         }       
-        List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
+        System.out.println("mid add analyticquestion");
+        System.out.println("size: " + activeSelectablePlugins.size());
         int removeIndex = -1;
         for(int i = 0; i < activeSelectablePlugins.size();i++){
             for(int j = i+1; j < activeSelectablePlugins.size();j++){
                 if(!activeSelectablePlugins.get(i).isEmpty() && isSamePluginName(activeSelectablePlugins.get(i).get(0),activeSelectablePlugins.get(j).get(0))){
-                    System.out.println("same name found here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    System.out.println(activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getName() + " same as " + activeSelectablePlugins.get(j).get(0).getPlugin().getClass().getName());
+                    //System.out.println("same name found here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                    removeIndex = i;
+                }
+            }
+        }
+        System.out.println("size: " + activeSelectablePlugins.size());
+        if(removeIndex != -1){
+            System.out.println("Deleting index : "  + removeIndex + " : " + activeSelectablePlugins.get(removeIndex).get(0).getPlugin().getClass().getName());
+            activeSelectablePlugins.remove(removeIndex);
+            
+        }   
+        System.out.println("size aftter delete 1 : " + activeSelectablePlugins.size());
+        removeIndex = -1;
+        for(int i = 0; i < activeSelectablePlugins.size();i++){
+            for(int j = i+1; j < activeSelectablePlugins.size();j++){
+                if(!activeSelectablePlugins.get(i).isEmpty() && isSamePluginName(activeSelectablePlugins.get(i).get(0),activeSelectablePlugins.get(j).get(0))){
+                    System.out.println(activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getName() + " same as " + activeSelectablePlugins.get(j).get(0).getPlugin().getClass().getName());
+                    //System.out.println("same name found here !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                     removeIndex = i;
                 }
             }
         }
         if(removeIndex != -1){
+            System.out.println("Deleting index : "  + removeIndex + " : " + activeSelectablePlugins.get(removeIndex).get(0).getPlugin().getClass().getName());
             activeSelectablePlugins.remove(removeIndex);
-        }    
+            
+        }   
+        System.out.println("end add analyticquestion");
     }
     
     // shallow compare two plugins if they are the same type (not the exact same object)
     private boolean isSamePluginName(final SelectableAnalyticPlugin p1, final SelectableAnalyticPlugin p2){
-        System.out.println("p1 :" + p1.getPlugin().getClass().getName() + " p2 : " + p2.getPlugin().getClass().getName());
+        if(p1.getPlugin().getClass().getName().equals(p2.getPlugin().getClass().getName())){
+            //System.out.println("Deleting : " + p1.getPlugin().getClass().getName());
+        }
+        //System.out.println("p1 :" + p1.getPlugin().getClass().getName() + " p2 : " + p2.getPlugin().getClass().getName());
         return p1.getPlugin().getClass().getName().equals(p2.getPlugin().getClass().getName());
     }
 
@@ -98,7 +126,7 @@ public class AnalyticViewState {
     }
     
     public void removeAnalyticQuestions(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
-        
+        System.out.println("start remove analyticquestion");
         List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
         
         for(int i = 0; i < selectablePlugins.size();i++){
@@ -109,9 +137,10 @@ public class AnalyticViewState {
                 }
             }
         }
-        
+        System.out.println("mid remove analyticquestion");
         activeSelectablePlugins.removeAll(removearray);
         activeAnalyticQuestions.remove(question);
+        System.out.println("end remove analyticquestion");
     }
     
     public void clearAnalyticQuestions() {
@@ -120,14 +149,14 @@ public class AnalyticViewState {
     }
 
     public void removePluginsMatchingCategory(String currentCategory) {
-        List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
-        for(int i = 0; i < activeSelectablePlugins.size();i++){
-            //if(currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
-            if(!activeSelectablePlugins.get(i).isEmpty() && activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)){
-                // when same catelog
-                removearray.add(activeSelectablePlugins.get(i));
+            List<List<SelectableAnalyticPlugin>> removearray = new ArrayList<>();
+            for(int i = 0; i < activeSelectablePlugins.size();i++){
+                //if(currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
+                if(!activeSelectablePlugins.get(i).isEmpty() && activeSelectablePlugins.get(i).get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)){
+                    // when same catelog
+                    removearray.add(activeSelectablePlugins.get(i));
+                }
             }
-        }
-        activeSelectablePlugins.removeAll(removearray);
+            activeSelectablePlugins.removeAll(removearray);
     }
 }

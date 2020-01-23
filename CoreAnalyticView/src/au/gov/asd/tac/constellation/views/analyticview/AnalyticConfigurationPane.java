@@ -60,6 +60,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import javax.swing.SwingUtilities;
 import org.openide.util.Lookup;
 
 /**
@@ -134,6 +135,10 @@ public class AnalyticConfigurationPane extends VBox {
                 } else {
                     categoryPlugins = categoryToPluginsMap.get(categoryName);
                 }
+//                selectablePlugin.checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+//                    // TODO: trigger selected event
+//                    pluginList.getSelectionModel().getSelectedItem().setSelected(newValue); // changeevent
+//                });
                 categoryPlugins.add(selectablePlugin);
             }
         });
@@ -404,48 +409,6 @@ public class AnalyticConfigurationPane extends VBox {
             }
         }
     }
-    protected void setQuestion(List<AnalyticQuestionDescription<?>> question, final List<List<SelectableAnalyticPlugin>> plugins){
-        // get question only if one exists
-        this.currentQuestion = question.isEmpty() ? null : question.get(0);
-        
-        //categoryList.getSelectionModel().clearSelection(); // TODO: may need this to clear old selections
-        
-        // for each list of plugins
-        for(List<SelectableAnalyticPlugin> selectedPluginList : plugins){
-            // for each plugin within the list of plugins
-            for(SelectableAnalyticPlugin selectedPlugin : selectedPluginList){
-            
-                // get the selected plugin and its category
-                final SelectableAnalyticPlugin temp = selectedPlugin;
-                final String category = temp.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory();
-
-                // run on different thread to update the UI items
-                Platform.runLater(
-                () -> {
-                    //when plugin is the same category as the selected category
-                    if(categoryList.getSelectionModel().getSelectedItem().equals(category)){
-                        categoryList.getSelectionModel().select(categoryList.getItems().indexOf(category));
-                        categoryListPane.setExpanded(true);
-                    }     
-                });
-                
-                Platform.runLater(
-                () -> {  
-                    //setting plugin enabled (DOES NOT KEEP STATE)??
-                    //selectedPlugin.checkbox.setSelected(true);
-                    selectedPlugin.setSelected(true);
-                });
-
-            }
-        }
-    }
-    
-    /**
-     * Refresh the state of the display by reading the Analytic View state attribute.
-     */
-    protected void refreshState(){
-        //PluginExecution.withPlugin(new AnalyticViewStateReader(this)).executeLater(GraphManager.getDefault().getActiveGraph());
-    }
     
     /**
      * Update/ save the state using the parameters checked on the display
@@ -505,6 +468,8 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
         updateGlobalParameters();
+        System.out.println("setpluginsfrom selected : " + (SwingUtilities.isEventDispatchThread() ? "on event dispatch" : (Platform.isFxApplicationThread() ? "on FXapplication thread" :"On normal thread")));
+                
         updateState(true);
     }
 
@@ -563,7 +528,15 @@ public class AnalyticConfigurationPane extends VBox {
 
         public SelectableAnalyticPlugin(final AnalyticPlugin plugin) {
             this.checkbox = new CheckBox();
-            this.checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {if(parent!=null){parent.getListView().getSelectionModel().select(this);}});
+            this.checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                if(parent!=null){
+                    if(parent.getListView().getSelectionModel().getSelectedItem() == this){
+                        // when this item is selected, 
+                        parent.getListView().getSelectionModel().clearSelection();
+                    }
+                    parent.getListView().getSelectionModel().select(this);
+                }
+            });
             this.plugin = plugin;
             this.parameters = new PluginParameters();
             parameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
@@ -665,41 +638,27 @@ public class AnalyticConfigurationPane extends VBox {
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            
-            // fetch current state
-            AnalyticViewState fetchedState;
-            // grab currently expanded category (Centrality, Global, Metrics, Similarity)
+            Thread.sleep(100);
             String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
-            System.out.println("current category: " + currentCategory);
-            // get state attribute id
             int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            
-            // if no state currently, make a new state and use defaults for setting.
-            fetchedState = graph.getObjectValue(stateAttributeId, 0);
-            
-            if(fetchedState == null){
-                fetchedState = new AnalyticViewState();
-            }
-            
-            // TODO: this line may not be necessary
-            fetchedState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
+            AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0) == null ? new AnalyticViewState()
                     : new AnalyticViewState(graph.getObjectValue(stateAttributeId, 0));
+            /**
+            for(List<SelectableAnalyticPlugin> pluginlist : currentState.getActiveSelectablePlugins()){
+                if(!pluginlist.isEmpty()){
+                    String name = pluginlist.get(0).getPlugin().getClass().getName();
+                    name = name.replace("au.gov.asd.tac.constellation.views.analyticview.analytics.", "");
+                    
+                    System.out.print(" " + name + " | ");
+                }   
+            }
+            */
             
-
             // updates the state with a selection or deselection of the currently opened category
             if(!analyticConfigurationPane.onLoad){
-                final AnalyticViewState currentState = fetchedState;
-                final Runnable task = () -> {
-                    // remove all plugins matching category
-                    currentState.removePluginsMatchingCategory(currentCategory);                    
-                };
-                task.run();
-
-                Thread thread = new Thread(task);
-                thread.start();
-                
-
-                
+                Thread.sleep(200);
+                // remove all plugins matching category
+                currentState.removePluginsMatchingCategory(currentCategory);
                 // grab all plugins from currently selected category
                 List<SelectableAnalyticPlugin> checkedPlugins = new ArrayList<>();
             
@@ -709,38 +668,39 @@ public class AnalyticConfigurationPane extends VBox {
                         checkedPlugins.add(selectablePlugin);
                     }
                 });
-                
+               
                 // add all plugins to state attribute
                 if(checkedPlugins.size() != 0){
                     currentState.addAnalyticQuestion(analyticConfigurationPane.currentQuestion, checkedPlugins);
-                    graph.setObjectValue(stateAttributeId, 0, currentState); // save - move thi location
+                    graph.setObjectValue(stateAttributeId, 0, currentState);
+                }else{
+                    graph.setObjectValue(stateAttributeId, 0, currentState);
                 }
+                // TODO: here to check for when this is activated by selected plugin loading
+                //graph.setObjectValue(stateAttributeId, 0, currentState);
             }
-            
-            // only this section when the user first loads the category
             
             // get question only if one exists
             analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null : currentState.getActiveAnalyticQuestions().get(0);
 
-            // on load
-
-            List<SelectableAnalyticPlugin> checkedWithinCategory = new ArrayList<>();
-
-            // for each list of plugins
-            for(List<SelectableAnalyticPlugin> selectedPluginList : currentState.getActiveSelectablePlugins()){
-                // if the first index is the same category as the current category.
-                if(!selectedPluginList.isEmpty() && currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
-                    // add plugin to selection
-                    checkedWithinCategory.add(selectedPluginList.get(0));
-
-                    Platform.runLater(
+            Platform.runLater(
                     () -> {
+                for(List<SelectableAnalyticPlugin> selectedPluginList : currentState.getActiveSelectablePlugins()){
+                    // if the first index is the same category as the current category.
+                    if(!selectedPluginList.isEmpty() && currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())){
                         analyticConfigurationPane.suppressed = true;
                         selectedPluginList.get(0).setSelected(true);
                         analyticConfigurationPane.suppressed = false;
-                    });
-                }
-            }
+                        System.out.println("platform : " + (SwingUtilities.isEventDispatchThread() ? "on event dispatch" : (Platform.isFxApplicationThread() ? "on FXapplication thread" :"On normal thread")));
+                    }
+                }  
+            });
+            
+            // TODO: MAKE SURE THIS HANDLES REMOVING ALL VALUES FROM A LIST. MAYBE CHECK THE REMOVE METHOD
+            
+            
+            
+            
         }
 
         @Override
