@@ -1,0 +1,40 @@
+before_cache:
+  - find "${HOME}"/.ivy2/cache -name "ivydata-*.properties" -print -delete
+cache:
+  directories:
+    - ${HOME}/.ivy2/cache
+
+env:
+  - builder_image="constellationapplication/netbeans-builder:latest"
+
+jobs:
+  include:
+
+  - stage: Run Tests
+    dist: trusty
+    language: generic
+    services:
+      - docker
+    script:
+      - docker pull "${builder_image}"
+      - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
+
+
+  - stage: Build zip
+    dist: trusty
+    language: generic
+    services:
+      - docker
+    script:
+      - docker pull "${builder_image}"
+      - docker run -v "$(pwd):/workdir/" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/build-zip.sh
+
+deploy:
+  provider: releases
+  api_key:
+    secure: R7G3PZJ2kmjlK2iWN/a6kwbSaE/zSMWTKdI3CmnJoJHu3/b9X8X6Wlyxeug36EuYw5pCEhi+j9PO4bcRa12VFB5k7fjyMBHrwEv4sNiONkyeSJMRtD4FpM/qxHRM1L5ZARtMowm+U9IkGvvJ92hdxq7kMDh01BrYEC1s2ij70BA7jUKdBJNjrPYt9TwlhWN9hzQxjikfJ/7qpQYc9vyi1T6kaLUGvqypv7rpuu2VdW+OoJYwRhxoxDT9EglSLnFcH1v2g020xi88V0XZ2Dkej+cTjLN5FOhEh25Zn0OUjLgi/15CJn1Febk/+PeA1DzTQtWRxFgWH2YJrC/RBBbT/bGSb46yCPP0aNSxYw5jLIf1YVxEtLixqaS4EBnj+NVIwZIORSjrXm34RGkIxqxvcyCmNfCa3rEnDTpw2+WHiWnhW+FRjiLRgSujhjEtFo00ET1fD9Bqp6fhTBcFTyzsF/gnHELcksG+992WM9V4T8rdG7+ASafKqQ9AqXO98Csy6c81+X3HU16ZQbFp3aKQHqqZgxeNYjFHQ0w+GXkgvlBWqISTVgRuO7LSE9bZos3JtZz1fG/7HDqRFJ4UkRKewsQyeNxBNCFy4ikgHrrsLy/6Bx5yKdr80YBTgfyBISBymTpP68GB2nBJHUuJOIrdpxha+E+3TXE5jYD9+9yuqxY=
+  file: 'dist/constellation.zip'
+  on:
+    repo: constellation-app/constellation
+    branch: master
+    tags: true
