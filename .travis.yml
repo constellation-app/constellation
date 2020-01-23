@@ -12,14 +12,11 @@ jobs:
 
   - stage: Run Tests
     dist: trusty
-    language: java
-    jdk: oraclejdk8
     services:
       - docker
     script:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
-      - sonar-scanner -Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} -Dsonar.pullrequest.base=${TRAVIS_BRANCH} -Dsonar.pullrequest.provider=github
 
   - stage: Build zip
     dist: trusty
