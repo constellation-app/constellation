@@ -176,19 +176,7 @@ public class GlyphManagerOpenGLController {
                 pixelBuffer.rewind();
             } else {
                 pixelBuffer = ByteBuffer.allocateDirect(width * height);
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> {
-                    glyphManager.readGlyphTexturePage(glyphsPagesBuffered, pixelBuffer);
-                    latch.countDown();
-                });
-                boolean waiting = true;
-                while (waiting) {
-                    try {
-                        latch.await();
-                        waiting = false;
-                    } catch (InterruptedException ex) {
-                    }
-                }
+                glyphManager.readGlyphTexturePage(glyphsPagesBuffered, pixelBuffer);
                 glyphsPageBuffers.add(pixelBuffer);
                 pixelBuffer.flip();
             }
