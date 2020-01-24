@@ -1,5 +1,9 @@
 # CONSTELLATION Changes
 
+## 2020-01-01 Changes in January 2020
+* Added LabelFontsOptionsPanel to allow setting of fonts rendered on the graph through the UI.
+* Added ConstellationLabelFonts interface to allow programmatic specification of default label fonts.
+
 ## 2019-12-01 Changes in December 2019
 * Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
 * Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.
