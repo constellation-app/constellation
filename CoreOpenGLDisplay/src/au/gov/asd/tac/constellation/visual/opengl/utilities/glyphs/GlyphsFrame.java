@@ -73,9 +73,9 @@ public class GlyphsFrame extends JFrame {
                 .sorted()
                 .toArray(String[]::new);
         fontNameSp.setModel(new DefaultComboBoxModel<>(availablefonts));
-        if(fontsInfo.length>0) {
+        if (fontsInfo.length > 0) {
             fontNameSp.getModel().setSelectedItem(fontsInfo[0].fontName);
-            cbBold.getModel().setSelected(fontsInfo[0].fontStyle==Font.BOLD);
+            cbBold.getModel().setSelected(fontsInfo[0].fontStyle == Font.BOLD);
         }
 
         fontSizeSp.setValue(GlyphManagerBI.DEFAULT_FONT_SIZE);
@@ -83,7 +83,7 @@ public class GlyphsFrame extends JFrame {
 
         final BufferedImage img = glyphManager.getImage();
         imageLabel.setIcon(new ImageIcon(glyphManager.getImage()));
-        glyphPanel.setPreferredSize(new Dimension(img.getWidth()+1, img.getHeight()+1));
+        glyphPanel.setPreferredSize(new Dimension(img.getWidth() + 1, img.getHeight() + 1));
 
         final String line = getLine();
         glyphManager.renderTextAsLigatures(line, null);
@@ -92,7 +92,7 @@ public class GlyphsFrame extends JFrame {
     }
 
     private void showTextureBuffer() {
-        final JLabel label = (JLabel)imageFrame.getContentPane().getComponent(0);
+        final JLabel label = (JLabel) imageFrame.getContentPane().getComponent(0);
         label.setIcon(new ImageIcon(glyphManager.getTextureBuffer()));
     }
 
@@ -335,11 +335,12 @@ public class GlyphsFrame extends JFrame {
     @SuppressWarnings("unchecked")
     private void textActionPerformed() {
         final String text = textField.getText().trim();
-        final DefaultComboBoxModel<String> model = (DefaultComboBoxModel)textLines.getModel();
+        final DefaultComboBoxModel<String> model = (DefaultComboBoxModel) textLines.getModel();
         model.addElement(text);
         model.setSelectedItem(text);
         repaint();
     }
+
     private void cbActionPerformed() {
         final boolean drawRuns = cbRuns.isSelected();
         final boolean drawIndividual = cbIGlyphs.isSelected();
@@ -352,9 +353,9 @@ public class GlyphsFrame extends JFrame {
 
     private void fontActionPerformed() {
         final FontInfo[] fontsInfo = glyphManager.getFonts();
-        final String fontName = (String)fontNameSp.getSelectedItem();
+        final String fontName = (String) fontNameSp.getSelectedItem();
         final int fontStyle = cbBold.isSelected() ? Font.BOLD : Font.PLAIN;
-        final int fontSize = ((SpinnerNumberModel)fontSizeSp.getModel()).getNumber().intValue();
+        final int fontSize = ((SpinnerNumberModel) fontSizeSp.getModel()).getNumber().intValue();
         final FontInfo fi = fontsInfo[0];
         fontsInfo[0] = new FontInfo(fontName, fontStyle, fontSize, fi.mustHave, fi.mustNotHave);
 
@@ -369,22 +370,22 @@ public class GlyphsFrame extends JFrame {
     }
 
     private String getLine() {
-        String line = (String)textLines.getModel().getSelectedItem();
+        String line = (String) textLines.getModel().getSelectedItem();
         final boolean isZalgo = cbZalgo.isSelected();
-        if(isZalgo) {
+        if (isZalgo) {
             final List<Integer> codepoints = new ArrayList<>();
             final Random random = new Random();
             final int length = line.length();
-            for(int offset = 0; offset < length;) {
+            for (int offset = 0; offset < length;) {
                 final int codepoint = line.codePointAt(offset);
                 final int cc = Character.charCount(codepoint);
 
                 codepoints.add(codepoint);
-                random.ints(random.nextInt(6), 0, 7*16).forEach(r -> codepoints.add(0x300 + r));
+                random.ints(random.nextInt(6), 0, 7 * 16).forEach(r -> codepoints.add(0x300 + r));
 
                 offset += cc;
             }
-            final int[] cpi = codepoints.stream().mapToInt(i->i).toArray();
+            final int[] cpi = codepoints.stream().mapToInt(i -> i).toArray();
             line = new String(cpi, 0, cpi.length);
         }
 
@@ -394,17 +395,17 @@ public class GlyphsFrame extends JFrame {
     }
 
     private static String[] loadText(final String fnam, final boolean raw) throws IOException {
-        try(final BufferedReader in = new BufferedReader(new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8))) {
-            final List<String> ls = in.lines().filter(line -> raw || (line.length()>0 && !line.startsWith("#"))).collect(Collectors.toList());
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8))) {
+            final List<String> ls = in.lines().filter(line -> raw || (line.length() > 0 && !line.startsWith("#"))).collect(Collectors.toList());
             final String[] text = ls.toArray(new String[ls.size()]);
 
 //            for(final String t : text) {
 //                System.out.printf("loadText %s [%s]\n", fnam, t);
 //            }
-
             return text;
         }
     }
+
     /**
      * @param args the command line arguments
      * @throws java.io.IOException
@@ -415,13 +416,12 @@ public class GlyphsFrame extends JFrame {
 //        for(final Font ff : ge.getAllFonts()) {
 //            System.out.printf("font: %s\n", ff);
 //        }
-
         final String[] fontNames = loadText("fonts.txt", true);
         final String[] text = loadText("text.txt", false);
 
         final ParsedFontInfo pfi = FontInfo.parseFontInfo(fontNames, GlyphManagerBI.DEFAULT_FONT_SIZE);
 
-        if(!pfi.messages.isEmpty()) {
+        if (!pfi.messages.isEmpty()) {
             System.out.printf("ParsedFontInfo message: %s\n", pfi.getMessages());
         }
 

@@ -28,10 +28,12 @@ final class LabelFontsPanel extends javax.swing.JPanel {
 
         final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] availableFonts = ge.getAvailableFontFamilyNames(Locale.ROOT);
+        System.out.println(Arrays.toString(availableFonts));
         final String os = System.getProperty("os.name");
-        if(os.toLowerCase().contains("win")) {
+        if (os.toLowerCase().contains("win")) {
             availableFonts = otfFontFilesWindows(availableFonts);
         }
+        System.out.println(Arrays.toString(availableFonts));
 
         Arrays.sort(availableFonts);
         cbFonts.setModel(new DefaultComboBoxModel<>(availableFonts));
@@ -43,7 +45,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
         Arrays.sort(scripts);
         cbScripts.setModel(new DefaultComboBoxModel<>(scripts));
 
-        taFontList.getDocument().addDocumentListener(new DocumentListener(){
+        taFontList.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(final DocumentEvent e) {
                 numberedTextArea.updateLineNumbers();
@@ -65,21 +67,22 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     }
 
     /**
-     * Look in the user's local profile's fonts directory for OTF fontfiles.
+     * Look in the user's local profile fonts directory for OTF fontfiles.
      *
      * @param existing The existing list of font names.
      *
-     * @return The existing list of font names, possibly extended with the names of OTF font files.
+     * @return The existing list of font names, possibly extended with the names
+     * of OTF font files.
      */
     private static String[] otfFontFilesWindows(final String[] existing) {
         final String local = System.getenv("LOCALAPPDATA");
-        if(local!=null) {
+        if (local != null) {
             final File fontDir = new File(local, "Microsoft/Windows/Fonts");
-            if(fontDir.isDirectory()) {
+            if (fontDir.isDirectory()) {
                 final File[] files = fontDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".otf"));
-                if(files.length>0) {
+                if (files.length > 0) {
                     final List<String> names = Arrays.stream(existing).collect(Collectors.toList());
-                    for(final File f : files) {
+                    for (final File f : files) {
                         names.add(f.getName());
                     }
 
@@ -88,7 +91,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
             }
         }
 
-        return null;
+        return new String[0];
     }
 
     /**
@@ -229,7 +232,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     private void addFontButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFontButtonActionPerformed
         // Add the selected font name to the end of the text area.
         //
-        final String fontName = (String)cbFonts.getSelectedItem();
+        final String fontName = (String) cbFonts.getSelectedItem();
         taFontList.insert(fontName + "\n", taFontList.getCaretPosition());
 //        String text = taFontList.getText();
 //        text = String.format("%s\n%s", text, fontName);
@@ -243,7 +246,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     private void checkButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkButtonActionPerformed
         final String text = taFontList.getText();
         final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
-        if(pfi.messages.isEmpty()) {
+        if (pfi.messages.isEmpty()) {
             msgLabel.setText("OK");
             msgLabel.setForeground(Color.BLACK);
         } else {
@@ -253,7 +256,7 @@ final class LabelFontsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_checkButtonActionPerformed
 
     private void addScriptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addScriptButtonActionPerformed
-        final String scriptName = (String)cbScripts.getSelectedItem();
+        final String scriptName = (String) cbScripts.getSelectedItem();
         taFontList.insert("," + scriptName, taFontList.getCaretPosition());
     }//GEN-LAST:event_addScriptButtonActionPerformed
 

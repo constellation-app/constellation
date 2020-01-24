@@ -743,7 +743,6 @@ public class GlyphManagerFX implements GlyphManager {
 //         */
 //        public void addGlyph(int glyphPosition, float x, float y);
 //    }
-
     /**
      * Writes a specified glyph texture page as a PNG image to the specified
      * OutputStream.

@@ -36,15 +36,18 @@ public interface GlyphManager {
 
     /**
      * Returns The width of the texture buffer.
+     *
      * @return The width of the texture buffer.
      */
     public int getTextureWidth();
 
     /**
      * Returns The height of the texture buffer.
+     *
      * @return The height of the texture buffer.
      */
     public int getTextureHeight();
+
     /**
      * Returns the scaling factor that should be applied to glyph texture widths
      * to convert them to display widths.

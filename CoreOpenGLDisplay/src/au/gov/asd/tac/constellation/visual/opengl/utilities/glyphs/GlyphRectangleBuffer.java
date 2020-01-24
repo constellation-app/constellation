@@ -18,12 +18,13 @@ import java.util.Map;
  * This class encapsulates a BufferedImage that holds rectangles containing
  * images of glyphs.
  * <p>
- * Each new rectangle is drawn at the current x,y position if there's enough room,
- * otherwise a new rectangle line is started.
+ * Each new rectangle is drawn at the current x,y position if there's enough
+ * room, otherwise a new rectangle line is started.
  *
  * @author algol
  */
 final class GlyphRectangleBuffer {
+
     // The buffers that glyphs will be drawn to.
     // Each one of these will eventually be copied to a texture buffer.
     //
@@ -38,8 +39,8 @@ final class GlyphRectangleBuffer {
     private Graphics2D g2d;
 
     /**
-     * If we draw the rectangles immediately next to each other, pixels from
-     * one image can bleed through to a neighbouring image, resulting in visible
+     * If we draw the rectangles immediately next to each other, pixels from one
+     * image can bleed through to a neighbouring image, resulting in visible
      * artifacts. Therefore we add some space between rectangles.
      */
     private static final int PADDING = 2;
@@ -87,8 +88,9 @@ final class GlyphRectangleBuffer {
      *
      * @param width
      * @param height
-     * @param bufferType Use BufferedImage.TYPE_BYTE_GRAY for CONSTELLATION (we only need grayscale).
-     *  Use BufferedImage.TYPE_INT_ARGB for standalone to see the pretty colors.
+     * @param bufferType Use BufferedImage.TYPE_BYTE_GRAY for CONSTELLATION (we
+     * only need grayscale). Use BufferedImage.TYPE_INT_ARGB for standalone to
+     * see the pretty colors.
      */
     GlyphRectangleBuffer(final int width, final int height, final int bufferType) {
         this.width = width;
@@ -115,7 +117,7 @@ final class GlyphRectangleBuffer {
 
     public void readRectangleBuffer(final int page, final ByteBuffer buffer) {
         final BufferedImage rb = rectBuffers.get(page);
-        final DataBufferByte dbb = (DataBufferByte)rb.getData().getDataBuffer();
+        final DataBufferByte dbb = (DataBufferByte) rb.getData().getDataBuffer();
 //        System.out.printf("@@buffer %d %s\n", dbb.getSize(), dbb.getData(page));
 //        final byte[] bb = dbb.getData(page);
 //        for(int i=0; i<bb.length; i++) {
@@ -138,7 +140,7 @@ final class GlyphRectangleBuffer {
     public void reset() {
         rectBuffers.clear();
         memory.clear();
-        if(g2d!=null) {
+        if (g2d != null) {
             g2d.dispose();
             g2d = null;
         }
@@ -151,15 +153,15 @@ final class GlyphRectangleBuffer {
     /**
      * Add a rectangle containing an image to the buffers.
      * <p>
-     * If the image has already been added (using the hash code of the int[]
-     * of the image's pixels as the key), the index of the existing rectangle
-     * is returned. Otherwise, the image is added and the index of the new
+     * If the image has already been added (using the hash code of the int[] of
+     * the image's pixels as the key), the index of the existing rectangle is
+     * returned. Otherwise, the image is added and the index of the new
      * rectangle is returned.
      *
      * @param img A BufferedImage containing an image.
-     * @param extra The number of extra pixels drawn around the edges of this image
-     *      to avoid interpolation problems later. Store the actual image but
-     *      only record the size-extra.
+     * @param extra The number of extra pixels drawn around the edges of this
+     * image to avoid interpolation problems later. Store the actual image but
+     * only record the size-extra.
      * @return
      */
     int addRectImage(final BufferedImage img, final int extra) {
@@ -172,17 +174,17 @@ final class GlyphRectangleBuffer {
         final int hashCode = Arrays.hashCode(img.getRGB(0, 0, w, h, null, 0, w));
 
         final int rectIndex;
-        if(memory.containsKey(hashCode)) {
+        if (memory.containsKey(hashCode)) {
             // We've seen this image before: return the index of the existing image.
             //
             rectIndex = memory.get(hashCode);
         } else {
             // This is a new image. Add it to the buffer, creating a new buffer if necessary.
             //
-            if((x+w+PADDING) >= width) {
+            if ((x + w + PADDING) >= width) {
                 newRectLine();
             }
-            if((y+h+PADDING) >= height) {
+            if ((y + h + PADDING) >= height) {
                 newRectBuffer();
             }
 
@@ -199,18 +201,18 @@ final class GlyphRectangleBuffer {
 
             // Ensure that the coordinates array has enough room to add more coordinates.
             //
-            if(ptr==rectTextureCoordinates.length) {
-                rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length*2);
+            if (ptr == rectTextureCoordinates.length) {
+                rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
             }
 
             // Texture coordinates are in units of texture buffer size;
             // each coordinate ranges from 0 to 1. The x coordinate also encodes
             // the texture page.
             //
-            rectTextureCoordinates[ptr+0] = (size()-1) + (x+extra)/(float)width;
-            rectTextureCoordinates[ptr+1] = (y+extra)/(float)height;
-            rectTextureCoordinates[ptr+2] = (w-extra*2)/(float)width;
-            rectTextureCoordinates[ptr+3] = (h-extra*2)/(float)height;
+            rectTextureCoordinates[ptr + 0] = (size() - 1) + (x + extra) / (float) width;
+            rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
+            rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
+            rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
@@ -224,7 +226,7 @@ final class GlyphRectangleBuffer {
     private void newRectBuffer() {
         rectBuffer = new BufferedImage(width, height, bufferType);
 
-        if(g2d!=null) {
+        if (g2d != null) {
             g2d.dispose();
         }
         g2d = rectBuffer.createGraphics();

@@ -10,6 +10,7 @@ import org.openide.util.NbPreferences;
  * @author algol
  */
 public class LabelFontsPreferenceKeys {
+
     public static final String FONT_LIST = "render.font.list";
     public static final String USE_MULTI_FONTS = "render.font.use_multi";
 
@@ -34,5 +35,6 @@ public class LabelFontsPreferenceKeys {
         return pfi.fontsInfo;
     }
 
-    private LabelFontsPreferenceKeys() {}
+    private LabelFontsPreferenceKeys() {
+    }
 }
