@@ -15,12 +15,14 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
+import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
@@ -66,7 +68,7 @@ public class BuildIconGraphAction extends AbstractAction {
             }
         }).executeLater(graph);
 
-        PluginExecution.withPlugin(CorePluginRegistry.RESET).waitingFor(f).executeLater(graph);
+        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeWriteLater(graph, f);
     }
 
     /**

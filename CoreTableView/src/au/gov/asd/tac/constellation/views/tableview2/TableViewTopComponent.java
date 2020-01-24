@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -58,7 +59,8 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1300),
+    @ActionReference(path = "Menu/Views", position = 1300)
+    ,
     @ActionReference(path = "Shortcuts", name = "CS-Y")
 })
 @TopComponent.OpenActionRegistration(
@@ -185,11 +187,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                             attributeTuple.getSecond().getName(),
                             g -> {
                                 final Thread thread = new Thread("Table View: Update Data") {
-                            @Override
-                            public void run() {
-                                pane.updateData(g, currentState);
-                            }
-                        };
+                                    @Override
+                                    public void run() {
+                                        pane.updateData(g, currentState);
+                                    }
+                                };
                                 thread.start();
                             }));
                 });
@@ -200,10 +202,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     }
 
     public void showSelected(final GraphElementType elementType, final int elementId) {
+        final TableViewState stateSnapshot = currentState;
         final Future<?> stateLock;
-        if (currentState.getElementType() != elementType) {
+        if (currentState != null && currentState.getElementType() != elementType) {
             final TableViewState newState = new TableViewState(currentState);
             newState.setElementType(elementType);
+            newState.setSelectedOnly(true);
             stateLock = PluginExecution.withPlugin(new TableViewUtilities.UpdateStatePlugin(newState)).executeLater(currentGraph);
         } else {
             stateLock = null;
@@ -220,6 +224,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         final Thread thread = new Thread("Table View: Update Selection") {
             @Override
             public void run() {
+                while (stateLock != null && currentState == stateSnapshot) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (final InterruptedException ex) {
+                        // DO NOTHING
+                    }
+                }
                 pane.updateSelection(currentGraph, currentState);
             }
         };
