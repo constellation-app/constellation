@@ -167,12 +167,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        analyticViewPane.getConfigurationPane().updateState(true);
+        analyticViewPane.getConfigurationPane().updateState(false);
     }
     
     @Override
     protected void handleComponentOpened() {
-        analyticViewPane.getConfigurationPane().updateState(true);
+        analyticViewPane.getConfigurationPane().updateState(false);
     }
 
     public class AnalyticController {
