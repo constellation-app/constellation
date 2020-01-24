@@ -22,14 +22,14 @@ package au.gov.asd.tac.constellation.security.proxy;
  */
 class ProxyPreferenceKeys {
 
-    static final String USE_DEFAULTS = "use_defaults";
-    static final String DEFAULT = "default";
-    static final String ADDITIONAL = "proxies";
-    static final String BYPASS = "local_hosts";
+    static final String USE_DEFAULTS = "proxy.use_defaults";
+    static final String DEFAULT = "proxy.default";
+    static final String ADDITIONAL = "proxy.proxies";
+    static final String BYPASS = "proxy.local_hosts";
 
     // Default values.
     static final boolean USE_DEFAULTS_DEFAULT = true;
-    static final String DEFAULT_DEFAULT = "";
-    static final String ADDITIONAL_DEFAULT = "";
-    static final String BYPASS_DEFAULT = "";
+    static final String DEFAULT_DEFAULT = ConstellationHttpProxy.getDefault().getDefaultProxyString();
+    static final String ADDITIONAL_DEFAULT = ConstellationHttpProxy.getDefault().getAdditionalProxiesString();
+    static final String BYPASS_DEFAULT = ConstellationHttpProxy.getDefault().getBypassProxyHostsString();
 }

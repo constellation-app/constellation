@@ -61,14 +61,12 @@ public class BuildIconGraphAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        final Future<?> f = PluginExecution.withPlugin(new SimpleEditPlugin("Build Icon Graph") {
+        PluginExecutor.startWith(new SimpleEditPlugin("Build Icon Graph") {
             @Override
             public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                 IconGraph.makeGraph(graph);
             }
-        }).executeLater(graph);
-
-        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeWriteLater(graph, f);
+        }).followedBy(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeWriteLater(graph);
     }
 
     /**
