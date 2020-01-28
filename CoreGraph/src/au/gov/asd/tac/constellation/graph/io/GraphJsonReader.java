@@ -91,7 +91,7 @@ public final class GraphJsonReader {
 
     public Graph readGraphZip(final File graphFile, final IoProgress progress) throws IOException, GraphParseException {
         try (final InputStream in = new BufferedInputStream(new FileInputStream(graphFile))) {
-            return readGraphZip(graphFile.getPath(), in, progress); // STOPS HERE
+            return readGraphZip(graphFile.getPath(), in, progress);
         }
     }
 
@@ -112,7 +112,7 @@ public final class GraphJsonReader {
             }
 
             try {
-                graph = readGraph(name, in.getInputStream(), in.getAvailableSize(), progress); // STOPS HERE
+                graph = readGraph(name, in.getInputStream(), in.getAvailableSize(), progress);
             } catch (IllegalStateException | InterruptedException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
             } finally {
@@ -394,7 +394,7 @@ public final class GraphJsonReader {
 
             current = jp.nextToken();
             if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("meta")) {
-                parseElement(storeGraph, GraphElementType.META, vertexMap, transactionMap, progress, entrySize, immutableObjectCache); // STOPS HERE
+                parseElement(storeGraph, GraphElementType.META, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else if (current != JsonToken.END_OBJECT) {
                 final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
                 throw new GraphParseException(msg);
@@ -684,7 +684,7 @@ public final class GraphJsonReader {
                         throw new Exception("No IO provider found for attribute type: " + ai.attrType);
                     }
                 }
-            }   
+            }
 
             if (++counter % REPORT_INTERVAL == 0) {
                 final String msg = String.format("Vertices: %d; Transactions %d", graph.getVertexCount(), graph.getTransactionCount());

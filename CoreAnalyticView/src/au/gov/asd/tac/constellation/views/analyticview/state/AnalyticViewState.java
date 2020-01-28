@@ -66,18 +66,18 @@ public class AnalyticViewState {
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
         activeAnalyticQuestions.add(question);
-        for(SelectableAnalyticPlugin plugin : selectablePlugins){
+        for (SelectableAnalyticPlugin plugin : selectablePlugins) {
             final List<SelectableAnalyticPlugin> pluginList = new ArrayList<>();
             pluginList.add(plugin);
             activeSelectablePlugins.add(pluginList);
         }
     }
-    
+
     public void removeAnalyticQuestion(final AnalyticQuestionDescription<?> question) {
         activeSelectablePlugins.remove(activeAnalyticQuestions.indexOf(question));
         activeAnalyticQuestions.remove(question);
     }
-    
+
     public void clearAnalyticQuestions() {
         activeAnalyticQuestions.clear();
         activeSelectablePlugins.clear();

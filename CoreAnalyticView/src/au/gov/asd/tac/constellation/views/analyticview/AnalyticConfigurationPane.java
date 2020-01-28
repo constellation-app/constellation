@@ -90,7 +90,6 @@ public class AnalyticConfigurationPane extends VBox {
     private WebView documentationView;
     
     private static boolean selectionSuppressed = false;
-
     private AnalyticQuestionDescription currentQuestion = null;
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription, List<SelectableAnalyticPlugin>> questionToPluginsMap;
@@ -406,7 +405,6 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginWasSelected true if the triggered update was from a plugin being selected
      */
     protected void updateState(boolean pluginWasSelected) {
-        // get currently selected plugin if any
         PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, pluginWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
      }
 
@@ -493,7 +491,9 @@ public class AnalyticConfigurationPane extends VBox {
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                if(currentQuestion != null){currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);}
+                if (currentQuestion != null) {
+                    currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
+                }
             });
         }
     }
@@ -526,8 +526,8 @@ public class AnalyticConfigurationPane extends VBox {
             this.checkbox = new CheckBox();
             // Allows triggering of selection listener when a checkbox is changed
             this.checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                if(parent!=null){
-                    if(parent.getListView().getSelectionModel().getSelectedItem() == this){
+                if (parent != null) {
+                    if (parent.getListView().getSelectionModel().getSelectedItem() == this) {
                         parent.getListView().getSelectionModel().clearSelection();
                     }
                     parent.getListView().getSelectionModel().select(this);
@@ -548,7 +548,7 @@ public class AnalyticConfigurationPane extends VBox {
             this.updatedParameters = parameters.copy();
         }
         
-        public final void setParent(final ListCell<SelectableAnalyticPlugin> parent){
+        public final void setParent(final ListCell<SelectableAnalyticPlugin> parent) {
             this.parent = parent;
         }
 
