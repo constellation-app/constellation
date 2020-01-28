@@ -629,9 +629,9 @@ public class AnalyticConfigurationPane extends VBox {
         private final AnalyticConfigurationPane analyticConfigurationPane;
         private final boolean pluginWasSelected;
         
-        public AnalyticViewStateUpdater(final AnalyticConfigurationPane analyticConfigurationPane, final boolean categoryWasSelected) {
+        public AnalyticViewStateUpdater(final AnalyticConfigurationPane analyticConfigurationPane, final boolean pluginWasSelected) {
             this.analyticConfigurationPane = analyticConfigurationPane;
-            this.pluginWasSelected = categoryWasSelected;
+            this.pluginWasSelected = pluginWasSelected;
         }
 
         @Override
