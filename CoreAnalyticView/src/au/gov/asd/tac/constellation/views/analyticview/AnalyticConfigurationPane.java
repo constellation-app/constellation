@@ -403,11 +403,12 @@ public class AnalyticConfigurationPane extends VBox {
     
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
-     * @param categoryWasSelected true if the triggered update was from a category being selected
+     * @param pluginWasSelected true if the triggered update was from a plugin being selected
      */
-    protected void updateState(boolean categoryWasSelected) {
-        PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, categoryWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
-    }
+    protected void updateState(boolean pluginWasSelected) {
+        // get currently selected plugin if any
+        PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, pluginWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
+     }
 
     private void createGlobalParameters() {
         globalAnalyticParameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
@@ -626,21 +627,23 @@ public class AnalyticConfigurationPane extends VBox {
     private static final class AnalyticViewStateUpdater extends SimpleEditPlugin {
 
         private final AnalyticConfigurationPane analyticConfigurationPane;
-        private final boolean categoryWasSelected;
+        private final boolean pluginWasSelected;
         
         public AnalyticViewStateUpdater(final AnalyticConfigurationPane analyticConfigurationPane, final boolean categoryWasSelected) {
             this.analyticConfigurationPane = analyticConfigurationPane;
-            this.categoryWasSelected = categoryWasSelected;
+            this.pluginWasSelected = categoryWasSelected;
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
             int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0);
-            currentState = currentState == null ? new AnalyticViewState() : currentState;
             
-            if (categoryWasSelected) {
+            // Make a copy in case the state on the graph is currently being modified.
+            AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+            currentState = (currentState == null) ? new AnalyticViewState() : new AnalyticViewState(currentState);
+            
+            if (pluginWasSelected) {
                 // remove all plugins matching category
                 currentState.removePluginsMatchingCategory(currentCategory);
                 // grab all plugins from currently selected category

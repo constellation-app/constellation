@@ -85,12 +85,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            //analyticViewPane.getConfigurationPane().refreshState();
             // TODO: recalculate the result using the current state when the graph changes
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             // TODO: listen for changes to the state, which describes current gui parameters
-            //analyticViewPane.getConfigurationPane().refreshState();
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
