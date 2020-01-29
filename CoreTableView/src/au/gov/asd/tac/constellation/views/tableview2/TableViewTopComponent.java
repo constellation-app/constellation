@@ -339,7 +339,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
 
     @Override
     protected String createStyle() {
-        return "resources/table_view.css";
+        return "resources/table-view.css";
     }
 
     @Override

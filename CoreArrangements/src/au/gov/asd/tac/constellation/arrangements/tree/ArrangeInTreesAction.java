@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.tree.ArrangeInTreesAction")
 @ActionRegistration(
         displayName = "#CTL_ArrangeInTreesAction",
-        iconBase = "au/gov/asd/tac/constellation/arrangements/tree/tree.png",
+        iconBase = "au/gov/asd/tac/constellation/arrangements/tree/resources/tree.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 200),
