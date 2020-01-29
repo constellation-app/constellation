@@ -39,6 +39,8 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Mgrs;
 import au.gov.asd.tac.constellation.utilities.gui.JDropDownMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JMultiChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
+import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
+import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature.ConstellationFeatureType;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationShapeFeature;
@@ -46,8 +48,6 @@ import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
-import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
-import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState.MarkerColorScheme;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState.MarkerLabel;
@@ -65,6 +65,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -358,14 +362,24 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // top component resize listener
         addComponentListener(new ComponentAdapter() {
+            ScheduledExecutorService scheduledExecutorService =
+                Executors.newScheduledThreadPool(1);
+            ScheduledFuture scheduledFuture;
             @Override
+            //Cancels the previous resize (future) and then performs the latest one every half second 
             public void componentResized(ComponentEvent event) {
-                if (event.getComponent().getWidth() != cachedWidth
-                        || event.getComponent().getHeight() != cachedHeight) {
-                    cachedWidth = event.getComponent().getWidth();
-                    cachedHeight = event.getComponent().getHeight();
-                    resetContent();
+                if(scheduledFuture != null) {
+                    scheduledFuture.cancel(true);
                 }
+                scheduledFuture = scheduledExecutorService.schedule(() -> {
+                    if (event.getComponent().getWidth() != cachedWidth
+                            || event.getComponent().getHeight() != cachedHeight) {
+                        cachedWidth = event.getComponent().getWidth();
+                        cachedHeight = event.getComponent().getHeight();
+                        resetContent();
+                    }
+                    return null;
+                }, 500, TimeUnit.MILLISECONDS);
             }
         });
 
