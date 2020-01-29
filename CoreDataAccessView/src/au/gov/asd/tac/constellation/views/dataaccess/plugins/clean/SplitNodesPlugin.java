@@ -157,7 +157,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         query.reset();
         while(query.next()){
             for (final String key : query.keys()){
-                if(SOURCE_ID.replace("<string>", "").equals(key) || SOURCE_IDENTIFIER.replace("<string>", "").equals(key)) {
+                if(key.endsWith(".[id]") || SOURCE_IDENTIFIER.equals(key)) {
                      //Skips the id and Identifier to make the new node unique
                 } else if ((GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X).equals(key) 
                         || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y).equals(key) 
@@ -165,8 +165,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
                     //The coordinates are also skipped so that the second node is not created in the exact same location
                     //as the first node
                 } else {
-                     result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), 
-                     query.get(key));
+                     result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), query.get(key));
                 }
             }
         }
