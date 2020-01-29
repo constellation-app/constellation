@@ -68,21 +68,21 @@ import org.openide.util.actions.Presenter;
 public final class BlazeActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
     @StaticResource
-    private static final String BLAZE_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/blaze/blaze_actions.png";
+    private static final String BLAZE_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/blaze_actions.png";
     @StaticResource
-    private static final String SELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/selectblazes.png";
+    private static final String SELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/selectblazes.png";
     @StaticResource
-    private static final String DESELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/blaze.png";
+    private static final String DESELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/blaze.png";
     @StaticResource
-    private static final String ADD_BLUE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_blue.png";
+    private static final String ADD_BLUE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_blue.png";
     @StaticResource
-    private static final String ADD_RED_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_red.png";
+    private static final String ADD_RED_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_red.png";
     @StaticResource
-    private static final String ADD_YELLOW_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_yellow.png";
+    private static final String ADD_YELLOW_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_yellow.png";
     @StaticResource
-    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_custom.png";
+    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_custom.png";
     @StaticResource
-    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/removeblaze.png";
+    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/removeblaze.png";
 
     private static final String SELECT_BLAZES_ACTION = "Select_Blazes";
     private static final String DESELECT_BLAZES_ACTION = "DeSelect_Blazes";

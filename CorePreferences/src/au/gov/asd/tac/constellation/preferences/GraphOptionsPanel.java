@@ -15,17 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.LayoutStyle;
-import org.openide.awt.Mnemonics;
-import org.openide.util.NbBundle;
-
 /**
  * UI panel to define the session parameters
  *

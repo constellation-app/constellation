@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "QualityControlViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/qualitycontrol/resources/quality_control_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/qualitycontrol/resources/quality-control-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",
@@ -73,7 +73,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     protected String createStyle() {
-        return "resources/qualitycontrolview.css";
+        return "resources/quality-control-view.css";
     }
 
     @Override

@@ -44,7 +44,7 @@ public class NamedSelectionListElement extends javax.swing.JPanel {
     protected void setLockedStatus(final boolean isLocked) {
         if (isLocked) {
             lblLocked.setIcon(new ImageIcon(getClass().getResource(
-                    "/au/gov/asd/tac/constellation/functionality/selection/named/namedselection_lockedselection.png")));
+                    "/au/gov/asd/tac/constellation/functionality/selection/named/resources/namedselection_lockedselection.png")));
         } else {
             lblLocked.setIcon(null);
         }
@@ -59,7 +59,7 @@ public class NamedSelectionListElement extends javax.swing.JPanel {
     protected void setLockedStatusSelected(final boolean isLocked) {
         if (isLocked) {
             lblLocked.setIcon(new ImageIcon(getClass().getResource(
-                    "/au/gov/asd/tac/constellation/functionality/selection/named/namedselection_lockedselectionselected.png")));
+                    "/au/gov/asd/tac/constellation/functionality/selection/named/resources/namedselection_lockedselectionselected.png")));
         } else {
             lblLocked.setIcon(null);
         }

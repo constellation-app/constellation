@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities;
+package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
 
 /**
  * The GlyphManagerOpenGLController manages the OpenGL buffers necessary to

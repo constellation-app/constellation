@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.DeselectVerticesAction")
-@ActionRegistration(displayName = "#CTL_DeselectVerticesAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/deselect_all.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_DeselectVerticesAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/resources/deselect_all.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 200)
 })

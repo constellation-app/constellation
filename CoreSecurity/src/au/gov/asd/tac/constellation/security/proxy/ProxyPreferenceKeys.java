@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.security.proxy;
 
 /**
- * Definitions for preference keys.
+ * Preference keys for proxy settings.
  *
  * @author algol
  */

@@ -163,7 +163,9 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
         jScrollPane2.setViewportView(additionalProxiesText);
 
         defaultProxyDescription.setFont(new java.awt.Font("Dialog", 2, 10)); // NOI18N
+        defaultProxyDescription.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         org.openide.awt.Mnemonics.setLocalizedText(defaultProxyDescription, org.openide.util.NbBundle.getMessage(ProxyOptionsPanel.class, "ProxyOptionsPanel.defaultProxyDescription.text")); // NOI18N
+        defaultProxyDescription.setVerticalAlignment(javax.swing.SwingConstants.TOP);
 
         javax.swing.GroupLayout proxySettingsPanelLayout = new javax.swing.GroupLayout(proxySettingsPanel);
         proxySettingsPanel.setLayout(proxySettingsPanelLayout);
@@ -175,15 +177,12 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
                     .addComponent(additionalProxiesLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(defaultProxyLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bypassProxyHostsLabel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(proxySettingsPanelLayout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addGroup(proxySettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(additionalProxiesDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(bypassProxyHostsDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                            .addComponent(defaultProxyDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))))
+                    .addComponent(defaultProxyDescription, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(additionalProxiesDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(bypassProxyHostsDescription, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(proxySettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(defaultProxyText, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                    .addComponent(defaultProxyText)
                     .addComponent(jScrollPane1)
                     .addComponent(jScrollPane2))
                 .addContainerGap())
@@ -195,7 +194,7 @@ public class ProxyOptionsPanel extends javax.swing.JPanel {
                     .addGroup(proxySettingsPanelLayout.createSequentialGroup()
                         .addComponent(defaultProxyLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(defaultProxyDescription, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(defaultProxyDescription))
                     .addComponent(defaultProxyText, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(proxySettingsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)

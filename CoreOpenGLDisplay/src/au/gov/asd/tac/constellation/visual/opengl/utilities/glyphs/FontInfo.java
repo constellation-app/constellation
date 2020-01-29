@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 import java.awt.Font;
@@ -44,13 +59,12 @@ public class FontInfo {
         Font font = null;
         if (fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
             File otfFile = getOtfFont(fontName);
-            if(otfFile!=null) {
+            if (otfFile != null) {
                 LOGGER.info(String.format("Reading font from %s", otfFile));
                 try {
                     final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
                     font = otf.deriveFont(fontStyle, fontSize);
-                }
-                catch(final FontFormatException | IOException ex) {
+                } catch (final FontFormatException | IOException ex) {
                     final String msg = String.format("Can't load font %s from %s", fontName, otfFile);
                     LOGGER.log(Level.SEVERE, msg, ex);
                     throw new IllegalArgumentException(msg);
@@ -212,11 +226,17 @@ public class FontInfo {
                             messages.add(String.format("Line %d: Blank font description", lineno));
                         } else {
                             switch (part) {
+                                case "PLAIN":
+                                    fontStyle = Font.PLAIN;
+                                    break;
                                 case "BOLD":
                                     fontStyle = Font.BOLD;
                                     break;
-                                case "PLAIN":
-                                    fontStyle = Font.PLAIN;
+                                case "ITALIC":
+                                    fontStyle = Font.ITALIC;
+                                    break;
+                                case "BOLD_ITALIC":
+                                    fontStyle = Font.BOLD | Font.ITALIC;
                                     break;
                                 default:
                                     final boolean mustNot = part.startsWith("!");

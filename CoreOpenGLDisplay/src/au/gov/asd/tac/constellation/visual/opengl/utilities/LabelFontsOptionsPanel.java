@@ -1,7 +1,23 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontStyle;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import java.awt.Color;
 import java.awt.Component;
@@ -28,12 +44,19 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         final NumberedTextArea numberedTextArea = new NumberedTextArea(fontListTextArea);
         fontListScrollPane.setRowHeaderView(numberedTextArea);
 
+        final String[] styles = Arrays.stream(FontStyle.class.getEnumConstants())
+                .map(s -> s.name())
+                .toArray(String[]::new);
+        addStyleComboBox.setModel(new DefaultComboBoxModel<>(styles));
+        addStyleComboBox.setSelectedItem(FontStyle.PLAIN.name());
+        
         final String[] scripts = Arrays.stream(Character.UnicodeScript.class.getEnumConstants())
-                .map(s -> s.toString())
+                .map(s -> s.name())
                 .sorted()
                 .toArray(String[]::new);
         Arrays.sort(scripts);
         addScriptComboBox.setModel(new DefaultComboBoxModel<>(scripts));
+        addScriptComboBox.setSelectedItem(Character.UnicodeScript.COMMON.name());
 
         fontListTextArea.getDocument().addDocumentListener(new DocumentListener() {
             
@@ -118,10 +141,14 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         addFontButton = new javax.swing.JButton();
         addScriptLabel = new javax.swing.JLabel();
         addScriptComboBox = new javax.swing.JComboBox<>();
-        addScriptButton = new javax.swing.JButton();
         validateButton = new javax.swing.JButton();
         useMultiFontCheckBox = new javax.swing.JCheckBox();
         validateLabel = new javax.swing.JLabel();
+        addStyleComboBox = new javax.swing.JComboBox<>();
+        addStyleLabel = new javax.swing.JLabel();
+        addStyleButton = new javax.swing.JButton();
+        addScriptButton = new javax.swing.JButton();
+        warningLabel = new javax.swing.JLabel();
 
         useDefaultCheckBox.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(useDefaultCheckBox, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.useDefaultCheckBox.text")); // NOI18N
@@ -168,14 +195,6 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
 
         addScriptComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
-        org.openide.awt.Mnemonics.setLocalizedText(addScriptButton, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addScriptButton.text")); // NOI18N
-        addScriptButton.setActionCommand(org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addScriptButton.actionCommand")); // NOI18N
-        addScriptButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addScriptButtonActionPerformed(evt);
-            }
-        });
-
         org.openide.awt.Mnemonics.setLocalizedText(validateButton, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.validateButton.text")); // NOI18N
         validateButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -190,32 +209,58 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         validateLabel.setLabelFor(validateButton);
         org.openide.awt.Mnemonics.setLocalizedText(validateLabel, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.validateLabel.text")); // NOI18N
 
+        addStyleComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        addStyleLabel.setLabelFor(addScriptButton);
+        org.openide.awt.Mnemonics.setLocalizedText(addStyleLabel, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addStyleLabel.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(addStyleButton, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addStyleButton.text")); // NOI18N
+        addStyleButton.setActionCommand(org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addStyleButton.actionCommand")); // NOI18N
+        addStyleButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addStyleButtonActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(addScriptButton, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addScriptButton.text")); // NOI18N
+        addScriptButton.setActionCommand(org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.addScriptButton.actionCommand")); // NOI18N
+        addScriptButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addScriptButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout labelFontsPanelLayout = new javax.swing.GroupLayout(labelFontsPanel);
         labelFontsPanel.setLayout(labelFontsPanelLayout);
         labelFontsPanelLayout.setHorizontalGroup(
             labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFontsPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(fontListScrollPane, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(labelFontsPanelLayout.createSequentialGroup()
-                                    .addComponent(useMultiFontCheckBox)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(validateButton))
-                                .addComponent(validateLabel)
-                                .addGroup(labelFontsPanelLayout.createSequentialGroup()
-                                    .addComponent(addFontLabel)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(addFontComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(addFontButton))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, labelFontsPanelLayout.createSequentialGroup()
-                            .addComponent(addScriptLabel)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(addScriptComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(addScriptButton))
+                        .addComponent(validateLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(labelFontsPanelLayout.createSequentialGroup()
+                            .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(addFontLabel)
+                                .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(addScriptLabel, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(addStyleLabel)))
+                            .addGap(18, 18, 18)
+                            .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(addScriptComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addStyleComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(addFontComboBox, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(addFontButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(addStyleButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(addScriptButton, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(fontListScrollPane, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(labelFontsPanelLayout.createSequentialGroup()
+                        .addComponent(useMultiFontCheckBox)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(validateButton)))
                 .addGap(18, 18, 18)
                 .addComponent(descriptionScrollPane)
                 .addContainerGap())
@@ -227,26 +272,38 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
                 .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(descriptionScrollPane)
                     .addGroup(labelFontsPanelLayout.createSequentialGroup()
-                        .addComponent(fontListScrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(validateButton)
-                            .addComponent(useMultiFontCheckBox))
+                        .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(labelFontsPanelLayout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(useMultiFontCheckBox))
+                            .addGroup(labelFontsPanelLayout.createSequentialGroup()
+                                .addComponent(fontListScrollPane, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(validateButton)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(validateLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(18, 18, 18)
                         .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addFontButton)
                             .addComponent(addFontComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(addFontLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addFontButton)
+                        .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addStyleButton)
+                            .addComponent(addStyleComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addStyleLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(labelFontsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(addScriptButton)
                             .addComponent(addScriptComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(addScriptLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addScriptButton))))
+                            .addComponent(addScriptLabel))))
+                .addContainerGap())
         );
+
+        warningLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        warningLabel.setForeground(new java.awt.Color(255, 0, 0));
+        warningLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/visual/opengl/utilities/resources/warning.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(warningLabel, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.warningLabel.text")); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -258,25 +315,26 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
                     .addComponent(labelFontsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(useDefaultCheckBox)
-                        .addGap(0, 537, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 151, Short.MAX_VALUE)
+                        .addComponent(warningLabel)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(useDefaultCheckBox)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(useDefaultCheckBox)
+                    .addComponent(warningLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelFontsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addFontButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFontButtonActionPerformed
-        // Add the selected font name to the end of the text area.
-        final String fontName = (String) addFontComboBox.getSelectedItem();
-        fontListTextArea.insert(fontName + "\n", fontListTextArea.getCaretPosition());
-    }//GEN-LAST:event_addFontButtonActionPerformed
+    private void useDefaultCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useDefaultCheckBoxActionPerformed
+        setUseDefaultSettings(useDefaultCheckBox.isSelected());
+    }//GEN-LAST:event_useDefaultCheckBoxActionPerformed
 
     private void validateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validateButtonActionPerformed
         final String text = fontListTextArea.getText();
@@ -290,14 +348,20 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_validateButtonActionPerformed
 
+    private void addFontButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addFontButtonActionPerformed
+        final String fontName = (String) addFontComboBox.getSelectedItem();
+        fontListTextArea.insert(String.format("%s", fontName), fontListTextArea.getCaretPosition());
+    }//GEN-LAST:event_addFontButtonActionPerformed
+
+    private void addStyleButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStyleButtonActionPerformed
+        final String styleName = (String) addStyleComboBox.getSelectedItem();
+        fontListTextArea.insert(String.format(",%s", styleName), fontListTextArea.getCaretPosition());
+    }//GEN-LAST:event_addStyleButtonActionPerformed
+
     private void addScriptButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addScriptButtonActionPerformed
         final String scriptName = (String) addScriptComboBox.getSelectedItem();
-        fontListTextArea.insert("," + scriptName, fontListTextArea.getCaretPosition());
+        fontListTextArea.insert(String.format(",%s", scriptName), fontListTextArea.getCaretPosition());
     }//GEN-LAST:event_addScriptButtonActionPerformed
-
-    private void useDefaultCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_useDefaultCheckBoxActionPerformed
-        setUseDefaultSettings(useDefaultCheckBox.isSelected());
-    }//GEN-LAST:event_useDefaultCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addFontButton;
@@ -306,6 +370,9 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
     private javax.swing.JButton addScriptButton;
     private javax.swing.JComboBox<String> addScriptComboBox;
     private javax.swing.JLabel addScriptLabel;
+    private javax.swing.JButton addStyleButton;
+    private javax.swing.JComboBox<String> addStyleComboBox;
+    private javax.swing.JLabel addStyleLabel;
     private javax.swing.JScrollPane descriptionScrollPane;
     private javax.swing.JTextArea descriptionTextArea;
     private javax.swing.JScrollPane fontListScrollPane;
@@ -315,5 +382,6 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox useMultiFontCheckBox;
     private javax.swing.JButton validateButton;
     private javax.swing.JLabel validateLabel;
+    private javax.swing.JLabel warningLabel;
     // End of variables declaration//GEN-END:variables
 }

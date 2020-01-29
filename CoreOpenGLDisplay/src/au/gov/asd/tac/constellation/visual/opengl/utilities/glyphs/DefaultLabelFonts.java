@@ -22,7 +22,7 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * The default fonts for use as labels in a graph.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = ConstellationLabelFonts.class, position = Integer.MAX_VALUE)

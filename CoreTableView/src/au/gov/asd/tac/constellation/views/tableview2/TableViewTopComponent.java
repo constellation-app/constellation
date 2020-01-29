@@ -47,7 +47,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "TableView2TopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/tableview2/resources/table_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/tableview2/resources/table-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

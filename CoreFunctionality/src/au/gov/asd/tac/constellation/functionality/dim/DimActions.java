@@ -48,23 +48,23 @@ import org.openide.util.actions.Presenter;
 public final class DimActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
     @StaticResource
-    private static final String DIM_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/dim/dim_actions.png";
+    private static final String DIM_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_actions.png";
     @StaticResource
-    private static final String DIM_SELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/dim_selected.png";
+    private static final String DIM_SELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_selected.png";
     @StaticResource
-    private static final String DIM_UNSELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/dim_unselected.png";
+    private static final String DIM_UNSELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_unselected.png";
     @StaticResource
-    private static final String DIM_ALL_ICON = "au/gov/asd/tac/constellation/functionality/dim/dim_all.png";
+    private static final String DIM_ALL_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_all.png";
     @StaticResource
-    private static final String UNDIM_SELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/undim_selected.png";
+    private static final String UNDIM_SELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/undim_selected.png";
     @StaticResource
-    private static final String UNDIM_UNSELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/undim_unselected.png";
+    private static final String UNDIM_UNSELECTED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/undim_unselected.png";
     @StaticResource
-    private static final String UNDIM_ALL_ICON = "au/gov/asd/tac/constellation/functionality/dim/undim_all.png";
+    private static final String UNDIM_ALL_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/undim_all.png";
     @StaticResource
-    private static final String SELECT_DIMMED_ICON = "au/gov/asd/tac/constellation/functionality/dim/select_dimmed.png";
+    private static final String SELECT_DIMMED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/select_dimmed.png";
     @StaticResource
-    private static final String SELECT_UNDIMMED_ICON = "au/gov/asd/tac/constellation/functionality/dim/select_undimmed.png";
+    private static final String SELECT_UNDIMMED_ICON = "au/gov/asd/tac/constellation/functionality/dim/resources/select_undimmed.png";
 
     private static final String DIM_SELECTED_ACTION = "Dim_Selected";
     private static final String DIM_UNSELECTED_ACTION = "Dim_Unselected";
