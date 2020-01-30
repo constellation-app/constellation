@@ -20,12 +20,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Export a graph to a GeoJSON file from the Map View.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = MapExporter.class)
 public class GeoJsonExporter implements MapExporter {
-    
+
     @Override
     public String getDisplayName() {
         return "GeoJSON";

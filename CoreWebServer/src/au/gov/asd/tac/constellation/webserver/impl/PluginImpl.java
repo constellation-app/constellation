@@ -72,7 +72,7 @@ public class PluginImpl {
      * @throws IOException
      */
     public static void post_run(final String graphId, final String pluginName, final InputStream in) throws IOException {
-        final Graph graph = graphId==null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         try {
             final ObjectMapper mapper = new ObjectMapper();
             final JsonNode json = mapper.readTree(in);

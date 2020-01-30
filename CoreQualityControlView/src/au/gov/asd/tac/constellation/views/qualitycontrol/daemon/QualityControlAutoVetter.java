@@ -44,7 +44,7 @@ import org.openide.util.Lookup;
  */
 public final class QualityControlAutoVetter implements GraphManagerListener, GraphChangeListener {
 
-    private static final QualityControlAutoVetter INSTANCE = new QualityControlAutoVetter();
+    private static QualityControlAutoVetter INSTANCE = null;
 
     private QualityControlState state;
 
@@ -151,10 +151,10 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         final List<Integer> vertexList = new ArrayList<>();
         final List<String> identifierList = new ArrayList<>();
         final List<SchemaVertexType> typeList = new ArrayList<>();
-
+        
+        
         if (graph != null) {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
-
             final Thread thread = new Thread("Quality Control View: Run Rule") {
                 @Override
                 public void run() {
@@ -267,6 +267,9 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * @return singleton instance of QualityControlAutoVetter
      */
     public synchronized static QualityControlAutoVetter getInstance() {
+        if(INSTANCE == null){
+            INSTANCE = new QualityControlAutoVetter();
+        }
         return INSTANCE;
     }
 }
