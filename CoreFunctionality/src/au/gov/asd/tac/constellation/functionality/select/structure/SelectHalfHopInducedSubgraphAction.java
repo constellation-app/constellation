@@ -25,7 +25,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectHalfHopInducedSubgraphAction")
-@ActionRegistration(displayName = "#CTL_SelectHalfHopInducedSubgraphAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/half_hop_induced_subgraph.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectHalfHopInducedSubgraphAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/half_hop_induced_subgraph.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 1300),
     @ActionReference(path = "Toolbars/Selection", position = 600)

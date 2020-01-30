@@ -59,8 +59,8 @@ public class ShowInTableViewContextMenuProvider implements ContextMenuProvider {
                     tc.open();
                 }
                 tc.requestActive();
+                ((au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent) tc).showSelected(elementType, elementId);
             }
-            ((au.gov.asd.tac.constellation.views.tableview2.TableViewTopComponent) tc).showSelected(elementType, elementId);
         });
     }
 }

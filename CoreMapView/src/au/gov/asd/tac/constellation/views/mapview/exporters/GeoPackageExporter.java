@@ -20,12 +20,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Export a graph to a GeoPackage file from the Map View.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = MapExporter.class)
 public class GeoPackageExporter implements MapExporter {
-    
+
     @Override
     public String getDisplayName() {
         return "GeoPackage";

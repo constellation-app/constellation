@@ -50,7 +50,7 @@ public abstract class AbstractCalculatorTutorial {
     private Button nextButton;
     private Button prevButton;
 
-    private final String LOCAL_STYLE = "resources/AttributeCalculator.css";
+    private final String LOCAL_STYLE = "resources/attribute-calculator.css";
 
     private int currentPage = 0;
     private int lastPage;

@@ -36,7 +36,6 @@ void main() {
 
         // The GL angle has 0 pointing east incrementing anti-clockwise, just like real maths.
         // We want 0 pointing north incrementing clockwise.
-        //
         angle = PI/2-angle;
 
         float dx = cos(angle);

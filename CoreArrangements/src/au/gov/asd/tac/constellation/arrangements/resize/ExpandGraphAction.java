@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
  * @author altair
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.resize.ExpandGraphAction")
-@ActionRegistration(displayName = "#CTL_ExpandGraphAction", iconBase = "au/gov/asd/tac/constellation/arrangements/resize/expand.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExpandGraphAction", iconBase = "au/gov/asd/tac/constellation/arrangements/resize/resources/expand.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1600),
     @ActionReference(path = "Toolbars/Arrange", position = 300)

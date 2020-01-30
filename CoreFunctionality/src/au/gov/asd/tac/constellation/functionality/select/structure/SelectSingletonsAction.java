@@ -28,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
  * perform singleton service on graph
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectSingletonsAction")
-@ActionRegistration(displayName = "#CTL_SelectSingletonsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/singleton.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectSingletonsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/singleton.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 700, separatorBefore = 699),
     @ActionReference(path = "Toolbars/Selection", position = 0)

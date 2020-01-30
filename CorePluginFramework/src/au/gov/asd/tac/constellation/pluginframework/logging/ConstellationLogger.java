@@ -58,7 +58,7 @@ public interface ConstellationLogger {
      * @param view the view that was closed.
      */
     public void viewStopped(final TopComponent view);
-    
+
     /**
      * Called to provide information about the state of a view.
      *

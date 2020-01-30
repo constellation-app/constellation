@@ -67,7 +67,7 @@ import org.openide.windows.WindowManager;
  */
 @ActionRegistration(
         displayName = "#LBL_openFile",
-        iconBase = "au/gov/asd/tac/constellation/graph/file/open/openFile.png",
+        iconBase = "au/gov/asd/tac/constellation/graph/file/open/resources/openFile.png",
         iconInMenu = false)
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.graph.file.open.OpenFileAction")
 @ActionReferences({

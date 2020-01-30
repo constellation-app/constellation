@@ -91,7 +91,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
                 break;
         }
     }
-    
+
     /**
      * Gather a graph's selected vertex ids into a BitSet.
      *

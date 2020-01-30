@@ -70,7 +70,6 @@ public class SaveGraphUtilities {
         } finally {
             rg.release();
         }
-
     }
 
     /**

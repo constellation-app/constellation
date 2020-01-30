@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "DataAccessViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/dataaccess/panes/resources/data_access_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/dataaccess/panes/resources/data-access-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -98,7 +98,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public String createStyle() {
-        return "resources/dataaccessview.css";
+        return "resources/data-access-view.css";
     }
 
     @Override

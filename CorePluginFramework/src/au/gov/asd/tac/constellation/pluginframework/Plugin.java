@@ -107,11 +107,11 @@ public interface Plugin {
      * Called to run the plugin.
      * <p>
      * This method is generally called by the framework in response to the user
-     * selecting a menu item, for instance.
-     * All changes to {@link PluginParameter} will fire an event. To suppress the 
-     * event, call {@link PluginParameter.suppressEvent(...)} method. Cases such 
-     * as pre-configuration of plugins which need the currently opened graph to
-     * define runtime activity and available menu items may find this method 
+     * selecting a menu item, for instance. All changes to
+     * {@link PluginParameter} will fire an event. To suppress the event, call
+     * {@link PluginParameter.suppressEvent(...)} method. Cases such as
+     * pre-configuration of plugins which need the currently opened graph to
+     * define runtime activity and available menu items may find this method
      * useful.
      *
      * @param graphs an object holding all information about the graphs in the

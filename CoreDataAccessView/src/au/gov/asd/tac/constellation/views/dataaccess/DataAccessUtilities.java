@@ -67,8 +67,4 @@ public class DataAccessUtilities {
             return null;
         }
     }
-
-    public static String getStylesheet() {
-        return DataAccessViewTopComponent.class.getResource("resources/dataaccessview.css").toExternalForm();
-    }
 }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-
 /**
  * Keys used to access graph preferences.
  *
@@ -23,7 +22,6 @@ package au.gov.asd.tac.constellation.preferences;
  */
 public final class GraphPreferenceKeys {
 
-    
     /**
      * Blaze settings
      */
@@ -31,7 +29,7 @@ public final class GraphPreferenceKeys {
     public static final int BLAZE_OPACITY_DEFAULT = 100;
     public static final String BLAZE_SIZE = "blazeSize";
     public static final String BLAZE_OPACITY = "blazeOpacity";
-    
+
     private GraphPreferenceKeys() {
     }
 }

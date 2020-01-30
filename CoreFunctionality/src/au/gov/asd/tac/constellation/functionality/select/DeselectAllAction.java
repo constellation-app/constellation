@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.DeselectAction")
-@ActionRegistration(displayName = "#CTL_DeselectAllAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/deselect_all.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_DeselectAllAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/resources/deselect_all.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 100),
     @ActionReference(path = "Shortcuts", name = "Escape")

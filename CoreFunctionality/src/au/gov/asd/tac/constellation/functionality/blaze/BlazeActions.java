@@ -68,21 +68,21 @@ import org.openide.util.actions.Presenter;
 public final class BlazeActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
     @StaticResource
-    private static final String BLAZE_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/blaze/blaze_actions.png";
+    private static final String BLAZE_ACTIONS_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/blaze_actions.png";
     @StaticResource
-    private static final String SELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/selectblazes.png";
+    private static final String SELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/selectblazes.png";
     @StaticResource
-    private static final String DESELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/blaze.png";
+    private static final String DESELECT_BLAZES_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/blaze.png";
     @StaticResource
-    private static final String ADD_BLUE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_blue.png";
+    private static final String ADD_BLUE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_blue.png";
     @StaticResource
-    private static final String ADD_RED_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_red.png";
+    private static final String ADD_RED_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_red.png";
     @StaticResource
-    private static final String ADD_YELLOW_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_yellow.png";
+    private static final String ADD_YELLOW_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_yellow.png";
     @StaticResource
-    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/addblaze_custom.png";
+    private static final String ADD_CUSTOM_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/addblaze_custom.png";
     @StaticResource
-    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/removeblaze.png";
+    private static final String REMOVE_BLAZE_ICON = "au/gov/asd/tac/constellation/functionality/blaze/resources/removeblaze.png";
 
     private static final String SELECT_BLAZES_ACTION = "Select_Blazes";
     private static final String DESELECT_BLAZES_ACTION = "DeSelect_Blazes";
@@ -158,7 +158,6 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         removeBlazeItem.addActionListener(BlazeActions.this);
         menu.add(removeBlazeItem);
 
-        
         this.sizeSlider = new SliderMenuItem("Size");
         sizeSlider.setValue((NbPreferences.forModule(GraphPreferenceKeys.class)
                 .getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)));
@@ -193,17 +192,17 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             Preferences preferences = NbPreferences.forModule(GraphPreferenceKeys.class);
-            
+
             final int blazeSizeAttributeId = VisualConcept.GraphAttribute.BLAZE_SIZE.get(rg);
-            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND ? 
-                    (preferences.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f :
-                    rg.getFloatValue(blazeSizeAttributeId, 0);
-            
+            final float blazeSize = blazeSizeAttributeId == Graph.NOT_FOUND
+                    ? (preferences.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)) / 100f
+                    : rg.getFloatValue(blazeSizeAttributeId, 0);
+
             final int blazeOpacityAttributeId = VisualConcept.GraphAttribute.BLAZE_OPACITY.get(rg);
-            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND ? 
-                    (preferences.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f :
-                    rg.getFloatValue(blazeOpacityAttributeId, 0);
-            
+            final float blazeOpacity = blazeOpacityAttributeId == Graph.NOT_FOUND
+                    ? (preferences.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)) / 100f
+                    : rg.getFloatValue(blazeOpacityAttributeId, 0);
+
             sizeSlider.removeChangeListener(sliderChangeListener);
             sizeSlider.setValue((int) (blazeSize * 100));
             sizeSlider.addChangeListener(sliderChangeListener);

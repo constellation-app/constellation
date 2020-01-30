@@ -15,17 +15,6 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
-import java.awt.Color;
-import java.awt.Font;
-import javax.swing.BorderFactory;
-import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JSlider;
-import javax.swing.LayoutStyle;
-import org.openide.awt.Mnemonics;
-import org.openide.util.NbBundle;
-
 /**
  * UI panel to define the session parameters
  *
@@ -38,11 +27,10 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
     public GraphOptionsPanel(final GraphOptionsPanelController controller) {
         this.controller = controller;
         initComponents();
-        
+
         /**
-         * REMOVE this section when implementing custom blaze colours
-         * Introduced with fix for issue #158
-         * FROM HERE
+         * REMOVE this section when implementing custom blaze colours Introduced
+         * with fix for issue #158 FROM HERE
          */
         BlazeColourPanel.setVisible(false);
         BlazeColourPlaceholder.setVisible(false);
@@ -51,25 +39,22 @@ final class GraphOptionsPanel extends javax.swing.JPanel {
          * TO HERE
          */
     }
-    
-    public void setBlazeSize(final int value){
+
+    public void setBlazeSize(final int value) {
         blazeSlider.setValue(value);
     }
-    
-    public void setBlazeOpacity(final int value){
+
+    public void setBlazeOpacity(final int value) {
         blazeOpacitySlider.setValue(value);
     }
-    
-    public int getBlazeSize(){
+
+    public int getBlazeSize() {
         return blazeSlider.getValue();
     }
-    
-    public int getBlazeOpacity(){
+
+    public int getBlazeOpacity() {
         return blazeOpacitySlider.getValue();
     }
-
-
-
 
     /**
      * This method is called from within the constructor to initialize the form.

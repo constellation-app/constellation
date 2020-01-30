@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 import java.awt.Font;
@@ -6,14 +21,16 @@ import java.util.List;
 import java.util.logging.Logger;
 
 /**
- * Split a string into a sequence of runs such that each run contains a single font.
+ * Split a string into a sequence of runs such that each run contains a single
+ * font.
  * <p>
- * A sequence of fonts is applied to each codepoint in the string. The first font
- * that can display the codepoint determines the run.
+ * A sequence of fonts is applied to each codepoint in the string. The first
+ * font that can display the codepoint determines the run.
  *
  * @author algol
  */
 class FontRun {
+
     private static final Logger LOGGER = Logger.getLogger(GlyphManagerBI.class.getName());
 
     final String string;
@@ -27,19 +44,20 @@ class FontRun {
     /**
      * Determine the font which the codepoint belongs to.
      * <p>
-     * The first font in the fonts array that can display the given codepoint
-     * id the font that determines the run.
+     * The first font in the fonts array that can display the given codepoint id
+     * the font that determines the run.
      *
      * @param fonts An array of fonts.
-     * @param codepoint We're looking for a font that can display this codepoint.
+     * @param codepoint We're looking for a font that can display this
+     * codepoint.
      *
-     * @return The index of the first font in the array that can display this codepoint.
-     *  If no font can display the codepoint, use the final font (which
-     *  is a default fallback font anyway).
+     * @return The index of the first font in the array that can display this
+     * codepoint. If no font can display the codepoint, use the final font
+     * (which is a default fallback font anyway).
      */
     private static int whichFont(final FontInfo[] fontsInfo, final int codepoint) {
-        for(int i=0; i<fontsInfo.length; i++) {
-            if(fontsInfo[i].canDisplay(codepoint)) {
+        for (int i = 0; i < fontsInfo.length; i++) {
+            if (fontsInfo[i].canDisplay(codepoint)) {
                 return i;
             }
         }
@@ -48,19 +66,20 @@ class FontRun {
 
         // If no font could display this codepoint, return the default font anyway.
         //
-        return fontsInfo.length-1;
+        return fontsInfo.length - 1;
     }
 
     /**
-     * Find the beginnings and ends of runs of codepoints that have the same font.
+     * Find the beginnings and ends of runs of codepoints that have the same
+     * font.
      * <p>
-     * We don't want to use Font.canDisplayUpTo().
-     * Consider the string containing Chinese and English text "CCCEEECCC".
-     * A font such as Noto Sans CJK SC Regular contains both Chinese and Latin
-     * characters, so Font.CanDisplayUpTo() would consume the entire string.
-     * This is no good if we want to use a different font style for Latin characters.
-     * Therefore, we look at each individual character.
-     * Obviously this requires that specific fonts appear first in the font list.
+     * We don't want to use Font.canDisplayUpTo(). Consider the string
+     * containing Chinese and English text "CCCEEECCC". A font such as Noto Sans
+     * CJK SC Regular contains both Chinese and Latin characters, so
+     * Font.CanDisplayUpTo() would consume the entire string. This is no good if
+     * we want to use a different font style for Latin characters. Therefore, we
+     * look at each individual character. Obviously this requires that specific
+     * fonts appear first in the font list.
      *
      * @param text
      *
@@ -73,20 +92,20 @@ class FontRun {
         int start = 0;
         final ArrayList<FontRun> frs = new ArrayList<>();
 
-        for(int offset = 0; offset < length;) {
+        for (int offset = 0; offset < length;) {
             final int codepoint = s.codePointAt(offset);
             final int cc = Character.charCount(codepoint);
 
             // If this is a space, make it the same font as the previous codepoint.
             // This keeps words of the same font together.
             //
-            final int fontIx = codepoint==32 && currFontIx!=-1 ? currFontIx : whichFont(fontsInfo, codepoint);
-            if(fontIx==-1) {
+            final int fontIx = codepoint == 32 && currFontIx != -1 ? currFontIx : whichFont(fontsInfo, codepoint);
+            if (fontIx == -1) {
                 final String t = new String(new int[]{fontsInfo[0].font.getMissingGlyphCode()}, 0, 1);
                 frs.add(new FontRun(t, fontsInfo[0].font));
             } else {
-                if(fontIx!=currFontIx) {
-                    if(currFontIx!=-1) {
+                if (fontIx != currFontIx) {
+                    if (currFontIx != -1) {
                         final String t = s.substring(start, offset);
                         frs.add(new FontRun(t, fontsInfo[currFontIx].font));
                     }
@@ -98,8 +117,7 @@ class FontRun {
             offset += cc;
         }
 
-       // TODO Fix non-displayable codepoints when a font doesn't exist.
-
+        // TODO Fix non-displayable codepoints when a font doesn't exist.
         // Add the end of the final run.
         //
         final String t = s.substring(start, length);

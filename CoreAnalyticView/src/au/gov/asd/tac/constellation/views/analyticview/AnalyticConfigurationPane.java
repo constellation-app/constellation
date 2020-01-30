@@ -290,7 +290,7 @@ public class AnalyticConfigurationPane extends VBox {
             this.documentationView = new WebView();
             documentationView.setFontScale(0.5);
             documentationView.getEngine().setUserStyleSheetLocation(
-                    getClass().getResource("resources/documentation.css").toExternalForm());
+                    getClass().getResource("resources/analytic-view.css").toExternalForm());
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -409,7 +409,7 @@ public class AnalyticConfigurationPane extends VBox {
         if (categoryListPane.isExpanded()) {
             final Class<? extends AnalyticResult> pluginResultType = pluginList.getItems().get(0).getPlugin().getResultType();
             AnalyticUtilities.lookupAnalyticAggregators(pluginResultType)
-                    .forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue((AnalyticAggregator) aggregator)));
+                    .forEach(aggregator -> aggregators.add(new AnalyticAggregatorParameterValue(aggregator)));
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
         } else if (questionListPane.isExpanded() && currentQuestion != null) {

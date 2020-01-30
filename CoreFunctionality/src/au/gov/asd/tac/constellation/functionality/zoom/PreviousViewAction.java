@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.PreviousViewAction")
-@ActionRegistration(displayName = "#CTL_PreviousViewAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/zoom_from_selection.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_PreviousViewAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/resources/zoom_from_selection.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 })

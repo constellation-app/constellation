@@ -1,3 +1,18 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 import java.awt.Font;
@@ -19,6 +34,7 @@ import java.util.stream.Collectors;
  * @author algol
  */
 public class FontInfo {
+
     private static final Logger LOGGER = Logger.getLogger(FontInfo.class.getName());
 
     final String fontName;
@@ -30,8 +46,8 @@ public class FontInfo {
     public FontInfo(final String fontName, final int fontStyle, final Set<Character.UnicodeScript> mustHave, final Set<Character.UnicodeScript> mustNotHave, final Font font) {
         this.fontName = fontName;
         this.fontStyle = fontStyle;
-        this.mustHave = mustHave!=null ? mustHave : Collections.emptySet();
-        this.mustNotHave = mustNotHave!=null ? mustNotHave : Collections.emptySet();
+        this.mustHave = mustHave != null ? mustHave : Collections.emptySet();
+        this.mustNotHave = mustNotHave != null ? mustNotHave : Collections.emptySet();
         this.font = font;
     }
 
@@ -41,15 +57,14 @@ public class FontInfo {
 
     private static Font getFont(final String fontName, final int fontStyle, final int fontSize) {
         Font font = null;
-        if(fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
+        if (fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
             File otfFile = getOtfFont(fontName);
-            if(otfFile!=null) {
+            if (otfFile != null) {
                 LOGGER.info(String.format("Reading font from %s", otfFile));
                 try {
                     final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
                     font = otf.deriveFont(fontStyle, fontSize);
-                }
-                catch(final FontFormatException | IOException ex) {
+                } catch (final FontFormatException | IOException ex) {
                     final String msg = String.format("Can't load font %s from %s", fontName, otfFile);
                     LOGGER.log(Level.SEVERE, msg, ex);
                     throw new IllegalArgumentException(msg);
@@ -63,7 +78,7 @@ public class FontInfo {
             font = new Font(fontName, fontStyle, fontSize);
         }
 
-        if(font.getFamily(Locale.US).equals(Font.DIALOG)) {
+        if (font.getFamily(Locale.US).equals(Font.DIALOG)) {
             // From the Javadoc:
             // If the name parameter represents something other
             // than a logical font, i.e. is interpreted as a
@@ -89,15 +104,13 @@ public class FontInfo {
      * @return True if the font will display the codepoint, false otherwise.
      */
     public boolean canDisplay(final int codepoint) {
-        if(font.canDisplay(codepoint)) {
+        if (font.canDisplay(codepoint)) {
             final Character.UnicodeScript script = Character.UnicodeScript.of(codepoint);
-            if(!mustHave.isEmpty() && mustHave.contains(script)) {
+            if (!mustHave.isEmpty() && mustHave.contains(script)) {
                 return true;
-            }
-            else if(!mustNotHave.isEmpty() && !mustNotHave.contains(script)) {
+            } else if (!mustNotHave.isEmpty() && !mustNotHave.contains(script)) {
                 return true;
-            }
-            else if(mustHave.isEmpty() && mustNotHave.isEmpty()) {
+            } else if (mustHave.isEmpty() && mustNotHave.isEmpty()) {
                 return true;
             }
         }
@@ -110,7 +123,8 @@ public class FontInfo {
      * <p>
      * The font must not exclude any Unicode scripts.
      *
-     * @param defaultName The name of the default font used when all other fonts aren't suitable.
+     * @param defaultName The name of the default font used when all other fonts
+     * aren't suitable.
      *
      * @return True if this is a suitable default font, otherwise false.
      */
@@ -129,25 +143,25 @@ public class FontInfo {
      */
     private static File getOtfFont(final String otfName) {
         File otfFile = new File(otfName);
-        if(otfFile.isAbsolute()) {
+        if (otfFile.isAbsolute()) {
             return otfFile.canRead() ? otfFile : null;
         } else {
             // If it is relative, look in operating system specific places for
             // the font file.
             //
             final String osName = System.getProperty("os.name");
-            if(osName.toLowerCase().contains("win")) {
+            if (osName.toLowerCase().contains("win")) {
                 // Look in the user's local profile, then the system font directory.
                 //
                 final String lap = System.getenv("LOCALAPPDATA");
-                if(lap!=null) {
+                if (lap != null) {
                     otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
-                    if(otfFile.canRead()) {
+                    if (otfFile.canRead()) {
                         return otfFile;
                     } else {
                         final String windir = System.getenv("windir");
                         otfFile = new File(String.format("%s/Fonts/%s", windir, otfName));
-                        if(otfFile.canRead()) {
+                        if (otfFile.canRead()) {
                             return otfFile;
                         }
                     }
@@ -163,6 +177,7 @@ public class FontInfo {
     }
 
     public static class ParsedFontInfo {
+
         public final FontInfo[] fontsInfo;
         public final List<String> messages;
 
@@ -177,7 +192,8 @@ public class FontInfo {
     }
 
     /**
-     * Parse lines of a string to find fontName[,bold|plain|block]... for each line.
+     * Parse lines of a string to find fontName[,bold|plain|block]... for each
+     * line.
      *
      * @param lines
      * @param fontSize
@@ -189,58 +205,64 @@ public class FontInfo {
         final List<String> messages = new ArrayList<>();
 
         int lineno = 0;
-        for(String line : lines) {
+        for (String line : lines) {
             lineno++;
             int fontStyle = Font.PLAIN;
             final Set<Character.UnicodeScript> mustHave = new HashSet<>();
             final Set<Character.UnicodeScript> mustNotHave = new HashSet<>();
             boolean ok = true;
             line = line.trim();
-            if(line.length()>0 && !line.startsWith("#")) {
+            if (line.length() > 0 && !line.startsWith("#")) {
                 final String[] parts = line.trim().split("\\p{Zs}*,\\p{Zs}*");
                 final String fontName = parts[0];//.trim();
-                if(fontName.isEmpty()) {
+                if (fontName.isEmpty()) {
                     ok = false;
                     messages.add(String.format("Line %d: Blank font name", lineno));
                 } else {
-                    for(int i=1; i<parts.length; i++) {
+                    for (int i = 1; i < parts.length; i++) {
                         String part = parts[i].toUpperCase();
-                        if(part.isEmpty()) {
+                        if (part.isEmpty()) {
                             ok = false;
                             messages.add(String.format("Line %d: Blank font description", lineno));
                         } else {
-                            switch(part) {
-                            case "BOLD":
-                                fontStyle = Font.BOLD;
-                                break;
-                            case "PLAIN":
-                                fontStyle = Font.PLAIN;
-                                break;
-                            default:
-                                final boolean mustNot = part.startsWith("!");
-                                if(mustNot) {
-                                    part = part.substring(1);
-                                }
-                                try {
-                                    final Character.UnicodeScript script = Character.UnicodeScript.forName(part);
-                                    final Set<Character.UnicodeScript> s = mustNot ? mustNotHave : mustHave;
-                                    s.add(script);
-                                } catch(final IllegalArgumentException ex) {
-                                    ok = false;
-                                    messages.add(String.format("Line %d: Unicode script '%s' does not exist", lineno, part));
-                                }
-                                break;
+                            switch (part) {
+                                case "PLAIN":
+                                    fontStyle = Font.PLAIN;
+                                    break;
+                                case "BOLD":
+                                    fontStyle = Font.BOLD;
+                                    break;
+                                case "ITALIC":
+                                    fontStyle = Font.ITALIC;
+                                    break;
+                                case "BOLD_ITALIC":
+                                    fontStyle = Font.BOLD | Font.ITALIC;
+                                    break;
+                                default:
+                                    final boolean mustNot = part.startsWith("!");
+                                    if (mustNot) {
+                                        part = part.substring(1);
+                                    }
+                                    try {
+                                        final Character.UnicodeScript script = Character.UnicodeScript.forName(part);
+                                        final Set<Character.UnicodeScript> s = mustNot ? mustNotHave : mustHave;
+                                        s.add(script);
+                                    } catch (final IllegalArgumentException ex) {
+                                        ok = false;
+                                        messages.add(String.format("Line %d: Unicode script '%s' does not exist", lineno, part));
+                                    }
+                                    break;
                             }
                         }
                     }
                 }
 
-                if(ok) {
+                if (ok) {
                     try {
                         final Font font = getFont(fontName, fontStyle, fontSize);
                         final FontInfo fi = new FontInfo(fontName, fontStyle, mustHave, mustNotHave, font);
                         fiList.add(fi);
-                    } catch(final IllegalArgumentException ex) {
+                    } catch (final IllegalArgumentException ex) {
                         messages.add(ex.getMessage());
                     }
                 }

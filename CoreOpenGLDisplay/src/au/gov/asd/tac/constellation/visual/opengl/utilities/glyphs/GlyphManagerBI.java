@@ -1,6 +1,20 @@
+/*
+ * Copyright 2010-2019 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GlyphManager;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
@@ -33,6 +47,7 @@ import javax.imageio.ImageIO;
  * @author algol
  */
 public final class GlyphManagerBI implements GlyphManager {
+
     private static final Logger LOGGER = Logger.getLogger(GlyphManagerBI.class.getName());
 
     /**
@@ -58,9 +73,8 @@ public final class GlyphManagerBI implements GlyphManager {
     private final BufferedImage drawing;
 
     /**
-     * The size of the rectangle buffer.
-     * An arbitrary number, not too small that we need lots of buffers,
-     * but not too large that OpenGL can't cope.
+     * The size of the rectangle buffer. An arbitrary number, not too small that
+     * we need lots of buffers, but not too large that OpenGL can't cope.
      */
     public static final int DEFAULT_TEXTURE_BUFFER_SIZE = 2048;
 
@@ -71,8 +85,8 @@ public final class GlyphManagerBI implements GlyphManager {
     private FontInfo[] fontsInfo;
 
     /**
-     * The glyphs must be scaled down to be rendered at a reasonable size.
-     * The font height seems to be a reasonable scale.
+     * The glyphs must be scaled down to be rendered at a reasonable size. The
+     * font height seems to be a reasonable scale.
      */
     private int maxFontHeight;
 
@@ -146,12 +160,11 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     static String cleanString(final String s) {
         return s
-            .trim()
-            .codePoints()
-            .filter(cp -> !((cp>=0x202a && cp<=0x202e) || (cp>=0x206a && cp<=0x206f)))
-            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-            .toString()
-        ;
+                .trim()
+                .codePoints()
+                .filter(cp -> !((cp >= 0x202a && cp <= 0x202e) || (cp >= 0x206a && cp <= 0x206f)))
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
 
     public void setBoundaries(final boolean drawRuns, final boolean drawIndividual, final boolean drawCombined) {
@@ -166,14 +179,13 @@ public final class GlyphManagerBI implements GlyphManager {
      * The most specific font (ie the font containing the fewest glyphs) should
      * be first. This allows a different font to be used for Latin characters.
      * <p>
-     * Because setting new fonts implies a complete redraw,
-     * the existing texture buffers are reset, so all strings have to be
-     * rebuilt.
+     * Because setting new fonts implies a complete redraw, the existing texture
+     * buffers are reset, so all strings have to be rebuilt.
      * <p>
      * Java doesn't recognise OTF fonts; they have to be created and derived,
-     * rather than just "new Font()". This means fonts such as Google's Noto
-     * CJK fonts need special treatment.
-     * Names ending in ".otf" are treated as filenames.
+     * rather than just "new Font()". This means fonts such as Google's Noto CJK
+     * fonts need special treatment. Names ending in ".otf" are treated as
+     * filenames.
      *
      * @param fontsInfo
      * @param fontSize The font size.
@@ -182,14 +194,14 @@ public final class GlyphManagerBI implements GlyphManager {
         // If the fontName array does not contain the default font, add it to the end.
         //
         final Optional<FontInfo> hasDefault = Arrays.stream(fontsInfo).filter(fi -> fi.isDefault(DEFAULT_FONT_NAME)).findFirst();
-        if(!hasDefault.isPresent()) {
-            this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length+1);
-            this.fontsInfo[this.fontsInfo.length-1] = new FontInfo(DEFAULT_FONT_NAME, DEFAULT_FONT_STYLE, DEFAULT_FONT_SIZE, null, null);
+        if (!hasDefault.isPresent()) {
+            this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length + 1);
+            this.fontsInfo[this.fontsInfo.length - 1] = new FontInfo(DEFAULT_FONT_NAME, DEFAULT_FONT_STYLE, DEFAULT_FONT_SIZE, null, null);
         } else {
             this.fontsInfo = Arrays.copyOf(fontsInfo, fontsInfo.length);
         }
 
-        for(int i=0; i<this.fontsInfo.length; i++) {
+        for (int i = 0; i < this.fontsInfo.length; i++) {
             LOGGER.info(String.format("Font %d: %s", i, this.fontsInfo[i]));
         }
 
@@ -199,10 +211,10 @@ public final class GlyphManagerBI implements GlyphManager {
         final BufferedImage tmpBI = new BufferedImage(1, 1, bufferType);
         final Graphics2D g2d = tmpBI.createGraphics();
         maxFontHeight = Arrays.stream(this.fontsInfo).map(fil -> {
-                final FontMetrics fm = g2d.getFontMetrics(fil.font);
-                final int height = fm.getHeight();
-                return height;
-            }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
+            final FontMetrics fm = g2d.getFontMetrics(fil.font);
+            final int height = fm.getHeight();
+            return height;
+        }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
         g2d.dispose();
 
         textureBuffer.reset();
@@ -211,9 +223,11 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     /**
-     * Return the names of the fonts being used (including the extra default font).
+     * Return the names of the fonts being used (including the extra default
+     * font).
      *
-     * @return The names of the fonts being used (including the extra default font).
+     * @return The names of the fonts being used (including the extra default
+     * font).
      */
     public FontInfo[] getFonts() {
 //        return Arrays.copyOf(fontNames, fontNames.length);
@@ -225,33 +239,34 @@ public final class GlyphManagerBI implements GlyphManager {
      * <p>
      * This code feels a bit ugly. Have another look later.
      *
-     * @param boxes A List<Rectangle> representing possibly overlapping glyph bounding boxes.
+     * @param boxes A List<Rectangle> representing possibly overlapping glyph
+     * bounding boxes.
      *
      * @return A List<Rectangle> of non-overlapping bounding boxes.
      */
     private static List<Rectangle> mergeBoxes(final List<Rectangle> boxes) {
         final List<Rectangle> merged = new ArrayList<>();
-        for(int i=boxes.size()-1;i>=0;) {
+        for (int i = boxes.size() - 1; i >= 0;) {
             Rectangle curr = boxes.get(i--);
-            if(i==-1) {
+            if (i == -1) {
                 merged.add(curr);
                 break;
             }
-            while(i>=0) {
+            while (i >= 0) {
                 final Rectangle prev = boxes.get(i);
-                if((prev.x + prev.width) < curr.x) {
+                if ((prev.x + prev.width) < curr.x) {
                     merged.add(curr);
                     break;
                 }
                 final int y = Math.min(prev.y, curr.y);
                 curr = new Rectangle(
-                    prev.x,
-                    y,
-                    Math.max(prev.x+prev.width, curr.x+curr.width)-prev.x,
-                    Math.max(prev.y+prev.height, curr.y+curr.height)-y
+                        prev.x,
+                        y,
+                        Math.max(prev.x + prev.width, curr.x + curr.width) - prev.x,
+                        Math.max(prev.y + prev.height, curr.y + curr.height) - y
                 );
                 i--;
-                if(i==-1) {
+                if (i == -1) {
                     merged.add(curr);
                     break;
                 }
@@ -264,10 +279,10 @@ public final class GlyphManagerBI implements GlyphManager {
     /**
      * Draw codepoints that may contain multiple directions and scripts.
      * <p>
-     * This is not a general purpose text drawer. Instead, it caters to the
-     * kind of string that are likely to be found in a CONSTELLLATION label;
-     * short, lacking punctuation, but possibly containing
-     * multi-language, multi-script, multi-directional characters.
+     * This is not a general purpose text drawer. Instead, it caters to the kind
+     * of string that are likely to be found in a CONSTELLLATION label; short,
+     * lacking punctuation, but possibly containing multi-language,
+     * multi-script, multi-directional characters.
      * <p>
      * A String is first broken up into sub-strings that consist of codepoints
      * of the same direction. These sub-strings are further broken into
@@ -292,11 +307,11 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     @Override
     public void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
-        if(text==null || text.isEmpty()) {
+        if (text == null || text.isEmpty()) {
             return;
         }
 
-        if(glyphStream==null) {
+        if (glyphStream == null) {
             glyphStream = DEFAULT_GLYPH_STREAM;
         }
 
@@ -312,7 +327,6 @@ public final class GlyphManagerBI implements GlyphManager {
 
 //        g2d.setColor(Color.ORANGE);
 //        g2d.drawLine(BASEX, BASEY, BASEX+1000, BASEY);
-
         int x = BASEX;
         final int y0 = basey;
 
@@ -324,8 +338,8 @@ public final class GlyphManagerBI implements GlyphManager {
         int bottom = Integer.MIN_VALUE;
         final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
 
-        for(final DirectionRun drun : DirectionRun.getDirectionRuns(text)) {
-            for(final FontRun frun : FontRun.getFontRuns(drun.run, fontsInfo)) {
+        for (final DirectionRun drun : DirectionRun.getDirectionRuns(text)) {
+            for (final FontRun frun : FontRun.getFontRuns(drun.run, fontsInfo)) {
 //                // Draw an indicator line to show where the font run starts.
 //                //
 //                g2d.setColor(Color.LIGHT_GRAY);
@@ -342,16 +356,16 @@ public final class GlyphManagerBI implements GlyphManager {
                 // Figure that out here.
                 //
                 final Rectangle pixelBounds = gv.getPixelBounds(null, x, y0);
-                if(pixelBounds.x<x) {
+                if (pixelBounds.x < x) {
 //                    System.out.printf("adjust %s %s %s\n", x, pixelBounds.x, x-pixelBounds.x);
-                    x += x-pixelBounds.x;
+                    x += x - pixelBounds.x;
                 }
 
 //                System.out.printf("* font run %s %d->%s\n", frun, x, pixelBounds);
                 g2d.setColor(Color.WHITE);
                 g2d.setFont(frun.font);
 
-                final Map<AttributedCharacterIterator.Attribute,Object> attrs = new HashMap<>();
+                final Map<AttributedCharacterIterator.Attribute, Object> attrs = new HashMap<>();
                 attrs.put(TextAttribute.RUN_DIRECTION, drun.direction);
                 attrs.put(TextAttribute.FONT, frun.font);
                 final TextLayout layout = new TextLayout(spart, attrs, frc);
@@ -365,17 +379,17 @@ public final class GlyphManagerBI implements GlyphManager {
                 // an exception below.)
                 //
                 final List<Rectangle> boxes = new ArrayList<>();
-                for(int glyphIx=0; glyphIx<gv.getNumGlyphs(); glyphIx++) {
+                for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
                     final int gc = gv.getGlyphCode(glyphIx);
-                    if(gc!=0) {
+                    if (gc != 0) {
                         final Rectangle r = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-                        if(r.width>0 && (r.x+r.width<drawing.getWidth())) {
+                        if (r.width > 0 && (r.x + r.width < drawing.getWidth())) {
                             boxes.add(r);
 
                             left = Math.min(left, r.x);
-                            right = Math.max(right, r.x+r.width);
+                            right = Math.max(right, r.x + r.width);
                             top = Math.min(top, r.y);
-                            bottom = Math.max(bottom, r.y+r.height);
+                            bottom = Math.max(bottom, r.y + r.height);
                         }
                     }
                 }
@@ -394,25 +408,25 @@ public final class GlyphManagerBI implements GlyphManager {
                     // Check that the glyph doesn't extend outside the drawing texture.
                     //
                     final int y = Math.max(r.y, 0);
-                    final int height = Math.min(r.height, drawing.getHeight()-y);
+                    final int height = Math.min(r.height, drawing.getHeight() - y);
 //                    System.out.printf("r.y=%d y=%d h=%d H=%d\n", r.y, y, height, drawing.getHeight());
-                    if(height>0) {
+                    if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
                         glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));
                     }
                 });
 
-                if(drawRuns) {
+                if (drawRuns) {
                     g2d.setColor(Color.RED);
                     g2d.drawRect(pixelBounds.x, pixelBounds.y, pixelBounds.width, pixelBounds.height);
                 }
 
-                if(drawIndividual) {
-                    for(int glyphIx=0; glyphIx<gv.getNumGlyphs(); glyphIx++) {
+                if (drawIndividual) {
+                    for (int glyphIx = 0; glyphIx < gv.getNumGlyphs(); glyphIx++) {
                         final int gc = gv.getGlyphCode(glyphIx);
-                        if(gc!=0) {
+                        if (gc != 0) {
                             final Rectangle gr = gv.getGlyphPixelBounds(glyphIx, frc, x, y0);
-                            if(gr.width!=0 && gr.height!=0) {
+                            if (gr.width != 0 && gr.height != 0) {
                                 g2d.setColor(Color.GREEN);
                                 g2d.drawRect(gr.x, gr.y, gr.width, gr.height);
                             }
@@ -420,21 +434,23 @@ public final class GlyphManagerBI implements GlyphManager {
                     }
                 }
 
-                if(drawCombined) {
+                if (drawCombined) {
                     g2d.setColor(Color.MAGENTA);
-                    merged.forEach(r -> {g2d.drawRect(r.x, r.y, r.width, r.height);});
+                    merged.forEach(r -> {
+                        g2d.drawRect(r.x, r.y, r.width, r.height);
+                    });
                 }
 
-                if(drawRuns || drawIndividual || drawCombined) {
+                if (drawRuns || drawIndividual || drawCombined) {
                     g2d.setColor(Color.LIGHT_GRAY);
-                    g2d.drawRect(0, 0, drawing.getWidth()-1, drawing.getHeight()-1);
+                    g2d.drawRect(0, 0, drawing.getWidth() - 1, drawing.getHeight() - 1);
                 }
 
                 // Just like some fonts draw to the left of their start points (see above),
                 // some fonts draw after their advance.
                 // Figure that out here.
                 //
-                final int maxAdvance = (int)Math.max(layout.getAdvance(), pixelBounds.width);
+                final int maxAdvance = (int) Math.max(layout.getAdvance(), pixelBounds.width);
                 x += maxAdvance;
             }
         }
@@ -443,7 +459,7 @@ public final class GlyphManagerBI implements GlyphManager {
 
         // Add the background for this text.
         //
-        glyphStream.newLine((right-left)/(float)maxFontHeight);
+        glyphStream.newLine((right - left) / (float) maxFontHeight);
 
         // The glyphRectangles list contains the absolute positions of each glyph rectangle
         // in pixels as drawn above.
@@ -457,12 +473,12 @@ public final class GlyphManagerBI implements GlyphManager {
         //   ConnectionLabelBatcher and NodeLabelBatcher).
         // * cy centers the top and bottom vertically.
         //
-        final float centre = (left+right)/2f;
-        for(final GlyphRectangle gr : glyphRectangles) {
-            final float cx = (gr.rect.x-centre)/(float)maxFontHeight - 0.1f;
+        final float centre = (left + right) / 2f;
+        for (final GlyphRectangle gr : glyphRectangles) {
+            final float cx = (gr.rect.x - centre) / (float) maxFontHeight - 0.1f;
 //            final float cy = (gr.rect.y-top+((maxFontHeight-(bottom-top))/2f))/(float)maxFontHeight;
 //            final float cy = (2*gr.rect.y-top+maxFontHeight-bottom)/(2f*maxFontHeight);
-            final float cy = (gr.rect.y-(top+bottom)/2f)/(float)(maxFontHeight) + 0.5f;
+            final float cy = (gr.rect.y - (top + bottom) / 2f) / (float) (maxFontHeight) + 0.5f;
             glyphStream.addGlyph(gr.position, cx, cy);
         }
     }
@@ -499,16 +515,16 @@ public final class GlyphManagerBI implements GlyphManager {
 
     @Override
     public float getWidthScalingFactor() {
-        return textureBuffer.width/maxFontHeight;
+        return textureBuffer.width / maxFontHeight;
     }
 
     @Override
     public float getHeightScalingFactor() {
-        return textureBuffer.height/maxFontHeight;
+        return textureBuffer.height / maxFontHeight;
     }
 
     BufferedImage getTextureBuffer() {
-        return textureBuffer.get(textureBuffer.size()-1);
+        return textureBuffer.get(textureBuffer.size() - 1);
     }
 
     @Override
@@ -528,11 +544,11 @@ public final class GlyphManagerBI implements GlyphManager {
         // the rest of the labelling mechanism works as expected.
         //
         final int extra = 1;
-        final int size = maxFontHeight + extra*2;
+        final int size = maxFontHeight + extra * 2;
         final BufferedImage bg = new BufferedImage(size, size, DEFAULT_BUFFER_TYPE);
         final Graphics2D g2d = bg.createGraphics();
         final int intensity = (int) (alpha * 255);
-        g2d.setColor(new Color((intensity<<16) | (intensity<<8) | intensity));
+        g2d.setColor(new Color((intensity << 16) | (intensity << 8) | intensity));
         g2d.fillRect(0, 0, size, size);
         g2d.dispose();
 
@@ -548,6 +564,7 @@ public final class GlyphManagerBI implements GlyphManager {
     }
 
     private static class GlyphRectangle {
+
         final int position;
         final Rectangle rect;
         final int ascent;

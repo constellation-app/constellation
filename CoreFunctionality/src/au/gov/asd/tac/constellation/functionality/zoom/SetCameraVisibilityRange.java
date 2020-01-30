@@ -76,7 +76,6 @@ public final class SetCameraVisibilityRange extends SimpleEditPlugin {
         final float visibilityHigh = parameters.getFloatValue(VISIBILITY_HIGH_ID);
 
         // Get a copy of the graph's current camera.
-        //
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
         if (cameraAttribute != Graph.NOT_FOUND) {
             final Camera oldCamera = graph.getObjectValue(cameraAttribute, 0);

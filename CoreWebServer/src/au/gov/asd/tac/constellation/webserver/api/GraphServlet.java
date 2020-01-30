@@ -117,7 +117,6 @@ public class GraphServlet extends ConstellationApiServlet {
             case "/new":
                 // Open a new graph.
                 // Use the specified schema for the new graph, or the default if no schema was specified.
-                //
                 final String schemaParam = request.getParameter("schema");
                 GraphImpl.post_new(schemaParam);
 

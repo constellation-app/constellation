@@ -201,11 +201,11 @@ public class OverviewPanel extends Pane {
                 final Object datetimeAttributeDefault = graph.getAttributeDefaultValue(datetimeAttributeId);
                 final Object datetimeAttributeValue = graph.getObjectValue(datetimeAttributeId, transactionID);
 
-                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType) 
+                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType)
                         && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)) {
                     if ((selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) || !selectedOnly) {
                         long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
-                        
+
                         // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
                         if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
                             transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;

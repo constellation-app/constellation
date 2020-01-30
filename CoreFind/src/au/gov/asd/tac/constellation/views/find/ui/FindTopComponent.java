@@ -72,7 +72,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "FindTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/find/ui/find_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/find/resources/find-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

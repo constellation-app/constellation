@@ -23,7 +23,7 @@ import org.openide.util.NbBundle;
  * @author mimosa
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.blaze.DeSelectBlazesAction")
-@ActionRegistration(displayName = "#CTL_DeSelectBlazesAction", iconBase = "au/gov/asd/tac/constellation/functionality/blaze/blaze.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_DeSelectBlazesAction", iconBase = "au/gov/asd/tac/constellation/functionality/blaze/resources/blaze.png", surviveFocusChange = true)
 @NbBundle.Messages("CTL_DeSelectBlazesAction=Deselect Blazes")
 @ActionReference(path = "Menu/Selection", position = 460)
 public class DeSelectBlazesAction extends SimplePluginAction {
