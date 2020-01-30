@@ -65,11 +65,20 @@ public class AnalyticViewState {
     }
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
-        activeAnalyticQuestions.add(question);
-        for (SelectableAnalyticPlugin plugin : selectablePlugins) {
-            final List<SelectableAnalyticPlugin> pluginList = new ArrayList<>();
-            pluginList.add(plugin);
-            activeSelectablePlugins.add(pluginList);
+        if(!activeAnalyticQuestions.isEmpty()){
+            if(question != activeAnalyticQuestions.get(currentAnalyticQuestionIndex)){
+                // When that question isn't within the list, add it to the next index 
+                // and increment the Analytic Question Index.
+                activeAnalyticQuestions.add(currentAnalyticQuestionIndex + 1, question);
+                activeSelectablePlugins.get(currentAnalyticQuestionIndex + 1).addAll(selectablePlugins);
+                setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex + 1);
+            }else{
+                activeSelectablePlugins.get(currentAnalyticQuestionIndex).addAll(selectablePlugins);
+            }
+        }else{
+            // is empty
+            activeAnalyticQuestions.add(currentAnalyticQuestionIndex, question);
+            activeSelectablePlugins.add(currentAnalyticQuestionIndex, selectablePlugins);
         }
     }
 
@@ -83,10 +92,18 @@ public class AnalyticViewState {
         activeSelectablePlugins.clear();
     }
 
+    /**
+     * Check the currently selected Question index of plugins for other plugins 
+     * matching the selected category
+     * @param currentCategory the currently selected plugin category to remove
+     * from
+     */
     public void removePluginsMatchingCategory(String currentCategory) {
-        activeSelectablePlugins.removeIf(plugin -> (
-                !plugin.isEmpty() && plugin.get(0).getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
-            )
-        );
+        if(!activeSelectablePlugins.isEmpty()){
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
+                plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
+                )
+            );
+        }
     }
 }

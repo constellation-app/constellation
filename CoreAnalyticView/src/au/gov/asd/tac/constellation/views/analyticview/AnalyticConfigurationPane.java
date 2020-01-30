@@ -660,19 +660,20 @@ public class AnalyticConfigurationPane extends VBox {
                 graph.setObjectValue(stateAttributeId, 0, currentState);
             }
             
-            // get question only if one exists 
-            // NOTE: currently adds empty questions. This may be a feature that is implemented later
+            // Utilized for Question pane - TODO: When multiple tabs + saving of
+            // questions is supported, link this currentquestion variable with 
+            // the saved/loaded question
             analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null :
-                    currentState.getActiveAnalyticQuestions().get(0);
-            
-            for (List<SelectableAnalyticPlugin> selectedPluginList : currentState.getActiveSelectablePlugins()) {
-                // when not empty list, and when the categories match
-                if (!selectedPluginList.isEmpty() && currentCategory.equals(selectedPluginList.get(0).plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
-                    Platform.runLater(() -> {
-                        AnalyticConfigurationPane.setSuppressedFlag(true);
-                        selectedPluginList.get(0).setSelected(true);
-                        AnalyticConfigurationPane.setSuppressedFlag(false);
-                    });
+                    currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
+            if(!currentState.getActiveSelectablePlugins().isEmpty()){
+                for (SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
+                    if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
+                        Platform.runLater(() -> {
+                            AnalyticConfigurationPane.setSuppressedFlag(true);
+                            selectedPlugin.setSelected(true);
+                            AnalyticConfigurationPane.setSuppressedFlag(false);
+                        });
+                    }
                 }
             }
         }
