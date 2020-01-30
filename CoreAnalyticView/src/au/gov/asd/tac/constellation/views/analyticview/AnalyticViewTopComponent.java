@@ -85,10 +85,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            // TODO: recalculate the result using the current state when the graph changes
+            analyticViewPane.getConfigurationPane().saveState();
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            // TODO: listen for changes to the state, which describes current gui parameters
+            analyticViewPane.getConfigurationPane().saveState();
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
@@ -109,6 +109,16 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 prerequisiteAttributes.get(attribute).add(plugin);
             });
         });
+//        prerequisiteAttributes.forEach((attribute, plugins) -> {
+//            addAttributeValueChangeHandler(attribute, graph -> {
+//                plugins.forEach(plugin -> {
+//                    final PluginParameters updatedParameters = plugin.createParameters().copy();
+//                    plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
+//                    analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
+//                });
+//                analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
+//            });
+//        });
     }
 
     /**

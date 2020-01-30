@@ -89,6 +89,7 @@ public class AnalyticConfigurationPane extends VBox {
     private final Tab documentationTab;
     private WebView documentationView;
     
+    private static boolean stateChanged = false;
     private static boolean selectionSuppressed = false;
     private AnalyticQuestionDescription currentQuestion = null;
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
@@ -251,16 +252,15 @@ public class AnalyticConfigurationPane extends VBox {
                     }
                 }
             };
-
             return cell;
         });
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(!selectionSuppressed){
+            if (!selectionSuppressed) {
                 if (newValue != null) {
                     populateDocumentationPane(newValue);
                     populateParameterPane(newValue.getAllParameters());
                     // only update state when the categories are expanded
-                    if (categoryListPane.isExpanded()) {  
+                    if (categoryListPane.isExpanded()) {
                         updateState(true);
                     }
                 } else {
@@ -405,8 +405,28 @@ public class AnalyticConfigurationPane extends VBox {
      * @param pluginWasSelected true if the triggered update was from a plugin being selected
      */
     protected void updateState(boolean pluginWasSelected) {
+        stateChanged = true;
         PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, pluginWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
-     }
+    }
+    
+    /**
+     * Saves the state of the graph by fetching all currently selected plugins 
+     * and updating the state only when the state has been changed
+     */
+    protected void saveState() {
+        if (stateChanged) {
+            stateChanged = false;
+            if (categoryListPane.isExpanded()) {
+                final List<SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
+                pluginList.getItems().forEach((selectablePlugin) -> {
+                    if (selectablePlugin.isSelected()) {
+                        selectedPlugins.add(selectablePlugin);
+                    }
+                });
+                PluginExecution.withPlugin(new AnalyticViewStateWriter(currentQuestion, selectedPlugins)).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
+        }
+    }
 
     private void createGlobalParameters() {
         globalAnalyticParameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
@@ -588,7 +608,7 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Write the given ScatterPlotState to the active graph.
+     * Write the given AnalyticViewState to the active graph.
      */
     private static final class AnalyticViewStateWriter extends SimpleEditPlugin {
 
@@ -657,7 +677,7 @@ public class AnalyticConfigurationPane extends VBox {
                 if (!checkedPlugins.isEmpty()) {
                     currentState.addAnalyticQuestion(analyticConfigurationPane.currentQuestion, checkedPlugins);
                 }
-                graph.setObjectValue(stateAttributeId, 0, currentState);
+                analyticConfigurationPane.saveState();
             }
             
             // Utilized for Question pane - TODO: When multiple tabs + saving of
@@ -665,7 +685,7 @@ public class AnalyticConfigurationPane extends VBox {
             // the saved/loaded question
             analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null :
                     currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
-            if(!currentState.getActiveSelectablePlugins().isEmpty()){
+            if (!currentState.getActiveSelectablePlugins().isEmpty()) {
                 for (SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
                     if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
                         Platform.runLater(() -> {

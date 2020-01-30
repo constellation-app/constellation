@@ -65,18 +65,15 @@ public class AnalyticViewState {
     }
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
-        if(!activeAnalyticQuestions.isEmpty()){
-            if(question != activeAnalyticQuestions.get(currentAnalyticQuestionIndex)){
-                // When that question isn't within the list, add it to the next index 
-                // and increment the Analytic Question Index.
-                activeAnalyticQuestions.add(currentAnalyticQuestionIndex + 1, question);
-                activeSelectablePlugins.get(currentAnalyticQuestionIndex + 1).addAll(selectablePlugins);
-                setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex + 1);
-            }else{
-                activeSelectablePlugins.get(currentAnalyticQuestionIndex).addAll(selectablePlugins);
-            }
-        }else{
-            // is empty
+        if (activeAnalyticQuestions.contains(question)) {
+            setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
+            selectablePlugins.forEach((plugin) -> {
+                if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
+                    activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
+                }
+            });
+        } else {
+            // does not contain question
             activeAnalyticQuestions.add(currentAnalyticQuestionIndex, question);
             activeSelectablePlugins.add(currentAnalyticQuestionIndex, selectablePlugins);
         }
@@ -99,7 +96,7 @@ public class AnalyticViewState {
      * from
      */
     public void removePluginsMatchingCategory(String currentCategory) {
-        if(!activeSelectablePlugins.isEmpty()){
+        if (!activeSelectablePlugins.isEmpty()) {
             activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
                 plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
                 )
