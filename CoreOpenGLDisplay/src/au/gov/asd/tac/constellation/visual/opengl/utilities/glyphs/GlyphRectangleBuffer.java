@@ -114,6 +114,11 @@ final class GlyphRectangleBuffer {
         rectBuffers = new ArrayList<>();
         memory = new HashMap<>();
 
+        // Start with room for an arbitrary number of rectangles
+        // so we don't have to grow the array too quickly.
+        //
+        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
+
         reset();
     }
 
@@ -260,11 +265,6 @@ final class GlyphRectangleBuffer {
         x = PADDING;
         y = PADDING;
         maxHeight = 0;
-
-        // Start with room for an arbitrary number of rectangles
-        // so we don't have to grow the array too quickly.
-        //
-        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
     }
 
     private void newRectLine() {
