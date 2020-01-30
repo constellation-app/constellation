@@ -1,6 +1,30 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-01-28 Data Access View
+<p>A bug has been fixed with the Data Access View which caused the application to lock up when it was opened.</p>
+
+== 2020-01-22 Map View
+<p>A stability improvement has been made to the Map View when you resize the window.</p>
+
+== 2020-01-20 Data Access View
+<p>A UX improvement has been made to the Data Access View which will enable the "Go" button when you have plugins selected. When you press "Go", a graph will be created if there isn't any open.</p>
+
+== 2020-01-20 Timeline View
+<p>A bug has been fixed in the timeline view when the timezone was changed and a graph was closed.</p>
+
+== 2020-01-15 New Flag Icons
+<p>We have updated the flag icons we use which are more detailed and of better quality.</p>
+
+== 2020-01-13 Hierachical Clustering
+<p>A bug with the hierachical clustering not reverting the graph after the pane was closed has been fixed.</p>
+
+== 2020-01-13 KTruss Clustering
+<p>A bug with the KTruss clustering not reverting the graph after the pane was closed has been fixed.</p>
+
+== 2020-01-04 Libraries Upgraded
+<p>We've upgraded to newer versions of open source libraries we use which should improve performance and stability.</p>
+
 == 2019-07-30 Data Access View Plugin Search
 <p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
 
