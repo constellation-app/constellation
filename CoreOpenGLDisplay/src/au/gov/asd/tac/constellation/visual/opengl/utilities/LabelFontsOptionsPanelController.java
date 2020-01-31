@@ -71,7 +71,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         }
 
         // TODO: Look for UNIX fonts.
-        
+
         Arrays.sort(availableFonts);
         labelFontsOptionsPanel.setAvailableFonts(availableFonts);
 
@@ -118,7 +118,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
                 prefs.putBoolean(LabelFontsPreferenceKeys.USE_DEFAULTS, labelFontsOptionsPanel.getUseDefaultSettings());
                 prefs.putBoolean(LabelFontsPreferenceKeys.USE_MULTI_FONTS, labelFontsOptionsPanel.getUseMultiFonts());
                 prefs.put(LabelFontsPreferenceKeys.FONT_LIST, labelFontsOptionsPanel.getFontList());
-                
+
                 // TODO: store modified settings
                 // Example:
                 // Preferences.userNodeForPackage(LabelFontsPanel.class).putBoolean("someFlag", someCheckBox.isSelected());
@@ -178,6 +178,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
 
     @Override
     public HelpCtx getHelpCtx() {
-        return new HelpCtx("au.gov.asd.tac.constellation.functionality.labelfonts");
+//        return new HelpCtx("au.gov.asd.tac.constellation.functionality.labelfonts");
+        return new HelpCtx("au.gov.asd.tac.constellation.visual.opengl.labelfonts");
     }
 }

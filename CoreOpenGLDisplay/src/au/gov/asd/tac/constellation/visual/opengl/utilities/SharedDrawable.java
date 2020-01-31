@@ -110,7 +110,7 @@ public final class SharedDrawable {
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
             final boolean useMultiFonts = LabelFontsPreferenceKeys.useMultiFontLabels();
             if(useMultiFonts) {
-                glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo(), 64, GlyphManagerBI.DEFAULT_TEXTURE_BUFFER_SIZE);
+                glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo());
             } else {
                 glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
             }
