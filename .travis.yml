@@ -18,12 +18,12 @@ jobs:
     script:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
-      - sonar-scanner -Dsonar.projectKey=constellation-app_constellation
+      - sonar-scanner -Dsonar.login=${SONAR_TOKEN} -Dsonar.projectKey=constellation-app_constellation
     addons:
       sonarcloud:
         organization: "constellation-app"
         token:
-          secure: "kCzs9K0FE9NELuKypbf+08d4gXbY0sXeWvIxXbp6wEHhW58I0otDCoLv6saulsaGbNJy30vDLCR2/JX3nO47jbMXV/peL/VPz8h1lpiQJYRMBqC1gVrorjqjZVL6QjcQO5+vipL6+Qog/BrKXPp23fXMfjkzFO9H1BaHc+aZxd9Zz3hLKdYLSeDRRBARDtZ7jaIO+3332N8nKfg/px/TPMOdbo9dfFwjPnej9hGtfaUqL9S3WbznQKq0MgiDs6km+w6ee+pcWYCDhFvWSYFZNRNnOSsQEiG/RUt2XJP5bg//3mc46U5TR3q7awTZjwzkzZDkrT1b7XfKnUbmGk7KNqkbQ+MRiMTc0U0zSToWhWFhajZikG/fLbpG7VaCir5shSbh+ZJ10yjOaEelCyajJvM/PwdowpHzZ7Jw8iSY4mkTTqSRm9eP848yC0kC0F9t7sGmXG7DTAND/xm1LYb7TqkRWK0bFiVLPTsmozU7CYq7iKSem60MZ/UfdjyG4P7rYfS+SM58qJbvIkjpQ/MDeK9pMB4vwad0bc2fRfYgZhbfeUpUg++CoV73E/Z2Dzb0CPSgnzPQRBsrZr6p6kDNcaTJqLGbewMmcFHAe24RMX3ktT0wsRs7FDZg2EdYX9xzxD/lUGwtrjURN8a49pQdQ94U5h+D+AS4+F9ZI7det00="
+          secure: $SONAR_TOKEN
 
   - stage: Build zip
     dist: trusty
