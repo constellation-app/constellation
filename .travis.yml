@@ -18,7 +18,7 @@ jobs:
     script:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
-      - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=constellation-app_constellation
+      - sonar-scanner -Dsonar.projectKey=constellation-app_constellation
     addons:
       sonarcloud:
         organization: "constellation-app"
