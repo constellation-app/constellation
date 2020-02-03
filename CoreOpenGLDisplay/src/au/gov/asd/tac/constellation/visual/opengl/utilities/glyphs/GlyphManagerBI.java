@@ -112,16 +112,23 @@ public final class GlyphManagerBI implements GlyphManager {
         }
     };
 
-    public GlyphManagerBI(final FontInfo[] fontsInfo, final int fontSize, final int textureSize) {
-        this(fontsInfo, fontSize, textureSize, DEFAULT_BUFFER_TYPE);
+    public GlyphManagerBI(final FontInfo[] fontsInfo) {
+        this(fontsInfo, DEFAULT_TEXTURE_BUFFER_SIZE, DEFAULT_BUFFER_TYPE);
     }
 
-    public GlyphManagerBI(final FontInfo[] fontsInfo, final int fontSize, final int textureBufferSize, final int bufferType) {
+    /**
+     *
+     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
+     * @param textureBufferSize The size of the texture buffer.
+     * @param bufferType For normal font rendering in CONSTELLATION, use BufferedImage.TYPE_BYTE_GRAY.
+     *      To see colors in the standalone renderer, use BufferedImage.TYPE_INT_ARGB.
+     */
+    public GlyphManagerBI(final FontInfo[] fontsInfo, final int textureBufferSize, final int bufferType) {
 
         this.bufferType = bufferType;
         textureBuffer = new GlyphRectangleBuffer(textureBufferSize, textureBufferSize, bufferType);
 
-        setFonts(fontsInfo, fontSize);
+        setFonts(fontsInfo);
 
         // Make the drawing buffer height twice the max font height.
         // Draw text at the mid y point.
@@ -187,10 +194,9 @@ public final class GlyphManagerBI implements GlyphManager {
      * fonts need special treatment. Names ending in ".otf" are treated as
      * filenames.
      *
-     * @param fontsInfo
-     * @param fontSize The font size.
+     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
      */
-    public void setFonts(final FontInfo[] fontsInfo, final int fontSize) {
+    public void setFonts(final FontInfo[] fontsInfo) {
         // If the fontName array does not contain the default font, add it to the end.
         //
         final Optional<FontInfo> hasDefault = Arrays.stream(fontsInfo).filter(fi -> fi.isDefault(DEFAULT_FONT_NAME)).findFirst();
