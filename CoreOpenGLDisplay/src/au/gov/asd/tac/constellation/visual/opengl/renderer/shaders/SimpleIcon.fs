@@ -2,7 +2,6 @@
 //
 // If drawHitTest is false, draw a texture using pointColor[3].
 // If drawHitTest is true, convert pointColor[2] to unique color to be used for hit testing.
-//
 
 #version 330 core
 

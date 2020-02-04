@@ -73,7 +73,6 @@ public class FileListener implements Runnable {
         if (Files.isDirectory(restPath)) {
             // Delete any existing files in the REST directory.
             // We don't want to execute any left over commands from a previous run.
-            //
             final String[] files = restPath.toFile().list();
             for (final String f : files) {
                 final Path p = restPath.resolve(f);
@@ -111,7 +110,6 @@ public class FileListener implements Runnable {
     @Override
     public void run() {
         // Download the Python REST client if enabled.
-        //
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
         if (pythonRestClientDownload) {
@@ -126,7 +124,6 @@ public class FileListener implements Runnable {
         // If the listener doesn't find any files, the sleep time will slowly get longer up to MAX_POLL_SLEEP,
         // so the filesystem doesn't get pounded as much.
         // When a request is found, the poll sleep time is reset to MIN_POLL_SLEEP.
-        //
         long pollSleep = MIN_POLL_SLEEP;
         try {
             while (running) {
@@ -134,8 +131,7 @@ public class FileListener implements Runnable {
                 for (final String f : files) {
                     if (f.equals(REQUEST_JSON)) {
                         // If any other files are required, write this file last, so the other files are already present.
-                        //
-//                        LOGGER.info(String.format("Found REST file %s", f));
+                        LOGGER.info(String.format("Found REST file %s", f));
                         final Path p = restPath.resolve(f);
                         JsonNode json = null;
                         try (final InputStream in = new FileInputStream(p.toFile())) {
@@ -163,7 +159,6 @@ public class FileListener implements Runnable {
                             // }
                             //
                             // If content (JSON or otherwise) is required, it gets delivered in a separate CONTENT_DATA file.
-                            //
                             if (json.hasNonNull("verb") && json.hasNonNull("endpoint") && json.hasNonNull("path")) {
                                 final String verb = json.get("verb").textValue();
                                 final String endpoint = json.get("endpoint").textValue();
@@ -172,7 +167,6 @@ public class FileListener implements Runnable {
                                 final JsonNode args = json.get("args");
                                 try {
                                     // Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
-                                    //
                                     final String msg = String.format("File REST API: %s %s %s", verb, endpoint, path);
                                     StatusDisplayer.getDefault().setStatusText(msg);
 
@@ -191,13 +185,11 @@ public class FileListener implements Runnable {
 
                         // Reset the poll sleep after a successful request,
                         // since we're obviously being used.
-                        //
                         pollSleep = MIN_POLL_SLEEP;
                     }
                 }
 
                 // Slowly sneak the poll sleep time up to a maximum.
-                //
                 pollSleep = Math.min(pollSleep + 1, MAX_POLL_SLEEP);
                 Thread.sleep(pollSleep);
             }
@@ -217,14 +209,20 @@ public class FileListener implements Runnable {
      * @throws Exception because of AutoCloseable
      */
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
+        final String graphId = getString(args, "graph_id");
         switch (endpoint) {
             case "/v1/graph":
                 switch (verb) {
                     case "get":
                         switch (path) {
+                            case "getattrs":
+                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                    GraphImpl.get_attributes(graphId, out);
+                                }
+                                break;
                             case "get":
                                 try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_get(out);
+                                    GraphImpl.get_get(graphId, out);
                                 }
                                 break;
                             case "image":
@@ -250,7 +248,7 @@ public class FileListener implements Runnable {
                         switch (path) {
                             case "set":
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    GraphImpl.post_set(in.in);
+                                    GraphImpl.post_set(graphId, in.in);
                                 }
                                 break;
                             case "new":
@@ -272,9 +270,9 @@ public class FileListener implements Runnable {
                     case "put":
                         switch (path) {
                             case "current":
-                                final String graphId = getString(args, "id");
-                                if (graphId != null) {
-                                    GraphImpl.put_current(graphId);
+                                final String gid = getString(args, "id");
+                                if (gid != null) {
+                                    GraphImpl.put_current(gid);
                                 } else {
                                     throw new EndpointException("Must specify id");
                                 }
@@ -338,7 +336,7 @@ public class FileListener implements Runnable {
                                 }
 
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    PluginImpl.post_run(pluginName, in.in);
+                                    PluginImpl.post_run(graphId, pluginName, in.in);
                                 }
                                 break;
                             default:
@@ -370,7 +368,7 @@ public class FileListener implements Runnable {
                                 }
 
                                 try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    RecordStoreImpl.get_get(vx, tx, selected, attrs, out);
+                                    RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
                                 }
                                 break;
                             default:
@@ -390,7 +388,7 @@ public class FileListener implements Runnable {
                                 final boolean resetView = resetViewParam == null ? true : resetViewParam;
 
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    RecordStoreImpl.post_add(completeWithSchema, arrange, resetView, in.in);
+                                    RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
                                 }
                                 break;
                             default:

@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MapExporter;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
@@ -29,16 +28,13 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.util.lookup.ServiceProviders;
 
 /**
  * Export a graph to a GeoPackage file.
  *
  * @author cygnus_x-1
  */
-@ServiceProviders({
-    @ServiceProvider(service = Plugin.class),
-    @ServiceProvider(service = MapExporter.class)})
+@ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
 @NbBundle.Messages("ExportToGeoPackagePlugin=Export to GeoPackage")
 public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
@@ -57,15 +53,5 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
     @Override
     protected boolean includeSpatialReference() {
         return true;
-    }
-
-    @Override
-    public String getDisplayName() {
-        return "GeoPackage";
-    }
-
-    @Override
-    public String getPluginReference() {
-        return this.getClass().getName();
     }
 }

@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -34,15 +34,11 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("NullPlugin=Null Plugin")
-public class NullPlugin extends SimpleEditPlugin {
+public class NullPlugin extends SimpleReadPlugin {
 
     @Override
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        // DO NOTHING
+    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+        // do nothing
     }
 
-    @Override
-    public boolean isSignificant() {
-        return false;
-    }
 }

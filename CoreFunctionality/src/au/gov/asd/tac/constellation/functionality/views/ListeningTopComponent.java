@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.views;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -88,8 +88,9 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
 
     @Override
     public final void componentOpened() {
+        super.componentOpened();
         LOGGER.finer("ComponentOpened");
-        preferenceMonitors.keySet().forEach(preference -> CoreUtilities.addPreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.addPreferenceChangeListener(preference, this));
         GraphManager.getDefault().addGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
         handleComponentOpened();
@@ -97,8 +98,9 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
 
     @Override
     public final void componentClosed() {
+        super.componentClosed();
         LOGGER.finer("ComponentClosed");
-        preferenceMonitors.keySet().forEach(preference -> CoreUtilities.removePreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.removePreferenceChangeListener(preference, this));
         GraphManager.getDefault().removeGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(null);
         handleComponentClosed();

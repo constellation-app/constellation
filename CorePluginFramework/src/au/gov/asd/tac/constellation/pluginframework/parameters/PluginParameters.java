@@ -276,7 +276,7 @@ public class PluginParameters implements PluginParameterListener {
         }
 
         parameters.getParameters().entrySet().forEach(parameter -> {
-            if (!this.getParameters().containsKey(parameter.getKey())) {
+            if (!this.hasParameter(parameter.getKey())) {
                 this.addParameter(parameter.getValue());
             }
         });
@@ -314,6 +314,16 @@ public class PluginParameters implements PluginParameterListener {
      */
     public final Map<String, PluginParameter<?>> getParameters() {
         return uParameters;
+    }
+
+    /**
+     * Check if the specified parameter exists
+     *
+     * @param id The parameter name.
+     * @return True if the parameter exists, otherwise false.
+     */
+    public final boolean hasParameter(final String id) {
+        return uParameters.containsKey(id);
     }
 
     /**

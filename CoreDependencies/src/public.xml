@@ -8,7 +8,5 @@ remove and re-add the Core Dependencies module from dependent modules.
 -->
 
 <public>
-    
     <package>*</package>
-    
 </public>

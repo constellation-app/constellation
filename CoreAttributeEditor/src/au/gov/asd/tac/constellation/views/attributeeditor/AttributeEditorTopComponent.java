@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
@@ -176,8 +176,8 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
-        CoreUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
-        CoreUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.addPreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override
@@ -185,8 +185,8 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
 
-        CoreUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
-        CoreUtilities.removePreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.removePreferenceChangeListener(prefs.absolutePath(), this);
     }
 
     void writeProperties(java.util.Properties p) {

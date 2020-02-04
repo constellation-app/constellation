@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.graph.visual.icons.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.labels.VertexGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.labels.TransactionGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.linestyle.LineStyleAttributeDescription;
+import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
 import au.gov.asd.tac.constellation.visual.camera.Camera;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import au.gov.asd.tac.constellation.visual.decorators.Decorators;
@@ -50,6 +51,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -75,6 +78,8 @@ public class VisualConcept extends SchemaConcept {
 
     public static class GraphAttribute {
 
+        static final Preferences PREFERENCES = NbPreferences.forModule(GraphPreferenceKeys.class);
+
         public static final SchemaAttribute BACKGROUND_COLOR = new SchemaAttribute.Builder(GraphElementType.GRAPH, ColorAttributeDescription.ATTRIBUTE_NAME, "background_color")
                 .setDescription("The background color of the graph")
                 .setDefaultValue(ConstellationColor.NIGHT_SKY)
@@ -82,12 +87,12 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute BLAZE_OPACITY = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_opacity")
                 .setDescription("The opacity of blazes on the graph")
-                .setDefaultValue(1.0)
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT) / 100f)
                 .create()
                 .build();
         public static final SchemaAttribute BLAZE_SIZE = new SchemaAttribute.Builder(GraphElementType.GRAPH, FloatAttributeDescription.ATTRIBUTE_NAME, "blaze_size")
                 .setDescription("The size of blazes on the graph")
-                .setDefaultValue(0.3)
+                .setDefaultValue(PREFERENCES.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT) / 100f)
                 .create()
                 .build();
         public static final SchemaAttribute BOTTOM_LABELS = new SchemaAttribute.Builder(GraphElementType.GRAPH, VertexGraphLabelsAttributeDescription.ATTRIBUTE_NAME, "node_labels_bottom")

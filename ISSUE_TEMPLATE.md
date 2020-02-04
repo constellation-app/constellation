@@ -16,9 +16,9 @@ https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.m
 * [ ] Put an X between the brackets on this line if you have done all of the following:
     * Running the latest version of Constellation
 	* Attached the ***Support Package*** via `Help` > `Support Package`
-    * Checked the FAQs: https://github.com/constellation-app/constellation/faq
+    * Checked the FAQs: https://github.com/constellation-app/constellation/wiki/FAQ
     * Checked that your issue isn't already filed: https://github.com/constellation-app/constellation/issues
-    * Checked that there is not already a module that provides the described functionality: https://github.com/constellation-app/constellation/repositories-catalog
+    * Checked that there is not already a module that provides the described functionality: https://github.com/constellation-app/constellation/wiki/Catalogue-of-Repositories
 
 ### Description
 

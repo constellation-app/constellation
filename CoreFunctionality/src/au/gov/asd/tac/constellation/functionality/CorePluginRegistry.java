@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.functionality.admin.DevOpsNotificationPlugin;
 import au.gov.asd.tac.constellation.functionality.autosave.AutosaveGraphPlugin;
 import au.gov.asd.tac.constellation.functionality.blaze.AddBlazePlugin;
 import au.gov.asd.tac.constellation.functionality.blaze.AddCustomBlazePlugin;
@@ -71,6 +72,8 @@ import au.gov.asd.tac.constellation.functionality.select.structure.SelectSinksPl
 import au.gov.asd.tac.constellation.functionality.select.structure.SelectSourcesPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.PreviousViewPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ResetViewPlugin;
+import au.gov.asd.tac.constellation.functionality.zoom.RotateCameraPlugin;
+import au.gov.asd.tac.constellation.functionality.zoom.SetCameraVisibilityRange;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToSelectionPlugin;
 import au.gov.asd.tac.constellation.functionality.zoom.ZoomToVerticesPlugin;
 
@@ -96,9 +99,11 @@ public final class CorePluginRegistry {
     public static final String CUT = CutToClipboardPlugin.class.getName();
     public static final String DELETE_SELECTION = DeleteSelectionPlugin.class.getName();
     public static final String DESELECT_ALL = DeselectAllPlugin.class.getName();
+    public static final String DESELECT_BLAZES = DeSelectBlazesPlugin.class.getName();
     public static final String DESELECT_TRANSACTIONS = DeselectTransactionsPlugin.class.getName();
     public static final String DESELECT_VERTICES = DeselectVerticesPlugin.class.getName();
     public static final String DESTROY_ALL_COMPOSITES = DestroyAllCompositesPlugin.class.getName();
+    public static final String DEV_OPS_NOTIFICATION = DevOpsNotificationPlugin.class.getName();
     public static final String DIM_ALL = DimAllPlugin.class.getName();
     public static final String DIM_SELECTED = DimSelectedPlugin.class.getName();
     public static final String DIM_UNSELECTED = DimUnselectedPlugin.class.getName();
@@ -113,11 +118,11 @@ public final class CorePluginRegistry {
     public static final String PREVIOUS_VIEW = PreviousViewPlugin.class.getName();
     public static final String REMOVE_BLAZE = RemoveBlazePlugin.class.getName();
     public static final String RESET = ResetViewPlugin.class.getName();
+    public static final String ROTATE_GRAPH = RotateCameraPlugin.class.getName();
     public static final String SAVE_GRAPH = SaveGraphPlugin.class.getName();
     public static final String SELECT_ALL = SelectAllPlugin.class.getName();
     public static final String SELECT_BACKBONE = SelectBackbonePlugin.class.getName();
     public static final String SELECT_BLAZES = SelectBlazesPlugin.class.getName();
-    public static final String DESELECT_BLAZES = DeSelectBlazesPlugin.class.getName();
     public static final String SELECT_DIMMED = SelectDimmedPlugin.class.getName();
     public static final String SELECT_INDUCED_HALF_HOP = SelectHalfHopInducedSubgraphPlugin.class.getName();
     public static final String SELECT_INDUCED_ONE_HOP = SelectOneHopInducedSubgraphPlugin.class.getName();
@@ -128,6 +133,7 @@ public final class CorePluginRegistry {
     public static final String SELECT_SOURCES = SelectSourcesPlugin.class.getName();
     public static final String SELECT_UNDIMMED = SelectUndimmedPlugin.class.getName();
     public static final String SEND_TO_EMAIL_CLIENT = SendToEmailClientPlugin.class.getName();
+    public static final String SET_CAMERA_VISIBILITY_RANGE = SetCameraVisibilityRange.class.getName();
     public static final String SET_CONNECTION_MODE = SetConnectionModePlugin.class.getName();
     public static final String SET_DRAW_FLAG = SetDrawFlagPlugin.class.getName();
     public static final String SET_VISIBLE_ABOVE_THRESHOLD = SetVisibleAboveThresholdPlugin.class.getName();

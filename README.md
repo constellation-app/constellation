@@ -32,28 +32,42 @@ There is currently no support for Mac and the feature request is tracked by [Iss
 
 To build Constellation from source code do the following:
 [For Netbeans 11 with JDK 11 with JFX 11]
-* Download NetBeans 11 (https://www.apache.org/dyn/closer.cgi/incubator/netbeans/incubating-netbeans/incubating-11.0/incubating-netbeans-11.0-bin.zip)
-* Download the Open JDK 11 with JFX 11 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.31.11-ca-fx-jdk11.0.3-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.31.11-ca-fx-jdk11.0.3-linux_x64.tar.gz)
+* Download NetBeans 11 (http://netbeans.apache.org/download/nb112/nb112.html)
+* Download the Open JDK 11 with JFX 11 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.35.15-ca-fx-jre11.0.5-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.35.15-ca-fx-jdk11.0.5-linux_x64.tar.gz)
 * Update the netbeans.conf file's netbeans_jdkhome entry (The file can be found under <C:\incubating-netbeans-11.0-bin\netbeans\etc> folder)
 * Clone this repository
+* Update the `netbeans_jdkhome` variable in `netbeans.conf`. Hint: This file may be located at `C:\Program Files\NetBeans 8.2\etc`.
 * Open the Constellation_Core module suite from NetBeans
-* Important Files -> build.xml -> Right click -> Update dependencies and clean build
-* Right click -> Run
+* In the Projects view, expand `Important Files` > `Build Script` > Right click > `Update dependencies and clean build`
+* Right click > `Run`
 
 ## Package Constellation
 
 To package Constellation in a zip bundle do the following:
 
-* In NetBeans, expand Constellation_Core -> Important Files
-* Right click on Build Script and run the build-zip target
+* In NetBeans, expand `Constellation_Core` > `Important Files`
+* Right click on `Build Script` and run the `build-zip-with-windows-jre` or `build-zip-with-linux-jre` target
 
-This will create a dist/constellation.zip file. It does not contain the JRE as 
-that depends on the platform you wish to run it on.
+The packaged file should be available from the `dist` directory.
 
-The JRE location Constellation looks for is defined in `etc/constellation.conf`.
-For example, if you wanted to package a JRE in the zip bundle, copy the jre into 
-the same folder level as bin and update the `jdkhome` variable to the name of 
-the JRE folder.
+## Contributing to Constellation
+
+For more information please see the [contributing guide](CONTRIBUTING.md).
+
+## Documentation
+
+* Constellation 101 Slides _(coming soon)_
+* Overview Video _(coming later)_
+* [Quick Start Guide](docs/Constellation_Quick_Start_Guide.pdf)
+* User Guide _(coming later)_
+* Built in documentation to Constellation exists
+
+## Training
+
+* Basics (Buttonology) _(coming later)_
+* Social Network Analysis _(coming later)_
+* [Developer Guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf)
+* [Example Module Template](https://github.com/constellation-app/constellation-module-example)
 
 ## Common Troubleshooting Checks
 
@@ -66,11 +80,6 @@ the JRE folder.
 
 * Click on `Help` > `JOGL Version` to see the graphics card capabilities of your machine.
 * Click on `Help` > `Show Logs` to view Constellation log information.
-
-
-## Contributing to Constellation
-
-For more information please see the [contributing guide](CONTRIBUTING.md).
 
 ## Acknowledgments
 

@@ -120,12 +120,13 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
                     types.sort(String::compareTo);
                 }
             }
-
+            transactionType.suppressEvent(true, new ArrayList());
             SingleChoiceParameterType.setOptions(transactionType, types);
-            // TODO: if you set the choice the plugin is enabled, so we can't do this
-            //        if (types.contains("Correlation")) {
-            //            SingleChoiceParameterType.setChoice(transactionType, "Correlation");
-            //        }
+
+            if (types.contains("Correlation")) {
+                SingleChoiceParameterType.setChoice(transactionType, "Correlation");
+            }
+            transactionType.suppressEvent(false, new ArrayList());
         }
     }
 

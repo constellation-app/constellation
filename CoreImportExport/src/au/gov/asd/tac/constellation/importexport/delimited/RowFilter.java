@@ -58,7 +58,7 @@ public class RowFilter {
 
     public RowFilter() {
         manager = new ScriptEngineManager();
-        engine = manager.getEngineByName("groovy");
+        engine = manager.getEngineByName("python");
         bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
         script = null;
     }

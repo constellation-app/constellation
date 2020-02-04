@@ -103,13 +103,13 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
     public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new JFileChooser().getFileSystemView().getDefaultDirectory().getAbsolutePath();
-    
-     /**
+
+    /**
      * Remember Save As location.
      */
     public static final String REMEMBER_SAVE_LOCATION = "rememberSaveLocation";
     public static final boolean REMEMBER_SAVE_LOCATION_DEFAULT = true;
-    
+
     /**
      * File Save location.
      */

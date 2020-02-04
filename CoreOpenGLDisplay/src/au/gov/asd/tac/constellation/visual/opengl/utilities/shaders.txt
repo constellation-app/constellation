@@ -2,13 +2,10 @@
 //
 // For applications, these shaders are pretty much irrelevant.
 //
-
-//
 // Identity Shader (SHADER_IDENTITY)
 // This shader does no transformations at all, and uses the current
 // glColor value for fragments.
 // It will shade between vertices.
-//
 SHADER_IDENTITY_VS =
 #version 330 core
 in vec4 vVertex;
@@ -29,9 +26,8 @@ void main(void)
 
 //
 // Flat Shader (SHADER_FLAT)
-// This shader applies the given model view matrix to the vertices, 
+// This shader applies the given model view matrix to the vertices,
 // and uses a uniform color value.
-//
 SHADER_FLAT_VS =
 #version 330 core
 uniform mat4 mvpMatrix;
@@ -51,10 +47,7 @@ void main(void)
     outColor = vColor;
 }
 
-//
-// SHADER_POINT_LIGHT_DIFF
 // Point light, diffuse lighting only
-//
 SHADER_POINT_LIGHT_DIFF_VS =
 #version 330 core
 uniform mat4 mvMatrix;
@@ -94,9 +87,7 @@ void main(void)
     outColor = vFragColor;
 }
 
-//
 // Point light (Diffuse only), with texture (modulated)
-//
 SHADER_TEXTURE_POINT_LIGHT_DIFF_VS =
 #version 330 core
 uniform mat4 mvMatrix;
@@ -138,7 +129,7 @@ out vec4 outColor;
 void main(void)
 {
 //    gl_FragColor = vFragColor * texture2D(textureUnit0, vTex);
-    outColor = vFragColor * texture2D(textureUnit0, vTex);
+    outColor = vFragColor * texture(textureUnit0, vTex);
 }
 
 =

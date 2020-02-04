@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -488,12 +488,12 @@ public final class TableViewTopComponent extends TopComponent implements Propert
         resultChanged(null);
 
         setTableFont();
-        CoreUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override
     public void componentClosed() {
-        CoreUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
         result.removeLookupListener(this);
         setNode(null);
     }

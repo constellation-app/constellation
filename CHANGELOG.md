@@ -1,9 +1,30 @@
 # CONSTELLATION Changes
 
+## 2019-12-01 Changes in December 2019
+* Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
+* Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.
+* Renamed ArcgisMap Provider to EsriMapProvider.
+* Updated EsriMapProvider to support both regular tile-based services, as well as image export. This can be specified by overriding the new getMapServerType method.
+
+## 2019-11-01 Changes in November 2019
+* Remove deprecated jai libraries.
+
+## 2019-10-01 Changes in October 2019
+* Added `DevOpsNotificationPlugin` to Core Functionality to track messages from plugins for developers and administrators attention. This is only going to be useful if you have setup a `ConstellationLogger` that sends information to a database or elastic search.
+* Fixed a bug with the Restful service caused by multiple servlet libraries used that created a clash.
+
 ## 2019-08-01 Changes in August 2019
-* Added BrandingUtilities to Core Utilities to hold the application name "Constellation"
-    * You can pass `constellation.environment` to set the version of Constellation which will appear in the title. This is useful if you have a "Development", "QA" and "Production" version for instance.
-* Fixed a Null Pointer Exception when selecting Circle arrangements
+* Added BrandingUtilities to Core Utilities to maintain the application name "Constellation".
+    * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.
+* Added PluginParameters.hasParameter() to the Core Plugin Framework module as a convenient way to check if a parameter exists.
+* Fixed a Null Pointer Exception when selecting Circle arrangements.
+* Fixed the GitHub url used by Help -> Submit a ticket.
+* Removed several unused dependencies, including JOGL, JTS, OpenCSV, Trove4j, JScience, and XML-APIs.
+* Renamed ConstellationLogger.ApplicationStart to ConstellationLogger.ApplicationStarted, ConstellationLogger.ApplicationStop to ConstellationLogger.ApplicationStopped, ConstellationLogger.PluginStart to ConstellationLogger.PluginStarted and ConstellationLogger.PluginStop to ConstellationLogger.PluginStopped.
+* Updated several dependencies to the latest versions, including Geotools, Jetty, Apache Commons, Jackson, RSyntaxArea, Google Guava, Apache POI, EJML, Processing, Jython, and SwingX.
+* Updated ConstellationLogger with new methods viewStarted, viewStopped and viewInfo to support logging of Views.
+* Updated DefaultConstellationLogger with a VERBOSE flag to switch between no-op and logging to standard out.
+* Updated AbstractTopComponent to log when the view is opened, closed, showing, hidden, activated and deactivated.
 
 ## 2019-06-01 Changes in June 2019
 * Added a Content.URL attribute to represent a URL link in the ContentConcept.

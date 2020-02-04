@@ -164,7 +164,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
                         dataSourceParameters.startParameterLoading();
                         perPluginParamMap.entrySet().stream().forEach(entry -> {
                             final String key = entry.getKey();
-                            if (dataSourceParameters.getParameters().containsKey(key) && !globalParamLabels.contains(key)) {
+                            if (dataSourceParameters.hasParameter(key) && !globalParamLabels.contains(key)) {
                                 final PluginParameter pp = dataSourceParameters.getParameters().get(key);
                                 // Don't set action type parameters.
                                 // Since their only reason for existence is to perform an action,

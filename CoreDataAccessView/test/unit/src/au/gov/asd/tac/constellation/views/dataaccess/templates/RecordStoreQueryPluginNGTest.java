@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -95,7 +95,7 @@ public class RecordStoreQueryPluginNGTest {
      */
     @Test
     public void testEditWhenAllVerticiesAreInTheCenterAndFrozenView() {
-        Assert.assertTrue(CoreUtilities.isGraphViewFrozen());
+        Assert.assertTrue(PreferenceUtilites.isGraphViewFrozen());
 
         final RecordStoreQueryPlugin instance = new RecordStoreQueryPluginMockImpl();
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();

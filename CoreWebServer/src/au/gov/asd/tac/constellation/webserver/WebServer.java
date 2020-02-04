@@ -148,7 +148,6 @@ public class WebServer {
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
                 // Make sure the file is owner read/write.
-                //
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
@@ -157,7 +156,6 @@ public class WebServer {
 
                 // On Posix, we can use stricter file permissions.
                 // On Windows, we just create the new file.
-                //
                 final String os = System.getProperty("os.name");
                 if (!os.startsWith("Windows")) {
                     final Path restPath = restFile.toPath();
@@ -166,15 +164,12 @@ public class WebServer {
                 }
 
                 // Now write the file contents.
-                //
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
-                    //
                     pw.printf("{\"%s\":\"%s\", \"port\":%d}\n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
 
                 // Download the Python REST client if enabled.
-                //
                 final boolean pythonRestClientDownload = prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT);
                 if (pythonRestClientDownload) {
                     downloadPythonClient();
@@ -187,7 +182,6 @@ public class WebServer {
                         throw new RuntimeException(e);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        //
                         restFile.delete();
                     }
                 });

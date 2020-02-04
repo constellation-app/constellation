@@ -165,7 +165,7 @@ public class CameraUtilities {
         rotate(camera, xDegrees, yDegrees, 0);
     }
 
-    private static void rotate(final Camera camera, final float xDegrees, final float yDegrees, final float zDegrees) {
+    public static void rotate(final Camera camera, final float xDegrees, final float yDegrees, final float zDegrees) {
         // Use a frame to move the eye and centre relative to the rotation point.
         Frame frame = new Frame(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp);
         frame.setOrigin(camera.lookAtRotation);

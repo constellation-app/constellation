@@ -38,8 +38,13 @@ public class TutorialStartup implements Runnable {
         if (prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)) {
             SwingUtilities.invokeLater(() -> {
                 final TopComponent tutorial = WindowManager.getDefault().findTopComponent(TutorialTopComponent.class.getSimpleName());
-                tutorial.open();
-                tutorial.requestActive();
+                if (tutorial != null) {
+                    if (!tutorial.isOpened()) {
+                        tutorial.open();
+                    }
+                    tutorial.setEnabled(true);
+                    tutorial.requestActive();
+                }
             });
         }
     }

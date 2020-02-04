@@ -516,7 +516,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
-            if (date != ZonedDateTimeAttributeDescription.LONG_NULL_VALUE && d1t <= date && date < d2t) {
+            if (date != ZonedDateTimeAttributeDescription.NULL_VALUE && d1t <= date && date < d2t) {
                 final long layerId = (date - d1t) / intervalLength;
                 final float layer = (float) layerId;
 
@@ -590,7 +590,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
-            if (date != ZonedDateTimeAttributeDescription.LONG_NULL_VALUE && (d1t <= date && date < d2t)) {
+            if (date != ZonedDateTimeAttributeDescription.NULL_VALUE && (d1t <= date && date < d2t)) {
                 dtg.setTimeInMillis(date);
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 

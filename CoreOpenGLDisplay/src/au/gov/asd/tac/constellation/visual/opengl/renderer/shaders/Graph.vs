@@ -9,5 +9,5 @@ uniform sampler2D depthTexture;
 
 void main(void) {
     textureCoordinate = inputTextureCoordinates.xy;
-    gl_Position = position; /*vec4(position.xy, texture2D(graphTexture, textureCoordinate));*/
+    gl_Position = position; /*vec4(position.xy, texture(graphTexture, textureCoordinate));*/
 }

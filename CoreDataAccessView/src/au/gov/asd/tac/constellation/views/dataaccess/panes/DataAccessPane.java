@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.NewDefaultSchemaGraphAction;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -208,9 +209,36 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
         executeButton.setStyle(GO_STYLE);
         executeButton.setOnAction((ActionEvent event) -> {
+            boolean pluginSelected = false;
+            boolean selectedPluginsValid = true;
+            
+            // check for activated plugins and their validity.
+            for (Tab tab : dataAccessTabPane.getTabs()) {
+                if (tabHasEnabledPlugins(tab)) {
+                    pluginSelected = true;
+                    if (!validateTabEnabledPlugins(tab)) {
+                        selectedPluginsValid = false;
+                    }
+                } 
+            }
+            // when no graph present, create new graph
+            if(graphId == null){
+                if (pluginSelected && selectedPluginsValid) {
+                    NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+                    graphAction.actionPerformed(null);
+                    while(GraphManager.getDefault().getActiveGraph() == null){
+                        // Wait and do nothing while graph is getting made
+                    }
+                    graphId = GraphManager.getDefault().getActiveGraph().getId();
+                    if (!graphState.containsKey(graphId)) {
+                        graphState.put(graphId, new GraphState());
+                    }
+                    currentGraphState = graphState.get(graphId);
+                }
+            }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
-            if (!tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+            if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
@@ -291,10 +319,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 waiting.start();
                 LOGGER.info("Plugins run.");
             } else { // Button is a stop button
-                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
-                    running.cancel(true);
-                }
+                if(currentGraphState != null){
+                    for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                        running.cancel(true);
+                    }
                 setExecuteButtonToGo();
+                }
             }
         });
         updateForPlugins(false);
@@ -785,8 +815,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         final boolean queryIsRunning = currentGraphState != null && currentGraphState.queriesRunning;
 
         // The button cannot be disabled if a query is running.
-        // Otherwise, disable if there is no graph, no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
-        final boolean disable = !queryIsRunning && (!graphPresent || !pluginSelected || !validTimeRange || !selectedPluginsValid);
+        // Otherwise, disable if there is no selected plugin, an invalid time range, or the selected plugins contain invalid parameter values.
+        final boolean disable = !queryIsRunning && (!pluginSelected || !validTimeRange || !selectedPluginsValid);
         executeButton.setDisable(disable);
     }
 

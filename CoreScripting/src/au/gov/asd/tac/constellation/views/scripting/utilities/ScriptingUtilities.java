@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import au.gov.asd.tac.constellation.views.scripting.ScriptingModule;
 import au.gov.asd.tac.constellation.views.scripting.graph.SGraph;
 import java.io.File;
@@ -101,7 +100,6 @@ public class ScriptingUtilities implements ScriptingModule {
     public void executePlugin(final SGraph graph, final String pluginName) {
         final Plugin plugin = PluginRegistry.get(pluginName);
         final PluginParameters parameters = new PluginParameters();
-        parameters.appendParameters(GlobalParameters.getParameters(null));
         parameters.appendParameters(plugin.createParameters());
         try {
             PluginExecution.withPlugin(plugin).withParameters(parameters).executeNow(graph.getGraph());
@@ -121,11 +119,10 @@ public class ScriptingUtilities implements ScriptingModule {
     public void executePlugin(final SGraph graph, final String pluginName, final Map<String, String> pluginParameters) {
         final Plugin plugin = PluginRegistry.get(pluginName);
         final PluginParameters parameters = new PluginParameters();
-        parameters.appendParameters(GlobalParameters.getParameters(null));
         parameters.appendParameters(plugin.createParameters());
         try {
             pluginParameters.forEach((parameterName, parameterValue) -> {
-                if (parameters.getParameters().containsKey(parameterName)) {
+                if (parameters.hasParameter(parameterName)) {
                     parameters.getParameters().get(parameterName).setStringValue(parameterValue);
                 }
             });

@@ -54,9 +54,7 @@ public class ConstellationInstalledFileLocator {
             // If we're not there (because we're running unit tests in development, for example), we won't find anything.
             // Instead, we'll hack our way to what we want. If there's a nicer way, tell me.
             //
-
             // Which JAR are we in?
-            //
             final URL url = protectedDomain.getCodeSource().getLocation();
 
             try {
@@ -66,7 +64,6 @@ public class ConstellationInstalledFileLocator {
             }
 
             // Go up two levels to the build\cluster directory so the relative path is correct.
-            //
             locatedFile = locatedFile.getParentFile().getParentFile();
             locatedFile = new File(locatedFile, relativePath);
 
