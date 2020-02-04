@@ -43,6 +43,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -93,9 +95,10 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
-
+    private final Lock lock = new ReentrantLock(true);
+    
     public AnalyticConfigurationPane() {
-
+        
         // create the parameters needed for all analytic questions
         createGlobalParameters();
 
@@ -223,7 +226,12 @@ public class AnalyticConfigurationPane extends VBox {
             Platform.runLater(() -> {
                 categoryListPane.setExpanded(!questionListPane.isExpanded());
                 if (questionListPane.isExpanded()) {
-                    currentQuestion = questionList.getSelectionModel().getSelectedItem();
+                    lock.lock();
+                    try {
+                        currentQuestion = questionList.getSelectionModel().getSelectedItem();
+                    } finally {
+                        lock.unlock();
+                    }
                     populateParameterPane(globalAnalyticParameters);
                     setPluginsFromSelectedQuestion();
                 }
@@ -468,12 +476,22 @@ public class AnalyticConfigurationPane extends VBox {
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             pluginList.getItems().forEach(selectablePlugin -> {
-                selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
+                lock.lock();
+                try {
+                    selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
+                } finally {
+                    lock.unlock();
+                }
             });
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {
-                selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-                currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
+                lock.lock();
+                try {
+                    selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
+                    currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
+                } finally {
+                    lock.unlock();
+                }
             });
         }
     }
