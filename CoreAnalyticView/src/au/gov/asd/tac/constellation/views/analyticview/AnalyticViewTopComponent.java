@@ -73,6 +73,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
+    private boolean suppressed = false;
 
     public AnalyticViewTopComponent() {
         super();
@@ -85,10 +86,14 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            analyticViewPane.getConfigurationPane().saveState();
+            if (!suppressed) {
+                analyticViewPane.getConfigurationPane().saveState();
+            }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            analyticViewPane.getConfigurationPane().saveState();
+            if (!suppressed) {
+                analyticViewPane.getConfigurationPane().saveState();
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
@@ -109,16 +114,19 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 prerequisiteAttributes.get(attribute).add(plugin);
             });
         });
-//        prerequisiteAttributes.forEach((attribute, plugins) -> {
-//            addAttributeValueChangeHandler(attribute, graph -> {
-//                plugins.forEach(plugin -> {
-//                    final PluginParameters updatedParameters = plugin.createParameters().copy();
-//                    plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
-//                    analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
-//                });
-//                analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
-//            });
-//        });
+        prerequisiteAttributes.forEach((attribute, plugins) -> {
+            addAttributeValueChangeHandler(attribute, graph -> {
+                if (!suppressed) {
+                    plugins.forEach(plugin -> {
+                        final PluginParameters updatedParameters = plugin.createParameters().copy();
+                        plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
+                        analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
+                    });
+                    analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
+                }
+                
+            });
+        });
     }
 
     /**
@@ -159,7 +167,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
         }
+        suppressed = true;
         manualUpdate();
+        suppressed = false;
+        analyticViewPane.getConfigurationPane().updateState(false);
     }
     
     @Override
