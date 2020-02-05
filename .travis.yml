@@ -18,12 +18,7 @@ jobs:
     script:
       - docker pull "${builder_image}"
       - docker run -v $(pwd):/workdir/ -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir /workdir/ "${builder_image}" .travis/run-tests.sh
-      - sonar-scanner \
-        -Dsonar.login=${SONAR_TOKEN} \
-        -Dsonar.projectKey=constellation-app_constellation \
-        -Dsonar.pullrequest.base=${TRAVIS_BRANCH} \
-        -Dsonar.pullrequest.key=${TRAVIS_PULL_REQUEST} \
-        -Dsonar.pullrequest.provider=github
+      - sonar-scanner -Dsonar.login=${SONAR_TOKEN} -Dsonar.projectKey=constellation-app_constellation -Dsonar.pullrequest.base=${TRAVIS_BRANCH} -Dsonar.pullrequest.key=$TRAVIS_PULL_REQUEST -Dsonar.pullrequest.provider=github
     addons:
       sonarcloud:
         organization: "constellation-app"
