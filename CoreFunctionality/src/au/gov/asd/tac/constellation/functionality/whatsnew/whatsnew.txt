@@ -25,6 +25,27 @@
 == 2020-01-04 Libraries Upgraded
 <p>We've upgraded to newer versions of open source libraries we use which should improve performance and stability.</p>
 
+== 2019-12-20 Quality Control View
+<p>The colours used to represent a warning when the score is 80 have been improved to be readable.</p>
+
+== 2019-12-16 Delimited File Importer
+<p>In the delimited file importer you can assign an attribute to the row column which is the first column.</p>
+
+== 2019-10-23 Jupyter Notebooks
+<p>Improvements have been made to the error handling when errors occur with the REST client.</p>
+
+== 2019-10-11 Jupyter Notebooks
+<p>You can now specify which graph you want to run a plugin in by specifying the <pre>graph id</pre>. For more information refer to the documentation by going to Tools -> Display REST Server Documentation.</p>
+
+== 2019-10-09 Jupyter Notebooks
+<p>You can now add custom blazes from a Jupyter Notebook. For more information see <a href="https://github.com/constellation-app/constellation/issues/139">139</a>.</p>
+
+== 2019-10-01 Jupyter Notebooks
+<p>A bug has been fixed interpreting strings which look like numbers as numbers in a pandas dataframe. For more information see <a href="https://github.com/constellation-app/constellation/issues/133">#133</a>.</p>
+
+== 2019-07-30 Remeber last save
+<p>Constellation will remember the location you last saved a graph. You can change this behaviour from Tools -> Options -> Constellation.</p>
+
 == 2019-07-30 Data Access View Plugin Search
 <p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
 
@@ -175,7 +196,7 @@ This option can be enabled by selecting <i>Cluster Markers</i> in the marker vis
 
 == 2018-02-26 Analytic View Update
 <p>The Analytic View now has a documentation window which will tell you about any analytic you click on.</p>
-<p>This can activated/deactivated by clicking <i>Options &gt; Show Documentation</i>.</p>
+<p>This can activated/deactivated by clicking <i>Options &; Show Documentation</i>.</p>
 
 == 2018-02-15 Compare Graphs
 <p>The Compare Graph plugin has been completed and moved into the Tools menu.</p>
