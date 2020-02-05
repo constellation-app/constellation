@@ -35,7 +35,7 @@
 <p>Improvements have been made to the error handling when errors occur with the REST client.</p>
 
 == 2019-10-11 Jupyter Notebooks
-<p>You can now specify which graph you want to run a plugin in by specifying the <pre>graph id</pre>. For more information refer to the documentation by going to Tools -> Display REST Server Documentation.</p>
+<p>You can now specify which graph you want to run a plugin in by specifying the <pre>graph id</pre>. For more information refer to the documentation by going to Tools &gt; Display REST Server Documentation.</p>
 
 == 2019-10-09 Jupyter Notebooks
 <p>You can now add custom blazes from a Jupyter Notebook. For more information see <a href="https://github.com/constellation-app/constellation/issues/139">139</a>.</p>
@@ -44,7 +44,7 @@
 <p>A bug has been fixed interpreting strings which look like numbers as numbers in a pandas dataframe. For more information see <a href="https://github.com/constellation-app/constellation/issues/133">#133</a>.</p>
 
 == 2019-07-30 Remeber last save
-<p>Constellation will remember the location you last saved a graph. You can change this behaviour from Tools -> Options -> Constellation.</p>
+<p>Constellation will remember the location you last saved a graph. You can change this behaviour from Tools &gt; Options &gt; Constellation.</p>
 
 == 2019-07-30 Data Access View Plugin Search
 <p>The Data Access View plugin search usability has been improved by having the search text field enabled always.</p>
@@ -97,13 +97,13 @@ Access View has been modified based on UX feedback.</p>
 or an invalid date-time range set in the Global Parameters (i.e. the 'From' date-time is later than the 'To' date-time).</p>
 
 == 2018-12-04 New Analytic Plugins
-<p>Under Experimental -> Build Graph, there are plugins for creating structured graphs that more closely resemble real social networks.</p>
+<p>Under Experimental &gt; Build Graph, there are plugins for creating structured graphs that more closely resemble real social networks.</p>
 <ul>
 <li><strong>Preferential Attachment Graph</strong> creates networks that follow the degree power law that is expected in real networks.</li>
 <li><strong>Small World Graph</strong> creates lattices/random networks depending on a rewiring probability</li>
 <li><strong>Complete Graph</strong> creates a complete graph.</li>
 </ul>
-<p>In the Analytic View -> Similarity, there are four new plugins that assist in link prediction.</p>
+<p>In the Analytic View &gt; Similarity, there are four new plugins that assist in link prediction.</p>
 <ul>
 <li><strong>Common Neighbours</strong> calculates the number of common neighbours between a pair of nodes.</li>
 <li><strong>Preferential Attachment</strong> calculates the product of the degrees of a pair of nodes.</li>
@@ -153,7 +153,7 @@ Clean section of the Data Access View, 'Removed Unused Attributes', which remove
 <p>A new button called <strong>Use maximum Time Range</strong> has been added to set the custom time range to start at 00:00:00 and end at 23:59:59.</p>
 
 == 2018-05-15 Rename Graphs
-<p>The right click -> rename option retains the current graph name.</p>
+<p>The right click &gt; rename option retains the current graph name.</p>
 
 == 2018-04-30 Data Access View Update
 <p>Added extra padding before the Go button to avoid accidentally clicking.</p>
@@ -170,7 +170,7 @@ Clean section of the Data Access View, 'Removed Unused Attributes', which remove
 <p>The Table View now has a column visibility option for only Key Attributes, and this is now the default setting.</p>
 
 == 2018-04-05 Proxy Settings
-<p>The interface for customising proxy settings (Setup > Options > CONSTELLATION > Proxies) has been
+<p>The interface for customising proxy settings (Setup &gt; Options &gt; CONSTELLATION &gt; Proxies) has been
 overhauled to provide a more intuitive experience. In particular, descriptions have been added to each option
 detailing how to use it, default settings are visible when you select the 'Use Default Settings' option, and
 changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
@@ -196,7 +196,7 @@ This option can be enabled by selecting <i>Cluster Markers</i> in the marker vis
 
 == 2018-02-26 Analytic View Update
 <p>The Analytic View now has a documentation window which will tell you about any analytic you click on.</p>
-<p>This can activated/deactivated by clicking <i>Options &; Show Documentation</i>.</p>
+<p>This can activated/deactivated by clicking <i>Options &gt; Show Documentation</i>.</p>
 
 == 2018-02-15 Compare Graphs
 <p>The Compare Graph plugin has been completed and moved into the Tools menu.</p>
@@ -303,7 +303,7 @@ instructions displayed in the notebook's output window.</p>
 == 2017-08-29 More Geospatial Export Options
 <p>You can now export geospatial data in your graph to a GeoPackage file. This is an OGC defined, GIS compliant SQLite database which is
 supported by ArcGIS (and most other GIS tools) and is significantly more flexible than a Shapefile. This export option is available under
-File > Export as well as in the toolbar of the Map View</p>
+File &gt; Export as well as in the toolbar of the Map View</p>
 
 == 2017-08-23 Blaze Menu Changes
 <p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default colour options.</p>
@@ -321,7 +321,7 @@ File > Export as well as in the toolbar of the Map View</p>
 <p>Refer to <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractFromContent">this</a> help page for more information.</p>
 
 == 2017-08-01 Select Blazes
-<p>You can now select all blazed nodes on the graph using Selection > Select Blazes. This option is also available in the toolbar menu.</p>
+<p>You can now select all blazed nodes on the graph using Selection &gt; Select Blazes. This option is also available in the toolbar menu.</p>
 
 == 2017-07-28 Map View Update
 <p>You can now toggle between metric and imperial measurements in the Map View using the button beside the measure tool.</p>
@@ -344,13 +344,13 @@ words will be extracted and represented as nodes. It also works with regular exp
 <p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match CONSTELLATION's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
 
 == 2017-07-18 Geospatial Export
-<p>You can now export geospatial data in your graph to GeoJSON or Shapefile using the File > Export menu or the toolbar options in the Map View.</p>
+<p>You can now export geospatial data in your graph to GeoJSON or Shapefile using the File &gt; Export menu or the toolbar options in the Map View.</p>
 
 == 2017-07-17 REST server requires a secret
 <p>The external scripting server now requires a secret to be used, which requires a new Python client.</p>
 
 == 2017-05-29 Support for Old Graphs
-<p>The logic to support old graphs has been changed so that old graphs will get the updated look and feel when you run Tools -> Complete with Schema or press F5.</p>
+<p>The logic to support old graphs has been changed so that old graphs will get the updated look and feel when you run Tools &gt; Complete with Schema or press F5.</p>
 <p>This has allowed graphs to load faster and more efficiently maintain the update code logic.</p>
 
 == 2017-05-28 Improved Analytics
@@ -406,7 +406,7 @@ Each cluster node will be given a shape attribute representing the area it repre
 within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 
 == 2017-04-18 Compare Graphs
-<p>You can now compare differences between 2 graphs and see the differences. This is available from Tools -> Compare Graphs. More information is available in <a href="" helpId="au.gov.asd.tac.constellation.functionality.compare.CompareGraphPlugin">this</a> help page.</p>
+<p>You can now compare differences between 2 graphs and see the differences. This is available from Tools &gt; Compare Graphs. More information is available in <a href="" helpId="au.gov.asd.tac.constellation.functionality.compare.CompareGraphPlugin">this</a> help page.</p>
 
 == 2017-04-03 Improved Quick Search
 <p>Fixed bugs with the quick search and recent search not returning results.</p>
@@ -456,7 +456,7 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 <li>Attribute, Collection, Vertex, Transaction, Edge and Link have been renamed to SAttribute, SCollection, SVertex, STransaction, SEdge and SLink respectively.</li>
 <li>SubgraphUtilities has moved to au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities.</li>
 </ul>
-<p>Note that documentation for the scripting API is now available from Scripting View > Actions > API Documentation.</p>
+<p>Note that documentation for the scripting API is now available from Scripting View &gt; Actions &gt; API Documentation.</p>
 
 == 2017-02-16 Workflow Plugins
 <p>A bug has been fixed related to workflow plugins where not all selected nodes were being passed to the workflow query.</p>
@@ -526,9 +526,9 @@ help page.</p>
 == 2016-06-06 Visual Attributes and Templates
 <p>A number of visual properties, such as labels and decorators, have been exposed as graph attributes so that they can be edited in the attribute editor like everything else (rather than through obscure menu items).</p>
 <p>Default values of visual attributes have been removed from preferences too - if you had a custom default background colour or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
-<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_colour, bottom_labels, and top_labels), then choose "File > Save Template" and enter a name.</p>
-<p>You can then make your template the default new graph (that is opened with Control+N) by choosing "File > Manage Templates", selecting your template name, and then pressing the "Set Default" button.</p>
-<p>You can have as many templates as you like - the options will be listed in the "File > New Graph" menu beneath the schema graphs.</p>
+<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_colour, bottom_labels, and top_labels), then choose "File &gt; Save Template" and enter a name.</p>
+<p>You can then make your template the default new graph (that is opened with Control+N) by choosing "File &gt; Manage Templates", selecting your template name, and then pressing the "Set Default" button.</p>
+<p>You can have as many templates as you like - the options will be listed in the "File &gt; New Graph" menu beneath the schema graphs.</p>
 
 == 2016-06-06 Performance Improvement
 <p>There is a significant performance improvement overall to CONSTELLATION after adding caching to the new Icon provider implementation.</p>
@@ -557,7 +557,7 @@ copy composite nodes between graphs. The existing version will remain an experim
 
 == 2016-03-17 Graph Visibility Threshold
 <p>You can configure a threshold to automatically hide all nodes on the graph. The idea is that you would instead use table view or the histogram to
-clean up the graph before you visualise it in the graph view. The threshold can be set in Tools -> Options -> CONSTELLATION -> Graph Drawing.
+clean up the graph before you visualise it in the graph view. The threshold can be set in Tools &gt; Options &gt; CONSTELLATION &gt; Graph Drawing.
 A new button is available in the graph toolbar than will enable/disable the threshold. For more information refer to
 <a href="" helpId="au.gov.asd.tac.constellation.visual.about">this</a> help page.</p>
 
@@ -578,7 +578,7 @@ For more information click <a href="" helpId="au.gov.asd.tac.constellation.views
 <p>CONSTELLATION will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
 you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, CONSTELLATION might try and cleanup
 unused memory. This is still an experimental feature. Similar to clearing memory on graph close, the option is under
-Tools > Options > CONSTELLATION > Application and is enabled by default.</p>
+Tools &gt; Options &gt; CONSTELLATION &gt; Application and is enabled by default.</p>
 
 == 2015-09-01 Label Rendering Improvements
 <p>The rendering of labels has been improved to display text more accurately (including right-to-left text) and improve compatibility with more graphics cards.</p>
