@@ -368,6 +368,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
         
         final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
+        deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
             DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
         });
