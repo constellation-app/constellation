@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-02-06 Data Access View
+<p>You can now have Data Access Plugins be deselected after pressing the Go button. This is a preference option available from the Data Access View options menu.</p>
+
 == 2020-01-28 Data Access View
 <p>A bug has been fixed with the Data Access View which caused the application to lock up when it was opened.</p>
 
