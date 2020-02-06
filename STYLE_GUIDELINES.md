@@ -1,6 +1,6 @@
 ## Coding Style Guidelines
 
-When the constellation project grows and has more contributors, it's no longer possible to just tell contributors to “follow the code formatting in the code.” Ostensibly, that never worked anyway. 
+When the constellation project grows and has more contributors, it's no longer possible to just tell contributors to “follow the code formatting in the code.” Ostensibly, that never worked anyway.
 
 Here is an attempt to describe how the source code should be formatted. It's a collection of good practises, but will get better over time as it gets more organised.
 
@@ -26,22 +26,22 @@ else condition condition condition
 instead use
 ```
 if (this) {
-  // something 
+  // something
 } else {
   // condition condition condition
 }
 ```
-* No spaces inside parens. 
+* No spaces inside parens.
 ```
 if( condition )  // BAD
 if ( condition ){  // BADDER
 if (condition) {  // good
 ```
-* Use a space after the paren and before the curly brace: 
+* Use a space after the paren and before the curly brace:
 ```
 if (condition) {
-``` 
-not 
+```
+not
 ```
 if (condition){
 ```
@@ -62,7 +62,7 @@ if (emptyBlock) {
 * Spaces before/after operators in nearly all cases:
   * `if (a == b)` not `if (a==b)`
   * `for (int i = 0; i < 10; i++) {`
-* ...with an exception for cases where it helps clarify order of operations: 
+* ...with an exception for cases where it helps clarify order of operations:
   * `int a = 13 + b*12 + c*7 + d` is ok to keep the * adjacent for easier reading
 
 ## Brace yourself
@@ -75,20 +75,20 @@ for (int i = 0; i < 10; i++) {
 ```
 never this:
 ```
-for (int i = 0; i < 10; i++) 
+for (int i = 0; i < 10; i++)
   println(i);
 ```
 Not using braces is too prone to causing subtle errors when merging code from multiple people.
 
-The rare exception is the occasional ‘continue’ statement at the top of a for-loop, or sometimes a single line `if (somethingOrOther) return;` if it just doesn't make sense to have a lot of extras. 
+The rare exception is the occasional ‘continue’ statement at the top of a for-loop, or sometimes a single line `if (somethingOrOther) return;` if it just doesn't make sense to have a lot of extras.
 
 Starting brace goes on same line, end brace goes on its own. An else statement should look like `} else {`
 
 ## Blank lines
 
-Use two blank lines between function blocks. 
+Use two blank lines between function blocks.
 
-One blank line after the package declaration. 
+One blank line after the package declaration.
 
 Two blank lines between the imports and the class definition.
 
@@ -99,7 +99,7 @@ No blank line after the function definition or before the closing brace.
 
 * Use `String[] lines` instead of `String lines[]`
 
-* Use `if (condition == null)` instead of `if (null == condition)`. It reads better to most people. Putting `null` on the left is good practice in C, C++, and perhaps other languages, but the error that it avoids is impossible in Java anyway. And if you want to be really pedantic, the compiler may even produce less efficient code with `if (null ==` because `if_acmpne` is used, which requires two variables, instead of `ifnonnull`. 
+* Use `if (condition == null)` instead of `if (null == condition)`. It reads better to most people. Putting `null` on the left is good practice in C, C++, and perhaps other languages, but the error that it avoids is impossible in Java anyway. And if you want to be really pedantic, the compiler may even produce less efficient code with `if (null ==` because `if_acmpne` is used, which requires two variables, instead of `ifnonnull`.
 
 * Only use the `?` operator if it saves multiple lines of code. One probably use is a short function that returns a result immediately, i.e. `return (something == null) ? 0 : Integer.parseInt(something)`
 
@@ -108,7 +108,7 @@ No blank line after the function definition or before the closing brace.
 * `static` goes first (before `public` et al) (This is different from Oracle style)
 
 
-## Functions 
+## Functions
 
 When adding parameters to a function, add to the end. Don't change order, even if it feels more intuitive for that variation. Only increase the number, don't have alternate forms with the same basic number of arguments.
 
@@ -125,7 +125,7 @@ When adding parameters to a function, add to the end. Don't change order, even i
 
 ## New lines
 
-* Keep code under 80 columns. Break up statements if you must. 
+* Keep code under 80 columns. Break up statements if you must.
     * There are some exceptions (the `PreferencesFrame` class, for instance) where breaking things up is even uglier, so the 80 column limit is occasionally ignored.
 
 * Avoid the chaining madness that has afflicted Java programming of late, where dots are placed at the end (or even beginning) of multi-line indented poetry.
@@ -153,7 +153,7 @@ static final int STATUS_COMPILER_ERR = 200;
 
 If importing many items inside a single package, consider using * instead of listing out a dozen individual classes.
 
-Please do not expand the imports in source that you’re editing. 
+Please do not expand the imports in source that you’re editing.
 
 Where possible, make sure text files checked into the repo are text files, and are marked as such so they can use the correct encoding for the platform. Please use this convention for newer files (or help us fix the others).
 
