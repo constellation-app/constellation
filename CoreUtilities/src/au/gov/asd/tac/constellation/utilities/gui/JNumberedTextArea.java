@@ -13,21 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities;
+package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.Color;
 import javax.swing.JTextArea;
 import javax.swing.text.Element;
 
 /**
- *
+ * A numbered text area for use with Swing.
+ * 
  * @author algol
  */
-public final class NumberedTextArea extends JTextArea {
+public final class JNumberedTextArea extends JTextArea {
 
     private final JTextArea textArea;
 
-    public NumberedTextArea(final JTextArea textArea) {
+    public JNumberedTextArea(final JTextArea textArea) {
         this.textArea = textArea;
         setBackground(Color.LIGHT_GRAY);
         setEditable(false);

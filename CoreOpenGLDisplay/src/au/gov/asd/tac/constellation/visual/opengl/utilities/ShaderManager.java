@@ -112,7 +112,6 @@ public class ShaderManager {
                 if (line.trim().endsWith("=")) {
                     if (key != null) {
                         shaderMap.setProperty(key, value);
-//                    System.out.println("## " + key + "\n" + value + "\n");
                     }
                     key = line.substring(0, line.length() - 1).trim();
                     value = "";
@@ -192,7 +191,6 @@ public class ShaderManager {
             // Just the color.
             int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], "vColor");
             float[] color = (float[]) args[0];
-//            System.out.printf("color %f %f %f %f", color[0], color[1], color[2], color[3]);
             gl.glUniform4fv(colorLoc, 1, color, 0);
         } else if (shaderId == SHADER_FLAT) {
             // The modelview projection matrix and the color.
@@ -237,7 +235,7 @@ public class ShaderManager {
             gl.glUniform4fv(colorLoc, 1, color.a, 0);
 
             int textureUnit = gl.glGetUniformLocation(stockShaders[shaderId], "textureUnit0");
-            int i = ((Integer) args[4]).intValue();
+            int i = (Integer) args[4];
             gl.glUniform1i(textureUnit, i);
         } else {
             throw new RenderException("Unimplemented shader.");

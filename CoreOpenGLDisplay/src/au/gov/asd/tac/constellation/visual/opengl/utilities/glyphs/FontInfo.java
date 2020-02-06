@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
+ * Describes a font and all its properties.
  *
  * @author algol
  */
@@ -80,15 +81,12 @@ public class FontInfo {
 
         if (font.getFamily(Locale.US).equals(Font.DIALOG)) {
             // From the Javadoc:
-            // If the name parameter represents something other
-            // than a logical font, i.e. is interpreted as a
-            // physical font face or family, and this cannot be
-            // mapped by the implementation to a physical font
-            // or a compatible alternative, then the font system
-            // will map the Font instance to "Dialog", such that
-            // for example, the family as reported by getFamily
-            // will be "Dialog".
-            //
+            // If the name parameter represents something other than a logical 
+            // font, i.e. is interpreted as a physical font face or family, and 
+            // this cannot be mapped by the implementation to a physical font or 
+            // a compatible alternative, then the font system will map the Font 
+            // instance to "Dialog", such that for example, the family as 
+            // reported by getFamily will be "Dialog".
             throw new IllegalArgumentException(String.format("Font '%s' is not available", fontName));
         }
 
@@ -146,13 +144,10 @@ public class FontInfo {
         if (otfFile.isAbsolute()) {
             return otfFile.canRead() ? otfFile : null;
         } else {
-            // If it is relative, look in operating system specific places for
-            // the font file.
-            //
+            // If it is relative, look in operating system specific places for the font file.
             final String osName = System.getProperty("os.name");
             if (osName.toLowerCase().contains("win")) {
                 // Look in the user's local profile, then the system font directory.
-                //
                 final String lap = System.getenv("LOCALAPPDATA");
                 if (lap != null) {
                     otfFile = new File(String.format("%s/Microsoft/Windows/Fonts/%s", lap, otfName));
@@ -168,7 +163,6 @@ public class FontInfo {
                 }
             } else {
                 // Figure out something for Linux etc.
-                //
                 return null;
             }
         }
@@ -274,6 +268,6 @@ public class FontInfo {
 
     @Override
     public String toString() {
-        return String.format("[FontInfo %s style:%d (%s) must:%s mustNot:%s]", fontName, fontStyle, font, mustHave, mustNotHave);
+        return String.format("[FontInfo[%s] %s style:%d must:%s mustNot:%s]", font, fontName, fontStyle, mustHave, mustNotHave);
     }
 }

@@ -53,9 +53,7 @@ import javafx.scene.paint.Color;
 import javax.imageio.ImageIO;
 
 /**
- * The GlyphManager manages a series of textures that hold all glyphs for the
- * application. It also performs text layout and provides x,y offsets for each
- * glyph in a specified string of text.
+ * Convert text into images that can be passed to OpenGL.
  *
  * @author sirius
  */
@@ -586,7 +584,6 @@ public class GlyphManagerFX implements GlyphManager {
         // Snapshot the pixels from the canvas into an image where the pixel data will be available
         // This seems inefficient but there does not seem to be any way to directly access pixel
         // data from a Canvas.
-//        System.out.println("~~~ " + copyImage);
         glyphTexture.snapshot(DEFAULT_SNAPSHOT_PARAMETER_IDS, copyImage);
 
         // Read all pixel values into the buffer. The image is greyscale so the blue
