@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
+import static au.gov.asd.tac.constellation.utilities.support.SupportPackage.LOG_DIRECTORY;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -27,23 +28,22 @@ import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.modules.Places;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.WindowManager;
 
 @ActionID(
         category = "Help",
-        id = "au.gov.asd.tac.constellation.utilities.support.SupporPackageAction"
+        id = "au.gov.asd.tac.constellation.utilities.support.SupportPackageAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_SupporPackageAction"
+        displayName = "#CTL_SupportPackageAction"
 )
 @ActionReference(path = "Menu/Help", position = 920)
 @Messages({
-    "CTL_SupporPackageAction=Support Package",
-    "MSG_SaveAsTitle=Save Graph"
+    "CTL_SupportPackageAction=Support Package",
+    "MSG_SaveAsTitle=Select Folder"
 })
-public final class SupporPackageAction implements ActionListener {
+public final class SupportPackageAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -54,12 +54,11 @@ public final class SupporPackageAction implements ActionListener {
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
             final String username = System.getenv("username");
 
-            final String sourcePath = Places.getUserDirectory().getPath() + File.separator + "var" + File.separator + "log";
             final File destination = new File(saveAsDirectory.getPath(), String.format("%s-%s-%s.zip", "SupportPackage", username, simpleDateFormat.format(now)));
             final SupportPackage supportPackage = new SupportPackage();
             final Thread supportPackageThread = new Thread(() -> {
                 try {
-                    supportPackage.createSupportPackage(new File(sourcePath), destination);
+                    supportPackage.createSupportPackage(new File(LOG_DIRECTORY), destination);
                     final NotifyDescriptor nd = new NotifyDescriptor.Message("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
                     DialogDisplayer.getDefault().notify(nd);
                 } catch (IOException ex) {
