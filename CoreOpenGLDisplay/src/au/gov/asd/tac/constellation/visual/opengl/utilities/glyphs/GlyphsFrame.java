@@ -47,7 +47,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 /**
- *
+ * An application for viewing fonts rendered as glyphs in OpenGL.
+ * 
  * @author algol
  */
 public class GlyphsFrame extends JFrame {
@@ -413,10 +414,6 @@ public class GlyphsFrame extends JFrame {
         try (final BufferedReader in = new BufferedReader(new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8))) {
             final List<String> ls = in.lines().filter(line -> raw || (line.length() > 0 && !line.startsWith("#"))).collect(Collectors.toList());
             final String[] text = ls.toArray(new String[ls.size()]);
-
-//            for(final String t : text) {
-//                System.out.printf("loadText %s [%s]\n", fnam, t);
-//            }
             return text;
         }
     }
@@ -426,11 +423,6 @@ public class GlyphsFrame extends JFrame {
      * @throws java.io.IOException
      */
     public static void main(String args[]) throws IOException {
-
-//        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        for(final Font ff : ge.getAllFonts()) {
-//            System.out.printf("font: %s\n", ff);
-//        }
         final String[] fontNames = loadText("fonts.txt", true);
         final String[] text = loadText("text.txt", false);
 

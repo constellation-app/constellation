@@ -138,14 +138,6 @@ final class GlyphRectangleBuffer {
     public void readRectangleBuffer(final int page, final ByteBuffer buffer) {
         final BufferedImage rb = rectBuffers.get(page);
         final DataBufferByte dbb = (DataBufferByte) rb.getData().getDataBuffer();
-//        System.out.printf("@@buffer %d %s\n", dbb.getSize(), dbb.getData(page));
-//        final byte[] bb = dbb.getData(page);
-//        for(int i=0; i<bb.length; i++) {
-//            System.out.printf("%s", bb[i]!=0?"*":".");
-//            if((i+1)%width==0) {
-//                System.out.printf("\n");
-//            }
-//        }
         buffer.put(dbb.getData());
     }
 

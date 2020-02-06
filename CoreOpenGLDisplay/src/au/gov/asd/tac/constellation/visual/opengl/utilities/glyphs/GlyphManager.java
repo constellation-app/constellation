@@ -20,6 +20,9 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 
 /**
+ * The GlyphManager manages a series of textures that hold all glyphs for the
+ * application. It also performs text layout and provides x,y offsets for each
+ * glyph in a specified string of text.
  *
  * @author algol
  */

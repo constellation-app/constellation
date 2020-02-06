@@ -29,30 +29,30 @@ import java.util.logging.Logger;
  *
  * @author algol
  */
-class FontRun {
+class FontRunSequence {
 
     private static final Logger LOGGER = Logger.getLogger(GlyphManagerBI.class.getName());
 
     final String string;
     final Font font;
 
-    private FontRun(final String s, final Font f) {
+    private FontRunSequence(final String s, final Font f) {
         this.string = s;
         this.font = f;
     }
 
     /**
-     * Determine the font which the codepoint belongs to.
+     * Determine the font which the code-point belongs to.
      * <p>
-     * The first font in the fonts array that can display the given codepoint id
-     * the font that determines the run.
+     * The first font in the fonts array that can display the given code-point
+     * id the font that determines the run.
      *
      * @param fonts An array of fonts.
      * @param codepoint We're looking for a font that can display this
-     * codepoint.
+     * code-point.
      *
      * @return The index of the first font in the array that can display this
-     * codepoint. If no font can display the codepoint, use the final font
+     * code-point. If no font can display the code-point, use the final font
      * (which is a default fallback font anyway).
      */
     private static int whichFont(final FontInfo[] fontsInfo, final int codepoint) {
@@ -65,7 +65,6 @@ class FontRun {
         LOGGER.warning(String.format("Font not found for codepoint U+%04X (%d.)", codepoint, codepoint));
 
         // If no font could display this codepoint, return the default font anyway.
-        //
         return fontsInfo.length - 1;
     }
 
@@ -85,29 +84,27 @@ class FontRun {
      *
      * @return A List<FontRun> font runs.
      */
-    static List<FontRun> getFontRuns(final String s, final FontInfo[] fontsInfo) {
+    static List<FontRunSequence> getFontRuns(final String s, final FontInfo[] fontsInfo) {
         final int length = s.length();
 
         int currFontIx = -1;
         int start = 0;
-        final ArrayList<FontRun> frs = new ArrayList<>();
+        final ArrayList<FontRunSequence> frs = new ArrayList<>();
 
         for (int offset = 0; offset < length;) {
             final int codepoint = s.codePointAt(offset);
             final int cc = Character.charCount(codepoint);
 
-            // If this is a space, make it the same font as the previous codepoint.
-            // This keeps words of the same font together.
-            //
+            // If this is a space, make it the same font as the previous codepoint, keeping words of the same font together.
             final int fontIx = codepoint == 32 && currFontIx != -1 ? currFontIx : whichFont(fontsInfo, codepoint);
             if (fontIx == -1) {
                 final String t = new String(new int[]{fontsInfo[0].font.getMissingGlyphCode()}, 0, 1);
-                frs.add(new FontRun(t, fontsInfo[0].font));
+                frs.add(new FontRunSequence(t, fontsInfo[0].font));
             } else {
                 if (fontIx != currFontIx) {
                     if (currFontIx != -1) {
                         final String t = s.substring(start, offset);
-                        frs.add(new FontRun(t, fontsInfo[currFontIx].font));
+                        frs.add(new FontRunSequence(t, fontsInfo[currFontIx].font));
                     }
                     start = offset;
                     currFontIx = fontIx;
@@ -117,18 +114,16 @@ class FontRun {
             offset += cc;
         }
 
-        // TODO Fix non-displayable codepoints when a font doesn't exist.
+        // TODO: Fix non-displayable codepoints when a font doesn't exist.
         // Add the end of the final run.
-        //
         final String t = s.substring(start, length);
-        frs.add(new FontRun(t, fontsInfo[currFontIx].font));
-//        System.out.printf("%d %d - [%s]\n", runs.get(runs.size()-2), length, text.subSequence(runs.get(runs.size()-2), length));
+        frs.add(new FontRunSequence(t, fontsInfo[currFontIx].font));
 
         return frs;
     }
 
     @Override
     public String toString() {
-        return String.format("[FontRun[%s],%s]", string, font.getName());
+        return String.format("[FontRunSequence[%s],%s]", string, font.getName());
     }
 }

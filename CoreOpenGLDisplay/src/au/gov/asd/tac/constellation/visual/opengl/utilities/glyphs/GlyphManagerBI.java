@@ -344,8 +344,8 @@ public final class GlyphManagerBI implements GlyphManager {
         int bottom = Integer.MIN_VALUE;
         final List<GlyphRectangle> glyphRectangles = new ArrayList<>();
 
-        for (final DirectionRun drun : DirectionRun.getDirectionRuns(text)) {
-            for (final FontRun frun : FontRun.getFontRuns(drun.run, fontsInfo)) {
+        for (final FontDirectionalRun drun : FontDirectionalRun.getDirectionRuns(text)) {
+            for (final FontRunSequence frun : FontRunSequence.getFontRuns(drun.run, fontsInfo)) {
 //                // Draw an indicator line to show where the font run starts.
 //                //
 //                g2d.setColor(Color.LIGHT_GRAY);
@@ -363,11 +363,9 @@ public final class GlyphManagerBI implements GlyphManager {
                 //
                 final Rectangle pixelBounds = gv.getPixelBounds(null, x, y0);
                 if (pixelBounds.x < x) {
-//                    System.out.printf("adjust %s %s %s\n", x, pixelBounds.x, x-pixelBounds.x);
                     x += x - pixelBounds.x;
                 }
 
-//                System.out.printf("* font run %s %d->%s\n", frun, x, pixelBounds);
                 g2d.setColor(Color.WHITE);
                 g2d.setFont(frun.font);
 
@@ -415,7 +413,6 @@ public final class GlyphManagerBI implements GlyphManager {
                     //
                     final int y = Math.max(r.y, 0);
                     final int height = Math.min(r.height, drawing.getHeight() - y);
-//                    System.out.printf("r.y=%d y=%d h=%d H=%d\n", r.y, y, height, drawing.getHeight());
                     if (height > 0) {
                         final int position = textureBuffer.addRectImage(drawing.getSubimage(r.x, y, r.width, height), 0);
                         glyphRectangles.add(new GlyphRectangle(position, r, fm.getAscent()));

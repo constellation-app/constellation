@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 import java.awt.Font;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ import java.util.List;
  *
  * @author algol
  */
-class DirectionRun {
+class FontDirectionalRun {
 
     final String run;
     final Boolean direction;
@@ -39,7 +38,7 @@ class DirectionRun {
      * @param direction One of TextAttribute.RUN_DIRECTION_LTR or
      * TextAttribute.RUN_DIRECTION_RTL.
      */
-    private DirectionRun(final String run, final Boolean direction) {
+    private FontDirectionalRun(final String run, final Boolean direction) {
         this.run = run;
         this.direction = direction;
     }
@@ -96,11 +95,11 @@ class DirectionRun {
      *
      * @return A List<DirectionRun>.
      */
-    static List<DirectionRun> getDirectionRuns(final String text) {
+    static List<FontDirectionalRun> getDirectionRuns(final String text) {
         final int length = text.length();
 
         char currDir = ' ';
-        final ArrayList<DirectionRun> runs = new ArrayList<>();
+        final ArrayList<FontDirectionalRun> runs = new ArrayList<>();
 
         int start = 0;
         for (int offset = 0; offset < length;) {
@@ -109,17 +108,15 @@ class DirectionRun {
 
             final char dir;
             final int cptype = Character.getType(codepoint);
-            /*codepoint==32*/
             if ((cptype == Character.SPACE_SEPARATOR || cptype == Character.NON_SPACING_MARK)) {
                 dir = currDir;
             } else {
                 final char d = codepointDirection(codepoint);
                 dir = d != 'R' ? 'L' : 'R';
             }
-//            System.out.printf("codepoint %d %d %c %c %d %s\n", offset, codepoint, currDir, dir, Character.getType(codepoint), Character.UnicodeBlock.of(codepoint));
+
             if (dir != currDir && currDir != ' ') {
-//                System.out.printf("CHDIR %s %s\n", start, offset);
-                runs.add(new DirectionRun(text.substring(start, offset), currDir == 'L' ? TextAttribute.RUN_DIRECTION_LTR : TextAttribute.RUN_DIRECTION_RTL));
+                runs.add(new FontDirectionalRun(text.substring(start, offset), currDir == 'L' ? TextAttribute.RUN_DIRECTION_LTR : TextAttribute.RUN_DIRECTION_RTL));
                 start = offset;
             }
 
@@ -128,14 +125,12 @@ class DirectionRun {
         }
 
         // Add the end of the final run.
-        //
-        runs.add(new DirectionRun(text.substring(start, length), currDir == 'L' ? TextAttribute.RUN_DIRECTION_LTR : TextAttribute.RUN_DIRECTION_RTL));
+        runs.add(new FontDirectionalRun(text.substring(start, length), currDir == 'L' ? TextAttribute.RUN_DIRECTION_LTR : TextAttribute.RUN_DIRECTION_RTL));
 
         // If there is more than one direction (which implies that at least one
         // run is right-to-left), modify the order of the runs.
-        //
         if (runs.size() > 1) {
-            final DirectionRun run = runs.get(runs.size()-1);
+            final FontDirectionalRun run = runs.get(runs.size() - 1);
 
             // If the last run is LTR and ends with a type "<...>", put the type
             // in its own run and move that run in front of the other runs.
@@ -145,38 +140,28 @@ class DirectionRun {
             // (This is a bit weird, because at this level we have no
             // knowledge of types, but we're trying to make it look right for
             // the users.)
-            //
-            if(run.direction.equals(TextAttribute.RUN_DIRECTION_LTR) && run.run.endsWith(">")) {
+            if (run.direction.equals(TextAttribute.RUN_DIRECTION_LTR) && run.run.endsWith(">")) {
                 final int lt = run.run.lastIndexOf('<');
-                if(lt>-1) {
-                    // Remove the run; it ends with a type, so it doesn't
-                    // belong at the end.
-                    //
-                    runs.remove(runs.size()-1);
+                if (lt > -1) {
+                    // Remove the run; it ends with a type, so it doesn't belong at the end.
+                    runs.remove(runs.size() - 1);
 
-                    if(lt==0) {
-                        // The less-than is at the start of the run,
-                        // therefore the type is already in a run by itself;
-                        // just insert it at the front.
+                    if (lt == 0) {
+                        // The less-than is at the start of the run, therefore the type is already in a run by itself; just insert it at the front.
                         runs.add(0, run);
                     } else {
                         // Split the run into two new runs and put them in their
                         // rightful places.
-                        //
-                        final DirectionRun runType = new DirectionRun(run.run.substring(lt), run.direction);
-                        final DirectionRun runOther = new DirectionRun(run.run.substring(0, lt), run.direction);
+                        final FontDirectionalRun runType = new FontDirectionalRun(run.run.substring(lt), run.direction);
+                        final FontDirectionalRun runOther = new FontDirectionalRun(run.run.substring(0, lt), run.direction);
 
                         // The text before the "<" goes back at the end.
-                        //
                         runs.add(runOther);
 
-                        // If the first run has the same direction, merge the
-                        // type run and the first run, else just insert the
-                        // type run at the front.
-                        //
-                        final DirectionRun run0 = runs.get(0);
-                        if(run0.direction.equals(runType.direction)) {
-                            runs.set(0, new DirectionRun(runType.run + run0.run, runType.direction));
+                        // If the first run has the same direction, merge the type run and the first run, else just insert the type run at the front.
+                        final FontDirectionalRun run0 = runs.get(0);
+                        if (run0.direction.equals(runType.direction)) {
+                            runs.set(0, new FontDirectionalRun(runType.run + run0.run, runType.direction));
                         } else {
                             runs.add(0, runType);
                         }
@@ -185,13 +170,11 @@ class DirectionRun {
             }
         }
 
-//        System.out.printf("* dir runs %d %s\n", runs.size(), runs.get(0).direction);
-//        runs.stream().forEach(s -> System.out.printf("* dir  run  %d %d [%s]\n", s.run.length(), s.run.codePointAt(0), s));
         return runs;
     }
 
     @Override
     public String toString() {
-        return String.format("[[%s],%s", run, direction.equals(TextAttribute.RUN_DIRECTION_LTR) ? "LTR" : "RTL");
+        return String.format("[FontDirctionalRun[%s],%s", run, direction.equals(TextAttribute.RUN_DIRECTION_LTR) ? "LTR" : "RTL");
     }
 }

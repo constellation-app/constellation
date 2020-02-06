@@ -154,7 +154,6 @@ public final class GLTools {
     public static String getProgramLog(final GL3 gl, final int shader) {
         final int[] maxLength = new int[1];
         gl.glGetProgramiv(shader, GL3.GL_INFO_LOG_LENGTH, maxLength, 0);
-//        System.out.println("log length="+maxLength[0]);
         if (maxLength[0] == 0) {
             return "";
         }
@@ -240,7 +239,6 @@ public final class GLTools {
             final String arg = (String) args[i++];
             if (index >= ShaderManager.FRAG_BASE) {
                 final int fragDataLocation = index - ShaderManager.FRAG_BASE;
-//                System.out.printf("Bind prog %d to location %d (%s)\n", progid, fragDataLocation, arg);
                 gl.glBindFragDataLocation(progid, fragDataLocation, arg);
             } else {
                 gl.glBindAttribLocation(progid, index, arg);
@@ -488,10 +486,7 @@ public final class GLTools {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
 //         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, ext);
         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
-//        System.out.printf("if=%d pf=%d pt=%d\n", data.getInternalFormat(), data.getPixelFormat(), data.getPixelType());
         final Texture tex = TextureIO.newTexture(data);
-//        System.out.println("textureObject=" + tex.getTextureObject());
-//        System.out.println("w="+tex.getImageWidth()+" h="+tex.getImageHeight());
 
         gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, wrapMode);
         gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, wrapMode);
@@ -549,8 +544,7 @@ public final class GLTools {
                 final int zoffset = i;
                 gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
                 data.destroy();
-            } catch (Throwable ex) {
-//                System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
+            } catch (final Throwable ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
 
@@ -638,7 +632,7 @@ public final class GLTools {
                         gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
                         data.destroy();
                     }
-                } catch (Throwable ex) {
+                } catch (final Throwable ex) {
                     System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
