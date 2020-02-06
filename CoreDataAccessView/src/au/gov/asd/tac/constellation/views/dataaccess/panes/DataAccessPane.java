@@ -326,6 +326,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 setExecuteButtonToGo();
                 }
             }
+            if(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
+                deselectAllPlugins();
+            }
         });
         updateForPlugins(false);
 
@@ -363,7 +366,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 DataAccessPreferenceKeys.setDataAccessResultsDir(null);
             }
         });
-
+        
+        final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
+        deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
+        deselectPluginsOnExecution.setOnAction(event -> {
+            DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
+        });
+        
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
         searchPluginTextField.textProperty().addListener((ov, oldValue, newValue) -> {
@@ -377,7 +386,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             manageFavourites();
         });
 
-        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem);
+        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem, deselectPluginsOnExecution);
         final MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
         menuBar.setMinHeight(32);
@@ -1027,6 +1036,14 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     @Override
     public void validityChanged(boolean enabled) {
+    }
+
+    private void deselectAllPlugins() {
+        dataAccessTabPane.getTabs().stream().filter((tab) -> (tabHasEnabledPlugins(tab))).forEachOrdered((tab) -> {
+            getQueryPhasePane(tab).getDataAccessPanes().forEach((dataAccessPane) -> {
+                dataAccessPane.validityChanged(false);
+            });
+        });
     }
 
     /**

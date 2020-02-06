@@ -73,6 +73,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticController analyticController;
+    private boolean suppressed = false;
 
     public AnalyticViewTopComponent() {
         super();
@@ -85,10 +86,14 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
-            // TODO: recalculate the result using the current state when the graph changes
+            if (!suppressed) {
+                analyticViewPane.getConfigurationPane().saveState();
+            }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            // TODO: listen for changes to the state, which describes current gui parameters
+            if (!suppressed) {
+                analyticViewPane.getConfigurationPane().saveState();
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
             analyticController.selectOnInternalVisualisations(GraphElementType.VERTEX, graph);
@@ -111,12 +116,15 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         });
         prerequisiteAttributes.forEach((attribute, plugins) -> {
             addAttributeValueChangeHandler(attribute, graph -> {
-                plugins.forEach(plugin -> {
-                    final PluginParameters updatedParameters = plugin.createParameters().copy();
-                    plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
-                    analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
-                });
-                analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
+                if (!suppressed) {
+                    plugins.forEach(plugin -> {
+                        final PluginParameters updatedParameters = plugin.createParameters().copy();
+                        plugin.onPrerequisiteAttributeChange(graph, updatedParameters);
+                        analyticViewPane.getConfigurationPane().lookupSelectablePlugin(plugin).setUpdatedParameters(updatedParameters);
+                    });
+                    analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
+                }
+                
             });
         });
     }
@@ -159,7 +167,20 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
         }
+        suppressed = true;
         manualUpdate();
+        suppressed = false;
+        analyticViewPane.getConfigurationPane().updateState(false);
+    }
+    
+    @Override
+    protected void handleGraphOpened(final Graph graph) {
+        analyticViewPane.getConfigurationPane().updateState(false);
+    }
+    
+    @Override
+    protected void handleComponentOpened() {
+        analyticViewPane.getConfigurationPane().updateState(false);
     }
 
     public class AnalyticController {
