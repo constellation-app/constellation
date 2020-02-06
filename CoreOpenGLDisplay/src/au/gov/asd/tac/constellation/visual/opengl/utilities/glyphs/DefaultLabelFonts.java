@@ -31,7 +31,7 @@ public class DefaultLabelFonts implements ConstellationLabelFonts {
     @Override
     public List<String> getFontList() {
         final List<String> fontList = new ArrayList<>();
-        fontList.add("SansSerif");
+//        fontList.add("SansSerif");
         return Collections.unmodifiableList(fontList);
     }
 }
