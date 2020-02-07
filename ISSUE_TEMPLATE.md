@@ -2,11 +2,11 @@
 
 ### Requirements
 
-* Filling out the template is required. Any pull request that does not include 
-enough information to be reviewed in a timely manner may be closed at the 
+* Filling out the template is required. Any pull request that does not include
+enough information to be reviewed in a timely manner may be closed at the
 maintainers' discretion.
-* Have you read Constellation's Code of Conduct? By filing an issue, you are 
-expected to comply with it, including treating everyone with respect: 
+* Have you read Constellation's Code of Conduct? By filing an issue, you are
+expected to comply with it, including treating everyone with respect:
 https://github.com/constellation-app/constellation/blob/master/CODE_OF_CONDUCT.md
 
 -->

@@ -1,5 +1,8 @@
 # CONSTELLATION Changes
 
+## 2020-02-01 Changes in February 2020
+* Renamed SupporPackageAction to SupportPackageAction to fix a spelling typo.
+
 ## 2020-01-01 Changes in January 2020
 * Added LabelFontsOptionsPanel to allow setting of fonts rendered on the graph through the UI.
 * Added ConstellationLabelFonts interface to allow programmatic specification of default label fonts.
