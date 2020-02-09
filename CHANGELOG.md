@@ -1,5 +1,8 @@
 # CONSTELLATION Changes
 
+## 2020-02-01 Changes in February 2020
+* Renamed SupporPackageAction to SupportPackageAction to fix a spelling typo.
+
 ## 2019-12-01 Changes in December 2019
 * Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
 * Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.
