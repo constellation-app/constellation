@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.openide.modules.Places;
 
 /**
  * Create a support package
@@ -31,6 +32,15 @@ import java.util.zip.ZipOutputStream;
  * @author arcturus
  */
 public class SupportPackage {
+
+    /**
+     * The directory where log files are saved to
+     */
+    public static final String LOG_DIRECTORY = String.format("%s%svar%slog",
+            Places.getUserDirectory().getPath(),
+            File.separator,
+            File.separator
+    );
 
     /**
      * A convenient method to create a support package
