@@ -162,7 +162,7 @@ public class FontInfo {
                     }
                 }
             } else {
-                // Figure out something for Linux etc.
+                // Figure out something for Linux, etc.
                 return null;
             }
         }
@@ -208,7 +208,7 @@ public class FontInfo {
             line = line.trim();
             if (line.length() > 0 && !line.startsWith("#")) {
                 final String[] parts = line.trim().split("\\p{Zs}*,\\p{Zs}*");
-                final String fontName = parts[0];//.trim();
+                final String fontName = parts[0];
                 if (fontName.isEmpty()) {
                     ok = false;
                     messages.add(String.format("Line %d: Blank font name", lineno));
@@ -243,7 +243,7 @@ public class FontInfo {
                                         s.add(script);
                                     } catch (final IllegalArgumentException ex) {
                                         ok = false;
-                                        messages.add(String.format("Line %d: Unicode script '%s' does not exist", lineno, part));
+                                        messages.add(String.format("Line %d: Font style or unicode script '%s' does not exist", lineno, part));
                                     }
                                     break;
                             }
