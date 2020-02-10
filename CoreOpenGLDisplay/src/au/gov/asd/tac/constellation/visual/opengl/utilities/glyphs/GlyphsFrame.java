@@ -48,13 +48,14 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 /**
  * An application for viewing fonts rendered as glyphs in OpenGL.
- * 
+ *
  * @author algol
  */
 public class GlyphsFrame extends JFrame {
 
     private final GlyphManagerBI glyphManager;
     private final JFrame imageFrame;
+    private final Random random = new Random();
 
     // For copying to the clipboard.
     //
@@ -390,7 +391,6 @@ public class GlyphsFrame extends JFrame {
         final boolean isZalgo = cbZalgo.isSelected();
         if (isZalgo) {
             final List<Integer> codepoints = new ArrayList<>();
-            final Random random = new Random();
             final int length = line.length();
             for (int offset = 0; offset < length;) {
                 final int codepoint = line.codePointAt(offset);

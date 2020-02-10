@@ -31,7 +31,7 @@ import java.util.logging.Logger;
  */
 class FontRunSequence {
 
-    private static final Logger LOGGER = Logger.getLogger(GlyphManagerBI.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(FontRunSequence.class.getName());
 
     final String string;
     final Font font;

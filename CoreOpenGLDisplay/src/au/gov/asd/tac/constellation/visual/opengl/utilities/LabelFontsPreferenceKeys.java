@@ -23,7 +23,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * Preference keys for label font settings.
- * 
+ *
  * @author algol
  * @author cygnus_x-1
  */
@@ -32,23 +32,19 @@ public class LabelFontsPreferenceKeys {
     public static final String USE_DEFAULTS = "render.font.use_defaults";
     public static final String USE_MULTI_FONTS = "render.font.use_multi";
     public static final String FONT_LIST = "render.font.list";
-    
+
     public static final boolean USE_DEFAULTS_DEFAULT = true;
     public static final boolean USE_MULTI_FONTS_DEFAULT = ConstellationLabelFonts.getDefault().getUseMultiFonts();
     public static final String FONT_LIST_DEFAULT = ConstellationLabelFonts.getDefault().getFontListString();
 
     public static boolean useMultiFontLabels() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
-        final boolean use = prefs.getBoolean(USE_MULTI_FONTS, USE_MULTI_FONTS_DEFAULT);
-
-        return use;
+        return prefs.getBoolean(USE_MULTI_FONTS, USE_MULTI_FONTS_DEFAULT);
     }
 
     public static String getFontText() {
         final Preferences prefs = NbPreferences.forModule(LabelFontsPreferenceKeys.class);
-        final String text = prefs.get(FONT_LIST, FONT_LIST_DEFAULT);
-
-        return text;
+        return prefs.get(FONT_LIST, FONT_LIST_DEFAULT);
     }
 
     public static FontInfo[] getFontInfo() {

@@ -61,7 +61,7 @@ public class FontInfo {
         if (fontName.toLowerCase().endsWith(".otf") || fontName.toLowerCase().endsWith(".ttf")) {
             File otfFile = getOtfFont(fontName);
             if (otfFile != null) {
-                LOGGER.info(String.format("Reading font from %s", otfFile));
+                LOGGER.log(Level.INFO, "Reading font from {0}", otfFile);
                 try {
                     final Font otf = Font.createFont(Font.TRUETYPE_FONT, otfFile);
                     font = otf.deriveFont(fontStyle, fontSize);
@@ -127,7 +127,7 @@ public class FontInfo {
      * @return True if this is a suitable default font, otherwise false.
      */
     public boolean isDefault(final String defaultName) {
-        return fontName.trim().toLowerCase().equals(defaultName.toLowerCase())
+        return fontName.trim().equalsIgnoreCase(defaultName)
                 && mustHave.isEmpty()
                 && mustNotHave.isEmpty();
     }

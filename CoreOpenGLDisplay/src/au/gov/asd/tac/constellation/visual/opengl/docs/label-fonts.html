@@ -55,21 +55,21 @@
         </p>
         <p>
             Fonts can be specified using either their font name, or the name of the file containing the font.
-            OpenType font files (<tt>.otf</tt>) and some TrueType font files (<tt>.ttf</tt>)
+            OpenType font files (<span class="mono">.otf</span>) and some TrueType font files (<span class="mono">.ttf</span>)
             must be specified using the filename.
         </p>
         <p>
-            On Windows, if an OTF font file name such as <tt>NotoSerifSC-Regular.otf</tt> is specified,
+            On Windows, if an OTF font file name such as <span class="mono">NotoSerifSC-Regular.otf</span> is specified,
             the file will first be looked for in the user's local profile font directory
-            <tt>%LOCALAPPDATA%/Microsoft/Windows/Fonts/NotoSerifSC-Regular.otf</tt>, then the windows directory
-            <tt>%WINDIR%/Fonts/NotoSerifSC-Regular.otf</tt>.
+            <span class="mono">%LOCALAPPDATA%/Microsoft/Windows/Fonts/NotoSerifSC-Regular.otf</span>, then the windows directory
+            <span class="mono">%WINDIR%/Fonts/NotoSerifSC-Regular.otf</span>.
         </p>
         <p>
-            An absolute filename (<tt>C:/MyFonts/font1.ttf</tt> or <tt>/fonts/font1.ttf</tt>) can be used
+            An absolute filename (<span class="mono">C:/MyFonts/font1.ttf</span> or <span class="mono">/fonts/font1.ttf</span>) can be used
             to specify a font file.
         </p>
         <p>
-            Blank lines and lines beginning with <tt>#</tt> are ignored.
+            Blank lines and lines beginning with <span class="mono">#</span> are ignored.
         </p>
         <p>
             An example:
@@ -80,15 +80,15 @@
             C:\Users\User1\Downloads\Fonts\NotoSerifCJKtc-Regular.otf
         </pre>
         <p>
-            This configuration first attempts to use the installed font <tt>Courier New</tt>,
-            then the installed font <tt>Noto Sans Arabic</tt>, and finally the font in the
-            file <tt>C:\Users\User1\Downloads\Fonts\NotoSerifCJKtc-Regular.otf</tt>.
+            This configuration first attempts to use the installed font <span class="mono">Courier New</span>,
+            then the installed font <span class="mono">Noto Sans Arabic</span>, and finally the font in the
+            file <span class="mono">C:\Users\User1\Downloads\Fonts\NotoSerifCJKtc-Regular.otf</span>.
         </p>
 
         <h3>Font tags</h3>
         <p>
             Fonts can be tagged with additional information. Adding one of the tags
-            <tt>BOLD</tt>, <tt>ITALIC</tt>, or <tt>BOLD_ITALIC</tt> will have the
+            <span class="mono">BOLD</span>, <span class="mono">ITALIC</span>, or <span class="mono">BOLD_ITALIC</span> will have the
             corresponding effect on the font.
         </p>
         <pre>
@@ -97,7 +97,7 @@
             C:\Users\User1\Downloads\Fonts\NotoSerifCJKtc-Regular.otf
         </pre>
         <p>
-            This configuration is the same as the previous one, but uses <tt>Courier New Bold</tt>.
+            This configuration is the same as the previous one, but uses <span class="mono">Courier New Bold</span>.
         </p>
 
         <h3>Script tags</h3>
@@ -136,10 +136,10 @@
         <h3>Fallback font</h3>
         <p>
             Regardless of the fonts that are specified, CONSTELLATION appends the
-            Java font <tt>SansSerif</tt> to the font list. (On Windows this is typically
+            Java font <span class="mono">SansSerif</span> to the font list. (On Windows this is typically
             Arial combined with some other fonts.) Even if the list is empty,
             or the fonts in the list cannot display all of the codepoints required
-            for labels, CONSTELLATION will always attempt to use <tt>SansSerif</tt>.
+            for labels, CONSTELLATION will always attempt to use <span class="mono">SansSerif</span>.
             This does not guarantee that all codepoints can be displayed
         </p>
 

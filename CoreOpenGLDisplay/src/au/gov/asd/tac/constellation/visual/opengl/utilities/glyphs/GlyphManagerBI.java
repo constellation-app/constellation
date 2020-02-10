@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 
@@ -56,7 +57,6 @@ public final class GlyphManagerBI implements GlyphManager {
     public static final String DEFAULT_FONT_NAME = Font.SANS_SERIF;
     public static final int DEFAULT_FONT_STYLE = Font.PLAIN;
     public static final int DEFAULT_FONT_SIZE = 64;
-//    public static final Font DEFAULT_FONT = new Font(DEFAULT_FONT_NAME, Font.PLAIN, DEFAULT_FONT_SIZE);
 
     public static final int DEFAULT_BUFFER_TYPE = BufferedImage.TYPE_BYTE_GRAY;
 
@@ -93,7 +93,9 @@ public final class GlyphManagerBI implements GlyphManager {
     // Which boundaries do we draw?
     // These are only used in the standalone context.
     //
-    private boolean drawRuns, drawIndividual, drawCombined;
+    private boolean drawRuns;
+    private boolean drawIndividual;
+    private boolean drawCombined;
 
     private final GlyphRectangleBuffer textureBuffer;
 
@@ -103,12 +105,12 @@ public final class GlyphManagerBI implements GlyphManager {
     private static final GlyphStream DEFAULT_GLYPH_STREAM = new GlyphStream() {
         @Override
         public void newLine(final float width) {
-            System.out.printf("GlyphStream newLine %f\n", width);
+            LOGGER.log(Level.INFO, "GlyphStream newLine {0}%n", width);
         }
 
         @Override
         public void addGlyph(final int glyphPosition, final float x, final float y) {
-            System.out.printf("GlyphStream addGlyph %d %f %f\n", glyphPosition, x, y);
+            LOGGER.log(Level.INFO, "GlyphStream addGlyph {0} {1} {2}%n", new Object[]{glyphPosition, x, y});
         }
     };
 
@@ -118,10 +120,12 @@ public final class GlyphManagerBI implements GlyphManager {
 
     /**
      *
-     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
+     * @param fontsInfo The fonts (and associated info) to be used for rendering
+     * text.
      * @param textureBufferSize The size of the texture buffer.
-     * @param bufferType For normal font rendering in CONSTELLATION, use BufferedImage.TYPE_BYTE_GRAY.
-     *      To see colors in the standalone renderer, use BufferedImage.TYPE_INT_ARGB.
+     * @param bufferType For normal font rendering in CONSTELLATION, use
+     * BufferedImage.TYPE_BYTE_GRAY. To see colors in the standalone renderer,
+     * use BufferedImage.TYPE_INT_ARGB.
      */
     public GlyphManagerBI(final FontInfo[] fontsInfo, final int textureBufferSize, final int bufferType) {
 
@@ -146,7 +150,7 @@ public final class GlyphManagerBI implements GlyphManager {
         //
         final int drawingWidth = 50 * maxFontHeight;
         final int drawingHeight = 2 * maxFontHeight;
-        LOGGER.info(String.format("Drawing buffer size: width=%d height=%d type=%d", drawingWidth, drawingHeight, bufferType));
+        LOGGER.log(Level.INFO, "Drawing buffer size: width={0} height={1} type={2}", new Object[]{drawingWidth, drawingHeight, bufferType});
         drawing = new BufferedImage(drawingWidth, drawingHeight, bufferType);
         basey = maxFontHeight;
 
@@ -194,7 +198,8 @@ public final class GlyphManagerBI implements GlyphManager {
      * fonts need special treatment. Names ending in ".otf" are treated as
      * filenames.
      *
-     * @param fontsInfo The fonts (and associated info) to be used for rendering text.
+     * @param fontsInfo The fonts (and associated info) to be used for rendering
+     * text.
      */
     public void setFonts(final FontInfo[] fontsInfo) {
         // If the fontName array does not contain the default font, add it to the end.
@@ -208,7 +213,7 @@ public final class GlyphManagerBI implements GlyphManager {
         }
 
         for (int i = 0; i < this.fontsInfo.length; i++) {
-            LOGGER.info(String.format("Font %d: %s", i, this.fontsInfo[i]));
+            LOGGER.log(Level.INFO, "Font {0}: {1}", new Object[]{i, this.fontsInfo[i]});
         }
 
         // Create a temporary BufferedImage so we can get the metrics we need.

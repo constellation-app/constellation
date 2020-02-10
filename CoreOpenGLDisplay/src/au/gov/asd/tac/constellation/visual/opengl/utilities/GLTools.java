@@ -544,7 +544,7 @@ public final class GLTools {
                 final int zoffset = i;
                 gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
                 data.destroy();
-            } catch (final Throwable ex) {
+            } catch (final RuntimeException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
 
@@ -632,7 +632,7 @@ public final class GLTools {
                         gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
                         data.destroy();
                     }
-                } catch (final Throwable ex) {
+                } catch (final RuntimeException ex) {
                     System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }

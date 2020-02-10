@@ -93,7 +93,7 @@ public class GlyphManagerFX implements GlyphManager {
         FORBIDDEN_CONTROL_CHARACTERS[0x206f - FIRST_FORIDDEN_CHARACTER] = true;
     }
 
-    private static char[] CLEAN_STRING_BUFFER = new char[1024];
+    private static char[] cleanStringBuffer = new char[1024];
 
     private static String cleanString(String original) {
 
@@ -102,11 +102,11 @@ public class GlyphManagerFX implements GlyphManager {
         }
 
         final int length = original.length();
-        if (CLEAN_STRING_BUFFER.length < length) {
-            CLEAN_STRING_BUFFER = new char[length];
+        if (cleanStringBuffer.length < length) {
+            cleanStringBuffer = new char[length];
         }
 
-        final char[] buffer = CLEAN_STRING_BUFFER;
+        final char[] buffer = cleanStringBuffer;
         final boolean[] forbidden = FORBIDDEN_CONTROL_CHARACTERS;
 
         original.getChars(0, length, buffer, 0);
@@ -138,7 +138,7 @@ public class GlyphManagerFX implements GlyphManager {
 
     // A comparator that compares GlyphLocations in a way that ensures that their left boundaries are ascending
     private static final Comparator<GlyphLocation> GLYPH_LOCATION_COMPARATOR = (GlyphLocation a, GlyphLocation b) -> {
-        return Float.compare(a.left, b.left);
+        return Float.compare(a.getLeft(), b.getLeft());
     };
 
     // A singleton layout instance
@@ -234,10 +234,12 @@ public class GlyphManagerFX implements GlyphManager {
         replacementGlyphCode = fontStrike.getGlyph(' ').getGlyphCode();
     }
 
+    @Override
     public int getTextureWidth() {
         return textureWidth;
     }
 
+    @Override
     public int getTextureHeight() {
         return textureHeight;
     }
@@ -247,6 +249,7 @@ public class GlyphManagerFX implements GlyphManager {
      *
      * @return the number of glyphs.
      */
+    @Override
     public int getGlyphCount() {
         return glyphCount;
     }
@@ -256,6 +259,7 @@ public class GlyphManagerFX implements GlyphManager {
      *
      * @return the number of glyph pages.
      */
+    @Override
     public int getGlyphPageCount() {
         return glyphTextures.size();
     }
@@ -271,6 +275,7 @@ public class GlyphManagerFX implements GlyphManager {
      *
      * @return an array holding the texture coordinates of each glyph.
      */
+    @Override
     public float[] getGlyphTextureCoordinates() {
         return glyphTextureCoordinates;
     }
@@ -282,6 +287,7 @@ public class GlyphManagerFX implements GlyphManager {
      * @return the scaling factor that should be applied to glyph texture widths
      * to convert them to display widths.
      */
+    @Override
     public float getWidthScalingFactor() {
         return widthScalingFactor;
     }
@@ -293,6 +299,7 @@ public class GlyphManagerFX implements GlyphManager {
      * @return the scaling factor that should be applied to glyph texture
      * heights to convert them to display heights.
      */
+    @Override
     public float getHeightScalingFactor() {
         return heightScalingFactor;
     }
@@ -306,6 +313,7 @@ public class GlyphManagerFX implements GlyphManager {
         }
     }
 
+    @Override
     public int createBackgroundGlyph(float alpha) {
         validateGlyphLocation(fontLineHeight, fontLineHeight);
 
@@ -366,8 +374,8 @@ public class GlyphManagerFX implements GlyphManager {
         for (GlyphList glyphList : glyphLists) {
 
             // Each run will have a number of glyphs
-            int glyphCount = glyphList.getGlyphCount();
-            for (int g = 0; g < glyphCount; g++) {
+            int currentGlyphCount = glyphList.getGlyphCount();
+            for (int g = 0; g < currentGlyphCount; g++) {
 
                 // See if we have already seen this glyph before
                 GlyphInfo glyphInfo = getGlyphInfo(glyphList.getGlyphCode(g));
@@ -392,6 +400,7 @@ public class GlyphManagerFX implements GlyphManager {
      * @param text the text containing the characters to be rendered.
      * @param glyphStream the glyph stream to output the characters to.
      */
+    @Override
     public synchronized void renderTextAsLigatures(String text, GlyphStream glyphStream) {
 
         if (text.contains("\n")) {
@@ -433,20 +442,19 @@ public class GlyphManagerFX implements GlyphManager {
         for (GlyphList glyphList : glyphLists) {
             float advance = glyphList.getLocation().x + advanceCentre;
 
-            int glyphCount = glyphList.getGlyphCount();
-
-            if (glyphCount == 0) {
+            int currentGlyphCount = glyphList.getGlyphCount();
+            if (currentGlyphCount == 0) {
                 continue;
             }
 
-            ensureGlyphLocationCapacity(glyphCount);
+            ensureGlyphLocationCapacity(currentGlyphCount);
 
             boolean ordered = true;
             boolean separated = true;
 
             glyphLocations[0].init(glyphList.getGlyphCode(0), glyphList.getPosX(0), glyphList.getPosY(0));
 
-            for (int g = 1; g < glyphCount; g++) {
+            for (int g = 1; g < currentGlyphCount; g++) {
 
                 glyphLocations[g].init(glyphList.getGlyphCode(g), glyphList.getPosX(g), glyphList.getPosY(g));
 
@@ -456,7 +464,7 @@ public class GlyphManagerFX implements GlyphManager {
 
             // If all the glyphs are separated from each other then just draw them individually
             if (separated) {
-                for (int g = 0; g < glyphCount; g++) {
+                for (int g = 0; g < currentGlyphCount; g++) {
                     GlyphLocation glyphLocation = glyphLocations[g];
                     glyphLocation.glyph.ensureRenderedToTexture();
                     glyphLocation.sendToGlyphStream(glyphStream, advance);
@@ -467,7 +475,7 @@ public class GlyphManagerFX implements GlyphManager {
 
                 // Sort the glyphs so that their left boundaries are in ascending order (if not already the case)
                 if (!ordered) {
-                    Arrays.sort(glyphLocations, 0, glyphCount, GLYPH_LOCATION_COMPARATOR);
+                    Arrays.sort(glyphLocations, 0, currentGlyphCount, GLYPH_LOCATION_COMPARATOR);
                 }
 
                 // Start with only the first glyph in a group
@@ -476,7 +484,7 @@ public class GlyphManagerFX implements GlyphManager {
                 float groupRight = 0;
 
                 // Process each glyph from left to right
-                while (currentGlyph < glyphCount) {
+                while (currentGlyph < currentGlyphCount) {
 
                     // Extend the right edge of the current group to include the current glyph
                     groupRight = Math.max(groupRight, glyphLocations[currentGlyph].right);
@@ -486,7 +494,7 @@ public class GlyphManagerFX implements GlyphManager {
 
                     // If the current glyph is the last glyph or does not overlap with those currently in the group
                     // then render the group we have so far. The current glyph will start a new group.
-                    if (currentGlyph == glyphCount || glyphLocations[currentGlyph].left > groupRight) {
+                    if (currentGlyph == currentGlyphCount || glyphLocations[currentGlyph].left > groupRight) {
 
                         // If there is only 1 glyph in this group then render it as a single glyph
                         if (firstGlyph == currentGlyph - 1) {
@@ -560,6 +568,7 @@ public class GlyphManagerFX implements GlyphManager {
      * @param page the glyph texture page to read.
      * @param buffer the buffer to store the pixel data in.
      */
+    @Override
     public void readGlyphTexturePage(int page, ByteBuffer buffer) {
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -573,6 +582,7 @@ public class GlyphManagerFX implements GlyphManager {
                 latch.await();
                 waiting = false;
             } catch (InterruptedException ex) {
+                // do nothing
             }
         }
     }
@@ -749,6 +759,7 @@ public class GlyphManagerFX implements GlyphManager {
      *
      * @throws IOException if an error occurs while writing the image.
      */
+    @Override
     public void writeGlyphBuffer(int page, OutputStream out) throws IOException {
         WritableImage image = new WritableImage((int) currentGlyphTexture.getWidth(), (int) currentGlyphTexture.getHeight());
         glyphTextures.get(page).snapshot(DEFAULT_SNAPSHOT_PARAMETER_IDS, image);
@@ -812,10 +823,13 @@ public class GlyphManagerFX implements GlyphManager {
 
     private class GlyphCollection {
 
-        public final float width, height;
-        public final float originX, originY;
+        public final float width;
+        public final float height;
+        public final float originX;
+        public final float originY;
         private final int[] glyphCodes;
-        private final float[] offsetX, offsetY;
+        private final float[] offsetX;
+        private final float[] offsetY;
         private final int hashCode;
 
         public GlyphCollection(GlyphLocation[] glyphLocations, int firstGlyph, int lastGlyph) {
@@ -911,7 +925,7 @@ public class GlyphManagerFX implements GlyphManager {
         public final Shape shape;
         public final RectBounds bounds;
 
-        public int position = -1;
+        private int position = -1;
 
         public GlyphInfo(int glyphCode) {
             // TODO: this needs to be reviewed as we are probably doing the
@@ -947,8 +961,11 @@ public class GlyphManagerFX implements GlyphManager {
 
     private class GlyphLocation {
 
-        public GlyphInfo glyph;
-        public float x, y, left, right;
+        private GlyphInfo glyph;
+        private float x;
+        private float y;
+        private float left;
+        private float right;
 
         public void init(int glyphCode, float x, float y) {
             this.glyph = getGlyphInfo(glyphCode);
@@ -961,5 +978,46 @@ public class GlyphManagerFX implements GlyphManager {
         public void sendToGlyphStream(GlyphStream glyphStream, float advance) {
             glyph.sendToGlyphStream(glyphStream, x + advance, y);
         }
+
+        public GlyphInfo getGlyph() {
+            return glyph;
+        }
+
+        public void setGlyph(GlyphInfo glyph) {
+            this.glyph = glyph;
+        }
+
+        public float getX() {
+            return x;
+        }
+
+        public void setX(float x) {
+            this.x = x;
+        }
+
+        public float getY() {
+            return y;
+        }
+
+        public void setY(float y) {
+            this.y = y;
+        }
+
+        public float getLeft() {
+            return left;
+        }
+
+        public void setLeft(float left) {
+            this.left = left;
+        }
+
+        public float getRight() {
+            return right;
+        }
+
+        public void setRight(float right) {
+            this.right = right;
+        }
+
     }
 }

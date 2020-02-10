@@ -71,7 +71,6 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
         }
 
         // TODO: Look for UNIX fonts.
-
         Arrays.sort(availableFonts);
         labelFontsOptionsPanel.setAvailableFonts(availableFonts);
 

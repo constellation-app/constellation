@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -109,7 +109,7 @@ public final class SharedDrawable {
 
             // Create shared glyph coordinates and glyph image textures using a GlyphManager
             final boolean useMultiFonts = LabelFontsPreferenceKeys.useMultiFontLabels();
-            if(useMultiFonts) {
+            if (useMultiFonts) {
                 glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo());
             } else {
                 glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);

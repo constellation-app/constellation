@@ -27,7 +27,6 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JScrollPane;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.openide.util.HelpCtx;
 
 /**
  * An options panel allowing customisation of label fonts.
@@ -37,10 +36,7 @@ import org.openide.util.HelpCtx;
  */
 final class LabelFontsOptionsPanel extends javax.swing.JPanel {
 
-    private final LabelFontsOptionsPanelController controller;
-
     LabelFontsOptionsPanel(LabelFontsOptionsPanelController controller) {
-        this.controller = controller;
         initComponents();
 
         final JNumberedTextArea numberedTextArea = new JNumberedTextArea(fontListTextArea);
