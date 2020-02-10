@@ -183,13 +183,12 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             if (parameter.getParameterValue().getGuiInit() != null) {
                 parameter.getParameterValue().getGuiInit().init(field);
             }
-
-            // Making the field enabled but not editable gives no visual indication of the fact that it isn't editable.
-            // Making the field disabled makes it hard to read and disables the scrollbar.
-            // Take the lesser of two evils.
+            // If parameter is enabled, ensure widget is both enabled and editable.
             field.setEditable(parameter.isEnabled());
+            field.setDisable(!parameter.isEnabled());
             field.setManaged(parameter.isVisible());
             field.setVisible(parameter.isVisible());
+            recentValuesCombo.setDisable(!parameter.isEnabled());
             this.setManaged(parameter.isVisible());
             this.setVisible(parameter.isVisible());
 
@@ -258,6 +257,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             }
                             break;
                         case ENABLED:
+                            // If enabled, then ensure widget is both editable and enabled.
+                            field.setEditable(pluginParameter.isEnabled());
                             field.setDisable(!pluginParameter.isEnabled());
                             recentValuesCombo.setDisable(!pluginParameter.isEnabled());
                             break;
