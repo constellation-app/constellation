@@ -29,7 +29,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.dim.SelectUndimmedAction")
-@ActionRegistration(displayName = "#CTL_SelectUndimmedAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/select_undimmed.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectUndimmedAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/resources/select_undimmed.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Selection", position = 600)
 @Messages("CTL_SelectUndimmedAction=Select Undimmed")
 public final class SelectUndimmedAction extends SimplePluginAction {

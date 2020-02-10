@@ -37,7 +37,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.blaze.RemoveBlazeAction")
-@ActionRegistration(displayName = "#CTL_RemoveBlazeAction", iconBase = "au/gov/asd/tac/constellation/functionality/blaze/removeblaze.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_RemoveBlazeAction", iconBase = "au/gov/asd/tac/constellation/functionality/blaze/resources/removeblaze.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 700)
 })

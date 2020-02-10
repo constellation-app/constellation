@@ -305,7 +305,7 @@ public class AnalyticConfigurationPane extends VBox {
             this.documentationView = new WebView();
             documentationView.setFontScale(0.5);
             documentationView.getEngine().setUserStyleSheetLocation(
-                    getClass().getResource("resources/documentation.css").toExternalForm());
+                    getClass().getResource("resources/analytic-view.css").toExternalForm());
             populateDocumentationPane(null);
             cdl.countDown();
         });

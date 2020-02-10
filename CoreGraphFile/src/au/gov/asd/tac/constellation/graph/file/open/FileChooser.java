@@ -72,7 +72,7 @@ import org.openide.util.lookup.ServiceProvider;
 class FileChooser extends JFileChooser {
 
     @StaticResource
-    private static final String NEBULA_PNG = "au/gov/asd/tac/constellation/graph/file/nebula/nebula.png";
+    private static final String NEBULA_PNG = "au/gov/asd/tac/constellation/graph/file/nebula/resources/nebula.png";
     private static final ImageIcon NEBULA_ICON = ImageUtilities.loadImageIcon(NEBULA_PNG, false);
 
     /**

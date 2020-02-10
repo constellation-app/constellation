@@ -35,7 +35,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetToNZAxisAction")
-@ActionRegistration(displayName = "#CTL_ResetToNZAxisAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/axis_z_negative.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ResetToNZAxisAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/resources/axis_z_negative.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display/Reset View by Axis", position = 600)
 })

@@ -31,7 +31,7 @@ import org.openide.util.NbBundle;
  * @author aquila
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectLoopsAction")
-@ActionRegistration(displayName = "#CTL_SelectLoopsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/loop.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectLoopsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/loop.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 900),
     @ActionReference(path = "Toolbars/Selection", position = 200)

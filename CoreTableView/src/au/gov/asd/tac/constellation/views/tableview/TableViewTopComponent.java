@@ -115,7 +115,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "TableViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/tableview/resources/table_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/tableview/resources/table-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -167,7 +167,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private static final Object OWN_WRITE = new Object();
 
     @StaticResource
-    private static final String SELECTED_ONLY_ICON = "au/gov/asd/tac/constellation/views/tableview/resources/selected_only.png";
+    private static final String SELECTED_ONLY_ICON = "au/gov/asd/tac/constellation/views/tableview/resources/selected-only.png";
     protected static final Icon SELECTED_ONLY = ImageUtilities.loadImageIcon(SELECTED_ONLY_ICON, false);
     protected static final Icon VX_ICON = UserInterfaceIconProvider.NODES.buildIcon(16);
     protected static final Icon TX_ICON = UserInterfaceIconProvider.CONNECTIONS.buildIcon(16);

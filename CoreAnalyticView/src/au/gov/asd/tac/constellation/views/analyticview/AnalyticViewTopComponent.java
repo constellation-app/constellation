@@ -45,7 +45,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "AnalyticViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/analyticview/resources/analytic_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/analyticview/resources/analytic-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

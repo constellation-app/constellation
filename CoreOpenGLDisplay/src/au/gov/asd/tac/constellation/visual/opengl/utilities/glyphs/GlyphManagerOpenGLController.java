@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.utilities;
+package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import javafx.application.Platform;
 
 /**
  * The GlyphManagerOpenGLController manages the OpenGL buffers necessary to
@@ -176,19 +174,7 @@ public class GlyphManagerOpenGLController {
                 pixelBuffer.rewind();
             } else {
                 pixelBuffer = ByteBuffer.allocateDirect(width * height);
-                CountDownLatch latch = new CountDownLatch(1);
-                Platform.runLater(() -> {
-                    glyphManager.readGlyphTexturePage(glyphsPagesBuffered, pixelBuffer);
-                    latch.countDown();
-                });
-                boolean waiting = true;
-                while (waiting) {
-                    try {
-                        latch.await();
-                        waiting = false;
-                    } catch (InterruptedException ex) {
-                    }
-                }
+                glyphManager.readGlyphTexturePage(glyphsPagesBuffered, pixelBuffer);
                 glyphsPageBuffers.add(pixelBuffer);
                 pixelBuffer.flip();
             }
