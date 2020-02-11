@@ -34,15 +34,6 @@ import org.openide.modules.Places;
 public class SupportPackage {
 
     /**
-     * The directory where log files are saved to
-     */
-    public static final String LOG_DIRECTORY = String.format("%s%svar%slog",
-            Places.getUserDirectory().getPath(),
-            File.separator,
-            File.separator
-    );
-
-    /**
      * A convenient method to create a support package
      *
      * @param sourceDirectory The folder to zip
@@ -103,6 +94,15 @@ public class SupportPackage {
                 generateFileList(new File(node, filename), list, startFolder);
             }
         }
+    }
+
+    /**
+     * The directory where log files are saved to
+     *
+     * @return A String of the directory the user log files are saved
+     */
+    public static String getUserLogDirectory() {
+        return String.format("%s%svar%slog", Places.getUserDirectory().getPath(), File.separator, File.separator);
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
