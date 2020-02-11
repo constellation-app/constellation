@@ -64,22 +64,48 @@
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
-    <target name="-download-javahelp-file" >
+    
+    <target name="-download-gluegen" >
         <mkdir dir="${ivy.lib.dir}"/>
-
-        <echo message="installing netbeans help files to ... ${nbplatform.default.netbeans.dest.dir}"/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
-             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true"/>
+        <echo message="installing gluegen..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt-natives-linux-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt-natives-linux-i586.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt-natives-macosx-universal.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt-natives-windows-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/gluegen-rt-natives-windows-i586.jar"/>
+        </get>
     </target>
     
-    <target name="-download-javahelp-indexfile" >
+    <target name="-download-jocl" >
         <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing netbeans help index files... ${nbplatform.default.netbeans.dest.dir}"/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
-             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
+        <echo message="installing jocl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl-natives-linux-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl-natives-linux-i586.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl-natives-macosx-universal.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl-natives-windows-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jocl-natives-windows-i586.jar"/>
+        </get>
     </target>
+    
+    <target name="-download-jogl" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing jogl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all-natives-linux-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all-natives-linux-i586.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all-natives-macosx-universal.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all-natives-windows-amd64.jar"/>
+            <url url="https://jogamp.org/deployment/v2.4.0-rc-20200202/jar/jogl-all-natives-windows-i586.jar"/>
+        </get>
+    </target>
+
   	
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps,-download-javahelp-file,-download-javahelp-indexfile"
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl"
             description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
