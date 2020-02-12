@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
-import static au.gov.asd.tac.constellation.utilities.support.SupportPackage.LOG_DIRECTORY;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -58,7 +57,7 @@ public final class SupportPackageAction implements ActionListener {
             final SupportPackage supportPackage = new SupportPackage();
             final Thread supportPackageThread = new Thread(() -> {
                 try {
-                    supportPackage.createSupportPackage(new File(LOG_DIRECTORY), destination);
+                    supportPackage.createSupportPackage(new File(SupportPackage.getUserLogDirectory()), destination);
                     final NotifyDescriptor nd = new NotifyDescriptor.Message("Support package saved successfully to " + destination.getPath(), NotifyDescriptor.INFORMATION_MESSAGE);
                     DialogDisplayer.getDefault().notify(nd);
                 } catch (IOException ex) {

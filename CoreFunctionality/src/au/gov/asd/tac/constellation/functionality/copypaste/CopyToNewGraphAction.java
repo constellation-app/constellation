@@ -28,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
  * Copy the current selected elements to a new graph
  */
 @ActionID(category = "Edit", id = "au.gov.asd.tac.constellation.functionality.copypaste.CopyToNewGraphAction")
-@ActionRegistration(displayName = "#CTL_CopyToNewGraphAction", iconBase = "au/gov/asd/tac/constellation/functionality/copypaste/copy_to_new_graph.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CopyToNewGraphAction", iconBase = "au/gov/asd/tac/constellation/functionality/copypaste/resources/copy_to_new_graph.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Edit", position = 600),
     @ActionReference(path = "Toolbars/File", position = 1),

@@ -41,7 +41,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "ScatterPlotTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/scatterplot/resources/scatter_plot.png",
+        iconBase = "au/gov/asd/tac/constellation/views/scatterplot/resources/scatter-plot.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -210,7 +210,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected String createStyle() {
-        return "resources/scatterplot.css";
+        return "resources/scatter-plot.css";
     }
 
     @Override

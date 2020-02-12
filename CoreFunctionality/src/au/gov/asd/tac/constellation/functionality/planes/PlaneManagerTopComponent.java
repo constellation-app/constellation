@@ -79,7 +79,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "PlaneManagerTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/functionality/planes/plane_manager.png",
+        iconBase = "au/gov/asd/tac/constellation/functionality/planes/resources/plane-manager.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

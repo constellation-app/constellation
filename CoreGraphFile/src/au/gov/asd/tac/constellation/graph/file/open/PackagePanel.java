@@ -127,8 +127,8 @@ public class PackagePanel extends JPanel {
             list.setSelectedIndex(pkgLevel);
         }
         list.setCellRenderer(new ListCellRenderer() {
-            private final Icon folderIcon = new ImageIcon(OpenFile.class.getResource("folder.gif")); // NOI18N
-            private final Icon rootFolderIcon = new ImageIcon(OpenFile.class.getResource("rootFolder.gif")); // NOI18N
+            private final Icon folderIcon = new ImageIcon(OpenFile.class.getResource("resources/folder.gif")); // NOI18N
+            private final Icon rootFolderIcon = new ImageIcon(OpenFile.class.getResource("resources/rootFolder.gif")); // NOI18N
             private final JLabel lab = new JLabel();
 
             @Override

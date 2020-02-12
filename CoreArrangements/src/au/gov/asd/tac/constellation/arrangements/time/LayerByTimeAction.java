@@ -38,7 +38,7 @@ import org.openide.util.NbBundle.Messages;
  * @author procyon
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.time.LayerByTimeAction")
-@ActionRegistration(displayName = "#CTL_LayerByTimeAction", iconBase = "au/gov/asd/tac/constellation/arrangements/time/time.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_LayerByTimeAction", iconBase = "au/gov/asd/tac/constellation/arrangements/time/resources/time.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Arrange", position = 1210)
 @Messages({
     "CTL_LayerByTimeAction=Layer by Time",
