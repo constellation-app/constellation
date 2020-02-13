@@ -5,7 +5,7 @@
 <p>Stability improvements have been made to the Analytic view when switching between graphs and having the Analytic view state updated.</p>
 
 == 2020-02-06 Data Access View
-<p>You can now have Data Access Plugins be deselected after pressing the Go button. This is a preference option available from the Data Access View options menu.</p>
+<p>You can now have Data Access Plugins be deselected after pressing the <strong>Go</string> button. This is a preference option available from the Data Access View options menu.</p>
 
 == 2020-01-28 Data Access View
 <p>A bug has been fixed with the Data Access View which caused the application to lock up when it was opened.</p>
@@ -22,8 +22,8 @@
 == 2020-01-15 New Flag Icons
 <p>We have updated the flag icons we use which are more detailed and of better quality.</p>
 
-== 2020-01-13 Hierachical Clustering
-<p>A bug with the hierachical clustering not reverting the graph after the pane was closed has been fixed.</p>
+== 2020-01-13 Hierarchical Clustering
+<p>A bug with the hierarchical clustering not reverting the graph after the pane was closed has been fixed.</p>
 
 == 2020-01-13 KTruss Clustering
 <p>A bug with the KTruss clustering not reverting the graph after the pane was closed has been fixed.</p>
@@ -41,7 +41,7 @@
 <p>Improvements have been made to the error handling when errors occur with the REST client.</p>
 
 == 2019-10-11 Jupyter Notebooks
-<p>You can now specify which graph you want to run a plugin in by specifying the <pre>graph id</pre>. For more information refer to the documentation by going to Tools &gt; Display REST Server Documentation.</p>
+<p>You can now specify which graph you want to run a plugin in by specifying the <strong>graph id</strong>. For more information refer to the documentation by going to Tools &gt; Display REST Server Documentation.</p>
 
 == 2019-10-09 Jupyter Notebooks
 <p>You can now add custom blazes from a Jupyter Notebook. For more information see <a href="https://github.com/constellation-app/constellation/issues/139">139</a>.</p>
@@ -49,7 +49,7 @@
 == 2019-10-01 Jupyter Notebooks
 <p>A bug has been fixed interpreting strings which look like numbers as numbers in a pandas dataframe. For more information see <a href="https://github.com/constellation-app/constellation/issues/133">#133</a>.</p>
 
-== 2019-07-30 Remeber last save
+== 2019-07-30 Remember last save
 <p>Constellation will remember the location you last saved a graph. You can change this behaviour from Tools &gt; Options &gt; Constellation.</p>
 
 == 2019-07-30 Data Access View Plugin Search
@@ -584,7 +584,7 @@ For more information click <a href="" helpId="au.gov.asd.tac.constellation.views
 <p>CONSTELLATION will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
 you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, CONSTELLATION might try and cleanup
 unused memory. This is still an experimental feature. Similar to clearing memory on graph close, the option is under
-Tools &gt; Options &gt; CONSTELLATION &gt; Application and is enabled by default.</p>
+Setup &gt; Options &gt; CONSTELLATION &gt; Application and is enabled by default.</p>
 
 == 2015-09-01 Label Rendering Improvements
 <p>The rendering of labels has been improved to display text more accurately (including right-to-left text) and improve compatibility with more graphics cards.</p>
