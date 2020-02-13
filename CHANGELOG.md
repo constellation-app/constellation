@@ -1,4 +1,6 @@
 # CONSTELLATION Changes
+## 2020-02-01
+* Updated JOGL to 2.4.0 to assist in migration to JDK11. Files hosted as third-party dependencies on github until available on maven.
 
 ## 2019-12-01 Changes in December 2019
 * Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
