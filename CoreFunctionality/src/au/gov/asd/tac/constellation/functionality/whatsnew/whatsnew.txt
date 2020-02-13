@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-02-07 Font Improvements
+<p>Support for rendering fonts in a Constellation graph has been overhauled enabling support for multiple fonts.
+Font preferences for the graph can be made by going to Setup &gt; Options &gt; Constellation &gt; Label Fonts. 
+For more information click on the help button located at the bottom right corner within this preference window.</p>
+
 == 2020-02-06 Analytic View
 <p>Stability improvements have been made to the Analytic view when switching between graphs and having the Analytic view state updated.</p>
 
