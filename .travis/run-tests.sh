@@ -24,4 +24,4 @@ ant \
   -Dbuild.compiler.debug=truenbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true clean build
+  -Dbuild.compiler.debug=true build #clean build
