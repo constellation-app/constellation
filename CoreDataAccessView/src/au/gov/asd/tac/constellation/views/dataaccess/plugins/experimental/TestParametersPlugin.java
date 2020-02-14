@@ -156,7 +156,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();
-        final String css = TestParametersPlugin.class.getResource("test.css").toExternalForm();
+        final String css = TestParametersPlugin.class.getResource("resources/test.css").toExternalForm();
 
         final BooleanParameterValue selectedpv = new BooleanParameterValue(true);
         selectedpv.setGuiInit(control -> {
