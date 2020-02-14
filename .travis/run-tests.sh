@@ -16,6 +16,13 @@ ant \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dtest.run.args=-javaagent:"${JACOCO_AGENT}" test
 
+# Convert binary jacoco.exec files to XML
+while IFS= read -r -d '' file; do
+  classfile="$(echo "${file}" | cut -d "/" -f2)"
+  xml_output="${file%.exec}.xml"
+  java -jar "${JACOCO_HOME}/lib/jacococli.jar" report "${file}" --classfiles "${classfile}" --xml "${xml_output}"
+done < <(find . -iname "*jacoco.exec" -print0)
+
 # core-training-build
 ant \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
@@ -24,4 +31,4 @@ ant \
   -Dbuild.compiler.debug=truenbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true clean build
+  -Dbuild.compiler.debug=true build #clean build
