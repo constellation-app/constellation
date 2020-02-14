@@ -276,7 +276,7 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         );
 
         warningLabel.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        warningLabel.setForeground(new java.awt.Color(255, 0, 0));
+        warningLabel.setForeground(new java.awt.Color(102, 102, 102));
         warningLabel.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/visual/opengl/utilities/resources/warning.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(warningLabel, org.openide.util.NbBundle.getMessage(LabelFontsOptionsPanel.class, "LabelFontsOptionsPanel.warningLabel.text")); // NOI18N
 
