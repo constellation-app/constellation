@@ -103,9 +103,20 @@
             <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-windows-i586.jar?raw=true"/>
         </get>
     </target>
-
+    
+    <target name="-download-javahelp-file" >
+        <echo message="installing netbeans help files to ... ${nbplatform.default.netbeans.dest.dir}"/>
+        <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
+             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true"/>
+    </target>
+    
+    <target name="-download-javahelp-indexfile" >
+        <echo message="installing netbeans help index files... ${nbplatform.default.netbeans.dest.dir}"/>
+        <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
+             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
+    </target>
   	
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl"
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl, -download-javahelp-file, -download-javahelp-indexfile"
             description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
