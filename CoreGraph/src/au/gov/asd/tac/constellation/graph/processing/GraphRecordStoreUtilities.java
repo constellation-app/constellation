@@ -52,7 +52,7 @@ public class GraphRecordStoreUtilities {
     }
 
     private static final int NO_ELEMENT = -1;
-    private static final String TYPE = "Type<string>";
+    private static final String TYPE_KEY = "Type<string>";
 
     public static final String COPY = "copy.";
     public static final String SOURCE = "source.";
@@ -178,7 +178,7 @@ public class GraphRecordStoreUtilities {
     }
 
     private static int addTransaction(GraphWriteMethods graph, int source, int destination, Map<String, String> values, Map<String, Integer> transactionMap, boolean initializeWithSchema, boolean completeWithSchema) {
-        final String type = values.get(TYPE);
+        final String type = values.get(TYPE_KEY);
         final String directedValue = values.get(DIRECTED_KEY);
         boolean directed = true;
         if (directedValue != null) {
@@ -256,7 +256,7 @@ public class GraphRecordStoreUtilities {
         if (GraphElementType.TRANSACTION.equals(elementType)) {
             final String requestedDirected = values.remove(DIRECTED_KEY);
             if (requestedDirected != null) {
-                final String type = values.get(TYPE);
+                final String type = values.get(TYPE_KEY);
                 final SchemaTransactionType currentType = SchemaTransactionTypeUtilities.getType(type);
                 if (currentType != null) {
                     final boolean directed = Boolean.parseBoolean(requestedDirected);
@@ -270,7 +270,7 @@ public class GraphRecordStoreUtilities {
                         if (!SchemaTransactionTypeUtilities.containsType(modifiedType)) {
                             SchemaTransactionTypeUtilities.addCustomType(modifiedType, false);
                         }
-                        values.put(TYPE, modifiedType.getName());
+                        values.put(TYPE_KEY, modifiedType.getName());
                     }
                 }
             }
