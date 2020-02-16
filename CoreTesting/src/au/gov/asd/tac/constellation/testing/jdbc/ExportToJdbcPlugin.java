@@ -44,6 +44,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDisplayer;
@@ -135,35 +136,37 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
         select.append(" WHERE 1<>1");
-        LOGGER.info(String.format("JDBC export vx SQL: %s", select.toString()));
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                final ResultSet rs = stmt.executeQuery(select.toString());
+                try (final ResultSet rs = stmt.executeQuery(select.toString())) {
 
-                final int vxCount = rg.getVertexCount();
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = rg.getVertex(position);
+                    final int vxCount = rg.getVertexCount();
+                    for (int position = 0; position < vxCount; position++) {
+                        final int vxId = rg.getVertex(position);
 
-                    rs.moveToInsertRow();
-                    for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
-                        final String label = entry.getKey();
-                        final Attribute attr = entry.getValue();
+                        rs.moveToInsertRow();
+                        for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
+                            final String label = entry.getKey();
+                            final Attribute attr = entry.getValue();
 
-                        if (attr == null) {
-                            rs.updateInt(label, vxId);
-                        } else {
-                            updateResultSetParam(rg, rs, label, attr, vxId);
+                            if (attr == null) {
+                                rs.updateInt(label, vxId);
+                            } else {
+                                updateResultSetParam(rg, rs, label, attr, vxId);
+                            }
                         }
-                    }
 
-                    rs.insertRow();
+                        rs.insertRow();
 
-                    if (position % INTERACT_COUNT == 0) {
-                        try {
-                            interaction.setProgress(start + position, total, String.format("Exported %d vertices", position), true);
-                        } catch (InterruptedException ex) {
-                            return false;
+                        if (position % INTERACT_COUNT == 0) {
+                            try {
+                                interaction.setProgress(start + position, total, String.format("Exported %d vertices", position), true);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                                return false;
+                            }
                         }
                     }
                 }
@@ -215,43 +218,45 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
         select.append(" WHERE 1<>1");
-        LOGGER.info(String.format("JDBC export tx SQL: %s", select.toString()));
+        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
-                final ResultSet rs = stmt.executeQuery(select.toString());
+                try (final ResultSet rs = stmt.executeQuery(select.toString())) {
 
-                final int txCount = rg.getTransactionCount();
-                for (int position = 0; position < txCount; position++) {
-                    final int txId = rg.getTransaction(position);
+                    final int txCount = rg.getTransactionCount();
+                    for (int position = 0; position < txCount; position++) {
+                        final int txId = rg.getTransaction(position);
 
-                    rs.moveToInsertRow();
-                    for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
-                        final String label = entry.getKey();
-                        final Attribute attr = entry.getValue();
+                        rs.moveToInsertRow();
+                        for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
+                            final String label = entry.getKey();
+                            final Attribute attr = entry.getValue();
 
-                        if (attr.getId() == pseudoId) {
-                            if (label.equals(GraphFileConstants.TX_ID)) {
-                                rs.updateInt(label, txId);
-                            } else if (label.equals(GraphFileConstants.SRC)) {
-                                rs.updateInt(label, rg.getTransactionSourceVertex(txId));
-                            } else if (label.equals(GraphFileConstants.DST)) {
-                                rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
-                            } else if (label.equals(GraphFileConstants.DIR)) {
-                                rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                            if (attr.getId() == pseudoId) {
+                                if (label.equals(GraphFileConstants.TX_ID)) {
+                                    rs.updateInt(label, txId);
+                                } else if (label.equals(GraphFileConstants.SRC)) {
+                                    rs.updateInt(label, rg.getTransactionSourceVertex(txId));
+                                } else if (label.equals(GraphFileConstants.DST)) {
+                                    rs.updateInt(label, rg.getTransactionDestinationVertex(txId));
+                                } else if (label.equals(GraphFileConstants.DIR)) {
+                                    rs.updateBoolean(label, rg.getTransactionDirection(txId) != Graph.FLAT);
+                                }
+                            } else {
+                                updateResultSetParam(rg, rs, label, attr, txId);
                             }
-                        } else {
-                            updateResultSetParam(rg, rs, label, attr, txId);
                         }
-                    }
 
-                    rs.insertRow();
+                        rs.insertRow();
 
-                    if (position % INTERACT_COUNT == 0) {
-                        try {
-                            interaction.setProgress(start + position, total, String.format("Exported %d transactions", position), true);
-                        } catch (InterruptedException ex) {
-                            return false;
+                        if (position % INTERACT_COUNT == 0) {
+                            try {
+                                interaction.setProgress(start + position, total, String.format("Exported %d transactions", position), true);
+                            } catch (InterruptedException ex) {
+                                Thread.currentThread().interrupt();
+                                return false;
+                            }
                         }
                     }
                 }
@@ -300,7 +305,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.info(String.format("JDBC export vx SQL: %s", insert.toString()));
+        LOGGER.log(Level.INFO,"JDBC export vx SQL: {0}", insert.toString());
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -330,6 +335,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                         try {
                             interaction.setProgress(start + position, total, String.format("Exported %d vertices", position), true);
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             return false;
                         }
                     }
@@ -394,7 +400,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.info(String.format("JDBC export tx SQL: %s", insert.toString()));
+        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", insert.toString());
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -420,6 +426,8 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                                 case GraphFileConstants.DIR:
                                     stmt.setBoolean(paramIx, rg.getTransactionDirection(txId) != Graph.FLAT);
                                     break;
+                                default:
+                                    // do nothing
                             }
                         } else {
                             setBatchParam(rg, stmt, paramIx, attr, txId);
@@ -437,6 +445,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                         try {
                             interaction.setProgress(start + position, total, String.format("Exported %d transactions", position), true);
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             return false;
                         }
                     }
@@ -536,8 +545,8 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
     private static void notifyException(final Exception ex) {
         final ByteArrayOutputStream sb = new ByteArrayOutputStream();
         final PrintWriter w = new PrintWriter(sb);
-        w.printf("Unexpected JDBC export exception: %s\n\n", ex.getMessage());
-        w.printf("Stack trace:\n\n");
+        w.printf("Unexpected JDBC export exception: %s%n%n", ex.getMessage());
+        w.printf("Stack trace:%n%n");
         ex.printStackTrace(w);
         w.flush();
         SwingUtilities.invokeLater(() -> {

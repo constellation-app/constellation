@@ -137,38 +137,40 @@ public class ConnectionPanel extends JPanel {
         try {
             final ArrayList<String> driverList = new ArrayList<>();
             if (jarfile != null && !jarfile.isEmpty()) {
-                final JarFile jf = new JarFile(jarfile);
-                final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
-                if (ze != null) {
-                    // Find the possible JDBC driver classes the nice way.
-                    final BufferedReader reader = new BufferedReader(new InputStreamReader(jf.getInputStream(ze), StandardCharsets.UTF_8.name()));
-                    while (true) {
-                        final String line = reader.readLine();
-                        if (line == null) {
-                            break;
-                        }
-
-                        driverList.add(line);
-                    }
-                } else {
-                    // The JAR file hasn't told us what the possible driver classes are,
-                    // so do it the hard way.
-                    final URL[] searchPath = new URL[]{new URL("file:///" + jarfile)};
-                    final ClassLoader clloader = new URLClassLoader(searchPath);
-                    for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
-                        final JarEntry je = e.nextElement();
-                        final String classname = je.getName();
-                        if (classname.endsWith(".class")) {
-                            try {
-                                // Remove ".class", convert '/' to '.' to create a proper class name.
-                                final int len = classname.length();
-                                final String name = classname.substring(0, len - 6).replace('/', '.');
-                                final Class<?> cl = clloader.loadClass(name);
-                                if (Driver.class.isAssignableFrom(cl)) {
-                                    driverList.add(name);
+                try (final JarFile jf = new JarFile(jarfile)) {
+                    final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
+                    if (ze != null) {
+                        // Find the possible JDBC driver classes the nice way.
+                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(jf.getInputStream(ze), StandardCharsets.UTF_8.name()))) {
+                            while (true) {
+                                final String line = reader.readLine();
+                                if (line == null) {
+                                    break;
                                 }
-                            } catch (ClassNotFoundException ex) {
-                                // Not a valid class; ignore it.
+
+                                driverList.add(line);
+                            }
+                        }
+                    } else {
+                        // The JAR file hasn't told us what the possible driver classes are,
+                        // so do it the hard way.
+                        final URL[] searchPath = new URL[]{new URL("file:///" + jarfile)};
+                        final ClassLoader clloader = new URLClassLoader(searchPath);
+                        for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
+                            final JarEntry je = e.nextElement();
+                            final String classname = je.getName();
+                            if (classname.endsWith(".class")) {
+                                try {
+                                    // Remove ".class", convert '/' to '.' to create a proper class name.
+                                    final int len = classname.length();
+                                    final String name = classname.substring(0, len - 6).replace('/', '.');
+                                    final Class<?> cl = clloader.loadClass(name);
+                                    if (Driver.class.isAssignableFrom(cl)) {
+                                        driverList.add(name);
+                                    }
+                                } catch (ClassNotFoundException ex) {
+                                    // Not a valid class; ignore it.
+                                }
                             }
                         }
                     }
@@ -187,7 +189,7 @@ public class ConnectionPanel extends JPanel {
         } catch (IOException ex) {
             driverCombo.setModel(new DefaultComboBoxModel<>(new String[0]));
 
-            final String msg = String.format("Not a valid JAR file:\n%s", ex.getMessage());
+            final String msg = String.format("Not a valid JAR file:%n%s", ex.getMessage());
             final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         }
@@ -430,14 +432,14 @@ public class ConnectionPanel extends JPanel {
 
     private static String createSql(final GraphReadMethods rg, final GraphElementType etype, final String tableName, final Set<Integer> keys) {
         final StringBuilder buf = new StringBuilder();
-        buf.append(String.format("CREATE TABLE %s\n(\n", tableName));
+        buf.append(String.format("CREATE TABLE %s%n(%n", tableName));
         if (etype == GraphElementType.VERTEX) {
-            buf.append(String.format("    %-16s %s,\n", "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format("    %-16s %s,%n", "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
         } else {
-            buf.append(String.format("    %-16s %s,\n", "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,\n", "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,\n", "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,\n", "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format("    %-16s %s,%n", "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format("    %-16s %s,%n", "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format("    %-16s %s,%n", "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format("    %-16s %s,%n", "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
         }
 
         final ArrayList<String> lines = new ArrayList<>();
@@ -445,7 +447,7 @@ public class ConnectionPanel extends JPanel {
         for (int position = 0; position < attrCount; position++) {
             final int attrId = rg.getAttribute(etype, position);
             final Attribute attr = new GraphAttribute(rg, attrId);
-            final String line = String.format("    %-16s %s,\n", JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
+            final String line = String.format("    %-16s %s,%n", JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
             lines.add(line);
         }
 
@@ -455,9 +457,9 @@ public class ConnectionPanel extends JPanel {
         });
 
         if (etype == GraphElementType.VERTEX) {
-            buf.append("    PRIMARY KEY (vx_id_)\n");
+            buf.append("    PRIMARY KEY (vx_id_)%n");
         } else {
-            buf.append("    PRIMARY KEY (tx_id_)\n");
+            buf.append("    PRIMARY KEY (tx_id_)%n");
         }
         buf.append(");");
 

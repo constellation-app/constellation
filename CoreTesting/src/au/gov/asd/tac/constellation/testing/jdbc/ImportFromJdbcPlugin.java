@@ -40,6 +40,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDisplayer;
@@ -119,23 +120,24 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
-        LOGGER.info(String.format("JDBC import vx SQL: %s", select.toString()));
+        LOGGER.log(Level.INFO,"JDBC import vx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
-                final ResultSet rs = stmt.executeQuery(select.toString());
+                try (final ResultSet rs = stmt.executeQuery(select.toString())) {
 
-                while (rs.next()) {
-                    final int vxId = wg.addVertex();
+                    while (rs.next()) {
+                        final int vxId = wg.addVertex();
 
-                    for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
-                        final String label = entry.getKey();
-                        final Attribute attr = entry.getValue();
+                        for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
+                            final String label = entry.getKey();
+                            final Attribute attr = entry.getValue();
 
-                        if (attr == null) {
-                            columnVxId2GraphVxId.put(rs.getInt(label), vxId);
-                        } else {
-                            setValue(wg, rs, label, attr, vxId);
+                            if (attr == null) {
+                                columnVxId2GraphVxId.put(rs.getInt(label), vxId);
+                            } else {
+                                setValue(wg, rs, label, attr, vxId);
+                            }
                         }
                     }
                 }
@@ -184,29 +186,30 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
-        LOGGER.info(String.format("JDBC import tx SQL: %s", select.toString()));
+        LOGGER.log(Level.INFO,"JDBC import tx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
-                final ResultSet rs = stmt.executeQuery(select.toString());
+                try (final ResultSet rs = stmt.executeQuery(select.toString())) {
 
-                int txId;
-                while (rs.next()) {
-                    final int src = rs.getInt(attrMap.get(GraphFileConstants.SRC));
-                    final int dst = rs.getInt(attrMap.get(GraphFileConstants.DST));
-                    boolean directed = rs.getBoolean(attrMap.get(GraphFileConstants.DIR));
-                    if (rs.wasNull()) {
-                        directed = true;
-                    }
+                    int txId;
+                    while (rs.next()) {
+                        final int src = rs.getInt(attrMap.get(GraphFileConstants.SRC));
+                        final int dst = rs.getInt(attrMap.get(GraphFileConstants.DST));
+                        boolean directed = rs.getBoolean(attrMap.get(GraphFileConstants.DIR));
+                        if (rs.wasNull()) {
+                            directed = true;
+                        }
 
-                    txId = wg.addTransaction(columnVxId2GraphVxId.get(src), columnVxId2GraphVxId.get(dst), directed);
+                        txId = wg.addTransaction(columnVxId2GraphVxId.get(src), columnVxId2GraphVxId.get(dst), directed);
 
-                    for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
-                        final String label = entry.getKey();
-                        final Attribute attr = entry.getValue();
+                        for (final Map.Entry<String, Attribute> entry : labelMap.entrySet()) {
+                            final String label = entry.getKey();
+                            final Attribute attr = entry.getValue();
 
-                        if (attr.getId() != pseudoId) {
-                            setValue(wg, rs, label, attr, txId);
+                            if (attr.getId() != pseudoId) {
+                                setValue(wg, rs, label, attr, txId);
+                            }
                         }
                     }
                 }
@@ -255,8 +258,8 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
     private static void notifyException(final Exception ex) {
         final ByteArrayOutputStream sb = new ByteArrayOutputStream();
         final PrintWriter w = new PrintWriter(sb);
-        w.printf("Unexpected exception: %s\n\n", ex.getMessage());
-        w.printf("Stack trace:\n\n");
+        w.printf("Unexpected exception: %s%n%n", ex.getMessage());
+        w.printf("Stack trace:%n%n");
         ex.printStackTrace(w);
         w.flush();
         SwingUtilities.invokeLater(() -> {

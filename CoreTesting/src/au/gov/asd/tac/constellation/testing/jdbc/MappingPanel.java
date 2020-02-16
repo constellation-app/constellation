@@ -311,13 +311,13 @@ public class MappingPanel extends javax.swing.JPanel {
 
         @Override
         public Object getValueAt(final int rowIndex, final int columnIndex) {
-//            System.out.printf("@@MP getValue at %d %d [%s]\n", rowIndex, columnIndex, values[columnIndex][rowIndex]);
+//            System.out.printf("@@MP getValue at %d %d [%s]%n", rowIndex, columnIndex, values[columnIndex][rowIndex]);
             return values[columnIndex][rowIndex];
         }
 
         @Override
         public void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
-//            System.out.printf("@@MP setValue at %d %d [%s]\n", rowIndex, columnIndex, aValue);
+//            System.out.printf("@@MP setValue at %d %d [%s]%n", rowIndex, columnIndex, aValue);
             values[columnIndex][rowIndex] = (String) aValue;
         }
 
@@ -338,7 +338,7 @@ public class MappingPanel extends javax.swing.JPanel {
 
         @Override
         public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
-//            System.out.printf("@@MP R %d %d [%s]\n", row, column, value);
+//            System.out.printf("@@MP R %d %d [%s]%n", row, column, value);
             setSelectedItem(value);
 
             return this;

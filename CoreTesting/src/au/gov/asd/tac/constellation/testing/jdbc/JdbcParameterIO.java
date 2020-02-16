@@ -98,7 +98,7 @@ class JdbcParameterIO {
                 mapper.writeValue(saveFile, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Query saved to %s.", saveFile.getPath()));
             } catch (IOException ex) {
-                final NotifyDescriptor nderr = new NotifyDescriptor.Message(String.format("Can't save %s:\n%s", saveFile.getPath(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                final NotifyDescriptor nderr = new NotifyDescriptor.Message(String.format("Can't save %s:%n%s", saveFile.getPath(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(nderr);
             }
         }
@@ -130,7 +130,7 @@ class JdbcParameterIO {
         try {
             latch.await();
         } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
         }
 
 //        final JdbcParameterIoLabelsPanel panel = new JdbcParameterIoLabelsPanel(names);

@@ -23,6 +23,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
@@ -33,6 +35,8 @@ import org.openide.util.HelpCtx;
  * @author algol
  */
 public class TablesPanelController implements WizardDescriptor.ExtendedAsynchronousValidatingPanel<WizardDescriptorData> {
+
+    private static final Logger LOGGER = Logger.getLogger(TablesPanelController.class.getName());
 
     private TablesPanel panel;
     private JdbcData data;
@@ -95,28 +99,28 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
         try {
             final File jarFile = new File(data.jar);
             try (final Connection conn = JdbcUtilities.getConnection(jarFile, data.driverName, data.url, data.username, data.password)) {
-                final String vxTable = panel.getVxTable().trim();
-                if (!vxTable.isEmpty()) {
+                final String vxTable = panel.getVxTable() != null ? panel.getVxTable().trim() : null;
+                if (vxTable != null && !vxTable.isEmpty()) {
                     getColumns(conn, vxTable, vxColumns);
                 }
-                if (!vxTable.equals(data.vxTable)) {
+                if (vxTable != null && !vxTable.equals(data.vxTable)) {
                     data.vxMappings = null;
                 }
 
                 data.vxColumns = vxColumns;
 
-                final String txTable = panel.getTxTable().trim();
-                if (!txTable.isEmpty()) {
+                final String txTable = panel.getTxTable() != null ? panel.getTxTable().trim() : null;
+                if (txTable != null && !txTable.isEmpty()) {
                     getColumns(conn, txTable, txColumns);
                 }
-                if (!txTable.equals(data.txTable)) {
+                if (txTable != null && !txTable.equals(data.txTable)) {
                     data.txMappings = null;
                 }
 
                 data.txColumns = txColumns;
             }
         } catch (final MalformedURLException | ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             final String msg = String.format("%s: %s", ex.getClass().getSimpleName(), ex.getMessage());
             throw new WizardValidationException(panel, msg, msg);
         }
