@@ -48,7 +48,6 @@ public class RecordStoreServlet extends ConstellationApiServlet {
         switch (request.getPathInfo()) {
             case "/get":
                 // Get (parts of) the currently active graph as a RecordStore.
-                //
                 final String graphId = request.getParameter("graph_id");
 
                 final boolean selected = Boolean.parseBoolean(request.getParameter("selected"));
@@ -83,7 +82,6 @@ public class RecordStoreServlet extends ConstellationApiServlet {
             case "/add":
                 // Add data to a new store, and add the store to the graph.
                 // If any transaction does not specify a source, add our own.
-                //
                 final String graphId = request.getParameter("graph_id");
 
                 final String completeWithSchemaParam = request.getParameter("complete_with_schema");

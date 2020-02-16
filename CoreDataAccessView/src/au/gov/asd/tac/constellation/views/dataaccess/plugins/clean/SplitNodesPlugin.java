@@ -120,12 +120,13 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
                     types.sort(String::compareTo);
                 }
             }
-
+            transactionType.suppressEvent(true, new ArrayList());
             SingleChoiceParameterType.setOptions(transactionType, types);
-            // TODO: if you set the choice the plugin is enabled, so we can't do this
-            //        if (types.contains("Correlation")) {
-            //            SingleChoiceParameterType.setChoice(transactionType, "Correlation");
-            //        }
+
+            if (types.contains("Correlation")) {
+                SingleChoiceParameterType.setChoice(transactionType, "Correlation");
+            }
+            transactionType.suppressEvent(false, new ArrayList());
         }
     }
 
@@ -151,6 +152,24 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, leftVertexTypesMatches.get(0));
         }
         result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, right);
+        
+        //Loops through all of the Node attributes and copies them to the new node
+        query.reset();
+        while(query.next()){
+            for (final String key : query.keys()){
+                if(key.endsWith(".[id]") || SOURCE_IDENTIFIER.equals(key)) {
+                     //Skips the id and Identifier to make the new node unique
+                } else if ((GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X).equals(key) 
+                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y).equals(key) 
+                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z).equals(key)){ 
+                    //The coordinates are also skipped so that the second node is not created in the exact same location
+                    //as the first node
+                } else {
+                     result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), query.get(key));
+                }
+            }
+        }
+        
         if (ordered_types.size() > 1 && rightVertexTypesMatches.size() > 0) {
             result.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, rightVertexTypesMatches.get(0));
         }

@@ -3,7 +3,7 @@ Constellation is a graph-focused data visualisation and interactive analysis app
 
 ## Vision Statement
 
-Constellation is a first class, domain agnostic data visualisation and analysis application 
+Constellation is a first class, domain agnostic data visualisation and analysis application
 enabling the user to solve large and complex data problems in a simple and intuitive way.
 
 * ***Users***: data analysts, data scientists, and all people interested in graph data analysis.
@@ -14,7 +14,7 @@ enabling the user to solve large and complex data problems in a simple and intui
 ## Prerequisites
 
 * Constellation requires at least Open JDK 8 with JFX 8 support build to be installed and is known to work on Windows 64-bit and Linux 64-bit.
-* The OpenGL graph display works with NVIDIA and ATI graphics cards that support 
+* The OpenGL graph display works with NVIDIA and ATI graphics cards that support
 OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
 
 ## Download Constellation
@@ -82,4 +82,4 @@ For more information please see the [contributing guide](CONTRIBUTING.md).
 
 ## Acknowledgments
 
-Third party libraries and assets were used in development of Constellation, please view [attribution list](ATTRIBUTION.md) for details. 
+Third party libraries and assets were used in development of Constellation, please view [attribution list](ATTRIBUTION.md) for details.

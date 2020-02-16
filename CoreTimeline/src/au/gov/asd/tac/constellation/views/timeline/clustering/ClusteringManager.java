@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
@@ -27,7 +27,9 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.views.timeline.TimeExtents;
+import au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,34 +56,44 @@ public class ClusteringManager {
     private Set<TreeElement> oldElementsToUnhide;
     private final Map<Integer, Integer> unhiddenVerticesOnGraph = new HashMap<>();
 
-    public TimeExtents generateTree(final GraphReadMethods rg, final String datetimeAttr,
+    public TimeExtents generateTree(final GraphReadMethods graph, final String datetimeAttribute,
             final boolean selectedOnly) {
 
-        final int count = rg.getTransactionCount();
-        final int dateTimeAttr = rg.getAttribute(GraphElementType.TRANSACTION, datetimeAttr);
-        final int selectedTransAttr = rg.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
-        final int selectedNodeAttr = rg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int transactionCount = graph.getTransactionCount();
+        final int datetimeAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, datetimeAttribute);
+        final int selectedTransAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
+        final int selectedNodeAttributeId = graph.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
 
         // If we actually have a the attributes
-        if (dateTimeAttr != Graph.NOT_FOUND && selectedNodeAttr != Graph.NOT_FOUND && selectedTransAttr != Graph.NOT_FOUND) {
+        if (datetimeAttributeId != Graph.NOT_FOUND && selectedNodeAttributeId != Graph.NOT_FOUND && selectedTransAttributeId != Graph.NOT_FOUND) {
             // Grab all of the transactions off the graph and turn into leaves:
-            for (int i = 0; i < count; i++) {
-                final int transactionID = rg.getTransaction(i);
-                long transTime = rg.getLongValue(dateTimeAttr, transactionID);
+            for (int i = 0; i < transactionCount; i++) {
+                final int transactionID = graph.getTransaction(i);
+                final String datetimeAttributeType = graph.getAttributeType(datetimeAttributeId);
+                final Object datetimeAttributeDefault = graph.getAttributeDefaultValue(datetimeAttributeId);
+                final Object datetimeAttributeValue = graph.getObjectValue(datetimeAttributeId, transactionID);
 
-                // Get the time for this transaction:
-                if (transTime != ZonedDateTimeAttributeDescription.LONG_NULL_VALUE) {
-                    final int vertexA = rg.getTransactionSourceVertex(transactionID);
-                    final int vertexB = rg.getTransactionDestinationVertex(transactionID);
+                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType)
+                        && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)) {
+                    final int vertexA = graph.getTransactionSourceVertex(transactionID);
+                    final int vertexB = graph.getTransactionDestinationVertex(transactionID);
 
                     final int lowerY = Math.min(vertexA, vertexB);
                     final int upperY = Math.max(vertexA, vertexB);
 
-                    final boolean isSelected = rg.getBooleanValue(selectedTransAttr, transactionID);
-                    if (isSelected || !selectedOnly) {
-                        final boolean nodesSelected = rg.getBooleanValue(selectedNodeAttr, vertexA) || rg.getBooleanValue(selectedNodeAttr, vertexB);
+                    long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
 
-                        leaves.add(new TreeLeaf(transactionID, transTime, isSelected, nodesSelected, lowerY, upperY, Math.min(vertexA, vertexB), Math.max(vertexA, vertexB)));
+                    // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
+                    if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
+                        transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;
+                    }
+
+                    final boolean isSelected = graph.getBooleanValue(selectedTransAttributeId, transactionID);
+                    if (isSelected || !selectedOnly) {
+                        final boolean nodesSelected = graph.getBooleanValue(selectedNodeAttributeId, vertexA) || graph.getBooleanValue(selectedNodeAttributeId, vertexB);
+
+                        System.out.println("ADDING::" + datetimeAttributeType + "::" + transactionValue);
+                        leaves.add(new TreeLeaf(transactionID, transactionValue, isSelected, nodesSelected, lowerY, upperY, Math.min(vertexA, vertexB), Math.max(vertexA, vertexB)));
                     }
                 }
             }
@@ -90,7 +102,6 @@ public class ClusteringManager {
                 tree = null;
                 return null;
             } else if (leaves.size() == 1) {
-
                 tree = leaves.get(0);
                 return new TimeExtents(tree.getLowerTimeExtent(), tree.getUpperTimeExtent());
             }

@@ -18,8 +18,9 @@ package au.gov.asd.tac.constellation.views.timeline;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -161,7 +162,7 @@ public class OverviewPanel extends Pane {
      * of the data.
      *
      * @param graph The graph to get the temporal data from.
-     * @param dateTimeAttrLabel The label of the attribute to retrieve temporal
+     * @param datetimeAttribute The label of the attribute to retrieve temporal
      * data from.
      * @param lowestTimeExtent The lowestTimeExtent observed temporal value.
      * @param highestTimeExtent The highestTimeExtent observed temporal value.
@@ -169,14 +170,12 @@ public class OverviewPanel extends Pane {
      * @param isFullRefresh is a full refresh needed.
      * @param selectedOnly only show selected items.
      */
-    public void populateHistogram(final ReadableGraph graph, final String dateTimeAttrLabel,
+    public void populateHistogram(final ReadableGraph graph, final String datetimeAttribute,
             final double lowestTimeExtent, final double highestTimeExtent, final boolean isFullRefresh,
             final boolean selectedOnly) {
-        final int transCount = graph.getTransactionCount();
-        final int dateTimeAttr = graph.getAttribute(GraphElementType.TRANSACTION, dateTimeAttrLabel);
-
-        final int selectedTransAttr = graph.getAttribute(GraphElementType.TRANSACTION,
-                VisualConcept.TransactionAttribute.SELECTED.getName());
+        final int transactionCount = graph.getTransactionCount();
+        final int datetimeAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, datetimeAttribute);
+        final int selectedTransAttributeId = graph.getAttribute(GraphElementType.TRANSACTION, VisualConcept.TransactionAttribute.SELECTED.getName());
 
         range = highestTimeExtent - lowestTimeExtent;
         this.lowestTimeExtent = lowestTimeExtent;
@@ -192,23 +191,30 @@ public class OverviewPanel extends Pane {
         final int[] itemsSelected = new int[intervals + 1];
 
         // Check to see if we actually have a datetime attribute:
-        if (dateTimeAttr != Graph.NOT_FOUND) {
+        if (datetimeAttributeId != Graph.NOT_FOUND) {
             final XYChart.Series<Number, Number> totalSeries = new XYChart.Series<>();
             final XYChart.Series<Number, Number> selectedSeries = new XYChart.Series<>();
 
-            for (int i = 0; i < transCount; i++) {
+            for (int i = 0; i < transactionCount; i++) {
                 final int transactionID = graph.getTransaction(i);
+                final String datetimeAttributeType = graph.getAttributeType(datetimeAttributeId);
+                final Object datetimeAttributeDefault = graph.getAttributeDefaultValue(datetimeAttributeId);
+                final Object datetimeAttributeValue = graph.getObjectValue(datetimeAttributeId, transactionID);
 
-                if ((selectedTransAttr != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttr, transactionID)) || !selectedOnly) {
-                    // Get the time for this transaction:
-                    final long transTime = graph.getLongValue(dateTimeAttr, transactionID);
+                if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType)
+                        && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)) {
+                    if ((selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) || !selectedOnly) {
+                        long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
 
-                    int interval = 0;
-                    if (intervalLength > 0) {
-                        interval = ((int) Math.round((transTime - lowestTimeExtent) / intervalLength));
-                    }
-                    // Ensure that we are adding only true datetimes:
-                    if (transTime != ZonedDateTimeAttributeDescription.LONG_NULL_VALUE) {
+                        // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
+                        if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
+                            transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;
+                        }
+
+                        int interval = 0;
+                        if (intervalLength > 0) {
+                            interval = ((int) Math.round((transactionValue - lowestTimeExtent) / intervalLength));
+                        }
 
                         if (items[interval] > 0) {
                             items[interval]++;
@@ -217,8 +223,8 @@ public class OverviewPanel extends Pane {
                         }
 
                         // Work out if we have selected values for the current interval:
-                        if (selectedTransAttr != Graph.NOT_FOUND) {
-                            if (graph.getBooleanValue(selectedTransAttr, transactionID)) {
+                        if (selectedTransAttributeId != Graph.NOT_FOUND) {
+                            if (graph.getBooleanValue(selectedTransAttributeId, transactionID)) {
                                 if (itemsSelected[interval] > 0) {
                                     itemsSelected[interval]++;
                                 } else {

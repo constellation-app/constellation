@@ -33,10 +33,10 @@ public class TreeLeaf extends TreeElement implements Comparable<TreeLeaf> {
     private int selectionCount = 0;
     private final boolean nodesSelected;
 
-    TreeLeaf(final int transactionID, final long transTime, final boolean isSelected, final boolean nodesSelected, final long lowerDisplayPos,
+    TreeLeaf(final int transactionID, final long transactionValue, final boolean isSelected, final boolean nodesSelected, final long lowerDisplayPos,
             final long upperDisplayPos, final int vertexIdA, final int vertexIdB) {
         this.id = transactionID;
-        this.datetime = transTime;
+        this.datetime = transactionValue;
         this.lowerDisplayPos = lowerDisplayPos;
         this.upperDisplayPos = upperDisplayPos;
         this.vertexIdA = vertexIdA;

@@ -154,7 +154,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "VisualGraphTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/functionality/visual/constellation.png",
+        iconBase = "au/gov/asd/tac/constellation/functionality/visual/resources/constellation.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER
 )
 @TopComponent.Registration(
@@ -723,7 +723,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         }
 
         // An action that renames the topcomponent without saving the (possibly modified) graph.
-        //
         final Action rename = new AbstractAction("Rename") {
             @Override
             public void actionPerformed(final ActionEvent e) {

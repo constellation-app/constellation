@@ -10,12 +10,10 @@
 // If an edge is drawn far away using triangle_strips, it doesn't look right: the triangles are drawn with artifacts that
 // leave gaps in the lines.
 // Therefore for distant edges we'll draw actual lines.
-//
 
 #version 330 core
 
 // Keep this in sync with SceneBatchStore.
-//
 const int LINE_INFO_ARROW = 1;
 const int LINE_INFO_OVERFLOW = 2;
 
@@ -50,17 +48,14 @@ flat out float lineLength;
 void main() {
     // Lines are explicitly not drawn if they have visibility <= 0.
     // See au.gov.asd.tac.constellation.visual.opengl.task;
-    //
     float visibility = vpointColor[0][3];
     if(visibility > max(visibilityLow, 0) && (visibility <= visibilityHigh || visibility > 1.0)) {
         // The ends of the line.
-        //
         vec4 end0 = gl_in[0].gl_Position;
         vec4 end1 = gl_in[1].gl_Position;
 
         // If the line is selected then move it slightly forward so
         // that it is drawn in front of unselected lines.
-        //
         int seldim = gData[0][2];
         bool isSelected = (seldim&1)!=0;
         bool isDim = (seldim&2) != 0;
@@ -81,7 +76,6 @@ void main() {
             // We want to end them on the surface of a 1-radius sphere around the centre,
             // so we subtract 1 from each end of the line.
             // As the ends of the line approach each other, the ends should move towards the centres of the points.
-            //
             lineLength = distance(end0, end1);
             vec4 lineDirection = normalize(end1 - end0);
             vec4 arrowVector = lineDirection * (clamp(lineLength, 0.0, 3.0)) * 0.29167;
@@ -101,7 +95,6 @@ void main() {
             // stored in the alpha of the color.
             // If we're drawing into the display buffer, vary the alpha depending on the distance of the line from the camera.
             // We use the nearest end of the line for the distance.
-            //
             vec4 color0;
             vec4 color1;
 
@@ -110,7 +103,6 @@ void main() {
             // However, this doesn't seem to be the case: sometimes an incorrect value ends up in
             // the hit test framebuffer.
             // Therefore, we'll pass the txId in a separate int that has no chance of being interpolated.
-            //
             int hti;
 
             if(drawHitTest==0) {
@@ -119,7 +111,6 @@ void main() {
 
                 // If this line is selected, and we're not drawing into the hit test buffer,
                 // draw it fatter.
-                //
                 if(isSelected){
                     color0 = highlightColor;
                     color1 = highlightColor;
@@ -129,9 +120,7 @@ void main() {
                 }
 
                 // This overwrites the visibility value in vpointcolor[][3].
-                //
-                // TODO The fade-out distance should depend on the current bounding box / camera distance.
-                //
+                // TODO: The fade-out distance should depend on the current bounding box / camera distance.
                 float lineAlpha = 1-smoothstep(10, 500000, lineDistance);
                 color0.a = lineAlpha * alpha;
                 color1.a = lineAlpha * alpha;
@@ -139,7 +128,6 @@ void main() {
                 hti = 0;
             } else {
                 // Color vec4s will be unused, but let's not leave things uninitialised.
-                //
                 color0 = vec4(0);
                 color1 = color0;
                 hti = -(gData[0].s + 1);
@@ -162,7 +150,6 @@ void main() {
             EndPrimitive();
 
             // Draw the motion bars.
-            //
             bool arrow0 = (gData[0].t & LINE_INFO_ARROW) != 0;
             bool arrow1 = (gData[1].t & LINE_INFO_ARROW) != 0;
             if(drawHitTest == 0 && directionMotion != -1 && lineLength > 1 && arrow0 != arrow1) {

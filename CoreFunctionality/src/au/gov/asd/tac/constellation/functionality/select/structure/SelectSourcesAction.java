@@ -31,7 +31,7 @@ import org.openide.util.NbBundle;
  * @author aquila
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectSourcesAction")
-@ActionRegistration(displayName = "#CTL_SelectSourcesAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/source.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectSourcesAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/source.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 1000),
     @ActionReference(path = "Toolbars/Selection", position = 300)

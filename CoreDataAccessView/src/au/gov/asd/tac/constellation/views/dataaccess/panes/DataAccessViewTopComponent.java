@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
@@ -34,7 +34,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "DataAccessViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/dataaccess/panes/resources/data_access_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/dataaccess/panes/resources/data-access-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -98,17 +98,17 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public String createStyle() {
-        return "resources/dataaccessview.css";
+        return "resources/data-access-view.css";
     }
 
     @Override
     public void handleComponentOpened() {
-        CoreUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override
     public void handleComponentClosed() {
-        CoreUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
     @Override

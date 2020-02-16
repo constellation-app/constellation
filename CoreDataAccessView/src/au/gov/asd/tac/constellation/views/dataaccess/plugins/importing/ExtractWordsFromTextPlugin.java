@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CoreUtilities;
+import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -46,6 +46,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParam
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
@@ -225,12 +226,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         attributes.sort(String::compareTo);
 
         if (parameters != null && parameters.getParameters() != null) {
+
             final PluginParameter contentAttribute = parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
+            contentAttribute.suppressEvent(true, new ArrayList());
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
-            // TODO: setting a choice causes the plugin to be enabled in the data access view...so we can't do this yet!
-            //        if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
-            //            SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
-            //        }
+            if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
+                SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
+            }
+            contentAttribute.suppressEvent(false, new ArrayList());
         }
     }
 
@@ -429,7 +432,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             }
         }
 
-        if (!CoreUtilities.isGraphViewFrozen()) {
+        if (!PreferenceUtilites.isGraphViewFrozen()) {
             // complete with schema, arrange in trees, and reset view
             PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
                     .followedBy(ArrangementPluginRegistry.TREES)

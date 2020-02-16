@@ -28,7 +28,7 @@ import org.openide.util.NbBundle.Messages;
  * Action for Select Pendants plugin.
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectPendantsAction")
-@ActionRegistration(displayName = "#CTL_SelectPendantsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/pendant.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectPendantsAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/pendant.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 800),
     @ActionReference(path = "Toolbars/Selection", position = 100)

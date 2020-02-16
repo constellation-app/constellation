@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.hop.HopOutOneAction")
-@ActionRegistration(displayName = "#CTL_HopOutOneAction", iconBase = "au/gov/asd/tac/constellation/functionality/hop/hop_one.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_HopOutOneAction", iconBase = "au/gov/asd/tac/constellation/functionality/hop/resources/hop_one.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 2200),
     @ActionReference(path = "Shortcuts", name = "C-Right")
