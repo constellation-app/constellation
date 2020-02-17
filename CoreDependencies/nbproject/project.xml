@@ -2240,8 +2240,8 @@
                 <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-main-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow-main-2.3.2.jar</binary-origin>
+                <runtime-relative-path>ext/nativewindow.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-0.7.1.jar</runtime-relative-path>
@@ -2420,8 +2420,8 @@
                 <binary-origin>release/modules/ext/guava-28.2-jre.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow-2.3.2-natives-windows-i586.jar</binary-origin>
+                <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-filter-21.2.jar</runtime-relative-path>
@@ -2472,8 +2472,8 @@
                 <binary-origin>release/modules/ext/jetty-util-9.4.24.v20191120.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/newt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-2.3.2-natives-windows-i586.jar</binary-origin>
+                <runtime-relative-path>ext/newt-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandmerge-1.1.10.jar</runtime-relative-path>
@@ -2556,8 +2556,8 @@
                 <binary-origin>release/modules/ext/jackson-databind-2.10.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/newt-main-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-main-2.3.2.jar</binary-origin>
+                <runtime-relative-path>ext/newt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-i586.jar</runtime-relative-path>
