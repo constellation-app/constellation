@@ -108,8 +108,8 @@
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing newt..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200202/jar/atomic/newt.jar"/>
-            <url url="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200202/jar/atomic/newt-natives-windows-i586.jar"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt-natives-windows-i586.jar?raw=true"/>
         </get>
     </target>
     
@@ -117,8 +117,8 @@
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing mainwindow..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200202/jar/atomic/nativewindow.jar"/>
-            <url url="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200202/jar/atomic/nativewindow-natives-windows-i586.jar"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow.jar?raw=true"/>
         </get>
     </target>
     
