@@ -188,9 +188,11 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             field.setDisable(!parameter.isEnabled());
             field.setManaged(parameter.isVisible());
             field.setVisible(parameter.isVisible());
-            recentValuesCombo.setDisable(!parameter.isEnabled());
             this.setManaged(parameter.isVisible());
             this.setVisible(parameter.isVisible());
+            if (recentValuesCombo != null) {
+                recentValuesCombo.setDisable(!parameter.isEnabled());
+            }
 
             field.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent event) -> {
                 if (event.getCode() == KeyCode.DELETE) {

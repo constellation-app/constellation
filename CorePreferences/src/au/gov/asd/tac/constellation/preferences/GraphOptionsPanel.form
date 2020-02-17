@@ -20,8 +20,11 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="blazeSizePanel" max="32767" attributes="0"/>
-                  <Component id="BlazeColourPanel" max="32767" attributes="0"/>
-                  <Component id="notePanel" alignment="0" max="32767" attributes="0"/>
+                  <Component id="blazeColourPanel" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="warningLabel" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -30,12 +33,12 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
-              <Component id="notePanel" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="warningLabel" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
               <Component id="blazeSizePanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="BlazeColourPanel" max="32767" attributes="0"/>
+              <Component id="blazeColourPanel" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -64,8 +67,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="BlazeSizeDescription1" alignment="1" min="-2" max="-2" attributes="0"/>
-                      <Component id="BlazeSizeDescription" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeOpacityDescription" alignment="1" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeSizeDescription" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -81,13 +84,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="BlazeSizeDescription" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeSizeDescription" min="-2" max="-2" attributes="0"/>
                       <Component id="blazeSlider" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="blazeOpacitySlider" min="-2" max="-2" attributes="0"/>
-                      <Component id="BlazeSizeDescription1" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeOpacityDescription" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -97,25 +100,25 @@
       <SubComponents>
         <Component class="javax.swing.JSlider" name="blazeSlider">
         </Component>
-        <Component class="javax.swing.JLabel" name="BlazeSizeDescription">
+        <Component class="javax.swing.JLabel" name="blazeSizeDescription">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.BlazeSizeDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeSizeDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JSlider" name="blazeOpacitySlider">
         </Component>
-        <Component class="javax.swing.JLabel" name="BlazeSizeDescription1">
+        <Component class="javax.swing.JLabel" name="blazeOpacityDescription">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.BlazeSizeDescription1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeOpacityDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="BlazeColourPanel">
+    <Container class="javax.swing.JPanel" name="blazeColourPanel">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
@@ -131,9 +134,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
-                  <Component id="BlazeColourDescription" min="-2" max="-2" attributes="0"/>
+                  <Component id="blazeColourDescription" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="143" max="32767" attributes="0"/>
-                  <Component id="BlazeColourPlaceholder" min="-2" max="-2" attributes="0"/>
+                  <Component id="blazeColourPlaceholder" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="94" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -143,8 +146,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="BlazeColourDescription" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="BlazeColourPlaceholder" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeColourDescription" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="blazeColourPlaceholder" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -152,65 +155,37 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="BlazeColourDescription">
+        <Component class="javax.swing.JLabel" name="blazeColourDescription">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.BlazeColourDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColourDescription.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
-        <Component class="javax.swing.JLabel" name="BlazeColourPlaceholder">
+        <Component class="javax.swing.JLabel" name="blazeColourPlaceholder">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.BlazeColourPlaceholder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.blazeColourPlaceholder.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
         </Component>
       </SubComponents>
     </Container>
-    <Container class="javax.swing.JPanel" name="notePanel">
+    <Component class="javax.swing.JLabel" name="warningLabel">
       <Properties>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Note">
-              <ResourceString PropertyName="titleX" bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.notePanel.border.title" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </TitledBorder>
-          </Border>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Tahoma" size="11" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="66" green="66" red="66" type="rgb"/>
+        </Property>
+        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+          <Image iconType="3" name="/au/gov/asd/tac/constellation/preferences/resources/warning.png"/>
+        </Property>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.warningLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
-                  <Component id="noteLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="noteLabel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-      <SubComponents>
-        <Component class="javax.swing.JLabel" name="noteLabel">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Dialog" size="11" style="2"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="GraphOptionsPanel.noteLabel.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-            </Property>
-          </Properties>
-        </Component>
-      </SubComponents>
-    </Container>
+    </Component>
   </SubComponents>
 </Form>
