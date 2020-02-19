@@ -33,7 +33,7 @@ RUN wget -q https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSIO
     && rm -v apache-ant-${ANT_VERSION}-bin.tar.gz
 
 ENV NETBEANS_VERSION="11.0" \
-  NETBEANS_HOME="/usr/local/netbeans"
+    NETBEANS_HOME="/usr/local/netbeans"
 ENV NETBEANS_CHECKSUM="9d7fbe5c6bcf781fc1d3f8e2aee62db0435dd716c60dc73ef900ee2817473cc5b0a8e12c1453b7e57aedcece70cff778673a8cf563c1fa4eea816d9636955d4b  incubating-netbeans-${NETBEANS_VERSION}-bin.zip"
 
 RUN wget -q "http://apache.mirror.amaze.com.au/incubator/netbeans/incubating-netbeans/incubating-${NETBEANS_VERSION}/incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
