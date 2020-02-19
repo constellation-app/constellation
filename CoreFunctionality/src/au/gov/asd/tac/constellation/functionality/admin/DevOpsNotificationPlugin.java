@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.functionality.admin;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
+import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -38,10 +38,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages({"DevOpsNotificationPlugin=DevOps Notification"})
-public class DevOpsNotificationPlugin extends SimpleReadPlugin {
+public class DevOpsNotificationPlugin extends SimplePlugin {
 
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         // do nothing
     }
 

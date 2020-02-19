@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.openide.modules.Places;
 
 /**
  * Create a support package
@@ -93,6 +94,15 @@ public class SupportPackage {
                 generateFileList(new File(node, filename), list, startFolder);
             }
         }
+    }
+
+    /**
+     * The directory where log files are saved to
+     *
+     * @return A String of the directory the user log files are saved
+     */
+    public static String getUserLogDirectory() {
+        return String.format("%s%svar%slog", Places.getUserDirectory().getPath(), File.separator, File.separator);
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {

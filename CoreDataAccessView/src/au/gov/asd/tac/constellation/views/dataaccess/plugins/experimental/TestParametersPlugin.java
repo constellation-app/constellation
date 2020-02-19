@@ -132,7 +132,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
 
     @StaticResource
-    private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/alien.png";
+    private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/resources/alien.png";
 
     public TestParametersPlugin() {
         addValidator(new QueryNameValidator());
@@ -156,7 +156,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();
-        final String css = TestParametersPlugin.class.getResource("style.css").toExternalForm();
+        final String css = TestParametersPlugin.class.getResource("resources/test.css").toExternalForm();
 
         final BooleanParameterValue selectedpv = new BooleanParameterValue(true);
         selectedpv.setGuiInit(control -> {

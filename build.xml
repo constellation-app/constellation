@@ -6,7 +6,7 @@
     <description>Builds the module suite CONSTELLATION.</description>
 
     <import file="nbproject/build-impl.xml"/>
-    
+
     <property name="ivy.install.version" value="2.3.0-rc1" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
     <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
@@ -20,7 +20,7 @@
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
     <property name="dist.filename.linux" value="constellation-linux" />
     <property name="dist.filename.windows" value="constellation-win" />
-    
+
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
         <ant target="clean" />
         <ant target="clean-dependencies" />
@@ -47,7 +47,7 @@
     <target name="-download-ivy" unless="ivy.skip.download" depends="-check-ivy">
         <mkdir dir="${ivy.jar.dir}"/>
         <echo message="installing ivy..."/>
-        <get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
              dest="${ivy.jar.file}" usetimestamp="true"/>
     </target>
 
@@ -57,7 +57,7 @@
         </path>
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
-    
+
     <target name="-download-unfolding-maps" >
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
@@ -113,7 +113,7 @@
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
     </target>
-    
+
     <target name="-download-windows-jre" >
         <echo message="downloading JRE..."/>
         <get src="${jre.url.windows}"
@@ -121,7 +121,7 @@
         <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
         <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
-    
+
     <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
         <mkdir dir="${dist.dir}"/>
         <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
@@ -133,8 +133,8 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
-                 destdir="${build.launcher.dir}/etc/" 
+        <fixcrlf srcdir="${build.launcher.dir}/etc/"
+                 destdir="${build.launcher.dir}/etc/"
                  preservelastmodified="true"
                  eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
@@ -146,7 +146,7 @@
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-            
+            <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
             <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
             <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
@@ -155,7 +155,7 @@
         </zip>
         <delete dir="${basedir}/${jre.filename.windows}/"/>
     </target>
-    
+
     <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
     <target name="-download-linux-jre" >
         <echo message="downloading JRE..."/>
@@ -164,7 +164,7 @@
         <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
         <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
     </target>
-    
+
     <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
     <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
         <mkdir dir="${dist.dir}"/>
@@ -177,8 +177,8 @@
             <property name="build.dir" value="${suite.build.dir}"/>
             <resources refid="zip.platform.clusters"/>
         </subant>
-        <fixcrlf srcdir="${build.launcher.dir}/etc/" 
-                 destdir="${build.launcher.dir}/etc/" 
+        <fixcrlf srcdir="${build.launcher.dir}/etc/"
+                 destdir="${build.launcher.dir}/etc/"
                  preservelastmodified="true"
                  eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
@@ -190,13 +190,13 @@
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <tarfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-            
+
             <!-- Make sure the files in jre/bin are executable -->
             <tarfileset dir="${basedir}/${jre.filename.linux}/" prefix="${app.name}/jre">
                 <exclude name="bin/*"/>
             </tarfileset>
             <tarfileset dir="${basedir}/${jre.filename.linux}/bin/" filemode="755" prefix="${app.name}/jre/bin"/>
-            
+
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
             <tarfileset dir="${cluster}" prefix="${app.name}/${app.name}">
                 <exclude name="config/Modules/*.xml_hidden"/>
@@ -206,20 +206,20 @@
         <delete file="${dist.dir}/${dist.filename.linux}.tar"/>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
-    
+
     <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
         <delete dir="${suite.build.dir}/ivy-reports"/>
         <mkdir dir="${suite.build.dir}/ivy-reports" />
-        
+
         <ivy:resolve type="${ivy.resolve.types}"/>
         <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
     </target>
-    
+
     <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
         <ivy:resolve/>
         <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>
-    
+
     <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>

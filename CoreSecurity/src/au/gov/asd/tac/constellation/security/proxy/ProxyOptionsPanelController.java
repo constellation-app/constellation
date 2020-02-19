@@ -25,7 +25,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
- * An options panel that allows proxies to be specified.
+ * A controller for {@link ProxyOptionsPanel}.
  *
  * @author algol
  */
@@ -37,7 +37,7 @@ import org.openide.util.NbPreferences;
         position = 900)
 @org.openide.util.NbBundle.Messages({
     "ProxyOptions_DisplayName=Proxy",
-    "ProxyOptions_Keywords=proxy proxy"
+    "ProxyOptions_Keywords=proxy"
 })
 public class ProxyOptionsPanelController extends OptionsPanelController implements HelpCtx.Provider {
 
@@ -81,6 +81,7 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
 
     @Override
     public void cancel() {
+        // DO NOTHING
     }
 
     @Override
@@ -117,16 +118,16 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
         pcs.removePropertyChangeListener(listener);
     }
 
+    @Override
+    public JComponent getComponent(final Lookup masterLookup) {
+        return getPanel();
+    }
+
     private ProxyOptionsPanel getPanel() {
         if (panel == null) {
             panel = new ProxyOptionsPanel(this);
         }
         return panel;
-    }
-
-    @Override
-    public JComponent getComponent(final Lookup masterLookup) {
-        return getPanel();
     }
 
     @Override

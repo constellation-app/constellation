@@ -51,7 +51,7 @@ import org.openide.util.NbBundle.Messages;
         position = 0)
 @DataObject.Registration(
         mimeType = "application/x-graph",
-        //        iconBase = "au/gov/asd/tac/constellation/graph/file/constellation.png",
+        iconBase = "au/gov/asd/tac/constellation/graph/file/constellation.png",
         displayName = "#LBL_Graph_LOADER",
         position = 0)
 @ActionReferences({

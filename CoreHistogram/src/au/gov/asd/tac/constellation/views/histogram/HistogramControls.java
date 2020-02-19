@@ -293,11 +293,11 @@ public class HistogramControls extends JPanel {
 
         sortLabel.setText(org.openide.util.NbBundle.getMessage(HistogramControls.class, "HistogramControls.sortLabel.text")); // NOI18N
 
-        descendingButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/views/histogram/down.png"))); // NOI18N
+        descendingButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/views/histogram/resources/down.png"))); // NOI18N
         descendingButton.setText(org.openide.util.NbBundle.getMessage(HistogramControls.class, "HistogramControls.descendingButton.text")); // NOI18N
         descendingButton.setToolTipText(org.openide.util.NbBundle.getMessage(HistogramControls.class, "HistogramControls.descendingButton.toolTipText")); // NOI18N
         descendingButton.setEnabled(false);
-        descendingButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/views/histogram/up.png"))); // NOI18N
+        descendingButton.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/views/histogram/resources/up.png"))); // NOI18N
         descendingButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 descendingButtonActionPerformed(evt);

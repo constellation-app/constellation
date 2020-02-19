@@ -31,7 +31,7 @@ import org.openide.util.NbBundle.Messages;
  * action framework supporting the repulsion action
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.utilities.NonoverlappingRepulsionAction")
-@ActionRegistration(iconBase = "au/gov/asd/tac/constellation/arrangements/repulsion.png", displayName = "#CTL_NonoverlappingRepulsionAction", surviveFocusChange = true)
+@ActionRegistration(iconBase = "au/gov/asd/tac/constellation/arrangements/resources/repulsion.png", displayName = "#CTL_NonoverlappingRepulsionAction", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Arrangements", position = 0)
 })

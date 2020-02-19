@@ -43,7 +43,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.hierarchical.ArrangeInHierarchyAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInHierarchyAction", iconBase = "au/gov/asd/tac/constellation/arrangements/hierarchical/hierarchical.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInHierarchyAction", iconBase = "au/gov/asd/tac/constellation/arrangements/hierarchical/resources/hierarchical.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 300),
     @ActionReference(path = "Shortcuts", name = "C-H")

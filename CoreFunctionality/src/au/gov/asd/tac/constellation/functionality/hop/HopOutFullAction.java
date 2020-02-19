@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.hop.HopOutFullAction")
-@ActionRegistration(displayName = "#CTL_HopOutFullAction", iconBase = "au/gov/asd/tac/constellation/functionality/hop/hop_full.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_HopOutFullAction", iconBase = "au/gov/asd/tac/constellation/functionality/hop/resources/hop_full.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 2300)
 })

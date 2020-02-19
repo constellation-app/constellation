@@ -36,7 +36,7 @@ response to any instances of misconduct.
 Project maintainers have the right and responsibility to remove, edit, or
 reject comments, commits, code, wiki edits, issues, and other contributions
 that are not aligned to the Code of Conduct. Project maintainers have the right
-to ban temporarily or permanently any contributor for other behaviors that 
+to ban temporarily or permanently any contributor for other behaviors that
 they deem inappropriate, threatening, offensive, or harmful.
 
 ## Scope
@@ -51,10 +51,10 @@ further defined and clarified by project maintainers.
 ## Enforcement
 
 Instances of abusive, harassing, or otherwise unacceptable behaviour may be
-reported by contacting the project team at stellar.admin@csiro.au. All complaints 
-will be reviewed and investigated and result in a response deemed 
-necessary and appropriate to the circumstances. The project team is obligated to 
-maintain confidentiality with regard to the reporter of an incident. Further 
+reported by contacting the project team at stellar.admin@csiro.au. All complaints
+will be reviewed and investigated and result in a response deemed
+necessary and appropriate to the circumstances. The project team is obligated to
+maintain confidentiality with regard to the reporter of an incident. Further
 details of specific enforcement policies may be posted separately.
 
 Project maintainers who do not follow or enforce the Code of Conduct in good
@@ -63,7 +63,7 @@ members of the project’s leadership.
 
 ## Attribution
 
-This Code of Conduct is adapted from the [Contributor Covenant][homepage], 
+This Code of Conduct is adapted from the [Contributor Covenant][homepage],
 version 1.4, available at [https://contributor-covenant.org/version/1/4][version].
 
 [homepage]: https://contributor-covenant.org

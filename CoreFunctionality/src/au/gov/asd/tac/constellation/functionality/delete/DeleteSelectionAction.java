@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Edit", id = "au.gov.asd.tac.constellation.functionality.delete.DeleteSelectionAction")
-@ActionRegistration(displayName = "#CTL_DeleteSelectionAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/delete.png", surviveFocusChange = false)
+@ActionRegistration(displayName = "#CTL_DeleteSelectionAction", iconBase = "au/gov/asd/tac/constellation/functionality/delete/resources/delete.png", surviveFocusChange = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Edit", position = 700),
     @ActionReference(path = "Shortcuts", name = "Delete")

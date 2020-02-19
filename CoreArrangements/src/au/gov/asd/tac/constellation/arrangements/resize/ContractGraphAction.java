@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * plugin for contracting the elements in a graph
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.resize.ContractGraphAction")
-@ActionRegistration(displayName = "#CTL_ContractGraphAction", iconBase = "au/gov/asd/tac/constellation/arrangements/resize/contract.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ContractGraphAction", iconBase = "au/gov/asd/tac/constellation/arrangements/resize/resources/contract.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1500),
     @ActionReference(path = "Toolbars/Arrange", position = 200)

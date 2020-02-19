@@ -48,9 +48,12 @@ import java.util.TreeMap;
 public class GraphRecordStoreUtilities {
 
     private GraphRecordStoreUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     private static final int NO_ELEMENT = -1;
+    private static final String TYPE_KEY = "Type<string>";
+
     public static final String COPY = "copy.";
     public static final String SOURCE = "source.";
     public static final String ALL = "all.";
@@ -175,13 +178,13 @@ public class GraphRecordStoreUtilities {
     }
 
     private static int addTransaction(GraphWriteMethods graph, int source, int destination, Map<String, String> values, Map<String, Integer> transactionMap, boolean initializeWithSchema, boolean completeWithSchema) {
-        final String type = values.get("Type<string>");
-        final String directedValue = values.remove(DIRECTED_KEY);
+        final String type = values.get(TYPE_KEY);
+        final String directedValue = values.get(DIRECTED_KEY);
         boolean directed = true;
         if (directedValue != null) {
             directed = !"False".equalsIgnoreCase(directedValue);
         } else {
-            SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
+            final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
             if (transactionType != null) {
                 directed = transactionType.isDirected();
             }
@@ -200,7 +203,7 @@ public class GraphRecordStoreUtilities {
             return NO_ELEMENT;
         }
 
-        if (transaction == NO_ELEMENT) {
+        if (transaction == NO_ELEMENT) { // TODO: should this check be done before the delete?
             return NO_ELEMENT;
         }
 
@@ -246,6 +249,33 @@ public class GraphRecordStoreUtilities {
     }
 
     private static void copyValues(GraphWriteMethods graph, GraphElementType elementType, int element, Map<String, String> values) {
+        /**
+         * check whether a transaction type is inconsistent with the direction
+         * attribute, if so make a custom type
+         */
+        if (GraphElementType.TRANSACTION.equals(elementType)) {
+            final String requestedDirected = values.remove(DIRECTED_KEY);
+            if (requestedDirected != null) {
+                final String type = values.get(TYPE_KEY);
+                final SchemaTransactionType currentType = SchemaTransactionTypeUtilities.getType(type);
+                if (currentType != null) {
+                    final boolean directed = Boolean.parseBoolean(requestedDirected);
+                    // if the requested direction is different to the type's direction then make a new type
+                    if (currentType.isDirected() != directed) {
+                        final String typeName = String.format("%s (%s)", currentType, directed ? "directed" : "undirected");
+                        SchemaTransactionType modifiedType = new SchemaTransactionType.Builder(currentType, typeName)
+                                .setDirected(Boolean.parseBoolean(requestedDirected))
+                                .build();
+
+                        if (!SchemaTransactionTypeUtilities.containsType(modifiedType)) {
+                            SchemaTransactionTypeUtilities.addCustomType(modifiedType, false);
+                        }
+                        values.put(TYPE_KEY, modifiedType.getName());
+                    }
+                }
+            }
+        }
+
         values.entrySet().stream().forEach((entry) -> {
             String key = entry.getKey();
             String type = "string";
@@ -257,6 +287,7 @@ public class GraphRecordStoreUtilities {
                 }
             }
 
+            // TODO: look at ensure(true/fale)
             int attribute = graph.getAttribute(elementType, key);
             if (attribute == Graph.NOT_FOUND) {
                 attribute = graph.getSchema() != null ? graph.getSchema().getFactory().ensureAttribute(graph, elementType, key) : Graph.NOT_FOUND;
