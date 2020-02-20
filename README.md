@@ -1,4 +1,23 @@
-# Constellation
+<p align="center">
+  <img src="./docs/constellation-logo.png"/>
+  </p>
+<p align="center">
+  <a href="https://travis-ci.com/constellation-app/constellation" alt="travis-ci">
+    <img src="https://travis-ci.com/constellation-app/constellation.svg?branch=master"/>
+  </a>
+  <!--  <a href="https://sonarcloud.io/dashboard?id=constellation-app_constellation" alt="Quality Gate Status">
+    <img src="https://sonarcloud.io/api/project_badges/measure?project=constellation-app_constellation&metric=alert_status"/>
+  </a>    -->
+  <a href="https://github.com/constellation-app/constellation/releases" alt="Release downloads">
+    <img src="https://img.shields.io/github/downloads/constellation-app/constellation/total.svg"/>
+  <a href="https://github.com/constellation-app/constellation/blob/master/CONTRIBUTING.md" alt="contributions welcome">
+    <img src="https://img.shields.io/badge/contributions-welcome-brightgreen.svg"/>
+  </a>
+  <a href="https://github.com/constellation-app/constellation/blob/master/LICENSE" alt="license">
+    <img src="https://img.shields.io/github/license/constellation-app/constellation.svg"/>
+  </a>
+</p>
+
 Constellation is a graph-focused data visualisation and interactive analysis application enabling data access, federation and manipulation capabilities across large and complex data sets.
 
 ## Vision Statement
