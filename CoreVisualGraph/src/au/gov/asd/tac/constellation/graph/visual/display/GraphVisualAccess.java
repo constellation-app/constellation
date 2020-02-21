@@ -244,8 +244,8 @@ public final class GraphVisualAccess implements VisualAccess {
             // Handle changes to the graph's decorators referred attributes
             if (recordChanges) {
                 count = nwDecorator == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(nwDecorator);
-                if (count != neDecoratorModCount) {
-                    neDecoratorModCount = count;
+                if (count != nwDecoratorModCount) {
+                    nwDecoratorModCount = count;
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_NW_DECORATOR).forItems(accessGraph.getVertexCount()).build());
                 }
                 count = neDecorator == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(neDecorator);
