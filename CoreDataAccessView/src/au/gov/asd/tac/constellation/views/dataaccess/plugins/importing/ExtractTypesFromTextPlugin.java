@@ -23,8 +23,10 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities.ExtractedVertexType;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
+import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
@@ -87,13 +89,17 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
     }
 
     @Override
-    protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+    protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final RecordStore result = new GraphRecordStore();
 
         interaction.setProgress(0, 0, "Importing...", true);
 
         final Map<String, PluginParameter<?>> extractEntityParameters = parameters.getParameters();
         final String text = extractEntityParameters.get(TEXT_PARAMETER_ID).getStringValue();
+        
+        if (text == null) {
+            throw new PluginException(PluginNotificationLevel.ERROR, "No text provided from which to extract types.");
+        }
 
         final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);
 
