@@ -7,7 +7,7 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="ivy.install.version" value="2.3.0-rc1" />
+    <property name="ivy.install.version" value="2.5.0" />
     <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
     <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
     <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
