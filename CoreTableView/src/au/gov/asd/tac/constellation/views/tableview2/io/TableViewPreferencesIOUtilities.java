@@ -160,17 +160,16 @@ public class TableViewPreferencesIOUtilities {
         } 
        
         //chop off ".json" from the filenames
-        // Chop off ".json".
         for (int i = 0; i < names.length; i++) {
             names[i] = decode(names[i].substring(0, names[i].length() - 5));
         }
         
-        final String queryName = TableViewPreferencesDialog.getTableViewPreferences(names);
+        final String tableViewPreferenceFileName = TableViewPreferencesDialog.getTableViewPreferences(names);
         
-        if (queryName != null) {
+        if (tableViewPreferenceFileName != null) {
             try {
                 final ObjectMapper mapper = new ObjectMapper();
-                final JsonNode root = mapper.readTree(new File(tableViewPreferencesDirectory, encode(queryName)));
+                final JsonNode root = mapper.readTree(new File(tableViewPreferencesDirectory, encode(tableViewPreferenceFileName) + ".json"));
                 
                 for (final JsonNode step : root) {
                     final JsonNode columnOrderPreference = step.get(COLUMN_ORDER_PREF_OBJECT);

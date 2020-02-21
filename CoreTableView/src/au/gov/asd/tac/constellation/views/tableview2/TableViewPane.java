@@ -191,8 +191,6 @@ public final class TableViewPane extends BorderPane {
         layoutPreferencesButton.setPopupSide(Side.RIGHT);
         final MenuItem loadPrefsOption = new MenuItem("Load Preferences...");
         loadPrefsOption.setOnAction((ActionEvent e) -> {
-            //final String x = TableViewPreferencesDialog.getTableViewPreferences();
-            //TableViewPreferencesDialog.getTableViewPreferenceName();
             if(GraphManager.getDefault().getActiveGraph() != null){
                 TableViewPreferencesIOUtilities.loadPreferences(table);
             }

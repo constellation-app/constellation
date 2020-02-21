@@ -15,37 +15,27 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.io;
 
-import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
 import au.gov.asd.tac.constellation.visual.DraggableCell;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.TilePane;
 
 /**
- * Displays a list of saved table prefrences 
+ * Displays a list of saved table preferences 
  * 
  * @author formalhaut69
  */
-public class TableViewPreferencesDialog extends ConstellationDialog {
+public class TableViewPreferencesDialog {
 
-    private static Button okButton;
-    private static Button cancelButton;
-    private static Button defaultButton;
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/editor-dark.css";
-    
-    
     public static String getTableViewPreferences(String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         
-        final String[] preferenceNames = names;
-        
-        final ObservableList<String> q = FXCollections.observableArrayList(preferenceNames);
+        final ObservableList<String> q = FXCollections.observableArrayList(names);
         final ListView<String> nameList = new ListView<>(q);
         nameList.setCellFactory(p -> new DraggableCell<>());
         nameList.setEditable(false);
@@ -54,18 +44,26 @@ public class TableViewPreferencesDialog extends ConstellationDialog {
                 dialog.setResult(ButtonType.OK);
             }
         });
-        ButtonType removeButton = new ButtonType("Remove");
-        
-        dialog.getButtonTypes().add(removeButton);
+        //ButtonType removeButton = new ButtonType("Remove");
+        dialog.getDialogPane().setContent(nameList);
+        //dialog.getButtonTypes().add(removeButton);
         dialog.setResizable(false);
         dialog.setTitle("Table View Preferences");
         dialog.setHeaderText("Select a preference to load.");
-        dialog.getDialogPane().setContent(nameList);
+//        final Button btOk = (Button) dialog.getDialogPane().lookupButton(removeButton);
+//        btOk.addEventFilter(ActionEvent.ACTION, event -> {
+//          event.consume();
+//        });  
         final Optional<ButtonType> option = dialog.showAndWait();
-        if (option.isPresent() && option.get() == ButtonType.OK) {
+        
+//        if (option.isPresent() && option.get() == removeButton) {
+//            System.out.println("NameList remove item: " + nameList.getItems());
+//            nameList.getItems().remove(nameList.getSelectionModel().getSelectedItem());
+//        } else 
+        if(option.isPresent() && option.get() == ButtonType.OK){
             return nameList.getSelectionModel().getSelectedItem();
         }
-
+        
         return null;
     }
     
