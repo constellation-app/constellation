@@ -21,12 +21,14 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
@@ -52,6 +54,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
@@ -116,6 +119,7 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
+    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
 
     private static final int PAD = 20;
     private static final int WIDTH = 120;
@@ -135,6 +139,7 @@ public final class TableViewPane extends BorderPane {
     private Button elementTypeButton;
     private MenuButton copyButton;
     private MenuButton exportButton;
+    private MenuButton layoutPreferencesButton; 
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
@@ -180,6 +185,28 @@ public final class TableViewPane extends BorderPane {
     }
 
     private ToolBar initToolbar() {
+        this.layoutPreferencesButton = new MenuButton();
+        layoutPreferencesButton.setGraphic(SETTINGS_ICON);
+        layoutPreferencesButton.setMaxWidth(WIDTH);
+        layoutPreferencesButton.setPopupSide(Side.RIGHT);
+        final MenuItem loadPrefsOption = new MenuItem("Load Preferences...");
+        loadPrefsOption.setOnAction((ActionEvent e) -> {
+            //final String x = TableViewPreferencesDialog.getTableViewPreferences();
+            //TableViewPreferencesDialog.getTableViewPreferenceName();
+            if(GraphManager.getDefault().getActiveGraph() != null){
+                TableViewPreferencesIOUtilities.loadPreferences(table);
+            }
+            e.consume();
+        });
+        final MenuItem savePrefsOption = new MenuItem("Save Preferences");
+        savePrefsOption.setOnAction(e -> {
+            if(GraphManager.getDefault().getActiveGraph() != null){
+                TableViewPreferencesIOUtilities.savePreferences(table);
+            }
+            e.consume();
+        });
+        layoutPreferencesButton.getItems().addAll(loadPrefsOption, savePrefsOption);
+        
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
         columnVisibilityButton.setMaxWidth(WIDTH);
@@ -276,7 +303,7 @@ public final class TableViewPane extends BorderPane {
                 exportExcelItem, exportExcelSelectionItem);
 
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
@@ -668,7 +695,7 @@ public final class TableViewPane extends BorderPane {
                     // add columns to table
                     table.getColumns().clear();
                     table.getColumns().addAll(columnIndex.stream().map(t -> t.getThird()).collect(Collectors.toList()));
-
+                    
                     // sort data if the column ordering changes
                     table.getColumns().addListener((final Change<? extends TableColumn<ObservableList<String>, ?>> change) -> {
                         if (lastChange == null || !lastChange.equals(change)) {
@@ -685,7 +712,7 @@ public final class TableViewPane extends BorderPane {
                                             item.set(elementIndex, element);
                                         }
                                     });
-
+                                    
                                     final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
                                             = columnIndex.stream()
                                                     .map(ci -> ci.getThird())
