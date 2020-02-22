@@ -17,14 +17,17 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
+import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -66,12 +69,14 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
+            // TODO: figure out how datePicker performs validation.
+//            throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             return datePicker.getValue();
         }
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
@@ -83,6 +88,8 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             });
 
             datePicker = new DatePicker();
+            datePicker.setConverter(new LocalDateStringConverter(
+                    TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((o, n, v) -> {
                 update();
@@ -92,6 +99,5 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             controls.addRow(1, noValueCheckBox);
             return controls;
         }
-
     }
 }

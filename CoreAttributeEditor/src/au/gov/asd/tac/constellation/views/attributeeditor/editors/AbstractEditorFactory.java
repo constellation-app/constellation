@@ -235,6 +235,5 @@ public abstract class AbstractEditorFactory<V> {
         public String getReason() {
             return reason;
         }
-
     }
 }
