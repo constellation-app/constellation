@@ -26,6 +26,7 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import java.util.Comparator;
 import java.util.TimeZone;
@@ -46,6 +47,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -117,16 +119,17 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
-            // TODO: figure out how datePicker performs validation.
-            System.out.println("DTEF_DP_TEXT::" 
-                    + datePicker.getConverter().fromString(datePicker.getEditor().getText()));
-//            throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
-            final ZonedDateTime zdt = ZonedDateTime.of(
+            try {
+                final String dateString = datePicker.getEditor().getText();
+                final LocalDate date = datePicker.getConverter().fromString(dateString);
+            } catch (final DateTimeParseException ex) {
+                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
+            }
+            return ZonedDateTime.of(
                     datePicker.getValue(),
                     LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(),
                             secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND),
                     timeZoneComboBox.getValue());
-            return zdt;
         }
 
         @Override
@@ -193,7 +196,11 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         private HBox createTimeSpinners() {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
-                    TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+                TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
+                update();
+                updateTimeZoneList();
+            });
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> {
                 update();

@@ -69,8 +69,12 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
-            // TODO: figure out how datePicker performs validation.
-//            throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
+            try {
+                final String dateString = datePicker.getEditor().getText();
+                final LocalDate date = datePicker.getConverter().fromString(dateString);
+            } catch (final DateTimeParseException ex) {
+                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
+            }
             return datePicker.getValue();
         }
 
@@ -90,8 +94,11 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
+                update();
+            });
             datePicker.setValue(LocalDate.now());
-            datePicker.valueProperty().addListener((o, n, v) -> {
+            datePicker.valueProperty().addListener((v, o, n) -> {
                 update();
             });
 

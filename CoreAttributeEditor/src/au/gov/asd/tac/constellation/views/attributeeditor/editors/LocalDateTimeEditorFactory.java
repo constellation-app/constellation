@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -92,13 +93,16 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
-            // TODO: figure out how datePicker performs validation.
-//            throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
-            final LocalDateTime ldt = LocalDateTime.of(
+            try {
+                final String dateString = datePicker.getEditor().getText();
+                final LocalDate date = datePicker.getConverter().fromString(dateString);
+            } catch (final DateTimeParseException ex) {
+                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
+            }
+            return LocalDateTime.of(
                     datePicker.getValue(),
                     LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(), 
                             secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND));
-            return ldt;
         }
 
         @Override
@@ -129,6 +133,9 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
                     TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
+                update();
+            });
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> {
                 update();

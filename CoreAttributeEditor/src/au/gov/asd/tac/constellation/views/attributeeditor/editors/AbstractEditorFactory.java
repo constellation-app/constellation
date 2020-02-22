@@ -104,7 +104,7 @@ public abstract class AbstractEditorFactory<V> {
                     final String error = validateCurrentValue();
                     errorMessageProperty.set(error);
                     disableEditProperty.set(error != null);
-                } catch (ControlsInvalidException ex) {
+                } catch (final ControlsInvalidException ex) {
                     disableEditProperty.set(true);
                     errorMessageProperty.set(ex.getReason());
                 }
