@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-    <info organisation="au.gov.asd.tac" module="tac-utilities" revision="working"/>
+    <info organisation="au.gov.asd.tac" module="third-party-dependencies"/>
+     <configurations defaultconf="runtime" defaultconfmapping="runtime->*;test->default">
+        <conf name="compile" description="Compile-time dependencies"/>
+        <conf name="provided" description="Provided dependencies"/>
+        <conf name="runtime" description="Runtime dependencies" extends="compile"/>
+        <conf name="test"    description="Test dependencies" extends="runtime"/>
+    </configurations>
     <dependencies>
 
         <!-- OpenGL -->
@@ -111,6 +117,7 @@
         <exclude type="src" ext="jar"/>
         <exclude type="source" ext="jar"/>
         <exclude type="sources" ext="jar"/>
+        <exclude type="test-jar" ext="jar"/>
         <exclude type="javadoc" ext="jar"/>
         <exclude type="license" ext="txt"/>
 
