@@ -3,10 +3,11 @@ function show(type)
     count = 0;
     for (var key in methods) {
         var row = document.getElementById(key);
-        if ((methods[key] & type) != 0) {
+        if ((methods[key] &  type) != 0) {
             row.style.display = '';
             row.className = (count++ % 2) ? rowColor : altColor;
-        } else
+        }
+        else
             row.style.display = 'none';
     }
     updateTabs(type);
@@ -20,9 +21,10 @@ function updateTabs(type)
         if (value == type) {
             sNode.className = activeTableTab;
             spanNode.innerHTML = tabs[value][1];
-        } else {
+        }
+        else {
             sNode.className = tableTab;
-            spanNode.innerHTML = "<a href=\"javascript:show(" + value + ");\">" + tabs[value][1] + "</a>";
+            spanNode.innerHTML = "<a href=\"javascript:show("+ value + ");\">" + tabs[value][1] + "</a>";
         }
     }
 }

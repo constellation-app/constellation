@@ -64,8 +64,78 @@
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
+    
+    <target name="-download-gluegen" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing gluegen..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-jocl" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing jocl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-jogl" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing jogl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-newt" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing newt..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-mainwindow" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing mainwindow..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-javahelp-file" >
+        <echo message="installing netbeans help files to ... ${nbplatform.default.netbeans.dest.dir}"/>
+        <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
+             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true"/>
+    </target>
+    
+    <target name="-download-javahelp-indexfile" >
+        <echo message="installing netbeans help index files... ${nbplatform.default.netbeans.dest.dir}"/>
+        <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
+             dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
+    </target>
+  	
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl,-download-newt, -download-mainwindow, -download-javahelp-file, -download-javahelp-indexfile"
+            description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
 

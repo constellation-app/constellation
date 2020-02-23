@@ -25,7 +25,8 @@ function handleLogin() {
                     for (i = 0; i < auth.scopes.length; i++) {
                         scopes.push(auth.scopes[i]);
                     }
-                } else {
+                }
+                else {
                     // 2.0 support
                     for (scope in auth.scopes) {
                         scopes.push({scope: scope, description: auth.scopes[scope], OAuthSchemeKey: key});
@@ -134,12 +135,14 @@ function handleLogin() {
                     window.swaggerUi.tokenName = dets.tokenName || 'access_token';
                     window.swaggerUi.tokenUrl = (flow === 'accessCode' ? dets.tokenUrl : null);
                     state = key;
-                } else if (authSchemes[key].type === 'oauth2' && flow && (flow === 'application')) {
+                }
+                else if (authSchemes[key].type === 'oauth2' && flow && (flow === 'application')) {
                     var dets = authSchemes[key];
                     window.swaggerUi.tokenName = dets.tokenName || 'access_token';
                     clientCredentialsFlow(scopes, dets.tokenUrl, key);
                     return;
-                } else if (authSchemes[key].grantTypes) {
+                }
+                else if (authSchemes[key].grantTypes) {
                     // 1.2 support
                     var o = authSchemes[key].grantTypes;
                     for (var t in o) {
@@ -148,7 +151,8 @@ function handleLogin() {
                             var ep = dets.loginEndpoint.url;
                             url = dets.loginEndpoint.url + '?response_type=token';
                             window.swaggerUi.tokenName = dets.tokenName;
-                        } else if (o.hasOwnProperty(t) && t === 'accessCode') {
+                        }
+                        else if (o.hasOwnProperty(t) && t === 'accessCode') {
                             var dets = o[t];
                             var ep = dets.tokenRequestEndpoint.url;
                             url = dets.tokenRequestEndpoint.url + '?response_type=code';
@@ -285,7 +289,8 @@ window.onOAuthComplete = function onOAuthComplete(token, OAuthSchemeKey) {
                 checkbox[pos].checked = false;
             });
             alert(token.error);
-        } else {
+        }
+        else {
             var b = token[window.swaggerUi.tokenName];
             if (!OAuthSchemeKey) {
                 OAuthSchemeKey = token.state;
@@ -317,7 +322,8 @@ window.onOAuthComplete = function onOAuthComplete(token, OAuthSchemeKey) {
                             // sorry, not all scopes are satisfied
                             $(o).find('.api-ic').addClass('ic-warning');
                             $(o).find('.api-ic').removeClass('ic-error');
-                        } else {
+                        }
+                        else {
                             o = v.parentNode.parentNode;
                             $(o.parentNode).find('.api-ic.ic-off').addClass('ic-on');
                             $(o.parentNode).find('.api-ic.ic-off').removeClass('ic-off');

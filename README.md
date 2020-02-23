@@ -46,8 +46,8 @@ enabling the user to solve large and complex data problems in a simple and intui
 
 ## Prerequisites
 
-* Constellation requires at least Open JDK 8 with JFX 8 support build to be installed and is known to work on Windows 64-bit and Linux 64-bit.
-* The OpenGL graph display works with NVIDIA and ATI graphics cards that support
+* Constellation requires at least Open JDK 11 with JFX 11 support build to be installed and is known to work on Windows 64-bit and Linux 64-bit.
+* The OpenGL graph display works with NVIDIA and ATI graphics cards that support 
 OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
 
 ## Download Constellation
@@ -64,9 +64,10 @@ There is currently no support for Mac and the feature request is tracked by [Iss
 ## Build Constellation
 
 To build Constellation from source code do the following:
-
-* Download NetBeans 8.2
-* Download the Open JDK 8 with JFX 8 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-linux_x64.tar.gz)
+[For Netbeans 11 with JDK 11 with JFX 11]
+* Download NetBeans 11 (http://netbeans.apache.org/download/nb112/nb112.html)
+* Download the Open JDK 11 with JFX 11 from Azul website for [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.35.15-ca-fx-jre11.0.5-win_x64.zip) or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.35.15-ca-fx-jdk11.0.5-linux_x64.tar.gz)
+* Update the netbeans.conf file's netbeans_jdkhome entry (The file can be found under <C:\incubating-netbeans-11.0-bin\netbeans\etc> folder)
 * Clone this repository
 * Update the `netbeans_jdkhome` variable in `netbeans.conf`. Hint: This file may be located at `C:\Program Files\NetBeans 8.2\etc`.
 * Open the Constellation_Core module suite from NetBeans

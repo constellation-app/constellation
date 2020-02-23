@@ -21,3 +21,4 @@ endorsed
 jacoco*
 
 CoreDependencies/release/modules/ext
+/nbproject/project.properties

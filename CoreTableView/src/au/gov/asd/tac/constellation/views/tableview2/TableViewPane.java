@@ -590,8 +590,14 @@ public final class TableViewPane extends BorderPane {
 
                     // set the columns widths based on the length of their text
                     final String columnText = column.getText();
-                    final float prefWidth = columnText == null
-                            ? 0 : fontMetrics.computeStringWidth(columnText);
+                    // since computeStringWidth is not available with FontMatrics 
+                    // we need to calculate each character width and set the column width
+                    float prefWidth = 0.0f;
+                    if (!columnText.isEmpty()) {
+                        for (int i = 0; i < columnText.length(); ++i) {
+                            prefWidth = prefWidth + fontMetrics.getCharWidth(columnText.charAt(i));
+                        }
+                    }
                     column.setPrefWidth(prefWidth + PAD);
 
                     // assign cells to columns

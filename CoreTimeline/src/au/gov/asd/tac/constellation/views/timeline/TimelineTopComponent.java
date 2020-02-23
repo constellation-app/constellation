@@ -135,6 +135,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         initComponents();
         setName(Bundle.CTL_TimelineTopComponent());
         setToolTipText(Bundle.HINT_TimelineTopComponent());
+        putClientProperty(TopComponent.PROP_KEEP_PREFERRED_SIZE_WHEN_SLIDED_IN, Boolean.TRUE);
 
         // Attach listener that determines the active graphnode:
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);

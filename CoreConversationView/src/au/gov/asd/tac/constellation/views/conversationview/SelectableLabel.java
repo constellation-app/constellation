@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.visual.tooltip.TooltipUtilities;
-import com.sun.javafx.css.converters.EnumConverter;
-import com.sun.javafx.scene.control.skin.TextAreaSkin;
+import javafx.css.converter.EnumConverter;
+import javafx.scene.control.skin.TextAreaSkin;
 import java.lang.reflect.Field;
 import java.util.List;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -63,9 +63,8 @@ public class SelectableLabel extends TextArea {
             super(textArea);
         }
 
-        @Override
         public void populateContextMenu(final ContextMenu contextMenu) {
-            super.populateContextMenu(contextMenu);
+            populateContextMenu(contextMenu);
             if (contextMenuItems != null) {
                 contextMenu.getItems().addAll(contextMenuItems);
             }

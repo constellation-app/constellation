@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.find;
 
+import au.gov.asd.tac.constellation.views.find.advanced.AdvancedFindPlugin;
+import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.views.find.advanced.FindRule;
+import au.gov.asd.tac.constellation.views.find.advanced.FindTypeOperators;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -24,10 +28,6 @@ import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.views.find.advanced.AdvancedFindPlugin;
-import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
-import au.gov.asd.tac.constellation.views.find.advanced.FindRule;
-import au.gov.asd.tac.constellation.views.find.advanced.FindTypeOperators;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
