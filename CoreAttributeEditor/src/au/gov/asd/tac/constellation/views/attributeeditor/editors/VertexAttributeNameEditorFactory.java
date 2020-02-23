@@ -72,8 +72,14 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
         }
 
         @Override
-        protected String getValueFromControls() {
-            return attributeList.getSelectionModel().getSelectedItem() != null ? attributeList.getSelectionModel().getSelectedItem() : nameText.getText();
+        protected String getValueFromControls() throws ControlsInvalidException {
+            if (attributeList.getSelectionModel().getSelectedItem() != null) {
+                return attributeList.getSelectionModel().getSelectedItem();
+            } else if (attributeList.getItems().contains(nameText.getText())) {
+                return nameText.getText();
+            } else {
+                throw new ControlsInvalidException("Entered value is not an attribute which exists on this graph.");
+            }
         }
 
         @Override
@@ -125,6 +131,5 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
             controls.addRow(2, attributeList);
             return controls;
         }
-
     }
 }

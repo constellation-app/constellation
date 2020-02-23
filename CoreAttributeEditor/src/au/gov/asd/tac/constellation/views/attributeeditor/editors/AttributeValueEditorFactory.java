@@ -74,5 +74,4 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
 
         return chosenEditType == null ? null : typeHandlers.get(chosenEditType);
     }
-
 }

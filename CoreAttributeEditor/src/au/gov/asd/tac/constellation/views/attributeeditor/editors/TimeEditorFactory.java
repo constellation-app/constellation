@@ -82,19 +82,21 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
-            if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
+            if (hourSpinner.getValue() == null || minSpinner.getValue() == null || 
+                    secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
-            return LocalTime.of(hourSpinner.getValue().intValue(), minSpinner.getValue().intValue(), secSpinner.getValue().intValue(), milliSpinner.getValue().intValue() * NANOSECONDS_IN_MILLISECOND);
+            return LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(), 
+                    secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND);
         }
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
-            HBox timeSpinnerContainer = createTimeSpinners();
+            final HBox timeSpinnerContainer = createTimeSpinners();
 
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);
@@ -112,7 +114,6 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         }
 
         private HBox createTimeSpinners() {
-
             hourSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23));
             minSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
             secSpinner = new Spinner<>(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59));
@@ -122,23 +123,23 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
             milliSpinner.getValueFactory().setValue(0);
 
-            HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
-            Label hourSpinnerLabel = new Label("hr:");
+            final Label hourSpinnerLabel = new Label("hr:");
             hourSpinnerLabel.setId("label");
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
-            Label minSpinnerLabel = new Label("min:");
+            final Label minSpinnerLabel = new Label("min:");
             minSpinnerLabel.setId("label");
             minSpinnerLabel.setLabelFor(minSpinner);
 
-            Label secSpinnerLabel = new Label("sec:");
+            final Label secSpinnerLabel = new Label("sec:");
             secSpinnerLabel.setId("label");
             secSpinnerLabel.setLabelFor(secSpinner);
 
-            Label milliSpinnerLabel = new Label("ms:");
+            final Label milliSpinnerLabel = new Label("ms:");
             milliSpinnerLabel.setId("label");
-            milliSpinnerLabel.setLabelFor(secSpinner);
+            milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
             minSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
@@ -163,19 +164,18 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
                 update();
             });
 
-            VBox hourLabelNode = new VBox(5);
+            final VBox hourLabelNode = new VBox(5);
             hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);
-            VBox minLabelNode = new VBox(5);
+            final VBox minLabelNode = new VBox(5);
             minLabelNode.getChildren().addAll(minSpinnerLabel, minSpinner);
-            VBox secLabelNode = new VBox(5);
+            final VBox secLabelNode = new VBox(5);
             secLabelNode.getChildren().addAll(secSpinnerLabel, secSpinner);
-            VBox milliLabelNode = new VBox(5);
+            final VBox milliLabelNode = new VBox(5);
             milliLabelNode.getChildren().addAll(milliSpinnerLabel, milliSpinner);
 
             timeSpinnerContainer.getChildren().addAll(hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
 
             return timeSpinnerContainer;
         }
-
     }
 }

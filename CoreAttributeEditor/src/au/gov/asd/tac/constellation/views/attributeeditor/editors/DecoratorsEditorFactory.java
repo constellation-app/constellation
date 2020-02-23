@@ -65,6 +65,26 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorat
         }
 
         @Override
+        protected boolean canSet(final Decorators value) {
+            // Decorators cannot be null, so prevent null values being set.
+            return value != null;
+        }
+
+        @Override
+        public void updateControlsWithValue(final Decorators value) {
+            setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
+            setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
+            setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
+            setDecoratorChoice(swCombo, value.getSouthWestDecoratorAttribute());
+        }
+
+        @Override
+        protected Decorators getValueFromControls() throws ControlsInvalidException {
+            return new Decorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo), 
+                    getDecoratorChoice(seCombo), getDecoratorChoice(swCombo));
+        }
+
+        @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
             final List<String> attributeNames = new ArrayList<>();
@@ -111,19 +131,6 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorat
             return controls;
         }
 
-        @Override
-        public void updateControlsWithValue(final Decorators value) {
-            setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
-            setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
-            setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
-            setDecoratorChoice(swCombo, value.getSouthWestDecoratorAttribute());
-        }
-
-        @Override
-        protected Decorators getValueFromControls() throws ControlsInvalidException {
-            return new Decorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo), getDecoratorChoice(seCombo), getDecoratorChoice(swCombo));
-        }
-
         private void setDecoratorChoice(final ComboBox<String> comboBox, final String choice) {
             comboBox.getSelectionModel().select(choice == null ? NO_DECORATOR : choice);
         }
@@ -131,6 +138,5 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorat
         private String getDecoratorChoice(final ComboBox<String> comboBox) {
             return comboBox.getSelectionModel().getSelectedItem().equals(NO_DECORATOR) ? null : comboBox.getSelectionModel().getSelectedItem();
         }
-
     }
 }
