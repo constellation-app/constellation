@@ -58,7 +58,7 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
         }
 
         @Override
-        protected boolean canSet(LineStyle value) {
+        protected boolean canSet(final LineStyle value) {
             // As LineStyle is an enum, we want one of its constants, not null.
             return value != null;
         }
@@ -101,6 +101,5 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             controls.addRow(0, lineStyleLabel, lineStyleComboBox);
             return controls;
         }
-
     }
 }

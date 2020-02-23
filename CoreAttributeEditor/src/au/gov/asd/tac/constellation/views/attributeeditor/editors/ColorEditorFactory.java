@@ -152,6 +152,5 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
             controls.addRow(2, noValueCheckBox);
             return controls;
         }
-
     }
 }
