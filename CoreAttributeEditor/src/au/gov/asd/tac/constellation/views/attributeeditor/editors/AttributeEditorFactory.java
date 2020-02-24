@@ -71,7 +71,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
             this.elementType = elementType;
         }
 
-        public void setTypeModifiable(boolean isTypeModifiable) {
+        public void setTypeModifiable(final boolean isTypeModifiable) {
             this.isTypeModifiable = isTypeModifiable;
             if (typeCombo != null) {
                 typeCombo.setDisable(!isTypeModifiable);
@@ -79,7 +79,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
         }
 
         @Override
-        protected boolean canSet(AttributePrototype value) {
+        protected boolean canSet(final AttributePrototype value) {
             return value != null;
         }
 
@@ -174,6 +174,5 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
                 dialog.showDialog();
             };
         }
-
     }
 }

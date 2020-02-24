@@ -58,7 +58,7 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
         }
 
         @Override
-        protected boolean canSet(List<String> value) {
+        protected boolean canSet(final List<String> value) {
             return value != null;
         }
 
@@ -127,6 +127,5 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
 
             return controls;
         }
-
     }
 }

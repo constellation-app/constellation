@@ -51,7 +51,7 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
         }
 
         @Override
-        protected boolean canSet(Boolean value) {
+        protected boolean canSet(final Boolean value) {
             // This is an editor for primitive booleans, so prevent null values being set.
             return value != null;
         }
@@ -82,6 +82,5 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
             return controls;
         }
-
     }
 }

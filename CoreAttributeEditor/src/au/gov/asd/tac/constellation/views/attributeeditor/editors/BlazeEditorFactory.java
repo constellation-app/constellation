@@ -87,9 +87,14 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
+            
             try {
-                return new Blaze(Integer.parseInt(angleTextField.getText()), ConstellationColor.fromFXColor(picker.getValue()));
-            } catch (NumberFormatException ex) {
+                final int angle = Integer.parseInt(angleTextField.getText());
+                if (angle >= 360) {
+                    throw new ControlsInvalidException("Blaze angle must be in range [0, 360)");
+                }
+                return new Blaze(angle, ConstellationColor.fromFXColor(picker.getValue()));
+            } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Blaze angle must be a number.");
             }
         }
@@ -218,6 +223,5 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             controls.addRow(5, noValueCheckBox);
             return controls;
         }
-
     }
 }

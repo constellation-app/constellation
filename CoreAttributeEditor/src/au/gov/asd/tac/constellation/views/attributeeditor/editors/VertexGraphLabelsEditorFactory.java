@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
-public class NodeGraphLabelsEditorFactory extends AttributeValueEditorFactory<GraphLabels> {
+public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<GraphLabels> {
 
     @Override
     public AbstractEditor<GraphLabels> createEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
@@ -76,6 +76,30 @@ public class NodeGraphLabelsEditorFactory extends AttributeValueEditorFactory<Gr
 
         protected GraphLabelsEditor(final EditOperation editOperation, final DefaultGetter<GraphLabels> defaultGetter, final ValueValidator<GraphLabels> validator, final String editedItemName, final GraphLabels initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
+        }
+
+        @Override
+        public void updateControlsWithValue(final GraphLabels value) {
+            labels.clear();
+            labelEntries.getChildren().clear();
+            if (value != null) {
+                value.getLabels().forEach(label -> {
+                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
+                });
+            }
+        }
+
+        @Override
+        protected GraphLabels getValueFromControls() throws ControlsInvalidException {
+            List<GraphLabel> data = new ArrayList<>();
+            try {
+                labels.forEach(label -> {
+                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
+                });
+            } catch (final NumberFormatException ex) {
+                throw new ControlsInvalidException("Non numeric value entered for label size");
+            }
+            return new GraphLabels(data);
         }
 
         @Override
@@ -242,31 +266,6 @@ public class NodeGraphLabelsEditorFactory extends AttributeValueEditorFactory<Gr
                     dialog.showDialog();
                 };
             }
-
-        }
-
-        @Override
-        public void updateControlsWithValue(final GraphLabels value) {
-            labels.clear();
-            labelEntries.getChildren().clear();
-            if (value != null) {
-                value.getLabels().forEach(label -> {
-                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
-                });
-            }
-        }
-
-        @Override
-        protected GraphLabels getValueFromControls() throws ControlsInvalidException {
-            List<GraphLabel> data = new ArrayList<>();
-            try {
-                labels.forEach(label -> {
-                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
-                });
-            } catch (NumberFormatException ex) {
-                throw new ControlsInvalidException("Non numeric value entered for label size");
-            }
-            return new GraphLabels(data);
         }
     }
 }
