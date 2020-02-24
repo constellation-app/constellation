@@ -158,7 +158,7 @@ ul {
     margin-right: 0;
     /*padding-left: 40px;*/
     /* custom */
-    list-style-image:url(images/blue-ball-mid.gif);
+    list-style-image:url(resources/blue-ball-mid.gif);
     margin-top: 5px;
     margin-bottom: 0;
     padding-left: 16px;
@@ -166,12 +166,12 @@ ul {
 
 ul li ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif)
+    list-style-image:url(resources/blue-sqr-mid.gif)
 }
 
 ul ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif)
+    list-style-image:url(resources/blue-sqr-mid.gif)
 }
 
 /* Numbered lists embedded in ordered lists */
@@ -210,7 +210,7 @@ ul ol ol {
 /* Graphics for notes and warnings */
 ul.note {
     /* custom */
-    list-style-image:url(images/tip.gif);
+    list-style-image:url(resources/tip.gif);
     margin-top: 5px;
     margin-bottom: 0;
     margin-left: 16px;
@@ -218,7 +218,7 @@ ul.note {
 
 ul.warning {
     /* custom */
-    list-style-image:url(images/warn.gif);
+    list-style-image:url(resources/warning.gif);
     margin-top: 5px;
     margin-bottom: 0;
     margin-left: 16px;
@@ -253,32 +253,32 @@ ol ol {
 /* Ordered lists embedded in numbered lists */
 ol li ul {
     /* custom */
-    list-style-image:url(images/blue-ball-mid.gif);
+    list-style-image:url(resources/blue-ball-mid.gif);
 }
 
 ol li ul li ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif);
+    list-style-image:url(resources/blue-sqr-mid.gif);
 }
 
 ol li ul ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif);
+    list-style-image:url(resources/blue-sqr-mid.gif);
 }
 
 ol ul {
     /* custom */
-    list-style-image:url(images/blue-ball-mid.gif);
+    list-style-image:url(resources/blue-ball-mid.gif);
 }
 
 ol ul li ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif);
+    list-style-image:url(resources/blue-sqr-mid.gif);
 }
 
 ol ul ul {
     /* custom */
-    list-style-image:url(images/blue-sqr-mid.gif);
+    list-style-image:url(resources/blue-sqr-mid.gif);
 }
 
 dl {

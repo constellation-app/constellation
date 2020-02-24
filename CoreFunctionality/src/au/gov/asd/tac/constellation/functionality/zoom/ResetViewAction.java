@@ -38,7 +38,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.zoom.ResetViewAction")
-@ActionRegistration(displayName = "#CTL_ResetViewAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/zoom_reset.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ResetViewAction", iconBase = "au/gov/asd/tac/constellation/functionality/zoom/resources/zoom_reset.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 300),
     @ActionReference(path = "Toolbars/Visualisation", position = 0),

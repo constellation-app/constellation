@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.InvertSelectionAction")
-@ActionRegistration(displayName = "#CTL_InvertSelectionAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/invert_selection.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_InvertSelectionAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/resources/invert_selection.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 400),
     @ActionReference(path = "Toolbars/Selection", position = 900),

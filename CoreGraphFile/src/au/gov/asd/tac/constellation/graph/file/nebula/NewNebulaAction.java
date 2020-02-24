@@ -39,7 +39,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.graph.file.nebula.NewNebulaAction")
-@ActionRegistration(displayName = "#CTL_NewNebulaAction")//, iconBase = "au/gov/asd/tac/constellation/file/nebula/nebula.png")
+@ActionRegistration(displayName = "#CTL_NewNebulaAction", iconBase = "au/gov/asd/tac/constellation/graph/file/nebula/resources/nebula.png")
 @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 @Messages("CTL_NewNebulaAction=New Nebula")
 public final class NewNebulaAction implements ActionListener {

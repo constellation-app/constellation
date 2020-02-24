@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.structure.SelectBackboneAction")
-@ActionRegistration(displayName = "#CTL_SelectBackboneAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/backbone.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectBackboneAction", iconBase = "au/gov/asd/tac/constellation/functionality/select/structure/resources/backbone.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 1200),
     @ActionReference(path = "Toolbars/Selection", position = 500)

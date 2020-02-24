@@ -64,7 +64,7 @@ import org.openide.util.NbBundle.Messages;
         position = 0)
 @DataObject.Registration(
         mimeType = "application/x-nebula",
-        iconBase = "au/gov/asd/tac/constellation/graph/file/nebula/nebula.png",
+        iconBase = "au/gov/asd/tac/constellation/graph/file/nebula/resources/nebula.png",
         displayName = "#LBL_Nebula_LOADER",
         position = 300)
 @ActionReferences({

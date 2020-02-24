@@ -51,7 +51,7 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         }
 
         @Override
-        protected boolean canSet(Long value) {
+        protected boolean canSet(final Long value) {
             // This is an editor for primitive longs, so prevent null values being set.
             return value != null;
         }
@@ -65,8 +65,8 @@ public class LongEditorFactory extends AttributeValueEditorFactory<Long> {
         protected Long getValueFromControls() throws AbstractEditorFactory.ControlsInvalidException {
             try {
                 return Long.parseLong(numberField.getText());
-            } catch (NumberFormatException ex) {
-                throw new AbstractEditorFactory.ControlsInvalidException("Entered value is not a long.");
+            } catch (final NumberFormatException ex) {
+                throw new ControlsInvalidException("Entered value is not a long.");
             }
         }
 

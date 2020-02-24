@@ -43,7 +43,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "PluginReporterTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/pluginframework/reporting/resources/plugin_reporter.png",
+        iconBase = "au/gov/asd/tac/constellation/pluginframework/reporting/resources/plugin-reporter.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -89,7 +89,7 @@ public final class PluginReporterTopComponent extends TopComponent implements Gr
             final Scene scene = new Scene(reporterPane, Color.web("#444444"));
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
             scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add(PluginReporterTopComponent.class.getResource("resources/PluginReporter.css").toExternalForm());
+            scene.getStylesheets().add(PluginReporterTopComponent.class.getResource("resources/plugin-reporter.css").toExternalForm());
 
             panel.setScene(scene);
         });

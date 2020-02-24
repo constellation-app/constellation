@@ -1,3 +1,12 @@
+before_cache:
+  - find "${HOME}"/.ivy2/cache -name "ivydata-*.properties" -print -delete
+cache:
+  directories:
+    - ${HOME}/.ivy2/cache
+
+env:
+  - runner_image="constellationapplication/netbeans-runner:8.2"
+
 jobs:
   include:
   - stage: Run Tests
@@ -9,23 +18,19 @@ jobs:
     script: source install-jdk.sh --url https://cdn.azul.com/zulu/bin/zulu11.31.11-ca-fx-jdk11.0.3-linux_x64.tar.gz
     sudo: false
     dist: trusty
-    script:
-    - docker pull "$IMAGE_NAME" || true
-    - docker run -v $(pwd):/workdir/ --workdir /workdir/ constellation-app/netbeans-builder .travis/script.sh
-    - sonar-scanner
+    language: java
     services:
-    - docker
-    env: IMAGE_NAME=constellation-app/netbeans-builder
+      - docker
+    script:
+      - docker pull "${runner_image}"
+      - docker run -v "${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR}" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir "${TRAVIS_BUILD_DIR}" "${runner_image}" .travis/run-tests.sh
+      - .travis/sonar.sh
     addons:
-        sonarcloud:
-        organization: theden-github
+      sonarcloud:
+        organization: "constellation-app"
         token:
-          secure: oZIesK+gN7WK10wbwh6xi+4jn6SV+TogX+yIaNpfYbqxR0eEhlqcNsc0LsGz/ITdg9PbIu1m66Y8Wk5TUoOK6LLUjK/t8vSXK5i/FB2K8dilgal8YKFwat/r2uWIrIhgvA/eR6fSit5TqKMVqCJByLmSOfHXk87XHL3xxK/XyGEJAI3r89PoLSwAyVBlf1pW/bpQhz4Enuz6M13W+gCeQX1tpTpEq0HIKO2kjDBuinTlANr2wnh1PE5xX/GULkXyVv01Xeqom2SbnMS32vfXyrKh2KtDFuV4P/DPZHt3oo+cAulNUVxUf3/DcmuqHX8rnHX37xB4rSo5QtJF0iGIK4q4HGFWPIB4ih1a+UWIamR/n6hhx8PwkBugapNizN05D4yzmcPyYBeUxhAkP/+7eQ0VyAZY7o7lLPWA26jCi6/F41XC9OxMKqZpeSoNJRDsWX553tcBpcBiAuPVXQ5zgqVWnbCa4yVQyPZ4mE41Svn3k06HvUHExZyCBBMwT8vy5ULoUjchKOLVcJEXuNroIxV7TujKHnrLZ2s73r+JFZegIgIzVYap3OKiA7h915IIi9YtEytD6tSANbe1JHM1c6lq7xtHu5JZK9hwWxICZb9rP83f6Vt6iPjMH8bkK9kz6YhenWFl3+sXaWdDmulREH6Hk5ORblFm1U7nHlM5rY0=
-    after_script:
-    - echo JAVA_HOME = ${JAVA_HOME}
-    - echo PATH = ${PATH}
-    - ls ${JAVA_HOME}
-    - java -version
+          secure: $SONAR_TOKEN
+
   - stage: Build zip
     language: java
     before_script:
@@ -36,19 +41,9 @@ jobs:
     sudo: false
     dist: trusty
     script:
-    - docker pull "$IMAGE_NAME" || true
-    - docker run -v $(pwd):/workdir/ --workdir /workdir/ constellation-app/netbeans-builder .travis/build-zip.sh
-    dist: trusty
-    sudo: required
-    services:
-    - docker
-    env: IMAGE_NAME=constellation-app/netbeans-builder
-    language: generic
-after_script:
-    - echo JAVA_HOME = ${JAVA_HOME}
-    - echo PATH = ${PATH}
-    - ls ${JAVA_HOME}
-    - java -version
+      - docker pull "${runner_image}"
+      - docker run -v "${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR}" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir "${TRAVIS_BUILD_DIR}" "${runner_image}" .travis/build-zip.sh
+
 deploy:
   provider: releases
   api_key:
