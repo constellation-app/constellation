@@ -7,16 +7,14 @@ cache:
 env:
   - runner_image="constellationapplication/netbeans-runner:11"
 
+# Disable shallow clone for SCM SonarCloud analysis
+git:
+  depth: false
+
 jobs:
   include:
+
   - stage: Run Tests
-    language: java
-    before_script:
-    - unset -v _JAVA_OPTIONS
-    - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
-    env: JDK=zulu11.31.11-ca-fx-jdk11.0.3-linux_x64
-    script: source install-jdk.sh --url https://cdn.azul.com/zulu/bin/zulu11.31.11-ca-fx-jdk11.0.3-linux_x64.tar.gz
-    sudo: false
     dist: trusty
     language: java
     services:
@@ -32,14 +30,10 @@ jobs:
           secure: $SONAR_TOKEN
 
   - stage: Build zip
-    language: java
-    before_script:
-    - unset -v _JAVA_OPTIONS
-    - wget https://github.com/sormuras/bach/raw/master/install-jdk.sh
-    env: JDK=zulu11.31.11-ca-fx-jdk11.0.3-linux_x64
-    script: source install-jdk.sh --url https://cdn.azul.com/zulu/bin/zulu11.31.11-ca-fx-jdk11.0.3-linux_x64.tar.gz
-    sudo: false
     dist: trusty
+    language: generic
+    services:
+      - docker
     script:
       - docker pull "${runner_image}"
       - docker run -v "${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR}" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir "${TRAVIS_BUILD_DIR}" "${runner_image}" .travis/build-zip.sh
@@ -47,7 +41,7 @@ jobs:
 deploy:
   provider: releases
   api_key:
-    secure: Kahmrg2n7tWFhJ7mcC+wPdCLdcyz4loQ0lfMur48ZQ08I7OTJxNz0XVkXgy/aF0VfNePKomRgc3FutWsn7KLDH5eFZL/Vu/giIJIFzK1R+b89Tv35lpHCnMall78YKt3oN9HWB30PktTE/MHXtulB/DjaJp6rKTpo2xlMK9rM+NFlOt/lwc1YHEgW+M59u+OAGJWuowL6Vp8O9n0y8rmw3Au4SoIPv3zYFXh6IVTxd7qMysmH+BX7Wn0STye8qGyb3JjM6H1VyKAtKI7yoMREhmKmt0Q218Y5+7QMtiQa/C2ACYCGQAZaKIhbK8ZYvvruY3EWCVpSI8VOd889NFf8OKd835v8ElmTkJiQEQ7K2GLTINuz9GKupY6SfLbcx5/rhGKm59WxMcTLFUtS7p4zg1X68AZI92usGe3XEe/L2wrGOQzewZEQzfS/mTLFHAkVfbrgh3QJM8kFttk+nYvnzzwN+cpOx7h01tUmcjrpE/qLqDe89yvnVkYdUHGPFAyWL9EiyNgx7+nSeJhNWbGsC86HlckARWV0S1JrJu3W5Ls3613IfDVlqCmNSQF6KDaZTdtKS0ELM/2qJVzmU+Fh9qqoODz+ZB7rS8FAMMk+5NvZr1p/wXDz96KNZpTbmm57Ry/KPaklzHHQ7rQt2Inxb6Ug3wd7Mq310kgCcY+blk=
+    secure: R7G3PZJ2kmjlK2iWN/a6kwbSaE/zSMWTKdI3CmnJoJHu3/b9X8X6Wlyxeug36EuYw5pCEhi+j9PO4bcRa12VFB5k7fjyMBHrwEv4sNiONkyeSJMRtD4FpM/qxHRM1L5ZARtMowm+U9IkGvvJ92hdxq7kMDh01BrYEC1s2ij70BA7jUKdBJNjrPYt9TwlhWN9hzQxjikfJ/7qpQYc9vyi1T6kaLUGvqypv7rpuu2VdW+OoJYwRhxoxDT9EglSLnFcH1v2g020xi88V0XZ2Dkej+cTjLN5FOhEh25Zn0OUjLgi/15CJn1Febk/+PeA1DzTQtWRxFgWH2YJrC/RBBbT/bGSb46yCPP0aNSxYw5jLIf1YVxEtLixqaS4EBnj+NVIwZIORSjrXm34RGkIxqxvcyCmNfCa3rEnDTpw2+WHiWnhW+FRjiLRgSujhjEtFo00ET1fD9Bqp6fhTBcFTyzsF/gnHELcksG+992WM9V4T8rdG7+ASafKqQ9AqXO98Csy6c81+X3HU16ZQbFp3aKQHqqZgxeNYjFHQ0w+GXkgvlBWqISTVgRuO7LSE9bZos3JtZz1fG/7HDqRFJ4UkRKewsQyeNxBNCFy4ikgHrrsLy/6Bx5yKdr80YBTgfyBISBymTpP68GB2nBJHUuJOIrdpxha+E+3TXE5jYD9+9yuqxY=
   file: 'dist/constellation.zip'
   on:
     repo: constellation-app/constellation
