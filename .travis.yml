@@ -5,7 +5,7 @@ cache:
     - ${HOME}/.ivy2/cache
 
 env:
-  - runner_image="constellationapplication/netbeans-runner:8.2"
+  - runner_image="constellationapplication/netbeans-runner:11"
 
 jobs:
   include:
