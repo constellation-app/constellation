@@ -10,8 +10,8 @@ RUN apt-get -y update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-ENV ZULU_VERSION="zulu11.37.17-ca-jdk11.0.6-linux_x64"
-ENV ZULU_CHECKSUM="1cc46abb475b022e6fc501329fa85fe474e71819be9eeba27cbb91d99969a13b7d15bfc0d81524677f8eb2b937f4f5e225b21dec28cf4ad8e5c182d9e3320117  ${ZULU_VERSION}.tar.gz"
+ENV ZULU_VERSION="zulu11.37.17-ca-fx-jdk11.0.6-linux_x64"
+ENV ZULU_CHECKSUM="410c2f29c7496d801968e1e7db9ef4639cecabcf34c2cffcbf96437258dcf23da76529450dc34bcfba19613cba90e6f078bebba05bc509401a7d8f23ff943ad0  zulu11.37.17-ca-fx-jdk11.0.6-linux_x64.tar.gz"
 
 RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
     && echo "${ZULU_CHECKSUM}" | sha512sum -c \
@@ -37,7 +37,7 @@ ENV NETBEANS_CHECKSUM="9d7fbe5c6bcf781fc1d3f8e2aee62db0435dd716c60dc73ef900ee281
 
 RUN wget -q "http://apache.mirror.amaze.com.au/incubator/netbeans/incubating-netbeans/incubating-${NETBEANS_VERSION}/incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
-    && unzip "incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
+    && unzip -q "incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
     && mv netbeans "${NETBEANS_HOME}" \
     && rm "incubating-netbeans-${NETBEANS_VERSION}-bin.zip"
 
@@ -49,7 +49,7 @@ RUN mkdir -p ${JACOCO_HOME}/ \
     && wget -q "http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/${JACOCO_VERSION}/jacoco-${JACOCO_VERSION}.zip" -O jacoco-${JACOCO_VERSION}.zip \
     && echo "${JACOCO_CHECKSUM}" | sha512sum -c \
     && mv "jacoco-${JACOCO_VERSION}.zip" "${JACOCO_HOME}/" \
-    && unzip "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
+    && unzip -q "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
     && rm "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip"
 
 ENV JACOCO_AGENT="${JACOCO_HOME}/lib/jacocoagent.jar" \
