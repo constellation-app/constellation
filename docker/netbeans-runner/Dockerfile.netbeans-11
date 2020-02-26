@@ -23,7 +23,6 @@ RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
 ENV ANT_VERSION="1.9.9" \
     ANT_HOME="/opt/ant" \
     JAVA_HOME="/usr/java/${ZULU_VERSION}"
-
 ENV ANT_CHECKSUM="4d9e0f372bd9401993a4aed3b3c754813192b8d3093e772c6eb70465a7ae3c6de9ccc13d399d6df9b784a87a6504e4c6526d27a47887e4d89911438133745e0e  apache-ant-${ANT_VERSION}-bin.tar.gz"
 
 RUN wget -q https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
@@ -44,7 +43,6 @@ RUN wget -q "http://apache.mirror.amaze.com.au/incubator/netbeans/incubating-net
 
 ENV JACOCO_VERSION="0.8.1" \
     JACOCO_HOME="/opt/jacoco"
-
 ENV JACOCO_CHECKSUM="f6d67930c701c87f47ec1ee53e3b4ff932909063c3efcbcf3ff207990d5c6a9fbf3eec90276d01bc02b5eebce732eb9525f651684189c0813f7a75ffa9d744aa  jacoco-${JACOCO_VERSION}.zip"
 
 RUN mkdir -p ${JACOCO_HOME}/ \
