@@ -23,7 +23,6 @@ RUN wget -q "https://cdn.azul.com/zulu/bin/${ZULU_VERSION}.tar.gz" \
 ENV ANT_VERSION="1.9.9" \
     ANT_HOME="/opt/ant" \
     JAVA_HOME="/usr/java/${ZULU_VERSION}"
-
 ENV ANT_CHECKSUM="4d9e0f372bd9401993a4aed3b3c754813192b8d3093e772c6eb70465a7ae3c6de9ccc13d399d6df9b784a87a6504e4c6526d27a47887e4d89911438133745e0e  apache-ant-${ANT_VERSION}-bin.tar.gz"
 
 RUN wget -q https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSION}-bin.tar.gz \
@@ -34,7 +33,6 @@ RUN wget -q https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSIO
 
 ENV NETBEANS_VERSION="8.2" \
     NETBEANS_BUNDLE="javaee-linux.sh"
-
 ENV NETBEANS_CHECKSUM="61c69707c2261a030098ac059b92212df5f14f397447b4221655b8158f2db603d12bb836d78c7d7749dc0d7e67f3b5d504371b58f5612201491c872283b7919d  netbeans-${NETBEANS_VERSION}-${NETBEANS_BUNDLE}"
 
 RUN wget -q http://download.netbeans.org/netbeans/${NETBEANS_VERSION}/final/bundles/netbeans-${NETBEANS_VERSION}-${NETBEANS_BUNDLE} \
@@ -45,14 +43,13 @@ RUN wget -q http://download.netbeans.org/netbeans/${NETBEANS_VERSION}/final/bund
 
 ENV JACOCO_VERSION="0.8.1" \
     JACOCO_HOME="/opt/jacoco"
-
 ENV JACOCO_CHECKSUM="f6d67930c701c87f47ec1ee53e3b4ff932909063c3efcbcf3ff207990d5c6a9fbf3eec90276d01bc02b5eebce732eb9525f651684189c0813f7a75ffa9d744aa  jacoco-${JACOCO_VERSION}.zip"
 
 RUN mkdir -p ${JACOCO_HOME}/ \
     && wget -q "http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/${JACOCO_VERSION}/jacoco-${JACOCO_VERSION}.zip" -O jacoco-${JACOCO_VERSION}.zip \
     && echo "${JACOCO_CHECKSUM}" | sha512sum -c \
     && mv "jacoco-${JACOCO_VERSION}.zip" "${JACOCO_HOME}/" \
-    && unzip "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
+    && unzip -q "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
     && rm "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip"
 
 ENV NETBEANS_HOME="/usr/local/netbeans-${NETBEANS_VERSION}" \
