@@ -49,7 +49,7 @@ RUN mkdir -p ${JACOCO_HOME}/ \
     && wget -q "http://search.maven.org/remotecontent?filepath=org/jacoco/jacoco/${JACOCO_VERSION}/jacoco-${JACOCO_VERSION}.zip" -O jacoco-${JACOCO_VERSION}.zip \
     && echo "${JACOCO_CHECKSUM}" | sha512sum -c \
     && mv "jacoco-${JACOCO_VERSION}.zip" "${JACOCO_HOME}/" \
-    && unzip "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
+    && unzip -q "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip" -d "${JACOCO_HOME}/" \
     && rm "${JACOCO_HOME}/jacoco-${JACOCO_VERSION}.zip"
 
 ENV NETBEANS_HOME="/usr/local/netbeans-${NETBEANS_VERSION}" \
