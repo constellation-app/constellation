@@ -43,7 +43,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "SimpleGraphTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/functionality/visual/constellation.png",
+        iconBase = "au/gov/asd/tac/constellation/functionality/visual/resources/constellation.png",
         persistenceType = TopComponent.PERSISTENCE_NEVER
 )
 @TopComponent.Registration(

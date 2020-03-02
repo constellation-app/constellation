@@ -55,7 +55,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "PerspectiveBookmarkTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/functionality/perspectives/perspective_bookmarks.png",
+        iconBase = "au/gov/asd/tac/constellation/functionality/perspectives/resources/perspective-bookmarks.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -200,7 +200,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         jToolBar1.setOrientation(javax.swing.SwingConstants.VERTICAL);
         jToolBar1.setRollover(true);
 
-        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/add.png"))); // NOI18N
+        addButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/resources/add.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(addButton, org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.addButton.text")); // NOI18N
         addButton.setToolTipText(org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.addButton.toolTipText")); // NOI18N
         addButton.setFocusable(false);
@@ -213,7 +213,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         });
         jToolBar1.add(addButton);
 
-        renameButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/rename.png"))); // NOI18N
+        renameButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/resources/rename.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(renameButton, org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.renameButton.text")); // NOI18N
         renameButton.setToolTipText(org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.renameButton.toolTipText")); // NOI18N
         renameButton.setFocusable(false);
@@ -226,7 +226,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         });
         jToolBar1.add(renameButton);
 
-        removeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/remove.png"))); // NOI18N
+        removeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/perspectives/resources/remove.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(removeButton, org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.removeButton.text")); // NOI18N
         removeButton.setToolTipText(org.openide.util.NbBundle.getMessage(PerspectiveBookmarkTopComponent.class, "PerspectiveBookmarkTopComponent.removeButton.toolTipText")); // NOI18N
         removeButton.setFocusable(false);

@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.visual.graphics3d.IntArray;
 import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GlyphManager;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.opengl.GL;

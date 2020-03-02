@@ -29,7 +29,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.dim.DimAllAction")
-@ActionRegistration(displayName = "#CTL_DimAllAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/dim_all.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_DimAllAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_all.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Display/Dimming", position = 2300)
 @Messages("CTL_DimAllAction=Dim All")
 public final class DimAllAction extends SimplePluginAction {

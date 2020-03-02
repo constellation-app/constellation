@@ -1,5 +1,14 @@
 # CONSTELLATION Changes
 
+## 2020-02-01 Changes in February 2020
+* Fixed a bug which now ensures that overriding a transaction direction using `GraphRecordStoreUtilities.DIRECTED_KEY` persists with the Type.
+* Renamed SupporPackageAction to SupportPackageAction to fix a spelling typo.
+* Updated JOGL to 2.4.0 to assist in migration to JDK11. Files hosted as third-party dependencies on github until available on maven.
+
+## 2020-01-01 Changes in January 2020
+* Added LabelFontsOptionsPanel to allow setting of fonts rendered on the graph through the UI.
+* Added ConstellationLabelFonts interface to allow programmatic specification of default label fonts.
+
 ## 2019-12-01 Changes in December 2019
 * Added method suppressEvent(boolean, List<>) to PluginParameter which allow setting of properties/options without firing change events.
 * Moved CoreUtilities in the Core Functionality module to PreferenceUtilites in the Core Utilities module.

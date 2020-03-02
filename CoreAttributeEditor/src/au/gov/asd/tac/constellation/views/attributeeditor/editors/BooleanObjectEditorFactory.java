@@ -87,6 +87,5 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
             controls.addRow(1, noValueCheckBox);
             return controls;
         }
-
     }
 }

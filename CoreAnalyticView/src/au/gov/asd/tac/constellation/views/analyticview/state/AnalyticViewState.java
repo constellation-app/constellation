@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
+import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,8 +65,18 @@ public class AnalyticViewState {
     }
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
-        activeAnalyticQuestions.add(question);
-        activeSelectablePlugins.add(selectablePlugins);
+        if (activeAnalyticQuestions.contains(question)) {
+            setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
+            selectablePlugins.forEach((plugin) -> {
+                if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
+                    activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
+                }
+            });
+        } else {
+            // does not contain question
+            activeAnalyticQuestions.add(currentAnalyticQuestionIndex, question);
+            activeSelectablePlugins.add(currentAnalyticQuestionIndex, selectablePlugins);
+        }
     }
 
     public void removeAnalyticQuestion(final AnalyticQuestionDescription<?> question) {
@@ -76,5 +87,20 @@ public class AnalyticViewState {
     public void clearAnalyticQuestions() {
         activeAnalyticQuestions.clear();
         activeSelectablePlugins.clear();
+    }
+
+    /**
+     * Check the currently selected Question index of plugins for other plugins 
+     * matching the selected category
+     * @param currentCategory the currently selected plugin category to remove
+     * from
+     */
+    public void removePluginsMatchingCategory(String currentCategory) {
+        if (!activeSelectablePlugins.isEmpty()) {
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
+                plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
+                )
+            );
+        }
     }
 }

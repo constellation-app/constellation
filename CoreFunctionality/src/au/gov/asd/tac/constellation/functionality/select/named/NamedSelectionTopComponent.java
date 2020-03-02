@@ -54,7 +54,7 @@ import org.openide.windows.TopComponent;
         autostore = false)
 @TopComponent.Description(
         preferredID = "NamedSelectionTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/functionality/select/named/named_selections.png",
+        iconBase = "au/gov/asd/tac/constellation/functionality/select/named/resources/named_selections.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",
@@ -355,7 +355,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         tlbActions.setOrientation(javax.swing.SwingConstants.VERTICAL);
         tlbActions.setRollover(true);
 
-        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_add.png"))); // NOI18N
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_add.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(btnAdd, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnAdd.text")); // NOI18N
         btnAdd.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnAdd.toolTipText")); // NOI18N
         btnAdd.setFocusable(false);
@@ -368,7 +368,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         });
         tlbActions.add(btnAdd);
 
-        btnRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_trash.png"))); // NOI18N
+        btnRemove.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_trash.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(btnRemove, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnRemove.text")); // NOI18N
         btnRemove.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnRemove.toolTipText")); // NOI18N
         btnRemove.setFocusable(false);
@@ -382,7 +382,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         tlbActions.add(btnRemove);
         tlbActions.add(sprtToolbar1);
 
-        btnSelectResults.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_selected.png"))); // NOI18N
+        btnSelectResults.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_selected.png"))); // NOI18N
         btnSelectResults.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(btnSelectResults, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnSelectResults.text")); // NOI18N
         btnSelectResults.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnSelectResults.toolTipText")); // NOI18N
@@ -396,7 +396,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         });
         tlbActions.add(btnSelectResults);
 
-        btnDimMode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_dimmed.png"))); // NOI18N
+        btnDimMode.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_dimmed.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(btnDimMode, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnDimMode.text")); // NOI18N
         btnDimMode.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnDimMode.toolTipText")); // NOI18N
         btnDimMode.setFocusable(false);
@@ -410,7 +410,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         tlbActions.add(btnDimMode);
         tlbActions.add(jSeparator1);
 
-        btnUnion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_union.png"))); // NOI18N
+        btnUnion.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_union.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(btnUnion, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnUnion.text")); // NOI18N
         btnUnion.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnUnion.toolTipText")); // NOI18N
         btnUnion.setFocusable(false);
@@ -423,7 +423,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         });
         tlbActions.add(btnUnion);
 
-        btnIntersection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/namedselection_intersection.png"))); // NOI18N
+        btnIntersection.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/functionality/select/named/resources/namedselection_intersection.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(btnIntersection, org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnIntersection.text")); // NOI18N
         btnIntersection.setToolTipText(org.openide.util.NbBundle.getMessage(NamedSelectionTopComponent.class, "NamedSelectionTopComponent.btnIntersection.toolTipText")); // NOI18N
         btnIntersection.setFocusable(false);

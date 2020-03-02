@@ -29,7 +29,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.dim.DimUnselectedAction")
-@ActionRegistration(displayName = "#CTL_DimUnselectedAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/dim_unselected.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_DimUnselectedAction", iconBase = "au/gov/asd/tac/constellation/functionality/dim/resources/dim_unselected.png", surviveFocusChange = true)
 @ActionReference(path = "Menu/Display/Dimming", position = 2200)
 @Messages("CTL_DimUnselectedAction=Dim Unselected")
 public final class DimUnselectedAction extends SimplePluginAction {

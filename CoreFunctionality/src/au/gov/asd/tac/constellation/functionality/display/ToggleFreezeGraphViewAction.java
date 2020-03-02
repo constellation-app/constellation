@@ -72,8 +72,8 @@ public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
     @Override
     protected String iconResource() {
         return PreferenceUtilites.isGraphViewFrozen()
-                ? "au/gov/asd/tac/constellation/functionality/display/snowflake.png"
-                : "au/gov/asd/tac/constellation/functionality/display/snowflake_alternate.png";
+                ? "au/gov/asd/tac/constellation/functionality/display/resources/snowflake.png"
+                : "au/gov/asd/tac/constellation/functionality/display/resources/snowflake_alternate.png";
     }
 
     @Override

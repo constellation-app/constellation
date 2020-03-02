@@ -103,10 +103,10 @@ import org.w3c.dom.events.EventTarget;
 public final class TutorialTopComponent extends TopComponent {
 
     private JFXPanel panel = new JFXPanel();
-    private static final String TUTORIAL_THEME = "resources/tutorialStylesheet.css";
+    private static final String TUTORIAL_THEME = "resources/tutorial.css";
     private static final String WEBENGINE_CSS_INJECTION = "resources/webengine.css";
-    public static final String MOUSE_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/mouse3.png";
-    public static final String MENU_IMAGE = "/au/gov/asd/tac/constellation/functionality/tutorial/sidebar.png";
+    public static final String MOUSE_IMAGE = "resources/mouse3.png";
+    public static final String MENU_IMAGE = "resources/sidebar.png";
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
     public static final String WELCOME_TEXT = "Welcome to Constellation";
     public static final double SPLIT_POS = 0.2;

@@ -67,7 +67,7 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
             }
             try {
                 return Float.parseFloat(numberField.getText());
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a decimal.");
             }
         }

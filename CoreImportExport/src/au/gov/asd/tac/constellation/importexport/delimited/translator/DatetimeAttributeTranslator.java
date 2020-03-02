@@ -77,9 +77,8 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         final PluginParameter<StringParameterValue> customParam = StringParameterType.build(CUSTOM_PARAMETER_ID);
         customParam.setName("Custom Format");
         customParam.setDescription("A custom datetime format");
-        // The custom field wont enable inside the addMasterController until you
-        // click on OK and open it again. This is a work around until it can be fixed.
-        customParam.setEnabled(true);
+        // customParam should be enabled and editable if "CUSTOM" format has been specified.
+        customParam.setEnabled(formatParam.getStringValue().equals("CUSTOM"));
         customParam.setStringValue("");
         parameters.addParameter(customParam);
 
@@ -114,7 +113,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
             return TemporalFormatting.formatAsZonedDateTime(dateTime);
 
-        } catch (final DateTimeException ex) {
+        } catch (final DateTimeException | IllegalArgumentException ex) {
             return "ERROR";
         }
     }

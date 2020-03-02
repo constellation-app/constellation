@@ -37,14 +37,12 @@ The following is a list of third-party libraries used in the development of Cons
 |ejml-ddense-0.31.jar| Apache2| 
 |ejml-simple-0.31.jar| Apache2 | 
 |geronimo-jms_1.1_spec-1.0.jar| Apache2 | 
-|gluegen-rt-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-linux-amd64-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-linux-i586-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-macosx-universal-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-solaris-amd64-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-solaris-i586-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-windows-amd64-2.3.2.jar| BSD-3 | 
-|gluegen-rt-natives-windows-i586-2.3.2.jar| BSD-3 | 
+|gluegen-rt.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+|gluegen-rt-natives-linux-amd64.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+|gluegen-rt-natives-linux-i586.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+|gluegen-rt-natives-macosx-universal.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+|gluegen-rt-natives-windows-amd64.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
+|gluegen-rt-natives-windows-i586.jar| BSD-3 | https://github.com/sgothel/gluegen/blob/master/LICENSE.txt
 |groovy-all-2.3.1.jar| Apache2 | 
 |gt-api-17.1.jar| LGPL | 
 |gt-cql-17.1.jar| LGPL | 
@@ -76,22 +74,18 @@ The following is a list of third-party libraries used in the development of Cons
 |jetty-util-8.1.9.v20130131.jar| EPL 1.0, Apache2 | 
 |jetty-websocket-8.1.9.v20130131.jar| EPL 1.0, Apache2 | 
 |jline-2.11.jar| BSD | https://github.com/jline/jline2/blob/master/LICENSE.txt 
-|jocl-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-linux-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-linux-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-macosx-universal-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-solaris-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-solaris-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-windows-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jocl-natives-windows-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
-|jogl-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-linux-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-linux-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-macosx-universal-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-solaris-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-solaris-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-windows-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
-|jogl-natives-windows-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jocl.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jocl-natives-linux-amd6.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jocl-natives-linux-i586.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jocl-natives-macosx-universal.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jocl-natives-windows-amd64.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jocl-natives-windows-i586.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT 
+|jogl-all.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jogl-all-natives-linux-amd64.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jogl-all-natives-linux-i586.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jogl-all-natives-macosx-universal.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jogl-all-natives-windows-amd64.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
+|jogl-all-natives-windows-i586.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt 
 |jscience-measure-4.3.1.jar| Apache2 | https://github.com/serso/jscience
 |json-simple-1.1.1.jar| Apache2 | https://github.com/fangyidong/json-simple/blob/master/LICENSE.txt 
 |json4processing-0.9.6.jar|  | 
