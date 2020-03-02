@@ -58,7 +58,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
         }
 
         @Override
-        protected boolean canSet(ConnectionMode value) {
+        protected boolean canSet(final ConnectionMode value) {
             // As ConnectionMode is an enum, we want one of its constants, not null.
             return value != null;
         }
@@ -101,6 +101,5 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;
         }
-
     }
 }

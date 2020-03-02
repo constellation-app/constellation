@@ -22,10 +22,10 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
+import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import java.io.IOException;
+import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +45,8 @@ import org.testng.annotations.Test;
  */
 public class GraphRecordStoreUtilitiesNGTest {
 
+    StoreGraph graph;
+
     public GraphRecordStoreUtilitiesNGTest() {
     }
 
@@ -58,6 +60,9 @@ public class GraphRecordStoreUtilitiesNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        graph = new StoreGraph(schema);
+        graph.getSchema().newGraph(graph);
     }
 
     @AfterMethod
@@ -66,11 +71,6 @@ public class GraphRecordStoreUtilitiesNGTest {
 
     @Test
     public void testAddRecordStoreToGraphIncludesAllRecords() {
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-        final StoreGraph graph = new StoreGraph(schema);
-        graph.getSchema().newGraph(graph);
-        graph.validateKeys();
-
         final RecordStore recordStore = new GraphRecordStore();
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
@@ -80,18 +80,17 @@ public class GraphRecordStoreUtilitiesNGTest {
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx2");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx3");
-        recordStore.set(GraphRecordStoreUtilities.SOURCE + "Compare", "Removed");
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + "CustomAttribute", "Removed");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx4");
-        recordStore.set(GraphRecordStoreUtilities.SOURCE + "Compare", "Changed"); // 5
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + "CustomAttribute", "Changed");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
         recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL, "vx1");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
         recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL, "vx4");
-        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "Compare", "Removed");
-
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "CustomAttribute", "Removed");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
         recordStore.add();
@@ -102,23 +101,23 @@ public class GraphRecordStoreUtilitiesNGTest {
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx4");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx5");
-        recordStore.set(GraphRecordStoreUtilities.SOURCE + "Compare", "Added");
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + "CustomAttribute", "Added");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
         recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL, "vx1");
         recordStore.add();
         recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
         recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.LABEL, "vx5");
-        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "Compare", "Added");
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + "CustomAttribute", "Added");
 
-        recordStore.reset();
-
+        // add recordstore to graph
         final boolean initializeWithSchema = true;
         final boolean completeWithSchema = false;
         final List<String> vertexIdAttributes = new ArrayList<>();
         vertexIdAttributes.add(VisualConcept.VertexAttribute.LABEL.getName() + "<string>");
-
         final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes);
+
+        // check counts
         assertEquals(veritices.size(), 6);
 
         final int vxCount = graph.getVertexCount();
@@ -127,18 +126,18 @@ public class GraphRecordStoreUtilitiesNGTest {
         final int txCount = graph.getTransactionCount();
         assertEquals(txCount, 4);
 
+        // check that all vertices start with vx
         final int vxNameAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
-
-//        for (int i = 0; i < vxCount; i++) {
-//            int vxId = graph.getVertex(i);
-//            assertEquals(graph.getStringValue(vxNameAttribute, vxId), String.valueOf("vx" + vxId));
-//        }
-        try {
-            SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, "testAddRecordStoreToGraphIncludesAllRecords");
-        } catch (IOException ex) {
-            Assert.fail(ex.getLocalizedMessage());
+        for (int i = 0; i < vxCount; i++) {
+            int vxId = graph.getVertex(i);
+            assertEquals(graph.getStringValue(vxNameAttribute, vxId), String.valueOf("vx" + vxId));
         }
 
+//        try {
+//            SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, "testAddRecordStoreToGraphIncludesAllRecords");
+//        } catch (IOException ex) {
+//            Assert.fail(ex.getLocalizedMessage());
+//        }
     }
 
     @Test
@@ -146,10 +145,6 @@ public class GraphRecordStoreUtilitiesNGTest {
         int vx0, vx1;
         int identifierAttribute, colorAttribute;
 
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
-
-        final StoreGraph graph = new StoreGraph(schema);
-        graph.getSchema().newGraph(graph);
         identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         colorAttribute = VisualConcept.VertexAttribute.COLOR.ensure(graph);
         graph.setPrimaryKey(GraphElementType.VERTEX, identifierAttribute);
@@ -185,6 +180,66 @@ public class GraphRecordStoreUtilitiesNGTest {
         assertEquals("vx0", graph.getStringValue(identifierAttribute, vx0));
         assertEquals("DarkGreen", graph.getStringValue(colorAttribute, vx0));
         assertEquals("vx1", graph.getStringValue(identifierAttribute, vx1));
+    }
+
+    @Test
+    public void addedRecordStoreSupportsTypesWithOverriddenDirectionWithInitialiseSchema() {
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "vx0");
+        recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "vx1");
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.DIRECTED_KEY, false);
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.COMMUNICATION); // the communication type is directed
+
+        final boolean initializeWithSchema = true;
+        final boolean completeWithSchema = false;
+        final List<String> vertexIdAttributes = new ArrayList<>();
+        final Map<String, Integer> vertexMap = new HashMap<>();
+        final Map<String, Integer> transactionMap = new HashMap<>();
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+
+        assertEquals(2, veritices.size());
+        assertEquals(2, graph.getVertexCount());
+        assertEquals(1, graph.getTransactionCount());
+
+//        try {
+//            SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, "testAddedRecordStoreSupportsTypesWithOverriddenDirectionWithInitialiseSchema");
+//        } catch (IOException ex) {
+//            Assert.fail(ex.getLocalizedMessage());
+//        }
+        final int transactionTypeId = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
+        SchemaTransactionType type = (SchemaTransactionType) graph.getObjectValue(transactionTypeId, 0);
+        Assert.assertFalse(type.isDirected());
+    }
+    
+    @Test
+    public void addedRecordStoreSupportsTypesWithOverriddenDirectionWithInitialiseAndCompleteWithSchema() {
+        final RecordStore recordStore = new GraphRecordStore();
+        recordStore.add();
+        recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "vx0");
+        recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "vx1");
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.DIRECTED_KEY, false);
+        recordStore.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.COMMUNICATION); // the communication type is directed
+
+        final boolean initializeWithSchema = true;
+        final boolean completeWithSchema = true;
+        final List<String> vertexIdAttributes = new ArrayList<>();
+        final Map<String, Integer> vertexMap = new HashMap<>();
+        final Map<String, Integer> transactionMap = new HashMap<>();
+        final List<Integer> veritices = GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, vertexMap, transactionMap);
+
+        assertEquals(2, veritices.size());
+        assertEquals(2, graph.getVertexCount());
+        assertEquals(1, graph.getTransactionCount());
+
+//        try {
+//            SaveGraphUtilities.saveGraphToTemporaryDirectory(graph, "testAddedRecordStoreSupportsTypesWithOverriddenDirectionWithInitialiseAndCompleteWithSchema");
+//        } catch (IOException ex) {
+//            Assert.fail(ex.getLocalizedMessage());
+//        }
+        final int transactionTypeId = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
+        SchemaTransactionType type = (SchemaTransactionType) graph.getObjectValue(transactionTypeId, 0);
+        Assert.assertFalse(type.isDirected());
     }
 
 }

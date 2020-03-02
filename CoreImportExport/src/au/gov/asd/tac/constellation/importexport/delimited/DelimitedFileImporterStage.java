@@ -66,7 +66,7 @@ public class DelimitedFileImporterStage extends Stage {
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
     @StaticResource
-    private static final String DELIMITED_IMPORTER_ICON_PATH = "au/gov/asd/tac/constellation/importexport/delimited/import-delimited.png";
+    private static final String DELIMITED_IMPORTER_ICON_PATH = "au/gov/asd/tac/constellation/importexport/delimited/resources/import-delimited.png";
     private static final Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.AZURE.getJavaColor());
 
     public DelimitedFileImporterStage() {

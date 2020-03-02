@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
         category = "File",
         id = "au.gov.asd.tac.constellation.importexport.delimited.ImportDelimitedFileAction")
 @ActionRegistration(
-        displayName = "#CTL_ImportDelimitedFileAction", iconBase = "au/gov/asd/tac/constellation/importexport/delimited/import-delimited.png")
+        displayName = "#CTL_ImportDelimitedFileAction", iconBase = "au/gov/asd/tac/constellation/importexport/delimited/resources/import-delimited.png")
 @ActionReferences({
     @ActionReference(path = "Menu/File/Import", position = 0),
     @ActionReference(path = "Toolbars/ImportExport", position = 0)

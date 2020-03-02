@@ -88,7 +88,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "MapViewTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/mapview/resources/map_view.png",
+        iconBase = "au/gov/asd/tac/constellation/views/mapview/resources/map-view.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",

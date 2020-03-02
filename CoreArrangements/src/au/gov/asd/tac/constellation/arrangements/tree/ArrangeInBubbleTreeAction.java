@@ -43,7 +43,7 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangements.tree.ArrangeInBubbleTreeAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInBubbleTreeAction", iconBase = "au/gov/asd/tac/constellation/arrangements/tree/bubbletree.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInBubbleTreeAction", iconBase = "au/gov/asd/tac/constellation/arrangements/tree/resources/bubbletree.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 800),
     @ActionReference(path = "Shortcuts", name = "C-A-T")

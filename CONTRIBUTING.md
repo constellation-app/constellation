@@ -2,11 +2,11 @@
 
 First, thank you for taking the time to contribute! :+1:
 
-We are happy to engage with the community and accept pull requests to make 
+We are happy to engage with the community and accept pull requests to make
 Constellation the best it can be.
 
-The following is a set of guidelines for contributing to Constellation and its 
-modules. These are not rules. Use your best judgment, and 
+The following is a set of guidelines for contributing to Constellation and its
+modules. These are not rules. Use your best judgment, and
 feel free to propose changes to this document in a pull request.
 
 #### Table of Contents
@@ -19,7 +19,7 @@ feel free to propose changes to this document in a pull request.
   * [Constellation Core](#constellation-core)
   * [Constellation Modules and Repositories](#constellation-modules-and-repositories)
   * [Design Decisions](#design-decisions)
-  
+
 [How Can I Contribute?](#how-can-i-contribute)
   * [Reporting Bugs](#reporting-bugs)
   * [Suggesting Enhancements](#suggesting-enhancements)
@@ -31,9 +31,9 @@ feel free to propose changes to this document in a pull request.
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the 
-[Constellation Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are 
-expected to uphold this code. Please report unacceptable behaviour to 
+This project and everyone participating in it is governed by the
+[Constellation Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are
+expected to uphold this code. Please report unacceptable behaviour to
 [stellar.admin@csiro.au](mailto:stellar.admin@csiro.au).
 
 ## I don't want to read this whole thing I just have a question!
@@ -50,86 +50,86 @@ This [repository](https://github.com/constellation-app/constellation) is sometim
 to as the ***Core*** and can be treated like the framework you develop your
 functionality on top of within your own module suite.
 
-The Core should only contain functionality that is ***domain agnostic***. 
+The Core should only contain functionality that is ***domain agnostic***.
 Functionality that is specific to a domain should be developed in a module that
 is in your own module suite.
 
-Note that if some of the functionality you develop can be developed in a domain 
+Note that if some of the functionality you develop can be developed in a domain
 agnostic approach then you can contribute that functionality to Core and develop
-the domain specific functionality in your own module. Refer to the 
+the domain specific functionality in your own module. Refer to the
 [developer guide](https://github.com/constellation-app/constellation-training/blob/master/CONSTELLATION%20Developer%20Guide.pdf)
 for information on how this is achieved.
 
 ### Constellation Modules and Repositories
 
-The Core is broken up into several modules which are logically grouped into 
-components based on functionality. Refer to the component diagram below which 
+The Core is broken up into several modules which are logically grouped into
+components based on functionality. Refer to the component diagram below which
 depicts how the modules are grouped together:
 
 ![Constellation Components](docs/components.png)
 
 The Core was developed with the intention that developers could extend its
-functionality by implementing interfaces and using the Service Provider design 
+functionality by implementing interfaces and using the Service Provider design
 pattern.
 
-Constellation's modular design technically provides you the ability to swap out 
+Constellation's modular design technically provides you the ability to swap out
 modules with your own implementation of choice. For instance, you could
 replace the `Core Table View` module with your own implementation in your module
 and disable `Core Table View` via the `Setup` > `Plugins` > `Installed` option.
 
-However, we would encourage effort be taken to instead improve the existing 
-views and add extension points to address specific use cases. 
+However, we would encourage effort be taken to instead improve the existing
+views and add extension points to address specific use cases.
 
-Modules developed outside of the Core module suite would exist in their own 
+Modules developed outside of the Core module suite would exist in their own
 module suite and would need to be hosted on a separate repository to Core.
 
-A list of repositories containing modules that can be used by Constellation is 
-available in the 
+A list of repositories containing modules that can be used by Constellation is
+available in the
 [Repositories Catalog](CATALOG_OF_REPOSITORIES.md).
-If you have created a module suite dependant on Core then feel free to send a 
+If you have created a module suite dependant on Core then feel free to send a
 pull request to have your repository included in the catalog.
 
 ### Design Decisions
 
-When we make a significant decision in how we maintain the project and what we 
-can or cannot support, we document the 
+When we make a significant decision in how we maintain the project and what we
+can or cannot support, we document the
 [design decisions](DESIGN_DECISIONS.md).
-If you have a question about how we do things, check if it is documented there. 
-If it is *not* documented there, please open an 
-[issue](https://github.com/constellation-app/constellation/issues) and ask your 
+If you have a question about how we do things, check if it is documented there.
+If it is *not* documented there, please open an
+[issue](https://github.com/constellation-app/constellation/issues) and ask your
 question.
 
 ## How Can I Contribute?
 
 ### Reporting Bugs
 
-This section guides you through submitting a bug report for Constellation. 
-Following these guidelines helps maintainers and the community understand your 
+This section guides you through submitting a bug report for Constellation.
+Following these guidelines helps maintainers and the community understand your
 report, reproduce the behaviour and find related reports.
 
 Before creating bug reports, please check the
-[issue tracker](https://github.com/constellation-app/constellation/issues) as it 
+[issue tracker](https://github.com/constellation-app/constellation/issues) as it
 may already be reported. When you are creating a bug report, please
-[include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill 
-out [the required template](ISSUE_TEMPLATE.md), the information it asks helps us 
+[include as many details as possible](#how-do-i-submit-a-good-bug-report). Fill
+out [the required template](ISSUE_TEMPLATE.md), the information it asks helps us
 resolve issues faster.
 
-> **Note:** If you find a **Closed** issue that seems like it is the same problem 
-you're experiencing, open a new issue and include a link to the original 
+> **Note:** If you find a **Closed** issue that seems like it is the same problem
+you're experiencing, open a new issue and include a link to the original
 issue in the body of your new issue.
 
 #### Before Submitting A Bug Report
 
-* Check whether the issue has already been reported in the 
+* Check whether the issue has already been reported in the
 [issues](https://github.com/constellation-app/constellation/issues) page.
-* Double check whether the issue is a bug in this repository or from a module 
+* Double check whether the issue is a bug in this repository or from a module
 from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
 
 #### How Do I Submit A (Good) Bug Report?
 
 Bugs are tracked as [GitHub issues](https://guides.github.com/features/issues).
 After you've determined [which repository](#constellation--modules-and-packages)
-your bug is related to, create an issue on that repository and provide the 
+your bug is related to, create an issue on that repository and provide the
 following information by filling in [the template](ISSUE_TEMPLATE.md).
 
 Explain the problem and include additional details to help maintainers reproduce
@@ -137,11 +137,11 @@ the problem:
 
 * **Use a clear and descriptive title** for the issue to identify the problem.
 * **Describe the exact steps which reproduce the problem** in as many details as
-possible. For example, start by explaining how you started Constellation, e.g. 
-which command exactly you used in the terminal, or how you started Constellation 
-otherwise. When listing steps, **don't just say what you did, but explain how 
-you did it**. For example, if you created some nodes, did you use the import 
-delimited file option, via the Rest API, Scripting View, create them using the 
+possible. For example, start by explaining how you started Constellation, e.g.
+which command exactly you used in the terminal, or how you started Constellation
+otherwise. When listing steps, **don't just say what you did, but explain how
+you did it**. For example, if you created some nodes, did you use the import
+delimited file option, via the Rest API, Scripting View, create them using the
 edit mode, or another method?
 * **Provide specific examples to demonstrate the steps**. Include links to files
 or GitHub projects, or copy/paste snippets, which you use in those examples.
@@ -150,97 +150,97 @@ If you're providing snippets in the issue, use
 * **Describe the behaviour you observed after following the steps** and point out
 what exactly is the problem with that behaviour.
 * **Explain which behaviour you expected to see instead and why.**
-* **Include screenshots and animated GIFs** which show you following the 
-described steps and clearly demonstrate the problem. You can use 
+* **Include screenshots and animated GIFs** which show you following the
+described steps and clearly demonstrate the problem. You can use
 [this tool](https://www.cockos.com/licecap) to record GIFs on macOS and Windows,
 and [this tool](https://github.com/colinkeenan/silentcast) for Linux.
 * **If you're reporting Constellation crashing**, include a stack trace from
-the operating system. Include the crash report in the issue in a 
+the operating system. Include the crash report in the issue in a
 [code block](https://help.github.com/articles/markdown-basics/#multiple-lines),
 a [file attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests),
 or put it in a [gist](https://gist.github.com) and provide a link to that gist.
 * **If the problem is related to performance or memory**, include a profile
 file generated via the ***Performance*** toolbar NetBeans button.
-* **If the problem is related to graphics**, include the output from `Help` > 
-`JOGL Version` in a 
+* **If the problem is related to graphics**, include the output from `Help` >
+`JOGL Version` in a
 [code block](https://help.github.com/articles/markdown-basics/#multiple-lines),
 a [file attachment](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests),
 or put it in a [gist](https://gist.github.com) and provide a link to that gist.
-* **If the problem wasn't triggered by a specific action**, describe what you 
-were doing before the problem happened and share more information using the 
+* **If the problem wasn't triggered by a specific action**, describe what you
+were doing before the problem happened and share more information using the
 guidelines below.
 
 Provide more context by answering these questions:
 
-* **Did the problem start happening recently** (e.g. after updating to a new 
+* **Did the problem start happening recently** (e.g. after updating to a new
 version of Constellation) or was this always a problem?
 * If the problem started happening recently, **can you reproduce the problem in
 an older version of Constellation?** What's the most recent version in which the
-problem doesn't happen? You can download older versions of Constellation from 
+problem doesn't happen? You can download older versions of Constellation from
 [the releases page](https://github.com/constellation-app/constellation/releases).
 * **Can you reliably reproduce the issue?** If not, provide details about how
 often the problem happens and under which conditions it normally happens.
 
-Include details about your configuration and environment (if you don't wish to 
+Include details about your configuration and environment (if you don't wish to
 provide the Support Package):
 
-* **Which version of Constellation are you using?** You can get the exact 
+* **Which version of Constellation are you using?** You can get the exact
 version by looking at the version on the top left of the application title
 * **What is the name and version of the OS you are using**?
-* **Are you running Constellation in a virtual machine?** If so, which VM 
+* **Are you running Constellation in a virtual machine?** If so, which VM
 software are you using and which operating systems and versions are used for the
 host and the guest?
-* **Which [packages](CATALOG_OF_REPOSITORIES.md) do you have installed?** You 
+* **Which [packages](CATALOG_OF_REPOSITORIES.md) do you have installed?** You
 can get that list by running `Help` > `Module Versions`.
 * **Are you using Constellation with multiple monitors?** If so, can you
 reproduce the problem when you use a single monitor?
 
 ### Suggesting Enhancements
 
-This section guides you through submitting an enhancement suggestion for 
-Constellation, including completely new features and minor improvements to 
-existing functionality. Following these guidelines helps maintainers and the 
+This section guides you through submitting an enhancement suggestion for
+Constellation, including completely new features and minor improvements to
+existing functionality. Following these guidelines helps maintainers and the
 community understand your suggestion and find related suggestions.
 
 Before creating enhancement suggestions, please check the
-[issue tracker](https://github.com/constellation-app/constellation/issues) as 
-you might find that you don't need to create one. When you are creating an 
+[issue tracker](https://github.com/constellation-app/constellation/issues) as
+you might find that you don't need to create one. When you are creating an
 enhancement suggestion, please [include as many details as possible](#how-do-i-submit-a-good-enhancement-suggestion).
-Fill in [the template](ISSUE_TEMPLATE.md), including the steps you imagine 
+Fill in [the template](ISSUE_TEMPLATE.md), including the steps you imagine
 you would take if the feature you're requesting existed.
 
 #### Before Submitting An Enhancement Suggestion
 
-* Check whether the enhancement has already been reported in the 
+* Check whether the enhancement has already been reported in the
 [issues](https://github.com/constellation-app/constellation/issues) page.
-* Double check whether the enhancement is a feature in this repository or from 
+* Double check whether the enhancement is a feature in this repository or from
 a module from [another repository](CATALOG_OF_REPOSITORIES.md) you have installed.
 
 #### How Do I Submit A (Good) Enhancement Suggestion?
 
 Enhancement suggestions are tracked as
-[GitHub issues](https://guides.github.com/features/issues). After you've 
-determined [which repository](CATALOG_OF_REPOSITORIES.md) your enhancement 
-suggestion is related to, create an issue on that repository and provide the 
+[GitHub issues](https://guides.github.com/features/issues). After you've
+determined [which repository](CATALOG_OF_REPOSITORIES.md) your enhancement
+suggestion is related to, create an issue on that repository and provide the
 following information:
 
 * **Use a clear and descriptive title** for the issue to identify the suggestion.
 * **Provide a step-by-step description of the suggested enhancement** in as much
 detail as possible.
 * **Provide specific examples to demonstrate the steps**. Include copy/pasteable
-snippets which you use in those examples, as 
+snippets which you use in those examples, as
 [Markdown code blocks](https://help.github.com/articles/markdown-basics/#multiple-lines).
 * **Describe the current behaviour** and **explain which behaviour you expected to
 see instead** and why.
-* **Include screenshots and animated GIFs** which show you following the 
-described steps and clearly demonstrate the problem. You can use 
+* **Include screenshots and animated GIFs** which show you following the
+described steps and clearly demonstrate the problem. You can use
 [this tool](https://www.cockos.com/licecap) to record GIFs on macOS and Windows,
 and [this tool](https://github.com/colinkeenan/silentcast) on Linux.
-* **Explain why this enhancement would be useful** to most Constellation users 
+* **Explain why this enhancement would be useful** to most Constellation users
 and isn't something that can or should be implemented as a
 [community package](CATALOG_OF_REPOSITORIES.md).
 * **List some other applications where this enhancement exists.**
-* **Which version of Constellation are you using?** You can get the exact 
+* **Which version of Constellation are you using?** You can get the exact
 version by looking at the version on the top left of the application title
 * **Specify the name and version of the OS you're using.**
 
@@ -264,7 +264,7 @@ you complete the self-paced
 #### Local development
 
 Constellation Core and all packages can be developed locally. For instructions
-on how to do this, see the ***Build Constellation*** section in the 
+on how to do this, see the ***Build Constellation*** section in the
 [Readme](README.md).
 
 ### Pull Requests
@@ -310,29 +310,29 @@ you code using `sonar-scanner` and checking via [Sonar Qube](https://sonarcloud.
 * Document code based on the [style guide](STYLE_GUIDELINES.md)
 * Avoid OS dependant code (e.g. Windows or Linux)
 * Utility methods should end with the word Utilities (i.e not Util or Utility)
-* Update the [change log](CHANGELOG.md) as a means to notify developers or 
+* Update the [change log](CHANGELOG.md) as a means to notify developers or
 important improvements or changes
-   * You must start with Added, Fixed, Improved, Moved, Removed, 
+   * You must start with Added, Fixed, Improved, Moved, Removed,
 Renamed or Updated and sort them alphabetically
 * Update whatsnew.txt if you want to inform users about your change
 * Update the html help pages as required
-* Use `java.util.logging.Logger` instead of `System.out.println` or 
+* Use `java.util.logging.Logger` instead of `System.out.println` or
 `System.err.println`.
-    * Note you should not use `org.apache.log4j.Logger` because it won't 
+    * Note you should not use `org.apache.log4j.Logger` because it won't
 appear in the logs.
 * Use StandardCharsets.UTF_8.name() instead of "UTF-8"
-* Classes that match `*AttributeDescriptionV*`, `*IOProviderV*` or 
+* Classes that match `*AttributeDescriptionV*`, `*IOProviderV*` or
 `*AttributeUpdateProvider` should be saved in a sub package named
 ***compatibility***.
     * Classes that match `*AttributeDescriptionV*` or `*IOProviderV*`
 should be annotated with `@deprecated`.
 * When developing a plugin, the plugin parameters have a label and description.
-   * Note that whenever a parameter has a default value, mention it in the 
+   * Note that whenever a parameter has a default value, mention it in the
 parameters description.
-* If your class extends `Plugin.class` and uses the `@ServiceProvider` annotation 
+* If your class extends `Plugin.class` and uses the `@ServiceProvider` annotation
 then the class name must end with the word `Plugin`.
 * Ensure new plugins have been added to the corresponding `*PluginRegistry`.
-* If you're calling arrangement plugins from within your plugin, you must add 
+* If you're calling arrangement plugins from within your plugin, you must add
 logic to check whether the freeze graph view state is enabled like so:
     ```java
     if (!CoreUtilities.isGraphViewFrozen()) {
@@ -352,19 +352,19 @@ logic to check whether the freeze graph view state is enabled like so:
     ```java
     final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
     ```
-* If you're using `javafx.stage.Stage` as a dialog, replace it with 
+* If you're using `javafx.stage.Stage` as a dialog, replace it with
 `ConstellationDialog` which makes sure your dialog remains on top (i.e is modal aware).
 * When documenting use the following conventions:
     * **nodes** rather than **vertices**
     * Use active voice. For example
         * GOOD:
-            * *To extract the foo, manipulate the bar* 
+            * *To extract the foo, manipulate the bar*
         * BAD:
             * *The foo can be extracted by manipulating the bar*
     * Give direct instructions (avoid *will* and *if*)
         * GOOD:	
             * *To increase the volume, turn the dial*
-            * *Turn the dial to increase the volume* 
+            * *Turn the dial to increase the volume*
             * *Turning the dial increases the volume*
         * OK:	
             * *Turning the dial will increase the volume*
@@ -377,7 +377,7 @@ logic to check whether the freeze graph view state is enabled like so:
         * OK:		
             * *Click on the big red button to activate the self-destruct*
             * *To activate the self-destruct, click the big red button*
-    * **you** rather than **we** 
+    * **you** rather than **we**
         * GOOD:
             * *You should save your graph before continuing*
         * BAD:	
@@ -416,12 +416,12 @@ To make sure your changes work as intended and don't break existing
 functionality, compile and run the existing Constellation
 tests and integration tests.
 
-* To run tests within your module, right click on the module from the Projects 
+* To run tests within your module, right click on the module from the Projects
 view and select ***Test***.
-* To run all tests, right click on the ***CONSTELLATION_CORE*** module suite from 
+* To run all tests, right click on the ***CONSTELLATION_CORE*** module suite from
 the Projects view and select ***Test***.
-* Push your changes to a ***Sonar Qube*** instance and make sure that you're not 
-introducing new leaks that don't already exist. A good way to check this is to 
+* Push your changes to a ***Sonar Qube*** instance and make sure that you're not
+introducing new leaks that don't already exist. A good way to check this is to
 filter issues by your author name and date range.
 
 ## Attribution to this guide
