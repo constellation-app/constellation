@@ -143,6 +143,7 @@
                 <package>au.gov.asd.tac.constellation.visual.opengl.renderer</package>
                 <package>au.gov.asd.tac.constellation.visual.opengl.renderer.batcher</package>
                 <package>au.gov.asd.tac.constellation.visual.opengl.utilities</package>
+                <package>au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs</package>
             </public-packages>
         </data>
     </configuration>

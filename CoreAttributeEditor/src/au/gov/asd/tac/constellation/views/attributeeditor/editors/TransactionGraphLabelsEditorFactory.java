@@ -79,6 +79,30 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         }
 
         @Override
+        public void updateControlsWithValue(final GraphLabels value) {
+            labels.clear();
+            labelEntries.getChildren().clear();
+            if (value != null) {
+                value.getLabels().forEach(label -> {
+                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
+                });
+            }
+        }
+
+        @Override
+        protected GraphLabels getValueFromControls() throws ControlsInvalidException {
+            List<GraphLabel> data = new ArrayList<>();
+            try {
+                labels.forEach(label -> {
+                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
+                });
+            } catch (final NumberFormatException ex) {
+                throw new ControlsInvalidException("Non numeric value entered for label size");
+            }
+            return new GraphLabels(data);
+        }
+
+        @Override
         protected Node createEditorControls() {
             // get all transaction attributes currently in the graph
             ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
@@ -242,31 +266,6 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                     dialog.showDialog();
                 };
             }
-
-        }
-
-        @Override
-        public void updateControlsWithValue(final GraphLabels value) {
-            labels.clear();
-            labelEntries.getChildren().clear();
-            if (value != null) {
-                value.getLabels().forEach(label -> {
-                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
-                });
-            }
-        }
-
-        @Override
-        protected GraphLabels getValueFromControls() throws ControlsInvalidException {
-            List<GraphLabel> data = new ArrayList<>();
-            try {
-                labels.forEach(label -> {
-                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
-                });
-            } catch (NumberFormatException ex) {
-                throw new ControlsInvalidException("Non numeric value entered for label size");
-            }
-            return new GraphLabels(data);
         }
     }
 }

@@ -51,7 +51,7 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
         }
 
         @Override
-        protected boolean canSet(Integer value) {
+        protected boolean canSet(final Integer value) {
             // This is an editor for primitive ints, so prevent null values being set.
             return value != null;
         }
@@ -65,7 +65,7 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
         protected Integer getValueFromControls() throws ControlsInvalidException {
             try {
                 return Integer.parseInt(numberField.getText());
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not an integer.");
             }
         }

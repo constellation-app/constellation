@@ -60,7 +60,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "HistogramTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/histogram/histogram.png",
+        iconBase = "au/gov/asd/tac/constellation/views/histogram/resources/histogram.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

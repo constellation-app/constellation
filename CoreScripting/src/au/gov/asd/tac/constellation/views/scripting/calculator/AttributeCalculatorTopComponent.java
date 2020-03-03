@@ -28,7 +28,7 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "AttributeCalculatorTopComponent",
-        iconBase = "au/gov/asd/tac/constellation/views/scripting/calculator/resources/attribute_calculator.png",
+        iconBase = "au/gov/asd/tac/constellation/views/scripting/calculator/resources/attribute-calculator.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -80,7 +80,7 @@ public final class AttributeCalculatorTopComponent extends JavaFxTopComponent<At
 
     @Override
     protected String createStyle() {
-        return "resources/attributecalculator.css";
+        return "resources/attribute-calculator.css";
     }
 
     @Override
