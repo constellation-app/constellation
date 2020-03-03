@@ -2196,8 +2196,8 @@
                 <binary-origin>release/modules/ext/jackson-core-2.10.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/core-3.3.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/core-3.3.7.jar</binary-origin>
+                <runtime-relative-path>ext/core.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/core.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-rescale-1.1.10.jar</runtime-relative-path>

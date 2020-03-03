@@ -122,6 +122,14 @@
         </get>
     </target>
     
+    <target name="-download-processing4.0" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing processing 4.0..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/Processing%204.0/core.jar?raw=true"/>
+        </get>
+    </target>
+    
     <target name="-download-javahelp-file" >
         <echo message="installing netbeans help files to ... ${nbplatform.default.netbeans.dest.dir}"/>
         <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
@@ -134,7 +142,7 @@
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
     </target>
   	
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl,-download-newt, -download-mainwindow, -download-javahelp-file, -download-javahelp-indexfile"
+    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps, -download-gluegen, -download-jocl, -download-jogl,-download-newt, -download-mainwindow, -download-processing4.0, -download-javahelp-file, -download-javahelp-indexfile"
             description="Download dependent libraries.">
         <ivy:resolve/>
         <ivy:retrieve/>
