@@ -74,7 +74,7 @@
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.24.v20191120"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.38"/>
         <dependency org="org.json" name="json" rev="20190722"/>
-        <dependency org="org.processing" name="core" rev="3.3.7"/>
+   <!-- <dependency org="org.processing" name="core" rev="3.3.7"/> -->
         <dependency org="org.python" name="jython-standalone" rev="2.7.2b2"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
 
