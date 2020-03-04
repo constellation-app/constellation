@@ -132,13 +132,13 @@
     
     <target name="-download-javahelp-file" >
         <echo message="installing netbeans help files to ... ${nbplatform.default.netbeans.dest.dir}"/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/org-netbeans-modules-javahelp.jar"
+        <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar"
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true"/>
     </target>
     
     <target name="-download-javahelp-indexfile" >
         <echo message="installing netbeans help index files... ${nbplatform.default.netbeans.dest.dir}"/>
-        <get src="https://github.com/rsabhi/NBhelp/raw/master/jhall-2.0_05.jar"
+        <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/NetBeans%20Help/jhall-2.0_05.jar"
              dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true"/>
     </target>
   	
