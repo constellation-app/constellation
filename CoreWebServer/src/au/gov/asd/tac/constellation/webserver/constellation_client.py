@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 201804010
+__version__ = 20200306
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -621,6 +621,19 @@ class Constellation:
         r = self.rest_request(endpoint='/v1/icon', path='get', params={'name':name})
 
         return r.content
+
+    def get_service(self, name, args=None):
+        """Call a REST service and return a dictionary.
+
+        The dictionary is built from the JSON in the response body.
+
+        :param name: The name of the service to be called.
+        :param args: A dictionary containing the arguments to be passed to the service as URL parameters.
+        """
+
+        r = self.rest_request(endpoint=f'/v1/service', path=name, params=args)
+
+        return r.json()
 
 def _get_rest(rest=None):
     """Get data from the file created by the CONSTELLATION HTTP REST server.

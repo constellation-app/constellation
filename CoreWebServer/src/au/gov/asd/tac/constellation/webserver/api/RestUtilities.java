@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import java.util.Map;
 
 /**
  * A collection of utilities for the REST API.
@@ -105,5 +106,28 @@ public class RestUtilities {
                 row.add(value);
                 break;
         }
+    }
+
+    public static String getStringArg(final Map<String, String[]> args, final String arg, final String defaultValue) {
+        if(args.containsKey(arg)) {
+            final String[] values = args.get(arg);
+            if(values.length==1) {
+                return values[0];
+            }
+        }
+
+        return defaultValue;
+    }
+
+    public static boolean getBooleanArg(final Map<String, String[]> args, final String arg, final boolean defaultValue) {
+        if(args.containsKey(arg)) {
+            final String[] values = args.get(arg);
+            if(values.length==1) {
+                final String value = values[0];
+                return "true".equalsIgnoreCase(value);
+            }
+        }
+
+        return defaultValue;
     }
 }
