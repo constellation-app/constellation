@@ -295,6 +295,7 @@ public class UserInterfaceIconProvider implements ConstellationIconProvider {
         userInterfaceIcons.add(REPORT);
         userInterfaceIcons.add(SEARCH);
         userInterfaceIcons.add(SELECT_MODE);
+        userInterfaceIcons.add(SETTINGS);
         userInterfaceIcons.add(SHARE);
         userInterfaceIcons.add(SORT);
         userInterfaceIcons.add(TAG);
