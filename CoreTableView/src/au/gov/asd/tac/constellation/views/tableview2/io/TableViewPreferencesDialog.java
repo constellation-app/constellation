@@ -32,7 +32,7 @@ import javafx.scene.layout.TilePane;
  */
 public class TableViewPreferencesDialog {
 
-    public static String getTableViewPreferences(String[] names) {
+    public static String getTableViewPreferences(final String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         
         final ObservableList<String> q = FXCollections.observableArrayList(names);
@@ -44,9 +44,9 @@ public class TableViewPreferencesDialog {
                 dialog.setResult(ButtonType.OK);
             }
         });
-        //ButtonType removeButton = new ButtonType("Remove");
+//        ButtonType removeButton = new ButtonType("Remove");
         dialog.getDialogPane().setContent(nameList);
-        //dialog.getButtonTypes().add(removeButton);
+//        dialog.getButtonTypes().add(removeButton);
         dialog.setResizable(false);
         dialog.setTitle("Table View Preferences");
         dialog.setHeaderText("Select a preference to load.");
@@ -68,8 +68,8 @@ public class TableViewPreferencesDialog {
     }
     
     
-    //Opens up a slightly different dialog window to allow the user to name the
-    //preference when it is being saved
+    // opens up a slightly different dialog window to allow the user to name the
+    // preference when it is being saved
     public static String getTableViewPreferenceName() {
         // create a tile pane 
         TilePane r = new TilePane(); 
@@ -85,7 +85,5 @@ public class TableViewPreferencesDialog {
         }
         
         return "";
-    
     }
-    
 }
