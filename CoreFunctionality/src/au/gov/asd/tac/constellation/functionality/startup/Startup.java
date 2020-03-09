@@ -49,7 +49,7 @@ public class Startup implements Runnable {
             String mostRecentVersion = MostRecentModules.getMostRecentVersion();
             if (mostRecentVersion == null) {
                 // once issue #86 is fixed this should go back to UNDER_DEVELOPMENT"
-                mostRecentVersion = "1.20191005.113234";
+                mostRecentVersion = "1.20200225.104006";
             }
 
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
