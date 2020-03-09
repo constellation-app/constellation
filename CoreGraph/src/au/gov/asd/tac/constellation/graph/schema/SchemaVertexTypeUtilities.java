@@ -307,7 +307,7 @@ public class SchemaVertexTypeUtilities {
 
         getTypes().forEach(schemaVertexType -> {
             final Pattern regex = schemaVertexType.getDetectionRegex();
-            if (regex != null) {
+            if (regex != null && text != null) {
                 final Matcher matcher = regex.matcher(text);
                 while (matcher.find()) {
                     final String identifier = matcher.group();

@@ -2,7 +2,8 @@
 
 ## 2020-02-01 Changes in February 2020
 * Fixed a bug which now ensures that overriding a transaction direction using `GraphRecordStoreUtilities.DIRECTED_KEY` persists with the Type.
-* Renamed SupporPackageAction to SupportPackageAction to fix a spelling typo.
+* Renamed `NodeGraphLabelsEditorFactory` to `VertexGraphLabelsEditorFactory`.
+* Renamed `SupporPackageAction` to `SupportPackageAction` to fix a spelling typo.
 
 ## 2020-01-01 Changes in January 2020
 * Added LabelFontsOptionsPanel to allow setting of fonts rendered on the graph through the UI.

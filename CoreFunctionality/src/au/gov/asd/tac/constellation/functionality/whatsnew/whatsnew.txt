@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-02-25 New Logo
+<p>Constellation has got a new logo!</p>
+
+== 2020-02-23 Improved Validation
+<p>Validation of custom attributes using dates, blaze angles, node and transaction attribute labels have been improved to provide instant feedback when an invalid value is set.</p>
+
 == 2020-02-07 Font Improvements
 <p>Support for rendering fonts in a Constellation graph has been overhauled enabling support for multiple fonts.
 Font preferences for the graph can be made by going to Setup &gt; Options &gt; Constellation &gt; Label Fonts. 
