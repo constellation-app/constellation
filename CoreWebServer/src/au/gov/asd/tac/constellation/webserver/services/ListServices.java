@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.webserver.RestService;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -38,7 +38,14 @@ public class ListServices implements RestService {
     }
 
     @Override
-    public void service(final Map<String, String[]> args, final InputStream in, final OutputStream out) throws IOException {
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        return parameters;
+    }
+
+    @Override
+    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
 
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();

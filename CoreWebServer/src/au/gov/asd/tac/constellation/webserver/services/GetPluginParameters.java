@@ -15,13 +15,15 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
+import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,37 +34,42 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
  @ServiceProvider(service=RestService.class)
-public class ListPlugins implements RestService {
-    private static final String ALIAS_PARAMETER_ID = PluginParameter.buildId(ListPlugins.class, "alias");
+public class GetPluginParameters implements RestService {
+    private static final String PLUGIN_NAME_PARAMETER_ID = PluginParameter.buildId(GetPluginParameters.class, "plugin_name");
 
     @Override
     public String getName() {
-        return "list_plugins";
+        return "get_plugin_parameters";
     }
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
-        aliasParam.setName("Show aliases");
-        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise.");
-        aliasParam.setObjectValue(true);
-        parameters.addParameter(aliasParam);
+        final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
+        nameParam.setName("Plugin name");
+        nameParam.setDescription("Show the plugin parameters.");
+        parameters.addParameter(nameParam);
 
         return parameters;
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final boolean alias = parameters.getBooleanValue(ALIAS_PARAMETER_ID);
+    public void service(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+        final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
+
+        final Plugin plugin = PluginRegistry.get(pluginName);
+        final PluginParameters pluginParams = plugin.createParameters();
 
         final ObjectMapper mapper = new ObjectMapper();
-        final ArrayNode root = mapper.createArrayNode();
-        PluginRegistry.getPluginClassNames()
-            .stream()
-            .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-            .forEachOrdered(name -> {root.add(name);});
+        final ObjectNode root = mapper.createObjectNode();
+        pluginParams.getParameters().entrySet().forEach(entry -> {
+            final ObjectNode attrs = root.putObject(entry.getKey());
+            final PluginParameter<?> pp = entry.getValue();
+            attrs.put("name", pp.getName());
+            attrs.put("type", pp.getType().getId());
+            attrs.put("description", pp.getDescription());
+        });
 
         mapper.writeValue(out, root);
     }

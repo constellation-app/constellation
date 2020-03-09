@@ -15,10 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
-import au.gov.asd.tac.constellation.webserver.RestService;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import java.io.IOException;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +55,26 @@ public class RestServiceServlet extends ConstellationApiServlet {
         for(final RestService rs : Lookup.getDefault().lookupAll(RestService.class)) {
             final String name = rs.getName();
             if(service.equals(name)) {
+                // Convert the arguments in the URL of the request to PluginParameters.
+                //
+                final PluginParameters parameters = rs.createParameters();
+                final Map<String, String[]> paramMap = request.getParameterMap();
+
+                paramMap.entrySet().forEach(entry -> {
+                    final String parameterName = entry.getKey();
+                    if(parameters.hasParameter(parameterName)) {
+                        final PluginParameter<?> param = parameters.getParameters().get(parameterName);
+                        if(entry.getValue().length==1) {
+                            param.setStringValue(entry.getValue()[0]);
+                        } else {
+                            throw new EndpointException("Service parameters do not accept multiple values");
+                        }
+                    } else {
+                        throw new EndpointException(String.format("Service %s has no such parameter: %s", service, parameterName));
+                    }
+                });
                 try {
-                    rs.service(request.getParameterMap(), request.getInputStream(), response.getOutputStream());
+                    rs.service(parameters, request.getInputStream(), response.getOutputStream());
                 } catch(final IOException | RuntimeException ex) {
                     throw new ServletException(ex);
                 }

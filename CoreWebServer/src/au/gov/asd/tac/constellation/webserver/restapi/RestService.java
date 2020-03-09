@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.webserver;
+package au.gov.asd.tac.constellation.webserver.restapi;
 
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Map;
 
 /**
  * The definition of a REST service.
@@ -38,14 +38,19 @@ public interface RestService {
     String getName();
 
     /**
+     * Creates the parameters for this service.
+     */
+    PluginParameters createParameters();
+
+    /**
      * A generic REST service.
      * <p>
      * REST services accept arbitrary JSON as input, and return arbitrary JSON
      * as output.
      *
-     * @param args URL arguments as returned by request.getParameterMap().
+     * @param parameters The parameters passed from the service request to the service.
      * @param in The body of the HTTP request.
-     * @param out The body of the response.
+     * @param out The body of the HTTP response.
      */
-    void service(Map<String, String[]> args, InputStream in, OutputStream out) throws IOException;
+    void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException;
 }
