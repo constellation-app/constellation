@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;

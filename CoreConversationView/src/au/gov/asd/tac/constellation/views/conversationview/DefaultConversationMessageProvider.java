@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import java.util.List;
 import javax.swing.SwingUtilities;
 

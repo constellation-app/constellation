@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;
 
 /**

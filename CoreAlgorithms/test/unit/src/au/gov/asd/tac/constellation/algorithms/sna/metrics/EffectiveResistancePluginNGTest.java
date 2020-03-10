@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.algorithms.sna.metrics;
 
 import au.gov.asd.tac.constellation.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.Schema;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
 import static org.testng.Assert.assertEquals;

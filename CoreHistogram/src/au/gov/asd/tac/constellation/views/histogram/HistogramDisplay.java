@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;

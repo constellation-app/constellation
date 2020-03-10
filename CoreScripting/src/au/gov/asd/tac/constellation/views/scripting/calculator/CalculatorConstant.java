@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.scripting.calculator;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 
 /**
  * A Number of 'constants' which can be inserted into the calculator's script

@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.util.EnumMap;
 import java.util.HashMap;

@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
-import au.gov.asd.tac.constellation.graph.visual.camera.CameraUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 

@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.importexport.json;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonWriter;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.IOException;
 import org.openide.util.Exceptions;
@@ -53,7 +53,7 @@ public class ExportToJsonPlugin extends SimpleReadPlugin {
         final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();
 
         try {
-            new GraphJsonWriter().writeGraphFile(rg, filename, new IoProgressHandle("Exporting..."));
+            new GraphJsonWriter().writeGraphFile(rg, filename, new HandleIoProgress("Exporting..."));
             ConstellationLoggerHelper.exportPropertyBuilder(
                     this,
                     GraphRecordStoreUtilities.getVertices(rg, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),

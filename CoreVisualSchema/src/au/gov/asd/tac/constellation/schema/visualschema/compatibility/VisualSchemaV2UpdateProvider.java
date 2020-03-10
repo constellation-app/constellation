@@ -20,10 +20,10 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

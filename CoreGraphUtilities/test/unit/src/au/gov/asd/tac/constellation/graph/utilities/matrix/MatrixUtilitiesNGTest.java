@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.utilities.matrix;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.Schema;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
 import org.ejml.simple.SimpleMatrix;
 import static org.testng.Assert.assertTrue;

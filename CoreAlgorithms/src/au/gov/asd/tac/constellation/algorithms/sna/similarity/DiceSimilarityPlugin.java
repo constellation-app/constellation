@@ -16,10 +16,11 @@
 package au.gov.asd.tac.constellation.algorithms.sna.similarity;
 
 import au.gov.asd.tac.constellation.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -32,7 +33,6 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -176,6 +176,6 @@ public class DiceSimilarityPlugin extends SimpleEditPlugin {
         // update the graph with dice similarity values
         SimilarityUtilities.addScoresToGraph(graph, diceSimilarities, DICE_SIMILARITY_ATTRIBUTE);
         // complete with schema
-        PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+        PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 }

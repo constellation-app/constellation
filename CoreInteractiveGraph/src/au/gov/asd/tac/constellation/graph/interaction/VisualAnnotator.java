@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.visual.display.VisualOperation;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualOperation;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualProcessor;
 import java.util.Queue;
 
 /**

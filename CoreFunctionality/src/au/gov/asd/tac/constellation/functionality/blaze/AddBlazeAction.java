@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.functionality.blaze;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
 import java.util.BitSet;
 import javafx.util.Pair;

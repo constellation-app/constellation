@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.arrangements.random;
 import au.gov.asd.tac.constellation.arrangements.Arranger;
 import au.gov.asd.tac.constellation.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Random;
 
 /**

@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.functionality.visual.MenuBaseAction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.DrawFlags;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;

@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;

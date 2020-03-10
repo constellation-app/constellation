@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.histogram.formats;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.attribute.RawAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.RawData;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.RawAttributeDescription;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;

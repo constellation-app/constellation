@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateController;
 import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateManager;
 import au.gov.asd.tac.constellation.pluginframework.update.MultiAttributeUpdateComponent;

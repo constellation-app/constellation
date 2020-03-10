@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Point;
 
 /**

@@ -27,8 +27,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.PrimaryKeyUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.attribute.AttributeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -44,8 +44,8 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoice
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -619,7 +619,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<Set<String>, Integer> keyToRecordIndex = new HashMap<>();
         recordstore.reset();
         while (recordstore.next()) {
-            final Set<String> vertex = new TreeSet();
+            final Set<String> vertex = new TreeSet<>();
 
             for (final String key : vertexKeys) {
                 if (!recordstore.hasValue(GraphRecordStoreUtilities.SOURCE + key)) {

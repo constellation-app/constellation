@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.importexport.delimited.model.TableRow;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;

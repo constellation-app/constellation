@@ -19,19 +19,19 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.RawAttributeDescription;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.RawAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TransactionTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.VertexTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.CharacterIconProvider;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,7 +115,7 @@ public class AnalyticConcept extends SchemaConcept {
     }
 
     @Override
-    protected Collection<SchemaAttribute> getSchemaAttributes() {
+    public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(VertexAttribute.TYPE);
         schemaAttributes.add(VertexAttribute.RAW);
@@ -346,7 +346,7 @@ public class AnalyticConcept extends SchemaConcept {
     }
 
     @Override
-    protected SchemaVertexType getDefaultSchemaVertexType() {
+    public SchemaVertexType getDefaultSchemaVertexType() {
         return SchemaVertexType.unknownType();
     }
 
@@ -390,12 +390,12 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaTransactionType REFERENCED = new SchemaTransactionType.Builder("Referenced")
                 .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
                 .setColor(ConstellationColor.CHOCOLATE)
-                .setStyle(LineStyle.DASHED)
+                .setStyle(TransactionLineStyle.DASHED)
                 .build();
     }
 
     @Override
-    protected List<SchemaTransactionType> getSchemaTransactionTypes() {
+    public List<SchemaTransactionType> getSchemaTransactionTypes() {
         final List<SchemaTransactionType> schemaTransactionTypes = new ArrayList<>();
         schemaTransactionTypes.add(TransactionType.COMMUNICATION);
         schemaTransactionTypes.add(TransactionType.CORRELATION);
@@ -410,7 +410,7 @@ public class AnalyticConcept extends SchemaConcept {
     }
 
     @Override
-    protected SchemaTransactionType getDefaultSchemaTransactionType() {
+    public SchemaTransactionType getDefaultSchemaTransactionType() {
         return SchemaTransactionType.unknownType();
     }
 }

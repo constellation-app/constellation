@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;

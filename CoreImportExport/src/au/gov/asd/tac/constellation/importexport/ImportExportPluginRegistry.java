@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.importexport.geospatial.ExportToKmlPlugin;
 import au.gov.asd.tac.constellation.importexport.geospatial.ExportToShapefilePlugin;
 import au.gov.asd.tac.constellation.importexport.image.ExportToImagePlugin;
 import au.gov.asd.tac.constellation.importexport.json.ExportToJsonPlugin;
-import au.gov.asd.tac.constellation.importexport.string.ExportToTextPlugin;
+import au.gov.asd.tac.constellation.importexport.text.ExportToTextPlugin;
 
 /**
  * A registry of import and export plugins

@@ -17,13 +17,13 @@ package au.gov.asd.tac.constellation.importexport.dragdrop;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper.DropInfo;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -74,7 +74,7 @@ public class FileDropper implements GraphDropper {
                                 @Override
                                 public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                                     try {
-                                        final Graph g = new GraphJsonReader().readGraphZip(file, new IoProgressHandle(String.format("Reading %s...", file.getName())));
+                                        final Graph g = new GraphJsonReader().readGraphZip(file, new HandleIoProgress(String.format("Reading %s...", file.getName())));
                                         GraphOpener.getDefault().openGraph(g, file.getName());
 
                                         final ReadableGraph rg = g.getReadableGraph();

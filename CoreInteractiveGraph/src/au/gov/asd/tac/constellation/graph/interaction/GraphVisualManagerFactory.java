@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.interaction;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualManager;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualProcessor;
 
 /**
  * A factory for creating {@link VisualManager} objects, along with all of their

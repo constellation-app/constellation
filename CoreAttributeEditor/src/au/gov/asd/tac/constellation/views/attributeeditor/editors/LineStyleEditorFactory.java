@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.visual.linestyle.LineStyleAttributeDescription;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.LineStyleAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -37,10 +37,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
-public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyle> {
+public class LineStyleEditorFactory extends AttributeValueEditorFactory<TransactionLineStyle> {
 
     @Override
-    public AbstractEditor<LineStyle> createEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+    public AbstractEditor<TransactionLineStyle> createEditor(final EditOperation editOperation, final DefaultGetter<TransactionLineStyle> defaultGetter, final ValueValidator<TransactionLineStyle> validator, final String editedItemName, final TransactionLineStyle initialValue) {
         return new LineStyleEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
@@ -49,27 +49,27 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
         return LineStyleAttributeDescription.ATTRIBUTE_NAME;
     }
 
-    public class LineStyleEditor extends AbstractEditor<LineStyle> {
+    public class LineStyleEditor extends AbstractEditor<TransactionLineStyle> {
 
-        private ComboBox<LineStyle> lineStyleComboBox;
+        private ComboBox<TransactionLineStyle> lineStyleComboBox;
 
-        protected LineStyleEditor(final EditOperation editOperation, final DefaultGetter<LineStyle> defaultGetter, final ValueValidator<LineStyle> validator, final String editedItemName, final LineStyle initialValue) {
+        protected LineStyleEditor(final EditOperation editOperation, final DefaultGetter<TransactionLineStyle> defaultGetter, final ValueValidator<TransactionLineStyle> validator, final String editedItemName, final TransactionLineStyle initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
-        protected boolean canSet(final LineStyle value) {
+        protected boolean canSet(final TransactionLineStyle value) {
             // As LineStyle is an enum, we want one of its constants, not null.
             return value != null;
         }
 
         @Override
-        public void updateControlsWithValue(final LineStyle value) {
+        public void updateControlsWithValue(final TransactionLineStyle value) {
             lineStyleComboBox.getSelectionModel().select(value);
         }
 
         @Override
-        protected LineStyle getValueFromControls() {
+        protected TransactionLineStyle getValueFromControls() {
             return lineStyleComboBox.getValue();
         }
 
@@ -80,11 +80,11 @@ public class LineStyleEditorFactory extends AttributeValueEditorFactory<LineStyl
             controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             final Label lineStyleLabel = new Label("Line Style:");
-            final ObservableList<LineStyle> lineStyles = FXCollections.observableArrayList(LineStyle.values());
+            final ObservableList<TransactionLineStyle> lineStyles = FXCollections.observableArrayList(TransactionLineStyle.values());
             lineStyleComboBox = new ComboBox<>(lineStyles);
-            final Callback<ListView<LineStyle>, ListCell<LineStyle>> cellFactory = (final ListView<LineStyle> p) -> new ListCell<LineStyle>() {
+            final Callback<ListView<TransactionLineStyle>, ListCell<TransactionLineStyle>> cellFactory = (final ListView<TransactionLineStyle> p) -> new ListCell<TransactionLineStyle>() {
                 @Override
-                protected void updateItem(final LineStyle item, boolean empty) {
+                protected void updateItem(final TransactionLineStyle item, boolean empty) {
                     super.updateItem(item, empty);
                     if (item != null) {
                         setText(item.name());

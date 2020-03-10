@@ -19,14 +19,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.visual.labels.TransactionGraphLabelsAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.TransactionGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorDialog;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabel;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -115,7 +115,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             }
             attributeNames.sort(String::compareTo);
 
-            HBox labelTitles = new HBox();
+            final HBox labelTitles = new HBox();
             final Label attrLabel = new Label("Attribute");
             attrLabel.setAlignment(Pos.CENTER);
             attrLabel.setPrefWidth(150);

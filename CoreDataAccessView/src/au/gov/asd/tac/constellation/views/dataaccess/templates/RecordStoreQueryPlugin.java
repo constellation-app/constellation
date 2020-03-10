@@ -19,14 +19,14 @@ import au.gov.asd.tac.constellation.arrangements.AbstractInclusionGraph.Connecti
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.operations.SetFloatValuesOperation;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;

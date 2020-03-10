@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.graph.utilities.wrapper;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.attribute.RawData;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.RawData;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import java.util.Arrays;
 import java.util.HashSet;

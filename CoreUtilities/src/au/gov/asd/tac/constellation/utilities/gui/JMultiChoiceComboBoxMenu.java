@@ -156,6 +156,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         }
     }
 
+    @SuppressWarnings("unchecked")
     public final void setSelectedItems(final E... items) {
         if (items != null) {
             clearSelection();
@@ -176,6 +177,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         }
     }
 
+    @SuppressWarnings("unchecked")
     public final void addSelectedItems(final E... items) {
         if (items != null) {
             for (final E item : items) {
@@ -195,6 +197,7 @@ public class JMultiChoiceComboBoxMenu<E> extends JComponent implements ListSelec
         }
     }
 
+    @SuppressWarnings("unchecked")
     public final void removeSelectedItems(final E... items) {
         if (items != null) {
             for (final E item : items) {

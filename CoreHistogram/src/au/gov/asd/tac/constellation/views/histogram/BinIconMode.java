@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.histogram;
 
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;

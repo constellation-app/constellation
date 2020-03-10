@@ -17,15 +17,15 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.utilities.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.display.VisualDefaults;
-import au.gov.asd.tac.constellation.visual.graphics3d.IntArray;
+import au.gov.asd.tac.constellation.graph.visual.VisualDefaults;
+import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import org.openide.util.NbBundle;
 
 /**

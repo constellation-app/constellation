@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import java.util.List;
 
 /**

@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.functionality.blaze;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities;
-import static au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities.COLOR_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities;
+import static au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities.COLOR_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
@@ -33,8 +33,8 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.blaze.Blaze;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;

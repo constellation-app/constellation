@@ -20,9 +20,9 @@ import au.gov.asd.tac.constellation.algorithms.clustering.ktruss.KTrussStateAttr
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -130,7 +130,7 @@ public class ClusteringConcept extends SchemaConcept {
     }
 
     @Override
-    protected Collection<SchemaAttribute> getSchemaAttributes() {
+    public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(MetaAttribute.K_TRUSS_CLUSTERING_STATE);
         schemaAttributes.add(MetaAttribute.HIERARCHICAL_CLUSTERING_STATE);

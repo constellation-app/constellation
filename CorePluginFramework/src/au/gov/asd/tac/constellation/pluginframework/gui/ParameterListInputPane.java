@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameterLi
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterListParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterListParameterType.ParameterListParameterValue;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

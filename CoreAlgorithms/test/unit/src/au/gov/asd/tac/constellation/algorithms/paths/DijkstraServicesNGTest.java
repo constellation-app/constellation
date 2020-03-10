@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.algorithms.paths;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaFactory;
 import java.util.ArrayList;
 import java.util.List;

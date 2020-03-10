@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.control.Menu;

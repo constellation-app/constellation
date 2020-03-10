@@ -56,6 +56,7 @@ import au.gov.asd.tac.constellation.functionality.email.SendToEmailClientPlugin;
 import au.gov.asd.tac.constellation.functionality.hop.HopOutPlugin;
 import au.gov.asd.tac.constellation.functionality.merge.PermanentMergePlugin;
 import au.gov.asd.tac.constellation.functionality.save.SaveGraphPlugin;
+import au.gov.asd.tac.constellation.functionality.schema.CompleteSchemaPlugin;
 import au.gov.asd.tac.constellation.functionality.select.ChangeSelectionPlugin;
 import au.gov.asd.tac.constellation.functionality.select.DeselectAllPlugin;
 import au.gov.asd.tac.constellation.functionality.select.DeselectTransactionsPlugin;
@@ -90,6 +91,7 @@ public final class CorePluginRegistry {
     public static final String CHANGE_SELECTION = ChangeSelectionPlugin.class.getName();
     public static final String CLOSE_GRAPH = CloseGraphPlugin.class.getName();
     public static final String COMPARE_GRAPH = CompareGraphPlugin.class.getName();
+    public static final String COMPLETE_SCHEMA = CompleteSchemaPlugin.class.getName();
     public static final String COMPOSITE_CORRELATED_NODES = CreateCompositesFromDominantNodesPlugin.class.getName();
     public static final String CONTRACT_ALL_COMPOSITES = ContractAllCompositesPlugin.class.getName();
     public static final String COPY = CopyToClipboardPlugin.class.getName();

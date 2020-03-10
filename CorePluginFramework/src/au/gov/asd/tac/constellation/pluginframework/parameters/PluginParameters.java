@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane.Par
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;

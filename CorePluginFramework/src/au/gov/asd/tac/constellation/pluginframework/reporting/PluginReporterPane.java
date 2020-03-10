@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.pluginframework.reporting;
 
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;

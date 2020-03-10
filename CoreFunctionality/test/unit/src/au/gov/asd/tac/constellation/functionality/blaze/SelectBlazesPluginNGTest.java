@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.functionality.blaze;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.Schema;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.visual.blaze.Blaze;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

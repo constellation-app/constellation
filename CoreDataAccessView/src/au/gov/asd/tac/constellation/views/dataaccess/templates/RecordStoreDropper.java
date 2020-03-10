@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper.DropInfo;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;

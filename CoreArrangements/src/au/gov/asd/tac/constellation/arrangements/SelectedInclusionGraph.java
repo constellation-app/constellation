@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.arrangements;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 
 /**
  * An AbstractInclusionGraph that uses the boolean selected attribute to include

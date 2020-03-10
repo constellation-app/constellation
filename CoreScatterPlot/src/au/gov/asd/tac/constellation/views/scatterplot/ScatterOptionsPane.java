@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilde
 import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;

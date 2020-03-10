@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.algorithms.clustering;
 
-import au.gov.asd.tac.constellation.functionality.BBoxf;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.Map;
 

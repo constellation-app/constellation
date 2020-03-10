@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.blaze;
 
-import static au.gov.asd.tac.constellation.graph.visual.blaze.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.schema.visualschema.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import java.util.BitSet;
 import java.util.List;

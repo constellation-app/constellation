@@ -17,16 +17,16 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities.ExtractedVertexType;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities.ExtractedVertexType;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
@@ -48,8 +48,7 @@ import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.time.ZonedDateTime;
@@ -434,11 +433,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
             // complete with schema, arrange in trees, and reset view
-            PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
+            PluginExecutor.startWith(CorePluginRegistry.COMPLETE_SCHEMA)
                     .followedBy(ArrangementPluginRegistry.TREES)
                     .executeNow(wg);
         } else {
-            PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
+            PluginExecutor.startWith(CorePluginRegistry.COMPLETE_SCHEMA)
                     .followedBy(CorePluginRegistry.RESET)
                     .executeNow(wg);
         }

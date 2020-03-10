@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.utilities.ElementSet;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
-import au.gov.asd.tac.constellation.visual.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;

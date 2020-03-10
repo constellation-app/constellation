@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -37,7 +38,6 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionType.MergeException;
@@ -230,7 +230,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
 
         interaction.setProgress(1, 0, "Merged " + mergedCount + " transactions.", true);
 
-        PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+        PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
     protected int mergeTransactions(GraphWriteMethods graph, Set<Integer> transactionsToMerge, int leadTransaction, GraphElementMerger merger) {

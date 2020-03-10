@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.functionality.composite;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.composites.CompositeUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -46,7 +46,7 @@ public class DestroyAllCompositesPlugin extends SimpleEditPlugin {
 
         final boolean anythingDestroyed = CompositeUtilities.destroyAllComposites(graph);
         if (anythingDestroyed) {
-            PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
         }
     }
 }

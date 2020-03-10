@@ -19,14 +19,11 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.TransactionTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -110,7 +107,7 @@ public class TransactionTypeIOProvider extends AbstractGraphIOProvider {
         final SchemaTransactionType schemaTransactionType = new SchemaTransactionType.Builder(name.textValue())
                 .setDescription(description == null ? null : description.textValue())
                 .setColor(color == null ? null : readColorObject(color))
-                .setStyle(style == null ? null : LineStyle.valueOf(style.textValue()))
+                .setStyle(style == null ? null : TransactionLineStyle.valueOf(style.textValue()))
                 .setDirected(directed == null ? null : directed.booleanValue())
                 .setSuperType(superType == null ? null : readTypeObject(superType))
                 .setOverridenType(overriddenType == null ? null : SchemaTransactionTypeUtilities.getType(overriddenType.textValue()))

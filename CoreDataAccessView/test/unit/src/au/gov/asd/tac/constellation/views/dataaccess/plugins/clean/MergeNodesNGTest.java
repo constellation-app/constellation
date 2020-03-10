@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.schema.Schema;
+import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;

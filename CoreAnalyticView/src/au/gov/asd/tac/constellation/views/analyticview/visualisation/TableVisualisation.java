@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult.ResultListener;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractTableTranslator;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import static au.gov.asd.tac.constellation.importexport.geospatial.AbstractGeoExportPlugin.ELEMENT_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.importexport.geospatial.AbstractGeoExportPlugin.OUTPUT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;

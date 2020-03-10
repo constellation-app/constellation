@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
 import au.gov.asd.tac.constellation.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.algorithms.sna.centrality.DegreeCentralityPlugin;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;

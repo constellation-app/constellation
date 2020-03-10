@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema;
 
+import au.gov.asd.tac.constellation.schema.SchemaVertexType;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import au.gov.asd.tac.constellation.visual.icons.CharacterIconProvider;
 import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;

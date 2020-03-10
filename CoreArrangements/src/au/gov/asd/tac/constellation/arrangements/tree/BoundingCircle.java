@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.arrangements.tree;
 
-import au.gov.asd.tac.constellation.functionality.BBoxf;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import java.util.List;
 
 /**

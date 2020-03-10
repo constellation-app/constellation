@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.arrangements;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabel;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 
 /**
  * A Utility to set an attribute on the graph called 'lradius' which

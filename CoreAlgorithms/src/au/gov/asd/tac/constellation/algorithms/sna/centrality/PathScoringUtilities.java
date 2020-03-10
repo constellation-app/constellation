@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.algorithms.sna.centrality;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
 import java.util.BitSet;

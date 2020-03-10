@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.functionality.hop;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import java.util.BitSet;
 import java.util.logging.Logger;
 

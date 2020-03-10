@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.FloatTextureBuffer;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualAccess;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualChange;
 import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
 

@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.algorithms.sna.similarity;
 
 import au.gov.asd.tac.constellation.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

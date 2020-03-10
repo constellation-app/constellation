@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.functionality.display;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.visual.MenuBaseAction;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.utilities.ConnectionMode;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import org.openide.awt.ActionID;

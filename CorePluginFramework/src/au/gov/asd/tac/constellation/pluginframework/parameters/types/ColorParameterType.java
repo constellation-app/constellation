@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.pluginframework.parameters.types;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType.ColorParameterValue;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

@@ -1,5 +1,6 @@
 Manifest-Version: 1.0
-OpenIDE-Module: au.gov.asd.tac.constellation.graph.visual
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: au.gov.asd.tac.graph.visual
 OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/graph/visual/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 

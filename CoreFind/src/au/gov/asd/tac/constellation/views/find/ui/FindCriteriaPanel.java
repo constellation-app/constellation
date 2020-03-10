@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.find.ui;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.visual.widgets.DateRangePanel;
-import au.gov.asd.tac.constellation.graph.visual.widgets.DateTimeListenerInterface;
-import au.gov.asd.tac.constellation.graph.visual.widgets.DateTimeRangePanel;
-import au.gov.asd.tac.constellation.graph.visual.widgets.TimeRangePanel;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.DateRangePanel;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.DateTimeListenerInterface;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.DateTimeRangePanel;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.TimeRangePanel;
 import au.gov.asd.tac.constellation.views.find.advanced.FindRule;
 import au.gov.asd.tac.constellation.views.find.advanced.FindTypeOperators;
 import au.gov.asd.tac.constellation.views.find.advanced.FindTypeOperators.Operator;

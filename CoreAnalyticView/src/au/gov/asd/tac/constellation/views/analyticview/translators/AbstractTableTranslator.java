@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.translators;
 
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
  *

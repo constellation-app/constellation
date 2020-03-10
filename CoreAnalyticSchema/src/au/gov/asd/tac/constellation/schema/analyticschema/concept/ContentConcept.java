@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.schema.analyticschema.concept;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.visual.hyperlink.HyperlinkAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -184,7 +184,7 @@ public class ContentConcept extends SchemaConcept {
     }
 
     @Override
-    protected Collection<SchemaAttribute> getSchemaAttributes() {
+    public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(VertexAttribute.APPLICATION);
         schemaAttributes.add(VertexAttribute.AUTHOR);

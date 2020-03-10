@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;

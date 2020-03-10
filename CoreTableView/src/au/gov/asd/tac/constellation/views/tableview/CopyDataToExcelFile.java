@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

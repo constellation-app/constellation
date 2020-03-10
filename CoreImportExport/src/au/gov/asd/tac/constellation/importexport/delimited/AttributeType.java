@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.importexport.delimited;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
  * AttributeType represents the 3 different types of attributes that can be

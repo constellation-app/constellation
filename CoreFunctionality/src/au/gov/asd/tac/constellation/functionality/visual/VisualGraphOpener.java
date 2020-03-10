@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
@@ -30,9 +30,9 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -62,13 +62,13 @@ import org.openide.windows.TopComponent;
  *
  * @author algol
  */
-@ServiceProvider(service = GraphOpener.class, position = 100)
 @Messages({
     "# {0} - fnam",
     "# {1} - save datetime",
     "# {2} - autosave datetime",
     "MSG_Autosave=File {0}\nsaved on {1}\nautosaved on {2}\nDo you want the more recent autosaved version?"
 })
+@ServiceProvider(service = GraphOpener.class, position = 100)
 public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
@@ -176,7 +176,7 @@ public final class VisualGraphOpener extends GraphOpener {
             if (graph == null) {
                 try {
                     final long t0 = System.currentTimeMillis();
-                    graph = new GraphJsonReader().readGraphZip(graphFile, new IoProgressHandle(String.format("Reading %s...", graphFile.getName())));
+                    graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
                     time = System.currentTimeMillis() - t0;
                 } catch (GraphParseException | IOException | RuntimeException ex) {
                     gex = ex;

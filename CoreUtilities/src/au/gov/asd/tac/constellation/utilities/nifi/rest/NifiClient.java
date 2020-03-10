@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.nifi.rest;
 
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;

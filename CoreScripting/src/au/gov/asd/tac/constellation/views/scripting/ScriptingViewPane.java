@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.scripting;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.importexport.ImportExportPluginRegistry;
-import au.gov.asd.tac.constellation.importexport.string.ExportToTextPlugin;
+import au.gov.asd.tac.constellation.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;

@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javafx.application.Platform;

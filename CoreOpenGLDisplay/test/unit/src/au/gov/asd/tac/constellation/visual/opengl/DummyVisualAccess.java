@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.utilities.display.VisualAccess;
+import au.gov.asd.tac.constellation.graph.utilities.display.VisualChange;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import java.util.Collections;
 import java.util.List;
 
@@ -287,8 +287,8 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public LineStyle getConnectionLineStyle(int connection) {
-        return LineStyle.SOLID;
+    public TransactionLineStyle getConnectionLineStyle(int connection) {
+        return TransactionLineStyle.SOLID;
     }
 
     @Override

@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.What
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

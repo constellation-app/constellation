@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.pluginframework;
 
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;

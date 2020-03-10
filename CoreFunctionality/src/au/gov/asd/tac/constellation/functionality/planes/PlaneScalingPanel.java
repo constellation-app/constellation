@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.planes;
 
-import au.gov.asd.tac.constellation.graph.visual.planes.Plane;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Plane;
 
 /**
  *

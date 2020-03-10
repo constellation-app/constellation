@@ -15,20 +15,19 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.utilities;
 
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.utilities.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.display.VisualGraphDefaults;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualDefaults;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix33f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.VisualDefaults;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -102,7 +101,7 @@ public class VisualGraphUtilities {
 
     public static ConnectionMode getConnectionMode(final GraphReadMethods graph) {
         final int connectionModeAttribute = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
-        return connectionModeAttribute != Graph.NOT_FOUND ? graph.getObjectValue(connectionModeAttribute, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
+        return connectionModeAttribute != Graph.NOT_FOUND ? graph.getObjectValue(connectionModeAttribute, 0) : VisualDefaults.DEFAULT_CONNECTION_MODE;
     }
 
     public static ConnectionMode getConnectionMode(final Graph graph) {

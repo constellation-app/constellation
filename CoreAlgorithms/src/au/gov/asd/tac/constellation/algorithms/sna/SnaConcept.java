@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.algorithms.sna;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -169,7 +169,7 @@ public class SnaConcept extends SchemaConcept {
     }
 
     @Override
-    protected Collection<SchemaAttribute> getSchemaAttributes() {
+    public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(GraphAttribute.DENSITY);
         schemaAttributes.add(GraphAttribute.DIAMETER);

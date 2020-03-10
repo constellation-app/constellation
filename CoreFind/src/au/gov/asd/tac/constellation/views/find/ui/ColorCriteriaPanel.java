@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find.ui;
 
-import au.gov.asd.tac.constellation.graph.visual.widgets.GraphColorChooser;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.GraphColorChooser;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;

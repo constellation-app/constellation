@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.timeline;
 
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import java.time.ZoneId;
 
 /**

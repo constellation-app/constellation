@@ -22,13 +22,13 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.labels.compatibility.GraphLabelV0;
-import au.gov.asd.tac.constellation.graph.visual.labels.compatibility.GraphLabelsAndDecoratorsV0;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.compatibility.GraphLabelV0;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.compatibility.GraphLabelsAndDecoratorsV0;
 import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
@@ -40,6 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author twilight_sparkle
  */
+@SuppressWarnings("deprecation")
 @ServiceProvider(service = UpdateProvider.class)
 public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
 
@@ -86,28 +87,28 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
 
             if (labelsAndDecorators != null) {
                 final GraphLabelV0[] bottomLabels = labelsAndDecorators.getBottomLabels();
-                List<au.gov.asd.tac.constellation.visual.labels.GraphLabel> newBottomLabels = new ArrayList<>();
+                List<au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel> newBottomLabels = new ArrayList<>();
                 for (GraphLabelV0 bottomLabel : bottomLabels) {
-                    newBottomLabels.add(new au.gov.asd.tac.constellation.visual.labels.GraphLabel(bottomLabel.getLabel(), bottomLabel.getColor(), bottomLabel.getRadius()));
+                    newBottomLabels.add(new au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel(bottomLabel.getLabel(), bottomLabel.getColor(), bottomLabel.getRadius()));
                 }
                 graph.setObjectValue(bottomLabelsAttribute, 0, new GraphLabels(newBottomLabels));
 
                 final GraphLabelV0[] topLabels = labelsAndDecorators.getTopLabels();
-                List<au.gov.asd.tac.constellation.visual.labels.GraphLabel> newTopLabels = new ArrayList<>();
+                List<au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel> newTopLabels = new ArrayList<>();
                 for (GraphLabelV0 topLabel : topLabels) {
-                    newTopLabels.add(new au.gov.asd.tac.constellation.visual.labels.GraphLabel(topLabel.getLabel(), topLabel.getColor(), topLabel.getRadius()));
+                    newTopLabels.add(new au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel(topLabel.getLabel(), topLabel.getColor(), topLabel.getRadius()));
                 }
                 graph.setObjectValue(topLabelsAttribute, 0, new GraphLabels(newTopLabels));
 
                 final GraphLabelV0[] connectionLabels = labelsAndDecorators.getConnectionLabels();
-                List<au.gov.asd.tac.constellation.visual.labels.GraphLabel> newConnectionLabels = new ArrayList<>();
+                List<au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel> newConnectionLabels = new ArrayList<>();
                 for (GraphLabelV0 connectionLabel : connectionLabels) {
-                    newConnectionLabels.add(new au.gov.asd.tac.constellation.visual.labels.GraphLabel(connectionLabel.getLabel(), connectionLabel.getColor(), connectionLabel.getRadius()));
+                    newConnectionLabels.add(new au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel(connectionLabel.getLabel(), connectionLabel.getColor(), connectionLabel.getRadius()));
                 }
                 graph.setObjectValue(transactionLabelsAttribute, 0, new GraphLabels(newConnectionLabels));
 
                 final String[] decoratorAttributes = labelsAndDecorators.getDecoratorLabels();
-                graph.setObjectValue(decoratorsAttribute, 0, new Decorators(
+                graph.setObjectValue(decoratorsAttribute, 0, new VertexDecorators(
                         updateDecoratorAttr(decoratorAttributes[0]),
                         updateDecoratorAttr(decoratorAttributes[1]),
                         updateDecoratorAttr(decoratorAttributes[2]),
@@ -121,9 +122,9 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
         final int labelsTopAttrId = graph.getAttribute(GraphElementType.GRAPH, LABELS_TOP_ATTRIBUTE_NAME);
         if (labelsTopAttrId != Graph.NOT_FOUND) {
             final String[] labelsTop = graph.getStringValue(labelsTopAttrId, 0).split(",");
-            final List<au.gov.asd.tac.constellation.visual.labels.GraphLabel> newTopLabels = new ArrayList<>();
+            final List<au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel> newTopLabels = new ArrayList<>();
             for (String topLabel : labelsTop) {
-                newTopLabels.add(new au.gov.asd.tac.constellation.visual.labels.GraphLabel(topLabel, ConstellationColor.LIGHT_BLUE, 1));
+                newTopLabels.add(new au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel(topLabel, ConstellationColor.LIGHT_BLUE, 1));
             }
             graph.setObjectValue(topLabelsAttribute, 0, new GraphLabels(newTopLabels));
             graph.removeAttribute(labelsTopAttrId);
@@ -132,9 +133,9 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
         final int labelsBottomAttrId = graph.getAttribute(GraphElementType.GRAPH, LABELS_BOTTOM_ATTRIBUTE_NAME);
         if (labelsBottomAttrId != Graph.NOT_FOUND) {
             final String[] labelsBottom = graph.getStringValue(labelsBottomAttrId, 0).split(",");
-            final List<au.gov.asd.tac.constellation.visual.labels.GraphLabel> newBottomLabels = new ArrayList<>();
+            final List<au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel> newBottomLabels = new ArrayList<>();
             for (String bottomLabel : labelsBottom) {
-                newBottomLabels.add(new au.gov.asd.tac.constellation.visual.labels.GraphLabel(bottomLabel, ConstellationColor.LIGHT_BLUE, 1));
+                newBottomLabels.add(new au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel(bottomLabel, ConstellationColor.LIGHT_BLUE, 1));
             }
             graph.setObjectValue(bottomLabelsAttribute, 0, new GraphLabels(newBottomLabels));
             graph.removeAttribute(labelsBottomAttrId);

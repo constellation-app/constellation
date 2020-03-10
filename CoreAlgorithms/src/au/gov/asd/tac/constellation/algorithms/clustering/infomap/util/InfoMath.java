@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.algorithms.clustering.infomap.util;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 
 /**
  *

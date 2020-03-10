@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.histogram.formats;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.VertexTypeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;

@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.functionality.autosave;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -86,7 +86,7 @@ public final class AutosaveStartup implements Runnable {
                                             // Remove the "_auto" from the end and load the matching graph.
                                             String path = f.getPath();
                                             path = path.substring(0, path.length() - 5);
-                                            final Graph g = new GraphJsonReader().readGraphZip(new File(path), new IoProgressHandle(loading));
+                                            final Graph g = new GraphJsonReader().readGraphZip(new File(path), new HandleIoProgress(loading));
                                             GraphOpener.getDefault().openGraph(g, name, false);
 
                                             AutosaveUtilities.deleteAutosave(f);

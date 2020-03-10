@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameterTy
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterListParameterType.ParameterList;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ParameterListParameterType.ParameterListParameterValue;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

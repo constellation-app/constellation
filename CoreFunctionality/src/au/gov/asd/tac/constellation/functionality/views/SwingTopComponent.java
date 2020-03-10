@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.views;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;

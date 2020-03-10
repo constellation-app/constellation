@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.utilities.StringUtilities;
-import au.gov.asd.tac.constellation.visual.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;

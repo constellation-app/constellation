@@ -35,7 +35,7 @@ public class DownloadImageUtilities {
      * Icon to state that the download failed
      */
     @StaticResource
-    private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/downloadFailed.png";
+    private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/download_failed.png";
 
     /**
      * Download a png file and return an {@code Image} instance of the image. If

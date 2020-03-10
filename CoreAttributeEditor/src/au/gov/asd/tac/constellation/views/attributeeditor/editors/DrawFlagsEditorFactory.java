@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import au.gov.asd.tac.constellation.graph.visual.drawflags.DrawFlagsAttributeDescription;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.DrawFlags;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;

@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.schema.analyticschema.utilities;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaConceptUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import java.util.Comparator;
 import java.util.List;
 import org.openide.util.Lookup;

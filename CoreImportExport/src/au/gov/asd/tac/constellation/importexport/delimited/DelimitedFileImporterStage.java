@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.importexport.delimited;
 
 import au.gov.asd.tac.constellation.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.importexport.delimited.io.ImportDelimitedIO;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.geometry.HPos;

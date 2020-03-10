@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.graph.node.templates;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.ObjectParam
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.IOException;
 import org.openide.util.NbBundle;
@@ -67,7 +67,7 @@ public class LoadTemplatePlugin extends SimplePlugin {
 
     private void loadTemplate(final File loadFile, final String templateName) throws PluginException {
         try {
-            final Graph graph = new GraphJsonReader().readGraphZip(loadFile, new IoProgressHandle("Loading Template..."));
+            final Graph graph = new GraphJsonReader().readGraphZip(loadFile, new HandleIoProgress("Loading Template..."));
             GraphOpener.getDefault().openGraph(graph, templateName);
         } catch (GraphParseException | IOException ex) {
             throw new PluginException(this, PluginNotificationLevel.ERROR, "Failed to open template", ex);

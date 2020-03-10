@@ -20,8 +20,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualChange;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualManager;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualProcessor;
 import java.util.List;
 
 /**

@@ -32,7 +32,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -75,7 +75,7 @@ public class RecordStoreImpl {
         // Build the JSON in a form suitable for passing to pandas.DataFrame.from_items().
         // This includes the datatypes with the names, so the client can do transforms
         // where required (for example, converting strings to timestamps).
-        final IoProgressHandle ioph = new IoProgressHandle("External script: get RecordStore");
+        final HandleIoProgress ioph = new HandleIoProgress("External script: get RecordStore");
         ioph.start();
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;

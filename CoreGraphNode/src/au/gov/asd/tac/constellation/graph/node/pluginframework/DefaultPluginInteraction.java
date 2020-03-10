@@ -22,13 +22,12 @@ import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.reporting.PluginReport;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
@@ -123,7 +122,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         } else if (totalSteps <= 0) {
 
             if (progress == null) {
-                progress = ProgressHandleFactory.createHandle(createProgressTitle(), this);
+                progress = ProgressHandle.createHandle(createProgressTitle(), this);
                 progress.start();
                 timer = new Timer();
                 progress.progress(timer.getTime() + " " + message);
@@ -137,7 +136,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         } else {
 
             if (progress == null) {
-                progress = ProgressHandleFactory.createHandle(createProgressTitle(), this);
+                progress = ProgressHandle.createHandle(createProgressTitle(), this);
                 progress.start();
                 timer = new Timer();
                 progress.switchToDeterminate(totalSteps);

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors.operations;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,7 +39,7 @@ public class PrimaryKeyDefaultGetter implements DefaultGetter {
     @Override
     public Object getDefaultValue() {
         final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
-        List<SchemaAttribute> keys = new ArrayList();
+        List<SchemaAttribute> keys = new ArrayList<>();
         try {
             if (rg.getSchema() != null) {
                 keys = rg.getSchema().getFactory().getKeyAttributes(elementType);

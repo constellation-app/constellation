@@ -25,9 +25,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.LayerName;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -48,8 +48,9 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoic
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.LayerNameAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -349,7 +350,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Establish new attributes.
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
-            final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerName.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
+            final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
             final int nLayersAttr = wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "number of layers", 0, null);
             final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
             final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, "float", "visibility", "visibility", 1, null);

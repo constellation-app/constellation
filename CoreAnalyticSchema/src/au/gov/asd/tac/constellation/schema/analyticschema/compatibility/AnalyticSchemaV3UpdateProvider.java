@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
 import org.openide.util.lookup.ServiceProvider;
 

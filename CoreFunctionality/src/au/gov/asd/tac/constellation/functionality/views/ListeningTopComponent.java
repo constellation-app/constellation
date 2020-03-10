@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.views;
 
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.graph.monitor.Monitor;
 import au.gov.asd.tac.constellation.graph.monitor.MonitorTransition;
 import au.gov.asd.tac.constellation.graph.monitor.MonitorTransitionFilter;
 import au.gov.asd.tac.constellation.graph.monitor.StructureMonitor;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.util.Collections;
 import java.util.HashMap;

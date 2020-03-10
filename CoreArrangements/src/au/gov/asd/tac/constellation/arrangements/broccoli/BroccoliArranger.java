@@ -16,15 +16,15 @@
 package au.gov.asd.tac.constellation.arrangements.broccoli;
 
 import au.gov.asd.tac.constellation.arrangements.Arranger;
-import au.gov.asd.tac.constellation.functionality.BBoxf;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.graphics3d.Frame;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix33f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.graphics.Frame;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
 
 /**

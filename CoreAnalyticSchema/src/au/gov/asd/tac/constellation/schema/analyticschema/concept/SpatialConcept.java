@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.attribute.FloatObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -130,7 +130,7 @@ public class SpatialConcept extends SchemaConcept {
     }
 
     @Override
-    protected Collection<SchemaAttribute> getSchemaAttributes() {
+    public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
         schemaAttributes.add(VertexAttribute.LATITUDE);
         schemaAttributes.add(VertexAttribute.LONGITUDE);

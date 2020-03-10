@@ -59,7 +59,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.QueryNameValidator;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;

@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.visual.decorators.DecoratorsAttributeDescription;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.DecoratorsAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,10 +39,10 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
-public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorators> {
+public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexDecorators> {
 
     @Override
-    public AbstractEditor<Decorators> createEditor(final EditOperation editOperation, final DefaultGetter<Decorators> defaultGetter, final ValueValidator<Decorators> validator, final String editedItemName, final Decorators initialValue) {
+    public AbstractEditor<VertexDecorators> createEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
         return new DecoratorsEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
     }
 
@@ -53,25 +53,25 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorat
 
     private static final String NO_DECORATOR = "<None>";
 
-    public class DecoratorsEditor extends AbstractEditor<Decorators> {
+    public class DecoratorsEditor extends AbstractEditor<VertexDecorators> {
 
         ComboBox<String> nwCombo;
         ComboBox<String> neCombo;
         ComboBox<String> seCombo;
         ComboBox<String> swCombo;
 
-        protected DecoratorsEditor(final EditOperation editOperation, final DefaultGetter<Decorators> defaultGetter, final ValueValidator<Decorators> validator, final String editedItemName, final Decorators initialValue) {
+        protected DecoratorsEditor(final EditOperation editOperation, final DefaultGetter<VertexDecorators> defaultGetter, final ValueValidator<VertexDecorators> validator, final String editedItemName, final VertexDecorators initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
         @Override
-        protected boolean canSet(final Decorators value) {
+        protected boolean canSet(final VertexDecorators value) {
             // Decorators cannot be null, so prevent null values being set.
             return value != null;
         }
 
         @Override
-        public void updateControlsWithValue(final Decorators value) {
+        public void updateControlsWithValue(final VertexDecorators value) {
             setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
             setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
             setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
@@ -79,8 +79,8 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<Decorat
         }
 
         @Override
-        protected Decorators getValueFromControls() throws ControlsInvalidException {
-            return new Decorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo), 
+        protected VertexDecorators getValueFromControls() throws ControlsInvalidException {
+            return new VertexDecorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo), 
                     getDecoratorChoice(seCombo), getDecoratorChoice(swCombo));
         }
 

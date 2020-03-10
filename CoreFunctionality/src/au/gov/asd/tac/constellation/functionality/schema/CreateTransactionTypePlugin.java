@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.functionality.schema;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
@@ -29,8 +29,8 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParame
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import java.util.Map;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -79,7 +79,7 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         final PluginParameter<StringParameterValue> lineStyleParam = StringParameterType.build(LINE_STYLE_PARAMETER_ID);
         lineStyleParam.setName("Line Style");
         lineStyleParam.setDescription("The line style of the new transaction type");
-        lineStyleParam.setStringValue(LineStyle.SOLID.toString());
+        lineStyleParam.setStringValue(TransactionLineStyle.SOLID.toString());
         params.addParameter(lineStyleParam);
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> directedParam = BooleanParameterType.build(DIRECTED_PARAMETER_ID);
@@ -124,7 +124,7 @@ public class CreateTransactionTypePlugin extends SimpleEditPlugin {
         final ConstellationColor color = parameters.getColorValue(COLOR_PARAMETER_ID);
 
         final String lsName = parameters.getStringValue(LINE_STYLE_PARAMETER_ID);
-        final LineStyle lineStyle = LineStyle.valueOf(lsName);
+        final TransactionLineStyle lineStyle = TransactionLineStyle.valueOf(lsName);
 
         final boolean directed = parameters.getBooleanValue(DIRECTED_PARAMETER_ID);
 

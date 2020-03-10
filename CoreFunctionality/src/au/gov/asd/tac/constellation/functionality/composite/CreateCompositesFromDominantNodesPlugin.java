@@ -15,12 +15,13 @@
  */
 package au.gov.asd.tac.constellation.functionality.composite;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.visual.composites.CompositeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.schema.visualschema.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -29,7 +30,6 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.utilities.VertexDominanceCalculator;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
@@ -108,7 +108,7 @@ public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
                 }
             }
 
-            PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
         }
     }
 }

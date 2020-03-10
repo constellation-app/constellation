@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.functionality.planes;
 
 import au.gov.asd.tac.constellation.functionality.planes.DragDropList.MyElement;
-import au.gov.asd.tac.constellation.graph.visual.planes.Plane;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Plane;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;

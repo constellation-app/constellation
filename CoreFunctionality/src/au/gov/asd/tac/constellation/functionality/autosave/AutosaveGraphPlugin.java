@@ -21,10 +21,10 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonWriter;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
@@ -34,7 +34,7 @@ import au.gov.asd.tac.constellation.pluginframework.PluginType;
 import au.gov.asd.tac.constellation.pluginframework.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -87,7 +87,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
                 final String gname = graph.getId() + GraphDataObject.FILE_EXTENSION;
                 StatusDisplayer.getDefault().setStatusText(String.format("Auto saving %s as %s at %s...", graphId, gname, new Date()));
                 final File saveFile = new File(saveDir, gname);
-                new GraphJsonWriter().writeGraphToZip(copy, saveFile.getPath(), new IoProgressHandle("Autosaving..."));
+                new GraphJsonWriter().writeGraphToZip(copy, saveFile.getPath(), new HandleIoProgress("Autosaving..."));
 
                 ConstellationLoggerHelper.exportPropertyBuilder(
                         this,

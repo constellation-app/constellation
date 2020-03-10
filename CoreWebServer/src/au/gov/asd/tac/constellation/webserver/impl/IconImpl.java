@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.webserver.impl;
 
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;

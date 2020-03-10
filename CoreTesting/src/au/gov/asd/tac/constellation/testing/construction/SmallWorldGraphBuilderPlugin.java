@@ -17,15 +17,15 @@ package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -48,7 +48,7 @@ import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Date;
@@ -244,8 +244,8 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int txDateTimeAttr = TemporalConcept.TransactionAttribute.DATETIME.ensure(graph);
 
-        final Decorators decorators;
-        decorators = new Decorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        final VertexDecorators decorators;
+        decorators = new VertexDecorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 

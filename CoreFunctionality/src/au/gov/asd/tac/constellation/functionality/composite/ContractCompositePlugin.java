@@ -15,22 +15,22 @@
  */
 package au.gov.asd.tac.constellation.functionality.composite;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.composites.CompositeNodeState;
-import au.gov.asd.tac.constellation.graph.visual.composites.CompositeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.CompositeNodeState;
+import au.gov.asd.tac.constellation.schema.visualschema.utilities.CompositeUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -59,7 +59,7 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
 
         final int compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(graph);
         CompositeUtilities.contractComposite(graph, compositeAttr, selectedItem);
-        PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+        PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
     @Override

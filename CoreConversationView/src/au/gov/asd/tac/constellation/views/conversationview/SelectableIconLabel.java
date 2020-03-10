@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;

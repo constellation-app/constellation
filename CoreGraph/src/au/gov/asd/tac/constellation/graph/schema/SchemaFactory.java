@@ -15,19 +15,24 @@
  */
 package au.gov.asd.tac.constellation.graph.schema;
 
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
-import au.gov.asd.tac.constellation.visual.icons.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.ImageIconData;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.ImageIconData;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,14 +52,15 @@ import org.openide.util.Lookup;
  */
 public abstract class SchemaFactory {
 
+    private static final ConstellationColor ICON_COLOR = ConstellationColor.AZURE;
+    private static final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
+    private static final ConstellationIcon ICON_BACKGROUND_MODIFIED = DefaultIconProvider.EDGE_SQUARE;
+    private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
+    
     private final Map<Class<? extends SchemaConcept>, Set<SchemaConcept>> REGISTERED_CONCEPTS;
     private final EnumMap<GraphElementType, Map<String, SchemaAttribute>> REGISTERED_ATTRIBUTES;
     private final List<SchemaVertexType> REGISTERED_VERTEX_TYPES;
     private final List<SchemaTransactionType> REGISTERED_TRANSACTION_TYPES;
-    private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
-    private static final ConstellationColor ICON_COLOR = ConstellationColor.AZURE;
-    private static final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
-    private static final ConstellationIcon ICON_BACKGROUND_MODIFIED = DefaultIconProvider.EDGE_SQUARE;
 
     /**
      * Constructor for SchemaFactory. This is where registered SchemaConcepts
@@ -413,8 +419,8 @@ public abstract class SchemaFactory {
         return GraphLabels.NO_LABELS;
     }
 
-    public Decorators getDecorators() {
-        return Decorators.NO_DECORATORS;
+    public VertexDecorators getDecorators() {
+        return VertexDecorators.NO_DECORATORS;
     }
 
     /**

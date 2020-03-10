@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.pluginframework.parameters.types;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

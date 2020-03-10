@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.scripting.calculator;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;

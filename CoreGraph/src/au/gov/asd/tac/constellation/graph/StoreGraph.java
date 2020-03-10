@@ -122,7 +122,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * @param transactionCapacity The initial capacity of the transaction store.
      * @param attributeCapacity The initial capacity of the attribute store.
      */
-    public StoreGraph(final String id, Schema schema, int vertexCapacity, int linkCapacity, int edgeCapacity, int transactionCapacity, int attributeCapacity) {
+    public StoreGraph(final String id, final Schema schema, int vertexCapacity, int linkCapacity, int edgeCapacity, int transactionCapacity, int attributeCapacity) {
         this.id = id;
         this.schema = schema;
 

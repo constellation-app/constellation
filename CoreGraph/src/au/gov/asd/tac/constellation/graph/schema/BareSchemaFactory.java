@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;

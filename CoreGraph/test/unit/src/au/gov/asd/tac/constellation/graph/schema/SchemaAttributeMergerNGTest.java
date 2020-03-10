@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema;
 
+import au.gov.asd.tac.constellation.schema.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;

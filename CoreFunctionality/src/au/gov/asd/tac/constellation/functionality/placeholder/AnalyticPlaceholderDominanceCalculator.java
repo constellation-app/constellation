@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.placeholder;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphVertex;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.utilities.VertexDominanceCalculator;

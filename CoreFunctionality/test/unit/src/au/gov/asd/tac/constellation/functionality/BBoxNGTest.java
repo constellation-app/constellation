@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import java.util.Arrays;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;

@@ -34,9 +34,9 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.Creation
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.graph.visual.camera.CameraUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
@@ -47,14 +47,14 @@ import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.display.VisualOperation;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.IntArray;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualManager;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualOperation;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualProcessor;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualProperty;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -476,6 +476,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         });
     }
 
+    @SuppressWarnings("fallthrough")
     @Override
     public void mouseReleased(MouseEvent event) {
         queue.add(wg -> {

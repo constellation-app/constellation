@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
+import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -36,7 +37,6 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.schema.visualschema.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +275,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             CopyGraphUtilities.copyGraphToGraph(copyGraph, graph, true);
-            PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
+            PluginExecution.withPlugin(CorePluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
         }
     }
 }

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.monitor;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 
 /**
  * An AttributeValueMonitor monitors the life cycle of a single attribute on a

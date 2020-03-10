@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.find.ui;
 
-import au.gov.asd.tac.constellation.graph.visual.widgets.IconChooser;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.IconChooser;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

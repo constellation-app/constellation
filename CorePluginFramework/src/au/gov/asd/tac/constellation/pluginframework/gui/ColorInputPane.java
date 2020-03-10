@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType.ColorParameterValue;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

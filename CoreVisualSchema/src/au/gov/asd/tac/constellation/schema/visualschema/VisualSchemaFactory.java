@@ -19,17 +19,17 @@ import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttributeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabel;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,7 +122,7 @@ public class VisualSchemaFactory extends SchemaFactory {
     }
 
     @Override
-    public Decorators getDecorators() {
+    public VertexDecorators getDecorators() {
         final List<String> decorators = new ArrayList<>();
         SchemaAttributeUtilities.getAttributes(GraphElementType.VERTEX).forEach(attribute -> {
             if (decorators.size() < 4 && attribute.isDecorator()) {
@@ -133,7 +133,7 @@ public class VisualSchemaFactory extends SchemaFactory {
         // sort the decorators list to have some consistency
         Collections.sort(decorators);
 
-        return new Decorators(
+        return new VertexDecorators(
                 decorators.size() > 0 ? decorators.get(0) : null,
                 decorators.size() > 1 ? decorators.get(1) : null,
                 decorators.size() > 2 ? decorators.get(2) : null,
@@ -279,7 +279,7 @@ public class VisualSchemaFactory extends SchemaFactory {
                 graph.setObjectValue(transactionColorAttribute, transactionId, colorDefaultValue);
             }
 
-            graph.setObjectValue(transactionStyleAttribute, transactionId, LineStyle.SOLID);
+            graph.setObjectValue(transactionStyleAttribute, transactionId, TransactionLineStyle.SOLID);
 
             graph.validateKey(GraphElementType.TRANSACTION, transactionId, false);
         }

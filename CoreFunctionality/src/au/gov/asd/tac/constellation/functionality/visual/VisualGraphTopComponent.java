@@ -44,7 +44,7 @@ import au.gov.asd.tac.constellation.graph.file.SaveNotification;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.interaction.GraphVisualManagerFactory;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonWriter;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
@@ -55,9 +55,8 @@ import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.display.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
@@ -77,11 +76,11 @@ import au.gov.asd.tac.constellation.pluginframework.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
-import au.gov.asd.tac.constellation.visual.display.VisualDefaults;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.graph.visual.VisualDefaults;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualManager;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -594,7 +593,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             isDisplay3D = displayModeIs3DAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(displayModeIs3DAttribute, 0) : VisualDefaults.DEFAULT_DISPLAY_MODE_3D;
             isDrawingMode = drawingModeAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(drawingModeAttribute, 0) : VisualDefaults.DEFAULT_DRAWING_MODE;
             isDrawingDirectedTransactions = drawDirectedAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(drawDirectedAttribute, 0) : VisualDefaults.DEFAULT_DRAWING_DIRECTED_TRANSACTIONS;
-            connectionMode = connectionModeAttribute != Graph.NOT_FOUND ? rg.getObjectValue(connectionModeAttribute, 0) : VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
+            connectionMode = connectionModeAttribute != Graph.NOT_FOUND ? rg.getObjectValue(connectionModeAttribute, 0) : VisualDefaults.DEFAULT_CONNECTION_MODE;
 
             drawNodesAction.putValue(Action.SELECTED_KEY, drawFlags.drawNodes());
             drawConnectionsAction.putValue(Action.SELECTED_KEY, drawFlags.drawConnections());
@@ -1068,7 +1067,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             try {
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
-                    cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new IoProgressHandle("Writing..."));
+                    cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (Exception ex) {

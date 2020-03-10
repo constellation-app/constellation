@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.testing.integration;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaElementType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.schema.SchemaElementType;
+import au.gov.asd.tac.constellation.schema.SchemaVertexType;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

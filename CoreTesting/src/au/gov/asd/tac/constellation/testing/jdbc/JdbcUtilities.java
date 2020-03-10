@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.testing.jdbc;
 
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;

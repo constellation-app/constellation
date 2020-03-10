@@ -23,14 +23,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.3</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.api.annotations.common</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -96,10 +88,6 @@
                 <package>au.gov.asd.tac.constellation.graph.attribute.interaction</package>
                 <package>au.gov.asd.tac.constellation.graph.attribute.io</package>
                 <package>au.gov.asd.tac.constellation.graph.construction</package>
-                <package>au.gov.asd.tac.constellation.graph.dragdrop</package>
-                <package>au.gov.asd.tac.constellation.graph.io</package>
-                <package>au.gov.asd.tac.constellation.graph.io.compatibility</package>
-                <package>au.gov.asd.tac.constellation.graph.io.providers</package>
                 <package>au.gov.asd.tac.constellation.graph.locking</package>
                 <package>au.gov.asd.tac.constellation.graph.manager</package>
                 <package>au.gov.asd.tac.constellation.graph.mergers</package>
@@ -107,9 +95,12 @@
                 <package>au.gov.asd.tac.constellation.graph.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.processing</package>
                 <package>au.gov.asd.tac.constellation.graph.schema</package>
+                <package>au.gov.asd.tac.constellation.graph.schema.attribute</package>
+                <package>au.gov.asd.tac.constellation.graph.schema.concept</package>
+                <package>au.gov.asd.tac.constellation.graph.schema.type</package>
+                <package>au.gov.asd.tac.constellation.graph.schema.visual</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.versioning</package>
-                <package>au.gov.asd.tac.constellation.graph.visual</package>
             </public-packages>
         </data>
         <spellchecker-wordlist xmlns="http://www.netbeans.org/ns/spellchecker-wordlist/1">

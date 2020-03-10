@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find.ui;
 
-import au.gov.asd.tac.constellation.graph.visual.widgets.IconChooser;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.IconChooser;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FontMetrics;

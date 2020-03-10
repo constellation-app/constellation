@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.functionality.BBoxf;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
@@ -37,14 +37,14 @@ import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.utilities.geospatial.Country;
-import au.gov.asd.tac.constellation.visual.blaze.Blaze;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabel;
-import au.gov.asd.tac.constellation.visual.labels.GraphLabels;
-import au.gov.asd.tac.constellation.visual.linestyle.LineStyle;
+import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -246,11 +246,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             transactionLabels.add(new GraphLabel(VisualConcept.TransactionAttribute.VISIBILITY.getName(), ConstellationColor.LIGHT_GREEN));
         }
 
-        final Decorators decorators;
+        final VertexDecorators decorators;
         if (drawManyDecorators) {
-            decorators = new Decorators(graph.getAttributeName(vxIsGoodAttr), SpatialConcept.VertexAttribute.COUNTRY.getName(), graph.getAttributeName(vxCountry2Attr), graph.getAttributeName(vxDecoratorAttr));
+            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), SpatialConcept.VertexAttribute.COUNTRY.getName(), graph.getAttributeName(vxCountry2Attr), graph.getAttributeName(vxDecoratorAttr));
         } else {
-            decorators = new Decorators(graph.getAttributeName(vxIsGoodAttr), null, null, null);
+            decorators = new VertexDecorators(graph.getAttributeName(vxIsGoodAttr), null, null, null);
         }
 
         final int bottomLabelsAttr = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(graph);
@@ -582,19 +582,19 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 0f, 1f, 1f));
         graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DASHED);
+        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DASHED);
 
         txId = graph.addTransaction(vx5, vx4, false);
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 1f, 0f, 1f));
         graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DOTTED);
+        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DOTTED);
 
         // Directed diamond.
         txId = graph.addTransaction(vx1, vx5, true);
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
-        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
+        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DIAMOND);
 
         // Loops.
         txId = graph.addTransaction(vx2, vx2, true);

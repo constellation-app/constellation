@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.functionality.perspectives;
 
 import au.gov.asd.tac.constellation.functionality.perspectives.PerspectiveModel.Perspective;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
 import javax.swing.AbstractListModel;
 
