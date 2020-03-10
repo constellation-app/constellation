@@ -15,16 +15,19 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.visual.icons.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -32,9 +35,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
-public class ListPlugins extends RestService {
-    private static final String NAME = "list_plugins";
-    private static final String ALIAS_PARAMETER_ID = String.format("%s.%s", NAME, "alias");
+public class ListIcons extends RestService {
+    private static final String NAME = "list_icons";
+    private static final String EDITABLE_PARAMETER_ID = String.format("%s.%s", NAME, "editable");
 
     @Override
     public String getName() {
@@ -43,32 +46,31 @@ public class ListPlugins extends RestService {
 
     @Override
     public String getDescription() {
-        return "List the available plugins.";
+        return "List the available icons.";
     }
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
-        aliasParam.setName("Show aliases");
-        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise.");
-        aliasParam.setObjectValue(true);
-        parameters.addParameter(aliasParam);
+        final PluginParameter<BooleanParameterValue> editableParam = BooleanParameterType.build(EDITABLE_PARAMETER_ID);
+        editableParam.setName("Editable");
+        editableParam.setDescription("If false (the default), return the built-in icons else return the editable icons.");
+        editableParam.setObjectValue(false);
+        parameters.addParameter(editableParam);
 
         return parameters;
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final boolean alias = parameters.getBooleanValue(ALIAS_PARAMETER_ID);
+    public void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+        final boolean editable = parameters.getBooleanValue(EDITABLE_PARAMETER_ID);
+        final List<String> names = new ArrayList<>(IconManager.getIconNames(editable));
+        names.sort(String::compareToIgnoreCase);
 
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
-        PluginRegistry.getPluginClassNames()
-            .stream()
-            .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-            .forEachOrdered(name -> {root.add(name);});
+        names.forEach(name -> root.add(name));
 
         mapper.writeValue(out, root);
     }

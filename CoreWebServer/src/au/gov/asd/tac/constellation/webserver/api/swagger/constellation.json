@@ -25,6 +25,10 @@
             "description": "RecordStore I/O"
         },
         {
+            "name": "service",
+            "description": "Services"
+        },
+        {
             "name": "type",
             "description": "Operations with types"
         }
@@ -404,6 +408,28 @@
                         "in": "query",
                         "type": "string",
                         "description": "Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency.",
+                        "required": false
+                    },
+                    {
+                        "name": "X-CONSTELLATION-SECRET",
+                        "in": "header",
+                        "type": "string",
+                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        "/v1/service/{service_name}": {
+            "get": {
+                "tags": ["service"],
+                "description": "Call a service. Query parameters are dependent on the service.",
+                "parameters": [
+                    {
+                        "name": "parameters",
+                        "in": "body",
+                        "type": "string",
+                        "description": "A JSON representation of a dictionary of the parameter names and values to be passed to the plugin.",
                         "required": false
                     },
                     {

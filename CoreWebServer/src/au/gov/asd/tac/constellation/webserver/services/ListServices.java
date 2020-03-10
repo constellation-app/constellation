@@ -29,19 +29,18 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
- @ServiceProvider(service=RestService.class)
-public class ListServices implements RestService {
+@ServiceProvider(service=RestService.class)
+public class ListServices extends RestService {
+    private static final String NAME = "list_services";
 
     @Override
     public String getName() {
-        return "list_services";
+        return NAME;
     }
 
     @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        return parameters;
+    public String getDescription() {
+        return "List the available services.";
     }
 
     @Override

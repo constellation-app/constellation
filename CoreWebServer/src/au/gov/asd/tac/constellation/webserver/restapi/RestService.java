@@ -28,19 +28,45 @@ import java.io.OutputStream;
  *
  * @author algol
  */
-public interface RestService {
+public abstract class RestService {
 
     /**
      * The name of the service as it appears in the URL to be called.
      *
      * @return The service name.
      */
-    String getName();
+    public abstract String getName();
+
+    /**
+     * A user-readable description of this service.
+     *
+     * @return A description of the service.
+     */
+    public abstract String getDescription();
+
+    /**
+     * The HTTP method used to call this service.
+     * <p>
+     * Two services may have the same name if they have different HTTP methods.
+     *
+     * @return One of "GET", "POST", "PUT" (case-sensitive).
+     */
+    public String getHttpMethod() {
+        return "GET";
+    }
 
     /**
      * Creates the parameters for this service.
+     * <p>
+     * A default is provided for services that take no parameters.
+     *
+     * @return
      */
-    PluginParameters createParameters();
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        return parameters;
+    }
 
     /**
      * A generic REST service.
@@ -51,6 +77,16 @@ public interface RestService {
      * @param parameters The parameters passed from the service request to the service.
      * @param in The body of the HTTP request.
      * @param out The body of the HTTP response.
+     * @throws java.io.IOException
      */
-    void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException;
+    public abstract void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException;
+
+    /**
+     * The MIME type of the data returned by the service.
+     *
+     * @return A String containing a MIME type.
+     */
+    public String getMimeType() {
+        return "application/json";
+    }
 }

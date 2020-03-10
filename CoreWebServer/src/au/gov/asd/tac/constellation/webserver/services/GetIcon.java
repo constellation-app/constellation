@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
+import au.gov.asd.tac.constellation.visual.icons.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -32,9 +32,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
-public class ListPlugins extends RestService {
-    private static final String NAME = "list_plugins";
-    private static final String ALIAS_PARAMETER_ID = String.format("%s.%s", NAME, "alias");
+public class GetIcon extends RestService {
+    private static final String NAME = "get_icon";
+    private static final String ICON_PARAMETER_ID = String.format("%s.%s", NAME, "icon_name");
 
     @Override
     public String getName() {
@@ -43,33 +43,30 @@ public class ListPlugins extends RestService {
 
     @Override
     public String getDescription() {
-        return "List the available plugins.";
+        return "Get the named icon as a PNG file.";
     }
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
-        aliasParam.setName("Show aliases");
-        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise.");
-        aliasParam.setObjectValue(true);
-        parameters.addParameter(aliasParam);
+        final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(ICON_PARAMETER_ID);
+        nameParam.setName("Get the named icon.");
+        nameParam.setDescription("Return the named icon as a PNG file.");
+        parameters.addParameter(nameParam);
 
         return parameters;
     }
 
     @Override
     public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final boolean alias = parameters.getBooleanValue(ALIAS_PARAMETER_ID);
+        final String iconName = parameters.getStringValue(ICON_PARAMETER_ID);
+        final ConstellationIcon icon = IconManager.getIcon(iconName);
+        out.write(icon.buildByteArray());
+    }
 
-        final ObjectMapper mapper = new ObjectMapper();
-        final ArrayNode root = mapper.createArrayNode();
-        PluginRegistry.getPluginClassNames()
-            .stream()
-            .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-            .forEachOrdered(name -> {root.add(name);});
-
-        mapper.writeValue(out, root);
+    @Override
+    public String getMimeType() {
+        return "image/png";
     }
 }

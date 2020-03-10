@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200306
+__version__ = 20200310
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -183,6 +183,11 @@ class Constellation:
         else:
             raise ValueError('Transport must be one of http, file, sftp')
 
+        # The `requests` HTTP library response instance.
+        # Use this to get the error contents if using HTTP.
+        #
+        self.r = None
+
     def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
         """Call CONSTELLATION's REST API over HTTP.
 
@@ -194,6 +199,16 @@ class Constellation:
             raise ValueError(f'Unrecognised verb "{verb}"')
         url = f'http://localhost:{self.port}{endpoint}/{path}'
         r = f(url, params=params, json=json_, data=data, headers=self.headers)
+
+        # Keep the response in case raise_for_status() raises.
+        # If it does, we can come back and use r.content.decode('latin1')
+        # to look at the HTML returned by Jetty to find out what happened (where
+        # 'latin1' is probably the encoding of the default HTML error page.)
+        #
+        self.r = r
+
+        # Raise for status because we don;t trust the users to check for errors.
+        #
         r.raise_for_status()
 
         return r
@@ -622,18 +637,28 @@ class Constellation:
 
         return r.content
 
-    def get_service(self, name, args=None):
-        """Call a REST service and return a dictionary.
+    def call_service(self, name, args=None, json=None):
+        """Call a REST service and return a response.
 
         The dictionary is built from the JSON in the response body.
 
+        The response is as returned by the Python requests library. The mime
+        type will vary depending on what the service returns.
+
         :param name: The name of the service to be called.
-        :param args: A dictionary containing the arguments to be passed to the service as URL parameters.
+        :param args: A dictionary containing the arguments to be passed to the
+            service as URL parameters.
+        :param json: A dictionary containing data to be sent to the service as
+            JSON in the body of the request.
+
+        :returns: The requests response.
+            For JSON responses, use get_service().json().
+            For binary repsonses, use get_service().content.
         """
 
-        r = self.rest_request(endpoint=f'/v1/service', path=name, params=args)
+        r = self.rest_request(endpoint=f'/v1/service', path=name, params=args, json_=json)
 
-        return r.json()
+        return r
 
 def _get_rest(rest=None):
     """Get data from the file created by the CONSTELLATION HTTP REST server.

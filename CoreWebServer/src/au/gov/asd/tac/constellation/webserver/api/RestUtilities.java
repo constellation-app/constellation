@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
@@ -27,7 +28,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import java.util.Map;
 
 /**
  * A collection of utilities for the REST API.

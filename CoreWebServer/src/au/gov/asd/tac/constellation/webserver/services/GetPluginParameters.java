@@ -34,12 +34,18 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
  @ServiceProvider(service=RestService.class)
-public class GetPluginParameters implements RestService {
-    private static final String PLUGIN_NAME_PARAMETER_ID = PluginParameter.buildId(GetPluginParameters.class, "plugin_name");
+public class GetPluginParameters extends RestService {
+    private static final String NAME = "get_plugin_parameters";
+    private static final String PLUGIN_NAME_PARAMETER_ID = String.format("%s.%s", NAME, "plugin_name");
 
     @Override
     public String getName() {
-        return "get_plugin_parameters";
+        return NAME;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Get the plugin parameters for the named plugin.";
     }
 
     @Override
@@ -64,11 +70,11 @@ public class GetPluginParameters implements RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         pluginParams.getParameters().entrySet().forEach(entry -> {
-            final ObjectNode attrs = root.putObject(entry.getKey());
+            final ObjectNode param = root.putObject(entry.getKey());
             final PluginParameter<?> pp = entry.getValue();
-            attrs.put("name", pp.getName());
-            attrs.put("type", pp.getType().getId());
-            attrs.put("description", pp.getDescription());
+            param.put("name", pp.getName());
+            param.put("type", pp.getType().getId());
+            param.put("description", pp.getDescription());
         });
 
         mapper.writeValue(out, root);

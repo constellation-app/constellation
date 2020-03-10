@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
@@ -43,9 +44,20 @@ public class RestServiceServlet extends ConstellationApiServlet {
 
     @Override
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
-        response.setStatus(HttpServletResponse.SC_OK);
+        call_service("GET", request, response);
+    }
 
+    @Override
+    protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        call_service("POST", request, response);
+    }
+
+    @Override
+    protected void put(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+        call_service("PUT", request, response);
+    }
+
+    private void call_service(final String httpMethod, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException{
         // Which service is being called?
         //
         final String service = request.getPathInfo().substring(1);
@@ -54,7 +66,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
         //
         for(final RestService rs : Lookup.getDefault().lookupAll(RestService.class)) {
             final String name = rs.getName();
-            if(service.equals(name)) {
+            if(service.equals(name) && rs.getHttpMethod().equals(httpMethod)) {
                 // Convert the arguments in the URL of the request to PluginParameters.
                 //
                 final PluginParameters parameters = rs.createParameters();
@@ -73,38 +85,19 @@ public class RestServiceServlet extends ConstellationApiServlet {
                         throw new EndpointException(String.format("Service %s has no such parameter: %s", service, parameterName));
                     }
                 });
+
                 try {
                     rs.service(parameters, request.getInputStream(), response.getOutputStream());
                 } catch(final IOException | RuntimeException ex) {
                     throw new ServletException(ex);
                 }
+
+                response.setContentType(rs.getMimeType());
+                response.setStatus(HttpServletResponse.SC_OK);
                 return;
             }
         }
 
         throw new ServletException(String.format("Unknown REST service '%s'", service));
-    }
-
-    @Override
-    protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        switch (request.getPathInfo()) {
-            case "/run":
-                // Run a plugin, optionally with parameters.
-                final String graphId = request.getParameter("graph_id");
-                final String pluginName = request.getParameter("name");
-                if (pluginName == null) {
-                    throw new ServletException("No plugin specified!");
-                } else {
-                    try {
-                        PluginImpl.post_run(graphId, pluginName, request.getInputStream());
-                    } catch (final Exception ex) {
-                        ex.printStackTrace();
-                        throw new ServletException(ex);
-                    }
-                }
-                break;
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
-        }
     }
 }
