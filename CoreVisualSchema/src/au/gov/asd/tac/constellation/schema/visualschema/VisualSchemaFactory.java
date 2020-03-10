@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -212,7 +213,7 @@ public class VisualSchemaFactory extends SchemaFactory {
 
             final Object backgroundIconDefaultValue = graph.getAttributeDefaultValue(vertexBackgroundIconAttribute);
             if ((backgroundIconDefaultValue == null) || (backgroundIconDefaultValue.toString().isEmpty())) {
-                graph.setStringValue(vertexBackgroundIconAttribute, vertexId, "Background.Flat Square");
+                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, DefaultIconProvider.FLAT_SQUARE);
             } else {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, backgroundIconDefaultValue);
             }

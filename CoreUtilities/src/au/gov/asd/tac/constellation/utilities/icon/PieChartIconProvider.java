@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
-import au.gov.asd.tac.constellation.utilities.icon.ConstellationIconProvider;
-import au.gov.asd.tac.constellation.utilities.icon.ImageIconData;
-import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;

@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
-import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
-import au.gov.asd.tac.constellation.utilities.icon.CustomIconProvider;
-import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.NetbeansUtilities;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
