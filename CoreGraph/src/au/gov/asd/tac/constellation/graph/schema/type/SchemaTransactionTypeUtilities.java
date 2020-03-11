@@ -178,13 +178,19 @@ public class SchemaTransactionTypeUtilities {
      * with the name.
      */
     public static SchemaTransactionType getTypeOrBuildNew(final String name) {
+        final SchemaTransactionType defaultType = SchemaTransactionTypeUtilities.getDefaultType();
+        if (name.equals(defaultType.getName())) {
+            return defaultType;
+        }
+        
         SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(name);
-        if (type.equals(SchemaTransactionTypeUtilities.getDefaultType())) {
-            type = new SchemaTransactionType.Builder(SchemaTransactionTypeUtilities.getDefaultType(), name)
+        if (type.equals(defaultType)) {
+            type = new SchemaTransactionType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
             SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
+        
         return type;
     }
 

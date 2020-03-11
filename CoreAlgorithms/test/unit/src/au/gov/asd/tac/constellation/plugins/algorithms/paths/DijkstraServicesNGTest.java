@@ -15,9 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.paths;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import java.util.ArrayList;

@@ -374,9 +374,9 @@ public class CompareGraphPluginNGTest {
 
         try {
             final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
-            final PluginParameters copyParams = copyGraphPlugin.createParameters();
-            PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow((GraphReadMethods) originalGraph);
-            compareGraph = (Graph) copyParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
+            final PluginParameters copyGraphParams = copyGraphPlugin.createParameters();
+            PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyGraphParams).executeNow((GraphReadMethods) originalGraph);
+            compareGraph = (Graph) copyGraphParams.getParameters().get(CopyToNewGraphPlugin.NEW_GRAPH_OUTPUT_PARAMETER_ID).getObjectValue();
         } catch (PluginException ex) {
             compareGraph = null;
             Assert.fail(ex.getLocalizedMessage());

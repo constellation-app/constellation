@@ -1,5 +1,21 @@
 # CONSTELLATION Changes
 
+## 2020-03-01 Changes in March 2020
+* Added new module Core View Framework containing AbstractTopComponent and other related classes
+* Moved VisualConcept to the Core Visual Schema module
+* Moved BBoxf and BBoxd to the Core Visual Graph module
+* Moved SimpleGraphOpener and SimpleGraphTopComponent to the Core Graph Node module
+* Moved VisualGraphOpener and VisualGraphTopComponent to the Core Interactive Graph module
+* Removed the Core Visual Support module by merging it with Core Utilities
+* Renamed base package of Core Visual Schema to au.gov.asd.tac.constellation.graph.schema.visual
+* Renamed base package of Core Analytic Schema to au.gov.asd.tac.constellation.graph.schema.analytic
+* Renamed base package of Core Plugin Framework to au.gov.asd.tac.constellation.plugins
+* Renamed base package of Core Algorithms to au.gov.asd.tac.constellation.plugins.algorithms
+* Renamed base package of Core Arrangements to au.gov.asd.tac.constellation.plugins.arrangements
+* Renamed base package of Core Import Export to au.gov.asd.tac.constellation.plugins.importexport
+* Updated Core Visual Schema with all attribute classes relevant to it
+* Updated Core Analytic Schema with all attribute classes relevant to it
+
 ## 2020-02-01 Changes in February 2020
 * Fixed a bug which now ensures that overriding a transaction direction using `GraphRecordStoreUtilities.DIRECTED_KEY` persists with the Type.
 * Renamed `NodeGraphLabelsEditorFactory` to `VertexGraphLabelsEditorFactory`.

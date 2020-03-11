@@ -15,23 +15,25 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.composite;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.copypaste.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.DeselectAllPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
@@ -80,7 +82,7 @@ public class CompositesNGTest {
         try {
             wg.addVertex();
             wg.addVertex();
-            PluginExecution.withPlugin(CorePluginRegistry.CONTRACT_ALL_COMPOSITES).executeNow(wg);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES).executeNow(wg);
         } finally {
             wg.commit();
         }
@@ -88,7 +90,7 @@ public class CompositesNGTest {
         // Assert that nothing happened to the graph since there were no composites
         ReadableGraph rg = graph.getReadableGraph();
         try {
-            final int compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(rg);
+            final int compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(rg);
             assertEquals(rg.getVertexCount(), 2);
             assertEquals(compositeAttr, Graph.NOT_FOUND);
         } finally {
@@ -104,7 +106,7 @@ public class CompositesNGTest {
         try {
             wg.addVertex();
             wg.addVertex();
-            PluginExecution.withPlugin(CorePluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg);
         } finally {
             wg.commit();
         }
@@ -112,7 +114,7 @@ public class CompositesNGTest {
         // Assert that nothing happened to the graph since there were no composites
         ReadableGraph rg = graph.getReadableGraph();
         try {
-            final int compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(rg);
+            final int compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(rg);
             assertEquals(rg.getVertexCount(), 2);
             assertEquals(compositeAttr, Graph.NOT_FOUND);
         } finally {
@@ -157,8 +159,8 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION).executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION).executeNow(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
         } finally {
             wg.commit();
         }
@@ -191,7 +193,7 @@ public class CompositesNGTest {
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
             // Contract all composites - nothing should happen
-            PluginExecution.withPlugin(CorePluginRegistry.CONTRACT_ALL_COMPOSITES).executeNow(wg2);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -221,7 +223,7 @@ public class CompositesNGTest {
         final WritableGraph wg3 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(CorePluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg3);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg3);
         } finally {
             wg3.commit();
         }
@@ -272,7 +274,7 @@ public class CompositesNGTest {
         final WritableGraph wg4 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites - nothing should happen
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg4);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg4);
         } finally {
             wg4.commit();
         }
@@ -322,7 +324,7 @@ public class CompositesNGTest {
         final WritableGraph wg5 = graph.getWritableGraph("test", true);
         try {
             // Contract all composites
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg5);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg5);
         } finally {
             wg5.commit();
         }
@@ -388,10 +390,10 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection then expand all composites
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+                    .followedBy(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Delete the expanded vertex corresponding to v0 then contract all composites
             final int v2pos = wg.getVertexPosition(v2);
@@ -399,7 +401,7 @@ public class CompositesNGTest {
             final int comp1 = v2pos != 1 ? wg.getVertex(1) : wg.getVertex(2);
             final int expanded_v0 = wg.getStringValue(nameAttr, comp0).equals(v0name) ? comp0 : comp1;
             wg.removeVertex(expanded_v0);
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg);
 
         } finally {
             wg.commit();
@@ -432,7 +434,7 @@ public class CompositesNGTest {
 
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -470,7 +472,7 @@ public class CompositesNGTest {
         try {
             // Delete v1 and then contract all composites
             wg.removeVertex(expanded_v1);
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg3);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg3);
         } finally {
             wg3.commit();
         }
@@ -526,10 +528,10 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection then expand all composites
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+                    .followedBy(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Delete the expanded vertex corresponding to v1 then contract all composites
             final int v2pos = wg.getVertexPosition(v2);
@@ -537,7 +539,7 @@ public class CompositesNGTest {
             final int comp1 = v2pos != 1 ? wg.getVertex(1) : wg.getVertex(2);
             final int expanded_v1 = wg.getStringValue(nameAttr, comp0).equals(v1name) ? comp0 : comp1;
             wg.removeVertex(expanded_v1);
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CONTRACT_ALL_COMPOSITES)).executeNow(wg);
 
         } finally {
             wg.commit();
@@ -565,7 +567,7 @@ public class CompositesNGTest {
 
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -632,15 +634,15 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Delete the transaction between the composite and the non-composite then expand all composites
             final int compositeNode = wg.getVertex(0) != v2 ? wg.getVertex(0) : wg.getVertex(1);
             final int compositeLink = wg.getLink(compositeNode, v2);
             final int compositeTransaction = wg.getLinkTransaction(compositeLink, 0);
             wg.removeTransaction(compositeTransaction);
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg);
 
         } finally {
             wg.commit();
@@ -725,14 +727,14 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Add a transaction from the composite to the non-composite then expand all composites
             final int compositeNode = wg.getVertex(0) != v2 ? wg.getVertex(0) : wg.getVertex(1);
             final int addedTx = wg.addTransaction(compositeNode, v2, true);
             wg.getSchema().newTransaction(wg, addedTx);
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg);
 
         } finally {
             wg.commit();
@@ -830,21 +832,21 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v3, false);
 
             // Make a composite from the selection then deselect all
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
                     .followedBy(PluginRegistry.get(DeselectAllPlugin.class.getName()))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Select v2 and v3
             wg.setBooleanValue(selectedAttr, v2, true);
             wg.setBooleanValue(selectedAttr, v3, true);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
 
             // Select all and composite the two composites
-            PluginExecutor.startWith(CorePluginRegistry.SELECT_ALL)
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+            PluginExecutor.startWith(VisualGraphPluginRegistry.SELECT_ALL)
+                    .followedBy(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
                     .executeNow(wg);
         } finally {
             wg.commit();
@@ -869,7 +871,7 @@ public class CompositesNGTest {
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -974,10 +976,10 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v3, false);
 
             // Make a composite from the selection then deselect all
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.DESELECT_ALL))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+                    .followedBy(PluginRegistry.get(VisualGraphPluginRegistry.DESELECT_ALL))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Select v2 and the newly made composite
             int compNode = wg.getVertex(0);
@@ -992,7 +994,7 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, compNode, true);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
         } finally {
             wg.commit();
         }
@@ -1021,7 +1023,7 @@ public class CompositesNGTest {
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -1125,11 +1127,11 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v3, false);
 
             // Make a composite from the selection then expand all composites, then finally deselect all
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.DESELECT_ALL))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+                    .followedBy(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES))
+                    .followedBy(PluginRegistry.get(VisualGraphPluginRegistry.DESELECT_ALL))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
 
             // Select v2 and the expanded vertex corresponding to v0
             v0 = Graph.NOT_FOUND;
@@ -1146,7 +1148,7 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v0, true);
 
             // Make a composite from the selection
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
         } finally {
             wg.commit();
         }
@@ -1197,7 +1199,7 @@ public class CompositesNGTest {
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES)).executeNow(wg2);
         } finally {
             wg2.commit();
         }
@@ -1294,8 +1296,8 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection then destroy all composites
-            PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)).executeNow(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
             CompositeUtilities.destroyAllComposites(wg);
         } finally {
             wg.commit();
@@ -1381,10 +1383,10 @@ public class CompositesNGTest {
             wg.setBooleanValue(selectedAttr, v2, false);
 
             // Make a composite from the selection, exapnd all composites, then destroy all composites
-            PluginExecutor.startWith(PluginRegistry.get(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
-                    .followedBy(PluginRegistry.get(CorePluginRegistry.EXPAND_ALL_COMPOSITES))
+            PluginExecutor.startWith(PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION))
+                    .followedBy(PluginRegistry.get(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES))
                     .executeNow(wg);
-            compositeAttr = VisualConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
+            compositeAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
             CompositeUtilities.destroyAllComposites(wg);
         } finally {
             wg.commit();
@@ -1470,16 +1472,16 @@ public class CompositesNGTest {
         }
 
         // Make a composite from the selection, then select everything, and copy to a new graph
-        copyPlugin = PluginRegistry.get(CorePluginRegistry.COPY_TO_NEW_GRAPH);
-        PluginExecutor.startWith(CorePluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)
-                .followedBy(CorePluginRegistry.SELECT_ALL)
+        copyPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
+        PluginExecutor.startWith(InteractiveGraphPluginRegistry.CREATE_COMPOSITE_FROM_SELECTION)
+                .followedBy(VisualGraphPluginRegistry.SELECT_ALL)
                 .followedBy(copyPlugin)
                 .executeNow(graph);
 
         final WritableGraph copyWg = ((CopyToNewGraphPlugin) copyPlugin).getCopy().getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(CorePluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(copyWg);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(copyWg);
         } finally {
             copyWg.commit();
         }
@@ -1489,7 +1491,7 @@ public class CompositesNGTest {
         final WritableGraph wg2 = graph.getWritableGraph("test", true);
         try {
             // Expand all composites
-            PluginExecution.withPlugin(CorePluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg2);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.EXPAND_ALL_COMPOSITES).executeNow(wg2);
         } finally {
             wg2.commit();
         }

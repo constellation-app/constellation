@@ -184,13 +184,19 @@ public class SchemaVertexTypeUtilities {
      * name.
      */
     public static SchemaVertexType getTypeOrBuildNew(final String name) {
+        final SchemaVertexType defaultType = SchemaVertexTypeUtilities.getDefaultType();
+        if (name.equals(defaultType.getName())) {
+            return defaultType;
+        }
+        
         SchemaVertexType type = SchemaVertexTypeUtilities.getType(name);
-        if (type.equals(SchemaVertexTypeUtilities.getDefaultType())) {
-            type = new SchemaVertexType.Builder(SchemaVertexTypeUtilities.getDefaultType(), name)
+        if (type.equals(defaultType)) {
+            type = new SchemaVertexType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
             SchemaVertexTypeUtilities.addCustomType(type, false);
         }
+        
         return type;
     }
 
