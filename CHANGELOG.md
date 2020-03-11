@@ -223,8 +223,8 @@
 * Moved NewDefaultSchemaGraphAction from the Core Simple Schema module to the Core Graph Node module.
 * Moved NewExperimentalSchemaGraphAction from the Core Simple Schema module to the Core Graph Node module.
 * Moved NewSchemaGraphAction from the Core Simple Schema module to the Core Graph Node module.
-* Moved au.gov.asd.tac.constellation.algorithms.geospatial.Geohash in the Core Utilities module to au.gov.asd.tac.constellation.utilities.geospatial.GeohashUtilities
-* Moved au.gov.asd.tac.constellation.algorithms.geospatial.Haversine in the Core Utilities module to au.gov.asd.tac.constellation.utilities.geospatial.HaversineUtilities
+* Moved au.gov.asd.tac.constellation.plugins.algorithms.geospatial.Geohash in the Core Utilities module to au.gov.asd.tac.constellation.utilities.geospatial.GeohashUtilities
+* Moved au.gov.asd.tac.constellation.plugins.algorithms.geospatial.Haversine in the Core Utilities module to au.gov.asd.tac.constellation.utilities.geospatial.HaversineUtilities
 * Moved au.gov.asd.tac.constellation.core.opener.SimpleGraphTopComponent to au.gov.asd.tac.constellation.core.visual.SimpleGraphTopComponent.
 * Moved au.gov.asd.tac.constellation.core.visual.SaveAsAction in the Core Functionality module to au.gov.asd.tac.constellation.core.save.SaveAsAction.
 * Moved au.gov.asd.tac.constellation.graph.file.GraphOpener in the Core Graph File to au.gov.asd.tac.constellation.graph.file.opener.GraphOpener.
@@ -248,7 +248,7 @@
 * Renamed SelectTopN to SelectTopNPlugin in Core Data Access View.
 * Renamed Utilities to GraphObjectUtilities in the Core File module.
 * Renamed the Core Simple Schema module to Core Visual Schema.
-    * The new package name is au.gov.asd.tac.constellation.schema.visualschema.
+    * The new package name is au.gov.asd.tac.constellation.graph.schema.visual.
     * Renamed SimpleSchemaFactory to VisualSchemaFactory.
     * Renamed SchemaPluginRegistry to VisualSchemaPluginRegistry.
 * Updated all plugin parameters to build the parameter name via PluginParameter.buildId() which is declared as a constant ending in _PARAMETER.
@@ -262,10 +262,10 @@
 * Added ObfuscatedPassword and supporting classes which allows for obfuscated passwords.
 * Added RecordStoreUtilities.fromCsv() to the Core Graph Module.
 * Moved all Graph IO classes to the Graph module and removed the Graph IO module.
-* Moved au.gov.asd.tac.constellation.schema.analyticschema.concept.ClusteringConcept to au.gov.asd.tac.constellation.algorithms.clustering.ClusteringConcept.
-* Moved au.gov.asd.tac.constellation.schema.analyticschema.concept.SnaConcept to au.gov.asd.tac.constellation.algorithms.sna.SnaConcept in the Core Alogorithms module.
-* Moved some centrality plugins to au.gov.asd.tac.constellation.algorithms.sna.centrality in th Core Alogorithms module.
-* Moved the social network analysis plugins into a new parent package au.gov.asd.tac.constellation.algorithms.sna in the Core Alogorithms module.
+* Moved au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept to au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept.
+* Moved au.gov.asd.tac.constellation.graph.schema.analytic.concept.SnaConcept to au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept in the Core Alogorithms module.
+* Moved some centrality plugins to au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality in th Core Alogorithms module.
+* Moved the social network analysis plugins into a new parent package au.gov.asd.tac.constellation.plugins.algorithms.sna in the Core Alogorithms module.
 * Removed the Core Graph IO, Charts, Networkx, Remote and Integration Testing modules.
 * Renamed HierarchicalAttributeDescription in the Core Algorithms module to HierarchicalStateAttributeDescription.
 * Renamed the importexport.delimited.parsers package to importexport.delimited.translaor to accurately reflect what it stores
@@ -318,7 +318,7 @@
 * Renamed GraphLabelsAndDecorators to GraphLabelsAndDecoratorsV0 in the Core Visual Graph module.
 * Renamed GraphLabelsAndDecoratorsIOProvider to GraphLabelsAndDecoratorsIOProviderV0 in the Core Visual Graph module.
 * Renamed LabelsAttributeDescription to LabelsAttributeDescriptionV0 in the Core Visual Graph module.
-* Renamed package 'au.gov.asd.tac.constellation.schema.analyticschema.update' to 'au.gov.asd.tac.constellation.schema.analyticschema.compatibility'.
+* Renamed package 'au.gov.asd.tac.constellation.graph.schema.analytic.update' to 'au.gov.asd.tac.constellation.graph.schema.analytic.compatibility'.
 * Renamed package 'au.gov.asd.tac.constellation.schema.simpleschema.update' to 'au.gov.asd.tac.constellation.schema.simpleschema.compatibility'.
 
 ## 2017-05-01 Changes in May 2017
@@ -395,7 +395,7 @@
 * Added au.gov.asd.tac.constellation.utilities.io.StringBuilderOutputStream as a alternative to java.io.StringWriter which uses StringBuilder instead of StringBuffer as the underlying implementation. Using StringBuilderOutputStream in say com.fasterxml.jackson.core.JsonFactory.createGenerator() can avoid an OutOfMemoryError.
 * Fixed a bug where the graph visibility above threshold was no longer working.
 * Fixed a major bug with GraphRecordStoreUtilities.getSelectedVerticesBatches() where the selected nodes were not correctly being added to the Recordstore.
-* Moved au.gov.asd.tac.constellation.schema.analyticschema.utilities.SubgraphUtilties to au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilties
+* Moved au.gov.asd.tac.constellation.graph.schema.analytic.utilities.SubgraphUtilties to au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilties
 * Moved the DeleteAllPlugin and DeleteSelectionPlugin to au.gov.asd.tac.constellation.core.delete.
 * Moved the Dim plugins to au.gov.asd.tac.constellation.core.dim in the Core Functionality module.
 * Moved the PermanentMergePlugin to au.gov.asd.tac.constellation.core.merge in the Core Functionality module.

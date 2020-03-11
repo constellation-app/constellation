@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview;
 
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;

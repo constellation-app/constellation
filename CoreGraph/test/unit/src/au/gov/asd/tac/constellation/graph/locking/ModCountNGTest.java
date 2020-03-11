@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.locking;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.schema.BareSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.BeforeClass;

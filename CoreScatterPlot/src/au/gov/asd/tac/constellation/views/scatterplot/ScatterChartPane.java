@@ -15,18 +15,18 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.select.ChangeSelectionPlugin;
-import au.gov.asd.tac.constellation.functionality.select.SelectionMode;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ElementTypeParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import java.util.BitSet;
 import java.util.Collections;
@@ -412,7 +412,7 @@ public class ScatterChartPane extends BorderPane {
             }
         }
 
-        PluginExecution.withPlugin(CorePluginRegistry.CHANGE_SELECTION)
+        PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                 .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds)
                 .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(state.getElementType()))
                 .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, selectionMode)

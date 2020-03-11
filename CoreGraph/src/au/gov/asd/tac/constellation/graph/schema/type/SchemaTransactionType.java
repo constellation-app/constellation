@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.graph.schema.type;
 
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +36,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
             "Unknown",
             "A transaction representing a relationship which is not currently part of the analytic schema",
             ConstellationColor.CLOUDS,
-            TransactionLineStyle.SOLID,
+            LineStyle.SOLID,
             true, null, null, null, false
     );
 
@@ -44,7 +44,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
         return UNKNOWN;
     }
 
-    private final TransactionLineStyle style;
+    private final LineStyle style;
     private final Boolean directed;
 
     /**
@@ -77,7 +77,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
      * assigned to using {@link Schema#completeTransaction}.
      */
     public SchemaTransactionType(final String name, final String description,
-            final ConstellationColor color, final TransactionLineStyle style, final Boolean directed,
+            final ConstellationColor color, final LineStyle style, final Boolean directed,
             final SchemaTransactionType superType, final SchemaTransactionType overridenType,
             final Map<String, String> properties, final boolean incomplete) {
         super(name, description, color, superType, overridenType, properties, incomplete);
@@ -92,7 +92,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
      * @return A {@link ConstellationLineStyle} representing the default style to use for
      * transactions of this SchemaTransactionType.
      */
-    public final TransactionLineStyle getStyle() {
+    public final LineStyle getStyle() {
         return style;
     }
 
@@ -188,7 +188,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
         protected final String name;
         protected String description;
         protected ConstellationColor color;
-        protected TransactionLineStyle style;
+        protected LineStyle style;
         protected Boolean directed;
         protected SchemaTransactionType superType;
         protected SchemaTransactionType overridenType = null;
@@ -232,7 +232,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
             return this;
         }
 
-        public Builder setStyle(final TransactionLineStyle style) {
+        public Builder setStyle(final LineStyle style) {
             this.style = style;
             return this;
         }

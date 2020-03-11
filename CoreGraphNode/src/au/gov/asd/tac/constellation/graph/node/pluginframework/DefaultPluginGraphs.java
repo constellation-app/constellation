@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.node.pluginframework;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import java.util.Map;
 
 /**

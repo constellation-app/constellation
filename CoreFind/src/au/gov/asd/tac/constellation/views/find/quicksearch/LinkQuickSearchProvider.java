@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.find.quicksearch;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
 import au.gov.asd.tac.constellation.views.find.advanced.QuickFindPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.SelectFindResultsPlugin;

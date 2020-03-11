@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.banner;
 
-import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Banner;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Banner;
 import au.gov.asd.tac.constellation.graph.utilities.widgets.GraphColorChooser;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Color;

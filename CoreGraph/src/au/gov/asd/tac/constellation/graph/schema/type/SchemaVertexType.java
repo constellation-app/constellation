@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.type;
 
+import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
-import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,8 +38,8 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
             "Unknown",
             "A node representing a type which is not currently part of the analytic schema",
             ConstellationColor.GREY,
-            DefaultIconProvider.FLAT_SQUARE,
             DefaultIconProvider.UNKNOWN,
+            DefaultIconProvider.FLAT_SQUARE,
             null, null, null, null, null, false
     );
 

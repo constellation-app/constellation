@@ -33,8 +33,8 @@ import org.openide.util.NbBundle.Messages;
  * <code>FindCriteriaPanel</code> classes.
  *
  * @author betelgeuse
- * @see au.gov.asd.tac.constellation.views.find.ui.FindTopComponent
- * @see au.gov.asd.tac.constellation.views.find.ui.FindCriteriaPanel
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindTopComponent
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindCriteriaPanel
  */
 @Messages({
     "DateTimeFormat=yyyy-MM-dd HH:mm:ss"

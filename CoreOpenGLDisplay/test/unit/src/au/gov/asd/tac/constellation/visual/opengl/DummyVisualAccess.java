@@ -19,9 +19,9 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.graph.utilities.display.VisualAccess;
 import au.gov.asd.tac.constellation.graph.utilities.display.VisualChange;
-import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.Collections;
 import java.util.List;
 
@@ -287,8 +287,8 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public TransactionLineStyle getConnectionLineStyle(int connection) {
-        return TransactionLineStyle.SOLID;
+    public LineStyle getConnectionLineStyle(int connection) {
+        return LineStyle.SOLID;
     }
 
     @Override

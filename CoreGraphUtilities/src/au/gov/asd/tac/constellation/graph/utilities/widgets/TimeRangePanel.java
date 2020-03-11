@@ -27,8 +27,8 @@ import org.openide.util.NbBundle;
  * classes.
  *
  * @author betelgeuse
- * @see au.gov.asd.tac.constellation.views.find.ui.FindTopComponent
- * @see au.gov.asd.tac.constellation.views.find.ui.FindCriteriaPanel
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindTopComponent
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindCriteriaPanel
  */
 @NbBundle.Messages({
     "TimeFormat=HH:mm:ss"

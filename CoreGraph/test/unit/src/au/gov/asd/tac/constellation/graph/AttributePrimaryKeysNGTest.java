@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.schema.BareSchemaFactory;
-import au.gov.asd.tac.constellation.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;

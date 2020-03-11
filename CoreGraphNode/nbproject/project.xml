@@ -23,7 +23,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.pluginframework</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -40,14 +40,6 @@
                 </dependency>
                 <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.graph.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -172,7 +164,8 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.graph.node</package>
-                <package>au.gov.asd.tac.constellation.graph.node.editors</package>
+                <package>au.gov.asd.tac.constellation.graph.node.create</package>
+                <package>au.gov.asd.tac.constellation.graph.node.gui</package>
                 <package>au.gov.asd.tac.constellation.graph.node.pluginframework</package>
             </public-packages>
         </data>

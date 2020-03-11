@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;

@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.HitState.HitType;
-import au.gov.asd.tac.constellation.graph.interaction.InteractionEventHandler;
-import au.gov.asd.tac.constellation.graph.interaction.VisualAnnotator;
-import au.gov.asd.tac.constellation.graph.interaction.VisualInteraction;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
+import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
+import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTester;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
@@ -31,10 +31,10 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.Selecti
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualChange;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualOperation;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualProperty;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;

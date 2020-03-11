@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>au.gov.asd.tac.constellation.algorithms</code-name-base>
+            <code-name-base>au.gov.asd.tac.constellation.plugins.algorithms</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -12,14 +12,6 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.functionality</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.7</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -39,6 +31,22 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.analytic</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.graph.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -47,7 +55,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.pluginframework</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -55,15 +63,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.schema.analyticschema</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.schema.visualschema</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -72,14 +72,6 @@
                 </dependency>
                 <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.graph.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -171,16 +163,16 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.algorithms</package>
-                <package>au.gov.asd.tac.constellation.algorithms.clustering</package>
-                <package>au.gov.asd.tac.constellation.algorithms.clustering.ktruss</package>
-                <package>au.gov.asd.tac.constellation.algorithms.sna</package>
-                <package>au.gov.asd.tac.constellation.algorithms.sna.centrality</package>
-                <package>au.gov.asd.tac.constellation.algorithms.sna.global</package>
-                <package>au.gov.asd.tac.constellation.algorithms.sna.metrics</package>
-                <package>au.gov.asd.tac.constellation.algorithms.sna.similarity</package>
-                <package>au.gov.asd.tac.constellation.algorithms.tree</package>
-                <package>au.gov.asd.tac.constellation.algorithms.triangles</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.clustering</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.sna</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.sna.global</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.tree</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms.triangles</package>
+                <package>au.gov.asd.tac.constellation.plugins.algorithms</package>
             </public-packages>
         </data>
     </configuration>

@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
-import au.gov.asd.tac.constellation.schema.BareSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import org.openide.util.Exceptions;
 import org.testng.annotations.Test;
 

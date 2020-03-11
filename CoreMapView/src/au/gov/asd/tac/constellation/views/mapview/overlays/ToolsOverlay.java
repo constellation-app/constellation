@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview.overlays;
 
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview.MapViewPluginRegistry;
 import static au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer.LOCK;

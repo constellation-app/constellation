@@ -31,8 +31,8 @@ import org.openide.util.NbBundle;
  * <code>FindCriteriaPanel</code> classes.
  *
  * @author betelgeuse
- * @see au.gov.asd.tac.constellation.views.find.ui.FindTopComponent
- * @see au.gov.asd.tac.constellation.views.find.ui.FindCriteriaPanel
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindTopComponent
+ * @see au.gov.asd.tac.constellation.views.find.gui.FindCriteriaPanel
  */
 @NbBundle.Messages({
     "DateFormat=yyyy-MM-dd",

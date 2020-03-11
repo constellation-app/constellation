@@ -15,36 +15,36 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.utilities.geospatial.Country;
-import au.gov.asd.tac.constellation.schema.visualschema.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
-import au.gov.asd.tac.constellation.graph.schema.visual.TransactionLineStyle;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -582,19 +582,19 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 0f, 1f, 1f));
         graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DASHED);
+        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DASHED);
 
         txId = graph.addTransaction(vx5, vx4, false);
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.getColorValue(1f, 1f, 0f, 1f));
         graph.setBooleanValue(txDirectedAttr, txId, false);
-        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DOTTED);
+        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DOTTED);
 
         // Directed diamond.
         txId = graph.addTransaction(vx1, vx5, true);
         graph.setIntValue(txIdAttr, txId, txId);
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.PINK);
-        graph.setObjectValue(txLineStyleAttr, txId, TransactionLineStyle.DIAMOND);
+        graph.setObjectValue(txLineStyleAttr, txId, LineStyle.DIAMOND);
 
         // Loops.
         txId = graph.addTransaction(vx2, vx2, true);
@@ -626,7 +626,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setObjectValue(txColorAttr, txId, ConstellationColor.BLUE);
         graph.setBooleanValue(txDimmedAttr, txId, true);
 
-        PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
     }
 

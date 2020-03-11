@@ -138,7 +138,6 @@
                 <package>au.gov.asd.tac.constellation.utilities.color</package>
                 <package>au.gov.asd.tac.constellation.utilities.csv</package>
                 <package>au.gov.asd.tac.constellation.utilities.datastructure</package>
-                <package>au.gov.asd.tac.constellation.utilities.decorator</package>
                 <package>au.gov.asd.tac.constellation.utilities.file</package>
                 <package>au.gov.asd.tac.constellation.utilities.font</package>
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>
@@ -151,8 +150,6 @@
                 <package>au.gov.asd.tac.constellation.utilities.ip</package>
                 <package>au.gov.asd.tac.constellation.utilities.javafx</package>
                 <package>au.gov.asd.tac.constellation.utilities.json</package>
-                <package>au.gov.asd.tac.constellation.utilities.label</package>
-                <package>au.gov.asd.tac.constellation.utilities.linestyle</package>
                 <package>au.gov.asd.tac.constellation.utilities.log</package>
                 <package>au.gov.asd.tac.constellation.utilities.lucene</package>
                 <package>au.gov.asd.tac.constellation.utilities.memory</package>
@@ -166,6 +163,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.text</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
                 <package>au.gov.asd.tac.constellation.utilities.video</package>
+                <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>
             </public-packages>
         </data>

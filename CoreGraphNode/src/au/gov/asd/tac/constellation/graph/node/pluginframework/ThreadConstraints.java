@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.node.pluginframework;
 
-import au.gov.asd.tac.constellation.pluginframework.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 
 /**
  * constraints for threads

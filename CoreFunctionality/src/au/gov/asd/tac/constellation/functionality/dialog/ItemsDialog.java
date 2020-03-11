@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import au.gov.asd.tac.constellation.functionality.copypaste.ClipboardUtilities;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Dimension;

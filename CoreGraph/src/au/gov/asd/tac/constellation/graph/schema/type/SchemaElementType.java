@@ -38,7 +38,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
     protected final SchemaElementType<T> overridenType;
     protected final Map<String, String> properties;
     protected boolean incomplete;
-    private final String hierarchy;
+    protected final String hierarchy;
 
     /**
      * Constructor for SchemaElementType. All properties of a SchemaElementType

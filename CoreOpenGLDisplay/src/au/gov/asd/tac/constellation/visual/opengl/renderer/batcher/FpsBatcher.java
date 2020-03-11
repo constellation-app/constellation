@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;

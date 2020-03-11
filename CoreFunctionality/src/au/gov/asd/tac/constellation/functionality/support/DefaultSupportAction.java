@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.functionality.support;
 
 import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.support.SupportHandler;
 import org.openide.util.lookup.ServiceProvider;
 

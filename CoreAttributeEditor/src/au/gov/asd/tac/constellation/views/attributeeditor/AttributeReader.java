@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.schema.visualschema.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
-import au.gov.asd.tac.constellation.graph.visual.VisualDefaults;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -160,7 +160,7 @@ public class AttributeReader {
                     final GraphIndexType selectedIndexType = selectedNodeAttribute != Graph.NOT_FOUND ? rg.getAttributeIndexType(selectedNodeAttribute) : GraphIndexType.NONE;
                     if (selectedIndexType == GraphIndexType.NONE) {
                         for (int i = 0; i < rg.getVertexCount(); i++) {
-                            final boolean selected = selectedNodeAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedNodeAttribute, rg.getVertex(i)) : VisualDefaults.DEFAULT_VERTEX_SELECTED;
+                            final boolean selected = selectedNodeAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedNodeAttribute, rg.getVertex(i)) : VisualGraphDefaults.DEFAULT_VERTEX_SELECTED;
                             if (selected) {
                                 selectedNodes.add(rg.getVertex(i));
                             }
@@ -184,7 +184,7 @@ public class AttributeReader {
             GraphIndexType selectedIndexType = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getAttributeIndexType(selectedTransactionAttribute) : GraphIndexType.NONE;
             if (selectedIndexType == GraphIndexType.NONE) {
                 for (int i = 0; i < rg.getTransactionCount(); i++) {
-                    boolean selected = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedTransactionAttribute, rg.getTransaction(i)) : VisualDefaults.DEFAULT_TRANSACTION_SELECTED;
+                    boolean selected = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedTransactionAttribute, rg.getTransaction(i)) : VisualGraphDefaults.DEFAULT_TRANSACTION_SELECTED;
                     if (selected) {
                         selectedTransactions.add(rg.getTransaction(i));
                     }

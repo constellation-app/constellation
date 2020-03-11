@@ -19,18 +19,20 @@
             Each attribute is defined by a name, description, type and a default value. The set of attribute types include.
         </p>
         <table border="1">
-            <tr><td>attr_list</td><td>A list of attribute labels referring to other attributes in this element type.</td></tr>
             <tr><td>boolean</td><td>A true or false value.</td></tr>
             <tr><td>color</td><td>A color. Some colors have names, other are represented by red/green/blue/alpha values between 0 and 1.</td></tr>
             <tr><td>date</td><td>A date with the representation yyyy-mm-dd.</td></tr>
-            <tr><td>datetime</td><td>A datetime with the representation yyyy-mm-dd hh:mm:ss.</td></tr>
+            <tr><td>datetime</td><td>A zoned datetime with the representation yyyy-mm-dd hh:mm:ss Z.</td></tr>
             <tr><td>float</td><td>A floating point number.</td></tr>
+            <tr><td>hyperlink</td><td>A URL or URI.</td></tr>
             <tr><td>icon</td><td>A small image used for foreground and background pictures on nodes, as well as node decorators.</td></tr>
-            <tr><td>integer</td><td>An integral number.</td></tr>
+            <tr><td>integer</td><td>An integer number.</td></tr>
+            <tr><td>local_datetime</td><td>A datetime with the representation yyyy-mm-dd hh:mm:ss.</td></tr>
+            <tr><td>long</td><td>A long number.</td></tr>
             <tr><td>object</td><td>A value that doesn't fit any of the other types.</td></tr>
             <tr><td>string</td><td>Text.</td></tr>
-            <tr><td>vertex_type</td><td>An object representing a type of node and all it's properties.</td></tr>
             <tr><td>time</td><td>A time with representation hh:mm:ss.</td></tr>
+            <tr><td>time_zone</td><td>A timezone for use with zoned datetimes.</td></tr>
         </table>
     </body>
 </html>

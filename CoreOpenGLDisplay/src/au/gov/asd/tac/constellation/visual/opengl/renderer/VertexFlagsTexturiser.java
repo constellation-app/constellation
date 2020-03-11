@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ByteTextureBuffer;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualAccess;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import com.jogamp.common.nio.Buffers;
 import java.nio.ByteBuffer;
 

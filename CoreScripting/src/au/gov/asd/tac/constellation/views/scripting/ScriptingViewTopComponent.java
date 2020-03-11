@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.scripting;
 
-import au.gov.asd.tac.constellation.functionality.views.SwingTopComponent;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import javax.swing.JScrollPane;
 import org.openide.awt.ActionID;
