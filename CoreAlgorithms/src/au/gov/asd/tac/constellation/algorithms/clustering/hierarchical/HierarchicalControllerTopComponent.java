@@ -551,7 +551,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 dp.setState(null);
                 revalidateParents(dp);
             }
-            if ((state != null) && doUpdate) {
+            if (state != null && doUpdate) {
                 updateGraph();
             }
         }
