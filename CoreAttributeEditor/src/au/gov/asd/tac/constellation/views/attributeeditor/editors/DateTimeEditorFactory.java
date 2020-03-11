@@ -47,7 +47,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
-import javafx.util.StringConverter;
 import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 

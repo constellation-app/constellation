@@ -48,11 +48,11 @@ import org.openide.util.NbBundle;
     @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
 })
 @NbBundle.Messages("CTL_BuildIconGraphAction=Icon Graph")
-public class BuildIconGraphAction extends AbstractAction {
+public class IconGraphBuilderAction extends AbstractAction {
 
     private final GraphNode context;
 
-    public BuildIconGraphAction(final GraphNode context) {
+    public IconGraphBuilderAction(final GraphNode context) {
         this.context = context;
     }
 

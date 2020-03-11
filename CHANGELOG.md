@@ -2,6 +2,7 @@
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing AbstractTopComponent and other related classes
+* Fixed a logic bug with `GraphRendererDropTarget` preventing graph droppers from every running.
 * Moved VisualConcept to the Core Visual Schema module
 * Moved BBoxf and BBoxd to the Core Visual Graph module
 * Moved SimpleGraphOpener and SimpleGraphTopComponent to the Core Graph Node module
