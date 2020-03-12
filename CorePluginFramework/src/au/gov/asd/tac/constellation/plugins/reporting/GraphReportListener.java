@@ -27,7 +27,7 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 public interface GraphReportListener {
 
     /**
-     * Called by the PluginReporter framework to advertise that a new
+     * Called by the plugin reporter framework to advertise that a new
      * {@link PluginReport} has been created.
      *
      * @param pluginReport the newly created {@link PluginReport}.

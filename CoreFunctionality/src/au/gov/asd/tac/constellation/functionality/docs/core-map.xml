@@ -4,6 +4,5 @@
     <mapID target="au.gov.asd.tac.constellation.functionality.introduction" url="introduction.html"/>
     <mapID target="au.gov.asd.tac.constellation.functionality.visual" url="visual-about.html"/>
     <mapID target="au.gov.asd.tac.constellation.functionality.display" url="display-about.html"/>
-    <mapID target="au.gov.asd.tac.constellation.functionality.selection.named" url="named-selections.html"/>
     <mapID target="au.gov.asd.tac.constellation.functionality.compare" url="compare-graph.html"/>
 </map>

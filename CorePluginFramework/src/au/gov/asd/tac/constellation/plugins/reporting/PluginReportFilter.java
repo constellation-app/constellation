@@ -24,12 +24,12 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 public interface PluginReportFilter {
 
     /**
-     * Called by the plugin reporter for each plugin report to determine if that
-     * plugin report should be displayed in the UI.
+     * Called by the plugin reporter framework for each plugin report to
+     * determine if that plugin report should be used.
      *
      * @param report the PluginReport to be filtered.
      *
-     * @return true if the given PluginReport should be displayed in the UI.
+     * @return true if the given PluginReport should be used.
      */
     public boolean includePluginReport(PluginReport report);
 }

@@ -4,6 +4,5 @@
     <indexitem text="Introduction to CONSTELLATION" target="au.gov.asd.tac.constellation.functionality.introduction"/>
     <indexitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual"/>
     <indexitem text="Display preferences" target="au.gov.asd.tac.constellation.functionality.display"/>
-    <indexitem text="Named Selections" target="au.gov.asd.tac.constellation.functionality.selection.named" />
     <indexitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
 </index>

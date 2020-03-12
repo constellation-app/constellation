@@ -5,11 +5,6 @@
         <tocitem text="Introduction to CONSTELLATION" target="au.gov.asd.tac.constellation.functionality.introduction"/>
         <tocitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual"/>
     </tocitem>
-    <tocitem text="Graph" mergetype="javax.help.SortMerge">
-        <tocitem text="Selection" mergetype="javax.help.SortMerge">
-            <tocitem text="Named Selections" target="au.gov.asd.tac.constellation.functionality.selection.named" />
-        </tocitem>
-    </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
         <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
     </tocitem>

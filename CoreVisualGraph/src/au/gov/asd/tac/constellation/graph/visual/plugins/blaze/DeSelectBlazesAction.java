@@ -11,7 +11,7 @@
 package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.node.pluginframework.SimplePluginAction;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;

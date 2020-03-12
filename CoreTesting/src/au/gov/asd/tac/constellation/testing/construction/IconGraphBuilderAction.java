@@ -42,12 +42,12 @@ import org.openide.util.NbBundle;
  *
  * @author cygnus_x-1
  */
-@ActionID(category = "Schema", id = "au.gov.asd.tac.constellation.testing.construction.BuildIconGraphAction")
-@ActionRegistration(displayName = "#CTL_BuildIconGraphAction", surviveFocusChange = true)
+@ActionID(category = "Schema", id = "au.gov.asd.tac.constellation.testing.construction.IconGraphBuilderAction")
+@ActionRegistration(displayName = "#CTL_IconGraphBuilderAction", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Build Graph", position = 0)
 })
-@NbBundle.Messages("CTL_BuildIconGraphAction=Icon Graph")
+@NbBundle.Messages("CTL_IconGraphBuilderAction=Icon Graph")
 public class IconGraphBuilderAction extends AbstractAction {
 
     private final GraphNode context;
