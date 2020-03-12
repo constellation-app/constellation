@@ -37,7 +37,7 @@ class PQTree {
 
     public void addLeaves(final PQNode toNode, final List<Integer> childNums) {
         for (int i : childNums) {
-            PQNode leaf = new PQNode(NodeType.LeafNode, i, currentNumber);
+            PQNode leaf = new PQNode(NodeType.LEAFNODE, i, currentNumber);
             toNode.addChild(leaf);
             leaves[i - 1].add(leaf);
         }
@@ -45,7 +45,7 @@ class PQTree {
 
     public PQTree(final int numberNodes) {
         currentNumber = 1;
-        this.root = new PQNode(NodeType.PNode);
+        this.root = new PQNode(NodeType.PNODE);
         leaves = new Set[numberNodes];
         for (int i = 0; i < numberNodes; i++) {
             leaves[i] = new HashSet<>();
@@ -137,13 +137,13 @@ class PQTree {
     }
 
     public void vertexAddition(List<Integer> virtualNodeNums) {
-        PQNode nextPNode = new PQNode(NodeType.PNode);
-        if (pertinentRoot.label.equals(NodeLabel.Full)) {
+        PQNode nextPNode = new PQNode(NodeType.PNODE);
+        if (pertinentRoot.label.equals(NodeLabel.FULL)) {
             subtreeReplace(pertinentRoot, nextPNode);
         } else {
             addDirectionIndicator(pertinentRoot);
             boolean first = true;
-            for (PQNode node : pertinentRoot.getLabelView(NodeLabel.Full)) {
+            for (PQNode node : pertinentRoot.getLabelView(NodeLabel.FULL)) {
                 if (first) {
                     subtreeReplace(node, nextPNode);
                     first = false;
@@ -164,8 +164,8 @@ class PQTree {
         // If the last processed node matched P4 or P6, then it is no longer the pertinent root,
         // instead its single partial child is the pertinent root and full children of the last matched
         // node have been moved to this child.
-        if (!pertinentRoot.label.equals(NodeLabel.Full) && pertinentRoot.labeledChildren.get(NodeLabel.Full).isEmpty()) {
-            pertinentRoot = pertinentRoot.labeledChildren.get(NodeLabel.Partial).iterator().next();
+        if (!pertinentRoot.label.equals(NodeLabel.FULL) && pertinentRoot.labeledChildren.get(NodeLabel.FULL).isEmpty()) {
+            pertinentRoot = pertinentRoot.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
         }
         List<Integer> pertinentFrontier = new LinkedList<>();
         readPertinentFrontier(pertinentRoot, pertinentFrontier);
@@ -196,19 +196,19 @@ class PQTree {
 
     private void readPertinentFrontier(PQNode node, List<Integer> frontier) {
         switch (node.type) {
-            case PNode:
-                for (PQNode child : node.labeledChildren.get(NodeLabel.Full)) {
+            case PNODE:
+                for (PQNode child : node.labeledChildren.get(NodeLabel.FULL)) {
                     readPertinentFrontier(child, frontier);
                 }
                 break;
-            case QNode:
+            case QNODE:
                 for (PQNode child : node.children) {
-                    if (child.label.equals(NodeLabel.Full)) {
+                    if (child.label.equals(NodeLabel.FULL)) {
                         readPertinentFrontier(child, frontier);
                     }
                 }
                 break;
-            case LeafNode:
+            case LEAFNODE:
                 if (node.virtualNum == currentNumber) {
                     frontier.add(node.realNum);
                 }
@@ -238,7 +238,7 @@ class PQTree {
             node.removeChild(labeledNode);
             return labeledNode;
         }
-        PQNode newPNode = new PQNode(NodeType.PNode);
+        PQNode newPNode = new PQNode(NodeType.PNODE);
         newPNode.relabel(label);
         // Move all children of node with the given label to be children of the new PNode.
         for (PQNode child : node.getLabelView(label)) {
@@ -251,12 +251,12 @@ class PQTree {
     // Matches leaf nodes
     private boolean templateL1(PQNode candidate) {
         // Check whether candidate is a leaf node
-        if (candidate.type != NodeType.LeafNode) {
+        if (candidate.type != NodeType.LEAFNODE) {
             return false;
         }
         // If the candidate's virtual number matches the current number, relabel it as full
         if (candidate.virtualNum == currentNumber) {
-            candidate.relabel(NodeLabel.Full);
+            candidate.relabel(NodeLabel.FULL);
         }
         return true;
     }
@@ -264,16 +264,16 @@ class PQTree {
     // Matches P-nodes where all children are empty, or all children are full
     private boolean templateP1(PQNode candidate) {
         // Check whether candidate is a P node
-        if (candidate.type != NodeType.PNode) {
+        if (candidate.type != NodeType.PNODE) {
             return false;
         }
         // Check whether all children of candidate are full - if so relabel candidate as full.
-        if (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.Full).size()) {
-            candidate.relabel(NodeLabel.Full);
+        if (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.FULL).size()) {
+            candidate.relabel(NodeLabel.FULL);
             return true;
         }
         // If not all children of candidate are full, check if they are all empty.
-        boolean matches = (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.Empty).size());
+        boolean matches = (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.EMPTY).size());
         if (matches) {
         }
         return matches;
@@ -282,17 +282,17 @@ class PQTree {
     // Matches P-nodes that are the root of the pertinent subtree containing no partial nodes
     private boolean templateP2(PQNode candidate) {
         // Check whether candidate is a P node with no partial children
-        if (candidate.type != NodeType.PNode || !candidate.labeledChildren.get(NodeLabel.Partial).isEmpty()) {
+        if (candidate.type != NodeType.PNODE || !candidate.labeledChildren.get(NodeLabel.PARTIAL).isEmpty()) {
             return false;
         }
 
         // If there is only one full node we need not change anything.
-        if (candidate.labeledChildren.get(NodeLabel.Full).size() == 1) {
+        if (candidate.labeledChildren.get(NodeLabel.FULL).size() == 1) {
             return true;
         }
 
         // Encapsulate full children and add the encapsulation to candidate. Note there will always be two or more full children for this template to match.
-        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.Full);
+        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         candidate.addChild(fullPNode);
 
         return true;
@@ -301,19 +301,19 @@ class PQTree {
     // Matches P-nodes that are not the root of the pertinent subtree containing no partial nodes
     private boolean templateP3(PQNode candidate) {
         // Check whether candidate is a P node with no partial children
-        if (candidate.type != NodeType.PNode || !candidate.labeledChildren.get(NodeLabel.Partial).isEmpty()) {
+        if (candidate.type != NodeType.PNODE || !candidate.labeledChildren.get(NodeLabel.PARTIAL).isEmpty()) {
             return false;
         }
 
         // Encapsulate empty children (note there will always be 1 or more to match this template)
-        PQNode emptyPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.Empty);
+        PQNode emptyPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
 
         // Encapsulate full children (note there will always be 1 or more to match this template)
-        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.Full);
+        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
 
         // Make a new QNode which will take both the empty and full encapsulations as children and replace candidate in the tree. NodeLabel it partial.
-        PQNode partialQNode = new PQNode(NodeType.QNode);
-        partialQNode.relabel(NodeLabel.Partial);
+        PQNode partialQNode = new PQNode(NodeType.QNODE);
+        partialQNode.relabel(NodeLabel.PARTIAL);
         partialQNode.addChild(emptyPNode);
         partialQNode.addChild(fullPNode);
         subtreeReplace(candidate, partialQNode);
@@ -324,20 +324,20 @@ class PQTree {
     // Matches P-nodes that are the root of the pertinent subtree containing exactly one partial node
     private boolean templateP4(PQNode candidate) {
         // Check whether candidate is a P node with exaclty one partial child
-        if (candidate.type != NodeType.PNode || candidate.labeledChildren.get(NodeLabel.Partial).size() != 1) {
+        if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 1) {
             return false;
         }
 
         // Get the single partial node which is a child of candidate
-        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.Partial).iterator().next();
+        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
 
         // Encapsulate full children and add the encapsulation to the partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.Full);
+        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             partialChild.addChild(fullChild);
         }
 
-        candidate.relabel(NodeLabel.Partial);
+        candidate.relabel(NodeLabel.PARTIAL);
 
         return true;
     }
@@ -345,20 +345,20 @@ class PQTree {
     // Matches P-nodes that are not the root of the pertinent subtree containing exactly one partial node
     private boolean templateP5(PQNode candidate) {
         // Check whether candidate is a P node with exaclty one partial child
-        if (candidate.type != NodeType.PNode || candidate.labeledChildren.get(NodeLabel.Partial).size() != 1) {
+        if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 1) {
             return false;
         }
 
         // Get the single partial node which is a child of candidate
-        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.Partial).iterator().next();
+        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
 
         // Encapsulate empty children and add the encapsulation as the first child of the partial child of candidate
-        PQNode emptyChild = encapsulateChildrenWithLabel(candidate, NodeLabel.Empty);
+        PQNode emptyChild = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
         if (emptyChild != null) {
             partialChild.addFirstChild(emptyChild);
         }
         // Encapsulate full children and add to the partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.Full);
+        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             partialChild.addChild(fullChild);
         }
@@ -372,17 +372,17 @@ class PQTree {
     // Matches P-nodes that are the root of the pertinent subtree containing exactly two partial node
     private boolean templateP6(PQNode candidate) {
         // Check whether candidate is a P node with exaclty two partial children.
-        if (candidate.type != NodeType.PNode || candidate.labeledChildren.get(NodeLabel.Partial).size() != 2) {
+        if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 2) {
             return false;
         }
 
         // Get the two partial nodes which are children of candidate, noting the order they actually occur in is not important because it is a P-node.
-        Iterator<PQNode> iter = candidate.labeledChildren.get(NodeLabel.Partial).iterator();
+        Iterator<PQNode> iter = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator();
         PQNode firstPartialChild = iter.next();
         PQNode secondPartialChild = iter.next();
 
         // Encapsulate full children and add to the first partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.Full);
+        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             firstPartialChild.addChild(fullChild);
         }
@@ -391,7 +391,7 @@ class PQTree {
         secondPartialChild.reverseChildren();
         firstPartialChild.concatenateSibling(secondPartialChild);
 
-        candidate.relabel(NodeLabel.Partial);
+        candidate.relabel(NodeLabel.PARTIAL);
 
         return true;
     }
@@ -399,16 +399,16 @@ class PQTree {
     // Matches Q-nodes where all children are empty, or all children are full
     private boolean templateQ1(PQNode candidate) {
         // Check whether candidate is a Q node
-        if (candidate.type != NodeType.QNode) {
+        if (candidate.type != NodeType.QNODE) {
             return false;
         }
         // Check whether all children of candidate are full - if so relabel candidate as full.
-        if (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.Full).size()) {
-            candidate.relabel(NodeLabel.Full);
+        if (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.FULL).size()) {
+            candidate.relabel(NodeLabel.FULL);
             return true;
         }
         // If not all children of candidate are full, check if they are all empty.
-        boolean match = (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.Empty).size());
+        boolean match = (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.EMPTY).size());
         if (match) {
         }
         return match;
@@ -417,7 +417,7 @@ class PQTree {
     // Matches Q-nodes with at most one partial child, deleting extra partial children if necessary
     private boolean templateQ2(PQNode candidate) {
         // Check whether candidate is a Q node
-        if (candidate.type != NodeType.QNode) {
+        if (candidate.type != NodeType.QNODE) {
             return false;
         }
 
@@ -431,7 +431,7 @@ class PQTree {
             numPertinentLeaves -= destroyed.pertinentLeafCount;
         }
 
-        candidate.relabel(NodeLabel.Partial);
+        candidate.relabel(NodeLabel.PARTIAL);
 
         return true;
     }
@@ -440,7 +440,7 @@ class PQTree {
     private boolean templateQ3(PQNode candidate) {
         // Check whether candidate is a Q node with two or more partial children
 //        int numPartialChildren = candidate.labeledChildren.get(NodeLabel.Partial).size();
-        if (candidate.type != NodeType.QNode /*|| numPartialChildren < 2*/) {
+        if (candidate.type != NodeType.QNODE /*|| numPartialChildren < 2*/) {
             return false;
         }
 
@@ -453,13 +453,13 @@ class PQTree {
             numPertinentLeaves -= destroyed.pertinentLeafCount;
         }
 
-        candidate.relabel(NodeLabel.Partial);
+        candidate.relabel(NodeLabel.PARTIAL);
 
         return true;
     }
 
     private void removeLeaves(PQNode node) {
-        if (node.type.equals(NodeType.LeafNode)) {
+        if (node.type.equals(NodeType.LEAFNODE)) {
             leaves[node.virtualNum - 1].remove(node);
         } else {
             for (PQNode child : node.children) {

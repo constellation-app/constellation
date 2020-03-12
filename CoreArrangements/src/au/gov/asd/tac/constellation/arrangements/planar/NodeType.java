@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.arrangements.planar;
  */
 enum NodeType {
 
-    PNode,
-    QNode,
-    LeafNode,
+    PNODE,
+    QNODE,
+    LEAFNODE,
 }

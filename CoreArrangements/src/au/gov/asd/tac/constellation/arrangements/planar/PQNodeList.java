@@ -208,7 +208,7 @@ class PQNodeList implements Iterable<PQNode> {
         }
 
         private PQNode makeNode() {
-            return new PQNode(NodeType.LeafNode);
+            return new PQNode(NodeType.LEAFNODE);
         }
 
         public void testAdd() {

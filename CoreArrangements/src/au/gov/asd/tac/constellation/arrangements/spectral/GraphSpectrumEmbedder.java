@@ -62,8 +62,8 @@ public class GraphSpectrumEmbedder {
 
     private static enum MatrixType {
 
-        AdjacencyMatrix,
-        LaplacianMatrix,;
+        ADJACENCYMATRIX,
+        LAPLACIANMATRIX,;
     }
 
     private static class GraphMatrix {
@@ -81,11 +81,11 @@ public class GraphSpectrumEmbedder {
         }
 
         public static GraphMatrix adjacencyFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
-            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.AdjacencyMatrix);
+            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.ADJACENCYMATRIX);
         }
 
         public static GraphMatrix laplacianFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
-            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LaplacianMatrix);
+            return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIANMATRIX);
         }
 
         public static GraphMatrix matrixFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks, MatrixType type) {
@@ -123,15 +123,15 @@ public class GraphSpectrumEmbedder {
                         continue;
                     }
                     neighbourCount++;
-                    if (type == MatrixType.LaplacianMatrix) {
+                    if (type == MatrixType.LAPLACIANMATRIX) {
                         matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
-                    } else if (type == MatrixType.AdjacencyMatrix) {
+                    } else if (type == MatrixType.ADJACENCYMATRIX) {
                         matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
                     }
                 }
-                if (type == MatrixType.LaplacianMatrix) {
+                if (type == MatrixType.LAPLACIANMATRIX) {
                     matrixEntries[i][i] = neighbourCount;
-                } else if (type == MatrixType.AdjacencyMatrix) {
+                } else if (type == MatrixType.ADJACENCYMATRIX) {
                     matrixEntries[i][i] = 0;
                 }
             }
