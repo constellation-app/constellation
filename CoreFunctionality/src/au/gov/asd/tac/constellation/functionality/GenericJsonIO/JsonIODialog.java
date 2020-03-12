@@ -13,30 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview2.io;
+package au.gov.asd.tac.constellation.functionality.GenericJsonIO;
 
 import au.gov.asd.tac.constellation.visual.DraggableCell;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.TilePane;
 
 /**
- * Displays a list of saved table preferences 
- * 
+ *  Displays a generic dialog window that can allow the user to select a Json preference from a list
+ *
  * @author formalhaut69
  */
-public class TableViewPreferencesDialog {
-
-    public static String getTableViewPreferences(String[] names) {
+public class JsonIODialog {
+        public static String getSelection(String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
-        
         final ObservableList<String> q = FXCollections.observableArrayList(names);
         final ListView<String> nameList = new ListView<>(q);
+        
         nameList.setCellFactory(p -> new DraggableCell<>());
         nameList.setEditable(false);
         nameList.setOnMouseClicked(event -> {
@@ -44,22 +45,25 @@ public class TableViewPreferencesDialog {
                 dialog.setResult(ButtonType.OK);
             }
         });
-        //ButtonType removeButton = new ButtonType("Remove");
+        ButtonType removeButton = new ButtonType("Remove");
         dialog.getDialogPane().setContent(nameList);
-        //dialog.getButtonTypes().add(removeButton);
+        dialog.getButtonTypes().add(removeButton);
         dialog.setResizable(false);
-        dialog.setTitle("Table View Preferences");
+        dialog.setTitle("Preferences");
         dialog.setHeaderText("Select a preference to load.");
-//        final Button btOk = (Button) dialog.getDialogPane().lookupButton(removeButton);
-//        btOk.addEventFilter(ActionEvent.ACTION, event -> {
-//          event.consume();
-//        });  
-        final Optional<ButtonType> option = dialog.showAndWait();
         
-//        if (option.isPresent() && option.get() == removeButton) {
-//            System.out.println("NameList remove item: " + nameList.getItems());
-//            nameList.getItems().remove(nameList.getSelectionModel().getSelectedItem());
-//        } else 
+        //The remove button has been wrapped inside the btOk, this has been done because any ButtonTypes added
+        //to an alert window will automatically close the window when pressed. 
+        //Wrapping it in another button can allow us to consume the closing event and keep the window open.
+        final Button btOk = (Button) dialog.getDialogPane().lookupButton(removeButton);
+        btOk.addEventFilter(ActionEvent.ACTION, event -> {
+            JsonIO.deleteJsonPreference(nameList.getSelectionModel().getSelectedItem());
+            q.remove(nameList.getSelectionModel().getSelectedItem());
+            nameList.setCellFactory(p -> new DraggableCell<>());
+            dialog.getDialogPane().setContent(nameList);
+            event.consume();
+        });  
+        final Optional<ButtonType> option = dialog.showAndWait();
         if(option.isPresent() && option.get() == ButtonType.OK){
             return nameList.getSelectionModel().getSelectedItem();
         }
@@ -67,25 +71,30 @@ public class TableViewPreferencesDialog {
         return null;
     }
     
-    
-    //Opens up a slightly different dialog window to allow the user to name the
-    //preference when it is being saved
-    public static String getTableViewPreferenceName() {
+       /**
+        *  Displays a small window allowing the user to enter a name for the new preference
+        *
+        * @author formalhaut69
+        */
+    public static String getName() {
+        String returnedName = "";
         // create a tile pane 
         TilePane r = new TilePane(); 
         // create a text input dialog 
         TextInputDialog td = new TextInputDialog(); 
-        td.setTitle("Table view preference name");
+        td.setTitle("Preference name");
         // setHeaderText 
-        td.setHeaderText("Enter a name for the table view preference"); 
-        
-        td.showAndWait();
-        if(!td.getEditor().getText().equals("")){
-            return td.getEditor().getText();
+        td.setHeaderText("Enter a name for the preference"); 
+        Optional<String> result = td.showAndWait();
+        if (!result.isPresent()) {
+            //return a space if the user pressed the cancel button
+            returnedName = " ";
+        } else if(!td.getEditor().getText().equals("")){
+            returnedName = td.getEditor().getText();
         }
         
-        return "";
-    
+        return returnedName;
     }
     
+
 }

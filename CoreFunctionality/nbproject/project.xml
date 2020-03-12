@@ -279,6 +279,7 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.functionality</package>
+                <package>au.gov.asd.tac.constellation.functionality.GenericJsonIO</package>
                 <package>au.gov.asd.tac.constellation.functionality.autosave</package>
                 <package>au.gov.asd.tac.constellation.functionality.browser</package>
                 <package>au.gov.asd.tac.constellation.functionality.copypaste</package>
