@@ -28,16 +28,18 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.TilePane;
 
 /**
- *  Displays a generic dialog window that can allow the user to select a Json preference from a list
+ * Displays a generic dialog window that can allow the user to select a Json
+ * preference from a list
  *
  * @author formalhaut69
  */
 public class JsonIODialog {
-        public static String getSelection(String[] names) {
+
+    public static String getSelection(String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         final ObservableList<String> q = FXCollections.observableArrayList(names);
         final ListView<String> nameList = new ListView<>(q);
-        
+
         nameList.setCellFactory(p -> new DraggableCell<>());
         nameList.setEditable(false);
         nameList.setOnMouseClicked(event -> {
@@ -51,7 +53,7 @@ public class JsonIODialog {
         dialog.setResizable(false);
         dialog.setTitle("Preferences");
         dialog.setHeaderText("Select a preference to load.");
-        
+
         //The remove button has been wrapped inside the btOk, this has been done because any ButtonTypes added
         //to an alert window will automatically close the window when pressed. 
         //Wrapping it in another button can allow us to consume the closing event and keep the window open.
@@ -62,39 +64,40 @@ public class JsonIODialog {
             nameList.setCellFactory(p -> new DraggableCell<>());
             dialog.getDialogPane().setContent(nameList);
             event.consume();
-        });  
+        });
         final Optional<ButtonType> option = dialog.showAndWait();
-        if(option.isPresent() && option.get() == ButtonType.OK){
+        if (option.isPresent() && option.get() == ButtonType.OK) {
             return nameList.getSelectionModel().getSelectedItem();
         }
-        
+
         return null;
     }
-    
-       /**
-        *  Displays a small window allowing the user to enter a name for the new preference
-        *
-        * @author formalhaut69
-        */
+
+    /**
+     * Displays a small window allowing the user to enter a name for the new
+     * preference
+     *
+     * @author formalhaut69
+     */
     public static String getName() {
         String returnedName = "";
+        // opens up a slightly different dialog window to allow the user to name the
+        // preference when it is being saved
         // create a tile pane 
-        TilePane r = new TilePane(); 
+        TilePane r = new TilePane();
         // create a text input dialog 
-        TextInputDialog td = new TextInputDialog(); 
+        TextInputDialog td = new TextInputDialog();
         td.setTitle("Preference name");
         // setHeaderText 
-        td.setHeaderText("Enter a name for the preference"); 
+        td.setHeaderText("Enter a name for the preference");
         Optional<String> result = td.showAndWait();
         if (!result.isPresent()) {
             //return a space if the user pressed the cancel button
             returnedName = " ";
-        } else if(!td.getEditor().getText().equals("")){
+        } else if (!td.getEditor().getText().equals("")) {
             returnedName = td.getEditor().getText();
         }
-        
+
         return returnedName;
     }
-    
-
 }

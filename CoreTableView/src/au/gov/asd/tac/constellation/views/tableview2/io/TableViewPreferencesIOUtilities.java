@@ -34,43 +34,39 @@ import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
 /**
- *
  * Save and Load TableView preferences
- * 
+ *
  * @author formalhaut69
  */
 public class TableViewPreferencesIOUtilities {
-    
+
     private static final String TABLE_VIEW_PREF_DIR = "TableViewPreferences";
     private static final String COLUMN_ORDER_PREF_OBJECT = "ColumnOrderPreference";
     private static final String SORT_BY_COLUMN_OBJECT = "SortByColumnObject";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
-    
-    
+
     /**
      * Save the current order of the table view as a JSON file
      *
      * @param the table View's table
-     *
      */
-    public static void savePreferences(TableView<ObservableList<String>> table) {
+    public static void savePreferences(final TableView<ObservableList<String>> table) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File tableViewPreferencesDirectory = new File(userDir, TABLE_VIEW_PREF_DIR);
         final ObservableList<TableColumn<ObservableList<String>, ?>> columns = table.getColumns();
-        
+
         if (!tableViewPreferencesDirectory.exists()) {
             tableViewPreferencesDirectory.mkdir();
         }
-        
+
         if (!tableViewPreferencesDirectory.isDirectory()) {
             final String msg = String.format("Can't create data access directory '%s'.", tableViewPreferencesDirectory);
             final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
             return;
         }
-        
         // A JSON document to store everything in;
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode rootNode = mapper.createArrayNode();
@@ -78,69 +74,65 @@ public class TableViewPreferencesIOUtilities {
         final ObjectNode columnOrderPrefObject = global.putObject(COLUMN_ORDER_PREF_OBJECT);
         final ObjectNode sortByColumnNode = global.putObject(SORT_BY_COLUMN_OBJECT);
         ArrayNode columnOrderArrayNode = columnOrderPrefObject.putArray("columnOrderArray");
-        
-        
+
         int i = 0;
-        while(i < columns.size() && columns.get(i).isVisible()){
+        while (i < columns.size() && columns.get(i).isVisible()) {
             columnOrderArrayNode.add(columns.get(i).getText());
             i++;
         }
-        
-        if(!table.getSortOrder().isEmpty()){
+
+        if (!table.getSortOrder().isEmpty()) {
             sortByColumnNode.put(table.getSortOrder().get(0).getText(), table.getSortOrder().get(0).getSortType().name());
         } else {
-            //The table isn't being sorted by any column so don't save anything
-           sortByColumnNode.put("NO SORT BY COLUMN", "");
+            // the table isn't being sorted by any column so don't save anything
+            sortByColumnNode.put("NO SORT BY COLUMN", "");
         }
-        
-        
+
         JsonIO.saveJsonPreferences(TABLE_VIEW_PREF_DIR, mapper, rootNode);
+
     }
-   
+
     /**
-     * Load in the preferences from the JSON file and re-order the table 
+     * Load in the preferences from the JSON file and re-order the table
      *
      * @param the table View's table
-     *
      */
     public static void loadPreferences(TableView<ObservableList<String>> table) {
         final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR);
-        if(root != null){
+        if (root != null) {
             for (final JsonNode step : root) {
-            final JsonNode columnOrderPreference = step.get(COLUMN_ORDER_PREF_OBJECT);
-            final JsonNode JsonColumnOrderArray = columnOrderPreference.get("columnOrderArray");
-            final JsonNode sortByColumnPreference = step.get(SORT_BY_COLUMN_OBJECT);
-            final String sortByColumn = sortByColumnPreference.fieldNames().next();
-            ArrayList<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-            
-            for (final JsonNode JsonSavedColumn : JsonColumnOrderArray) {
-                TableColumn<ObservableList<String>, ?> copy;
-                for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
-                    if(column.getText().equals(JsonSavedColumn.textValue())){
-                        copy = column;
-                        copy.setVisible(true);
-                        newColumnOrder.add(copy);
+                final JsonNode columnOrderPreference = step.get(COLUMN_ORDER_PREF_OBJECT);
+                final JsonNode JsonColumnOrderArray = columnOrderPreference.get("columnOrderArray");
+                final JsonNode sortByColumnPreference = step.get(SORT_BY_COLUMN_OBJECT);
+                final String sortByColumn = sortByColumnPreference.fieldNames().next();
+                ArrayList<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
+
+                for (final JsonNode JsonSavedColumn : JsonColumnOrderArray) {
+                    TableColumn<ObservableList<String>, ?> copy;
+                    for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                        if (column.getText().equals(JsonSavedColumn.textValue())) {
+                            copy = column;
+                            copy.setVisible(true);
+                            newColumnOrder.add(copy);
+
+                        }
                     }
+                    table.getColumns().removeIf(tc -> tc.getText().equals(JsonSavedColumn.textValue()));
                 }
-                table.getColumns().removeIf(tc -> tc.getText().equals(JsonSavedColumn.textValue()));
-            }
-            
-            //set all the other columns to not visible
-            for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
-                newColumnOrder.add(column);
-                column.setVisible(false);
-            }
-            table.getColumns().setAll(newColumnOrder);
-            table.getSortOrder().clear();
-            for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
-                if(column.getText().equals(sortByColumn)){
-                    table.getSortOrder().add(column);
+
+                //set all the other columns to not visible
+                for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                    newColumnOrder.add(column);
+                    column.setVisible(false);
+                }
+                table.getColumns().setAll(newColumnOrder);
+                table.getSortOrder().clear();
+                for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                    if (column.getText().equals(sortByColumn)) {
+                        table.getSortOrder().add(column);
+                    }
                 }
             }
         }
-        } 
-            
-        
     }
-
 }
