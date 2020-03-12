@@ -60,7 +60,7 @@ public abstract class AbstractInclusionGraph {
 
     // Indicates that this vertex is a parent.
     // It must be less than zero because >=0 points to the parent vxId.
-    // TODO Put this constant somewhere sensible.
+    // TODO: put this constant somewhere sensible.
     public static final int COMPOSITE_PARENT_MARKER = -314159;
 
     /**

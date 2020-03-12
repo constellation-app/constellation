@@ -51,87 +51,6 @@ public class IconManagerNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getIconProviders method, of class IconManager.
-//     */
-//    @Test
-//    public void testGetIconProviders() {
-//        System.out.println("getIconProviders");
-//        Collection expResult = null;
-//        Collection result = IconManager.getIconProviders();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getCustomProvider method, of class IconManager.
-//     */
-//    @Test
-//    public void testGetCustomProvider() {
-//        System.out.println("getCustomProvider");
-//        CustomIconProvider expResult = null;
-//        CustomIconProvider result = IconManager.getCustomProvider();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of iconExists method, of class IconManager.
-//     */
-//    @Test
-//    public void testIconExists_String_Class() {
-//        System.out.println("iconExists");
-//        String name = "";
-//        boolean expResult = false;
-//        boolean result = IconManager.iconExists(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of iconExists method, of class IconManager.
-//     */
-//    @Test
-//    public void testIconExists_String() {
-//        System.out.println("iconExists");
-//        String name = "";
-//        boolean expResult = false;
-//        boolean result = IconManager.iconExists(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getIcon method, of class IconManager.
-//     */
-//    @Test
-//    public void testGetIcon_String_Class() {
-//        System.out.println("getIcon");
-//        String name = "";
-//        ConstellationIcon expResult = null;
-//        ConstellationIcon result = IconManager.getIcon(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getIcon method, of class IconManager.
-//     */
-//    @Test
-//    public void testGetIcon_String() {
-//        System.out.println("getIcon");
-//        String name = "";
-//        ConstellationIcon expResult = null;
-//        ConstellationIcon result = IconManager.getIcon(name);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testGetIcon_StringPerformancetest() {
         final IconManager im = new IconManager();
@@ -153,19 +72,6 @@ public class IconManagerNGTest {
         }
     }
 
-//    /**
-//     * Test of getIconNames method, of class IconManager.
-//     */
-//    @Test
-//    public void testGetIconNames() {
-//        System.out.println("getIconNames");
-//        Boolean editable = null;
-//        Set expResult = null;
-//        Set result = IconManager.getIconNames(editable);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of getIconObjects method, of class IconManager.
      */
@@ -191,32 +97,4 @@ public class IconManagerNGTest {
         System.out.println("Total = " + total);
         System.out.println("Diff is " + (end - start));
     }
-
-//    /**
-//     * Test of addIcon method, of class IconManager.
-//     */
-//    @Test
-//    public void testAddIcon() {
-//        System.out.println("addIcon");
-//        ConstellationIcon icon = null;
-//        boolean expResult = false;
-//        boolean result = IconManager.addIcon(icon);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeIcon method, of class IconManager.
-//     */
-//    @Test
-//    public void testRemoveIcon() {
-//        System.out.println("removeIcon");
-//        String iconName = "";
-//        boolean expResult = false;
-//        boolean result = IconManager.removeIcon(iconName);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

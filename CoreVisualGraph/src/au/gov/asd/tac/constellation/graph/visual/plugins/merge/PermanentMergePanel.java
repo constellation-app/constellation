@@ -373,22 +373,18 @@ public final class PermanentMergePanel extends JPanel {
         add(jPanel2, gridBagConstraints);
     }// </editor-fold>//GEN-END:initComponents
     private void includeAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_includeAllButtonActionPerformed
-        // TODO add your handling code here:
         this.includeAllVertices();
     }//GEN-LAST:event_includeAllButtonActionPerformed
 
     private void excludeAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_excludeAllButtonActionPerformed
-        // TODO add your handling code here:
         this.excludeAllVertices();
     }//GEN-LAST:event_excludeAllButtonActionPerformed
 
     private void nodeTablePropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_nodeTablePropertyChange
-        // TODO add your handling code here:
         this.udpateSelectedNodeCount();
     }//GEN-LAST:event_nodeTablePropertyChange
 
     private void nodeTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nodeTableMouseClicked
-        // TODO add your handling code here:
         this.processCellSelection(nodeTable.getSelectedRow(), nodeTable.getSelectedColumn());
     }//GEN-LAST:event_nodeTableMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables

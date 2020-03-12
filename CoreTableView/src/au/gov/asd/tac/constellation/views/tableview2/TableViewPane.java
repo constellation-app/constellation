@@ -161,7 +161,7 @@ public final class TableViewPane extends BorderPane {
         table.setPadding(new Insets(5));
         setCenter(table);
 
-        // TODO: experiment with caching!
+        // TODO: experiment with caching
         table.setCache(false);
 
         this.progress = new BorderPane();

@@ -57,71 +57,6 @@ public class VertexTypeIOProviderNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getName method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testGetName() {
-//        System.out.println("getName");
-//        VertexTypeIOProvider instance = new VertexTypeIOProvider();
-//        String expResult = "";
-//        String result = instance.getName();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of readObject method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testReadObject() throws Exception {
-//        System.out.println("readObject");
-//        int attributeId = 0;
-//        int elementId = 0;
-//        JsonNode jnode = null;
-//        GraphWriteMethods graph = null;
-//        Map<Integer, Integer> vertexMap = null;
-//        Map<Integer, Integer> transactionMap = null;
-//        GraphByteReader byteReader = null;
-//        ImmutableObjectCache cache = null;
-//        VertexTypeIOProvider instance = new VertexTypeIOProvider();
-//        instance.readObject(attributeId, elementId, jnode, graph, vertexMap, transactionMap, byteReader, cache);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of writeObject method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testWriteObject() throws Exception {
-//        System.out.println("writeObject");
-//        Attribute attribute = null;
-//        int elementId = 0;
-//        JsonGenerator jsonGenerator = null;
-//        GraphReadMethods graph = null;
-//        GraphByteWriter byteWriter = null;
-//        boolean verbose = false;
-//        VertexTypeIOProvider instance = new VertexTypeIOProvider();
-//        instance.writeObject(attribute, elementId, jsonGenerator, graph, byteWriter, verbose);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of readTypeObject method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testReadTypeObject() {
-//        System.out.println("readTypeObject");
-//        JsonNode type = null;
-//        SchemaVertexType expResult = null;
-//        SchemaVertexType result = VertexTypeIOProvider.readTypeObject(type);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testWriteTypeObject() throws Exception {
         final SchemaVertexType type = new SchemaVertexType.Builder("type")
@@ -259,31 +194,4 @@ public class VertexTypeIOProviderNGTest {
 
         Assert.assertEquals(actual.toString(), expected.toString());
     }
-
-//    /**
-//     * Test of readColorObject method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testReadColorObject() {
-//        System.out.println("readColorObject");
-//        JsonNode color = null;
-//        ColorValue expResult = null;
-//        ColorValue result = VertexTypeIOProvider.readColorObject(color);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of writeColorObject method, of class VertexTypeIOProvider.
-//     */
-//    @Test
-//    public void testWriteColorObject() throws Exception {
-//        System.out.println("writeColorObject");
-//        ColorValue color = null;
-//        JsonGenerator jsonGenerator = null;
-//        VertexTypeIOProvider.writeColorObject(color, jsonGenerator);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

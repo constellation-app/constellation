@@ -68,7 +68,7 @@ import org.openide.util.NbBundle;
 /**
  * Panel offering mounting points to user, when opening .java file.
  * 
- * TODO: This entire class should be refactored using form.
+ * TODO: this entire class should be refactored using form.
  */
 public class PackagePanel extends JPanel {
 

@@ -50,21 +50,6 @@ public class BBoxNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of add method, of class BBox.
-//     */
-//    @Test
-//    public void testAdd()
-//    {
-//        System.out.println("add");
-//        float x = 0.0F;
-//        float y = 0.0F;
-//        float z = 0.0F;
-//        BBox instance = new BBox();
-//        instance.add(x, y, z);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of getCentre method, of class BBox.
      */
@@ -89,33 +74,4 @@ public class BBoxNGTest {
 
         assertTrue(box.isEmpty());
     }
-
-//    /**
-//     * Test of getMin method, of class BBox.
-//     */
-//    @Test
-//    public void testGetMin()
-//    {
-//        System.out.println("getMin");
-//        BBox instance = new BBox();
-//        float[] expResult = null;
-//        float[] result = instance.getMin();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//    /**
-//     * Test of getMax method, of class BBox.
-//     */
-//    @Test
-//    public void testGetMax()
-//    {
-//        System.out.println("getMax");
-//        BBox instance = new BBox();
-//        float[] expResult = null;
-//        float[] result = instance.getMax();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

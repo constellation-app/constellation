@@ -144,8 +144,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
             return mergeStep == other.mergeStep ? compare(vertNum, other.vertNum) : compare(mergeStep, other.mergeStep);
         }
 
-        // TODO Copied from JDK1.7 so compareTo() will work in JDK1.6.
-        // TODO fix when possible.
+        // TODO: copied from JDK1.7 so compareTo() will work in JDK1.6 - fix when possible.
         public static int compare(int x, int y) {
             return (x < y) ? -1 : ((x == y) ? 0 : 1);
         }

@@ -21,12 +21,12 @@
 
 /* ====== CHART TOP LEVEL ITEMS ============================================== */
 .chart {
-    -fx-padding: -5px, 0px, 10px, 0px;
+    -fx-padding: -5 0 10 0;
     -fx-border-color: #111111;
     -fx-background-color: #111111;
     -fx-fill: #111111;
-    /*-fx-translate-x: -5px;*/
-    -fx-translate-y: 3px;
+    /*-fx-translate-x: -5;*/
+    -fx-translate-y: 3;
 }
 .chart-plot-background {
     -fx-background-color: #111111;

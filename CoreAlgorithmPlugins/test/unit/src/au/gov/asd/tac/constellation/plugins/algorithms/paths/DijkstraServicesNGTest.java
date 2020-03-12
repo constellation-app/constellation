@@ -382,17 +382,4 @@ public class DijkstraServicesNGTest {
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx4));
         assertFalse(graph.getBooleanValue(selectedTransactionAttr, tx5));
     }
-
-//    /**
-//     * Test of selectOnGraph method, of class DijkstraServices.
-//     */
-//    @Test
-//    public void testSelectOnGraph() {
-//        System.out.println("selectOnGraph");
-//        boolean clearSelection = false;
-//        DijkstraServices instance = null;
-////        instance.selectOnGraph(clearSelection);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

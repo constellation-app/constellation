@@ -489,7 +489,7 @@ public class ImportController {
     public void setShowAllSchemaAttributes(final boolean showAllSchemaAttributes) {
         this.showAllSchemaAttributes = showAllSchemaAttributes;
         importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
-        // TODO: so the tick box could have changed but the menu item isn't updated!
+        // TODO: the tick box could have changed but the menu item isn't updated, fix it
     }
 
     public String[] getCurrentColumns() {

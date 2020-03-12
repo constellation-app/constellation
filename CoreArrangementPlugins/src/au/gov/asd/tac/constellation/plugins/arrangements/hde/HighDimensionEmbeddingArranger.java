@@ -30,7 +30,7 @@ import java.util.Random;
  * 2528 of Lecture Notes in Computer Science, pp. 207-219,<br>
  * Springer Verlag, 2002.
  * <p>
- * TODO scale x,y,z after arrangement so the graph isn't cramped.
+ * TODO: scale x,y,z after arrangement so the graph isn't cramped.
  *
  * @author algol
  */

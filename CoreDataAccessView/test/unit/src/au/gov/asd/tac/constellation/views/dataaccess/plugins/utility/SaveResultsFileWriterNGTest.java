@@ -59,51 +59,6 @@ public class SaveResultsFileWriterNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of write method, of class SaveResultsFileWriter.
-//     *
-//     * @throws java.lang.Exception
-//     */
-//    @Test
-//    public void testWrite() throws Exception {
-//        System.out.println("write");
-//        Plugin plugin = null;
-//        String data = "";
-//        String filenameSuffix = "";
-//        SaveResultsFileWriter.write(plugin, data, filenameSuffix);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of writeRecordStore method, of class SaveResultsFileWriter.
-//     *
-//     * @throws java.lang.Exception
-//     */
-//    @Test
-//    public void testWriteRecordStore() throws Exception {
-//        System.out.println("writeRecordStore");
-//        Plugin plugin = null;
-//        final RecordStore recordstore = null;
-//        SaveResultsFileWriter.writeRecordStore(plugin, recordstore);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of writeXml method, of class SaveResultsFileWriter.
-//     *
-//     * @throws java.lang.Exception
-//     */
-//    @Test
-//    public void testWriteXml() throws Exception {
-//        System.out.println("writeXml");
-//        Plugin plugin = null;
-//        String xml = "";
-//        SaveResultsFileWriter.writeXml(plugin, xml);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of generateFilename method, of class SaveResultsFileWriter.
      */

@@ -251,7 +251,7 @@ public final class GraphTaxonomy {
      *
      * @return A Condensation representing the relationship between the taxa.
      *
-     * TODO sometimes its not worth adding the transactions.
+     * TODO: sometimes its not worth adding the transactions.
      */
     public Condensation getCondensedGraph() throws InterruptedException {
 //        final Map<Integer, Extent> taxonKeyToExtent = new HashMap<>();
@@ -269,8 +269,8 @@ public final class GraphTaxonomy {
         final int cRadiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(condensedGraph);
 
         // Add the vertices.
-        // TODO do these need to be sorted?
-        for (Integer k : getSortedTaxaKeys()) {
+        // TODO: do these need to be sorted?
+        for (final Integer k : getSortedTaxaKeys()) {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }

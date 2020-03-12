@@ -184,7 +184,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
         }
 
         if (result != null) {
-            // TODO: try to see if its worth setting this to init with schema to true. It did cause issues with it sometimes generating Vertex # nodes
+            // TODO: try to see if its worth setting this to init with schema to true - it did cause issues with it sometimes generating vertex # nodes
             final List<Integer> newVertices = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, result, false, true, null);
 
             wg.validateKey(GraphElementType.VERTEX, true);

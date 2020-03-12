@@ -245,7 +245,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void calendarButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calendarButton1ActionPerformed
-        // TODO add your handling code here:
         final Date date = this.getFirstDate();
         DateChooserPanel dc = new DateChooserPanel(date);
         final DialogDescriptor dialog = new DialogDescriptor(dc, "Select Date", true, null);
@@ -266,8 +265,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_calendarButton2ActionPerformed
 
     private void presetDateRangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presetDateRangesActionPerformed
-        // TODO add your handling code here:
-
         String value = (String) (presetDateRanges.getSelectedItem());
         if (value.equals(Bundle.PresetRange0())) {
             spnDateTime1.setEnabled(true);

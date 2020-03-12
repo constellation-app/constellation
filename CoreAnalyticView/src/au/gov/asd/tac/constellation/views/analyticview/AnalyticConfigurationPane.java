@@ -696,7 +696,7 @@ public class AnalyticConfigurationPane extends VBox {
                 analyticConfigurationPane.saveState();
             }
             
-            // Utilized for Question pane - TODO: When multiple tabs + saving of
+            // Utilized for Question pane - TODO: when multiple tabs + saving of
             // questions is supported, link this currentquestion variable with 
             // the saved/loaded question
             analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null :

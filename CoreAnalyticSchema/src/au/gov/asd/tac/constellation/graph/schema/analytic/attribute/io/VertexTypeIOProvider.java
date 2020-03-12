@@ -111,12 +111,13 @@ public class VertexTypeIOProvider extends AbstractGraphIOProvider {
             }
         }
 
+        // TODO: need to serialise the pattern case sensitivity
         final SchemaVertexType schemaVertexType = new SchemaVertexType.Builder(name.textValue())
                 .setDescription(description == null ? null : description.textValue())
                 .setColor(color == null ? null : readColorObject(color))
                 .setForegroundIcon(foregroundIcon == null ? null : IconManager.getIcon(foregroundIcon.textValue()))
                 .setBackgroundIcon(backgroundIcon == null ? null : IconManager.getIcon(backgroundIcon.textValue()))
-                .setDetectionRegex(detectRegex == null ? null : Pattern.compile(detectRegex.textValue(), Pattern.CASE_INSENSITIVE)) // TODO: need to serialise the pattern case sensitivity
+                .setDetectionRegex(detectRegex == null ? null : Pattern.compile(detectRegex.textValue(), Pattern.CASE_INSENSITIVE))
                 .setValidationRegex(validationRegex == null ? null : Pattern.compile(validationRegex.textValue(), Pattern.CASE_INSENSITIVE))
                 .setSuperType(superType == null ? null : readTypeObject(superType))
                 .setOverridenType(overriddenType == null ? null : readTypeObject(overriddenType))

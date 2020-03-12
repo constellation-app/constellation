@@ -114,7 +114,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
 
     @Override
     public void newActiveGraph(final Graph graph) {
-        // TODO if the old graph and the new graph have the same schema, don't recalculate.
+        // TODO: if the old graph and the new graph have the same schema, don't recalculate.
         Platform.runLater(() -> {
             transactionTypes.clear();
 

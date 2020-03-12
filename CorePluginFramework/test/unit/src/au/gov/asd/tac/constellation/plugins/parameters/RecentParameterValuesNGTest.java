@@ -84,55 +84,6 @@ public class RecentParameterValuesNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of getRecentValues method, of class RecentParameterValues.
-//     */
-//    @Test
-//    public void testGetRecentValues() {
-//        System.out.println("getRecentValues");
-//        String parameterId = "";
-//        List expResult = null;
-//        List result = RecentParameterValues.getRecentValues(parameterId);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of addListener method, of class RecentParameterValues.
-//     */
-//    @Test
-//    public void testAddListener() {
-//        System.out.println("addListener");
-//        RecentValuesListener listener = null;
-//        RecentParameterValues.addListener(listener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeListener method, of class RecentParameterValues.
-//     */
-//    @Test
-//    public void testRemoveListener() {
-//        System.out.println("removeListener");
-//        RecentValuesListener listener = null;
-//        RecentParameterValues.removeListener(listener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of fireChangeEvent method, of class RecentParameterValues.
-//     */
-//    @Test
-//    public void testFireChangeEvent() {
-//        System.out.println("fireChangeEvent");
-//        RecentValuesChangeEvent e = null;
-//        RecentParameterValues.fireChangeEvent(e);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of saveToPreferences method, of class RecentParameterValues.
      */

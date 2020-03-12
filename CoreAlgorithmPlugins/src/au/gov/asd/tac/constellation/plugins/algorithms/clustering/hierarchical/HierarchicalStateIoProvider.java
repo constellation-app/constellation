@@ -164,7 +164,7 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                // TODO groups array is sized for capacity, not max vertex id: this means too much stuff is being written.
+                // TODO: groups array is sized for capacity, not max vertex id: this means too much stuff is being written.
                 jsonGenerator.writeArrayFieldStart("groups");
                 for (final FastNewman.Group group : state.groups) {
                     if (group != null) {

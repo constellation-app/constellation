@@ -278,6 +278,5 @@ public class MergeNodeNGTest {
         } finally {
             wg.commit();
         }
-
     }
 }

@@ -301,8 +301,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 switch (change) {
                     case VALUE:
                         if (!isAdjusting) {
-                            // TODO Don't change the value if it isn't necessary.
-                            //                        final DateTimeRange param = (DateTimeRange)pluginParameter.getObjectValue();
+                            // TODO: don't change the value if it isn't necessary.
                             final DateTimeRange param = pluginParameter.getDateTimeRangeValue();
                             if (param.getPeriod() != null) {
                                 setPeriod(param.getPeriod(), param.getZoneId());

@@ -217,7 +217,7 @@ public abstract class InfomapBase {
             return;
         }
 
-        // TODO: Write out initial codelength (two-level/hierarchical) on which the compression rate depends.
+        // TODO: write out initial codelength (two-level/hierarchical) on which the compression rate depends.
         if (config.verbosity == 0) {
             Logf.printf("\nRecursive sub-structure compression: ");
         } else {

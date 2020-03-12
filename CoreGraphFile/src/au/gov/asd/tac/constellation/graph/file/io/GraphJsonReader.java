@@ -439,7 +439,8 @@ public final class GraphJsonReader {
             });
         } catch (Exception ex) {
             final String msg = "There was an error loading some parts of the graph. The error was " + ex.getLocalizedMessage();
-//            throw new PluginException(PluginNotificationLevel.ERROR, msg); // TODO: I would like to throw a plugin exception
+            // TODO: throw a plugin exception
+//            throw new PluginException(PluginNotificationLevel.ERROR, msg); 
             LOGGER.warning(msg);
             Exceptions.printStackTrace(ex);
         }

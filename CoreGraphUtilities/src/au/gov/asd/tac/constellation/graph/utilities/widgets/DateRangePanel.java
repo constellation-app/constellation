@@ -291,7 +291,6 @@ public class DateRangePanel extends javax.swing.JPanel {
     }//GEN-LAST:event_calendarButton2ActionPerformed
 
     private void presetDateRangesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_presetDateRangesActionPerformed
-        // TODO add your handling code here:
         String value = (String) (presetDateRanges.getSelectedItem());
         if (value.equals(Bundle.PresetRange0())) {
             spnDate1.setEnabled(true);

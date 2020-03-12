@@ -28,6 +28,7 @@
         <p>
             When you open the Scripting View, it will initialise several custom
             objects for you to make use of in your scripts.
+        </p>
         <ul>
             <li>
                 <strong>graph</strong>: this object represents the current
@@ -49,69 +50,72 @@
                 for more information on how to use this object.
             </li>
         </ul>
-        You can add your own custom objects by extending the ScriptingModule
-        class in the Scripting Module. Speak to your developers for more
-        information on what they have added, or to include your own custom
-        scripting objects.
-    </p>
-    <h2>
-        The Graph
-    </h2>
-    <p>
-        The current active graph is always readily accessible using the
-        provided <strong>graph</strong> object, which provides a number of
-        convenient methods for reading from and writing to the graph. Under
-        the hood, the graph object is an <em>SGraph</em>, which provides
-        access for interrogation and editing of the underlying Constellation
-        graph. The SGraph object, as well as all the objects obtainable from an
-        SGraph are documented in the
-        <a href="javadoc/au-gov-asd-tac-constellation-scripting/index.html">API javadoc</a>.
-    </p>
-    <p>
-        You can access all other open graphs using the
-        <strong>utilities</strong> object as follows:
-    <ul>
-        <li>
-            <strong>getOpenGraphs()</strong> will return a map or
-            dictionary of graph name to graph for every currently open
-            graph.
-        </li>
-    </ul>
-</p>
-<p>
-    You can also make a copy of a graph using the
-    <strong>utilities</strong> object as follows:
-<ul>
-    <li>
-        <strong>copyGraph(graph)</strong> will return an in-memory
-        copy of the provided graph.
-    </li>
-</ul>
-</p>
-<h2>
-    Plugins
-</h2>
-<p>
-    Every user action in Constellation is designed to be a disposable
-    operation (generally on the graph) called a plugin. The Scripting
-    View provides the ability to run any plugin available to
-    Constellation using the provided <strong>utilities</strong> object.
-    The utilities object provides two ways to run a plugin:
-<ul>
-    <li>
-        <strong>executePlugin(graph, pluginName)</strong> allows you
-        to run a plugin by name with default parameter values.
-    </li>
-    <li>
-        <strong>executePlugin(graph, pluginName, pluginParameters)</strong>
-        allows you to run a plugin by name with custom parameter
-        values. Parameter values should be provided as a map or
-        dictionary of parameter names as strings to parameter values
-        as strings.
-    </li>
-</ul>
-Plugin names and parameters are documented in the <em>Plugins</em> tab
-of the Schema View within Constellation.
-</p>
-</body>
+        <p>
+            You can add your own custom objects by extending the ScriptingModule
+            class in the Scripting Module. Speak to your developers for more
+            information on what they have added, or to include your own custom
+            scripting objects.
+        </p>
+        <h2>
+            The Graph
+        </h2>
+        <p>
+            The current active graph is always readily accessible using the
+            provided <strong>graph</strong> object, which provides a number of
+            convenient methods for reading from and writing to the graph. Under
+            the hood, the graph object is an <em>SGraph</em>, which provides
+            access for interrogation and editing of the underlying Constellation
+            graph. The SGraph object, as well as all the objects obtainable from an
+            SGraph are documented in the
+            <a href="javadoc/au-gov-asd-tac-constellation-scripting/index.html">API javadoc</a>.
+        </p>
+        <p>
+            You can access all other open graphs using the
+            <strong>utilities</strong> object as follows:
+        </p>
+        <ul>
+            <li>
+                <strong>getOpenGraphs()</strong> will return a map or
+                dictionary of graph name to graph for every currently open
+                graph.
+            </li>
+        </ul>
+        <p>
+            You can also make a copy of a graph using the
+            <strong>utilities</strong> object as follows:
+        </p>
+        <ul>
+            <li>
+                <strong>copyGraph(graph)</strong> will return an in-memory
+                copy of the provided graph.
+            </li>
+        </ul>
+        <h2>
+            Plugins
+        </h2>
+        <p>
+            Every user action in Constellation is designed to be a disposable
+            operation (generally on the graph) called a plugin. The Scripting
+            View provides the ability to run any plugin available to
+            Constellation using the provided <strong>utilities</strong> object.
+            The utilities object provides two ways to run a plugin:
+        </p>
+        <ul>
+            <li>
+                <strong>executePlugin(graph, pluginName)</strong> allows you
+                to run a plugin by name with default parameter values.
+            </li>
+            <li>
+                <strong>executePlugin(graph, pluginName, pluginParameters)</strong>
+                allows you to run a plugin by name with custom parameter
+                values. Parameter values should be provided as a map or
+                dictionary of parameter names as strings to parameter values
+                as strings.
+            </li>
+        </ul>
+        <p>
+            Plugin names and parameters are documented in the <em>Plugins</em> tab
+            of the Schema View within Constellation.
+        </p>
+    </body>
 </html>

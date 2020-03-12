@@ -93,48 +93,6 @@ public class TemporalFormattingNGTest {
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertEquals(result, expResult);
     }
-//
-//    /**
-//     * Test of completeLocalDateTimeString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteLocalDateTimeString() {
-//        System.out.println("completeLocalDateTimeString");
-//        String localDateTimeString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeLocalDateTimeString(localDateTimeString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of completeDateString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteDateString() {
-//        System.out.println("completeDateString");
-//        String dateString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeDateString(dateString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of completeTimeString method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testCompleteTimeString() {
-//        System.out.println("completeTimeString");
-//        String timeString = "";
-//        String expResult = "";
-//        String result = TemporalFormatting.completeTimeString(timeString);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 
     /**
      * Test of formatAsZonedDateTime method, of class TemporalFormatting.
@@ -157,75 +115,6 @@ public class TemporalFormattingNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of formatAsLocalDateTime method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsLocalDateTime() {
-//        System.out.println("formatAsLocalDateTime");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsLocalDateTime(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of formatAsDate method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsDate() {
-//        System.out.println("formatAsDate");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsDate(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of formatAsTime method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testFormatAsTime() {
-//        System.out.println("formatAsTime");
-//        TemporalAccessor accessor = null;
-//        String expResult = "";
-//        String result = TemporalFormatting.formatAsTime(accessor);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of zonedDateTimeFromLong method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testZonedDateTimeFromLong() {
-//        System.out.println("zonedDateTimeFromLong");
-//        long value = 0L;
-//        ZonedDateTime expResult = null;
-//        ZonedDateTime result = TemporalFormatting.zonedDateTimeFromLong(value);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of zonedDateTimeStringFromLong method, of class TemporalFormatting.
-//     */
-//    @Test
-//    public void testZonedDateTimeStringFromLong() {
-//        System.out.println("zonedDateTimeStringFromLong");
-//        long value = 0L;
-//        String expResult = "";
-//        String result = TemporalFormatting.zonedDateTimeStringFromLong(value);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     @Test
     public void testZonedDateTimeConvertToUtc() {
         final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2018-02-22T18:38:30+01:00");

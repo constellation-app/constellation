@@ -63,61 +63,6 @@ public class SelectTopNNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getType method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetType() {
-//        System.out.println("getType");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPosition method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetPosition() {
-//        System.out.println("getPosition");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        int expResult = 0;
-//        int result = instance.getPosition();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDescription method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetDescription() {
-//        System.out.println("getDescription");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getDescription();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createParameters method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        PluginParameters expResult = null;
-//        PluginParameters result = instance.createParameters();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of edit method, of class SelectTopNPlugin.
      *

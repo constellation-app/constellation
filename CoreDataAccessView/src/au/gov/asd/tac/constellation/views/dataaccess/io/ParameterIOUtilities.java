@@ -100,7 +100,7 @@ public class ParameterIOUtilities {
                                 }
                             });
                             break;
-                            // TODO: support multiple tabs and not introduce memory leaks
+                            // TODO: support multiple tabs, but don't introduce memory leaks
                         }
                     }
                 }

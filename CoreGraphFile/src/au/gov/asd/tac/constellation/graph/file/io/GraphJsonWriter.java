@@ -324,7 +324,7 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeStringField("descr", attr.getDescription());
             }
 
-            // TODO: This is really horrible. We should not just be getting the default value as whatever type the description feels like giving us and then writing out it as a number (after introspecting its type) or its toString() value.
+            // TODO: this is really horrible. We should not just be getting the default value as whatever type the description feels like giving us and then writing out it as a number (after introspecting its type) or its toString() value.
             // This should be done in a safe, extensible and verifiable manner, and more importantly, in a manner consistent with the way the attribute values themselves are written out (using IO providers). The long term solution to this
             // is probably not to just change the code here (or add in some default writing/reading stuff in IO providers), but to actually integrate the getting and setting of defaults into the getting and setting of
             // actual attribute values inside the attribute descriptions.

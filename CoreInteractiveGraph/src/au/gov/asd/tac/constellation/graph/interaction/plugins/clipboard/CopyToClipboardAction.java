@@ -53,7 +53,7 @@ public final class CopyToClipboardAction extends AbstractAction {
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
 
-        // TODO Make this a SimpleReadPlugin when sirius allows for it in the framework.
+        // TODO: make this a SimpleReadPlugin.
         PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
             @Override
             protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {

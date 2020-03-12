@@ -26,7 +26,7 @@
     -fx-background-color: #111111;
     -fx-fill: #111111;
     /*-fx-translate-x: -5px;*/
-    -fx-translate-y: 3px;
+    -fx-translate-y: 3;
 }
 .chart-plot-background {
     -fx-background-color: #111111;

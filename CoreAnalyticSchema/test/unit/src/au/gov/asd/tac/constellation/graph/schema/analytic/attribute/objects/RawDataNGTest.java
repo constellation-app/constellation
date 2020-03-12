@@ -141,19 +141,6 @@ public class RawDataNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of hashCode method, of class RawData.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        System.out.println("hashCode");
-//        RawData instance = null;
-//        int expResult = 0;
-//        int result = instance.hashCode();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of equals method, of class RawData.
      */
@@ -176,19 +163,4 @@ public class RawDataNGTest {
         String result = instance.toString();
         assertEquals(result, expResult);
     }
-
-//    /**
-//     * Test of compareTo method, of class RawData.
-//     */
-//    @Test
-//    public void testCompareTo() {
-//        System.out.println("compareTo");
-//        RawData rawValue = null;
-//        RawData instance = null;
-//        int expResult = 0;
-//        int result = instance.compareTo(rawValue);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

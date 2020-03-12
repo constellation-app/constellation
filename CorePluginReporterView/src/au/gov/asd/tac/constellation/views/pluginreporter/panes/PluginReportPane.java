@@ -219,7 +219,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         content.putString(writer.toString());
         clipboard.setContent(content);
 
-//        ClipboardUtility.copyToClipboard(writer.toString()); //TODO: can't do this because of circular dependancy
+        // TODO: can't do this because of circular dependancy
+//        ClipboardUtilities.copyToClipboard(writer.toString()); 
         PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
             @Override
             protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {

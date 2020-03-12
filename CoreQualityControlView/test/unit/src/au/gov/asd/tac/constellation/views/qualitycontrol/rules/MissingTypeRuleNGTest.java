@@ -53,48 +53,6 @@ public class MissingTypeRuleNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getName method, of class MissingTypeRule.
-//     */
-//    @Test
-//    public void testGetName() {
-//        System.out.println("getName");
-//        MissingTypeRule instance = new MissingTypeRule();
-//        String expResult = "";
-//        String result = instance.getName();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDescription method, of class MissingTypeRule.
-//     */
-//    @Test
-//    public void testGetDescription() {
-//        System.out.println("getDescription");
-//        MissingTypeRule instance = new MissingTypeRule();
-//        String expResult = "";
-//        String result = instance.getDescription();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getQuality method, of class MissingTypeRule.
-//     */
-//    @Test
-//    public void testGetQuality() {
-//        System.out.println("getQuality");
-//        int vertex = 0;
-//        MissingTypeRule instance = new MissingTypeRule();
-//        int expResult = 0;
-//        int result = instance.getQuality(vertex);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of executeRule method, of class MissingTypeRule.
      *

@@ -596,11 +596,8 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
         final Graph graph = graphNode.getGraph();
-        /*TODO: update this so that it listens specifically for changes to the state meta attr.
-         *      This will have to wait until Sirius modifies the PluginFramework to allow read
-         *      access. */
-
-        ReadableGraph rg = graph.getReadableGraph();
+        // TODO: update this so that it listens specifically for changes to the state meta attribute.
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
             final long vmc = rg.getGlobalModificationCounter();
             if (vmc != valueModificationCounter) {

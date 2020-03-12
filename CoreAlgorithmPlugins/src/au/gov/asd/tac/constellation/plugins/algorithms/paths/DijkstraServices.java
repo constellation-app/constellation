@@ -578,7 +578,7 @@ public class DijkstraServices {
                             }
                         }
                     } else {
-                        //TODO: Need to catch error here
+                        //TODO: need to catch error here
                         LOGGER.log(Level.SEVERE, "ERROR: {0} in pursuit of {1}", new Object[]{previous, target});
                     }
                 }

@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import java.util.Arrays;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -165,16 +166,16 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
                     }
                 }
             }
-//
-//            // Copy the named selection state.
-//            final int namedSelectionAttr = original.getAttribute(GraphElementType.META, NamedSelectionState.ATTRIBUTE_NAME);
-//            if (namedSelectionAttr != Graph.NOT_FOUND) {
-//                final Object possibleState = original.getObjectValue(namedSelectionAttr, 0);
-//                if (possibleState instanceof NamedSelectionState) {
-//                    final NamedSelectionState state = new NamedSelectionState((NamedSelectionState) possibleState);
-//                    graph.setObjectValue(attributeTranslation[namedSelectionAttr], 0, state);
-//                }
-//            }
+
+            // Copy the named selection state.
+            final int namedSelectionAttr = original.getAttribute(GraphElementType.META, NamedSelectionState.ATTRIBUTE_NAME);
+            if (namedSelectionAttr != Graph.NOT_FOUND) {
+                final Object possibleState = original.getObjectValue(namedSelectionAttr, 0);
+                if (possibleState instanceof NamedSelectionState) {
+                    final NamedSelectionState state = new NamedSelectionState((NamedSelectionState) possibleState);
+                    graph.setObjectValue(attributeTranslation[namedSelectionAttr], 0, state);
+                }
+            }
 
             // Copy the vertices.
             int[] vertexTranslation = new int[original.getVertexCapacity()];

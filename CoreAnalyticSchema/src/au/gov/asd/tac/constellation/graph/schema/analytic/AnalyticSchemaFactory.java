@@ -59,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
     // Note: changing this value will break backwards compatibility!
-    public static final String ANALYTIC_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.analyticFactory";
+    public static final String ANALYTIC_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.AnalyticSchemaFactory";
 
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.GRAPH;
     private static final ConstellationColor ICON_COLOR = ConstellationColor.CARROT;

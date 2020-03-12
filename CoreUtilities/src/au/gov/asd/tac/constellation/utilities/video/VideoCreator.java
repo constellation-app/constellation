@@ -86,7 +86,7 @@ public final class VideoCreator implements Runnable {
     @Override
     public void run() {
         // TODO: removed the dependency to xuggle as the recording is not working
-        // TODO: commented and keeping the entire method because I want to revisit and make it work again one fine day :-)
+        // TODO: revisit this and make it work again one fine day :-)
 //        // Get a dotted filename.
 //        final File orig = new File(out);
 //        final String name = orig.getName();

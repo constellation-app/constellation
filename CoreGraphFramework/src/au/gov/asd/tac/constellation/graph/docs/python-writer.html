@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title></title>
+        <title>Using Python to write CONSTELLATION .star files</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     </head>
     <body>
@@ -28,111 +28,110 @@
             <span class="tt">json.dumps()</span> method.</p>
 
         <pre>
-#
-# Write a CONSTELLATION .star file.
-#
+            #
+            # Write a CONSTELLATION .star file.
+            #
 
-from __future__ import division
-from __future__ import print_function
+            from __future__ import division
+            from __future__ import print_function
 
-import json
-import math
-import pprint
-import sys
-import zipfile
+            import json
+            import math
+            import pprint
+            import sys
+            import zipfile
 
-def attr(label, type, descr, default=None):
-    a = {
-        #'mod_count': 0,
-        'label': label,
-        'type': type,
-        'descr': descr
-    }
-    if default is not None:
-        a['default'] = default
+            def attr(label, type, descr, default=None):
+                a = {
+                    #'mod_count': 0,
+                    'label': label,
+                    'type': type,
+                    'descr': descr
+                }
+                if default is not None:
+                    a['default'] = default
 
-    return a
+                return a
 
-def create_graph(vertexCount):
-    '''Create a graph containing vertexCount vertices.'''
+            def create_graph(vertexCount):
+                '''Create a graph containing vertexCount vertices.'''
 
-    incAngle = 360 / vertexCount
-    radius = (vertexCount*3) / (2 * math.pi)
+                incAngle = 360 / vertexCount
+                radius = (vertexCount*3) / (2 * math.pi)
 
-    vx_attrs = [
-        attr('x', 'float', 'x coord', 0),
-        attr('y', 'float', 'y coord', 0),
-        attr('z', 'float', 'z coord', 0),
-        attr('Name', 'string', 'Node name'),
-        attr('background_icon', 'icon', 'icon'),
-        attr('color', 'color', 'color')
-    ]
+                vx_attrs = [
+                    attr('x', 'float', 'x coord', 0),
+                    attr('y', 'float', 'y coord', 0),
+                    attr('z', 'float', 'z coord', 0),
+                    attr('Name', 'string', 'Node name'),
+                    attr('background_icon', 'icon', 'icon'),
+                    attr('color', 'color', 'color')
+                ]
 
-    tx_attrs = []
+                tx_attrs = []
 
-    vx_data = []
-    for i in range(vertexCount):
-        name = 'Node %d' % i
-        x = radius * math.cos(math.radians(i * incAngle))
-        y = radius * math.sin(math.radians(i * incAngle))
-        color = 'Yellow' if x>0 else 'Blue'
-        vx = {
-            'vx_id_': i,
-            'Name': name,
-            'x': x,
-            'y': y,
-            'z': 0,
-            'background_icon': 'Background.Round Circle',
-            'color': color
-        }
-        vx_data.append(vx)
+                vx_data = []
+                for i in range(vertexCount):
+                    name = 'Node %d' % i
+                    x = radius * math.cos(math.radians(i * incAngle))
+                    y = radius * math.sin(math.radians(i * incAngle))
+                    color = 'Yellow' if x>0 else 'Blue'
+                    vx = {
+                        'vx_id_': i,
+                        'Name': name,
+                        'x': x,
+                        'y': y,
+                        'z': 0,
+                        'background_icon': 'Background.Round Circle',
+                        'color': color
+                    }
+                    vx_data.append(vx)
 
-    tx_data = []
-    for i in range(vertexCount):
-        src = i
-        dst = i+1 if i<(vertexCount-1) else 0
-        tx = {
-            'vx_src_': src,
-            'vx_dst_': dst,
-            'tx_dir_': True
-        }
-        tx_data.append(tx)
+                tx_data = []
+                for i in range(vertexCount):
+                    src = i
+                    dst = i+1 if i<(vertexCount-1) else 0
+                    tx = {
+                        'vx_src_': src,
+                        'vx_dst_': dst,
+                        'tx_dir_': True
+                    }
+                    tx_data.append(tx)
 
-    labels_data = {'bottom' : [{'attr':'Name', 'color':'Green'}]}
+                labels_data = {'bottom' : [{'attr':'Name', 'color':'Green'}]}
 
-    graph = [
-        {'version':1, 'global_mod_count':0, 'structure_mod_count': 0, 'attribute_mod_count': 0},
-        #{'version':1},
-        {'graph': [{'attrs':[attr('color', 'color', 'color', 'Black')]}, {'data':[]}]},
-        {'vertex': [{'attrs':vx_attrs}, {'data':vx_data}]},
-        {'transaction': [{'attrs':tx_attrs}, {'data':tx_data}]},
-        {'meta': [{'attrs':[attr('labels', 'labels', 'labels')]}, {'data':[{'labels':labels_data}]}]}
-    ]
+                graph = [
+                    {'version':1, 'global_mod_count':0, 'structure_mod_count': 0, 'attribute_mod_count': 0},
+                    #{'version':1},
+                    {'graph': [{'attrs':[attr('color', 'color', 'color', 'Black')]}, {'data':[]}]},
+                    {'vertex': [{'attrs':vx_attrs}, {'data':vx_data}]},
+                    {'transaction': [{'attrs':tx_attrs}, {'data':tx_data}]},
+                    {'meta': [{'attrs':[attr('labels', 'labels', 'labels')]}, {'data':[{'labels':labels_data}]}]}
+                ]
 
-    return graph
+                return graph
 
-def write_file(graph, fnam):
-    f = open(fnam, 'wb')
-    doc = json.dumps(graph, indent=2, encoding='UTF-8')
-    f.write(doc)
-    f.close()
+            def write_file(graph, fnam):
+                f = open(fnam, 'wb')
+                doc = json.dumps(graph, indent=2, encoding='UTF-8')
+                f.write(doc)
+                f.close()
 
-def write_graph(graph, fnam):
-    zf = zipfile.ZipFile(fnam, 'w')
-    try:
-        doc = json.dumps(graph, indent=2, encoding='UTF-8')
-        #print(doc)
-        zf.writestr('graph.txt', doc)
-    finally:
-        zf.close()
+            def write_graph(graph, fnam):
+                zf = zipfile.ZipFile(fnam, 'w')
+                try:
+                    doc = json.dumps(graph, indent=2, encoding='UTF-8')
+                    #print(doc)
+                    zf.writestr('graph.txt', doc)
+                finally:
+                    zf.close()
 
-if __name__=='__main__':
-    graph = create_graph(10)
-    #pprint.pprint(graph, indent=2)
+            if __name__=='__main__':
+                graph = create_graph(10)
+                #pprint.pprint(graph, indent=2)
 
-    write_graph(graph, 'circle.star')
-    write_file(graph, 'graph.txt')
-    
+                write_graph(graph, 'circle.star')
+                write_file(graph, 'graph.txt')
         </pre>
     </body>
 </html>

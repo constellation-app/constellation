@@ -527,13 +527,13 @@ public abstract class InfomapGreedy extends InfomapBase {
             final Node current = getNode(activeNetwork.get(flip));
 
             // If no links connecting this node with other nodes, it won't move into others,
-            // and others won't move into this. TODO: Always best leave it alone?
+            // and others won't move into this. TODO: always best leave it alone?
             if (current.getDegree() == 0
                     || (config.includeSelfLinks
                     && (current.getOutDegree() == 1 && current.getInDegree() == 1)
                     && current.getOutEdges().get(0).getTarget().equals(current))) {
                 Logf.printf("SKIPPING isolated node %s\n", current);
-                //TODO: If not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
+                //TODO: if not skipping self-links, this yields different results from moveNodesToPredefinedModules!!
                 assert !config.includeSelfLinks;
                 continue;
             }

@@ -26,9 +26,6 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import java.util.ArrayList;
@@ -49,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class VisualSchemaFactory extends SchemaFactory {
 
     // Note: changing this value will break backwards compatibility!
-    public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.schema.InteractiveSchemaFactory";
+    public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
 
     @Override
     public String getName() {

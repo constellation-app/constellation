@@ -312,7 +312,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<List<String>, Integer> compareTransactionKeysToIndex = getTransactionKeysToRecordstoreIndex(compare, vertexPrimaryKeys, transactionPrimaryKeys);
 
         final Set<Set<String>> seenVertices = new HashSet<>();
-        final Set<List<String>> seenTransactions = new HashSet<>(); // TODO: this could be a list of Sets
+        // TODO: this could be a list of sets
+        final Set<List<String>> seenTransactions = new HashSet<>();
         final List<String> attributes = result.keys();
 
         final Map<String, String> vertexSourceRecordPrimaryValues = new HashMap<>();

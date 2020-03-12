@@ -57,7 +57,7 @@ import org.openide.windows.TopComponent;
  * <p>
  * Note that if you don't have support for OpenGL then comment out the
  * ServiceProvider annotation which will mean that
- * {@link au.gov.asd.tac.constellation.graph.node.SimpleGraphTopComponent}
+ * {@link au.gov.asd.tac.constellation.graph.node.gui.SimpleGraphTopComponent}
  * is used instead.
  *
  * @author algol
