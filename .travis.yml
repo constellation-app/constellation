@@ -26,8 +26,7 @@ jobs:
     addons:
       sonarcloud:
         organization: "constellation-app"
-        token:
-          secure: $SONAR_TOKEN
+        token: $SONAR_TOKEN
 
   - stage: Build zip
     dist: trusty
