@@ -1,5 +1,8 @@
 # CONSTELLATION Changes
 
+## 2020-03-01 Changes in March 2020
+* Fix a logic bug with `GraphRendererDropTarget` preventing graph droppers from every running.
+
 ## 2020-02-01 Changes in February 2020
 * Fixed a bug which now ensures that overriding a transaction direction using `GraphRecordStoreUtilities.DIRECTED_KEY` persists with the Type.
 * Renamed `NodeGraphLabelsEditorFactory` to `VertexGraphLabelsEditorFactory`.
