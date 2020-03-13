@@ -300,9 +300,9 @@ public class TemporalFormattingNGTest {
      */
     @Test
     public void testParseDateTimeWithOffset() {
-        String testDateTime = "Tue Apr 23 01:16:42 +10:00 2019";
+        String testDateTime = "Tue Apr 23 01:16:42 +1000 2019";
         final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER2, LOGGER);
-        final String expResult = "2019-04-23 01:16:42.000 +1000";
+        final String expResult = "2019-04-23 01:16:42.000 +10:00";
         assertEquals(result, expResult);
     }
     
