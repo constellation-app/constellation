@@ -125,6 +125,8 @@
                 <package>com.jogamp.nativewindow</package>
                 <package>com.jogamp.nativewindow.awt</package>
                 <package>com.jogamp.nativewindow.egl</package>
+                <package>com.jogamp.nativewindow.ios</package>
+                <package>com.jogamp.nativewindow.javafx</package>
                 <package>com.jogamp.nativewindow.macosx</package>
                 <package>com.jogamp.nativewindow.swt</package>
                 <package>com.jogamp.nativewindow.util</package>
@@ -135,6 +137,7 @@
                 <package>com.jogamp.newt.awt.applet</package>
                 <package>com.jogamp.newt.event</package>
                 <package>com.jogamp.newt.event.awt</package>
+                <package>com.jogamp.newt.javafx</package>
                 <package>com.jogamp.newt.opengl</package>
                 <package>com.jogamp.newt.opengl.util</package>
                 <package>com.jogamp.newt.opengl.util.stereo</package>
@@ -145,7 +148,6 @@
                 <package>com.jogamp.opencl.gl</package>
                 <package>com.jogamp.opencl.impl</package>
                 <package>com.jogamp.opencl.llb</package>
-                <package>com.jogamp.opencl.llb.gl</package>
                 <package>com.jogamp.opencl.llb.impl</package>
                 <package>com.jogamp.opencl.spi</package>
                 <package>com.jogamp.opencl.util</package>
@@ -297,16 +299,9 @@
                 <package>impl.org.controlsfx</package>
                 <package>impl.org.controlsfx.autocompletion</package>
                 <package>impl.org.controlsfx.behavior</package>
+                <package>impl.org.controlsfx.collections</package>
                 <package>impl.org.controlsfx.i18n</package>
                 <package>impl.org.controlsfx.skin</package>
-                <package>impl.org.controlsfx.spreadsheet</package>
-                <package>impl.org.controlsfx.tableview2</package>
-                <package>impl.org.controlsfx.tableview2.filter.filtermenubutton</package>
-                <package>impl.org.controlsfx.tableview2.filter.parser</package>
-                <package>impl.org.controlsfx.tableview2.filter.parser.aggregate</package>
-                <package>impl.org.controlsfx.tableview2.filter.parser.number</package>
-                <package>impl.org.controlsfx.tableview2.filter.parser.string</package>
-                <package>impl.org.controlsfx.tableview2.filter.popupfilter</package>
                 <package>impl.org.controlsfx.tools</package>
                 <package>impl.org.controlsfx.tools.rectangle</package>
                 <package>impl.org.controlsfx.tools.rectangle.change</package>
@@ -454,6 +449,8 @@
                 <package>jogamp.nativetag.opengl.windows.i586</package>
                 <package>jogamp.nativewindow</package>
                 <package>jogamp.nativewindow.awt</package>
+                <package>jogamp.nativewindow.drm</package>
+                <package>jogamp.nativewindow.ios</package>
                 <package>jogamp.nativewindow.jawt</package>
                 <package>jogamp.nativewindow.jawt.macosx</package>
                 <package>jogamp.nativewindow.jawt.windows</package>
@@ -468,12 +465,15 @@
                 <package>jogamp.newt.driver</package>
                 <package>jogamp.newt.driver.awt</package>
                 <package>jogamp.newt.driver.bcm.vc.iv</package>
+                <package>jogamp.newt.driver.egl.gbm</package>
+                <package>jogamp.newt.driver.ios</package>
                 <package>jogamp.newt.driver.linux</package>
                 <package>jogamp.newt.driver.macosx</package>
                 <package>jogamp.newt.driver.opengl</package>
                 <package>jogamp.newt.driver.windows</package>
                 <package>jogamp.newt.driver.x11</package>
                 <package>jogamp.newt.event</package>
+                <package>jogamp.newt.javafx</package>
                 <package>jogamp.newt.swt</package>
                 <package>jogamp.newt.swt.event</package>
                 <package>jogamp.opencl</package>
@@ -491,6 +491,7 @@
                 <package>jogamp.opengl.glu.nurbs</package>
                 <package>jogamp.opengl.glu.registry</package>
                 <package>jogamp.opengl.glu.tessellator</package>
+                <package>jogamp.opengl.ios.eagl</package>
                 <package>jogamp.opengl.macosx.cgl</package>
                 <package>jogamp.opengl.macosx.cgl.awt</package>
                 <package>jogamp.opengl.openal.av</package>
@@ -946,17 +947,8 @@
                 <package>org.controlsfx.control.action</package>
                 <package>org.controlsfx.control.cell</package>
                 <package>org.controlsfx.control.decoration</package>
-                <package>org.controlsfx.control.spreadsheet</package>
                 <package>org.controlsfx.control.table</package>
                 <package>org.controlsfx.control.table.model</package>
-                <package>org.controlsfx.control.tableview2</package>
-                <package>org.controlsfx.control.tableview2.actions</package>
-                <package>org.controlsfx.control.tableview2.cell</package>
-                <package>org.controlsfx.control.tableview2.event</package>
-                <package>org.controlsfx.control.tableview2.filter.filtereditor</package>
-                <package>org.controlsfx.control.tableview2.filter.filtermenubutton</package>
-                <package>org.controlsfx.control.tableview2.filter.parser</package>
-                <package>org.controlsfx.control.tableview2.filter.popupfilter</package>
                 <package>org.controlsfx.control.textfield</package>
                 <package>org.controlsfx.dialog</package>
                 <package>org.controlsfx.glyphfont</package>
@@ -1976,6 +1968,14 @@
                 <package>tec.uom.se.unit</package>
             </public-packages>
             <class-path-extension>
+                <runtime-relative-path>ext/controlsfx-11.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/controlsfx-11.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/ejml-ddense-0.38.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-ddense-0.38.jar</binary-origin>
             </class-path-extension>
@@ -1988,6 +1988,10 @@
                 <binary-origin>release/modules/ext/jetty-jmx-9.4.24.v20191120.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx-swing-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-swing-11.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/j2objc-annotations-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/j2objc-annotations-1.3.jar</binary-origin>
             </class-path-extension>
@@ -1998,10 +2002,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/failureaccess-1.0.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/failureaccess-1.0.1.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
@@ -2036,24 +2036,12 @@
                 <binary-origin>release/modules/ext/commons-codec-1.13.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-linux-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-linux-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-macosx-universal.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/ejml-simple-0.38.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-simple-0.38.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-epsg-wkt-21.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-epsg-wkt-21.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-rlookup-1.1.10.jar</runtime-relative-path>
@@ -2088,8 +2076,20 @@
                 <binary-origin>release/modules/ext/ejml-fdense-0.38.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-linux-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-scale-1.1.10.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jt-scale-1.1.10.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/uom-lib-common-1.0.2.jar</runtime-relative-path>
@@ -2116,10 +2116,6 @@
                 <binary-origin>release/modules/ext/junit-4.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-macosx-universal.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/worldwind-2.0.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/worldwind-2.0.0.jar</binary-origin>
             </class-path-extension>
@@ -2128,8 +2124,8 @@
                 <binary-origin>release/modules/ext/jetty-io-9.4.24.v20191120.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-linux-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-linux-i586.jar</binary-origin>
+                <runtime-relative-path>ext/gluegen-rt-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/sqlite-jdbc-3.27.2.1.jar</runtime-relative-path>
@@ -2138,6 +2134,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-ows-21.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-xsd-ows-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/core.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/core.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandcombine-1.1.10.jar</runtime-relative-path>
@@ -2172,6 +2172,10 @@
                 <binary-origin>release/modules/ext/filters-2.0.235.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx-graphics-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-graphics-11.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jt-crop-1.1.10.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jt-crop-1.1.10.jar</binary-origin>
             </class-path-extension>
@@ -2192,12 +2196,16 @@
                 <binary-origin>release/modules/ext/jt-warp-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/newt-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jackson-core-2.10.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-core-2.10.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/core-3.3.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/core-3.3.7.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-rescale-1.1.10.jar</runtime-relative-path>
@@ -2206,10 +2214,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-cdense-0.38.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-cdense-0.38.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.w3.xlink-21.2.jar</runtime-relative-path>
@@ -2232,20 +2236,24 @@
                 <binary-origin>release/modules/ext/jdom2-2.0.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-main-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow-main-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-0.7.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-quantity-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-windows-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/newt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-shapefile-21.2.jar</runtime-relative-path>
@@ -2254,6 +2262,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-1.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jgridshift-1.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx-web-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-web-11.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.xsd-2.12.0.jar</runtime-relative-path>
@@ -2268,12 +2280,20 @@
                 <binary-origin>release/modules/ext/gt-epsg-hsql-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx-controls-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-controls-11.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/poi-ooxml-4.1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/poi-ooxml-4.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-jxpath-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-jxpath-1.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/javafx-base-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-base-11.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/curvesapi-1.06.jar</runtime-relative-path>
@@ -2300,20 +2320,8 @@
                 <binary-origin>release/modules/ext/net.opengis.fes-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/jt-algebra-1.1.10.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jt-algebra-1.1.10.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-linux-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-linux-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-zonal-1.1.10.jar</runtime-relative-path>
@@ -2328,8 +2336,8 @@
                 <binary-origin>release/modules/ext/jt-translate-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-linux-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-security-9.4.24.v20191120.jar</runtime-relative-path>
@@ -2344,20 +2352,16 @@
                 <binary-origin>release/modules/ext/gt-coverage-21.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-linux-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-logging-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-logging-1.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jogl-all-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jogl-all-2.3.2-natives-windows-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/controlsfx-8.40.16.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/controlsfx-8.40.16.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-fes-21.2.jar</runtime-relative-path>
@@ -2392,8 +2396,12 @@
                 <binary-origin>release/modules/ext/jt-format-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-windows-amd64.jar</binary-origin>
+                <runtime-relative-path>ext/nativewindow.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
@@ -2420,10 +2428,6 @@
                 <binary-origin>release/modules/ext/guava-28.2-jre.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/nativewindow-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/nativewindow-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-filter-21.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-xsd-filter-21.2.jar</binary-origin>
             </class-path-extension>
@@ -2432,8 +2436,16 @@
                 <binary-origin>release/modules/ext/jt-imagefunction-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-natives-linux-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jts-core-1.16.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jts-core-1.16.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/gluegen-rt-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gluegen-rt-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-colorconvert-1.1.10.jar</runtime-relative-path>
@@ -2446,6 +2458,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gt-jdbc-21.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-jdbc-21.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jython-standalone-2.7.2b2.jar</runtime-relative-path>
@@ -2470,10 +2486,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-util-9.4.24.v20191120.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-util-9.4.24.v20191120.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/newt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-2.3.2-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandmerge-1.1.10.jar</runtime-relative-path>
@@ -2520,6 +2532,10 @@
                 <binary-origin>release/modules/ext/jt-scale2-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jetty-server-9.4.24.v20191120.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-server-9.4.24.v20191120.jar</binary-origin>
             </class-path-extension>
@@ -2530,10 +2546,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/checker-qual-2.10.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/checker-qual-2.10.0.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-2.3.2-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-2.3.2-natives-linux-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-collections4-4.4.jar</runtime-relative-path>
@@ -2556,14 +2568,6 @@
                 <binary-origin>release/modules/ext/jackson-databind-2.10.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/newt-main-2.3.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-main-2.3.2.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/unfolding-master-20171010.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/unfolding-master-20171010.jar</binary-origin>
             </class-path-extension>
@@ -2580,6 +2584,18 @@
                 <binary-origin>release/modules/ext/commons-dbcp-1.4.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/javafx-media-11.0.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/javafx-media-11.0.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/nativewindow-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/nativewindow-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/systems-common-java8-0.7.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/systems-common-java8-0.7.2.jar</binary-origin>
             </class-path-extension>
@@ -2592,8 +2608,8 @@
                 <binary-origin>release/modules/ext/jt-lookup-1.1.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gluegen-rt-2.3.2-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gluegen-rt-2.3.2-natives-macosx-universal.jar</binary-origin>
+                <runtime-relative-path>ext/jocl-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0.jar</runtime-relative-path>
