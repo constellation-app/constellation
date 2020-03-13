@@ -36,6 +36,9 @@ import org.testng.annotations.Test;
 public class TemporalFormattingNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TemporalFormattingNGTest.class.getName());
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss z yyyy");
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER2 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss x yyyy");
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER3 = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     public TemporalFormattingNGTest() {
     }
@@ -280,4 +283,38 @@ public class TemporalFormattingNGTest {
         final String result = TemporalFormatting.parseAsZonedDateTime(null, formatter, LOGGER);
         assertEquals(result, expResult);
     }
+    
+     /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithZone() {
+        String testDateTime = "Tue Apr 23 01:16:42 AEST 2019";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER, LOGGER);
+        final String expResult = "2019-04-23 01:16:42.000 +10:00 [Australia/Sydney]";
+        assertEquals(result, expResult);
+    }
+    
+     /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithOffset() {
+        String testDateTime = "Tue Apr 23 01:16:42 +10:00 2019";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER2, LOGGER);
+        final String expResult = "2019-04-23 01:16:42.000 +10:00";
+        assertEquals(result, expResult);
+    }
+    
+     /**
+     * Test of parseAsZonedDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testParseDateTimeWithNoZone() {
+        String testDateTime = "20191225";
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER3, LOGGER);
+        final String expResult = "2019-12-25 00:00:00.000 +00:00";
+        assertEquals(result, expResult);
+    }
+    
 }
