@@ -217,7 +217,9 @@
                  preservelastmodified="true"
                  eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <!-- Using pre-built executable files that come with the Constellation icon -->
+            <!--<zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
+            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
@@ -258,7 +260,9 @@
                  preservelastmodified="true"
                  eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
-            <tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
+            <!-- Using pre-built executable files that come with the Constellation icon -->
+            <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
+            <tarfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <tarfileset dir="${temp.dir.rest}" prefix="${app.name}"/>

@@ -22,14 +22,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import com.sun.javafx.tk.FontMetrics;
 import com.sun.javafx.tk.Toolkit;
 import java.util.ArrayList;
@@ -161,7 +161,7 @@ public final class TableViewPane extends BorderPane {
         table.setPadding(new Insets(5));
         setCenter(table);
 
-        // TODO: experiment with caching!
+        // TODO: experiment with caching
         table.setCache(false);
 
         this.progress = new BorderPane();
@@ -590,14 +590,8 @@ public final class TableViewPane extends BorderPane {
 
                     // set the columns widths based on the length of their text
                     final String columnText = column.getText();
-                    // since computeStringWidth is not available with FontMatrics 
-                    // we need to calculate each character width and set the column width
-                    float prefWidth = 0.0f;
-                    if (!columnText.isEmpty()) {
-                        for (int i = 0; i < columnText.length(); ++i) {
-                            prefWidth = prefWidth + fontMetrics.getCharWidth(columnText.charAt(i));
-                        }
-                    }
+                    final float prefWidth = columnText == null
+                            ? 0 : fontMetrics.computeStringWidth(columnText);
                     column.setPrefWidth(prefWidth + PAD);
 
                     // assign cells to columns

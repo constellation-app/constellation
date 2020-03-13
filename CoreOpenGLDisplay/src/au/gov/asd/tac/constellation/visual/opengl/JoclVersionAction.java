@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
-import com.jogamp.opencl.JoclVersion;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
-//import com.jogamp.common.util.JogampVersion;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.visual.opengl.JoclVersionAction")
 @ActionRegistration(displayName = "#CTL_JoclVersionAction")

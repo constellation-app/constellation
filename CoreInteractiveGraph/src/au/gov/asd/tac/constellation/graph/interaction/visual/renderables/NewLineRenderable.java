@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_COLOR;
 import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_WIDTH;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;

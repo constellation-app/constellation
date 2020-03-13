@@ -3,7 +3,7 @@
 *** GENERATED FROM project.xml - DO NOT EDIT  ***
 ***         EDIT ../build.xml INSTEAD         ***
 -->
-<project name="au.gov.asd.tac.constellation.schema.analyticschema-impl" basedir="..">
+<project name="au.gov.asd.tac.constellation.graph.schema.analytic-impl" basedir="..">
     <fail message="Please build using Ant 1.7.1 or higher.">
         <condition>
             <not>

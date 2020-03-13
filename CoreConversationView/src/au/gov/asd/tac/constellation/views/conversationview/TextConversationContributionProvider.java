@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.select.ChangeSelectionPlugin;
-import au.gov.asd.tac.constellation.functionality.select.SelectionMode;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ElementTypeParameterValue;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -83,7 +83,7 @@ public class TextConversationContributionProvider extends ConversationContributi
                 final BitSet elementIds = new BitSet();
                 elementIds.set(getMessage().getTransaction());
 
-                PluginExecution.withPlugin(CorePluginRegistry.CHANGE_SELECTION)
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.CHANGE_SELECTION)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_BIT_SET_PARAMETER_ID, elementIds)
                         .withParameter(ChangeSelectionPlugin.ELEMENT_TYPE_PARAMETER_ID, new ElementTypeParameterValue(GraphElementType.TRANSACTION))
                         .withParameter(ChangeSelectionPlugin.SELECTION_MODE_PARAMETER_ID, SelectionMode.REPLACE)

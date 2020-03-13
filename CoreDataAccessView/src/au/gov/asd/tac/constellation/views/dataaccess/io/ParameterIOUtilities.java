@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.views.dataaccess.io;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.PasswordParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
@@ -100,7 +100,7 @@ public class ParameterIOUtilities {
                                 }
                             });
                             break;
-                            // TODO: support multiple tabs and not introduce memory leaks
+                            // TODO: support multiple tabs, but don't introduce memory leaks
                         }
                     }
                 }

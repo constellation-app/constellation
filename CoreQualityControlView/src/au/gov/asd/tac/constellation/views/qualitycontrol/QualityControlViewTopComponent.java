@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;

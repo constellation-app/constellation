@@ -54,7 +54,7 @@ networks, network infrastructure, chemical composition, etc.
 * Constellation is known to work on Windows 64-bit and Linux 64-bit. There is 
 currently no support for Mac and the feature request is tracked by 
 [Issue #21](https://github.com/constellation-app/constellation/issues/21).
-* The OpenGL graph display works with NVIDIA and ATI graphics cards that support 
+* The OpenGL graph display works with NVIDIA and ATI graphics cards that support
 OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
 
 ## Download Constellation
@@ -63,8 +63,11 @@ Download Constellation by going to the [release page](https://github.com/constel
 
 ## Run Constellation
 
-Unzip the constellation.zip bundle and double click the `bin/constellation64.exe` for Windows or
-run the `bin\constellation` shell script for Linux.
+Unzip the constellation.zip bundle and double click the `bin/constellation64.exe` 
+for Windows or run the `bin\constellation` shell script for Linux.
+
+There is currently no support for Mac and the feature request is tracked by 
+[Issue #21](https://github.com/constellation-app/constellation/issues/21).
 
 ## Build Constellation
 
@@ -73,15 +76,13 @@ installed and is known to work on Windows 64-bit and Linux 64-bit.
 
 To build Constellation from source code do the following:
 
-* Download NetBeans 11.3 (https://netbeans.apache.org/download/nb113/nb113.html)
-* Download the Open JDK 11 with JFX 11 from Azul website for 
+* Download [NetBeans 11.3](https://netbeans.apache.org/downloads/nb113/nb113.html)
+* Download Azul's Zulu distribution of Open JDK 11 with JFX 11, either the 
 [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip) 
 or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
-* Update the netbeans.conf file's netbeans_jdkhome entry (The file can be found 
-under <C:\incubating-netbeans-11.0-bin\netbeans\etc> folder)
+* Update the netbeans.conf file's netbeans_jdkhome entry (the file can be found 
+ under the `NetBeans-11.3-bin\netbeans\etc` directory)
 * Clone this repository
-* Update the `netbeans_jdkhome` variable in `netbeans.conf`. Hint: This file may 
-be located at `C:\Program Files\NetBeans 8.2\etc`.
 * Open the Constellation_Core module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
 `Update dependencies and clean build`

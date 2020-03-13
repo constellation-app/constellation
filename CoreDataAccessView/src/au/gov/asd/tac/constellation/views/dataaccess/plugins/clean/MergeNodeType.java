@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;

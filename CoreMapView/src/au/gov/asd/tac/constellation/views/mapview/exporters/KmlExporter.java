@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.exporters;
 
-import au.gov.asd.tac.constellation.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

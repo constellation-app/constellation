@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.functionality.startup;
 
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import javax.swing.JFrame;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;
@@ -49,7 +49,7 @@ public class Startup implements Runnable {
             String mostRecentVersion = MostRecentModules.getMostRecentVersion();
             if (mostRecentVersion == null) {
                 // once issue #86 is fixed this should go back to UNDER_DEVELOPMENT"
-                mostRecentVersion = "1.20191005.113234";
+                mostRecentVersion = "1.20200225.104006";
             }
 
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();

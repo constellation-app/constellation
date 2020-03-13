@@ -70,7 +70,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
             availableFonts = otfFontFilesWindows(availableFonts);
         }
 
-        // TODO: Look for UNIX fonts.
+        // TODO: look for unix fonts.
         Arrays.sort(availableFonts);
         labelFontsOptionsPanel.setAvailableFonts(availableFonts);
 

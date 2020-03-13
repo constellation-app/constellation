@@ -15,9 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.temporal;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -26,6 +27,7 @@ import java.time.format.SignStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalQueries;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
@@ -462,7 +464,15 @@ public class TemporalFormatting {
             return null;
         }
         try {
-            return TemporalFormatting.formatAsZonedDateTime(formatter.parse(value));
+            TemporalAccessor myDateTime = formatter.parse(value);
+            ZoneId parsedTimeZone = myDateTime.query(TemporalQueries.zoneId());
+            ZoneOffset parsedOffset = myDateTime.query(TemporalQueries.offset());
+            if ((parsedTimeZone != null) || (parsedOffset != null)) {
+                ZonedDateTime myZonedDateTime  = ZonedDateTime.parse(value, formatter);
+                return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(myZonedDateTime);
+            } else { 
+               return TemporalFormatting.formatAsZonedDateTime(formatter.parse(value));
+            }    
         } catch (DateTimeParseException ex) {
             logger.log(Level.SEVERE, ERROR_PARSING_DATE_MESSAGE, new Object[]{value, ex.getMessage()});
             return value;

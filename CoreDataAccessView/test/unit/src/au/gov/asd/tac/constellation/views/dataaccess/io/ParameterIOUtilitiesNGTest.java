@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

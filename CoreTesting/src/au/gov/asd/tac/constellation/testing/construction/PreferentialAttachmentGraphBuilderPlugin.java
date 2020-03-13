@@ -15,35 +15,35 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.visual.decorators.Decorators;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -197,8 +197,8 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int[] startVxIds = new int[m];
 
-        final Decorators decorators;
-        decorators = new Decorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        final VertexDecorators decorators;
+        decorators = new VertexDecorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
@@ -306,20 +306,22 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
             if (n < 10000) {
                 // Do a trees layout.
                 try {
-                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES).followedBy(CorePluginRegistry.RESET).executeNow(graph);
+                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
+                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
                 } catch (PluginException ex) {
                     Exceptions.printStackTrace(ex);
                 }
             } else {
                 // Do a grid layout.
                 try {
-                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE).followedBy(CorePluginRegistry.RESET).executeNow(graph);
+                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
                 } catch (PluginException ex) {
                     Exceptions.printStackTrace(ex);
                 }
             }
         } else {
-            PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);

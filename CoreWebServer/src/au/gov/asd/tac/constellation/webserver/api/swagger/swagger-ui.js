@@ -2085,7 +2085,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 }
                 else {
                 var obj = {
-                useJQuery: false, // TODO
+                useJQuery: false,
                         url: item.root,
                         method: 'get',
                         headers: {
@@ -3297,7 +3297,6 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 }
                 };
                 SwaggerSpecConverter.prototype.authorizations = function(obj) {
-                // TODO
                 if (!_.isObject(obj)) {
                 return;
                 }
@@ -4544,7 +4543,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 return encodeURIComponent(arg);
                 };
                 /**
-                 * TODO revisit, might not want to leave '/'
+                 * TODO: revisit, might not want to leave '/'
                  **/
                 Operation.prototype.encodePathParam = function (pathParam) {
                 return encodeURIComponent(pathParam);
@@ -4611,9 +4610,8 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 process.removeAllListeners = noop;
                 process.emit = noop;
                 process.binding = function (name) {
-                throw new Error('process.binding is not supported');
+                    throw new Error('process.binding is not supported');
                 };
-// TODO(shtylman)
                 process.cwd = function () { return '/' };
                 process.chdir = function (dir) {
                 throw new Error('process.chdir is not supported');
@@ -4681,7 +4679,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
          *
          *   - IE10 has a broken `TypedArray.prototype.subarray` function which returns arrays of
          *     incorrect length in some situations.
-
+         
          * We detect these buggy browsers and set `Buffer.TYPED_ARRAY_SUPPORT` to `false` so they
          * get the Object implementation, which is slower but behaves correctly.
          */
@@ -10216,16 +10214,16 @@ return buffer + "    </tbody>\n  </table>\n</td>";
         }, {"../type":33}], 50:[function(require, module, exports){
         /*
          Copyright (c) jQuery Foundation, Inc. and Contributors, All Rights Reserved.
-
+         
          Redistribution and use in source and binary forms, with or without
          modification, are permitted provided that the following conditions are met:
-
+         
          * Redistributions of source code must retain the above copyright
          notice, this list of conditions and the following disclaimer.
          * Redistributions in binary form must reproduce the above copyright
          notice, this list of conditions and the following disclaimer in the
          documentation and/or other materials provided with the distribution.
-
+         
          THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
          AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
          IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -21138,7 +21136,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                 return value;
                                                                 });
                                                                 }, function (reason) {
-                                                                // TODO attempt to recycle the rejection with "this".
+                                                                // TODO: attempt to recycle the rejection with "this".
                                                                 return callback.fcall().then(function () {
                                                                 throw reason;
                                                                 });
@@ -24057,7 +24055,6 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                                                                                 var parameterContentTypeView = new SwaggerUi.Views.ParameterContentTypeView({model: contentTypeModel});
                                                                                                                                         $('.parameter-content-type', $(this.el)).append(parameterContentTypeView.render().el);
                                                                                                                                 }
-
                                                                                                                                 else {
                                                                                                                                 var responseContentTypeView = new SwaggerUi.Views.ResponseContentTypeView({model: contentTypeModel});
                                                                                                                                         $('.response-content-type', $(this.el)).append(responseContentTypeView.render().el);
@@ -24209,7 +24206,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                                                                                         // Fix for bug in IE 10/11 which causes placeholder text to be copied to "value"
                                                                                                                                         if ($.trim(textArea.val()) === '' || textArea.prop('placeholder') === textArea.val()) {
                                                                                                                                 textArea.val(this.model.sampleJSON);
-                                                                                                                                        // TODO move this code outside of the view and expose an event instead
+                                                                                                                                        // TODO: move this code outside of the view and expose an event instead
                                                                                                                                         if (this.model.jsonEditor && this.model.jsonEditor.isEnabled()){
                                                                                                                                 this.model.jsonEditor.setValue(JSON.parse(this.model.sampleJSON));
                                                                                                                                 }

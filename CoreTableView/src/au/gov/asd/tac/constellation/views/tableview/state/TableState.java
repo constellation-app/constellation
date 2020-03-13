@@ -81,7 +81,7 @@ public final class TableState {
 
         final RowSorter<? extends TableModel> sorter = table.getRowSorter();
         for (final RowSorter.SortKey sk : sorter.getSortKeys()) {
-            // TODO Should really store the column label + segment here.
+            // TODO: should really store the column label + segment here.
             state.sortOrder.add(String.format("%d,%s", sk.getColumn(), sk.getSortOrder()));
         }
 
