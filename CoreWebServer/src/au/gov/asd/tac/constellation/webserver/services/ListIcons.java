@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.visual.icons.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -37,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class ListIcons extends RestService {
     private static final String NAME = "list_icons";
-    private static final String EDITABLE_PARAMETER_ID = String.format("%s.%s", NAME, "editable");
+    private static final String EDITABLE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "editable");
 
     @Override
     public String getName() {
@@ -47,6 +48,11 @@ public class ListIcons extends RestService {
     @Override
     public String getDescription() {
         return "List the available icons.";
+    }
+
+    @Override
+    public String[] getTags() {
+        return new String[]{"icon"};
     }
 
     @Override

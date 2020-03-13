@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,9 +36,9 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
  @ServiceProvider(service=RestService.class)
-public class GetPluginParameters extends RestService {
-    private static final String NAME = "get_plugin_parameters";
-    private static final String PLUGIN_NAME_PARAMETER_ID = String.format("%s.%s", NAME, "plugin_name");
+public class GetPluginDescription extends RestService {
+    private static final String NAME = "get_plugin_description";
+    private static final String PLUGIN_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "plugin_name");
 
     @Override
     public String getName() {
@@ -45,7 +47,12 @@ public class GetPluginParameters extends RestService {
 
     @Override
     public String getDescription() {
-        return "Get the plugin parameters for the named plugin.";
+        return "Get the plugin description and parameters for the named plugin.";
+    }
+
+    @Override
+    public String[] getTags() {
+        return new String[]{"plugin"};
     }
 
     @Override
@@ -54,7 +61,7 @@ public class GetPluginParameters extends RestService {
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
-        nameParam.setDescription("Show the plugin parameters.");
+        nameParam.setDescription("Get the plugin description and parameters.");
         parameters.addParameter(nameParam);
 
         return parameters;
@@ -69,8 +76,18 @@ public class GetPluginParameters extends RestService {
 
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
+
+        root.put("name", plugin.getName());
+        root.put("id", plugin.getId());
+        root.put("description", plugin.getDescription());
+        final ArrayNode tags = root.putArray("tags");
+        for(final String tag : plugin.getTags()) {
+            tags.add(tag);
+        }
+
+        final ObjectNode params = root.putObject("parameters");
         pluginParams.getParameters().entrySet().forEach(entry -> {
-            final ObjectNode param = root.putObject(entry.getKey());
+            final ObjectNode param = params.putObject(entry.getKey());
             final PluginParameter<?> pp = entry.getValue();
             param.put("name", pp.getName());
             param.put("type", pp.getType().getId());

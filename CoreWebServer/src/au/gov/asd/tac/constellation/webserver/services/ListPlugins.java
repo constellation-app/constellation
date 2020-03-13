@@ -47,6 +47,11 @@ public class ListPlugins extends RestService {
     }
 
     @Override
+    public String[] getTags() {
+        return new String[]{"plugin"};
+    }
+
+    @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 

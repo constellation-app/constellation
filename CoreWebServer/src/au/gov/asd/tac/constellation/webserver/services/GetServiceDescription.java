@@ -19,14 +19,16 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.webserver.ServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Optional;
-import org.openide.util.Lookup;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -36,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
  @ServiceProvider(service=RestService.class)
 public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
-    private static final String SERVICE_NAME_PARAMETER_ID = String.format("%s.%s", NAME, "service_name");
-    private static final String METHOD_NAME_PARAMETER_ID = String.format("%s.%s", NAME, "method");
+    private static final String SERVICE_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "service_name");
+    private static final String METHOD_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "method");
 
     @Override
     public String getName() {
@@ -47,6 +49,11 @@ public class GetServiceDescription extends RestService {
     @Override
     public String getDescription() {
         return "Return the description and parameters of the named service.";
+    }
+
+    @Override
+    public String[] getTags() {
+        return new String[]{"service"};
     }
 
     @Override
@@ -61,7 +68,7 @@ public class GetServiceDescription extends RestService {
         final PluginParameter<StringParameterValue> methodParam = StringParameterType.build(METHOD_NAME_PARAMETER_ID);
         methodParam.setName("Method name");
         methodParam.setDescription("The HTTP method by which the service id called (GET, PUT, POST), default GET.");
-        methodParam.setStringValue("GET");
+        methodParam.setStringValue(HttpMethod.GET.name());
         parameters.addParameter(methodParam);
 
         return parameters;
@@ -70,36 +77,31 @@ public class GetServiceDescription extends RestService {
     @Override
     public void service(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String serviceName = parameters.getStringValue(SERVICE_NAME_PARAMETER_ID);
-        final String method = parameters.getStringValue(METHOD_NAME_PARAMETER_ID);
+        final HttpMethod httpMethod = HttpMethod.getValue(parameters.getStringValue(METHOD_NAME_PARAMETER_ID));
 
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 
-        final Optional<? extends RestService> rs_o = Lookup.getDefault().lookupAll(RestService.class)
-            .stream()
-            .filter(rs -> rs.getName().equals(serviceName) && rs.getHttpMethod().equals(method))
-            .findFirst();
-
-        if(rs_o.isPresent()) {
-            final RestService rs = rs_o.get();
-            root.put("name", rs.getName());
-            root.put("description", rs.getDescription());
-            root.put("mimetype", rs.getMimeType());
-
-            final ObjectNode params = root.putObject("parameters");
-            rs.createParameters().getParameters().entrySet().forEach(entry -> {
-                final PluginParameter<?> pp = entry.getValue();
-                final ObjectNode param = params.putObject(entry.getKey());
-                param.put("name", pp.getName());
-                param.put("type", pp.getType().getId());
-                param.put("description", pp.getDescription());
-                if(pp.getObjectValue()!=null) {
-                    param.put("value", pp.getObjectValue().toString());
-                }
-            });
-        } else {
-            throw new IllegalArgumentException(String.format("Service '%s' does not exist.", serviceName));
+        final RestService rs = ServiceRegistry.get(serviceName, httpMethod);
+        root.put("name", rs.getName());
+        root.put("description", rs.getDescription());
+        root.put("mimetype", rs.getMimeType());
+        final ArrayNode tags = root.putArray("tags");
+        for(final String tag : rs.getTags()) {
+            tags.add(tag);
         }
+
+        final ObjectNode params = root.putObject("parameters");
+        rs.createParameters().getParameters().entrySet().forEach(entry -> {
+            final PluginParameter<?> pp = entry.getValue();
+            final ObjectNode param = params.putObject(entry.getKey());
+            param.put("name", pp.getName());
+            param.put("type", pp.getType().getId());
+            param.put("description", pp.getDescription());
+            if(pp.getObjectValue()!=null) {
+                param.put("value", pp.getObjectValue().toString());
+            }
+        });
 
         mapper.writeValue(out, root);
     }

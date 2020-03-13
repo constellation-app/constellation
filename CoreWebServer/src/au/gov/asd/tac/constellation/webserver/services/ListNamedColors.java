@@ -45,6 +45,11 @@ public class ListNamedColors extends RestService {
     }
 
     @Override
+    public String[] getTags() {
+        return new String[]{"color"};
+    }
+
+    @Override
     public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();

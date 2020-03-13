@@ -1,0 +1,114 @@
+/*
+ * Copyright 2010-2020 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.webserver;
+
+import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.openide.util.Lookup;
+
+/**
+ *
+ * @author algol
+ */
+public class ServiceRegistry {
+    private static final Logger LOGGER = Logger.getLogger(PluginRegistry.class.getName());
+
+    private static class ServiceKey {
+        private final String name;
+        private final HttpMethod httpMethod;
+
+        private ServiceKey(final String name, final HttpMethod httpMethod) {
+            this.name = name;
+            this.httpMethod = httpMethod;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 29 * hash + Objects.hashCode(this.name);
+            hash = 29 * hash + Objects.hashCode(this.httpMethod);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if(this==obj) {
+                return true;
+            }
+            if(obj==null) {
+                return false;
+            }
+            if(getClass()!=obj.getClass()) {
+                return false;
+            }
+            final ServiceKey other = (ServiceKey) obj;
+            return httpMethod==other.httpMethod && name.equals(other.name);
+        }
+    }
+
+    private static HashMap<ServiceKey, Class<? extends RestService>> servicesMap = null;
+
+    private static synchronized void init() {
+        if(servicesMap!=null) {
+            return;
+        }
+
+        // Find all the REST services.
+        // We have to instantiate them to get the name and httpMethod; oh well.
+        //
+        servicesMap = new HashMap<>();
+        Lookup.getDefault().lookupAll(RestService.class)
+            .stream()
+            .forEach(rs -> {
+                servicesMap.put(new ServiceKey(rs.getName(), rs.getHttpMethod()), rs.getClass());
+                final String msg = String.format("Discovered REST service %s (%s): %s", rs.getName(), rs.getHttpMethod(), rs.getDescription());
+                LOGGER.info(msg);
+            });
+    }
+
+    /**
+     * Get an instance of a registered service by name.
+     *
+     * @param name The name of the service.
+     *
+     * @return A new instance of the named service.
+     * @throws IllegalArgumentException If the supplied name did not correspond
+     * to a registered service.
+     */
+
+    public static RestService get(final String name, final HttpMethod httpMethod) {
+        init();
+
+        final ServiceKey key = new ServiceKey(name, httpMethod);
+        if(servicesMap.containsKey(key)) {
+            final Class<? extends RestService> c = servicesMap.get(key);
+            try {
+                return c.newInstance();
+            } catch (final InstantiationException | IllegalAccessException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+        }
+
+        // Throw a RunTimeException if an invalid name was passed.
+        //
+        throw new IllegalArgumentException(String.format("No such service as '%s' (%s)!", name, httpMethod));
+    }
+}

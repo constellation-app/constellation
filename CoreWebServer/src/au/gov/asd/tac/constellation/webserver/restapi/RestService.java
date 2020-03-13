@@ -16,13 +16,14 @@
 package au.gov.asd.tac.constellation.webserver.restapi;
 
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
  * The definition of a REST service.
- * <p>
+ *
  * REST services are accessed via the internal web server by REST clients.
  * They are not otherwise available from the CONSTELLATION user interface.
  *
@@ -40,9 +41,21 @@ public abstract class RestService {
     /**
      * A user-readable description of this service.
      *
+     * This is typically used by a user interface to provide more information
+     * about what a service does.
+     *
      * @return A description of the service.
      */
     public abstract String getDescription();
+
+    /**
+     * Return a list of tags for this service.
+     *
+     * Tags are used through out Constellation to categorise and filter services.
+     *
+     * @return a list of tags for this service.
+     */
+    public abstract String[] getTags();
 
     /**
      * The HTTP method used to call this service.
@@ -51,8 +64,8 @@ public abstract class RestService {
      *
      * @return One of "GET", "POST", "PUT" (case-sensitive).
      */
-    public String getHttpMethod() {
-        return "GET";
+    public HttpMethod getHttpMethod() {
+        return HttpMethod.GET;
     }
 
     /**
@@ -79,7 +92,7 @@ public abstract class RestService {
      * @param out The body of the HTTP response.
      * @throws java.io.IOException
      */
-    public abstract void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException;
+    public abstract void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException;
 
     /**
      * The MIME type of the data returned by the service.
@@ -87,6 +100,6 @@ public abstract class RestService {
      * @return A String containing a MIME type.
      */
     public String getMimeType() {
-        return "application/json";
+        return ServiceUtilities.APPLICATION_JSON;
     }
 }

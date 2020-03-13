@@ -44,6 +44,11 @@ public class ListServices extends RestService {
     }
 
     @Override
+    public String[] getTags() {
+        return new String[]{"service"};
+    }
+
+    @Override
     public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
 
         final ObjectMapper mapper = new ObjectMapper();

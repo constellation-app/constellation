@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParam
 import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
 import au.gov.asd.tac.constellation.visual.icons.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import static au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.IMAGE_PNG;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -45,6 +46,11 @@ public class GetIcon extends RestService {
     public String getDescription() {
         return "Get the named icon as a PNG file.";
     }
+    
+    @Override
+    public String[] getTags() {
+        return new String[]{"icon"};
+    }
 
     @Override
     public PluginParameters createParameters() {
@@ -67,6 +73,6 @@ public class GetIcon extends RestService {
 
     @Override
     public String getMimeType() {
-        return "image/png";
+        return IMAGE_PNG;
     }
 }

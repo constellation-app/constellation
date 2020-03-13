@@ -39,7 +39,12 @@ public class ReflectJSON extends RestService {
 
     @Override
     public String getDescription() {
-        return "Reflect the incoming JSON as output. This is a tet to ensure JSON input and output works.";
+        return "Reflect the incoming JSON as output. This is an example to ensure JSON input and output works.";
+    }
+
+    @Override
+    public String[] getTags() {
+        return new String[]{"example", "json"};
     }
 
     @Override
