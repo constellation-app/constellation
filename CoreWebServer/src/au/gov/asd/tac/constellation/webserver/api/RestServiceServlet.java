@@ -80,7 +80,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
                     throw new EndpointException("Service parameters do not accept multiple values");
                 }
             } else {
-                throw new EndpointException(String.format("Service %s has no such parameter: %s", serviceName, parameterName));
+                throw new EndpointException(String.format("Service '%s' has no such parameter: '%s'", serviceName, parameterName));
             }
         });
 

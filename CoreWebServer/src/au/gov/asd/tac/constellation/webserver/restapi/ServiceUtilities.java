@@ -15,6 +15,16 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.DoubleNode;
+import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -24,7 +34,7 @@ import java.util.Locale;
 public class ServiceUtilities {
     private ServiceUtilities() {
     }
-    
+
     /**
      * Constants for the HTTP method used by a service.
      */
@@ -67,5 +77,85 @@ public class ServiceUtilities {
      */
     public static String buildId(final String serviceName, final String parameterName) {
         return String.format("%s.%s", serviceName, parameterName);
+    }
+
+    /**
+     * Convert a JSON ArrayNode to a Java List.
+     * <p>
+     * The type of list is taken from the type of the first element of the
+     * ArrayNode.
+     *
+     * @param array A JSON ArrayNode.
+     *
+     * @return A List<Float>, List<Integer>, or List<String>.
+     */
+    private static List<?> toList(final ArrayNode array) {
+        final int size = array.size();
+        List<?> list;
+        if (size == 0) {
+            list = new ArrayList<>(size);
+        } else if (array.get(0).getClass() == IntNode.class) {
+            final List<Integer> values = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                values.add(array.get(i).intValue());
+            }
+
+            list = values;
+        } else if (array.get(0).getClass() == DoubleNode.class) {
+            final List<Float> values = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                values.add(array.get(i).floatValue());
+            }
+
+            list = values;
+        } else {
+            final List<String> values = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                values.add(array.get(i).asText());
+            }
+
+            list = values;
+        }
+
+        return list;
+    }
+
+    /**
+     * Set PluginParameters values from JSON.
+     *
+     * Given an existing ObjectNode, parse the keys and values into an existing
+     * PluginParameters instance. Scalar values are supported in so far as
+     * PluginParameters.setStringValue() can interpret them. List values are
+     * supported in so far as PluginParameters.setObjectValue() can interpret
+     * them.
+     *
+     * @param json An OnjectNode.
+     * @param parameters The parameters to be assigned values.
+     */
+    public static void parametersFromJson(final ObjectNode json, final PluginParameters parameters) {
+        json.fields().forEachRemaining(entry -> {
+            final String parameterName = entry.getKey();
+            if (parameters.hasParameter(parameterName)) {
+                // Set the parameter with error checking.
+                //
+                final PluginParameter<?> param = parameters.getParameters().get(parameterName);
+                final JsonNode node = entry.getValue();
+                if (node.isArray()) {
+                    // If the parameter is a JSON array, convert it to a Java List.
+                    //
+                    param.setObjectValue(toList((ArrayNode) node));
+                } else {
+                    // Convert the parameter to a String, and let PluginParameter deal with the type conversion.
+                    //
+                    param.setStringValue(node.asText());
+                }
+                final String paramError = param.getError();
+                if (paramError != null) {
+                    throw new EndpointException(String.format("Can't set parameter '%s' to value '%s': %s", parameterName, entry.getValue().asText(), paramError));
+                }
+            } else {
+                throw new EndpointException(String.format("No such parameter: %s", parameterName));
+            }
+        });
     }
 }

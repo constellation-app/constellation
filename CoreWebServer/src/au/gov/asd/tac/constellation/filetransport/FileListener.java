@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.filetransport;
 
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
@@ -23,6 +24,10 @@ import au.gov.asd.tac.constellation.webserver.impl.IconImpl;
 import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
 import au.gov.asd.tac.constellation.webserver.impl.TypeImpl;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,6 +45,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javax.servlet.ServletException;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
@@ -211,6 +217,26 @@ public class FileListener implements Runnable {
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
         final String graphId = getString(args, "graph_id");
         switch (endpoint) {
+            case "/v1/service":
+                System.out.printf("@@FILE /v1/service path [%s]\n", path);
+                final HttpMethod httpMethod = HttpMethod.getValue(verb);
+                // Get an instance of the service (if it exists).
+                //
+                final RestService rs = RestServiceRegistry.get(path, httpMethod);
+
+                // Convert the arguments to PluginParameters.
+                //
+                final PluginParameters parameters = rs.createParameters();
+                ServiceUtilities.parametersFromJson((ObjectNode)args, parameters);
+
+                try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                    rs.callService(parameters, ins.in, out);
+                } catch(final IOException | RuntimeException ex) {
+                    throw new EndpointException(ex);
+                }
+
+                break;
+
             case "/v1/graph":
                 switch (verb) {
                     case "get":
@@ -446,6 +472,11 @@ public class FileListener implements Runnable {
      * <p>
      * We don't want the input file left lying around after we're finished with
      * it.
+     * <p>
+     * Services may or may not require an input file, we don't know.
+     * Therefore the "optional" parameter allows the input file to not exist.
+     * If a service tries to use an InputStream that doesn't exist,
+     * things go bang.
      */
     private static class InStream implements AutoCloseable {
 
@@ -453,21 +484,33 @@ public class FileListener implements Runnable {
         final InputStream in;
 
         InStream(final Path p, final String name) throws FileNotFoundException {
-            fqp = p.resolve(name).toFile();
-            in = new FileInputStream(fqp);
+            this(p, name, false);
         }
 
-        InputStream in() {
-            return in;
+        InStream(final Path p, final String name, final boolean optional) throws FileNotFoundException {
+            fqp = p.resolve(name).toFile();
+            if(fqp.canRead()) {
+                in = new FileInputStream(fqp);
+            } else if(optional) {
+                in = null;
+            } else {
+                throw new FileNotFoundException(fqp.getAbsolutePath());
+            }
         }
+
+//        InputStream in() {
+//            return in;
+//        }
 
         @Override
         public void close() {
-            try {
-                in.close();
-            } catch (IOException ex) {
+            if(in!=null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                }
+                fqp.delete();
             }
-            fqp.delete();
         }
     }
 
