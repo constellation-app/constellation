@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
-import com.sun.javafx.charts.ChartLayoutAnimator;
+//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,19 +23,18 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.chart.Axis;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 /**
  * An axis for representing Date objects, based on the DateAxis class available
  * in the ExtFX library.
+ * 
+ * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1
  */
@@ -46,7 +45,7 @@ public class DateAxis extends Axis<Date> {
      */
     private final LongProperty currentLowerBound = new SimpleLongProperty(this, "currentLowerBound");
     private final LongProperty currentUpperBound = new SimpleLongProperty(this, "currentUpperBound");
-    private ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
+//    private ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
     private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
@@ -211,17 +210,17 @@ public class DateAxis extends Axis<Date> {
 //                    new KeyFrame(Duration.millis(3000), keyValue, keyValue2));
 //            timeline.play();
 
-            animator.stop(currentAnimationID);
-            currentAnimationID = animator.animate(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(currentLowerBound, oldLowerBound.getTime()),
-                            new KeyValue(currentUpperBound, oldUpperBound.getTime())
-                    ),
-                    new KeyFrame(Duration.millis(700),
-                            new KeyValue(currentLowerBound, newLowerBound.getTime()),
-                            new KeyValue(currentUpperBound, newUpperBound.getTime())
-                    )
-            );
+//            animator.stop(currentAnimationID);
+//            currentAnimationID = animator.animate(
+//                    new KeyFrame(Duration.ZERO,
+//                            new KeyValue(currentLowerBound, oldLowerBound.getTime()),
+//                            new KeyValue(currentUpperBound, oldUpperBound.getTime())
+//                    ),
+//                    new KeyFrame(Duration.millis(700),
+//                            new KeyValue(currentLowerBound, newLowerBound.getTime()),
+//                            new KeyValue(currentUpperBound, newUpperBound.getTime())
+//                    )
+//            );
 
         } else {
             currentLowerBound.set(getLowerBound().getTime());

@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-import com.sun.javafx.charts.ChartLayoutAnimator;
+//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.time.Instant;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -27,19 +27,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ObjectPropertyBase;
 import javafx.beans.property.SimpleLongProperty;
 import javafx.scene.chart.Axis;
-import javafx.util.Duration;
 import javafx.util.StringConverter;
 
 /**
  * An axis for representing ZonedDateTime objects, based on the DateAxis class
  * available in the ExtFX library.
+ * 
+ * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1
  */
@@ -48,7 +47,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     // properties used for animation.
     private final LongProperty currentLowerBound = new SimpleLongProperty(this, "currentLowerBound");
     private final LongProperty currentUpperBound = new SimpleLongProperty(this, "currentUpperBound");
-    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
+//    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
     private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
@@ -208,17 +207,17 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 //                    new KeyFrame(Duration.millis(3000), keyValue, keyValue2));
 //            timeline.play();
 
-            animator.stop(currentAnimationID);
-            currentAnimationID = animator.animate(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(currentLowerBound, oldLowerBound.toInstant().toEpochMilli()),
-                            new KeyValue(currentUpperBound, oldUpperBound.toInstant().toEpochMilli())
-                    ),
-                    new KeyFrame(Duration.millis(700),
-                            new KeyValue(currentLowerBound, newLowerBound.toInstant().toEpochMilli()),
-                            new KeyValue(currentUpperBound, newUpperBound.toInstant().toEpochMilli())
-                    )
-            );
+//            animator.stop(currentAnimationID);
+//            currentAnimationID = animator.animate(
+//                    new KeyFrame(Duration.ZERO,
+//                            new KeyValue(currentLowerBound, oldLowerBound.toInstant().toEpochMilli()),
+//                            new KeyValue(currentUpperBound, oldUpperBound.toInstant().toEpochMilli())
+//                    ),
+//                    new KeyFrame(Duration.millis(700),
+//                            new KeyValue(currentLowerBound, newLowerBound.toInstant().toEpochMilli()),
+//                            new KeyValue(currentUpperBound, newUpperBound.toInstant().toEpochMilli())
+//                    )
+//            );
 
         } else {
             currentLowerBound.set(getLowerBound().toInstant().toEpochMilli());

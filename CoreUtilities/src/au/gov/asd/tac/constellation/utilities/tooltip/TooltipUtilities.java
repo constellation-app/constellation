@@ -38,7 +38,7 @@ public class TooltipUtilities {
 
         textInputControl.setOnMouseEntered((event) -> {
             if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?, ?> skin = (TextInputControlSkin<?, ?>) textInputControl.getSkin();
+                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
                 characterIndex[0] = info.getCharIndex();
                 List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
@@ -55,7 +55,7 @@ public class TooltipUtilities {
 
         textInputControl.setOnMouseMoved((event) -> {
             if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?, ?> skin = (TextInputControlSkin<?, ?>) textInputControl.getSkin();
+                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
 
                 // If the mouse is over a different character then get new tooltips

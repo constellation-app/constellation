@@ -30,8 +30,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -75,12 +73,16 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
+//import javafx.scene.text.Font;
+//import javafx.tk.FontMetrics;
+//import javafx.tk.Toolkit;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
 
 /**
  * Table View Pane.
+ * 
+ * TODO: some javafx classes no are longer supported, fix it.
  *
  * @author elnath
  * @author cygnus_x-1
@@ -583,16 +585,16 @@ public final class TableViewPane extends BorderPane {
                 });
 
                 // style and format columns in columnIndex
-                final Font defaultFont = Font.getDefault();
-                final FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(defaultFont);
+//                final Font defaultFont = Font.getDefault();
+//                final FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(defaultFont);
                 columnIndex.forEach(columnTuple -> {
                     final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
 
                     // set the columns widths based on the length of their text
-                    final String columnText = column.getText();
-                    final float prefWidth = columnText == null
-                            ? 0 : fontMetrics.computeStringWidth(columnText);
-                    column.setPrefWidth(prefWidth + PAD);
+//                    final String columnText = column.getText();
+//                    final float prefWidth = columnText == null
+//                            ? 0 : fontMetrics.computeStringWidth(columnText);
+//                    column.setPrefWidth(prefWidth + PAD);
 
                     // assign cells to columns
                     column.setCellValueFactory(cellData -> {
