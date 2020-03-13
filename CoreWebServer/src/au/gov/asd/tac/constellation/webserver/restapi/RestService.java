@@ -59,8 +59,10 @@ public abstract class RestService {
 
     /**
      * The HTTP method used to call this service.
-     * <p>
+     *
      * Two services may have the same name if they have different HTTP methods.
+     *
+     * Get is a typical HTTP request, so this is the default.
      *
      * @return One of "GET", "POST", "PUT" (case-sensitive).
      */
@@ -70,8 +72,8 @@ public abstract class RestService {
 
     /**
      * Creates the parameters for this service.
-     * <p>
-     * A default is provided for services that take no parameters.
+     *
+     * The default is provided for services that take no parameters.
      *
      * @return
      */
@@ -83,19 +85,23 @@ public abstract class RestService {
 
     /**
      * A generic REST service.
-     * <p>
-     * REST services accept arbitrary JSON as input, and return arbitrary JSON
-     * as output.
+     *
+     * REST services accept URL parameters and arbitrary data as input,
+     * and return arbitrary data as output. Typically, the input and output
+     * may very well be JSON.
      *
      * @param parameters The parameters passed from the service request to the service.
      * @param in The body of the HTTP request.
      * @param out The body of the HTTP response.
+     *
      * @throws java.io.IOException
      */
-    public abstract void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException;
+    public abstract void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException;
 
     /**
      * The MIME type of the data returned by the service.
+     *
+     * JSON is a typical output type, so this is the default.
      *
      * @return A String containing a MIME type.
      */

@@ -50,7 +50,7 @@ public class ListNamedColors extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         Arrays.stream(ConstellationColor.NAMED_COLOR_LIST)

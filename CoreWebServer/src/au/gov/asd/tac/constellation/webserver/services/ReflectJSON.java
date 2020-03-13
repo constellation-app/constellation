@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -39,7 +40,7 @@ public class ReflectJSON extends RestService {
 
     @Override
     public String getDescription() {
-        return "Reflect the incoming JSON as output. This is an example to ensure JSON input and output works.";
+        return "Reflect the JSON in the request body as output to the response body. This is an example to ensure JSON input and output works.";
     }
 
     @Override
@@ -48,7 +49,12 @@ public class ReflectJSON extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceUtilities.HttpMethod getHttpMethod() {
+        return ServiceUtilities.HttpMethod.POST;
+    }
+
+    @Override
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
         mapper.writeValue(out, json);

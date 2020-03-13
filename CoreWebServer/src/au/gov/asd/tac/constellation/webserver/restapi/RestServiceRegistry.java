@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.webserver;
+package au.gov.asd.tac.constellation.webserver.restapi;
 
 import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.Lookup;
@@ -28,12 +30,12 @@ import org.openide.util.Lookup;
  *
  * @author algol
  */
-public class ServiceRegistry {
+public class RestServiceRegistry {
     private static final Logger LOGGER = Logger.getLogger(PluginRegistry.class.getName());
 
-    private static class ServiceKey {
-        private final String name;
-        private final HttpMethod httpMethod;
+    public static class ServiceKey {
+        public final String name;
+        public final HttpMethod httpMethod;
 
         private ServiceKey(final String name, final HttpMethod httpMethod) {
             this.name = name;
@@ -85,15 +87,28 @@ public class ServiceRegistry {
     }
 
     /**
+     * Get an instance of a registered service by key.
+     *
+     * @param serviceKey The service key.
+     *
+     * @return A new instance of the named service.
+     * @throws IllegalArgumentException If the supplied key did not correspond
+     * to a registered service.
+     */
+    public static RestService get(final ServiceKey serviceKey) {
+        return get(serviceKey.name, serviceKey.httpMethod);
+    }
+
+    /**
      * Get an instance of a registered service by name.
      *
      * @param name The name of the service.
+     * @param httpMethod The HttpMethod of the service.
      *
      * @return A new instance of the named service.
      * @throws IllegalArgumentException If the supplied name did not correspond
      * to a registered service.
      */
-
     public static RestService get(final String name, final HttpMethod httpMethod) {
         init();
 
@@ -110,5 +125,15 @@ public class ServiceRegistry {
         // Throw a RunTimeException if an invalid name was passed.
         //
         throw new IllegalArgumentException(String.format("No such service as '%s' (%s)!", name, httpMethod));
+    }
+
+    /**
+     * Return a set containing all the names and HttpMethods of the available services.
+     *
+     * @return A set containing all the names and HttpMethods of the available services.
+     */
+    public static Set<ServiceKey> getServices() {
+        init();
+        return Collections.unmodifiableSet(servicesMap.keySet());
     }
 }

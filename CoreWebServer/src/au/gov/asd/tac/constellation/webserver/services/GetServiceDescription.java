@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.ServiceRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
     private static final String SERVICE_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "service_name");
-    private static final String METHOD_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "method");
+    private static final String METHOD_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "http_method");
 
     @Override
     public String getName() {
@@ -66,7 +66,7 @@ public class GetServiceDescription extends RestService {
         parameters.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> methodParam = StringParameterType.build(METHOD_NAME_PARAMETER_ID);
-        methodParam.setName("Method name");
+        methodParam.setName("HTTP method name");
         methodParam.setDescription("The HTTP method by which the service id called (GET, PUT, POST), default GET.");
         methodParam.setStringValue(HttpMethod.GET.name());
         parameters.addParameter(methodParam);
@@ -75,15 +75,16 @@ public class GetServiceDescription extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String serviceName = parameters.getStringValue(SERVICE_NAME_PARAMETER_ID);
         final HttpMethod httpMethod = HttpMethod.getValue(parameters.getStringValue(METHOD_NAME_PARAMETER_ID));
 
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 
-        final RestService rs = ServiceRegistry.get(serviceName, httpMethod);
+        final RestService rs = RestServiceRegistry.get(serviceName, httpMethod);
         root.put("name", rs.getName());
+        root.put("http_method", httpMethod.name());
         root.put("description", rs.getDescription());
         root.put("mimetype", rs.getMimeType());
         final ArrayNode tags = root.putArray("tags");

@@ -68,7 +68,7 @@ public class GetPluginDescription extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
 
         final Plugin plugin = PluginRegistry.get(pluginName);

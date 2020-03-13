@@ -61,7 +61,7 @@ public class ListIcons extends RestService {
 
         final PluginParameter<BooleanParameterValue> editableParam = BooleanParameterType.build(EDITABLE_PARAMETER_ID);
         editableParam.setName("Editable");
-        editableParam.setDescription("If false (the default), return the built-in icons else return the editable icons.");
+        editableParam.setDescription("If false (the default), return the built-in icons, else return the editable icons.");
         editableParam.setObjectValue(false);
         parameters.addParameter(editableParam);
 
@@ -69,7 +69,7 @@ public class ListIcons extends RestService {
     }
 
     @Override
-    public void service(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final boolean editable = parameters.getBooleanValue(EDITABLE_PARAMETER_ID);
         final List<String> names = new ArrayList<>(IconManager.getIconNames(editable));
         names.sort(String::compareToIgnoreCase);

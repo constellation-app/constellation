@@ -17,12 +17,14 @@ package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.openide.util.Lookup;
+import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,15 +51,16 @@ public class ListServices extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
 
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
 
-        Lookup.getDefault().lookupAll(RestService.class)
-            .stream()
-            .map(rs -> rs.getName())
-            .forEach(name -> {root.add(name);});
+        RestServiceRegistry.getServices().forEach(serviceKey -> {
+            final ObjectNode service = root.addObject();
+            service.put("name", serviceKey.name);
+            service.put("httpMethod", serviceKey.httpMethod.name());
+        });
 
         mapper.writeValue(out, root);
     }

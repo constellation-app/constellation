@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.webserver.ServiceRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
@@ -63,7 +63,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
 
         // Get an instance of the service (if it exists).
         //
-        final RestService rs = ServiceRegistry.get(serviceName, httpMethod);
+        final RestService rs = RestServiceRegistry.get(serviceName, httpMethod);
 
         // Convert the arguments in the URL of the request to PluginParameters.
         //
@@ -85,7 +85,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
         });
 
         try {
-            rs.service(parameters, request.getInputStream(), response.getOutputStream());
+            rs.callService(parameters, request.getInputStream(), response.getOutputStream());
         } catch(final IOException | RuntimeException ex) {
             throw new ServletException(ex);
         }

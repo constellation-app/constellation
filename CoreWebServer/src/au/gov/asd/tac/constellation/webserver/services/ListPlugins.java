@@ -65,7 +65,7 @@ public class ListPlugins extends RestService {
     }
 
     @Override
-    public void service(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final boolean alias = parameters.getBooleanValue(ALIAS_PARAMETER_ID);
 
         final ObjectMapper mapper = new ObjectMapper();

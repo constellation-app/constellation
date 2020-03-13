@@ -420,28 +420,6 @@
                 ]
             }
         },
-        "/v1/service/{service_name}": {
-            "get": {
-                "tags": ["service"],
-                "description": "Call a service. Query parameters are dependent on the service.",
-                "parameters": [
-                    {
-                        "name": "parameters",
-                        "in": "body",
-                        "type": "string",
-                        "description": "A JSON representation of a dictionary of the parameter names and values to be passed to the plugin.",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
         "/v1/type/describe": {
             "get": {
                 "tags": ["type"],
