@@ -102,7 +102,7 @@ with graph.writableGraph('<graph_edit_name>') as wg:
 
     pluginParameters = {\
         'MergeTransactionsPlugin.lead': 'Earliest Time',\
-        'MergeTransactionsPlugin.mergeType': 'DateTime',\
+        'MergeTransactionsPlugin.merge_type': 'DateTime',\
         'MergeTransactionsPlugin.selected': 'false',\
         'MergeTransactionsPlugin.threshold': '60'}
         
