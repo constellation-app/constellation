@@ -37,7 +37,6 @@ jobs:
       - docker pull "${runner_image}"
       - docker run -v "${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR}" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir "${TRAVIS_BUILD_DIR}" "${runner_image}" .travis/build-zip.sh
 
-  - stage: Release
     deploy:
       provider: releases
       token:
