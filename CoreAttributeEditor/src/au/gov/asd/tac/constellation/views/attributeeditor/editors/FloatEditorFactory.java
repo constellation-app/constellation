@@ -51,7 +51,7 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
         }
 
         @Override
-        protected boolean canSet(Float value) {
+        protected boolean canSet(final Float value) {
             // This is an editor for primitive floats, so prevent null values being set.
             return value != null;
         }
@@ -65,7 +65,7 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
         protected Float getValueFromControls() throws ControlsInvalidException {
             try {
                 return Float.parseFloat(numberField.getText());
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Entered value is not a float.");
             }
         }

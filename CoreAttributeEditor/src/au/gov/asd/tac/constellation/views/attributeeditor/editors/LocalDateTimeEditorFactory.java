@@ -17,12 +17,14 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoField;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -34,6 +36,7 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.converter.LocalDateStringConverter;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -90,15 +93,21 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
-            final LocalDateTime ldt = LocalDateTime.of(
+            try {
+                final String dateString = datePicker.getEditor().getText();
+                final LocalDate date = datePicker.getConverter().fromString(dateString);
+            } catch (final DateTimeParseException ex) {
+                throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
+            }
+            return LocalDateTime.of(
                     datePicker.getValue(),
-                    LocalTime.of(hourSpinner.getValue().intValue(), minSpinner.getValue().intValue(), secSpinner.getValue().intValue(), milliSpinner.getValue().intValue() * NANOSECONDS_IN_MILLISECOND));
-            return ldt;
+                    LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(), 
+                            secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND));
         }
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
@@ -113,7 +122,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
                 update();
             });
 
-            HBox timeSpinnerContainer = createTimeSpinners();
+            final HBox timeSpinnerContainer = createTimeSpinners();
 
             controls.addRow(0, timeSpinnerContainer);
             controls.addRow(1, noValueCheckBox);
@@ -121,8 +130,12 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         }
 
         private HBox createTimeSpinners() {
-
             datePicker = new DatePicker();
+            datePicker.setConverter(new LocalDateStringConverter(
+                    TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+            datePicker.getEditor().textProperty().addListener((v, o, n) -> {
+                update();
+            });
             datePicker.setValue(LocalDate.now());
             datePicker.valueProperty().addListener((v, o, n) -> {
                 update();
@@ -137,25 +150,25 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             secSpinner.getValueFactory().setValue(LocalTime.now(ZoneOffset.UTC).getSecond());
             milliSpinner.getValueFactory().setValue(0);
 
-            HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
+            final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
-            Label dateLabel = new Label("Date:");
+            final Label dateLabel = new Label("Date:");
             dateLabel.setId("label");
             dateLabel.setLabelFor(datePicker);
 
-            Label hourSpinnerLabel = new Label("Hour:");
+            final Label hourSpinnerLabel = new Label("Hour:");
             hourSpinnerLabel.setId("label");
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
-            Label minSpinnerLabel = new Label("Minute:");
+            final Label minSpinnerLabel = new Label("Minute:");
             minSpinnerLabel.setId("label");
             minSpinnerLabel.setLabelFor(minSpinner);
 
-            Label secSpinnerLabel = new Label("Second:");
+            final Label secSpinnerLabel = new Label("Second:");
             secSpinnerLabel.setId("label");
             secSpinnerLabel.setLabelFor(secSpinner);
 
-            Label milliSpinnerLabel = new Label("Millis:");
+            final Label milliSpinnerLabel = new Label("Millis:");
             milliSpinnerLabel.setId("label");
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
@@ -182,21 +195,20 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
                 update();
             });
 
-            VBox dateLabelNode = new VBox(5);
+            final VBox dateLabelNode = new VBox(5);
             dateLabelNode.getChildren().addAll(dateLabel, datePicker);
-            VBox hourLabelNode = new VBox(5);
+            final VBox hourLabelNode = new VBox(5);
             hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);
-            VBox minLabelNode = new VBox(5);
+            final VBox minLabelNode = new VBox(5);
             minLabelNode.getChildren().addAll(minSpinnerLabel, minSpinner);
-            VBox secLabelNode = new VBox(5);
+            final VBox secLabelNode = new VBox(5);
             secLabelNode.getChildren().addAll(secSpinnerLabel, secSpinner);
-            VBox milliLabelNode = new VBox(5);
+            final VBox milliLabelNode = new VBox(5);
             milliLabelNode.getChildren().addAll(milliSpinnerLabel, milliSpinner);
 
             timeSpinnerContainer.getChildren().addAll(dateLabelNode, hourLabelNode, minLabelNode, secLabelNode, milliLabelNode);
 
             return timeSpinnerContainer;
         }
-
     }
 }

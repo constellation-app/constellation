@@ -16,7 +16,8 @@ ant \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dtest.run.args=-javaagent:"${JACOCO_AGENT}" test
 
-# Convert binary jacoco.exec files to XML
+# Need to convert the binary jacoco.exec files to XML since the property
+# sonar.coverage.jacoco.xmlReportPaths on SonarCloud only supports XML
 while IFS= read -r -d '' file; do
   classfile="$(echo "${file}" | cut -d "/" -f2)"
   xml_output="${file%.exec}.xml"
@@ -31,4 +32,5 @@ ant \
   -Dbuild.compiler.debug=truenbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true build #clean build
+  -Dbuild.compiler.debug=true build # clean build
+# disable clean build to preserve files for Sonar

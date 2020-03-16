@@ -55,8 +55,8 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         }
 
         @Override
-        protected boolean canSet(DrawFlags value) {
-            // This is an editor for primitive booleans, so prevent null values being set.
+        protected boolean canSet(final DrawFlags value) {
+            // Draw flags cannot be null, so prevent null values being set.
             return value != null;
         }
 
@@ -71,12 +71,14 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
         @Override
         protected DrawFlags getValueFromControls() {
-            return new DrawFlags(drawNodesCheckBox.isSelected(), drawConnectionsCheckBox.isSelected(), drawNodeLabelsCheckBox.isSelected(), drawConnectionLabelsCheckBox.isSelected(), drawBlazesCheckBox.isSelected());
+            return new DrawFlags(drawNodesCheckBox.isSelected(), 
+                    drawConnectionsCheckBox.isSelected(), drawNodeLabelsCheckBox.isSelected(), 
+                    drawConnectionLabelsCheckBox.isSelected(), drawBlazesCheckBox.isSelected());
         }
 
         @Override
         protected Node createEditorControls() {
-            VBox controls = new VBox();
+            final VBox controls = new VBox();
             controls.setFillWidth(true);
 
             drawNodesCheckBox = new CheckBox("Nodes");
@@ -108,6 +110,5 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
             return controls;
         }
-
     }
 }

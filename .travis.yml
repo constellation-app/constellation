@@ -7,6 +7,10 @@ cache:
 env:
   - runner_image="constellationapplication/netbeans-runner:8.2"
 
+# Disable shallow clone for SCM SonarCloud analysis
+git:
+  depth: false
+
 jobs:
   include:
 
@@ -22,8 +26,7 @@ jobs:
     addons:
       sonarcloud:
         organization: "constellation-app"
-        token:
-          secure: $SONAR_TOKEN
+        token: $SONAR_TOKEN
 
   - stage: Build zip
     dist: trusty

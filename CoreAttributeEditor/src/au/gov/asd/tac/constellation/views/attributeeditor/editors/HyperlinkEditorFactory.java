@@ -69,7 +69,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             }
             try {
                 return new URI(textField.getText());
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new ControlsInvalidException("Entered value is not a valid URL.");
             }
         }
@@ -96,6 +96,5 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
             controls.addRow(1, noValueCheckBox);
             return controls;
         }
-
     }
 }

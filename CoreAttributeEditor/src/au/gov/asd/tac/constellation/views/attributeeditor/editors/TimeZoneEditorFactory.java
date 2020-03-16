@@ -66,14 +66,14 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
         }
 
         @Override
-        public void updateControlsWithValue(final ZoneId value) {
-            timeZoneComboBox.getSelectionModel().select(value);
+        protected boolean canSet(final ZoneId value) {
+            // Time zones cannot be null, so prevent null values being set.
+            return value != null;
         }
 
         @Override
-        protected boolean canSet(ZoneId value) {
-            // We do not want to set a null time zone.
-            return value != null;
+        public void updateControlsWithValue(final ZoneId value) {
+            timeZoneComboBox.getSelectionModel().select(value);
         }
 
         @Override
@@ -112,6 +112,5 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             controls.getChildren().addAll(timeZoneComboBox);
             return controls;
         }
-
     }
 }
