@@ -23,5 +23,5 @@ enum NodeType {
 
     PNODE,
     QNODE,
-    LEAFNODE,
+    LEAF_NODE,
 }

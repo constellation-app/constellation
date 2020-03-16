@@ -46,7 +46,7 @@ class PQNode {
 
     public PQNode(final NodeType type) {
         this.type = type;
-        numLeafDescendants = type == NodeType.LEAFNODE ? 1 : 0;
+        numLeafDescendants = type == NodeType.LEAF_NODE ? 1 : 0;
         for (NodeLabel l : NodeLabel.values()) {
             labeledChildren.put(l, new HashSet<>());
         }

@@ -37,7 +37,7 @@ class PQTree {
 
     public void addLeaves(final PQNode toNode, final List<Integer> childNums) {
         for (int i : childNums) {
-            PQNode leaf = new PQNode(NodeType.LEAFNODE, i, currentNumber);
+            PQNode leaf = new PQNode(NodeType.LEAF_NODE, i, currentNumber);
             toNode.addChild(leaf);
             leaves[i - 1].add(leaf);
         }
@@ -208,7 +208,7 @@ class PQTree {
                     }
                 }
                 break;
-            case LEAFNODE:
+            case LEAF_NODE:
                 if (node.virtualNum == currentNumber) {
                     frontier.add(node.realNum);
                 }
@@ -251,7 +251,7 @@ class PQTree {
     // Matches leaf nodes
     private boolean templateL1(PQNode candidate) {
         // Check whether candidate is a leaf node
-        if (candidate.type != NodeType.LEAFNODE) {
+        if (candidate.type != NodeType.LEAF_NODE) {
             return false;
         }
         // If the candidate's virtual number matches the current number, relabel it as full
@@ -459,7 +459,7 @@ class PQTree {
     }
 
     private void removeLeaves(PQNode node) {
-        if (node.type.equals(NodeType.LEAFNODE)) {
+        if (node.type.equals(NodeType.LEAF_NODE)) {
             leaves[node.virtualNum - 1].remove(node);
         } else {
             for (PQNode child : node.children) {
