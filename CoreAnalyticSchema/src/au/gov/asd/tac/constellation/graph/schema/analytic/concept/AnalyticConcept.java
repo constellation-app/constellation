@@ -172,7 +172,8 @@ public class AnalyticConcept extends SchemaConcept {
                 .setColor(ConstellationColor.BLUEBERRY)
                 .setForegroundIcon(AnalyticIconProvider.UNIFORM_RESOURCE_LOCATOR)
                 .build();
-        public static final SchemaVertexType LOCATION = new SchemaVertexType.Builder("Location").setDescription("A node representing a geographic location, eg. the country Australia")
+        public static final SchemaVertexType LOCATION = new SchemaVertexType.Builder("Location")
+                .setDescription("A node representing a geographic location, eg. the country Australia")
                 .setColor(ConstellationColor.CARROT)
                 .setForegroundIcon(AnalyticIconProvider.GLOBE)
                 .build();

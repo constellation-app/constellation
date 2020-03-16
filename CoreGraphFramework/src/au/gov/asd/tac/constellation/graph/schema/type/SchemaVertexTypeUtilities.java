@@ -111,9 +111,9 @@ public class SchemaVertexTypeUtilities {
                 }
             });
 
-            // Remove any types that are overriden by concepts
+            // Remove any types that are explicitly overriden by concepts
             SchemaConceptUtilities.getConcepts().forEach(concept -> {
-                if (fromConcepts == GET_ALL_TYPES || fromConcepts.contains(concept.getClass()) && concept.getOverwrittenSchemaVertexTypes() != null) {
+                if ((fromConcepts == GET_ALL_TYPES || fromConcepts.contains(concept.getClass())) && concept.getOverwrittenSchemaVertexTypes() != null) {
                     vertexTypes.removeAll(concept.getOverwrittenSchemaVertexTypes());
                 }
             });
