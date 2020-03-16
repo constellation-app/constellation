@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-03-16 Schema View
+<p>Duplicate node and transaction types are removed from Schema View</p>
+
 == 2020-02-25 New Logo
 <p>Constellation has got a new logo!</p>
 
