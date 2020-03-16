@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,11 +76,11 @@ public class JsonIO {
         mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
         
         String fileName = JsonIODialog.getName();
-        if(fileName.equals("")){
+        if (fileName.equals("")) {
             fileName = String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now()));
         }
-        if(!fileName.equals(" ")){
-            if (fileName != null){
+        if (!fileName.equals(" ")) {
+            if (fileName != null) {
                 mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
                 mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
                 final File f = new File(JsonFileLocation, encode(fileName + ".json"));
@@ -109,7 +109,6 @@ public class JsonIO {
                 DialogDisplayer.getDefault().notify(nd);
             }
         }
-        
     }
     
     /**
@@ -119,7 +118,7 @@ public class JsonIO {
      *
      * @return The encoded String.
      */
-    public static String encode(final String s) {
+    private static String encode(final String s) {
         final StringBuilder b = new StringBuilder();
         for (final char c : s.toCharArray()) {
             if (isValidFileCharacter(c)) {
@@ -128,7 +127,6 @@ public class JsonIO {
                 b.append(String.format("_%04x", (int) c));
             }
         }
-
         return b.toString();
     } 
     
@@ -139,7 +137,7 @@ public class JsonIO {
      *
      * @return The decoded String.
      */
-    static String decode(final String s) {
+    private static String decode(final String s) {
         final StringBuilder b = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
             final char c = s.charAt(i);
@@ -160,12 +158,14 @@ public class JsonIO {
                 }
             }
         }
-
         return b.toString();
     }
    
    static boolean isValidFileCharacter(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ' || c == '-' || c == '.';
+        return (c >= '0' && c <= '9') 
+                || (c >= 'A' && c <= 'Z') 
+                || (c >= 'a' && c <= 'z') 
+                || c == ' ' || c == '-' || c == '.';
     }
    
    /**
@@ -175,7 +175,7 @@ public class JsonIO {
      *
      * @return The JsonNode of the selected preference or null if nothing is selected
      */
-    public static JsonNode loadJsonPreferences(String JsonDirectory) {
+    public static JsonNode loadJsonPreferences(final String JsonDirectory) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File JsonFileLocation = new File(userDir, JsonDirectory);
@@ -193,13 +193,14 @@ public class JsonIO {
             names = new String[0];
         } 
        
-        //chop off ".json" from the filenames
+        // chop off ".json" from the filenames
         for (int i = 0; i < names.length; i++) {
             names[i] = decode(names[i].substring(0, names[i].length() - 5));
         }
         
         //Get name from the dialog window
         final String JsonFileName = JsonIODialog.getSelection(names);
+        
         if(JsonFileName != null){
             try {
                 return mapper.readTree(new File(JsonFileLocation, encode(JsonFileName) + ".json"));
@@ -208,7 +209,6 @@ public class JsonIO {
             }
         }
         return null;
-        
     }
     
     /**
@@ -217,7 +217,7 @@ public class JsonIO {
      * @param JsonDirectory the directory location of the Json files as a string
      *
      */
-    static void deleteJsonPreference(String selectedItem) {
+    static void deleteJsonPreference(final String selectedItem) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File JsonFileLocation = new File(userDir, CURRENT_DIR);
@@ -231,5 +231,4 @@ public class JsonIO {
             }
         }
     }
-    
 }

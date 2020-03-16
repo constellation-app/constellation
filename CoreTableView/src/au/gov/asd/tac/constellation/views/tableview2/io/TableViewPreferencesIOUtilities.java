@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.io.File;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.Preferences;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -67,13 +68,15 @@ public class TableViewPreferencesIOUtilities {
             DialogDisplayer.getDefault().notify(nd);
             return;
         }
-        // A JSON document to store everything in;
+        
+        // a json document to store everything in; an array of objects where 
+        // each array element is a tab, and the objects are the parameters in each tab.
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode rootNode = mapper.createArrayNode();
         final ObjectNode global = rootNode.addObject();
         final ObjectNode columnOrderPrefObject = global.putObject(COLUMN_ORDER_PREF_OBJECT);
         final ObjectNode sortByColumnNode = global.putObject(SORT_BY_COLUMN_OBJECT);
-        ArrayNode columnOrderArrayNode = columnOrderPrefObject.putArray("columnOrderArray");
+        final ArrayNode columnOrderArrayNode = columnOrderPrefObject.putArray("columnOrderArray");
 
         int i = 0;
         while (i < columns.size() && columns.get(i).isVisible()) {
@@ -87,9 +90,7 @@ public class TableViewPreferencesIOUtilities {
             // the table isn't being sorted by any column so don't save anything
             sortByColumnNode.put("NO SORT BY COLUMN", "");
         }
-
         JsonIO.saveJsonPreferences(TABLE_VIEW_PREF_DIR, mapper, rootNode);
-
     }
 
     /**
@@ -97,7 +98,7 @@ public class TableViewPreferencesIOUtilities {
      *
      * @param the table View's table
      */
-    public static void loadPreferences(TableView<ObservableList<String>> table) {
+    public static void loadPreferences(final TableView<ObservableList<String>> table) {
         final JsonNode root = JsonIO.loadJsonPreferences(TABLE_VIEW_PREF_DIR);
         if (root != null) {
             for (final JsonNode step : root) {
@@ -105,11 +106,11 @@ public class TableViewPreferencesIOUtilities {
                 final JsonNode JsonColumnOrderArray = columnOrderPreference.get("columnOrderArray");
                 final JsonNode sortByColumnPreference = step.get(SORT_BY_COLUMN_OBJECT);
                 final String sortByColumn = sortByColumnPreference.fieldNames().next();
-                ArrayList<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
+                final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
 
                 for (final JsonNode JsonSavedColumn : JsonColumnOrderArray) {
                     TableColumn<ObservableList<String>, ?> copy;
-                    for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                    for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                         if (column.getText().equals(JsonSavedColumn.textValue())) {
                             copy = column;
                             copy.setVisible(true);
@@ -121,13 +122,13 @@ public class TableViewPreferencesIOUtilities {
                 }
 
                 //set all the other columns to not visible
-                for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                     newColumnOrder.add(column);
                     column.setVisible(false);
                 }
                 table.getColumns().setAll(newColumnOrder);
                 table.getSortOrder().clear();
-                for (TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                     if (column.getText().equals(sortByColumn)) {
                         table.getSortOrder().add(column);
                     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import javafx.scene.layout.TilePane;
  */
 public class JsonIODialog {
 
-    public static String getSelection(String[] names) {
+    public static String getSelection(final String[] names) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
         final ObservableList<String> q = FXCollections.observableArrayList(names);
         final ListView<String> nameList = new ListView<>(q);
@@ -54,9 +54,9 @@ public class JsonIODialog {
         dialog.setTitle("Preferences");
         dialog.setHeaderText("Select a preference to load.");
 
-        //The remove button has been wrapped inside the btOk, this has been done because any ButtonTypes added
-        //to an alert window will automatically close the window when pressed. 
-        //Wrapping it in another button can allow us to consume the closing event and keep the window open.
+        // The remove button has been wrapped inside the btOk, this has been done because any ButtonTypes added
+        // to an alert window will automatically close the window when pressed. 
+        // Wrapping it in another button can allow us to consume the closing event and keep the window open.
         final Button btOk = (Button) dialog.getDialogPane().lookupButton(removeButton);
         btOk.addEventFilter(ActionEvent.ACTION, event -> {
             JsonIO.deleteJsonPreference(nameList.getSelectionModel().getSelectedItem());
@@ -97,7 +97,7 @@ public class JsonIODialog {
         } else if (!td.getEditor().getText().equals("")) {
             returnedName = td.getEditor().getText();
         }
-
+        
         return returnedName;
     }
 }
