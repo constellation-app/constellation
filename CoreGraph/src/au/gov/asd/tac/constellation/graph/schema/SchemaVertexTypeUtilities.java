@@ -187,7 +187,8 @@ public class SchemaVertexTypeUtilities {
             type = new SchemaVertexType.Builder(SchemaVertexTypeUtilities.getDefaultType(), name)
                     .setIncomplete(true)
                     .build();
-            SchemaVertexTypeUtilities.addCustomType(type, false);
+            // TODO: Fix custom types overriding built in schema types
+//            SchemaVertexTypeUtilities.addCustomType(type, false);
         }
         return type;
     }

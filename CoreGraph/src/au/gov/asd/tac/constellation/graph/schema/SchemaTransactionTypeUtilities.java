@@ -181,7 +181,8 @@ public class SchemaTransactionTypeUtilities {
             type = new SchemaTransactionType.Builder(SchemaTransactionTypeUtilities.getDefaultType(), name)
                     .setIncomplete(true)
                     .build();
-            SchemaTransactionTypeUtilities.addCustomType(type, false);
+            // TODO: Fix custom types overriding built in schema types
+//            SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
         return type;
     }
