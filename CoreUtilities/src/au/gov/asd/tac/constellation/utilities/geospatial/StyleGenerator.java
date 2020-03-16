@@ -126,7 +126,7 @@ public class StyleGenerator {
 
         // create a partially opaque outline stroke
         final Rule defaultRule = makeFillRule();
-        defaultRule.setIsElseFilter(true);
+        defaultRule.setElseFilter(true);
         defaultRule.setName("Default Rule");
         ruleList.add(defaultRule);
 
