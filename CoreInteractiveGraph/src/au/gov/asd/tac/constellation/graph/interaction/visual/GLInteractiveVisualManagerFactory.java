@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.GraphVisualManagerFactory;
+import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.visual.display.GraphVisualAccess;
+import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;

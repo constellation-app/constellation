@@ -147,23 +147,4 @@ public class SubgraphUtilitiesNGTest {
         assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertEquals(copy.getStringValue(vxAttr, vx0), VX_VALUE);
     }
-
-    // TODO: testing loops everywhere including here
-//    /**
-//     * Test of getSubgraph method, of class SubGraphUtilities.
-//     */
-//    @Test
-//    public void testGetSubgraph() {
-//        System.out.println("getSubgraph");
-//        GraphReadMethods graph = null;
-//        Schema schema = null;
-//        Set<SchemaTransactionType> types = null;
-//        int transactionTypeAttributeId = 0;
-//        boolean isExclusive = false;
-//        StoreGraph expResult = null;
-//        StoreGraph result = SubGraphUtilities.getSubgraph(graph, schema, types, transactionTypeAttributeId, isExclusive);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

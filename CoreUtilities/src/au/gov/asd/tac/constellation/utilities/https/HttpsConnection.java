@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.https;
 
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

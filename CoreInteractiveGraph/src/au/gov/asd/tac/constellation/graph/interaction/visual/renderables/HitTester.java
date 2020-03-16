@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.HitState.HitType;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.ip;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.google.common.base.Strings;
 import java.net.InetAddress;
 

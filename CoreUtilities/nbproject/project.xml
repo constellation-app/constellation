@@ -40,6 +40,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.netbeans.api.progress</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.47.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.netbeans.modules.javahelp</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -124,29 +133,37 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.utilities</package>
-                <package>au.gov.asd.tac.constellation.utilities.branding</package>
+                <package>au.gov.asd.tac.constellation.utilities.camera</package>
+                <package>au.gov.asd.tac.constellation.utilities.clipboard</package>
+                <package>au.gov.asd.tac.constellation.utilities.color</package>
                 <package>au.gov.asd.tac.constellation.utilities.csv</package>
                 <package>au.gov.asd.tac.constellation.utilities.datastructure</package>
                 <package>au.gov.asd.tac.constellation.utilities.file</package>
                 <package>au.gov.asd.tac.constellation.utilities.font</package>
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>
+                <package>au.gov.asd.tac.constellation.utilities.graphics</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
                 <package>au.gov.asd.tac.constellation.utilities.https</package>
+                <package>au.gov.asd.tac.constellation.utilities.icon</package>
                 <package>au.gov.asd.tac.constellation.utilities.image</package>
                 <package>au.gov.asd.tac.constellation.utilities.ip</package>
+                <package>au.gov.asd.tac.constellation.utilities.javafx</package>
                 <package>au.gov.asd.tac.constellation.utilities.json</package>
                 <package>au.gov.asd.tac.constellation.utilities.log</package>
                 <package>au.gov.asd.tac.constellation.utilities.lucene</package>
                 <package>au.gov.asd.tac.constellation.utilities.memory</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi.rest</package>
-                <package>au.gov.asd.tac.constellation.utilities.preferences</package>
                 <package>au.gov.asd.tac.constellation.utilities.rest</package>
                 <package>au.gov.asd.tac.constellation.utilities.sql</package>
-                <package>au.gov.asd.tac.constellation.utilities.string</package>
+                <package>au.gov.asd.tac.constellation.utilities.stream</package>
                 <package>au.gov.asd.tac.constellation.utilities.support</package>
                 <package>au.gov.asd.tac.constellation.utilities.temporal</package>
+                <package>au.gov.asd.tac.constellation.utilities.text</package>
+                <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
+                <package>au.gov.asd.tac.constellation.utilities.video</package>
+                <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>
             </public-packages>
         </data>

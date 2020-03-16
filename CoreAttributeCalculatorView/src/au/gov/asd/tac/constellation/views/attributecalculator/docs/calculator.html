@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Attribute Calculator</title>
+        <link rel="stylesheet" href="nbdocs://au.gov.asd.tac.constellation.preferences/au/gov/asd/tac/constellation/preferences/constellation.css" type="text/css">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+        <h1>Attribute Calculator</h1>
+        <table border="1">
+            <tr>
+                <td>
+                    <strong>CONSTELLATION Action</strong>
+                </td>
+                <td>
+                    <strong>User Action</strong>
+                </td>
+                <td>
+                    <strong>Menu Icon</strong>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Open Attribute Calculator
+                </td>
+                <td>
+                    Views -> Attribute Calculator
+                </td>
+                <td>
+                    <center>
+                        <img src="../resources/attribute-calculator.png" alt="" width="16" height="16">
+                    </center>
+                </td>
+            </tr>
+        </table>
+
+        <p>
+            The attribute calculator is a tool which allows users to set the values
+            of node and transaction attributes based on complex calculations
+            involving other attributes and graph properties.
+            These calculations are referred to as 'scripts'. The attribute calculator
+            includes a number of inbuilt scripts, as well as features to assist in
+            and simplify the process of creating new scripts.
+        </p>
+        <center>
+            <img src="resources/AttributeCalculatorMain.png" alt="">
+        </center>
+        <p>
+            The interface to the attribute calculator is depicted above.
+            It is organised into three main columns; the controls column, the script column, and the docs column.
+            The sizes of the columns can be adjusted by dragging the grey dividers that separate them.
+            There is also the execution controls at the bottom right which are used to run a script.
+        </p>
+
+        <h2>Controls Column</h2>
+        <center>
+            <img src="resources/AttributeCalculatorControlsColumn.png" alt="">
+        </center>
+        <p>
+            The controls column is used to set up and build an attribute calculator script.
+            The first three drop down boxes allow for us to specify the details of the attribute we will be setting.
+            The final drop-down and list allows access to a number of templates which assist in building scripts.
+        </p>
+        <p>
+            A detailed description of each control is as follows:
+        </p>
+        <ul>
+            <li>
+                <em>Graph Element</em> - Here we choose between setting the values of node and transaction attributes.
+            </li>
+            <li>
+                <em>Attribute to Set</em> - Here we choose the name of the attribute to set. The list is pre-populated with the attributes that exist in the current graph, but we can enter a new name here to create a new attribute.
+            </li>
+            <li><em>Attribute Type</em> - Here we choose the type of the attribute we are setting. This only applies if we are creating a new attribute - if we picked an existing attribute from the above drop-down, then this drop-down will be disabled.
+            </li>
+            <li>
+                <em>Insert in Script</em> - This utility allows us to insert attributes, graph properties, and other functions into our script.
+                The drop-down can be used to select a broad category, which will then populate the list below it with items.
+                Single clicking an item will display information about it in the docs column. Double clicking an item inserts it at the current cursor location in the script.
+            </li>
+            <li>
+                <em>Save Button</em> - Saves the current script along with the details of the attribute that is being set.
+                A dialogue will be displayed asking for a name and description of the script.
+            </li>
+            <li>
+                <em>Load Button</em> - Loads the currently selected script. This button is disabled when the 'complete scripts'
+                category is not selected from the 'insert in script' drop down.
+            </li>
+            <li>
+                <em>Del Button</em> - Deletes the currently selected script. This button is disabled when the 'complete scripts'
+                category is not selected from the 'insert in script' drop down.
+            </li>
+            <li><em>Help Button</em> - From here we can open this help, or the attribute calculator tutorial.
+            </li>
+            <li>
+                <em>Docs Button</em> - Toggles the visibility of the Docs column.
+            </li>
+        </ul>
+
+        <h2>Complete Scripts</h2>
+        <p>
+            The insert in script utility also has a special category 'complete scripts'. These are entire scripts to perform
+            predetermined calculations for specific attributes. Double clicking them will not place anything in the current script.
+            Instead, the load button must be pressed, which will completely overwrite the current script as well as the
+            attribute that is being set.
+        </p>
+
+        <h2>Script Column</h2>
+        <center>
+            <img src="resources/AttributeCalculatorScriptColumn.png" alt="">
+        </center>
+        <p>
+            The Script column contains the actual script that we want to use to set the values of an attribute.
+            Text can be typed directly into this column, or inserted by using the control's column 'insert in script' utility.
+        </p>
+
+        <h2>Docs Column</h2>
+        <center>
+            <img src="resources/AttributeCalculatorDocsColumn.png" alt="">
+        </center>
+        <p>
+            The Docs column provides information about the attribute that is being set, as well as information about the currently
+            selected category and item in the controls column's 'insert in script' utility.
+        </p>
+
+        <h2>Execution Controls</h2>
+        <center>
+            <img src="resources/AttributeCalculatorExecutionBar.png" alt="">
+        </center>
+        <p>
+            The Execution controls are used to configure and run the script.
+        </p>
+        <ul>
+            <li><em>Complete With Schema</em> - If this is selected, everything in the graph will be validated against the graph's schema after the script has finished running and the desired attribute has been set.
+            </li><li><em>Selected Elements Only</em> - If this is selected, the script will only set the value of the desired attribute for currently selected elements.
+            </li><li><em>Execute</em> - Runs the script.
+            </li>
+        </ul>
+    </body>
+</html>
+

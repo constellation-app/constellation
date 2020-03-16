@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.dragdrop.GraphDropper.DropInfo;
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.HitState.HitType;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Point;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
@@ -75,17 +75,16 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
         BiConsumer<Graph, DropInfo> dropHandler = null;
 
         // Accept the drop, work out whether any graph dropper will handle it, and if so mark the drop as complete.
-        if (dropHandler != null) {
-            dtde.acceptDrop(dtde.getDropAction());
-            final Collection<? extends GraphDropper> droppers = Lookup.getDefault().lookupAll(GraphDropper.class);
-            for (final GraphDropper dropper : droppers) {
-                dropHandler = dropper.drop(dtde);
-                if (dropHandler != null) {
-                    break;
-                }
+        dtde.acceptDrop(dtde.getDropAction());
+        final Collection<? extends GraphDropper> droppers = Lookup.getDefault().lookupAll(GraphDropper.class);
+        for (final GraphDropper dropper : droppers) {
+            dropHandler = dropper.drop(dtde);
+            if (dropHandler != null) {
+                break;
             }
-            dtde.dropComplete(dropHandler != null);
         }
+        dtde.dropComplete(dropHandler != null);
+
         // If a dropper did provide a handler for this drop event, process it in a new thread, providing it with the information obtained from hit testing the graph for the drop location.
         // (Note this has to be in a new thread because hit testing is done on the EDT, which we need to wait for the results of, but we are already on the EDT).
         if (dropHandler != null) {

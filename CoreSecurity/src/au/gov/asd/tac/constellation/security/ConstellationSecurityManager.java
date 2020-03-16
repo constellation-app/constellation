@@ -113,10 +113,9 @@ public class ConstellationSecurityManager {
 
                                 break finished;
                             }
-                        } catch (SecurityException ex) {
-                            LOGGER.severe(String.format("Exception while setting default SSLContext: %s", ex.getMessage()));
+                        } catch (final SecurityException ex) {
                             // TODO: Handle exceptions from getSSLContext()
-                            ex.printStackTrace();
+                            LOGGER.severe(String.format("Exception while setting default SSLContext: %s", ex.getMessage()));
                         }
                     }
                 }

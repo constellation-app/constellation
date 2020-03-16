@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.utilities;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 
 /**
  * A state object for markers in the Map View.

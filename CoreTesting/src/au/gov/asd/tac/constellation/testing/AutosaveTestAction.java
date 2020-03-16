@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
-import au.gov.asd.tac.constellation.functionality.autosave.Autosaver;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.Autosaver;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;

@@ -19,16 +19,14 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -162,16 +160,17 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
 
     @Override
     public void newActiveGraph(final Graph graph) {
-        // TODO if the old graph and the new graph have the same schema, don't recalculate.
+        // TODO: if the old graph and the new graph have the same schema, don't recalculate.
         Platform.runLater(() -> {
+            detailsView.getChildren().clear();
+            final Label nameLabel = new Label("No type selected");
+            detailsView.getChildren().add(nameLabel);
+
             vertexTypes.clear();
 
             if (graph != null && graph.getSchema() != null && GraphNode.getGraphNode(graph) != null) {
                 final SchemaFactory schemaFactory = graph.getSchema().getFactory();
-                final Set<Class<? extends SchemaConcept>> concepts = new HashSet<>();
-                concepts.addAll(schemaFactory.getRegisteredConcepts());
-                SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
-                        .forEach(childConcept -> concepts.add(childConcept.getClass()));
+                final Set<Class<? extends SchemaConcept>> concepts = schemaFactory.getRegisteredConcepts();
                 schemaLabel.setText(String.format("%s - %s", schemaFactory.getLabel(), GraphNode.getGraphNode(graph).getDisplayName()));
                 vertexTypes.addAll(SchemaVertexTypeUtilities.getTypes(concepts));
                 Collections.sort(vertexTypes, (final SchemaVertexType a, final SchemaVertexType b) -> a.getName().compareToIgnoreCase(b.getName()));
@@ -249,46 +248,46 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 col1.setPercentWidth(75);
                 grid.getColumnConstraints().addAll(col0, col1);
 
-                Label nameLabel = new Label(vertexType.getName());
+                final Label nameLabel = new Label(vertexType.getName());
                 nameLabel.setWrapText(true);
                 grid.add(boldLabel("Name:"), 0, 0);
                 grid.add(nameLabel, 1, 0);
 
-                Label descriptionLabel = new Label(vertexType.getDescription());
+                final Label descriptionLabel = new Label(vertexType.getDescription());
                 descriptionLabel.setWrapText(true);
                 grid.add(boldLabel("Description:"), 0, 1);
                 grid.add(descriptionLabel, 1, 1);
 
-                Label colorLabel = new Label(vertexType.getColor().toString());
+                final Label colorLabel = new Label(vertexType.getColor().toString());
                 colorLabel.setWrapText(true);
                 grid.add(boldLabel("Color:"), 0, 2);
                 grid.add(colorLabel, 1, 2);
 
-                Label foregroundIconLabel = new Label(vertexType.getForegroundIcon().getName());
+                final Label foregroundIconLabel = new Label(vertexType.getForegroundIcon().getName());
                 foregroundIconLabel.setWrapText(true);
                 grid.add(boldLabel("Foreground Icon:"), 0, 3);
                 grid.add(foregroundIconLabel, 1, 3);
 
-                Label backgroundIconLabel = new Label(vertexType.getBackgroundIcon().getName());
+                final Label backgroundIconLabel = new Label(vertexType.getBackgroundIcon().getName());
                 backgroundIconLabel.setWrapText(true);
                 grid.add(boldLabel("Background Icon:"), 0, 4);
                 grid.add(backgroundIconLabel, 1, 4);
 
                 if (vertexType.getValidationRegex() != null) {
-                    Label validationLabel = new Label(vertexType.getValidationRegex().toString());
+                    final Label validationLabel = new Label(vertexType.getValidationRegex().toString());
                     validationLabel.setWrapText(true);
                     grid.add(boldLabel("Validation Regex:"), 0, 5);
                     grid.add(validationLabel, 1, 5);
                 }
 
                 if (vertexType.getDetectionRegex() != null) {
-                    Label detectionLabel = new Label(vertexType.getDetectionRegex().toString());
+                    final Label detectionLabel = new Label(vertexType.getDetectionRegex().toString());
                     detectionLabel.setWrapText(true);
                     grid.add(boldLabel("Detection Regex:"), 0, 6);
                     grid.add(detectionLabel, 1, 6);
                 }
 
-                Label hierarchyLabel = new Label(vertexType.getHierachy());
+                final Label hierarchyLabel = new Label(vertexType.getHierachy());
                 hierarchyLabel.setWrapText(true);
                 grid.add(boldLabel("Hierarchy:"), 0, 7);
                 grid.add(hierarchyLabel, 1, 7);

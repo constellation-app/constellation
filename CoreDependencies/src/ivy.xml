@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-    <info organisation="au.gov.asd.tac" module="tac-utilities" revision="working"/>
+    <info organisation="au.gov.asd.tac" module="third-party-dependencies" revision="working"/>
     <dependencies>
 
-<!--         OpenGL - This section to be updated and uncommented when JOGL 2.4.0+ is available on MAVEN
-        <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" >
+        <!-- OpenGL - This section to be updated and uncommented when JOGL 2.4.0+ is available on MAVEN -->
+<!--        <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" >
             <artifact name="gluegen-rt" type="jar" ext="jar"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
@@ -74,7 +74,7 @@
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.24.v20191120"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.38"/>
         <dependency org="org.json" name="json" rev="20190722"/>
-   <!-- <dependency org="org.processing" name="core" rev="3.3.7"/> -->
+        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
         <dependency org="org.python" name="jython-standalone" rev="2.7.2b2"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
 
@@ -89,9 +89,6 @@
         <!-- Exclusions -->
         <exclude org="com.apple" module="AppleJavaExtensions" />
         <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
-<!--        <exclude org="org.jogamp.gluegen" module="gluegen-rt-main"/>
-        <exclude org="org.jogamp.jogl" module="jogl"/>
-        <exclude org="org.jogamp.jogl" module="jogl-all-main"/>-->
         <!-- Prevent the use of deprecated jai libraries -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>

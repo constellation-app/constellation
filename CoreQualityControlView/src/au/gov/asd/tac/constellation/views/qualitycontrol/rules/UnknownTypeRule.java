@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.qualitycontrol.rules;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

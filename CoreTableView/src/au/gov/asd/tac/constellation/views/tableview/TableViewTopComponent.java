@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -25,21 +24,22 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
 import au.gov.asd.tac.constellation.views.tableview.state.TableState;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -730,7 +730,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
         public void keyTyped(final KeyEvent e) {
             if (graphNode != null) {
                 if (e.getKeyChar() == KeyEvent.VK_DELETE) {
-                    PluginExecution.withPlugin(PluginRegistry.get(CorePluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
+                    PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
                 }
             }
         }
