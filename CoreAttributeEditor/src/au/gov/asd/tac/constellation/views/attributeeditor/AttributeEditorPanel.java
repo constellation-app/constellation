@@ -161,7 +161,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private static enum HeadingType {
 
-        Graph, Node, Transaction;
+        GRAPH, NODE, TRANSACTION;
     }
 
     private static final AttributeEditorFactory ATTRIBUTE_EDITOR_FACTORY = new AttributeEditorFactory();
@@ -330,15 +330,15 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         final String key;
         final GraphElementType elementType;
         switch (headingType) {
-            case Graph:
+            case GRAPH:
                 key = AttributePreferenceKey.GRAPH_SHOW_ALL;
                 elementType = GraphElementType.GRAPH;
                 break;
-            case Node:
+            case NODE:
                 key = AttributePreferenceKey.NODE_SHOW_ALL;
                 elementType = GraphElementType.VERTEX;
                 break;
-            case Transaction:
+            case TRANSACTION:
                 key = AttributePreferenceKey.TRANSACTION_SHOW_ALL;
                 elementType = GraphElementType.TRANSACTION;
                 break;

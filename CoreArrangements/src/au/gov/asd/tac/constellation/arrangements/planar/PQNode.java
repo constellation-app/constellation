@@ -34,7 +34,7 @@ class PQNode {
     public DirectionIndicator directionIndicator = null;
 
     public final NodeType type;
-    public NodeLabel label = NodeLabel.Empty;
+    public NodeLabel label = NodeLabel.EMPTY;
 
     public int numLeafDescendants;
     public int pertinentChildCount = 0;
@@ -46,7 +46,7 @@ class PQNode {
 
     public PQNode(final NodeType type) {
         this.type = type;
-        numLeafDescendants = type == NodeType.LeafNode ? 1 : 0;
+        numLeafDescendants = type == NodeType.LEAF_NODE ? 1 : 0;
         for (NodeLabel l : NodeLabel.values()) {
             labeledChildren.put(l, new HashSet<>());
         }
@@ -159,7 +159,7 @@ class PQNode {
     // Should only be called on QNodes with at most one partial child.
     public List<PQNode> trimAndFlattenQNodeChildren(PQNode dividingNode, boolean reverse) {
         List<PQNode> removed = new LinkedList<>();
-        NodeLabel toRemove = reverse ^ (dividingNode == null) ? NodeLabel.Empty : NodeLabel.Full;
+        NodeLabel toRemove = reverse ^ (dividingNode == null) ? NodeLabel.EMPTY : NodeLabel.FULL;
         PQNode toFlatten = null;
         for (PQNode child : children) {
             if (toFlatten != null) {
@@ -169,7 +169,7 @@ class PQNode {
             if (child.label.equals(toRemove)) {
                 removeChild(child);
                 removed.add(child);
-            } else if (child.label.equals(NodeLabel.Partial) && child != dividingNode) {
+            } else if (child.label.equals(NodeLabel.PARTIAL) && child != dividingNode) {
                 for (PQNode grandchild : child.getLabelView(toRemove)) {
                     child.removeChild(grandchild);
                     removed.add(grandchild);
@@ -177,13 +177,13 @@ class PQNode {
                 toFlatten = child;
             }
             if (child == dividingNode) {
-                if (child.label.equals(NodeLabel.Partial)) {
+                if (child.label.equals(NodeLabel.PARTIAL)) {
                     if (reverse) {
                         child.reverseChildren();
                     }
                     toFlatten = child;
                 }
-                toRemove = (toRemove.equals(NodeLabel.Empty)) ? NodeLabel.Full : NodeLabel.Empty;
+                toRemove = (toRemove.equals(NodeLabel.EMPTY)) ? NodeLabel.FULL : NodeLabel.EMPTY;
             }
         }
         if (toFlatten != null) {
@@ -201,7 +201,7 @@ class PQNode {
     // Should only be called on QNodes with two partial children.
     public List<PQNode> trimAndFlattenQNodeChildren(PQNode divideStart, PQNode divideEnd) {
         List<PQNode> removed = new LinkedList<>();
-        NodeLabel toRemove = NodeLabel.Full;
+        NodeLabel toRemove = NodeLabel.FULL;
         PQNode toFlatten = null;
         for (PQNode child : children) {
             if (toFlatten != null) {
@@ -209,21 +209,21 @@ class PQNode {
                 toFlatten = null;
             }
             if (child == divideStart) {
-                if (child.label.equals(NodeLabel.Partial)) {
+                if (child.label.equals(NodeLabel.PARTIAL)) {
                     toFlatten = child;
                 }
-                toRemove = NodeLabel.Empty;
+                toRemove = NodeLabel.EMPTY;
             } else if (child == divideEnd) {
-                if (child.label.equals(NodeLabel.Partial)) {
+                if (child.label.equals(NodeLabel.PARTIAL)) {
                     child.reverseChildren();
                     toFlatten = child;
                 }
-                toRemove = NodeLabel.Full;
+                toRemove = NodeLabel.FULL;
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
                 removed.add(child);
-            } else if (child.label.equals(NodeLabel.Partial) && child != divideStart && child != divideEnd) {
+            } else if (child.label.equals(NodeLabel.PARTIAL) && child != divideStart && child != divideEnd) {
                 for (PQNode grandchild : child.getLabelView(toRemove)) {
                     child.removeChild(grandchild);
                     removed.add(grandchild);
@@ -258,20 +258,20 @@ class PQNode {
             }
             reverseCount -= lastChange;
             switch (child.label) {
-                case Empty:
+                case EMPTY:
                     count += child.numLeafDescendants;
                     lastChange = child.numLeafDescendants;
                     break;
-                case Full:
+                case FULL:
                     count -= child.numLeafDescendants;
                     lastChange = -child.numLeafDescendants;
                     break;
-                case Partial:
-                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.Empty)) {
+                case PARTIAL:
+                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.EMPTY)) {
                         count += grandchild.numLeafDescendants;
                         lastChange += grandchild.numLeafDescendants;
                     }
-                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.Full)) {
+                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.FULL)) {
                         carry += grandchild.numLeafDescendants;
                         reverseCount += grandchild.numLeafDescendants;
                     }
@@ -312,21 +312,21 @@ class PQNode {
             count += carry;
             carry = 0;
             switch (child.label) {
-                case Empty:
+                case EMPTY:
                     carry = -child.numLeafDescendants;
                     break;
-                case Full:
+                case FULL:
                     carry = child.numLeafDescendants;
                     break;
-                case Partial:
-                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.Empty)) {
+                case PARTIAL:
+                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.EMPTY)) {
                         if (count <= countAtAnchor) {
                             count -= grandchild.numLeafDescendants;
                         } else {
                             carry -= grandchild.numLeafDescendants;
                         }
                     }
-                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.Full)) {
+                    for (PQNode grandchild : child.labeledChildren.get(NodeLabel.FULL)) {
                         if (count <= countAtAnchor) {
                             carry += grandchild.numLeafDescendants;
                         } else {
@@ -368,11 +368,11 @@ class PQNode {
         }
 
         private PQNode makeNode() {
-            return makeNode(NodeType.PNode);
+            return makeNode(NodeType.PNODE);
         }
 
         private PQNode makeQNodeWithChildren(final PQNode[] children) {
-            PQNode node = makeNode(NodeType.QNode);
+            PQNode node = makeNode(NodeType.QNODE);
             for (PQNode child : children) {
                 node.addChild(child);
             }
@@ -393,15 +393,15 @@ class PQNode {
             PQNode grandChild = makeNode();
             PQNode grandChild2 = makeNode();
 
-            child.label = NodeLabel.Empty;
+            child.label = NodeLabel.EMPTY;
             child.numLeafDescendants = 1;
-            fullChild1.label = NodeLabel.Full;
+            fullChild1.label = NodeLabel.FULL;
             fullChild1.numLeafDescendants = 1;
-            fullChild2.label = NodeLabel.Full;
+            fullChild2.label = NodeLabel.FULL;
             fullChild2.numLeafDescendants = 1;
-            grandChild.label = NodeLabel.Empty;
+            grandChild.label = NodeLabel.EMPTY;
             grandChild.numLeafDescendants = 2;
-            grandChild2.label = NodeLabel.Empty;
+            grandChild2.label = NodeLabel.EMPTY;
             grandChild2.numLeafDescendants = 1;
 
             // Test that a new node has no children
@@ -412,9 +412,9 @@ class PQNode {
             iter = node.children.iterator();
             assert !iter.hasNext();
 
-            assert node.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test adding a child
             node.addChild(child);
@@ -430,10 +430,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child);
-            assert node.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child);
+            assert node.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert child.children.size == 0;
@@ -456,11 +456,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(fullChild1);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(fullChild1);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert fullChild1.children.size == 0;
@@ -484,12 +484,12 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 2;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(fullChild1);
-            assert node.labeledChildren.get(NodeLabel.Full).contains(fullChild2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 2;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(fullChild1);
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(fullChild2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert fullChild2.children.size == 0;
@@ -516,10 +516,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert child.labeledChildren.get(NodeLabel.Empty).contains(grandChild);
-            assert child.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert child.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild);
+            assert child.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert grandChild.children.size == 0;
@@ -547,11 +547,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child.labeledChildren.get(NodeLabel.Empty).size() == 2;
-            assert child.labeledChildren.get(NodeLabel.Empty).contains(grandChild);
-            assert child.labeledChildren.get(NodeLabel.Empty).contains(grandChild2);
-            assert child.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.EMPTY).size() == 2;
+            assert child.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild);
+            assert child.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild2);
+            assert child.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert grandChild2.children.size == 0;
@@ -571,15 +571,15 @@ class PQNode {
             PQNode grandChild = makeNode();
             PQNode grandChild2 = makeNode();
 
-            child.label = NodeLabel.Empty;
+            child.label = NodeLabel.EMPTY;
             child.numLeafDescendants = 1;
-            fullChild1.label = NodeLabel.Full;
+            fullChild1.label = NodeLabel.FULL;
             fullChild1.numLeafDescendants = 1;
-            fullChild2.label = NodeLabel.Full;
+            fullChild2.label = NodeLabel.FULL;
             fullChild2.numLeafDescendants = 1;
-            grandChild.label = NodeLabel.Empty;
+            grandChild.label = NodeLabel.EMPTY;
             grandChild.numLeafDescendants = 2;
-            grandChild2.label = NodeLabel.Empty;
+            grandChild2.label = NodeLabel.EMPTY;
             grandChild2.numLeafDescendants = 1;
 
             // Build same structure as in testAdd()
@@ -604,11 +604,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(fullChild2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(fullChild2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test removing a grandchild
             child.removeChild(grandChild2);
@@ -629,10 +629,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert child.labeledChildren.get(NodeLabel.Empty).contains(grandChild);
-            assert child.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert child.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild);
+            assert child.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test removing a child with a grandchild
             node.removeChild(child);
@@ -648,10 +648,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(fullChild2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(fullChild2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test removing the last child
             node.removeChild(fullChild2);
@@ -666,9 +666,9 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
         }
 
@@ -684,13 +684,13 @@ class PQNode {
             PQNode grandChild2 = makeNode();
             PQNode replacementGrandChild = makeNode();
 
-            child1.label = NodeLabel.Empty;
-            replacementChild1.label = NodeLabel.Full;
-            child2.label = NodeLabel.Full;
-            replacementChild2.label = NodeLabel.Empty;
-            grandChild.label = NodeLabel.Empty;
-            grandChild2.label = NodeLabel.Full;
-            replacementGrandChild.label = NodeLabel.Partial;
+            child1.label = NodeLabel.EMPTY;
+            replacementChild1.label = NodeLabel.FULL;
+            child2.label = NodeLabel.FULL;
+            replacementChild2.label = NodeLabel.EMPTY;
+            grandChild.label = NodeLabel.EMPTY;
+            grandChild2.label = NodeLabel.FULL;
+            replacementGrandChild.label = NodeLabel.PARTIAL;
 
             child1.numLeafDescendants = 1;
             replacementChild1.numLeafDescendants = 2;
@@ -721,11 +721,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 2;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(replacementChild1);
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 2;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(replacementChild1);
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert replacementChild1.children.size == 0;
@@ -752,10 +752,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child2.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert child2.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child2.labeledChildren.get(NodeLabel.Partial).size() == 1;
-            assert child2.labeledChildren.get(NodeLabel.Partial).contains(replacementGrandChild);
+            assert child2.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert child2.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child2.labeledChildren.get(NodeLabel.PARTIAL).size() == 1;
+            assert child2.labeledChildren.get(NodeLabel.PARTIAL).contains(replacementGrandChild);
 
             // Check child metrics
             assert replacementGrandChild.children.size == 0;
@@ -779,11 +779,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(replacementChild2);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(replacementChild1);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(replacementChild2);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(replacementChild1);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
             assert replacementChild2.children.size == 1;
@@ -800,13 +800,13 @@ class PQNode {
             PQNode grandChild1 = makeNode();
             PQNode grandChild2 = makeNode();
 
-            child1.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 1;
-            child2.label = NodeLabel.Full;
+            child2.label = NodeLabel.FULL;
             child2.numLeafDescendants = 1;
-            grandChild1.label = NodeLabel.Empty;
+            grandChild1.label = NodeLabel.EMPTY;
             grandChild1.numLeafDescendants = 2;
-            grandChild2.label = NodeLabel.Empty;
+            grandChild2.label = NodeLabel.EMPTY;
             grandChild2.numLeafDescendants = 0;
 
             node.addChild(child1);
@@ -829,11 +829,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child1);
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child1);
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test reversing a child with no children
             child1.reverseChildren();
@@ -848,9 +848,9 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child1.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert child1.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child1.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child1.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert child1.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child1.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test reversing a child with children
             child2.reverseChildren();
@@ -867,11 +867,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert child2.labeledChildren.get(NodeLabel.Empty).size() == 2;
-            assert child2.labeledChildren.get(NodeLabel.Empty).contains(grandChild1);
-            assert child2.labeledChildren.get(NodeLabel.Empty).contains(grandChild2);
-            assert child2.labeledChildren.get(NodeLabel.Full).isEmpty();
-            assert child2.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child2.labeledChildren.get(NodeLabel.EMPTY).size() == 2;
+            assert child2.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild1);
+            assert child2.labeledChildren.get(NodeLabel.EMPTY).contains(grandChild2);
+            assert child2.labeledChildren.get(NodeLabel.FULL).isEmpty();
+            assert child2.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
         }
 
@@ -887,19 +887,19 @@ class PQNode {
             PQNode child3grandChild1 = makeNode();
             PQNode child3grandChild2 = makeNode();
 
-            child1.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 0;
-            child2.label = NodeLabel.Full;
+            child2.label = NodeLabel.FULL;
             child2.numLeafDescendants = 0;
-            child3.label = NodeLabel.Full;
+            child3.label = NodeLabel.FULL;
             child3.numLeafDescendants = 0;
-            child2grandChild1.label = NodeLabel.Empty;
+            child2grandChild1.label = NodeLabel.EMPTY;
             child2grandChild1.numLeafDescendants = 2;
-            child2grandChild2.label = NodeLabel.Empty;
+            child2grandChild2.label = NodeLabel.EMPTY;
             child2grandChild2.numLeafDescendants = 0;
-            child3grandChild1.label = NodeLabel.Full;
+            child3grandChild1.label = NodeLabel.FULL;
             child3grandChild1.numLeafDescendants = 1;
-            child3grandChild2.label = NodeLabel.Full;
+            child3grandChild2.label = NodeLabel.FULL;
             child3grandChild2.numLeafDescendants = 0;
 
             node.addChild(child1);
@@ -925,11 +925,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child1);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child3);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child1);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child3);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check concatenated child metrics
             assert child3.children.size == 4;
@@ -945,13 +945,13 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check concatenated child's sets of children
-            assert child3.labeledChildren.get(NodeLabel.Empty).size() == 2;
-            assert child3.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild1);
-            assert child3.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild2);
-            assert child3.labeledChildren.get(NodeLabel.Full).size() == 2;
-            assert child3.labeledChildren.get(NodeLabel.Full).contains(child3grandChild1);
-            assert child3.labeledChildren.get(NodeLabel.Full).contains(child3grandChild2);
-            assert child3.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).size() == 2;
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild1);
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild2);
+            assert child3.labeledChildren.get(NodeLabel.FULL).size() == 2;
+            assert child3.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild1);
+            assert child3.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild2);
+            assert child3.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // check grandchildren parent pointers
             assert child3grandChild1.parent == child3;
@@ -973,10 +973,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).isEmpty();
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child3);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child3);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check concatenated child metrics
             assert child3.children.size == 4;
@@ -992,13 +992,13 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check concatenated child's sets of children
-            assert child3.labeledChildren.get(NodeLabel.Empty).size() == 2;
-            assert child3.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild1);
-            assert child3.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild2);
-            assert child3.labeledChildren.get(NodeLabel.Full).size() == 2;
-            assert child3.labeledChildren.get(NodeLabel.Full).contains(child3grandChild1);
-            assert child3.labeledChildren.get(NodeLabel.Full).contains(child3grandChild2);
-            assert child3.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).size() == 2;
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild1);
+            assert child3.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild2);
+            assert child3.labeledChildren.get(NodeLabel.FULL).size() == 2;
+            assert child3.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild1);
+            assert child3.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild2);
+            assert child3.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
         }
 
@@ -1014,19 +1014,19 @@ class PQNode {
             PQNode child3grandChild1 = makeNode();
             PQNode child3grandChild2 = makeNode();
 
-            child1.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
             child1.numLeafDescendants = 1;
-            child2.label = NodeLabel.Full;
+            child2.label = NodeLabel.FULL;
             child2.numLeafDescendants = 0;
-            child3.label = NodeLabel.Full;
+            child3.label = NodeLabel.FULL;
             child3.numLeafDescendants = 0;
-            child2grandChild1.label = NodeLabel.Empty;
+            child2grandChild1.label = NodeLabel.EMPTY;
             child2grandChild1.numLeafDescendants = 2;
-            child2grandChild2.label = NodeLabel.Empty;
+            child2grandChild2.label = NodeLabel.EMPTY;
             child2grandChild2.numLeafDescendants = 0;
-            child3grandChild1.label = NodeLabel.Full;
+            child3grandChild1.label = NodeLabel.FULL;
             child3grandChild1.numLeafDescendants = 1;
-            child3grandChild2.label = NodeLabel.Full;
+            child3grandChild2.label = NodeLabel.FULL;
             child3grandChild2.numLeafDescendants = 0;
 
             node.addChild(child1);
@@ -1054,13 +1054,13 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 3;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child1);
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild1);
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild2);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 1;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child3);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 3;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child1);
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild1);
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild2);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 1;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child3);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Test flattening a child at the end
             node.flatten(child3);
@@ -1080,14 +1080,14 @@ class PQNode {
             assert !iter.hasNext();
 
             // Check sets of children
-            assert node.labeledChildren.get(NodeLabel.Empty).size() == 3;
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child1);
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild1);
-            assert node.labeledChildren.get(NodeLabel.Empty).contains(child2grandChild2);
-            assert node.labeledChildren.get(NodeLabel.Full).size() == 2;
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child3grandChild1);
-            assert node.labeledChildren.get(NodeLabel.Full).contains(child3grandChild2);
-            assert node.labeledChildren.get(NodeLabel.Partial).isEmpty();
+            assert node.labeledChildren.get(NodeLabel.EMPTY).size() == 3;
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child1);
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild1);
+            assert node.labeledChildren.get(NodeLabel.EMPTY).contains(child2grandChild2);
+            assert node.labeledChildren.get(NodeLabel.FULL).size() == 2;
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild1);
+            assert node.labeledChildren.get(NodeLabel.FULL).contains(child3grandChild2);
+            assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
         }
 
@@ -1102,10 +1102,10 @@ class PQNode {
             PQNode[] children = {child1, child2, child3, child4};
 
             // Test 1 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Empty;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.EMPTY;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.EMPTY;
             node = makeQNodeWithChildren(children);
 
             // Test 1 - test trimming pointer at first node, with deletion immediately after
@@ -1117,10 +1117,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 2 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Full;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 2 - test trimming pointer at a middle node, with deletion immediately before and after
@@ -1132,10 +1132,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 3 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Empty;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Full;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.EMPTY;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 3 - test trimming pointer at end with deletion immediately before and at pointer
@@ -1147,10 +1147,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 4 setup
-            child1.label = NodeLabel.Full;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Empty;
-            child4.label = NodeLabel.Full;
+            child1.label = NodeLabel.FULL;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.EMPTY;
+            child4.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 4 - test trimming pointer is null, with deletion in the middle somewhere
@@ -1163,10 +1163,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 5 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Empty;
-            child4.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.EMPTY;
+            child4.label = NodeLabel.EMPTY;
             node = makeQNodeWithChildren(children);
 
             // Test 5 - reverse of test 1
@@ -1178,10 +1178,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 6 setup
-            child1.label = NodeLabel.Full;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Empty;
+            child1.label = NodeLabel.FULL;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.EMPTY;
             node = makeQNodeWithChildren(children);
 
             // Test 6 - reverse of test 2
@@ -1193,10 +1193,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 7 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Empty;
-            child4.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.EMPTY;
+            child4.label = NodeLabel.EMPTY;
             node = makeQNodeWithChildren(children);
 
             // Test 7 - reverse of test 3
@@ -1209,10 +1209,10 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 8 setup
-            child1.label = NodeLabel.Full;
-            child2.label = NodeLabel.Empty;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Full;
+            child1.label = NodeLabel.FULL;
+            child2.label = NodeLabel.EMPTY;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 8 - reverse of test 4
@@ -1226,25 +1226,25 @@ class PQNode {
 
             // Setup for tests with partial nodes
             PQNode emptyChild = makeNode();
-            emptyChild.label = NodeLabel.Empty;
+            emptyChild.label = NodeLabel.EMPTY;
             PQNode fullChild = makeNode();
-            fullChild.label = NodeLabel.Full;
+            fullChild.label = NodeLabel.FULL;
             PQNode partialChild = null;
             PQNode gChild1 = makeNode();
             PQNode gChild2 = makeNode();
             PQNode gChild3 = makeNode();
             PQNode gChild4 = makeNode();
-            gChild1.label = NodeLabel.Empty;
-            gChild2.label = NodeLabel.Empty;
-            gChild3.label = NodeLabel.Full;
-            gChild4.label = NodeLabel.Full;
+            gChild1.label = NodeLabel.EMPTY;
+            gChild2.label = NodeLabel.EMPTY;
+            gChild3.label = NodeLabel.FULL;
+            gChild4.label = NodeLabel.FULL;
             PQNode[] topLevelChildren = {emptyChild, partialChild, fullChild};
             PQNode[] topLevelChildrenReverse = {fullChild, partialChild, emptyChild};
             PQNode[] secondLevelChildren = {gChild1, gChild2, gChild3, gChild4};
 
             // Test 9 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildren);
 
@@ -1262,7 +1262,7 @@ class PQNode {
 
             // Test 10 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildren);
 
@@ -1281,7 +1281,7 @@ class PQNode {
 
             // Test 11 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildren);
 
@@ -1296,7 +1296,7 @@ class PQNode {
 
             // Test 12 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildrenReverse[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildrenReverse);
 
@@ -1314,7 +1314,7 @@ class PQNode {
 
             // Test 13 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildrenReverse[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildrenReverse);
 
@@ -1329,7 +1329,7 @@ class PQNode {
 
             // Test 14 setup
             partialChild = makeQNodeWithChildren(secondLevelChildren);
-            partialChild.label = NodeLabel.Partial;
+            partialChild.label = NodeLabel.PARTIAL;
             topLevelChildrenReverse[1] = partialChild;
             node = makeQNodeWithChildren(topLevelChildrenReverse);
 
@@ -1356,11 +1356,11 @@ class PQNode {
             PQNode[] children = {child1, child2, child3, child4, child5};
 
             // Test 1 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Empty;
-            child4.label = NodeLabel.Full;
-            child5.label = NodeLabel.Empty;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.EMPTY;
+            child4.label = NodeLabel.FULL;
+            child5.label = NodeLabel.EMPTY;
             node = makeQNodeWithChildren(children);
 
             // Test 1 - test trimming pointers so nodes inside are removed
@@ -1374,11 +1374,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 2 setup
-            child1.label = NodeLabel.Full;
-            child2.label = NodeLabel.Empty;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Full;
-            child5.label = NodeLabel.Full;
+            child1.label = NodeLabel.FULL;
+            child2.label = NodeLabel.EMPTY;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.FULL;
+            child5.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 2 - test trimming pointers so nodes at and outside pointers are removed
@@ -1390,11 +1390,11 @@ class PQNode {
             assert !iter.hasNext();
 
             // Test 3 setup
-            child1.label = NodeLabel.Empty;
-            child2.label = NodeLabel.Full;
-            child3.label = NodeLabel.Full;
-            child4.label = NodeLabel.Empty;
-            child5.label = NodeLabel.Full;
+            child1.label = NodeLabel.EMPTY;
+            child2.label = NodeLabel.FULL;
+            child3.label = NodeLabel.FULL;
+            child4.label = NodeLabel.EMPTY;
+            child5.label = NodeLabel.FULL;
             node = makeQNodeWithChildren(children);
 
             // Test 3 - test trimming pointers spanning whole node
@@ -1408,11 +1408,11 @@ class PQNode {
 
             // Setup for tests with partial nodes
             PQNode emptyChild1 = makeNode();
-            emptyChild1.label = NodeLabel.Empty;
+            emptyChild1.label = NodeLabel.EMPTY;
             PQNode emptyChild2 = makeNode();
-            emptyChild2.label = NodeLabel.Empty;
+            emptyChild2.label = NodeLabel.EMPTY;
             PQNode fullChild = makeNode();
-            fullChild.label = NodeLabel.Full;
+            fullChild.label = NodeLabel.FULL;
             PQNode partialChild1 = null;
             PQNode partialChild2 = null;
             PQNode g1Child1 = makeNode();
@@ -1423,24 +1423,24 @@ class PQNode {
             PQNode g2Child2 = makeNode();
             PQNode g2Child3 = makeNode();
             PQNode g2Child4 = makeNode();
-            g1Child1.label = NodeLabel.Empty;
-            g1Child2.label = NodeLabel.Empty;
-            g1Child3.label = NodeLabel.Full;
-            g1Child4.label = NodeLabel.Full;
-            g2Child1.label = NodeLabel.Empty;
-            g2Child2.label = NodeLabel.Empty;
-            g2Child3.label = NodeLabel.Full;
-            g2Child4.label = NodeLabel.Full;
+            g1Child1.label = NodeLabel.EMPTY;
+            g1Child2.label = NodeLabel.EMPTY;
+            g1Child3.label = NodeLabel.FULL;
+            g1Child4.label = NodeLabel.FULL;
+            g2Child1.label = NodeLabel.EMPTY;
+            g2Child2.label = NodeLabel.EMPTY;
+            g2Child3.label = NodeLabel.FULL;
+            g2Child4.label = NodeLabel.FULL;
             PQNode[] topLevelChildren = {emptyChild1, partialChild1, fullChild, partialChild2, emptyChild2};
             PQNode[] secondLevelChildren1 = {g1Child1, g1Child2, g1Child3, g1Child4};
             PQNode[] secondLevelChildren2 = {g2Child1, g2Child2, g2Child3, g2Child4};
 
             // Test 4 setup
             partialChild1 = makeQNodeWithChildren(secondLevelChildren1);
-            partialChild1.label = NodeLabel.Partial;
+            partialChild1.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild1;
             partialChild2 = makeQNodeWithChildren(secondLevelChildren2);
-            partialChild2.label = NodeLabel.Partial;
+            partialChild2.label = NodeLabel.PARTIAL;
             topLevelChildren[3] = partialChild2;
             node = makeQNodeWithChildren(topLevelChildren);
 
@@ -1463,10 +1463,10 @@ class PQNode {
 
             // Test 5 setup
             partialChild1 = makeQNodeWithChildren(secondLevelChildren1);
-            partialChild1.label = NodeLabel.Partial;
+            partialChild1.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild1;
             partialChild2 = makeQNodeWithChildren(secondLevelChildren2);
-            partialChild2.label = NodeLabel.Partial;
+            partialChild2.label = NodeLabel.PARTIAL;
             topLevelChildren[3] = partialChild2;
             node = makeQNodeWithChildren(topLevelChildren);
 
@@ -1483,10 +1483,10 @@ class PQNode {
 
             // Test 6 setup
             partialChild1 = makeQNodeWithChildren(secondLevelChildren1);
-            partialChild1.label = NodeLabel.Partial;
+            partialChild1.label = NodeLabel.PARTIAL;
             topLevelChildren[1] = partialChild1;
             partialChild2 = makeQNodeWithChildren(secondLevelChildren2);
-            partialChild2.label = NodeLabel.Partial;
+            partialChild2.label = NodeLabel.PARTIAL;
             topLevelChildren[3] = partialChild2;
             node = makeQNodeWithChildren(topLevelChildren);
 

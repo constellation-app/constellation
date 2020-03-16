@@ -21,7 +21,7 @@ package au.gov.asd.tac.constellation.arrangements.planar;
  */
 enum NodeLabel {
 
-    Full,
-    Empty,
-    Partial;
+    FULL,
+    EMPTY,
+    PARTIAL;
 }
