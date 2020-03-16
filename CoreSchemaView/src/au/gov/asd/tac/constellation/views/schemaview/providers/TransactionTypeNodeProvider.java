@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -125,9 +126,13 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
                         .forEach(childConcept -> concepts.add(childConcept.getClass()));
                 schemaLabel.setText(String.format("%s - %s", schemaFactory.getLabel(), GraphNode.getGraphNode(graph).getDisplayName()));
-                transactionTypes.addAll(SchemaTransactionTypeUtilities.getTypes(concepts));
-                Collections.sort(transactionTypes, (final SchemaTransactionType a, final SchemaTransactionType b) -> a.getName().compareToIgnoreCase(b.getName()));
-
+                transactionTypes.addAll(
+                        SchemaTransactionTypeUtilities
+                                .getTypes(concepts)
+                                .stream()
+                                .distinct()
+                                .sorted((final SchemaTransactionType a, final SchemaTransactionType b) -> a.getName().compareToIgnoreCase(b.getName()))
+                                .collect(Collectors.toList()));
             } else {
                 schemaLabel.setText("No schema available");
             }

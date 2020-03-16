@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -173,8 +174,13 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
                         .forEach(childConcept -> concepts.add(childConcept.getClass()));
                 schemaLabel.setText(String.format("%s - %s", schemaFactory.getLabel(), GraphNode.getGraphNode(graph).getDisplayName()));
-                vertexTypes.addAll(SchemaVertexTypeUtilities.getTypes(concepts));
-                Collections.sort(vertexTypes, (final SchemaVertexType a, final SchemaVertexType b) -> a.getName().compareToIgnoreCase(b.getName()));
+                vertexTypes.addAll(
+                        SchemaVertexTypeUtilities
+                        .getTypes(concepts)
+                        .stream()
+                        .distinct()
+                        .sorted((final SchemaVertexType a, final SchemaVertexType b) -> a.getName().compareToIgnoreCase(b.getName()))
+                        .collect(Collectors.toList()));
             } else {
                 schemaLabel.setText("No schema available");
             }
