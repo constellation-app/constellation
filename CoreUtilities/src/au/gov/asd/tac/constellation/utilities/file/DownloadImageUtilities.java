@@ -24,9 +24,7 @@ import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.Exceptions;
 
 /**
- * TODO: move me and the DOWNLOAD_FAILED_ICON asset to a common utility
- * class in core
- *
+  *
  * @author arcturus
  */
 public class DownloadImageUtilities {

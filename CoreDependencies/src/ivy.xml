@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-    <info organisation="au.gov.asd.tac" module="third-party-dependencies"/>
-    
-    <configurations defaultconfmapping="*->default,master">
-        <conf name="compile" description="Compile-time dependencies" visibility="public"/>
-        <conf name="runtime" description="Runtime dependencies" visibility="public" extends="compile"/>
-        <conf name="test" description="Test dependencies" visibility="public" extends="runtime"/>
-        <conf name="provided" description="Provided dependencies" visibility="public"/>
-    </configurations>
-    
-    <dependencies defaultconf="runtime">
-        <!-- OpenGL -->
-        <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" >
+    <info organisation="au.gov.asd.tac" module="third-party-dependencies" revision="working"/>
+    <dependencies>
+
+        <!-- OpenGL - This section to be updated and uncommented when JOGL 2.4.0+ is available on MAVEN -->
+<!--        <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.3.2" >
             <artifact name="gluegen-rt" type="jar" ext="jar"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
@@ -19,6 +12,7 @@
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
+
         <dependency org="org.jogamp.jocl" name="jocl" rev="2.3.2">
             <artifact name="jocl" type="jar" ext="jar"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
@@ -27,6 +21,7 @@
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
         </dependency>
+
         <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.3.2">
             <artifact name="jogl-all" type="jar" ext="jar"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
@@ -34,69 +29,87 @@
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
             <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>
+        </dependency>-->
 
         <!-- Geotools -->
-        <!-- The Geotools core libraries are typically packaged together, but 
-        we've included the modules separately so that we can explicitly exclude 
-        components we do not require. -->
+        <!--
+        The Geotools core libraries are typically packaged together but we've
+        included the modules separately so that we can include only the 
+        components we need. The commented jars remain here to document which 
+        core libraries have been left out.
+        -->
         <!--<dependency org="org.geotools" name="gt-coverage" rev="21.2"/>-->
-        <dependency org="org.geotools" name="gt-cql" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-jdbc" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-main" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-metadata" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-opengis" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-referencing" rev="22.2"/>
-        <!--<dependency org="org.geotools" name="gt-render" rev="22.2"/>-->
-        <dependency org="org.geotools" name="gt-xml" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-geopkg" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-shapefile" rev="22.2"/>
-        <dependency org="org.geotools" name="gt-geojson" rev="22.2"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="22.2"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-cql" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-jdbc" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-main" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-metadata" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-opengis" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-referencing" rev="21.2"/>
+        <!--<dependency org="org.geotools" name="gt-render" rev="21.2"/>-->
+        <dependency org="org.geotools" name="gt-xml" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-geopkg" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-shapefile" rev="21.2"/>
+        <dependency org="org.geotools" name="gt-geojson" rev="21.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="21.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="21.2"/>
 
         <!-- Apache Commons -->
-        <dependency org="org.apache.commons" name="commons-csv" rev="1.8"/>
+        <dependency org="org.apache.commons" name="commons-csv" rev="1.7"/>
         <dependency org="org.apache.commons" name="commons-lang3" rev="3.9"/>
         <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1"/>
         <dependency org="org.apache.commons" name="commons-text" rev="1.8"/>
 
         <!-- Other -->
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.4.27.v20200227"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.27.v20200227"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.1"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.1"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.0.8"/>
         <dependency org="com.google.guava" name="guava" rev="28.2-jre" />
-        <dependency org="org.json" name="json" rev="20190722"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.3"/>
-        <!--<dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.3"/>-->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.3"/>
-        <dependency org="org.apache.poi" name="poi" rev="4.1.2"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2"/>
-        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.2"/>
         <dependency org="gov.nasa" name="worldwind" rev="2.0.0"/>
+        <dependency org="org.apache.poi" name="poi" rev="4.1.1"/>
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.1"/>
+        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.1"/>
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.0.1"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.4.24.v20191120"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.24.v20191120"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.38"/>
-        <dependency org="org.processing" name="core" rev="3.3.7"/>
-        <dependency org="org.python" name="jython-standalone" rev="2.7.2rc1"/>
-        <dependency org="org.controlsfx" name="controlsfx" rev="8.40.16"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.0"/>
+        <dependency org="org.json" name="json" rev="20190722"/>
+        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
+        <dependency org="org.python" name="jython-standalone" rev="2.7.2b2"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
-        
-        <!-- Required by Unfolding Maps -->
-        <dependency org="log4j" name="log4j" rev="1.2.17"/>
 
         <!-- To Be Added -->
         <!--<dependency org="javax.help" name="javahelp" rev="2.0.05" />-->
         <!--<dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE112" />-->
         <!--<dependency org="org.openjfx" name="javafx-graphics" rev="11.0.2" />-->
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
-        <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
+        <!--<dependency org="unfolding" name="unfolding" rev="master-20171010"/>-->
+        <!--<dependency org="unfolding" name="json4processing" rev="0.9.6"/>-->
 
         <!-- Exclusions -->
+        <exclude org="com.apple" module="AppleJavaExtensions" />
+        <exclude org="org.eclipse.jetty.orbit" module="javax.servlet" />
+        <!-- Prevent the use of deprecated jai libraries -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>
         <exclude org="javax.media" module="jai_imageio"/>
-        <exclude type="source" ext="jar" conf="*"/>
-        <exclude type="javadoc" ext="jar" conf="*"/>
-        <exclude type="license" ext="txt" conf="*"/>
+        <!-- Prevent the use of another deprecated jai library -->
+        <exclude org="it.geosolutions.imageio-ext" module="imageio-ext-tiff"/>
+
+        <!--
+        This seems to be a maven dependency of log4j-1.2.17.
+        However, javaee-api-5.0-2.jar (servlet API 2.5) clashes with
+        javax.servlet-api-3.1.0.jar (servlet API 3.1), which breaks Jetty
+        (in particular API 2.5 doesn't have HttpServletResponse.getStatus()).
+        Therefore, we exclude this.
+        -->
+        <exclude org="org.apache.openejb" module="javaee-api"/>
+
+        <exclude type="src" ext="jar"/>
+        <exclude type="source" ext="jar"/>
+        <exclude type="sources" ext="jar"/>
+        <exclude type="javadoc" ext="jar"/>
+        <exclude type="license" ext="txt"/>
+
     </dependencies>
 </ivy-module>

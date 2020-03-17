@@ -16,14 +16,14 @@
 package au.gov.asd.tac.constellation.utilities.tooltip;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
-import com.sun.javafx.scene.control.skin.TextAreaSkin;
-import com.sun.javafx.scene.control.skin.TextFieldSkin;
-import com.sun.javafx.scene.control.skin.TextInputControlSkin;
-import com.sun.javafx.scene.text.HitInfo;
 import java.util.List;
 import javafx.geometry.Point2D;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextInputControl;
+import javafx.scene.control.skin.TextAreaSkin;
+import javafx.scene.control.skin.TextFieldSkin;
+import javafx.scene.control.skin.TextInputControlSkin;
+import javafx.scene.text.HitInfo;
 
 /**
  *
@@ -38,7 +38,7 @@ public class TooltipUtilities {
 
         textInputControl.setOnMouseEntered((event) -> {
             if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?, ?> skin = (TextInputControlSkin<?, ?>) textInputControl.getSkin();
+                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
                 characterIndex[0] = info.getCharIndex();
                 List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
@@ -55,7 +55,7 @@ public class TooltipUtilities {
 
         textInputControl.setOnMouseMoved((event) -> {
             if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?, ?> skin = (TextInputControlSkin<?, ?>) textInputControl.getSkin();
+                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
 
                 // If the mouse is over a different character then get new tooltips

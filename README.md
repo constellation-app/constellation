@@ -71,18 +71,18 @@ There is currently no support for Mac and the feature request is tracked by
 
 ## Build Constellation
 
-* Constellation requires at least Open JDK 8 with JFX 8 support build to be 
+* Constellation requires at least Open JDK 11 with JFX 11 support build to be 
 installed and is known to work on Windows 64-bit and Linux 64-bit.
 
 To build Constellation from source code do the following:
 
-* Download NetBeans 8.2 (https://netbeans.org/downloads/old/8.2)
-* Download the Open JDK 8 with JFX 8 from Azul website for 
-[Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-win_x64.zip) 
-or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu8.38.0.13-ca-fx-jdk8.0.212-linux_x64.tar.gz)
+* Download [NetBeans 11.3](https://netbeans.apache.org/downloads/nb113/nb113.html)
+* Download Azul's Zulu distribution of Open JDK 11 with JFX 11, either the 
+[Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip) 
+or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
+* Update the netbeans.conf file's netbeans_jdkhome entry (the file can be found 
+ under the `NetBeans-11.3-bin\netbeans\etc` directory)
 * Clone this repository
-* Update the `netbeans_jdkhome` variable in `netbeans.conf`. Hint: This file may 
-be located at `C:\Program Files\NetBeans 8.2\etc`.
 * Open the Constellation_Core module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
 `Update dependencies and clean build`

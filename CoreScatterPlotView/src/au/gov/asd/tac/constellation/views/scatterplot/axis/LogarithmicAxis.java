@@ -15,27 +15,26 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
-import com.sun.javafx.charts.ChartLayoutAnimator;
+//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.chart.ValueAxis;
-import javafx.util.Duration;
 
 /**
  * An axis for representing numeric data logarithmically, based on the
  * LogarithmicAxis class available in the ExtFX library.
+ * 
+ * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1
  */
 public class LogarithmicAxis extends ValueAxis<Number> {
 
     private final DoubleProperty currentUpperBound = new SimpleDoubleProperty();
-    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
+//    private final ChartLayoutAnimator animator = new ChartLayoutAnimator(this);
     private Object currentAnimationID;
 
     /**
@@ -116,17 +115,17 @@ public class LogarithmicAxis extends ValueAxis<Number> {
         setUpperBound(upper);
 
         if (animate) {
-            animator.stop(currentAnimationID);
-            currentAnimationID = animator.animate(
-                    new KeyFrame(Duration.ZERO,
-                            new KeyValue(currentLowerBound, oldLowerBound),
-                            new KeyValue(currentUpperBound, oldUpperBound)
-                    ),
-                    new KeyFrame(Duration.millis(700),
-                            new KeyValue(currentLowerBound, lower),
-                            new KeyValue(currentUpperBound, upper)
-                    )
-            );
+//            animator.stop(currentAnimationID);
+//            currentAnimationID = animator.animate(
+//                    new KeyFrame(Duration.ZERO,
+//                            new KeyValue(currentLowerBound, oldLowerBound),
+//                            new KeyValue(currentUpperBound, oldUpperBound)
+//                    ),
+//                    new KeyFrame(Duration.millis(700),
+//                            new KeyValue(currentLowerBound, lower),
+//                            new KeyValue(currentUpperBound, upper)
+//                    )
+//            );
         } else {
             currentLowerBound.set(lowerBound);
             currentUpperBound.set(upperBound);

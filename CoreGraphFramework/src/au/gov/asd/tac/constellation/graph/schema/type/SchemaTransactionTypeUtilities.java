@@ -106,7 +106,7 @@ public class SchemaTransactionTypeUtilities {
 
             // Remove any types that are overriden by concepts
             SchemaConceptUtilities.getConcepts().forEach(concept -> {
-                if (fromConcepts == GET_ALL_TYPES || fromConcepts.contains(concept.getClass()) && concept.getOverwrittenSchemaTransactionTypes() != null) {
+                if ((fromConcepts == GET_ALL_TYPES || fromConcepts.contains(concept.getClass())) && concept.getOverwrittenSchemaTransactionTypes() != null) {
                     transactionTypes.removeAll(concept.getOverwrittenSchemaTransactionTypes());
                 }
             });
@@ -188,8 +188,7 @@ public class SchemaTransactionTypeUtilities {
             type = new SchemaTransactionType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            // TODO: Fix custom types overriding built in schema types
-//            SchemaTransactionTypeUtilities.addCustomType(type, false);
+            SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
         
         return type;
