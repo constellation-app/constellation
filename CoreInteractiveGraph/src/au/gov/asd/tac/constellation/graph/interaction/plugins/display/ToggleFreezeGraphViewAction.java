@@ -80,5 +80,4 @@ public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
     public HelpCtx getHelpCtx() {
         return HelpCtx.DEFAULT_HELP;
     }
-
 }

@@ -84,7 +84,7 @@ public class OpenFileAction implements ActionListener {
     }
 
     private HelpCtx getHelpCtx() {
-        return new HelpCtx(OpenFileAction.class);
+        return new HelpCtx(this.getClass().getName());
     }
 
     /**

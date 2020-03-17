@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -75,7 +76,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                 }
             }
             try {
-                AttributeDescription attributeDescription = attributeDescriptionClass.newInstance();
+                AttributeDescription attributeDescription = attributeDescriptionClass.getDeclaredConstructor().newInstance();
                 for (TableRow row : data) {
                     CellValueProperty property = row.getProperty(columnIndex);
                     String value = property.get().getOriginalText();
@@ -99,7 +100,9 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                         }
                     }
                 }
-            } catch (IllegalAccessException | InstantiationException ex) {
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 ex.printStackTrace();
             }
         } else {

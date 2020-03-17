@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.testing.jdbc;
 
 import java.awt.Component;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -119,7 +120,11 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
 
                 data.txColumns = txColumns;
             }
-        } catch (final MalformedURLException | ClassNotFoundException | SQLException | InstantiationException | IllegalAccessException ex) {
+        } catch (final MalformedURLException | ClassNotFoundException
+                | IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException
+                | SQLException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             final String msg = String.format("%s: %s", ex.getClass().getSimpleName(), ex.getMessage());
             throw new WizardValidationException(panel, msg, msg);

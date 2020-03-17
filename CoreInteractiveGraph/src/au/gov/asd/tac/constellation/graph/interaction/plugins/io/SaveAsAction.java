@@ -176,8 +176,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     @Override
     public boolean isEnabled() {
-        if (isDirty
-                || null == changeSupport || !changeSupport.hasListeners("enabled")) {
+        if (isDirty || changeSupport == null || !changeSupport.hasListeners("enabled")) {
             refreshEnabled();
         }
         return super.isEnabled();
@@ -190,12 +189,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         if (inst.size() > 0) {
             SaveAsCapable saveAs = inst.iterator().next();
             File newFile = getNewFileName();
-            if (null != newFile) {
+            if (newFile != null) {
                 //create target folder if necessary
                 FileObject newFolder = null;
                 try {
                     File targetFolder = newFile.getParentFile();
-                    if (null == targetFolder) {
+                    if (targetFolder == null) {
                         throw new IOException(newFile.getAbsolutePath());
                     }
                     newFolder = FileUtil.createFolder(targetFolder);
@@ -260,9 +259,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         final boolean rememberSaveLocation = prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT);
         File newFile = null;
         FileObject currentFileObject = getCurrentFileObject();
-        if (null != currentFileObject) {
+        if (currentFileObject != null) {
             newFile = FileUtil.toFile(currentFileObject);
-            if (null == newFile) {
+            if (newFile == null) {
                 newFile = new File(currentFileObject.getNameExt());
             }
         }
@@ -271,15 +270,13 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         chooser.setFileFilter(new FileNameExtensionFilter(String.format("%s graphs [.star]", BrandingUtilities.APPLICATION_NAME), "star"));
         chooser.setDialogTitle(Bundle.MSG_SaveAsTitle());
         chooser.setMultiSelectionEnabled(false);
-        if (null != newFile) {
+        if (newFile != null) {
+            chooser.setCurrentDirectory(newFile.getParentFile());
             chooser.setSelectedFile(newFile);
-            FileUtil.preventFileChooserSymlinkTraversal(chooser, newFile.getParentFile());
+        } else {
+            final File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
+            chooser.setCurrentDirectory(initialFolder);
         }
-
-        final File initialFolder = getInitialFolderFrom(newFile, lastFileSaveLocation, rememberSaveLocation);
-
-        //null check not required here, Passing in null sets the file chooser to point to the user's default directory.
-        chooser.setCurrentDirectory(initialFolder);
 
         final File origFile = newFile;
         while (true) {
@@ -287,7 +284,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                 return null;
             }
             newFile = chooser.getSelectedFile();
-            if (null == newFile) {
+            if (newFile == null) {
                 break;
             }
             if (isFileInUse(newFile)) {
@@ -340,9 +337,9 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
 
     private FileObject getCurrentFileObject() {
         TopComponent tc = TopComponent.getRegistry().getActivated();
-        if (null != tc) {
+        if (tc != null) {
             DataObject dob = tc.getLookup().lookup(DataObject.class);
-            if (null != dob) {
+            if (dob != null) {
                 return dob.getPrimaryFile();
             }
         }
@@ -356,7 +353,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * will be used instead of file's parent folder.
      */
     private File getInitialFolderFrom(final File newFile, String lastFileSaveLocation, boolean rememberSaveLocation) {
-        if (null != newFile) {
+        if (newFile != null) {
             File parent = newFile.getParentFile();
             if (parent == null) {
                 if (lastDir.isEmpty()) {
@@ -382,7 +379,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
      * @return True if given file is netbeans user dir.
      */
     private boolean isFromUserDir(final File file) {
-        if (null == file) {
+        if (file == null) {
             return false;
         }
         File nbUserDir = new File(System.getProperty("netbeans.user")); //NOI18N
@@ -438,8 +435,8 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         }
 
         TopComponent tc = TopComponent.getRegistry().getActivated();
-        boolean isEditorWindowActivated = null != tc && WindowManager.getDefault().isEditorTopComponent(tc);
-        setEnabled(null != lkpInfo && !lkpInfo.allItems().isEmpty() && isEditorWindowActivated);
+        boolean isEditorWindowActivated = tc != null && WindowManager.getDefault().isEditorTopComponent(tc);
+        setEnabled(lkpInfo != null && !lkpInfo.allItems().isEmpty() && isEditorWindowActivated);
         isDirty = false;
     }
 
@@ -453,22 +450,22 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             lkpInfo = context.lookup(tpl);
         }
 
-        if (null == changeSupport || !changeSupport.hasListeners("enabled")) { //NOI18N
-            if (isGlobal && null != registryListener) {
+        if (changeSupport == null || !changeSupport.hasListeners("enabled")) { //NOI18N
+            if (isGlobal && registryListener != null) {
                 TopComponent.getRegistry().removePropertyChangeListener(registryListener);
                 registryListener = null;
             }
-            if (null != lookupListener) {
+            if (lookupListener != null) {
                 lkpInfo.removeLookupListener(lookupListener);
                 lookupListener = null;
             }
         } else {
-            if (null == registryListener) {
+            if (registryListener == null) {
                 registryListener = createRegistryListener();
                 TopComponent.getRegistry().addPropertyChangeListener(registryListener);
             }
 
-            if (null == lookupListener) {
+            if (lookupListener == null) {
                 lookupListener = createLookupListener();
                 lkpInfo.addLookupListener(lookupListener);
             }

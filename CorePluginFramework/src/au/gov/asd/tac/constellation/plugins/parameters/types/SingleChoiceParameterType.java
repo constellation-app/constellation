@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -399,9 +400,11 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         public String validateString(final String s) {
             // Pass the validation to the inner DataObject.
             try {
-                final ParameterValue validator = innerClass.newInstance();
+                final ParameterValue validator = innerClass.getDeclaredConstructor().newInstance();
                 return validator.validateString(s);
-            } catch (final InstantiationException | IllegalAccessException ex) {
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
                 return ex.getMessage();
             }
@@ -412,20 +415,22 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             try {
                 if (choice == null) {
                     if (s != null) {
-                        final ParameterValue newChoice = innerClass.newInstance();
+                        final ParameterValue newChoice = innerClass.getDeclaredConstructor().newInstance();
                         newChoice.setStringValue(s);
                         choice = newChoice;
                         return true;
                     }
                 } else {
-                    final ParameterValue newChoice = innerClass.newInstance();
+                    final ParameterValue newChoice = innerClass.getDeclaredConstructor().newInstance();
                     newChoice.setStringValue(s);
                     if (!choice.equals(newChoice)) {
                         choice = newChoice;
                         return true;
                     }
                 }
-            } catch (final InstantiationException | IllegalAccessException ex) {
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
