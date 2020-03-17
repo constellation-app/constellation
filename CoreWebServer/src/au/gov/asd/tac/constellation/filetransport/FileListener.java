@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
-import au.gov.asd.tac.constellation.webserver.impl.IconImpl;
 import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
 import au.gov.asd.tac.constellation.webserver.impl.TypeImpl;
@@ -301,31 +300,6 @@ public class FileListener implements Runnable {
                                     GraphImpl.put_current(gid);
                                 } else {
                                     throw new EndpointException("Must specify id");
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/icon":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean editable = getBoolean(args, "editable");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_list(editable, out);
-                                }
-                                break;
-                            case "get":
-                                final String name = getString(args, "name");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_get(name, out);
                                 }
                                 break;
                             default:

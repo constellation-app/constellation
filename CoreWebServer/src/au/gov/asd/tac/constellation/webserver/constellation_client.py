@@ -207,7 +207,7 @@ class Constellation:
         #
         self.r = r
 
-        # Raise for status because we don;t trust the users to check for errors.
+        # Raise for status because we don't trust the users to check for errors.
         #
         r.raise_for_status()
 
@@ -622,20 +622,20 @@ class Constellation:
     def list_icons(self, editable=False):
         """List the icons known by CONSTELLATION.
 
-        :param editable: If True, include user icons."""
+        :param editable: If False, return built-in icons, else return user icons.
+        """
 
-        r = self.rest_request(endpoint='/v1/icon', path='list', params={'editable':editable})
+        name = 'list_icons'
+        return self.call_service(name, args={f'{name}.editable':editable}).json()
 
-        return r.json()
-
-    def get_icon(self, name):
+    def get_icon(self, icon_name):
         """Get the named icon in PNG format.
 
-        :param name: The name of the icon to get."""
+        :param icon_name: The name of the icon to get.
+        """
 
-        r = self.rest_request(endpoint='/v1/icon', path='get', params={'name':name})
-
-        return r.content
+        name = 'get_icon'
+        return self.call_service(name, args={f'{name}.icon_name':icon_name}).content
 
     def call_service(self, name, args=None, json=None):
         """Call a REST service and return a response.
