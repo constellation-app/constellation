@@ -145,6 +145,7 @@
     <target name="download-dependencies" 
             depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
             description="Download dependent libraries.">
+        <mkdir dir="${ivy.lib.dir}"/>
         <ivy:resolve/>
         <ivy:retrieve/>
 
@@ -223,7 +224,6 @@
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-
             <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
             <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
