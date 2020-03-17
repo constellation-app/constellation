@@ -31,15 +31,18 @@ RUN wget -q https://archive.apache.org/dist/ant/binaries/apache-ant-${ANT_VERSIO
     && mv "apache-ant-${ANT_VERSION}" "${ANT_HOME}" \
     && rm -v apache-ant-${ANT_VERSION}-bin.tar.gz
 
-ENV NETBEANS_VERSION="11.0" \
-    NETBEANS_HOME="/usr/local/netbeans"
-ENV NETBEANS_CHECKSUM="9d7fbe5c6bcf781fc1d3f8e2aee62db0435dd716c60dc73ef900ee2817473cc5b0a8e12c1453b7e57aedcece70cff778673a8cf563c1fa4eea816d9636955d4b  incubating-netbeans-${NETBEANS_VERSION}-bin.zip"
+ENV NETBEANS_VERSION="11.3" \
+    NETBEANS_HOME="/usr/local/netbeans" \
+    NETBEANS_HELP_GITHUB="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help"
+ENV NETBEANS_CHECKSUM="ae828836138b5a4156d58df24dd4053be58018cb6b5beb179cb0f4cd8b5db72d2a7356a434d01157aacb78d228732950cf4e3a0b6c725da8e053b6ccd91075d6  netbeans-${NETBEANS_VERSION}-bin.zip"
 
-RUN wget -q "http://apache.mirror.amaze.com.au/incubator/netbeans/incubating-netbeans/incubating-${NETBEANS_VERSION}/incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
+RUN wget -q "http://apache.mirror.amaze.com.au/netbeans/netbeans/${NETBEANS_VERSION}/netbeans-${NETBEANS_VERSION}-bin.zip" \
     && echo "${NETBEANS_CHECKSUM}" | sha512sum -c \
-    && unzip -q "incubating-netbeans-${NETBEANS_VERSION}-bin.zip" \
+    && unzip -q "netbeans-${NETBEANS_VERSION}-bin.zip" \
+    && wget -q "${NETBEANS_HELP_GITHUB}/org-netbeans-modules-javahelp.jar?raw=true" -O netbeans/platform/modules/org-netbeans-modules-javahelp.jar \
+    && wget -q "${NETBEANS_HELP_GITHUB}/jhall-2.0_05.jar?raw=true" -O netbeans/platform/modules/ext/jhall-2.0_05.jar \
     && mv netbeans "${NETBEANS_HOME}" \
-    && rm "incubating-netbeans-${NETBEANS_VERSION}-bin.zip"
+    && rm "netbeans-${NETBEANS_VERSION}-bin.zip"
 
 ENV JACOCO_VERSION="0.8.1" \
     JACOCO_HOME="/opt/jacoco"
