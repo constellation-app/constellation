@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.temporal;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZoneId;

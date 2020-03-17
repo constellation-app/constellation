@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;

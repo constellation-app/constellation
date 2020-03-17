@@ -15,18 +15,18 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualDefaults;
-import au.gov.asd.tac.constellation.visual.graphics3d.FloatArray;
-import au.gov.asd.tac.constellation.visual.graphics3d.IntArray;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.utilities.graphics.FloatArray;
+import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -101,8 +101,8 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
 
         // Create the batch
         attributeLabelBatch = new Batch(GL3.GL_POINTS);
-        final ConstellationColor summaryColor = VisualDefaults.DEFAULT_LABEL_COLOR;
-        summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
+        final ConstellationColor summaryColor = VisualGraphDefaults.DEFAULT_LABEL_COLOR;
+        summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualGraphDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
         floatsTarget = attributeLabelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);
         intsTarget = attributeLabelBatch.newIntBuffer(INT_BUFFER_WIDTH, false);
         summaryLabelBatch = new Batch(attributeLabelBatch);

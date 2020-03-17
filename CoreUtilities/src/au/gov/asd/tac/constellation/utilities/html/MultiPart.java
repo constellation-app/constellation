@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.html;
 
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

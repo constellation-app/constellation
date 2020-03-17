@@ -49,10 +49,10 @@ public final class ApplicationPreferenceKeys {
         final File f = new File(userDir);
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                // TODO warn the user.
+                // TODO: warn the user.
             }
         } else if (!f.isDirectory()) {
-            // TODO warn the user.
+            // TODO: warn the user.
         }
 
         return userDir;
@@ -132,10 +132,10 @@ public final class ApplicationPreferenceKeys {
         final File f = new File(restDir);
         if (!f.exists()) {
             if (!f.mkdirs()) {
-                // TODO warn the user.
+                // TODO: warn the user.
             }
         } else if (!f.isDirectory()) {
-            // TODO warn the user.
+            // TODO: warn the user.
         }
 
         return restDir;

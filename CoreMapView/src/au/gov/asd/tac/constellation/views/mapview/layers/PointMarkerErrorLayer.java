@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance.Haversine;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationPointMarker;

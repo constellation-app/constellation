@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.awt.Component;
 import java.awt.Frame;

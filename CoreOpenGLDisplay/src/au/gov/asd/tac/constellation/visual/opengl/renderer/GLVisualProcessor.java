@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualOperation;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor.VisualChangeProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.awt.GLCanvas;

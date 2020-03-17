@@ -230,11 +230,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         displayPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.displayPanel.border.title"))); // NOI18N
 
         Mnemonics.setLocalizedText(freezeGraphCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.freezeGraphCheckBox.text")); // NOI18N
-        freezeGraphCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                freezeGraphCheckBoxActionPerformed(evt);
-            }
-        });
 
         GroupLayout displayPanelLayout = new GroupLayout(displayPanel);
         displayPanel.setLayout(displayPanelLayout);
@@ -350,11 +345,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         rememberSaveLocationCheckBox.setSelected(true);
         Mnemonics.setLocalizedText(rememberSaveLocationCheckBox, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberSaveLocationCheckBox.text")); // NOI18N
         rememberSaveLocationCheckBox.setActionCommand(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.rememberSaveLocationCheckBox.actionCommand")); // NOI18N
-        rememberSaveLocationCheckBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                rememberSaveLocationCheckBoxActionPerformed(evt);
-            }
-        });
 
         GroupLayout saveLocationPanelLayout = new GroupLayout(saveLocationPanel);
         saveLocationPanel.setLayout(saveLocationPanelLayout);
@@ -437,11 +427,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         autosaveSpinner.setEnabled(autosaveCheckBox.isSelected());
     }//GEN-LAST:event_autosaveCheckBoxActionPerformed
 
-    private void freezeGraphCheckBoxActionPerformed(ActionEvent evt)//GEN-FIRST:event_freezeGraphCheckBoxActionPerformed
-    {//GEN-HEADEREND:event_freezeGraphCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_freezeGraphCheckBoxActionPerformed
-
     private void notebookDirectoryButtonActionPerformed(ActionEvent evt)//GEN-FIRST:event_notebookDirectoryButtonActionPerformed
     {//GEN-HEADEREND:event_notebookDirectoryButtonActionPerformed
         final JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
@@ -468,10 +453,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
             restDirectoryText.setText(fnam);
         }
     }//GEN-LAST:event_restDirectoryButtonActionPerformed
-
-    private void rememberSaveLocationCheckBoxActionPerformed(ActionEvent evt) {//GEN-FIRST:event_rememberSaveLocationCheckBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_rememberSaveLocationCheckBoxActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;

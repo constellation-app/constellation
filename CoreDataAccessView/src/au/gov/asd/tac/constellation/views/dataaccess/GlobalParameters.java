@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

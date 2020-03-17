@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.animation;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
