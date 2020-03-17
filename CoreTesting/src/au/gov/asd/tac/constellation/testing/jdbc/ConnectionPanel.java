@@ -155,21 +155,22 @@ public class ConnectionPanel extends JPanel {
                         // The JAR file hasn't told us what the possible driver classes are,
                         // so do it the hard way.
                         final URL[] searchPath = new URL[]{new URL("file:///" + jarfile)};
-                        final ClassLoader clloader = new URLClassLoader(searchPath);
-                        for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
-                            final JarEntry je = e.nextElement();
-                            final String classname = je.getName();
-                            if (classname.endsWith(".class")) {
-                                try {
-                                    // Remove ".class", convert '/' to '.' to create a proper class name.
-                                    final int len = classname.length();
-                                    final String name = classname.substring(0, len - 6).replace('/', '.');
-                                    final Class<?> cl = clloader.loadClass(name);
-                                    if (Driver.class.isAssignableFrom(cl)) {
-                                        driverList.add(name);
+                        try (final URLClassLoader clloader = new URLClassLoader(searchPath)) {
+                            for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
+                                final JarEntry je = e.nextElement();
+                                final String classname = je.getName();
+                                if (classname.endsWith(".class")) {
+                                    try {
+                                        // Remove ".class", convert '/' to '.' to create a proper class name.
+                                        final int len = classname.length();
+                                        final String name = classname.substring(0, len - 6).replace('/', '.');
+                                        final Class<?> cl = clloader.loadClass(name);
+                                        if (Driver.class.isAssignableFrom(cl)) {
+                                            driverList.add(name);
+                                        }
+                                    } catch (ClassNotFoundException ex) {
+                                        // Not a valid class; ignore it.
                                     }
-                                } catch (ClassNotFoundException ex) {
-                                    // Not a valid class; ignore it.
                                 }
                             }
                         }
