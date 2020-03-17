@@ -76,7 +76,7 @@ installed and is known to work on Windows 64-bit and Linux 64-bit.
 
 To build Constellation from source code do the following:
 
-* Download [NetBeans 11.3](https://netbeans.apache.org/downloads/nb113/nb113.html)
+* Download [NetBeans 11.3](https://netbeans.apache.org/download/nb113/nb113.html)
 * Download Azul's Zulu distribution of Open JDK 11 with JFX 11, either the 
 [Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip) 
 or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
