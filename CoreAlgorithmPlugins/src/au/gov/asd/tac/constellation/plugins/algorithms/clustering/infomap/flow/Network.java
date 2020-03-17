@@ -1,0 +1,164 @@
+/*
+ * Copyright 2010-2020 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
+
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.TreeMap;
+
+/**
+ * Parse graph connections into a map ordered by (end1, end2).
+ *
+ * @author algol
+ */
+public class Network {
+
+    private final Config config;
+    private final GraphReadMethods rg;
+    private final Iterable<Connection> graphConnections;
+
+    private final TreeMap<NodePair, Double> connectionMap;
+
+    private final int vxNameId;
+
+    private final double[] nodeWeights;
+    private final double sumNodeWeights;
+    private int numSelfLinks;
+    private double totalWeight;
+
+    public Network(final Config config, final GraphReadMethods rg) {
+        this.config = config;
+        this.rg = rg;
+
+        vxNameId = rg.getAttribute(GraphElementType.VERTEX, "Name");
+
+        connectionMap = new TreeMap<>();
+
+        // We assume that all vertices have weight 1.
+        nodeWeights = new double[rg.getVertexCount()];
+        Arrays.fill(nodeWeights, 1);
+        sumNodeWeights = rg.getVertexCount();
+
+        graphConnections = new Iterable<Connection>() {
+            @Override
+            public Iterator<Connection> iterator() {
+                if (config.connectionType == ConnectionType.LINKS) {
+                    return new LinkIterator(rg);
+                } else if (config.connectionType == ConnectionType.EDGES) {
+                    return new EdgeIterator(rg);
+                } else if (config.connectionType == ConnectionType.TRANSACTIONS) {
+                    return new TransactionIterator(rg);
+                } else {
+                    throw new IllegalStateException(String.format("Unexpected connection type %s", config.connectionType));
+                }
+            }
+        };
+    }
+
+    public void read() {
+        connectionMap.clear();
+        numSelfLinks = 0;
+
+        int numDoubleLinks = 0;
+        totalWeight = 0;
+
+        // Iterate over connections (transactions, edges, or links, depending on the config).
+        // Note that connection ends are StoreGraph positions, not vertex ids.
+        // This gives us a nice 0..n-1 numbering which the algorithm pretty much relies on.
+        // Don't forget to convert back when looking at the results.
+        for (final Connection conn : graphConnections) {
+            if (conn.target == conn.source) {
+                numSelfLinks++;
+                if (!config.includeSelfLinks) {
+                    continue;
+                }
+            }
+
+            // If undirected links, aggregate weight rather than adding an opposite link.
+            if (config.isUndirected() && conn.target < conn.source) {
+                final int tmp = conn.source;
+                conn.source = conn.target;
+                conn.target = tmp;
+            }
+
+            totalWeight += conn.weight;
+            if (config.isUndirected()) {
+                totalWeight += conn.weight;
+            }
+
+            // Aggregate link weights if they are defined more than once.
+            final NodePair nodePair = new NodePair(conn.source, conn.target);
+            final Double d = connectionMap.get(nodePair);
+            if (d == null) {
+                connectionMap.put(nodePair, conn.weight);
+            } else {
+                connectionMap.put(nodePair, d + conn.weight);
+                numDoubleLinks++;
+                if (conn.target == conn.source) {
+                    numSelfLinks--;
+                }
+            }
+        }
+
+        Logf.printf("done! Found %d nodes and %d connections. ", rg.getVertexCount(), connectionMap.size());
+        if (numDoubleLinks > 0) {
+            Logf.printf("%d connections was aggregated to existing connections. ", numDoubleLinks);
+        }
+        if (numSelfLinks > 0 && !config.includeSelfLinks) {
+            Logf.printf("%d self-connections was ignored. ");
+        }
+
+        System.out.printf("\n");
+    }
+
+    public int getNumNodes() {
+        return rg.getVertexCount();
+    }
+
+    public double getTotalWeight() {
+        return totalWeight;
+    }
+
+    public TreeMap<NodePair, Double> getMap() {
+        return connectionMap;
+    }
+
+    public double[] getNodeTeleportRates() {
+        return nodeWeights;
+    }
+
+    public double getSumNodeWeights() {
+        return sumNodeWeights;
+    }
+
+    public String getNodeName(final int position) {
+
+        if (vxNameId == Graph.NOT_FOUND) {
+            return "";
+        }
+
+        final int vxId = rg.getVertex(position);
+        final String name = String.format("[Node position=%d, vxId=%d]", position, vxId);
+
+        return name;
+    }
+}

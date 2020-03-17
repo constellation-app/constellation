@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.testing.debug;
 
 import au.gov.asd.tac.constellation.functionality.startup.MostRecentModules;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;

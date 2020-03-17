@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.node;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import org.openide.windows.TopComponent;
 
 /**

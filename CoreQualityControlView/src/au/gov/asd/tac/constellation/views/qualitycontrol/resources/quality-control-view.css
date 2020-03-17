@@ -22,7 +22,7 @@
     -fx-padding: 1; /* 0.083333em; */
 
     /* Constants used throughout the tableview.
-     * TODO: Should these be derived from the palette in .scene?
+     * TODO: should these be derived from the palette in .scene?
      */
     -fx-table-header-border-color: #959595;
     /*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/

@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module: au.gov.asd.tac.constellation.schema.visualschema
-OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/schema/visualschema/Bundle.properties
+OpenIDE-Module: au.gov.asd.tac.constellation.graph.schema.visual
+OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/graph/schema/visual/Bundle.properties
 OpenIDE-Module-Specification-Version: 1.0
 

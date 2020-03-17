@@ -23,14 +23,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.graph.file</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.2</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.graph.node</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -39,7 +31,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.pluginframework</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -63,14 +63,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.3</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.api.annotations.common</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -89,15 +81,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.settings</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.49.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.openide.awt</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -111,30 +94,6 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.42.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.filesystems</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>9.10.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.filesystems.nb</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>9.9.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.loaders</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>7.66.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -169,14 +128,6 @@
                         <specification-version>9.6.1</specification-version>
                     </run-dependency>
                 </dependency>
-                <dependency>
-                    <code-name-base>org.openide.windows</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>6.75.1</specification-version>
-                    </run-dependency>
-                </dependency>
             </module-dependencies>
             <test-dependencies>
                 <test-type>
@@ -188,26 +139,13 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.graph.visual.banner</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.blaze</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.blaze.compatibility</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.camera</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.color</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.composites</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.concept</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.connectionmode</package>
+                <package>au.gov.asd.tac.constellation.graph.visual</package>
                 <package>au.gov.asd.tac.constellation.graph.visual.contextmenu</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.decorators</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.display</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.drawflags</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.hyperlink</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.icons</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.labels</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.labels.compatibility</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.linestyle</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.planes</package>
+                <package>au.gov.asd.tac.constellation.graph.visual.dragdrop</package>
+                <package>au.gov.asd.tac.constellation.graph.visual.framework</package>
+                <package>au.gov.asd.tac.constellation.graph.visual.graphics</package>
+                <package>au.gov.asd.tac.constellation.graph.visual.plugins.select</package>
                 <package>au.gov.asd.tac.constellation.graph.visual.utilities</package>
-                <package>au.gov.asd.tac.constellation.graph.visual.widgets</package>
             </public-packages>
         </data>
     </configuration>

@@ -214,13 +214,12 @@
         <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
     </target>
 
-    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
-        <ivy:resolve/>
-        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
-    </target>
-
     <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>
 
+    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+        <ivy:resolve/>
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
 </project>

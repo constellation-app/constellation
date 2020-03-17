@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.nifi.rest;
 
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;
@@ -52,7 +52,7 @@ public class NifiClient extends RestClient {
     private static final NifiConfig DEFAULT_CONFIG = Lookup.getDefault().lookup(NifiConfig.class);
 
     // This is used to prevent the same file being submitted multiple times.
-    // TODO: Make this more robust and efficient.
+    // TODO: make this more robust and efficient.
     private static final HashMap<String, String> SUBMIT_CACHE = new HashMap<>();
 
     private NifiFileSubmitResponse postToNodes(final Map<String, String> headers, final byte[] bytes, final Boolean stopAfterFirstAccept) throws IOException {

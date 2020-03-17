@@ -276,7 +276,7 @@ public class RecentFileAction extends AbstractAction
                 RecentFiles.pruneHistory();
             }
         }
-        // TODO: Processing of pressing of a shortcut key that can be associated
+        // TODO: processing of pressing of a shortcut key that can be associated
         // with this action. Note, in this case, any UI component can be passed
         // as the source.
     }

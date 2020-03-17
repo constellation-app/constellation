@@ -140,19 +140,6 @@ public class ThreeTupleNGTest {
         assertEquals(instance.getThird(), "updated");
     }
 
-//    /**
-//     * Test of stream method, of class ThreeTuple.
-//     */
-//    @Test
-//    public void testStream() {
-//        System.out.println("stream");
-//        ThreeTuple instance = null;
-//        Stream expResult = null;
-//        Stream result = instance.stream();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of equals method, of class ThreeTuple.
      */
@@ -169,19 +156,6 @@ public class ThreeTupleNGTest {
         assertEquals(result, expResult);
     }
 
-//    /**
-//     * Test of hashCode method, of class ThreeTuple.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        System.out.println("hashCode");
-//        ThreeTuple instance = null;
-//        int expResult = 0;
-//        int result = instance.hashCode();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of toString method, of class ThreeTuple.
      */
