@@ -8,61 +8,11 @@
     "host": "localhost:1517",
     "basePath": "/",
     "tags": [
-        {
-            "name": "graph",
-            "description": "Operations on graphs"
-        }
     ],
     "schemes": ["http"],
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": {
-        "/v1/graph/getattrs": {
-            "get": {
-                "tags": ["graph"],
-                "description": "The graph, vertex, and transaction attributes.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "graph_id",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The id of the associated graph",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/graph/get": {
-            "get": {
-                "tags": ["graph"],
-                "description": "The graph attribute values.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "graph_id",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The id of the associated graph",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
         "/v1/graph/set": {
             "post": {
                 "tags": ["graph"],
