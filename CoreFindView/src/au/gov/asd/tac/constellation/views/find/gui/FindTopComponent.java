@@ -786,6 +786,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             future.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -903,6 +904,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             future.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }

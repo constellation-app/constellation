@@ -108,7 +108,10 @@ public class PluginImpl {
             } else {
                 PluginExecution.withPlugin(pluginName).executeNow(graph);
             }
-        } catch (final InterruptedException | PluginException | IllegalArgumentException ex) {
+        } catch (PluginException | IllegalArgumentException ex) {
+            throw new EndpointException(ex);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             throw new EndpointException(ex);
         }
     }

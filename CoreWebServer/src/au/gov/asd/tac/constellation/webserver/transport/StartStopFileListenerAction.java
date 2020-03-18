@@ -75,6 +75,7 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
                 setBooleanState(!listener_on);
             } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
 

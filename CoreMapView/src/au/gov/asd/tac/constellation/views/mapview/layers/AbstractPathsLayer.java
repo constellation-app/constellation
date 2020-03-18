@@ -83,6 +83,7 @@ public abstract class AbstractPathsLayer extends MapLayer {
                     return true;
                 }
             } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
         }

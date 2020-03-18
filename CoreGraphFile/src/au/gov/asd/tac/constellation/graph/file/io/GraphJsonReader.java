@@ -113,9 +113,12 @@ public final class GraphJsonReader {
 
             try {
                 graph = readGraph(name, in.getInputStream(), in.getAvailableSize(), progress);
-            } catch (IllegalStateException | InterruptedException ex) {
+            } catch (IllegalStateException ex) {
                 throw new GraphParseException(ex.getMessage(), ex);
-            } finally {
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new GraphParseException(ex.getMessage(), ex);
+            }finally {
                 in.getInputStream().close();
             }
         } finally {

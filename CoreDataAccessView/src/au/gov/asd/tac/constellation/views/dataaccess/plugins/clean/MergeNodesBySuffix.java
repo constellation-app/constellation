@@ -131,6 +131,7 @@ public class MergeNodesBySuffix implements MergeNodeType {
                             leadVertex = selected[0];
                         } catch (InterruptedException ex) {
                             Exceptions.printStackTrace(ex);
+                            Thread.currentThread().interrupt();
                         }
                     }
 

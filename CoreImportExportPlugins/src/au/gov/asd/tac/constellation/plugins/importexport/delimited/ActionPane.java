@@ -57,6 +57,7 @@ public class ActionPane extends BorderPane {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 } catch (PluginException ex) {
                 }
             }

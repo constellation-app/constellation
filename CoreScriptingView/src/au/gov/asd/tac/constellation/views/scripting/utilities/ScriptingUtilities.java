@@ -103,7 +103,10 @@ public class ScriptingUtilities implements ScriptingModule {
         parameters.appendParameters(plugin.createParameters());
         try {
             PluginExecution.withPlugin(plugin).withParameters(parameters).executeNow(graph.getGraph());
-        } catch (InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -127,7 +130,10 @@ public class ScriptingUtilities implements ScriptingModule {
                 }
             });
             PluginExecution.withPlugin(plugin).withParameters(parameters).executeNow(graph.getGraph());
-        } catch (InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
