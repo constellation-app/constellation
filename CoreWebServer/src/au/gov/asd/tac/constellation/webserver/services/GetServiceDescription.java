@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
- @ServiceProvider(service=RestService.class)
+@ServiceProvider(service=RestService.class)
 public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
     private static final String SERVICE_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "service_name");

@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200310
+__version__ = 20200318
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -602,22 +602,17 @@ class Constellation:
     def list_graphs(self):
         """List the open graphs."""
 
-        r = self.rest_request(endpoint='/v1/graph', path='schema_all')
+        return self.call_service('list_graphs').json()
 
-        data = json.loads(r.text)
-
-        return data
-
-    def describe_type(self, name):
+    def describe_type(self, type_name):
         """Describe the specified CONSTELLATION type.
 
-        :param name: The name of the type to describe.
+        :param type_name: The name of the type to describe.
 
         :returns: A dictionary describing the named CONSTELLATION type."""
 
-        r = self.rest_request(endpoint='/v1/type', path='describe', params={'type': name})
-
-        return r.json()
+        service = 'get_type_description'
+        return self.call_service(service, args={f'{service}.type_name':type_name}).json()
 
     def list_icons(self, editable=False):
         """List the icons known by CONSTELLATION.
@@ -625,8 +620,8 @@ class Constellation:
         :param editable: If False, return built-in icons, else return user icons.
         """
 
-        name = 'list_icons'
-        return self.call_service(name, args={f'{name}.editable':editable}).json()
+        service = 'list_icons'
+        return self.call_service(service, args={f'{service}.editable':editable}).json()
 
     def get_icon(self, icon_name):
         """Get the named icon in PNG format.
@@ -634,8 +629,8 @@ class Constellation:
         :param icon_name: The name of the icon to get.
         """
 
-        name = 'get_icon'
-        return self.call_service(name, args={f'{name}.icon_name':icon_name}).content
+        service = 'get_icon'
+        return self.call_service(service, args={f'{service}.icon_name':icon_name}).content
 
     def call_service(self, name, args=None, json=None):
         """Call a REST service and return a response.

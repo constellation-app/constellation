@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,35 +13,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.webserver.impl;
+package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  *
  * @author algol
  */
-public class TypeImpl {
+@ServiceProvider(service=RestService.class)
+public class GetTypeDescription extends RestService {
+    private static final String NAME = "get_type_description";
+    private static final String TYPE_PARAMETER_ID = String.format("%s.%s", NAME, "type_name");
 
-    /**
-     * Describe the specified type.
-     *
-     * @param type The type to describe.
-     * @param out An OutputStream to write the response to.
-     *
-     * @throws IOException
-     */
-    public static void get_describe(final String type, final OutputStream out) throws IOException {
-        if (!SchemaVertexTypeUtilities.getDefaultType().equals(SchemaVertexTypeUtilities.getType(type))) {
-            final SchemaVertexType vertexType = SchemaVertexTypeUtilities.getType(type);
+    @Override
+    public String getName() {
+        return NAME;
+    }
+
+    @Override
+    public String getDescription() {
+        return "Get the named type as a JSON document.";
+    }
+
+    @Override
+    public String[] getTags() {
+        return new String[]{"type"};
+    }
+
+    @Override
+    public PluginParameters createParameters() {
+        final PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(TYPE_PARAMETER_ID);
+        nameParam.setName("Get the named type.");
+        nameParam.setDescription("Return the named type.");
+        parameters.addParameter(nameParam);
+
+        return parameters;
+    }
+
+    @Override
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+        final String typeName = parameters.getStringValue(TYPE_PARAMETER_ID);
+
+        if (!SchemaVertexTypeUtilities.getDefaultType().equals(SchemaVertexTypeUtilities.getType(typeName))) {
+            final SchemaVertexType vertexType = SchemaVertexTypeUtilities.getType(typeName);
 
             final ObjectMapper mapper = new ObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
@@ -70,8 +101,8 @@ public class TypeImpl {
             root.put("hierarchy", vertexType.getHierachy());
 
             mapper.writeValue(out, root);
-        } else if (!SchemaTransactionTypeUtilities.getDefaultType().equals(SchemaTransactionTypeUtilities.getType(type))) {
-            final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(type);
+        } else if (!SchemaTransactionTypeUtilities.getDefaultType().equals(SchemaTransactionTypeUtilities.getType(typeName))) {
+            final SchemaTransactionType transactionType = SchemaTransactionTypeUtilities.getType(typeName);
 
             final ObjectMapper mapper = new ObjectMapper();
             final ObjectNode root = mapper.createObjectNode();
@@ -95,7 +126,7 @@ public class TypeImpl {
 
             mapper.writeValue(out, root);
         } else {
-            throw new EndpointException("The given type was not recognised.");
+            throw new IllegalArgumentException(String.format("The type '%s' is unknown.", typeName));
         }
     }
 }

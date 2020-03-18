@@ -189,69 +189,6 @@
                 ]
             }
         },
-        "/v1/graph/schema_all": {
-            "get": {
-                "tags": ["graph"],
-                "description": "The id, name, and schema of each open graph as an array of objects.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/icon/list": {
-            "get": {
-                "tags": ["icon"],
-                "description": "A list of icon names.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "editable",
-                        "in": "query",
-                        "type": "boolean",
-                        "default": "",
-                        "description": "If not specified, return all icon names; if false, return built-in icon names; if true, return user icon names.",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/icon/get": {
-            "get": {
-                "tags": ["icon"],
-                "description": "The icon with the given name.",
-                "produces": ["image/png"],
-                "parameters": [
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The name of the icon to get.",
-                        "required": true
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
         "/v1/plugin/run": {
             "post": {
                 "tags": ["plugin"],
@@ -276,30 +213,6 @@
                         "in": "body",
                         "type": "string",
                         "description": "A JSON representation of a dictionary of the parameter names and values to be passed to the plugin.",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/plugin/list": {
-            "get": {
-                "tags": ["plugin"],
-                "description": "Get a list of plugins.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "alias",
-                        "in": "query",
-                        "type": "boolean",
-                        "default": true,
-                        "description": "If true, plugin aliases are listed, otherwise the full plugin names are listed.",
                         "required": false
                     },
                     {
@@ -409,29 +322,6 @@
                         "type": "string",
                         "description": "Include only these comma-separated attributes in the recordstore. Use this for much greater efficiency.",
                         "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/type/describe": {
-            "get": {
-                "tags": ["type"],
-                "description": "All the properties of the type.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "type",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The type to describe.",
-                        "required": true
                     },
                     {
                         "name": "X-CONSTELLATION-SECRET",

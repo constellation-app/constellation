@@ -83,14 +83,14 @@ public class GraphServlet extends ConstellationApiServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
             }
-            case "/schema_all": {
-                // Return the id, name, and schema of all open graphs.
-                GraphImpl.get_schema_all(response.getOutputStream());
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                break;
-            }
+//            case "/schema_all": {
+//                // Return the id, name, and schema of all open graphs.
+//                GraphImpl.get_schema_all(response.getOutputStream());
+//
+//                response.setContentType("application/json");
+//                response.setStatus(HttpServletResponse.SC_OK);
+//                break;
+//            }
             default:
                 throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }

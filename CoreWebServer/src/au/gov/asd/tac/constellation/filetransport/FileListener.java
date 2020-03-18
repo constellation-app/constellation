@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
 import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
-import au.gov.asd.tac.constellation.webserver.impl.TypeImpl;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -44,7 +43,6 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import javax.servlet.ServletException;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
@@ -260,11 +258,11 @@ public class FileListener implements Runnable {
                                     GraphImpl.get_schema(out);
                                 }
                                 break;
-                            case "schema_all":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_schema_all(out);
-                                }
-                                break;
+//                            case "schema_all":
+//                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+//                                    GraphImpl.get_schema_all(out);
+//                                }
+//                                break;
                             default:
                                 unrec("path", path);
                         }
@@ -389,29 +387,6 @@ public class FileListener implements Runnable {
 
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
                                     RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/type":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "describe":
-                                final String type = getString(args, "type");
-                                if (type == null) {
-                                    throw new EndpointException("No type specified.");
-                                }
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    TypeImpl.get_describe(type, out);
                                 }
                                 break;
                             default:

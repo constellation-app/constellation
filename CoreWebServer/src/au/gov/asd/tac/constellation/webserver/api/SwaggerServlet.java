@@ -41,6 +41,9 @@ import org.openide.util.lookup.ServiceProvider;
  * The swagger packages contain the contents of swagger-ui/dist unzipped as-is
  * with the addition of the constellation.json swagger config file.
  * The index.html file has been modified to link to constellation.json
+ * <p>
+ * The JSON returned by the servlet is modified on the fly to contain
+ * REST service information.
  *
  * @author algol
  */
@@ -88,13 +91,20 @@ public class SwaggerServlet extends ConstellationHttpServlet {
 
                     httpMethod.put("description", rs.getDescription());
 
+                    // Most parameters are passed in the URL query.
+                    // Some parameters are passed in the body of the request.
+                    // Since PluginParameter doesn't have an option to specify
+                    // this, we'll improvise and look for "(body)" in the
+                    // parameter name. These will be dummy parameters;
+                    // unused except for their swagger description.
+                    //
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
                         final ObjectNode param = params.addObject();
-                        param.put("in", "query");
+                        param.put("in", pp.getName().toLowerCase(Locale.US).contains("(body)") ? "body" : "query");
                         param.put("required", false); // TODO Hard-code this until PluginParameters grows a required field.
-                        param.put("name", pp.getName());
+                        param.put("name", pp.getId());
                         param.put("type", pp.getType().getId());
                         param.put("description", pp.getDescription());
                         if(pp.getObjectValue()!=null) {
