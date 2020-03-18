@@ -36,37 +36,6 @@ import org.openide.util.lookup.ServiceProvider;
         urlPatterns = {"/v1/graph/*"})
 public class GraphServlet extends ConstellationApiServlet {
 
-    private static final String IMAGE_TYPE = "png";
-
-    @Override
-    protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-
-        final String graphId = request.getParameter("graph_id");
-
-        switch (request.getPathInfo()) {
-            case "/getattrs": {
-                // Return the graph, vertex, and transaction attributes as a map.
-                GraphImpl.get_attributes(graphId, response.getOutputStream());
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                break;
-            }
-            case "/get": {
-                // Return the graph attribute values in DataFrame format.
-                GraphImpl.get_get(graphId, response.getOutputStream());
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                break;
-            }
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
-        }
-
-        response.getOutputStream().close();
-    }
-
     @Override
     protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
 

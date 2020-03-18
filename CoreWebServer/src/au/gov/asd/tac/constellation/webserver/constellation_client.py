@@ -425,7 +425,6 @@ class Constellation:
         #
         if data:
             df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
-
             df, self.types = self._fix_types(df)
             return df
         else:
@@ -484,26 +483,28 @@ class Constellation:
             attributes.
         """
 
+        service = 'get_attributes'
         params = {}
         if graph_id:
-            params = {'graph_id':graph_id}
+            params = {f'{service}.graph_id':graph_id}
 
-        r = self.rest_request(endpoint='/v1/graph', path='getattrs', params=params)
+        return self.call_service('get_attributes', args=params).json()
+        # r = self.rest_request(endpoint='/v1/graph', path='getattrs', params=params)
 
-        return r.json()
+        # return r.json()
 
     def get_graph_attributes(self, graph_id=None):
         """Get the graph attribute values."""
 
+        service = 'get_graph_values'
         params = {}
         if graph_id:
-            params = {'graph_id':graph_id}
+            params = {f'{service}.graph_id':graph_id}
 
-        r = self.rest_request(endpoint='/v1/graph', path='get', params=params)
+        r = self.call_service('get_graph_values', args=params)
 
-        df = pd.read_json(r.text, orient='split', dtype=False, convert_dates=False)
-
-        self._fix_types(df)
+        df = pd.read_json(r.content, orient='split', dtype=False, convert_dates=False)
+        df, self.types = self._fix_types(df)
 
         return df
 

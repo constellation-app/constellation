@@ -15,19 +15,22 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import javax.swing.SwingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -35,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
-public class SetGraph extends RestService {
-    private static final String NAME = "set_graph";
+public class GetAttributes extends RestService {
+    private static final String NAME = "get_attributes";
     private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
 
     @Override
@@ -46,7 +49,7 @@ public class SetGraph extends RestService {
 
     @Override
     public String getDescription() {
-        return "Make the graph with the specified id the active graph.";
+        return "The graph, vertex, and transaction attributes as a JSON object.";
     }
 
     @Override
@@ -55,17 +58,12 @@ public class SetGraph extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.PUT;
-    }
-
-    @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of a graph to make active.");
+        graphIdParam.setDescription("The id of the graph to get the attributes of.");
         parameters.addParameter(graphIdParam);
 
         return parameters;
@@ -75,17 +73,42 @@ public class SetGraph extends RestService {
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
 
-        final GraphNode graphNode = GraphNode.getGraphNode(graphId);
-        if (graphNode != null) {
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    graphNode.getTopComponent().requestActive();
-                });
-            } catch (final InterruptedException | InvocationTargetException ex) {
-                throw new EndpointException(ex);
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectNode root = mapper.createObjectNode();
+
+        final ReadableGraph rg = graph.getReadableGraph();
+        try {
+            final int gCount = rg.getAttributeCount(GraphElementType.GRAPH);
+            for (int i = 0; i < gCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.GRAPH, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("graph.%s", label), type);
             }
-        } else {
-            throw new EndpointException(String.format("No graph with id '%s'", graphId));
+
+            final int vCount = rg.getAttributeCount(GraphElementType.VERTEX);
+            for (int i = 0; i < vCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.VERTEX, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("source.%s", label), type);
+            }
+
+            final int tCount = rg.getAttributeCount(GraphElementType.TRANSACTION);
+            for (int i = 0; i < tCount; i++) {
+                final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, i);
+                final String type = rg.getAttributeType(attrId);
+                final String label = rg.getAttributeName(attrId);
+
+                root.put(String.format("transaction.%s", label), type);
+            }
+        } finally {
+            rg.release();
         }
+
+        mapper.writeValue(out, root);
     }
 }

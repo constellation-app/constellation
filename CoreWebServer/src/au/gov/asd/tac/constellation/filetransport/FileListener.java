@@ -231,22 +231,6 @@ public class FileListener implements Runnable {
 
             case "/v1/graph":
                 switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "getattrs":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_attributes(graphId, out);
-                                }
-                                break;
-                            case "get":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_get(graphId, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
                     case "post":
                         switch (path) {
                             case "set":

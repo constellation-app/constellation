@@ -77,10 +77,10 @@ public class GetRecordStore extends RestService {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
-        graphidParam.setName("Graph id");
-        graphidParam.setDescription("The id of a graph to get data from.");
-        parameters.addParameter(graphidParam);
+        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
+        graphIdParam.setName("Graph id");
+        graphIdParam.setDescription("The id of a graph to get data from.");
+        parameters.addParameter(graphIdParam);
 
         final PluginParameter<BooleanParameterValue> selectedParam = BooleanParameterType.build(SELECTED_PARAMETER_ID);
         selectedParam.setName("Selected elements only");
