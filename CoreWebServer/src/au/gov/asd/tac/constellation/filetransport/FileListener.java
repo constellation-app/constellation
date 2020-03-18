@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
-import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -38,8 +37,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.awt.StatusDisplayer;
@@ -213,7 +210,7 @@ public class FileListener implements Runnable {
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
         final String graphId = getString(args, "graph_id");
         switch (endpoint) {
-            case "/v1/service":
+            case "/v2/service":
                 final HttpMethod httpMethod = HttpMethod.getValue(verb);
                 // Get an instance of the service (if it exists).
                 //
@@ -255,72 +252,6 @@ public class FileListener implements Runnable {
                             case "set":
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
                                     GraphImpl.post_set(graphId, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    case "put":
-                        switch (path) {
-                            case "current":
-                                final String gid = getString(args, "id");
-                                if (gid != null) {
-                                    GraphImpl.put_current(gid);
-                                } else {
-                                    throw new EndpointException("Must specify id");
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/recordstore":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "get":
-                                final boolean selected = getBooleanNonNull(args, "selected");
-                                final boolean vx = getBooleanNonNull(args, "vx");
-                                final boolean tx = getBooleanNonNull(args, "tx");
-
-                                // Allow the user to specify a specific set of attributes,
-                                // cutting down data transfer and processing a lot,
-                                // particularly on the Python side.
-                                final String attrsParam = getString(args, "attrs");
-                                final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
-                                final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-                                for (final String k : attrsArray) {
-                                    attrs.add(k);
-                                }
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    case "post":
-                        switch (path) {
-                            case "add":
-                                final Boolean completeWithSchemaParam = getBoolean(args, "complete_with_schema");
-                                final boolean completeWithSchema = completeWithSchemaParam == null ? true : completeWithSchemaParam;
-
-                                final String arrangeParam = getString(args, "arrange");
-                                final String arrange = arrangeParam == null ? null : arrangeParam;
-
-                                final Boolean resetViewParam = getBoolean(args, "reset_view");
-                                final boolean resetView = resetViewParam == null ? true : resetViewParam;
-
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
                                 }
                                 break;
                             default:

@@ -168,26 +168,6 @@ public class GraphImpl {
         setGraphAttributes(graphId, columns, row);
     }
 
-    /**
-     * Make the specified graph the current graph.
-     *
-     * @param graphId
-     */
-    public static void put_current(final String graphId) {
-        final GraphNode graphNode = GraphNode.getGraphNode(graphId);
-        if (graphNode != null) {
-            try {
-                SwingUtilities.invokeAndWait(() -> {
-                    graphNode.getTopComponent().requestActive();
-                });
-            } catch (final InterruptedException | InvocationTargetException ex) {
-                throw new EndpointException(ex);
-            }
-        } else {
-            throw new EndpointException(String.format("No graph with id '%s'", graphId));
-        }
-    }
-
     private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 

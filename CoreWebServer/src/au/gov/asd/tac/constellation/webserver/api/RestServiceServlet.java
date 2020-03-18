@@ -32,6 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * A web service that allows a client to call CONSTELLATION REST services.
  *
+ * The URL pattern *must* match the FileListener and Swagger/OpenAPI patterns.
+ *
  * @author algol
  */
 @ServiceProvider(service = ConstellationHttpServlet.class)

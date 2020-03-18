@@ -350,26 +350,10 @@ class Constellation:
         :returns: The data as a string.
         """
 
-        #    # Check that there is a currently active graph.
-        #    #
-        #    r = requests.get('http://localhost:1517/v1/graph/schema')
-        #    if r.status_code != requests.codes.ok:
-        #        r.raise_for_status()
-        #    data = json.loads(r.text)
-        #
-        #    if not data['id']:
-        #        print('There is no active graph.')
-        #        return None
-        if 'attrs' in params and params['attrs']:
-            attrs = params['attrs']
-            if isinstance(attrs, list):
-                params['attrs'] = ','.join(attrs)
-
         # Fetch the graph data.
         #
-        r = self.rest_request(endpoint='/v1/recordstore', path='get', params=params)
-
-        return r.text
+        service = 'get_recordstore'
+        return self.call_service(service, args=params).content
 
     def get_json(self, params):
         """Get a Python data structure from the graph as specified by
@@ -426,14 +410,23 @@ class Constellation:
         :returns: A DataFrame containing the requested data.
         """
 
-        data = self.get_data(kwargs)
+        service = 'get_recordstore'
+        args = {}
+        for arg in ['graphid', 'selected', 'vx', 'tx', 'attrs']:
+            if arg in kwargs:
+                value = kwargs[arg]
+                if arg=='attrs' and isinstance(value, list):
+                    value = ','.join(value)
+                args[f'{service}.{arg}'] = value
+
+        data = self.get_data(args)
 
         # We can't create a DataFrame if there is no data.
         #
         if data:
             df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
 
-            self.types = self._fix_types(df)
+            df, self.types = self._fix_types(df)
             return df
         else:
             self.types = {}
@@ -455,11 +448,11 @@ class Constellation:
 
         # Remove the type suffix from the column names.
         #
-        df.rename(columns=rename_dict, inplace=True)
+        df = df.rename(columns=rename_dict)
 
-        return types
+        return df, types
 
-    def put_dataframe(self, df, **params):
+    def put_dataframe(self, df, **kwargs):
         """Add the contents of a Pandas DataFrame to the current or specified graph.
 
         :param df: The DataFrame to send to CONSTELLATION.
@@ -475,8 +468,14 @@ class Constellation:
         :param graph_id: The id of the graph to be updated.
         """
 
+        service = 'add_recordstore'
+        args = {}
+        for arg in ['graphid', 'complete_with_schema', 'arrange', 'reset_view']:
+            if arg in kwargs:
+                args[f'{service}.{arg}'] = kwargs[arg]
+
         j = df.to_json(orient='split', date_format='iso')
-        self.rest_request(verb='post', endpoint='/v1/recordstore', path='add', data=j.encode('utf-8'), params=params)
+        self.call_service(service, verb='post', args=args, data=j.encode('utf-8'))
 
     def get_attributes(self, graph_id=None):
         """Get the graph, node, and transaction attributes of the current or specified graph.
@@ -525,7 +524,8 @@ class Constellation:
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
 
-        self.rest_request(verb='put', endpoint='/v1/graph', path='current', params={'graph_id':graph_id})
+        service = 'set_graph'
+        self.call_service(service, verb='put', args={f'{service}.graph_id':graph_id})
 
     def open_graph(self, filename):
         """Open the graph file specified by the filename."""
@@ -638,7 +638,7 @@ class Constellation:
         service = 'get_icon'
         return self.call_service(service, args={f'{service}.icon_name':icon_name}).content
 
-    def call_service(self, name, *, verb='get', args=None, json=None):
+    def call_service(self, name, *, verb='get', args=None, json=None, data=None):
         """Call a REST service and return a response.
 
         The dictionary is built from the JSON in the response body.
@@ -658,7 +658,7 @@ class Constellation:
             For binary repsonses, use get_service().content.
         """
 
-        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json)
+        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data)
 
         return r
 
