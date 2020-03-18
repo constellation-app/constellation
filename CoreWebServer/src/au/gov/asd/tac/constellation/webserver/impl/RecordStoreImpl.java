@@ -283,7 +283,10 @@ public class RecordStoreImpl {
 
         try {
             pe.executeNow(graph);
-        } catch (final InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
     }

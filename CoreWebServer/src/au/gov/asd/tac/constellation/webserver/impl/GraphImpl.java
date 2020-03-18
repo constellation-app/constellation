@@ -325,6 +325,7 @@ public class GraphImpl {
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
 
             final Graph newGraph = GraphManager.getDefault().getActiveGraph();
@@ -378,7 +379,10 @@ public class GraphImpl {
                 SwingUtilities.invokeAndWait(() -> {
                     graphNode.getTopComponent().requestActive();
                 });
-            } catch (final InterruptedException | InvocationTargetException ex) {
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new EndpointException(ex);
+            } catch (InvocationTargetException ex) {
                 throw new EndpointException(ex);
             }
         } else {
@@ -408,7 +412,9 @@ public class GraphImpl {
 
         try {
             pe.executeNow(graph);
-        } catch (final InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
     }

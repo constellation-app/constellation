@@ -195,6 +195,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                 countDownLatch.await();
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
 

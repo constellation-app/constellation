@@ -541,6 +541,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             countDownLatch.await();
         } catch (InterruptedException ex) {
             LOGGER.severe(ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         }
 
         return plugins;
@@ -705,6 +706,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         }
                     }
                 } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                 }
                 Platform.runLater(() -> {
                     graphState.get(storedGraphId).queriesRunning = false;

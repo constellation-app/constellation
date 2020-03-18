@@ -360,6 +360,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
                 Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
         LOGGER.log(Level.INFO, "slept for {0} seconds", sleep);
@@ -422,6 +423,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             interaction.setProgress(1, 0, String.format("Pretended to add %d node(s), modify %d node(s)", r.nextInt(100) + 1, r.nextInt(100) + 1), false);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         }
 
         final String queryName = parameters.getStringValue(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);

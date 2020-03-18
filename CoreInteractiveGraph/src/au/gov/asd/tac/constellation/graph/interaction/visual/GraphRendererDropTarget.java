@@ -99,6 +99,7 @@ public final class GraphRendererDropTarget extends DropTargetAdapter {
                         hitState = hitTestQueue.take();
                         break;
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                     }
                 }
                 final DropInfo dropInfo = new DropInfo(dropGraphLocation, hitState.getCurrentHitId(), hitState.getCurrentHitType().equals(HitType.VERTEX), hitState.getCurrentHitType().equals(HitType.TRANSACTION));

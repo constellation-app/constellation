@@ -214,8 +214,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         if (stateLock != null) {
             try {
                 stateLock.get();
-            } catch (final ExecutionException | InterruptedException ex) {
+            } catch (final ExecutionException ex) {
                 // DO NOTHING
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -239,7 +241,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                         // matches the state object we updated it to.
                         Thread.sleep(10);
                     } catch (final InterruptedException ex) {
-                        // DO NOTHING
+                        Thread.currentThread().interrupt();
                     }
                 }
                 pane.updateSelection(currentGraph, currentState);

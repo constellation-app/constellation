@@ -295,6 +295,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -341,6 +342,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -392,6 +394,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -433,6 +436,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -474,6 +478,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 

@@ -198,6 +198,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         handler = queue.take();
                         break;
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                         if (!handleEvents) {
                             return;
                         }
@@ -241,6 +242,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             } catch (InterruptedException ex) {
                                 waitTime = Math.max(0, time + waitTime - System.currentTimeMillis());
                                 time = System.currentTimeMillis();
+                                Thread.currentThread().interrupt();
                             }
                         }
                     }
@@ -738,6 +740,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     resultConsumer.accept((EventState) hitTestQueue.take());
                     break;
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
             }
         };
@@ -906,7 +909,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         parameters.getParameters().get(CreateTransactionPlugin.DIRECTED_PARAMETER_ID).setObjectValue(directed);
         try {
             PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(wg);
-        } catch (InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex){
         }
         announceNextFlush = true;
     }

@@ -832,6 +832,7 @@ public final class TableViewPane extends BorderPane {
                     updateDataLatch.await();
                 } catch (InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data", ex);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
