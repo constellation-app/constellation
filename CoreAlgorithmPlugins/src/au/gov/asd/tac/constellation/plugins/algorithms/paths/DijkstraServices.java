@@ -338,7 +338,7 @@ public class DijkstraServices {
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
-                } catch (final InterruptedException ex) {
+                } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     return;
                 } catch (BrokenBarrierException ex) {
