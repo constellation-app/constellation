@@ -215,7 +215,10 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 Integer option = (Integer) DialogDisplayer.getDefault().notify(descriptor);
                 result[0] = option;
             });
-        } catch (InterruptedException | InvocationTargetException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -285,6 +288,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     progress.progress(getTime() + " " + currentMessage);
                 }
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
     }

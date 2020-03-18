@@ -132,6 +132,7 @@ public class PluginParametersSwingDialog {
             latch.await();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         }
     }
 

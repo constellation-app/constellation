@@ -368,7 +368,10 @@ public class ScriptingViewPane extends JPanel {
                 try {
                     setName(SCRIPTING_VIEW_THREAD_NAME);
                     f.get();
-                } catch (final InterruptedException | ExecutionException ex) {
+                } catch (final InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException ex) {
                     Exceptions.printStackTrace(ex);
                 }
 

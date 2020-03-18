@@ -121,6 +121,7 @@ public class QueryServices {
                         barrier.await();
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
+                        Thread.currentThread().interrupt();
                     } catch (BrokenBarrierException ex) {
                         Exceptions.printStackTrace(ex);
                     }
@@ -190,6 +191,7 @@ public class QueryServices {
                     barrier.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
                 } catch (BrokenBarrierException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -463,6 +465,7 @@ public class QueryServices {
                 try {
                     barrier.await();
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     return;
                 } catch (BrokenBarrierException ex) {
                     return;

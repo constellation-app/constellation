@@ -466,6 +466,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                     panelCreated.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
                 }
             }
         }

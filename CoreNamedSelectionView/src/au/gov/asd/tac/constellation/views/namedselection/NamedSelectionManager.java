@@ -654,7 +654,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -686,7 +689,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -715,7 +721,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -737,7 +746,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -747,7 +759,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -774,7 +789,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
             final Future<?> f = PluginExecution.withPlugin(nssp).interactively(true).executeLater(graph);
             try {
                 f.get();
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }

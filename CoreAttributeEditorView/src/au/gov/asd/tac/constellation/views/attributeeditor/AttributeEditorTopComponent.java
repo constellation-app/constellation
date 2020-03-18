@@ -134,6 +134,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         };
 
@@ -271,6 +272,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
                         }
 
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
 
                 });

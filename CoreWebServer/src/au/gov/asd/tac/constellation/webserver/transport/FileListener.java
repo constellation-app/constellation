@@ -196,6 +196,7 @@ public class FileListener implements Runnable {
         } catch (final InterruptedException ex) {
             stop();
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         }
 
         StatusDisplayer.getDefault().setStatusText(String.format("Stopped file listener in directory %s", restPath));

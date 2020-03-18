@@ -74,6 +74,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                                 future.get();
                             } catch (InterruptedException ex) {
                                 Exceptions.printStackTrace(ex);
+                                Thread.currentThread().interrupt();
                             } catch (ExecutionException ex) {
                                 Exceptions.printStackTrace(ex);
                             }
@@ -134,6 +135,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 } catch (InterruptedException ex) {
                     auditPluginError(plugin, ex);
                     interaction.notify(PluginNotificationLevel.INFO, "Plugin Cancelled: " + plugin.getName());
+                    Thread.currentThread().interrupt();
                     if (currentReport != null) {
                         currentReport.setError(ex);
                     }
