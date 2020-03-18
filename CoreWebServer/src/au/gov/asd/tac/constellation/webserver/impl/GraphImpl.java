@@ -414,6 +414,7 @@ public class GraphImpl {
             pe.executeNow(graph);
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (PluginException ex) {
             Exceptions.printStackTrace(ex);
         }
