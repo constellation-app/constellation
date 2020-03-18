@@ -59,18 +59,15 @@ public class ListGraphs extends RestService {
         final Map<String, Graph> graphs = GraphNode.getAllGraphs();
         graphs.entrySet().forEach(entry -> {
             final String id = entry.getKey();
-            final Graph g = entry.getValue();
+            final Graph graph = entry.getValue();
             final ObjectNode obj = mapper.createObjectNode();
             obj.put("id", id);
             obj.put("name", GraphNode.getGraphNode(id).getDisplayName());
-            final Schema schema = g.getSchema();
-            if(schema!=null) {
-                obj.put("schema", schema.getFactory().getName());
-            }
+            final Schema schema = graph.getSchema();
+            obj.put("schema", schema!=null ? schema.getFactory().getName() : null);
             root.add(obj);
         });
 
         mapper.writeValue(out, root);
-
     }
 }

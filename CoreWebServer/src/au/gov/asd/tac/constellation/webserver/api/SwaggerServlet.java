@@ -57,7 +57,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     /**
      * This *must* match the URL pattern for RestServiceServlet.
      */
-    private static final String SERVICE_PATH = "/v1/service/%s";
+    private static final String SERVICE_PATH = "/v2/service/%s";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {

@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -38,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetTypeDescription extends RestService {
     private static final String NAME = "get_type_description";
-    private static final String TYPE_PARAMETER_ID = String.format("%s.%s", NAME, "type_name");
+    private static final String TYPE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "type_name");
 
     @Override
     public String getName() {

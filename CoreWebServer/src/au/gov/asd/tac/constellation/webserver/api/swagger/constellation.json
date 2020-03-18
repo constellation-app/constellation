@@ -37,50 +37,6 @@
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": {
-        "/v1/graph/new": {
-            "post": {
-                "tags": ["graph"],
-                "description": "Open a new graph using the specified schema. If a schema is not specified, the default schema is used.<p>This call is asynchronous: the client must check for an active graph.",
-                "parameters": [
-                    {
-                        "name": "schema",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The schema of the new graph.",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/graph/open": {
-            "post": {
-                "tags": ["graph"],
-                "description": "Open an existing graph from a .star file.<p>This call is asynchronous: the client must check for an active graph.",
-                "parameters": [
-                    {
-                        "name": "filename",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The filename of the .star file.",
-                        "required": true
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
         "/v1/graph/getattrs": {
             "get": {
                 "tags": ["graph"],
@@ -145,74 +101,6 @@
                         "in": "query",
                         "type": "string",
                         "description": "The id of the associated graph",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/graph/image": {
-            "get": {
-                "tags": ["graph"],
-                "description": "Bytes containing an image of the graph visualisation encoded in PNG format.",
-                "produces": ["image/png"],
-                "parameters": [
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/graph/schema": {
-            "get": {
-                "tags": ["graph"],
-                "description": "The id, name, and schema of the active graph. If there is no active graph, the id will be null and there will be no name or schema.",
-                "produces": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        },
-        "/v1/plugin/run": {
-            "post": {
-                "tags": ["plugin"],
-                "description": "Run the named plugin on the active graph. (Currently, parameters cannot be passed to the plugin.)",
-                "parameters": [
-                    {
-                        "name": "graph_id",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The id of the associated graph",
-                        "required": false
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The name of the plugin to run.",
-                        "required": true
-                    },
-                    {
-                        "name": "parameters",
-                        "in": "body",
-                        "type": "string",
-                        "description": "A JSON representation of a dictionary of the parameter names and values to be passed to the plugin.",
                         "required": false
                     },
                     {

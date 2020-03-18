@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.DoubleNode;
 import com.fasterxml.jackson.databind.node.IntNode;
@@ -26,6 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -157,5 +162,58 @@ public class ServiceUtilities {
                 throw new EndpointException(String.format("No such parameter: %s", parameterName));
             }
         });
+    }
+
+    public static String activeGraphId() {
+        final Graph existingGraph = GraphManager.getDefault().getActiveGraph();
+        final String existingId = existingGraph != null ? existingGraph.getId() : null;
+
+        return existingId;
+    }
+
+    /**
+     * Wait for another graph to become active and return the graph id.
+     *
+     * Creating and opening a graph are asynchronous operations, but we don't
+     * want to put the burden of figuring out when the graph is ready on the
+     * caller. Instead we wait for the asynchronous operation to finish by
+     * comparing the id of the active graph to that of an existing graph
+     * (possibly null). This could be fooled by the user changing graphs,
+     * but what are you going to do?
+     *
+     * @param existingId
+     *
+     * @return The new graph id.
+     */
+    public static String waitForGraphChange(final String existingId) {
+        // Now we wait for the new graph to become active.
+        //
+        int waits = 0;
+        while(true) {
+            // Wait a bit to give the new graph time to become active.
+            //
+            try {
+                Thread.sleep(1000);
+            } catch(final InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+            final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+            final String newId = newGraph != null ? newGraph.getId() : null;
+            if((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
+                // - there was no existing graph, and the new graph is active, or
+                // - there was an existing graph, and the active graph is not the existing graph.
+                // - we assume the user hasn't interfered by manually switching to another graph at the same time.
+                //
+                return newId;
+            }
+
+            // We only have so much patience.
+            //
+            if (++waits > 10) {
+                throw new EndpointException("The new graph has taken too long to become active");
+            }
+        }
+
     }
 }

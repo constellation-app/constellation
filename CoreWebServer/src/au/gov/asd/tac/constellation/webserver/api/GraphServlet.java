@@ -60,37 +60,6 @@ public class GraphServlet extends ConstellationApiServlet {
                 response.setStatus(HttpServletResponse.SC_OK);
                 break;
             }
-            case "/image": {
-                // Return a screenshot of the graph.
-
-                final boolean hasContent = GraphImpl.get_image(response.getOutputStream());
-                if (hasContent) {
-                    response.setContentType(IMAGE_TYPE);
-                    response.setStatus(HttpServletResponse.SC_OK);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-                }
-                break;
-            }
-            case "/schema": {
-                // Return:
-                //      the id of the active graph, or null if there is no active graph;
-                //      if there is an active graph, the graph's name and schema (which may be null).
-
-                GraphImpl.get_schema(response.getOutputStream());
-
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                break;
-            }
-//            case "/schema_all": {
-//                // Return the id, name, and schema of all open graphs.
-//                GraphImpl.get_schema_all(response.getOutputStream());
-//
-//                response.setContentType("application/json");
-//                response.setStatus(HttpServletResponse.SC_OK);
-//                break;
-//            }
             default:
                 throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }
@@ -112,23 +81,6 @@ public class GraphServlet extends ConstellationApiServlet {
                 // which is what is output by pandas.to_json(..., orient="split').
                 // (We ignore the index array.)
                 GraphImpl.post_set(graphId, request.getInputStream());
-
-                break;
-            case "/new":
-                // Open a new graph.
-                // Use the specified schema for the new graph, or the default if no schema was specified.
-                final String schemaParam = request.getParameter("schema");
-                GraphImpl.post_new(schemaParam);
-
-                break;
-            case "/open":
-                // Open an existing graph.
-                final String filenameParam = request.getParameter("filename");
-                if (filenameParam == null) {
-                    throw new ServletException("Required filename not found");
-                }
-
-                GraphImpl.post_open(filenameParam);
 
                 break;
             default:

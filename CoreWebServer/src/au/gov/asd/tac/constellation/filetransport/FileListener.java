@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
-import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
@@ -215,7 +214,6 @@ public class FileListener implements Runnable {
         final String graphId = getString(args, "graph_id");
         switch (endpoint) {
             case "/v1/service":
-                System.out.printf("@@FILE /v1/service path [%s]\n", path);
                 final HttpMethod httpMethod = HttpMethod.getValue(verb);
                 // Get an instance of the service (if it exists).
                 //
@@ -248,21 +246,6 @@ public class FileListener implements Runnable {
                                     GraphImpl.get_get(graphId, out);
                                 }
                                 break;
-                            case "image":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_image(out);
-                                }
-                                break;
-                            case "schema":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_schema(out);
-                                }
-                                break;
-//                            case "schema_all":
-//                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-//                                    GraphImpl.get_schema_all(out);
-//                                }
-//                                break;
                             default:
                                 unrec("path", path);
                         }
@@ -273,18 +256,6 @@ public class FileListener implements Runnable {
                                 try (final InStream in = new InStream(restPath, CONTENT_IN)) {
                                     GraphImpl.post_set(graphId, in.in);
                                 }
-                                break;
-                            case "new":
-                                final String schemaParam = getString(args, "schema");
-                                GraphImpl.post_new(schemaParam);
-                                break;
-                            case "open":
-                                final String filenameParam = getString(args, "filename");
-                                if (filenameParam == null) {
-                                    throw new EndpointException("Required filename not found");
-                                }
-
-                                GraphImpl.post_open(filenameParam);
                                 break;
                             default:
                                 unrec("path", path);
@@ -298,43 +269,6 @@ public class FileListener implements Runnable {
                                     GraphImpl.put_current(gid);
                                 } else {
                                     throw new EndpointException("Must specify id");
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/plugin":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean alias = getBooleanNonNull(args, "alias");
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    PluginImpl.get_list(alias, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                                break;
-                        }
-                        break;
-                    case "post":
-                        switch (path) {
-                            case "run":
-                                final String pluginName = getString(args, "name");
-                                if (pluginName == null) {
-                                    throw new EndpointException("No plugin specified!");
-                                }
-
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    PluginImpl.post_run(graphId, pluginName, in.in);
                                 }
                                 break;
                             default:

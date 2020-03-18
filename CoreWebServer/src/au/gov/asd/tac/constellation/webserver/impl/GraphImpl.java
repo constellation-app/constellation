@@ -19,40 +19,23 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.pluginframework.Plugin;
 import au.gov.asd.tac.constellation.pluginframework.PluginException;
 import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
 import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.concurrent.Semaphore;
-import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import org.openide.util.Exceptions;
 
@@ -144,102 +127,6 @@ public class GraphImpl {
     }
 
     /**
-     * Return a screenshot of the graph.
-     * <p>
-     * This must be done on the active graph, so there's no graphId parameter.
-     *
-     * @param out An OutputStream to write the response to.
-     *
-     * @return True if an image is returned, False otherwise.
-     *
-     * @throws IOException
-     */
-    public static boolean get_image(final OutputStream out) throws IOException {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-
-        // This is asynchronous, so we need a Semaphore.
-        //
-        final GraphNode graphNode = GraphNode.getGraphNode(graph);
-        final VisualManager visualManager = graphNode.getVisualManager();
-        final BufferedImage[] img1 = new BufferedImage[1];
-
-        final boolean hasContent = visualManager != null;
-        if (hasContent) {
-            final Semaphore waiter = new Semaphore(0);
-            visualManager.exportToBufferedImage(img1, waiter);
-            waiter.acquireUninterruptibly();
-
-            final boolean written = ImageIO.write(img1[0], IMAGE_TYPE, out);
-        }
-
-        return hasContent;
-    }
-
-    /**
-     * Return: the id of the active graph, or null if there is no active graph;
-     * if there is an active graph, the graph's name and schema (which may be
-     * null).
-     *
-     * @param out An OutputStream to write the response to.
-     *
-     * @throws IOException
-     */
-    public static void get_schema(final OutputStream out) throws IOException {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode root = mapper.createObjectNode();
-        String name = null;
-        String schemaName = null;
-        final String id = graph != null ? graph.getId() : null;
-        if (graph != null) {
-            name = GraphNode.getGraphNode(id).getDisplayName();
-            final Schema schema = graph.getSchema();
-            if (schema != null) {
-                schemaName = schema.getFactory().getName();
-            }
-        }
-
-        root.put("id", id);
-        if (name != null) {
-            root.put("name", name);
-        }
-        if (id != null) {
-            root.put("schema", schemaName);
-        }
-
-        mapper.writeValue(out, root);
-
-    }
-
-    /**
-     * Return the id, name, and schema of all open graphs.
-     *
-     * @param out An OutputStream to write the response to.
-     *
-     * @throws IOException
-     */
-    public static void get_schema_all(final OutputStream out) throws IOException {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final ObjectMapper mapper = new ObjectMapper();
-        final ArrayNode root = mapper.createArrayNode();
-        final Map<String, Graph> graphs = GraphNode.getAllGraphs();
-        graphs.entrySet().forEach(entry -> {
-            final String id = entry.getKey();
-            final Graph g = entry.getValue();
-            final ObjectNode obj = mapper.createObjectNode();
-            obj.put("id", id);
-            obj.put("name", GraphNode.getGraphNode(id).getDisplayName());
-            final Schema schema = graph.getSchema();
-            if (schema != null) {
-                obj.put("schema", schema.getFactory().getName());
-            }
-            root.add(obj);
-        });
-
-        mapper.writeValue(out, root);
-    }
-
-    /**
      * Merge a dataframe into the current graph.
      *
      * @param in An InputStream to read the data from.
@@ -279,91 +166,6 @@ public class GraphImpl {
         }
 
         setGraphAttributes(graphId, columns, row);
-    }
-
-    /**
-     * Create a new graph.
-     *
-     * @param schemaParam The schema of the new graph, or the default schema if
-     * null
-     */
-    public static void post_new(final String schemaParam) {
-        String schemaName = null;
-        for (final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
-            if (schemaFactory.isPrimarySchema()) {
-                if (schemaParam == null || schemaParam.equals(schemaFactory.getName())) {
-                    schemaName = schemaFactory.getName();
-                    break;
-                }
-            }
-        }
-
-        if (schemaName == null) {
-            throw new EndpointException(String.format("Unknown schema %s", schemaParam));
-        }
-
-        // Creating a new graph is asynchronous; we want to hide this from the client.
-        //
-        final Graph existingGraph = GraphManager.getDefault().getActiveGraph();
-        final String existingId = existingGraph != null ? existingGraph.getId() : null;
-
-        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(schemaName).createSchema();
-        final StoreGraph sg = new StoreGraph(schema);
-        schema.newGraph(sg);
-        final Graph dualGraph = new DualGraph(sg, false);
-
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().replace(" ", "").toLowerCase();
-        GraphOpener.getDefault().openGraph(dualGraph, graphName);
-
-        // Now we wait for the new graph to become active.
-        //
-        int waits = 0;
-        while (true) {
-            // Wait a bit to give the new graph time to become active.
-            //
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-
-            final Graph newGraph = GraphManager.getDefault().getActiveGraph();
-            final String newId = newGraph != null ? newGraph.getId() : null;
-            if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
-                // - there was no existing graph, and the new graph is active, or
-                // - there was an existing graph, and the active graph is not the existing graph.
-                // - we assume the user hasn't interfered by manually switching to another graph at the same time.
-                //
-                break;
-            }
-
-            // We only have so much patience.
-            //
-            if (++waits > 10) {
-                throw new EndpointException("The new graph has taken too long to become active");
-            }
-        }
-    }
-
-    /**
-     * Open the specified graph file.
-     *
-     * @param filenameParam The name of the file to open.
-     *
-     * @throws IOException
-     */
-    public static void post_open(final String filenameParam) throws IOException {
-        final File fnam = new File(filenameParam).getAbsoluteFile();
-        String name = fnam.getName();
-        if (name.toUpperCase().endsWith(GraphDataObject.FILE_EXTENSION)) {
-            name = name.substring(0, name.length() - 5);
-        }
-        try {
-            final Graph g = new GraphJsonReader().readGraphZip(fnam, new IoProgressHandle(String.format("Loading graph %s...", fnam)));
-            GraphOpener.getDefault().openGraph(g, name, false);
-        } catch (final GraphParseException ex) {
-            throw new EndpointException(ex);
-        }
     }
 
     /**

@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,8 +33,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
-public class ListServices extends RestService {
-    private static final String NAME = "list_services";
+public class GetGraph extends RestService {
+    private static final String NAME = "get_graph";
 
     @Override
     public String getName() {
@@ -41,25 +43,33 @@ public class ListServices extends RestService {
 
     @Override
     public String getDescription() {
-        return "List the available services.";
+        return "The id, name, and schema of the active graph as a JSON object.";
     }
 
     @Override
     public String[] getTags() {
-        return new String[]{"service"};
+        return new String[]{"graph", "schema"};
     }
 
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
         final ObjectMapper mapper = new ObjectMapper();
-        final ArrayNode root = mapper.createArrayNode();
+        final ObjectNode root = mapper.createObjectNode();
+        String name = null;
+        String schemaName = null;
+        final String id = graph != null ? graph.getId() : null;
+        if (graph != null) {
+            name = GraphNode.getGraphNode(id).getDisplayName();
+            final Schema schema = graph.getSchema();
+            if (schema != null) {
+                schemaName = schema.getFactory().getName();
+            }
+        }
 
-        RestServiceRegistry.getServices().forEach(serviceKey -> {
-            final ObjectNode service = root.addObject();
-            service.put("name", serviceKey.name);
-            service.put("httpMethod", serviceKey.httpMethod.name());
-        });
+        root.put("id", id);
+        root.put("name", name);
+        root.put("schema", schemaName);
 
         mapper.writeValue(out, root);
     }

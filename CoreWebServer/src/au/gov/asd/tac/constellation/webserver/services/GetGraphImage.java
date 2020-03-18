@@ -15,18 +15,21 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.visual.display.VisualManager;
 import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
 import au.gov.asd.tac.constellation.visual.icons.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import static au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.IMAGE_PNG;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.Semaphore;
+import javax.imageio.ImageIO;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,9 +37,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
-public class GetIcon extends RestService {
-    private static final String NAME = "get_icon";
-    private static final String ICON_PARAMETER_ID = ServiceUtilities.buildId(NAME, "icon_name");
+public class GetGraphImage extends RestService {
+    private static final String NAME = "get_graph_image";
 
     @Override
     public String getName() {
@@ -45,31 +47,33 @@ public class GetIcon extends RestService {
 
     @Override
     public String getDescription() {
-        return "Get the named icon as a PNG file.";
+        return "A screenshot of the graph in PNG format.";
     }
 
     @Override
     public String[] getTags() {
-        return new String[]{"icon", "PNG"};
-    }
-
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(ICON_PARAMETER_ID);
-        nameParam.setName("Get the named icon.");
-        nameParam.setDescription("Return the named icon as a PNG file.");
-        parameters.addParameter(nameParam);
-
-        return parameters;
+        return new String[]{"graph", "PNG"};
     }
 
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final String iconName = parameters.getStringValue(ICON_PARAMETER_ID);
-        final ConstellationIcon icon = IconManager.getIcon(iconName);
-        out.write(icon.buildByteArray());
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+
+        // This is asynchronous, so we need a Semaphore.
+        //
+        final GraphNode graphNode = GraphNode.getGraphNode(graph);
+        final VisualManager visualManager = graphNode.getVisualManager();
+        final BufferedImage[] img1 = new BufferedImage[1];
+
+        if(visualManager!=null) {
+            final Semaphore waiter = new Semaphore(0);
+            visualManager.exportToBufferedImage(img1, waiter);
+            waiter.acquireUninterruptibly();
+
+            ImageIO.write(img1[0], "png", out);
+        } else {
+            throw new IOException("Graph image unavailable");
+        }
     }
 
     @Override

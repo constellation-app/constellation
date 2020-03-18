@@ -528,35 +528,42 @@ class Constellation:
         self.rest_request(verb='put', endpoint='/v1/graph', path='current', params={'graph_id':graph_id})
 
     def open_graph(self, filename):
-        """Open a graph from the file system"""
+        """Open the graph file specified by the filename."""
 
-        self.rest_request(verb='post', endpoint='/v1/graph', path='open', params={'filename':filename})
+        service = 'open_graph'
+        graph = self.call_service(service, verb='post', args={f'{service}.filename':filename}).json()
 
-    def new_graph(self, schema=None):
+        return graph['id']
+
+    def new_graph(self, schema_name=None):
         """Open a new graph using the given schema.
-
-        Opening a new graph is an asynchronous operation; this convenience
-        function opens a new graph and waits until it is ready to be used.
 
         The default schema is whatever CONSTELLATION's default schema is.
 
-        :param schema: The optional schema of the new graph.
-        :param get_id: Get the id of the new graph.
+        :param schema_name: The optional schema of the new graph.
 
         :returns: The id of the new graph.
         """
 
+        service = 'new_graph'
         params = {}
-        if schema:
-            params['schema'] = schema
+        if schema_name:
+            params[f'{service}.schema_name'] = schema_name
+        graph = self.call_service(service, verb='post', args=params).json()
 
-        r = self.rest_request(verb='post', endpoint='/v1/graph', path='new', params=params)
+        return graph['id']
 
-        r = self.rest_request(endpoint='/v1/graph', path='schema')
-        data = json.loads(r.text)
-        id = data.get('id', '')
+        # params = {}
+        # if schema:
+        #     params['schema'] = schema
 
-        return id
+        # r = self.rest_request(verb='post', endpoint='/v1/graph', path='new', params=params)
+
+        # r = self.rest_request(endpoint='/v1/graph', path='schema')
+        # data = json.loads(r.text)
+        # id = data.get('id', '')
+
+        # return id
 
     def get_graph_image(self):
         """Get the visualisation of the current active graph as an image encoded in PNG format.
@@ -564,16 +571,17 @@ class Constellation:
         :returns: The PNG-encoded bytes.
         """
 
-        r = self.rest_request(endpoint='/v1/graph', path='image')
+        return self.call_service('get_graph_image').content
 
-        return r.content
-
-    def run_plugin(self, name, args=None, *, graph_id=None):
+    def run_plugin(self, plugin_name, args=None, *, graph_id=None):
         """Run the specified plugin.
+
+        Use list_plugins() to discover plugins, and describe_plugin() to
+        see what parameters it has.
 
         Plugin names are case-insensitive.
 
-        :param name: The name of the plugin to run
+        :param plugin_name: The name of the plugin to run.
         :param args: The arguments to be passed to the plugin; a dictionary
             in the form {parameter_name:value, ...}.
         :param graph_id: The id of the graph to run the plugin on,
@@ -585,7 +593,8 @@ class Constellation:
         if not isinstance(args, dict):
             raise ValueError('args must be a dictionary')
 
-        self.rest_request(verb='post', endpoint='/v1/plugin', path='run', params={'name': name, 'graph_id':graph_id}, json_=args)
+        service = 'run_plugin'
+        self.call_service(service, verb='post', args={f'{service}.plugin_name':plugin_name, f'{service}.graph_id':graph_id}, json=args)
 
     def list_plugins(self, alias=True):
         """List the available plugins.
@@ -593,11 +602,8 @@ class Constellation:
         :param alias: If True, list the plugins by alias rather than
             fully qualified name."""
 
-        r = self.rest_request(endpoint='/v1/plugin', path='list', params={'alias': alias})
-
-        data = json.loads(r.text)
-
-        return data
+        service = 'list_plugins'
+        return self.call_service(service, args={f'{service}.alias':alias}).json()
 
     def list_graphs(self):
         """List the open graphs."""
@@ -632,7 +638,7 @@ class Constellation:
         service = 'get_icon'
         return self.call_service(service, args={f'{service}.icon_name':icon_name}).content
 
-    def call_service(self, name, args=None, json=None):
+    def call_service(self, name, *, verb='get', args=None, json=None):
         """Call a REST service and return a response.
 
         The dictionary is built from the JSON in the response body.
@@ -641,6 +647,7 @@ class Constellation:
         type will vary depending on what the service returns.
 
         :param name: The name of the service to be called.
+        :param verb: The HTTP method used to make the request ('get', 'post', 'put').
         :param args: A dictionary containing the arguments to be passed to the
             service as URL parameters.
         :param json: A dictionary containing data to be sent to the service as
@@ -651,7 +658,7 @@ class Constellation:
             For binary repsonses, use get_service().content.
         """
 
-        r = self.rest_request(endpoint=f'/v1/service', path=name, params=args, json_=json)
+        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json)
 
         return r
 

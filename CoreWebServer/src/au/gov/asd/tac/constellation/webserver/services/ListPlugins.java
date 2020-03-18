@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -34,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class ListPlugins extends RestService {
     private static final String NAME = "list_plugins";
-    private static final String ALIAS_PARAMETER_ID = String.format("%s.%s", NAME, "alias");
+    private static final String ALIAS_PARAMETER_ID = ServiceUtilities.buildId(NAME, "alias");
 
     @Override
     public String getName() {

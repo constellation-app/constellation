@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @WebServlet(
     name = "ServicesAPI",
     description = "REST API for services",
-    urlPatterns = {"/v1/service/*"})
+    urlPatterns = {"/v2/service/*"})
 public class RestServiceServlet extends ConstellationApiServlet {
 
     @Override
