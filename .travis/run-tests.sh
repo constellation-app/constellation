@@ -12,8 +12,8 @@ ant \
 # core-unit-test
 ant \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
+  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dtest.run.args=-javaagent:"${JACOCO_AGENT}" test
 
 # Need to convert the binary jacoco.exec files to XML since the property
@@ -26,10 +26,8 @@ done < <(find . -iname "*jacoco.exec" -print0)
 
 # core-training-build
 ant \
+  -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
-  -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=truenbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
   -Dupdate.dependencies=true \
   -Dbuild.compiler.debug=true build # clean build
