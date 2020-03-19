@@ -28,7 +28,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -95,7 +95,7 @@ public class NewGraph extends RestService {
         }
 
         if(schemaName == null) {
-            throw new EndpointException(String.format("Unknown schema %s", schemaParam));
+            throw new RestServiceException(String.format("Unknown schema %s", schemaParam));
         }
 
         // Creating a new graph is asynchronous; we want to hide this from the client.

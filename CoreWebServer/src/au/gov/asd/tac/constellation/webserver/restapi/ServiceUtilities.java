@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -156,10 +155,10 @@ public class ServiceUtilities {
                 }
                 final String paramError = param.getError();
                 if (paramError != null) {
-                    throw new EndpointException(String.format("Can't set parameter '%s' to value '%s': %s", parameterName, entry.getValue().asText(), paramError));
+                    throw new RestServiceException(String.format("Can't set parameter '%s' to value '%s': %s", parameterName, entry.getValue().asText(), paramError));
                 }
             } else {
-                throw new EndpointException(String.format("No such parameter: %s", parameterName));
+                throw new RestServiceException(String.format("No such parameter: %s", parameterName));
             }
         });
     }
@@ -211,7 +210,7 @@ public class ServiceUtilities {
             // We only have so much patience.
             //
             if (++waits > 10) {
-                throw new EndpointException("The new graph has taken too long to become active");
+                throw new RestServiceException("The new graph has taken too long to become active");
             }
         }
 

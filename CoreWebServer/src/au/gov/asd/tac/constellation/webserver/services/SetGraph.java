@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import java.io.IOException;
@@ -82,10 +82,10 @@ public class SetGraph extends RestService {
                     graphNode.getTopComponent().requestActive();
                 });
             } catch (final InterruptedException | InvocationTargetException ex) {
-                throw new EndpointException(ex);
+                throw new RestServiceException(ex);
             }
         } else {
-            throw new EndpointException(String.format("No graph with id '%s'", graphId));
+            throw new RestServiceException(String.format("No graph with id '%s'", graphId));
         }
     }
 }

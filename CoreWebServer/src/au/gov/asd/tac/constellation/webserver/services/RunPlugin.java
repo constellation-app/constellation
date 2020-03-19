@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -108,7 +108,7 @@ public class RunPlugin extends RestService {
                 PluginExecution.withPlugin(pluginName).executeNow(graph);
             }
         } catch (final InterruptedException | PluginException | IllegalArgumentException ex) {
-            throw new EndpointException(ex);
+            throw new RestServiceException(ex);
         }
     }
 }

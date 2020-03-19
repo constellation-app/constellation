@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- /*
- * This package contains the implementations of the REST endpoints.
+package au.gov.asd.tac.constellation.webserver.restapi;
+
+/**
+ * A generic exception for problems in REST services.
+ * <p>
+ * This provides a transport-independent exception.
  *
- * The transport APIs accept data from a client (via HTTP or file), parse it for the required parameters and input,
- * and call these methods, which return data to the transport APIs to create a response.
- *
- * The implementation methods should have no knowledge of the transport that was used.
- *
- * The implementation methods should be named "verb_endpoint" to match the HTTP endpoint.
+ * @author algol
  */
-package au.gov.asd.tac.constellation.webserver.impl;
+public class RestServiceException extends RuntimeException {
+
+    public RestServiceException(final String message) {
+        super(message);
+    }
+
+    public RestServiceException(final Exception ex) {
+        super(ex);
+    }
+}

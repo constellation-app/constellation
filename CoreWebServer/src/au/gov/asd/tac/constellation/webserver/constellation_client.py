@@ -188,7 +188,7 @@ class Constellation:
         #
         self.r = None
 
-    def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+    def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over HTTP.
 
         HTTP calls are only made to localhost for simplicity and security."""
@@ -197,8 +197,12 @@ class Constellation:
             f = REQUESTS[verb]
         else:
             raise ValueError(f'Unrecognised verb "{verb}"')
+
+        h = dict(self.headers)
+        if headers:
+            h.update(headers)
         url = f'http://localhost:{self.port}{endpoint}/{path}'
-        r = f(url, params=params, json=json_, data=data, headers=self.headers)
+        r = f(url, params=params, json=json_, data=data, headers=h)
 
         # Keep the response in case raise_for_status() raises.
         # If it does, we can come back and use r.content.decode('latin1')
@@ -258,7 +262,7 @@ class Constellation:
 
         return r, c
 
-    def file_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+    def file_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over files in a directory.
 
         Do not specify both json_ and data.
@@ -287,7 +291,7 @@ class Constellation:
         #
         return FileResponse(str(response), str(content))
 
-    def sftp_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+    def sftp_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over sftp.
 
         Do not specify both json_ and data.
@@ -474,7 +478,7 @@ class Constellation:
                 args[f'{service}.{arg}'] = kwargs[arg]
 
         j = df.to_json(orient='split', date_format='iso')
-        self.call_service(service, verb='post', args=args, data=j.encode('utf-8'))
+        self.call_service(service, verb='post', args=args, data=j.encode('utf-8'), headers={'Content-Type': 'application/json'})
 
     def get_attributes(self, graph_id=None):
         """Get the graph, node, and transaction attributes of the current or specified graph.
@@ -489,9 +493,6 @@ class Constellation:
             params = {f'{service}.graph_id':graph_id}
 
         return self.call_service('get_attributes', args=params).json()
-        # r = self.rest_request(endpoint='/v1/graph', path='getattrs', params=params)
-
-        # return r.json()
 
     def get_graph_attributes(self, graph_id=None):
         """Get the graph attribute values."""
@@ -515,12 +516,13 @@ class Constellation:
             or the active graph if not specified.
         """
 
+        service = 'set_graph_values'
         params = {}
         if graph_id:
-            params = {'graph_id':graph_id}
+            params = {f'{service}.graph_id':graph_id}
 
         j = df.to_json(orient='split', date_format='iso')
-        self.rest_request(verb='post', endpoint='/v1/graph', path='set', params=params, data=j.encode('utf-8'))
+        self.call_service('set_graph_values', verb='post',  args=params, data=j, headers={'Content-Type': 'application/json'})
 
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
@@ -639,7 +641,7 @@ class Constellation:
         service = 'get_icon'
         return self.call_service(service, args={f'{service}.icon_name':icon_name}).content
 
-    def call_service(self, name, *, verb='get', args=None, json=None, data=None):
+    def call_service(self, name, *, verb='get', args=None, json=None, data=None, headers=None):
         """Call a REST service and return a response.
 
         The dictionary is built from the JSON in the response body.
@@ -659,7 +661,7 @@ class Constellation:
             For binary repsonses, use get_service().content.
         """
 
-        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data)
+        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data, headers=headers)
 
         return r
 

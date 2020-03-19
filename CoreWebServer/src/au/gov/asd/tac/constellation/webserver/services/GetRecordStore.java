@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanPara
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.visual.IoProgressHandle;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -170,7 +170,7 @@ public class GetRecordStore extends RestService {
             }
 
             if(buf.length() != 0) {
-                throw new EndpointException("The following attributes do not exist in the record store: " + buf.toString());
+                throw new RestServiceException("The following attributes do not exist in the record store: " + buf.toString());
             }
         } else {
             // The user didn't specify any attributes, so use all of

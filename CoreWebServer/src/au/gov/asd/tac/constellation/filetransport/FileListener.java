@@ -18,8 +18,7 @@ package au.gov.asd.tac.constellation.filetransport;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
-import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -171,7 +170,7 @@ public class FileListener implements Runnable {
 
                                     parseAndExecute(verb, endpoint, path, args);
                                     response();
-                                } catch (final EndpointException ex) {
+                                } catch (final RestServiceException ex) {
                                     response(ex.getMessage());
                                 } catch (final Exception ex) {
                                     response(ex.getMessage());
@@ -208,7 +207,6 @@ public class FileListener implements Runnable {
      * @throws Exception because of AutoCloseable
      */
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
-        final String graphId = getString(args, "graph_id");
         switch (endpoint) {
             case "/v2/service":
                 final HttpMethod httpMethod = HttpMethod.getValue(verb);
@@ -224,45 +222,15 @@ public class FileListener implements Runnable {
                 try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
                     rs.callService(parameters, ins.in, out);
                 } catch(final IOException | RuntimeException ex) {
-                    throw new EndpointException(ex);
+                    throw new RestServiceException(ex);
                 }
 
                 break;
 
-            case "/v1/graph":
-                switch (verb) {
-                    case "post":
-                        switch (path) {
-                            case "set":
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    GraphImpl.post_set(graphId, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
             default:
                 unrec("endpoint", endpoint);
                 break;
         }
-    }
-
-    private static String getString(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).textValue() : null;
-    }
-
-    private static Boolean getBoolean(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).booleanValue() : null;
-    }
-
-    private static boolean getBooleanNonNull(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).booleanValue() : false;
     }
 
     /**
@@ -296,10 +264,6 @@ public class FileListener implements Runnable {
             }
         }
 
-//        InputStream in() {
-//            return in;
-//        }
-
         @Override
         public void close() {
             if(in!=null) {
@@ -318,13 +282,13 @@ public class FileListener implements Runnable {
             final OutputStream out = new FileOutputStream(fqp.toFile());
             return out;
         } catch (final FileNotFoundException ex) {
-            throw new EndpointException(ex);
+            throw new RestServiceException(ex);
         }
     }
 
     private void unrec(final String type, final String name) {
         final String msg = String.format("Unrecognised %s '%s'", type, name);
-        throw new EndpointException(msg);
+        throw new RestServiceException(msg);
     }
 
     private void response() {

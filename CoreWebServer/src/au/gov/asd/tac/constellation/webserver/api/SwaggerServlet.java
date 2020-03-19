@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,10 +29,12 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
+import java.util.prefs.Preferences;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -69,13 +71,22 @@ public class SwaggerServlet extends ConstellationHttpServlet {
 
             if(fnam.equals("swagger/constellation.json")) {
                 // The file constellation.json contains our swagger info.
-                // Dynamically add services.
+                // Dynamically add data and services.
                 //
 
                 final Set<String> serviceTags = new HashSet<>();
 
                 final ObjectMapper mapper = new ObjectMapper();
-                final JsonNode root = mapper.readTree(in);
+                final ObjectNode root = (ObjectNode)mapper.readTree(in);
+
+                // Get the hostname:port right.
+                //
+                final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+                final int port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
+                root.put("host", String.format("localhost:%d", port));
+
+                // Add the REST services.
+                //
                 final ObjectNode paths = (ObjectNode)root.get("paths");
                 RestServiceRegistry.getServices().forEach(serviceKey -> {
                     final ObjectNode path = paths.putObject(String.format(SERVICE_PATH, serviceKey.name));
@@ -90,6 +101,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     }
 
                     httpMethod.put("description", rs.getDescription());
+                    httpMethod.put("produces", rs.getMimeType());
 
                     // Most parameters are passed in the URL query.
                     // Some parameters are passed in the body of the request.

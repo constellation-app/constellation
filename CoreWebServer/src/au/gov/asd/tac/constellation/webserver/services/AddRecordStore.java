@@ -36,7 +36,7 @@ import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParam
 import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
@@ -138,11 +138,11 @@ public class AddRecordStore extends RestService {
         // which is what is output by pandas.to_json(..., orient="split').
         // (We ignore the index array.)
         if(!json.hasNonNull("columns") || !json.get("columns").isArray()) {
-            throw new EndpointException("Could not find columns object containing column names");
+            throw new RestServiceException("Could not find columns object containing column names");
         }
 
         if(!json.hasNonNull("data") || !json.get("data").isArray()) {
-            throw new EndpointException("Could not find data object containing data rows");
+            throw new RestServiceException("Could not find data object containing data rows");
         }
 
         final ArrayNode columns = (ArrayNode) json.get("columns");

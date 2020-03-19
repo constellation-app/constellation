@@ -50,7 +50,7 @@ public class GetGraphValues extends RestService {
 
     @Override
     public String getDescription() {
-        return "The graph attribute values.";
+        return "Get the graph attribute values.";
     }
 
     @Override
@@ -73,7 +73,6 @@ public class GetGraphValues extends RestService {
     @Override
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
-        System.out.printf("@@graphid [%s]\n", graphId);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         final ObjectMapper mapper = new ObjectMapper();

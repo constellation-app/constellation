@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
@@ -79,20 +80,19 @@ public class RestServiceServlet extends ConstellationApiServlet {
                 if(entry.getValue().length==1) {
                     param.setStringValue(entry.getValue()[0]);
                 } else {
-                    throw new EndpointException("Service parameters do not accept multiple values");
+                    throw new RestServiceException("Service parameters do not accept multiple values");
                 }
             } else {
-                throw new EndpointException(String.format("Service '%s' has no parameter '%s'", serviceName, parameterName));
+                throw new RestServiceException(String.format("Service '%s' has no parameter '%s'", serviceName, parameterName));
             }
         });
 
         try {
+            response.setContentType(rs.getMimeType());
+            response.setStatus(HttpServletResponse.SC_OK);
             rs.callService(parameters, request.getInputStream(), response.getOutputStream());
         } catch(final IOException | RuntimeException ex) {
             throw new ServletException(ex);
         }
-
-        response.setContentType(rs.getMimeType());
-        response.setStatus(HttpServletResponse.SC_OK);
     }
 }

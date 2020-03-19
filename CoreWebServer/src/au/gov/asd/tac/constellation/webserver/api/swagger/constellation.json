@@ -13,36 +13,6 @@
     "consumes": ["application/json"],
     "produces": ["application/json"],
     "paths": {
-        "/v1/graph/set": {
-            "post": {
-                "tags": ["graph"],
-                "description": "Set the graph attributes.",
-                "consumes": ["application/json"],
-                "parameters": [
-                    {
-                        "name": "body",
-                        "in": "body",
-                        "type": "string",
-                        "description": "The graph attributes to set, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso'). Note that any custom attributes will be added to as 'string' type attributes.",
-                        "required": true
-                    },
-                    {
-                        "name": "graph_id",
-                        "in": "query",
-                        "type": "string",
-                        "description": "The id of the associated graph",
-                        "required": false
-                    },
-                    {
-                        "name": "X-CONSTELLATION-SECRET",
-                        "in": "header",
-                        "type": "string",
-                        "description": "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)",
-                        "required": true
-                    }
-                ]
-            }
-        }
     },
     "definitions": {
         "RecordStore": {
