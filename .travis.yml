@@ -37,3 +37,11 @@ deploy:
     repo: constellation-app/constellation
     branch: master
     tags: true
+
+notifications:
+  webhooks:
+    urls:
+      - https://webhooks.gitter.im/e/82ac70bdb3f9e144d859
+    on_success: change
+    on_failure: always
+    on_start: never
