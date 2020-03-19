@@ -79,6 +79,8 @@ public class FR3DArranger implements Arranger {
 
     private GraphWriteMethods wg;
     boolean maintainMean = false;
+    
+    private final Random r = new Random();
 
     /**
      * Creates a new arranger using the specified {@link PluginInteraction}.
@@ -155,7 +157,6 @@ public class FR3DArranger implements Arranger {
             points.add(null);
             offsets.add(null);
         }
-        final Random r = new Random();
 
         wg.vertexStream().parallel().forEach(node -> {
             // Start each point at a random position.

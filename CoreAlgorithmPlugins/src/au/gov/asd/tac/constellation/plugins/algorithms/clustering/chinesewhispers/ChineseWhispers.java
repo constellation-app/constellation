@@ -56,6 +56,8 @@ public final class ChineseWhispers {
 
     // Map a vxId to it's cluster number.
     private int[] vxClusters;
+    
+    private final Random random = new Random();
 
     public ChineseWhispers(final GraphWriteMethods wg) {
         this.wg = wg;
@@ -63,7 +65,6 @@ public final class ChineseWhispers {
     }
 
     public void cluster() {
-        final Random random = new Random();
         final int vxCount = wg.getVertexCount();
 
         // An array containing vertex positions in a random order.

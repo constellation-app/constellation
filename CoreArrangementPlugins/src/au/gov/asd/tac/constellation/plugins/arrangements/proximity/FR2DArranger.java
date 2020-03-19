@@ -54,6 +54,8 @@ class FR2DArranger implements Arranger {
     private boolean maintainMean;
 
     private final PluginInteraction interaction;
+    
+    private final Random r = new Random();
 
     /**
      *
@@ -101,7 +103,6 @@ class FR2DArranger implements Arranger {
             points.add(null);
             offsets.add(null);
         }
-        final Random r = new Random();
 
         for (int position = 0; position < vxCount; position++) {
             final int vxId = graph.getVertex(position);
