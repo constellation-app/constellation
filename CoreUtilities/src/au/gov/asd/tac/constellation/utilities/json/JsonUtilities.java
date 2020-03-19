@@ -92,6 +92,9 @@ public class JsonUtilities {
 
             @Override
             public String next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().textValue();
             }
         };
@@ -169,6 +172,9 @@ public class JsonUtilities {
 
             @Override
             public Integer next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().intValue();
             }
         };
@@ -216,6 +222,9 @@ public class JsonUtilities {
 
             @Override
             public Boolean next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().booleanValue();
             }
         };

@@ -70,6 +70,8 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
     private static class Worker {
 
         private final GraphWriteMethods graph;
+        
+        private final Random r = new Random();
 
         Worker(GraphWriteMethods graph) {
             this.graph = graph;
@@ -92,7 +94,6 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
             // Colour the taxonomies so we can see what's going on.
             if (tax != null) {
-                final Random r = new Random();
                 for (Integer subvxId : tax.getTaxa().keySet()) {
                     final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
                     final Set<Integer> subgraph = tax.getTaxa().get(subvxId);

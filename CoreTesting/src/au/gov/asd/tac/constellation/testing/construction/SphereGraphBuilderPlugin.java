@@ -79,6 +79,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "use_all_displayable_chars");
     public static final String DRAW_MANY_TX_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_tx");
     public static final String DRAW_MANY_DECORATORS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_deco");
+    
+    private final Random random = new Random();
 
     @Override
     public String getDescription() {
@@ -166,7 +168,6 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int PLAY_CHARS_LEN = 86;
 
         // other variables
-        final Random random = new Random();
         final IconRandomiser iconRandomiser = new IconRandomiser();
         final int vertexCount = graph.getVertexCount();
 

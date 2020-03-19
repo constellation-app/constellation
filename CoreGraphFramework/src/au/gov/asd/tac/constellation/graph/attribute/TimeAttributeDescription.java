@@ -181,7 +181,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
 
             return (hour * 3600000) + (min * 60000) + (sec * 1000) + ms;
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can\'t parse time string \'{0}\': {1}", new Object[]{time, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can''t parse time string ''{0}'': {1}", new Object[]{time, ex.getMessage()});
         }
         return NULL_VALUE;
     }

@@ -216,7 +216,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
             return cal.getTimeInMillis();
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can\'t parse date string \'{0}\': {1}", new Object[]{date, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can''t parse date string ''{0}'': {1}", new Object[]{date, ex.getMessage()});
         }
 
         return NULL_VALUE;
