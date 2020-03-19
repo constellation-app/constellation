@@ -67,7 +67,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                     final ColumnState cs = new ColumnState(label, segment, width);
                     state.columns.add(cs);
                 } catch (IllegalArgumentException ex) {
-                    LOGGER.log(Level.SEVERE, "Segment value {0} illegal", segmentText);
+                    LOGGER.log(Level.SEVERE, "Segment value {0} illegal", segmentText, ex);
                 }
             }
 
