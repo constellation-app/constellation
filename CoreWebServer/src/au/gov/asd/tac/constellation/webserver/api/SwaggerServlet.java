@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -53,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 @WebServlet(
         name = "SwaggerDoc",
         description = "Swagger documentation for the REST API",
-        urlPatterns = {"/swagger-ui/*"})
+        urlPatterns = {"/swagger/*", "/swagger-ui/*"})
 public class SwaggerServlet extends ConstellationHttpServlet {
 
     /**
@@ -64,7 +65,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         final String requestPath = request.getPathInfo();
-        final String fnam = "swagger" + requestPath;
+        final String fnam = request.getServletPath().substring(1) + requestPath;
 
         try {
             final InputStream in = SwaggerServlet.class.getResourceAsStream(fnam);
@@ -74,8 +75,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 // Dynamically add data and services.
                 //
 
-                final Set<String> serviceTags = new HashSet<>();
-
                 final ObjectMapper mapper = new ObjectMapper();
                 final ObjectNode root = (ObjectNode)mapper.readTree(in);
 
@@ -83,7 +82,9 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 //
                 final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
                 final int port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
-                root.put("host", String.format("localhost:%d", port));
+                final ArrayNode servers = root.putArray("servers");
+                final ObjectNode server = servers.addObject();
+                server.put("url", String.format("http://localhost:%d", port));
 
                 // Add the REST services.
                 //
@@ -94,14 +95,14 @@ public class SwaggerServlet extends ConstellationHttpServlet {
 
                     final RestService rs = RestServiceRegistry.get(serviceKey);
 
-                    final ArrayNode tags = httpMethod.putArray("tags");
-                    for(final String tag : rs.getTags()) {
-                        tags.add(tag);
-                        serviceTags.add(tag);
-                    }
+                    httpMethod.put("summary", rs.getDescription());
 
-                    httpMethod.put("description", rs.getDescription());
-                    httpMethod.put("produces", rs.getMimeType());
+                    if(rs.getTags().length>0) {
+                        final ArrayNode tags = httpMethod.putArray("tags");
+                        for(final String tag : rs.getTags()) {
+                            tags.add(tag);
+                        }
+                    }
 
                     // Most parameters are passed in the URL query.
                     // Some parameters are passed in the body of the request.
@@ -114,14 +115,15 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
                         final ObjectNode param = params.addObject();
+                        param.put("name", pp.getId());
                         param.put("in", pp.getName().toLowerCase(Locale.US).contains("(body)") ? "body" : "query");
                         param.put("required", false); // TODO Hard-code this until PluginParameters grows a required field.
-                        param.put("name", pp.getId());
-                        param.put("type", pp.getType().getId());
                         param.put("description", pp.getDescription());
-                        if(pp.getObjectValue()!=null) {
-                            param.put("value", pp.getObjectValue().toString());
-                        }
+                        final ObjectNode schema = param.putObject("schema");
+                        schema.put("type", pp.getType().getId());
+//                        if(pp.getObjectValue()!=null) {
+//                            param.put("value", pp.getObjectValue().toString());
+//                        }
                     });
 
                     // Add the required CONSTELLATION secret header parameter.
@@ -130,29 +132,53 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         final ObjectNode param = params.addObject();
                         param.put("name", "X-CONSTELLATION-SECRET");
                         param.put("in", "header");
-                        param.put("type", "string");
-                        param.put("description", "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)");
                         param.put("required", true);
+                        param.put("description", "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)");
+                        final ObjectNode schema = param.putObject("schema");
+                        schema.put("type", "string");
+                    }
+
+                    final ObjectNode responses = httpMethod.putObject("responses");
+                    final ObjectNode success = responses.putObject("200");
+                    success.put("description", rs.getDescription());
+                    final ObjectNode content = success.putObject("content");
+                    final ObjectNode mime = content.putObject(rs.getMimeType());
+                    final ObjectNode schema = mime.putObject("schema");
+                    if(rs.getMimeType().equals(ServiceUtilities.IMAGE_PNG)) {
+                        schema.put("type", "string");
+                        schema.put("format", "binary");
+//                    } else if(rs.getMimeType().equals(ServiceUtilities.APPLICATION_JSON)) {
+//                        // Make a wild guess about the response.
+//                        //
+//                        if(serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
+//                            schema.put("type", "array");
+//                        } else{
+//                            schema.put("type", "object");
+//                        }
                     }
                 });
 
-                // Update the tags: discover which tags are already there, and add the rest.
-                //
-                final ArrayNode tagArray = (ArrayNode)root.get("tags");
-                tagArray.forEach(existing -> {
-                    final String name = existing.get("name").textValue();
-                    serviceTags.remove(name);
-                });
-
-                serviceTags.forEach(tag -> {
-                    final ObjectNode newTag = tagArray.addObject();
-                    newTag.put("name", tag);
-                    newTag.put("description", String.format("Related to %s operations", tag));
-                });
+//                // Update the tags: discover which tags are already there, and add the rest.
+//                //
+//                final ArrayNode tagArray = (ArrayNode)root.get("tags");
+//                tagArray.forEach(existing -> {
+//                    final String name = existing.get("name").textValue();
+//                    serviceTags.remove(name);
+//                });
+//
+//                serviceTags.forEach(tag -> {
+//                    final ObjectNode newTag = tagArray.addObject();
+//                    newTag.put("name", tag);
+//                    newTag.put("description", String.format("Related to %s operations", tag));
+//                });
 
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
+                if(fnam.endsWith(".js")) {
+                    response.setContentType("text/javascript");
+                }
+
                 // This is every other file.
                 // Just transfer the bytes.
                 //

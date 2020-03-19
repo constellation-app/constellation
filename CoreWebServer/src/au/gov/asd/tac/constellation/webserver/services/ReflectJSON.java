@@ -45,7 +45,7 @@ public class ReflectJSON extends RestService {
 
     @Override
     public String[] getTags() {
-        return new String[]{"example", "json"};
+        return new String[]{"example"};
     }
 
     @Override

@@ -1,31 +1,10 @@
 {
-    "swagger": "2.0",
+    "openapi": "3.0.0",
     "info": {
-        "version": "1.0.0",
-        "title": "CONSTELLATION External Scripting",
-        "description": "A REST API for CONSTELLATION"
+        "title": "CONSTELLATION REST Services",
+        "description": "A REST API for CONSTELLATION",
+        "version": "2.0.0"
     },
-    "host": "localhost:1517",
-    "basePath": "/",
-    "tags": [
-    ],
-    "schemes": ["http"],
-    "consumes": ["application/json"],
-    "produces": ["application/json"],
     "paths": {
-    },
-    "definitions": {
-        "RecordStore": {
-            "type": "object",
-            "required": ["name"],
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "tag": {
-                    "type": "string"
-                }
-            }
-        }
     }
 }
