@@ -117,9 +117,9 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             LOGGER.log(Level.INFO, "input stream={0}", f);
             r = new InputStreamReader(f, StandardCharsets.UTF_8.name());
         } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         ((Compilable) engine).compile(r).eval();
 

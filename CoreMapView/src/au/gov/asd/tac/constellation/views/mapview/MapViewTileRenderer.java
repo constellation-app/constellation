@@ -288,7 +288,7 @@ public class MapViewTileRenderer extends PApplet {
                 is = null;
             }
         } catch (NoSuchFieldException | SecurityException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // initialise the surface

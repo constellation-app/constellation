@@ -42,6 +42,8 @@ import java.io.OutputStream;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -57,6 +59,8 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
 @Messages("AutosaveGraphPlugin=Autosave Graph")
 public final class AutosaveGraphPlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPlugin.class.getName());
 
     @Override
     public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
@@ -106,7 +110,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
                     p.store(s, null);
                 }
             } catch (IOException ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

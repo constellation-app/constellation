@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.CssMetaData;
@@ -47,6 +49,8 @@ import javafx.scene.control.skin.TextAreaSkin;
  * @author sirius
  */
 public class SelectableLabel extends TextArea {
+    
+    private static final Logger LOGGER = Logger.getLogger(SelectableLabel.class.getName());
 
     private Node content = null;
     private TextAreaSkin skin = null;
@@ -177,7 +181,7 @@ public class SelectableLabel extends TextArea {
             viewportBoundsField.setAccessible(true);
             viewportBoundsField.set(scrollPane, new EmptyBoundingBoxProperty(scrollPane, "viewportBounds"));
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

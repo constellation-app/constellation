@@ -68,7 +68,6 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                     state.columns.add(cs);
                 } catch (IllegalArgumentException ex) {
                     LOGGER.log(Level.SEVERE, "Segment value {0} illegal", segmentText);
-                    ex.printStackTrace();
                 }
             }
 
