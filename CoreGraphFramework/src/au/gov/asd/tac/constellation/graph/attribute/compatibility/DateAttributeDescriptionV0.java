@@ -215,10 +215,8 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal.getTimeInMillis();
-        } catch (StringIndexOutOfBoundsException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse date string '{0}': '{1}'", new Object[]{date, ex.getMessage()});
-        } catch (NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse date string '{0}': '{1}'", new Object[]{date, ex.getMessage()});
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+            LOGGER.log(Level.WARNING, "Can\'t parse date string \'{0}\': {1}", new Object[]{date, ex.getMessage()});
         }
 
         return NULL_VALUE;

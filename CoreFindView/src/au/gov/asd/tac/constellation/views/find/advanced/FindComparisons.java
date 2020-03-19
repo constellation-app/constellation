@@ -632,7 +632,7 @@ public class FindComparisons {
             if (!isCaseSensitive) {
                 return item == null ? false : item.toLowerCase().endsWith(suffix.toLowerCase());
             } else {
-                return item == null ? false : item.endsWith(item);
+                return item == null ? false : item.endsWith(suffix);
             }
         }
 
