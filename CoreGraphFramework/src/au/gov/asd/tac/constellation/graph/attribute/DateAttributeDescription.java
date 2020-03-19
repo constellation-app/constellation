@@ -178,7 +178,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
             final int d = Integer.parseInt(value.substring(8, 10), 10);
             return LocalDate.of(y, m, d).toEpochDay();
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can\'t parse date string \'{0}\': {1}", new Object[]{value, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can''t parse date string ''{0}'': {1}", new Object[]{value, ex.getMessage()});
         }
 
         return NULL_VALUE;
