@@ -109,8 +109,8 @@ class FR2DArranger implements Arranger {
 
             // Start each point at a random position.
             final Point2D.Float p = new Point2D.Float(
-                    BORDER + r.nextInt(width - BORDER * 2),
-                    BORDER + r.nextInt(height - BORDER * 2));
+                    BORDER + (float) r.nextInt(width - BORDER * 2),
+                    BORDER + (float) r.nextInt(height - BORDER * 2));
             points.set(vxId, p);
             offsets.set(vxId, new Point2D.Float(0, 0));
         }

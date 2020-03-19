@@ -728,7 +728,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             return;
         }
 
-        final double observedDisplayPosDifference = highestObservedDisplayPos - lowestObservedDisplayPos;
+        final double observedDisplayPosDifference = (double) highestObservedDisplayPos - lowestObservedDisplayPos;
         final double amountY = observedDisplayPosDifference == 0 ? yAxis.getHeight() : yAxis.getHeight() / (highestObservedDisplayPos - lowestObservedDisplayPos);
 
         final double timeExtentDifference = upperTimeExtent - lowerTimeExtent;
