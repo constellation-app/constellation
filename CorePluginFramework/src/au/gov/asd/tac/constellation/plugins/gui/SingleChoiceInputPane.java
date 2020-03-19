@@ -47,7 +47,7 @@ import javafx.scene.layout.HBox;
  */
 public class SingleChoiceInputPane extends HBox {
 
-    public static int DEFAULT_WIDTH = 300;
+    public static final int DEFAULT_WIDTH = 300;
 
     private final ComboBox<ParameterValue> field;
 
