@@ -183,7 +183,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDe
                     : ZoneId.of(regionId);
             return ZonedDateTime.of(ye, mo, da, ho, mi, se, ms * TemporalConstants.NANOSECONDS_IN_MILLISECOND, zi);
         } catch (StringIndexOutOfBoundsException | NumberFormatException | DateTimeException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse datetime string '{0}': '{1}'", new Object[]{value, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can\'t parse datetime string \'{0}\': {1}", new Object[]{value, ex.getMessage()});
         }
 
         return null;

@@ -106,7 +106,7 @@ public final class TimeZoneAttributeDescription extends AbstractAttributeDescrip
             final String regionId = value.length() > 6 ? value.substring(8, value.length() - 1) : null;
             return regionId == null ? ZoneOffset.of(offsetId) : ZoneId.of(regionId);
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse timezone string '{0}': '{1}'", new Object[]{value, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can\'t parse timezone string \'{0}\': {1}", new Object[]{value, ex.getMessage()});
         }
 
         return null;
