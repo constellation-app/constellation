@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.ImageIconData;
 import java.awt.image.BufferedImage;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -56,7 +57,7 @@ public abstract class SchemaFactory {
     private static final ConstellationIcon ICON_BACKGROUND = DefaultIconProvider.FLAT_SQUARE;
     private static final ConstellationIcon ICON_BACKGROUND_MODIFIED = DefaultIconProvider.EDGE_SQUARE;
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
-    
+
     private final Map<Class<? extends SchemaConcept>, Set<SchemaConcept>> REGISTERED_CONCEPTS;
     private final EnumMap<GraphElementType, Map<String, SchemaAttribute>> REGISTERED_ATTRIBUTES;
     private final List<SchemaVertexType> REGISTERED_VERTEX_TYPES;
@@ -101,8 +102,10 @@ public abstract class SchemaFactory {
             // instantiate concept
             SchemaConcept concept;
             try {
-                concept = parentConceptClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
+                concept = parentConceptClass.getDeclaredConstructor().newInstance();
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 throw new RuntimeException(ex);
             }
 

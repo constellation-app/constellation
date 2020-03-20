@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -1539,7 +1540,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         AttributeDescription attributeDescription;
         try {
-            attributeDescription = dataType.newInstance();
+            attributeDescription = dataType.getDeclaredConstructor().newInstance();
             attributeDescription.setGraph(this);
             attributeDescription.setDefault(defaultValue);
 
@@ -1563,9 +1564,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 default:
                     throw new IllegalArgumentException("Unrecognised element type " + elementType);
             }
-        } catch (Exception e) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             final String msg = String.format("Error creating data type for new %s attribute '%s'", elementType, label);
-            throw new IllegalStateException(msg, e);
+            throw new IllegalStateException(msg, ex);
         }
 
         ensureAttributeCapacity(aStore.getCount() + 1);

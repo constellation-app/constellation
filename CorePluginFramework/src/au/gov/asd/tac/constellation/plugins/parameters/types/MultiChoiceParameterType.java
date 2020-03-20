@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -404,7 +405,7 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
                 final String[] c = s2.split("\n");
                 for (String s : c) {
                     try {
-                        final ParameterValue dobj = innerClass.newInstance();
+                        final ParameterValue dobj = innerClass.getDeclaredConstructor().newInstance();
                         if (s.startsWith(CHECK_MARK)) {
                             s = s.substring(CHECK_MARK.length());
                             dobj.setStringValue(s);
@@ -414,7 +415,9 @@ public class MultiChoiceParameterType extends PluginParameterType<MultiChoicePar
                         }
 
                         options.add(dobj);
-                    } catch (final InstantiationException | IllegalAccessException ex) {
+                    } catch (final IllegalAccessException | IllegalArgumentException
+                            | InstantiationException | NoSuchMethodException
+                            | SecurityException | InvocationTargetException ex) {
                         Exceptions.printStackTrace(ex);
                     }
                 }

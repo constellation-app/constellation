@@ -50,13 +50,13 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
         final VisualManager manager = new VisualManager(access, processor);
         final GraphChangeListener changeDetector = (event) -> manager.updateFromIndigenousChanges();
         final DefaultInteractionEventHandler eventHandler = new DefaultInteractionEventHandler(graph, manager, processor, processor);
-        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
 
+        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
         graph.addGraphChangeListener(changeDetector);
         changeDetector.graphChanged(null);
         processor.startVisualising(manager);
         processor.setEventHandler(eventHandler);
+        
         return manager;
     }
-
 }
