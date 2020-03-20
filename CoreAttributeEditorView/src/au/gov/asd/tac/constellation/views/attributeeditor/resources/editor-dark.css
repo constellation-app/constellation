@@ -103,7 +103,7 @@
 }
 
 .list-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ListCellSkin";
+    -fx-skin: "javafx.scene.control.skin.ListCellSkin";
     -fx-background-color: -fx-control-inner-background;
     -fx-padding: 0.25em; /* 3 */
     -fx-text-fill: -fx-text-inner-color;
