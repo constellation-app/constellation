@@ -17,12 +17,14 @@ package au.gov.asd.tac.constellation.webserver.restapi;
 
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -62,6 +64,11 @@ public class RestServiceRegistry {
             }
             final ServiceKey other = (ServiceKey) obj;
             return httpMethod==other.httpMethod && name.equals(other.name);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s (%s)", name, httpMethod);
         }
     }
 
@@ -115,9 +122,10 @@ public class RestServiceRegistry {
         if(servicesMap.containsKey(key)) {
             final Class<? extends RestService> c = servicesMap.get(key);
             try {
-                return c.newInstance();
-            } catch (final InstantiationException | IllegalAccessException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
+                return c.getDeclaredConstructor().newInstance();
+            } catch(NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+                LOGGER.log(Level.SEVERE, String.format("When creating REST service %s", key), ex);
+                Exceptions.printStackTrace(ex);
             }
         }
 

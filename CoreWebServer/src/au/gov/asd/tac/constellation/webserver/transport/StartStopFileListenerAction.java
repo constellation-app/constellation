@@ -17,15 +17,17 @@ package au.gov.asd.tac.constellation.webserver.transport;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.Exceptions;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.actions.BooleanStateAction;
 
 /**
  * Start and stop the file listener.
@@ -33,34 +35,48 @@ import org.openide.util.actions.BooleanStateAction;
  * @author algol
  * @author rsabhi modified
  */
-@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.filetransport.StartStopFileListenerAction")
-@ActionRegistration(displayName = "#CTL_StartStopFileListenerAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/filelistener_off.png", surviveFocusChange = true, lazy = true)
+@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.webserver.transport.StartStopFileListenerAction")
+@ActionRegistration(
+        displayName = "#CTL_StartFileListenerAction",
+        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/filelistener_off.png",
+        surviveFocusChange = true,
+        lazy = true
+)
 @ActionReference(path = "Menu/Tools", position = 1550)
-@Messages("CTL_StartStopFileListenerAction=Start/Stop File Listener")
-public final class StartStopFileListenerAction extends BooleanStateAction {
+@Messages({
+    "CTL_StartFileListenerAction=Start File Listener",
+    "CTL_StopFileListenerAction=Stop File Listener"
+})
+public final class StartStopFileListenerAction extends AbstractAction {
+    private static final Logger LOGGER = Logger.getLogger(StartStopFileListenerAction.class.getName());
 
-    private static final String ICON_ON = "au/gov/asd/tac/constellation/webserver/resources/filelistener_on.png";
-    private static final String ICON_OFF = "au/gov/asd/tac/constellation/webserver/resources/filelistener_off.png";
+    private static final String RESOURCE_ON = "resources/filelistener_on.png";
+    private static final String RESOURCE_OFF = "resources/filelistener_off.png";
+    private static final ImageIcon ICON_ON = new ImageIcon(StartStopFileListenerAction.class.getResource(RESOURCE_ON));
+    private static final ImageIcon ICON_OFF = new ImageIcon(StartStopFileListenerAction.class.getResource(RESOURCE_OFF));
+
     private static final long JOIN_WAIT = 1000;
 
     private boolean listener_on;
     private FileListener fileListener;
     private Thread listenerRunner;
 
+    public StartStopFileListenerAction() {
+        listener_on = false;
+    }
+
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        super.actionPerformed(ev);
-        if (!listener_on) {
+        if(!listener_on) {
             try {
                 fileListener = new FileListener();
                 listenerRunner = new Thread(fileListener);
                 listenerRunner.start();
 
-                // This will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null.
-                putValue(Action.SMALL_ICON, null);
-
-                setBooleanState(!listener_on);
+                putValue(Action.NAME, NbBundle.getMessage(StartStopFileListenerAction.class, "CTL_StopFileListenerAction"));
+                putValue(Action.SMALL_ICON, ICON_ON);
             } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, "When starting file listener", ex);
                 Exceptions.printStackTrace(ex);
             }
 
@@ -69,38 +85,14 @@ public final class StartStopFileListenerAction extends BooleanStateAction {
             try {
                 listenerRunner.join(JOIN_WAIT);
 
-                // This will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null.
-                putValue(Action.SMALL_ICON, null);
-
-                setBooleanState(!listener_on);
-            } catch (final InterruptedException ex) {
+                putValue(Action.NAME, NbBundle.getMessage(StartStopFileListenerAction.class, "CTL_StartFileListenerAction"));
+                putValue(Action.SMALL_ICON, ICON_OFF);
+            } catch(final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "When stopping file listener", ex);
                 Exceptions.printStackTrace(ex);
             }
         }
 
         listener_on = !listener_on;
-
-    }
-
-    @Override
-    protected void initialize() {
-        listener_on = false;
-        super.initialize();
-        setBooleanState(listener_on);
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(StartStopFileListenerAction.class, "CTL_StartStopFileListenerAction");
-    }
-
-    @Override
-    protected String iconResource() {
-        return listener_on ? ICON_ON : ICON_OFF;
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return HelpCtx.DEFAULT_HELP;
     }
 }
