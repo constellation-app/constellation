@@ -35,10 +35,10 @@ import javafx.scene.shape.Polygon;
  */
 public final class Transaction extends Group {
 
-    public static int UNDIRECTED = 0;
-    public static int DIRECTED_DOWN = 1;
-    public static int DIRECTED_UP = 2;
-    public static int BIDIRECTIONAL = 3;
+    public static final int UNDIRECTED = 0;
+    public static final int DIRECTED_DOWN = 1;
+    public static final int DIRECTED_UP = 2;
+    public static final int BIDIRECTIONAL = 3;
 
     private final int transactionID;
     private final Color transactionColor;

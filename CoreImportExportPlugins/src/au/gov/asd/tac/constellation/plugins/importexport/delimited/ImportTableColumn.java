@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRo
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -38,6 +40,8 @@ import javafx.scene.layout.BorderPane;
  * @author sirius
  */
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
+    
+    private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
 
     private final String label;
     private final int columnIndex;
@@ -100,7 +104,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                     }
                 }
             } catch (IllegalAccessException | InstantiationException ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
             for (TableRow row : data) {

@@ -133,14 +133,14 @@ final class NamedColorPanel extends AbstractColorChooserPanel {
 
         @Override
         public int getSize() {
-//            System.out.printf("@~getSize %d\n", ColorValue.NAMED_COLOR_LIST.length);
-            return ConstellationColor.NAMED_COLOR_LIST.length;
+//            System.out.printf("@~getSize %d\n", ColorValue.NAMED_COLOR_LIST.size());
+            return ConstellationColor.NAMED_COLOR_LIST.size();
         }
 
         @Override
         public ConstellationColor getElementAt(int index) {
-//            System.out.printf("@~getElementAt %d %s\n", index, ColorValue.NAMED_COLOR_LIST[index]);
-            return ConstellationColor.NAMED_COLOR_LIST[index];
+//            System.out.printf("@~getElementAt %d %s\n", index, ColorValue.NAMED_COLOR_LIST.get(index));
+            return ConstellationColor.NAMED_COLOR_LIST.get(index);
         }
     }
 

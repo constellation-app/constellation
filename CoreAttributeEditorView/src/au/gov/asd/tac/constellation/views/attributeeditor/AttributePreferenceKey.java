@@ -30,8 +30,8 @@ public class AttributePreferenceKey {
      attribute hiding preference
      */
     public static final char SPLIT_CHAR = ';';
-    public static final char[] META_CHARS = {SPLIT_CHAR};
-    public static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();
+    protected static final char[] META_CHARS = {SPLIT_CHAR};
+    protected static final Set<Character> SPLIT_CHAR_SET = new HashSet<>();
     public static final String HIDDEN_ATTRIBUTES = "hiddenAttribute";
     public static final String GRAPH_SHOW_ALL = "graphShowAll";
     public static final String NODE_SHOW_ALL = "nodeShowAll";
@@ -40,7 +40,7 @@ public class AttributePreferenceKey {
     public static final String CUSTOM_ATTRIBUTE_COLOUR = "customAttributeColour";
     public static final String SCHEMA_ATTRIBUTE_COLOUR = "schemaAttributeColour";
     public static final String HIDDEN_ATTRIBUTE_COLOUR = "hiddenAttributeColour";
-    public static final Set<String> ATTRIBUTE_COLOR_PREFS = new HashSet<>();
+    protected static final Set<String> ATTRIBUTE_COLOR_PREFS = new HashSet<>();
 
     static {
         SPLIT_CHAR_SET.add(SPLIT_CHAR);
