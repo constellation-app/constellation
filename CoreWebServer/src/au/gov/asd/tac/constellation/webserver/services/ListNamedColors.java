@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,8 +52,10 @@ public class ListNamedColors extends RestService {
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
-        Arrays.stream(ConstellationColor.NAMED_COLOR_LIST)
-            .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));
+        ConstellationColor.NAMED_COLOR_LIST
+            .forEach(cocol -> {
+                root.put(cocol.getName(), cocol.getHtmlColor());
+            });
 
         mapper.writeValue(out, root);
     }
