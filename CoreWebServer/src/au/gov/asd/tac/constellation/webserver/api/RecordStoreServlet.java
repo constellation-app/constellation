@@ -45,59 +45,53 @@ public class RecordStoreServlet extends ConstellationApiServlet {
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
 
-        switch (request.getPathInfo()) {
-            case "/get":
-                // Get (parts of) the currently active graph as a RecordStore.
-                final String graphId = request.getParameter("graph_id");
+        if ("/get".equals(request.getPathInfo())) {
+            // Get (parts of) the currently active graph as a RecordStore.
+            final String graphId = request.getParameter("graph_id");
 
-                final boolean selected = Boolean.parseBoolean(request.getParameter("selected"));
-                final boolean vx = Boolean.parseBoolean(request.getParameter("vx"));
-                final boolean tx = Boolean.parseBoolean(request.getParameter("tx"));
+            final boolean selected = Boolean.parseBoolean(request.getParameter("selected"));
+            final boolean vx = Boolean.parseBoolean(request.getParameter("vx"));
+            final boolean tx = Boolean.parseBoolean(request.getParameter("tx"));
 
-                // Allow the user to specify a specific set of attributes,
-                // cutting down data transfer and processing a lot,
-                // particularly on the Python side.
-                final String attrsParam = request.getParameter("attrs");
-                final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
-                final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-                for (final String k : attrsArray) {
-                    attrs.add(k);
-                }
+            // Allow the user to specify a specific set of attributes,
+            // cutting down data transfer and processing a lot,
+            // particularly on the Python side.
+            final String attrsParam = request.getParameter("attrs");
+            final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
+            final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
+            for (final String k : attrsArray) {
+                attrs.add(k);
+            }
 
-                RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, response.getOutputStream());
+            RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, response.getOutputStream());
 
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                response.getOutputStream().close();
-
-                break;
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_OK);
+            response.getOutputStream().close();
+        } else {
+            throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }
     }
 
     @Override
     protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        switch (request.getPathInfo()) {
-            case "/add":
-                // Add data to a new store, and add the store to the graph.
-                // If any transaction does not specify a source, add our own.
-                final String graphId = request.getParameter("graph_id");
+        if ("/add".equals(request.getPathInfo())) {
+            // Add data to a new store, and add the store to the graph.
+            // If any transaction does not specify a source, add our own.
+            final String graphId = request.getParameter("graph_id");
 
-                final String completeWithSchemaParam = request.getParameter("complete_with_schema");
-                final boolean completeWithSchema = completeWithSchemaParam == null ? true : Boolean.parseBoolean(completeWithSchemaParam);
+            final String completeWithSchemaParam = request.getParameter("complete_with_schema");
+            final boolean completeWithSchema = completeWithSchemaParam == null ? true : Boolean.parseBoolean(completeWithSchemaParam);
 
-                final String arrangeParam = request.getParameter("arrange");
-                final String arrange = arrangeParam == null ? null : arrangeParam;
+            final String arrangeParam = request.getParameter("arrange");
+            final String arrange = arrangeParam == null ? null : arrangeParam;
 
-                final String resetViewParam = request.getParameter("reset_view");
-                final boolean resetView = resetViewParam == null ? true : Boolean.parseBoolean(resetViewParam);
+            final String resetViewParam = request.getParameter("reset_view");
+            final boolean resetView = resetViewParam == null ? true : Boolean.parseBoolean(resetViewParam);
 
-                RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, request.getInputStream());
-
-                break;
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
+            RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, request.getInputStream());
+        } else {
+            throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }
     }
 }
