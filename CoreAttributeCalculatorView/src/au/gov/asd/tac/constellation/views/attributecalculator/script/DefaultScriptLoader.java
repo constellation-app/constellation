@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
 /**
@@ -36,6 +38,8 @@ import org.openide.util.Exceptions;
  * @author twilight_sparkle
  */
 public class DefaultScriptLoader extends AbstractScriptLoader {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultScriptLoader.class.getName());
 
     private static final String DESCRIPTION_KEY = "description";
 
@@ -55,7 +59,7 @@ public class DefaultScriptLoader extends AbstractScriptLoader {
                     try {
                         line = reader.readLine();
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         line = null;
                     }
                     if (line == null) {

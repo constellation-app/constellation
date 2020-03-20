@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import org.openide.DialogDescriptor;
@@ -40,6 +42,8 @@ import org.openide.util.NbBundle.Messages;
     "DateTimeFormat=yyyy-MM-dd HH:mm:ss"
 })
 public class DateTimeRangePanel extends javax.swing.JPanel {
+    
+    private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
     private final DateTimeListenerInterface parentPanel;
     private JSpinner.DateEditor de1;
@@ -314,7 +318,7 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
         try {
             cal.setTime(sdf.parse(formatted));
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
 
         return cal;

@@ -54,7 +54,7 @@ public class FloatValueUpdater2 implements ValueUpdater32 {
         FLOAT_GETTERS[parameters & 3].getUndo(state);
     }
 
-    public static final ValueGetter[] FLOAT_GETTERS = new ValueGetter[]{
+    private static final ValueGetter[] FLOAT_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {

@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -41,6 +43,8 @@ import javax.swing.SwingUtilities;
  * @author sirius
  */
 public class DefaultConversationSenderProvider implements ConversationSenderProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultConversationSenderProvider.class.getName());
 
     @Override
     public void updateMessageSenders(GraphReadMethods graph, List<ConversationMessage> messages, List<String> senderAttributes) {
@@ -94,7 +98,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
             }
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -135,7 +139,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
                     region = borderPane;
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             return region;

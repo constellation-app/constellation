@@ -54,7 +54,7 @@ public class ObjectValueUpdater2 implements ValueUpdater32 {
         OBJECT_GETTERS[parameters & 3].getUndo(state);
     }
 
-    public static final ValueGetter[] OBJECT_GETTERS = new ValueGetter[]{
+    private static final ValueGetter[] OBJECT_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
