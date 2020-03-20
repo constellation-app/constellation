@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.plugins;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.CalculatorContextManager;
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -28,6 +25,9 @@ import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorUtilities;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.CalculatorContextManager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +36,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
