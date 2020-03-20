@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.SortedMap;
@@ -74,22 +75,29 @@ public final class AttributeRegistry implements Serializable {
 
     private void registerAttribute(final Class<? extends AttributeDescription> attributeDescription, final boolean onlyRegisterIfNewer) {
         try {
-            AttributeDescription attribute = attributeDescription.newInstance();
+            AttributeDescription attribute = attributeDescription.getDeclaredConstructor().newInstance();
             final String attrName = attribute.getName();
-            if (!onlyRegisterIfNewer || !attributes.containsKey(attrName) || attributes.get(attrName).newInstance().getVersion() < attribute.getVersion()) {
+            if (!onlyRegisterIfNewer || !attributes.containsKey(attrName)
+                    || attributes.get(attrName).getDeclaredConstructor().newInstance().getVersion() < attribute.getVersion()) {
                 attributes.put(attrName, attributeDescription);
             }
-        } catch (InstantiationException | IllegalAccessException ex) {
-            throw new IllegalArgumentException("Error registering attribute description: " + attributeDescription.getCanonicalName(), ex);
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
+            throw new IllegalArgumentException("Error registering attribute description: "
+                    + attributeDescription.getCanonicalName(), ex);
         }
     }
 
     public Class<?> getNativeType(final Class<? extends AttributeDescription> attributeDescription) {
         try {
-            final AttributeDescription attribute = attributeDescription.newInstance();
+            final AttributeDescription attribute = attributeDescription.getDeclaredConstructor().newInstance();
             return attribute.getNativeClass();
-        } catch (InstantiationException | IllegalAccessException ex) {
-            throw new IllegalArgumentException("Error getting type for attribute description: " + attributeDescription.getCanonicalName(), ex);
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
+            throw new IllegalArgumentException("Error getting type for attribute description: "
+                    + attributeDescription.getCanonicalName(), ex);
         }
     }
 

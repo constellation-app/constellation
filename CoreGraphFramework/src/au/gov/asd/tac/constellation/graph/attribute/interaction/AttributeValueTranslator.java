@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 /**

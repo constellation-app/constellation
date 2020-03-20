@@ -30,6 +30,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -91,7 +92,10 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                 } else {
                     interaction.setProgress(0, 0, "JDBC export interrupted, database may be inconsistent.", false);
                 }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | MalformedURLException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException
+                    | IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 notifyException(ex);
 //                throw new PluginException(PluginNotificationLevel.INFO, ex);
             }
@@ -218,7 +222,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
         select.append(" WHERE 1<>1");
-        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -305,7 +309,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO,"JDBC export vx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", insert.toString());
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -400,7 +404,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO,"JDBC export tx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", insert.toString());
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -427,7 +431,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                                     stmt.setBoolean(paramIx, rg.getTransactionDirection(txId) != Graph.FLAT);
                                     break;
                                 default:
-                                    // do nothing
+                                // do nothing
                             }
                         } else {
                             setBatchParam(rg, stmt, paramIx, attr, txId);
