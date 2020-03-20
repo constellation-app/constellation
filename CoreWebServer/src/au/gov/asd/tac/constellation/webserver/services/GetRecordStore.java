@@ -20,17 +20,18 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -52,11 +53,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetRecordStore extends RestService {
     private static final String NAME = "get_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
-    private static final String SELECTED_PARAMETER_ID = ServiceUtilities.buildId(NAME, "selected");
-    private static final String VX_PARAMETER_ID = ServiceUtilities.buildId(NAME, "vx");
-    private static final String TX_PARAMETER_ID = ServiceUtilities.buildId(NAME, "tx");
-    private static final String ATTRS_PARAMETER_ID = ServiceUtilities.buildId(NAME, "attrs");
+    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String SELECTED_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "selected");
+    private static final String VX_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "vx");
+    private static final String TX_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "tx");
+    private static final String ATTRS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "attrs");
 
     @Override
     public String getName() {
@@ -129,7 +130,7 @@ public class GetRecordStore extends RestService {
         // This includes the datatypes with the names, so the client can do transforms
         // where required (for example, converting strings to timestamps).
         //
-        final IoProgressHandle ioph = new IoProgressHandle("External script: get RecordStore");
+        final IoProgress ioph = new HandleIoProgress("External script: get RecordStore");
         ioph.start();
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;

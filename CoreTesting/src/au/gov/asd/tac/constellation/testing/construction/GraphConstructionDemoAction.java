@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.construction.ConnectionBuilder;
@@ -24,14 +23,15 @@ import au.gov.asd.tac.constellation.graph.construction.JellyfishGraphBuilder;
 import au.gov.asd.tac.constellation.graph.construction.PathGraphBuilder;
 import au.gov.asd.tac.constellation.graph.construction.ProductBuilder;
 import au.gov.asd.tac.constellation.graph.construction.TreeGraphBuilder;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -122,7 +122,7 @@ public final class GraphConstructionDemoAction extends AbstractAction {
                     }
                     AttributeFillBuilder.fillAttribute(graph, colorAttrID, t.nodes, ConstellationColor.getColorValue(1f, 1f, 0f, 1f));
 
-                    PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
                 }
             }).executeLater(graph);
 

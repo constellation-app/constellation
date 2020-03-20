@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 
 /**
  * A logical model for drawing new lines (lines that are in the process of being

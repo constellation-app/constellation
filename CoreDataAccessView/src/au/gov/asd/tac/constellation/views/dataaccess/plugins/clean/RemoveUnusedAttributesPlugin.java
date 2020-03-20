@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.HashSet;

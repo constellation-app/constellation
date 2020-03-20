@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.views.tableview;
 
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.AttributeSegment;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Component;
 import java.io.IOException;

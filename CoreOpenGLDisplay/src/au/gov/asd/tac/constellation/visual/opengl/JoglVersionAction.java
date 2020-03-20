@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;

@@ -1,0 +1,162 @@
+#================================================================================
+# Getting Started
+#================================================================================
+#
+#The Scripting View allows you full access to the graph and plugins using the 
+#Java implementation of the Python scripting language known as Jython. Python 
+#provides two useful commands for learning more about the behaviour of objects, 
+#namely 'help' and 'dir'. The 'dir' command is available in the Scripting View, 
+#but the 'help command is not. To see the results of the 'dir' command you must 
+#print it.
+#
+#Right-clicking anywhere in the script editor pane reveals a list of simple edit 
+#functions.
+#
+#Clicking on "Actions" in the bottom-left reveals several file options:
+#-   "Open" launches a file dialog that lets you load an existing script from 
+#    your local profile into the pane.
+#-   "Save As..." launches a file dialog that lets you save the script currently 
+#    in the pane to your local profile.
+#-   "New Output Window" is a toggle that, when active, directs the script output 
+#    to a new tab instead of clobbering the current output. Note that when you 
+#    execute a script on a new graph it will always open a new tab.
+#-   "API Documentation" opens documentation describing how to use the Scripting 
+#    View API.
+#
+#Clicking on the "Execute" button runs your script on the selected graph and 
+#returns any output (or error messages) to an output window. Right-click on the 
+#output window border for a list of visibility options or inside the pane for a 
+#list of format and text search options.
+
+print 'Directory of Graph:'
+print '\n'.join(dir(graph))
+
+#================================================================================
+# Opening Graphs
+#================================================================================
+#
+#You must create a reference to the built-in 'graph' object in order to 
+#manipulate it. There are two distinct graph states you can access - a readable 
+#graph and a writable graph. You'll usually want to use writable graph as it 
+#lets you both read and modify.
+
+print('\nOpening Graph...')
+with graph.writableGraph('<graph_edit_name>') as wg:
+
+#Your graph is now represented as an object by the variable 'wg'. There is no 
+#need to close the graph as the with context takes care of that for you. 
+#Remember to indent any code within the context (rule of thumb is four spaces).
+#
+#================================================================================
+# Graph Iteration
+#================================================================================
+#
+#A CONSTELLATION graph typically consists of vertices, links, edges and 
+#transactions. The 'graph' object has methods to access each of these:
+
+    print('\nIterating Over Graph:')
+    for vertex in wg.vertices():
+        print vertex
+        
+#It is also possible to access each of these graph elements from any other graph 
+#element:
+        
+        for transaction in vertex.transactions():
+            print '  ', transaction
+
+#================================================================================
+# Accessing Attributes
+#================================================================================
+#
+#Attributes are stored on vertices, links, edges and transactions in a dictionary 
+#and can be retrieved as such. For a list of all the attributes on an element, 
+#select that element on the graph and open the Attribute Editor.
+
+    print('\nAccessing Attributes:')
+    for vertex in wg.vertices():
+        if vertex['selected']:
+            print vertex['Identifier']
+        else:
+            print vertex['color']
+
+#================================================================================
+# The Best of Both Worlds
+#================================================================================
+#
+#Jython is a unique environment that lets you take advantage of both Python and 
+#Java. While Python syntax is generally less verbose and easier to learn, Java 
+#has extensive libraries, all of which are at your disposal. If you can't find an 
+#easy Python solution to a problem, you might find a Java one instead. It is 
+#also worth noting that Jython cannot currently interpret any Cython code.
+#
+#================================================================================
+# Calling Plugins
+#================================================================================
+#
+#One of the most powerful features of the Scripting View is its ability to call 
+#CONSTELLATION plugins. This is done using the built-in 'utilities' object as 
+#demonstrated below.
+
+    print('\nRunning a Plugin:')
+    transactionCountBeforePlugin = wg.transactionCount()
+
+    pluginParameters = {\
+        'MergeTransactionsPlugin.lead': 'Earliest Time',\
+        'MergeTransactionsPlugin.merge_type': 'DateTime',\
+        'MergeTransactionsPlugin.selected': 'false',\
+        'MergeTransactionsPlugin.threshold': '60'}
+        
+    utilities.executePlugin(graph, 'MergeTransactions', pluginParameters)
+        
+    transactionCountAfterPlugin = wg.transactionCount()
+    print '%d transactions were merged.' %(transactionCountBeforePlugin - transactionCountAfterPlugin) 
+
+#To view the plugins available and the arguments required for each plugin, search 
+#for the plugin name using the Schema View.
+#
+#================================================================================
+# Datetime Module
+#================================================================================
+#
+#Jython's implementation of the datetime module is different to Python's. 
+#However, the "DateTime" attribute of transactions in CONSTELLATION already 
+#returns a Java 'ZonedDateTime' object. It is recommended that you use its 
+#methods directly rather than converting type where possible.
+#
+#================================================================================
+# File I/O
+#================================================================================
+#
+#To do file handling you'll need to make use of Java's InputStream and 
+#OutputStream objects. Here is an example of reading from a file:
+#
+#from java.io import FileInputStream
+#
+#with open(FileInputStream('input_file_path'), 'r') as file:
+#    for line in file:
+#        ...
+#
+#And here is an example of writing to a file:
+#
+#from java.io import FileOutputStream
+#
+#with open(FileOutputStream('output_file_path'), 'w') as file:
+#    ...
+#    file.write(...)
+#
+#================================================================================
+# Character Limit
+#================================================================================
+#
+#The window may only contain up to 100,000 characters. Once this limit is reached 
+#an IO Exception is raised whenever the execute button is pressed. If you obey 
+#the Python style guide's (PEP008) 80-character limit, this translates to a 
+#minimum of 1250 lines.
+#
+#If you need more room then consider:
+#-   refactoring your code;
+#-   executing multiple scripts; or
+#-   opening a file in the script
+#
+#The latter is especially relevant if you have reference data embedded in the 
+#script itself.

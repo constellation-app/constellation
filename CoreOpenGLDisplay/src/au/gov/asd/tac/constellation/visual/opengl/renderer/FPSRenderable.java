@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.FpsBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import com.jogamp.opengl.GL3;

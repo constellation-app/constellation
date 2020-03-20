@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.ServletException;

@@ -19,13 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetGraphValues extends RestService {
     private static final String NAME = "get_graph_values";
-    private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
 
     @Override
     public String getName() {

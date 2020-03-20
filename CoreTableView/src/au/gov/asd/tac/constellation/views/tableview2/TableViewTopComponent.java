@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2;
 
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.views.tableview2.TableViewUtilities.UpdateStatePlugin;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewConcept;
@@ -35,7 +35,6 @@ import java.util.stream.Collectors;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -215,8 +214,10 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         if (stateLock != null) {
             try {
                 stateLock.get();
-            } catch (final ExecutionException | InterruptedException ex) {
+            } catch (final ExecutionException ex) {
                 // DO NOTHING
+            } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -225,7 +226,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             public void run() {
                 while (stateLock != null && currentState == stateSnapshot) {
                     try {
-                        // TODO: REMOVE THIS!
+                        // TODO: remove sleep
                         // ...but there is an async issue which needs to be 
                         // resolved first. When showSelected() is called, the 
                         // order of operations is to update the Table View 
@@ -240,7 +241,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                         // matches the state object we updated it to.
                         Thread.sleep(10);
                     } catch (final InterruptedException ex) {
-                        // DO NOTHING
+                        Thread.currentThread().interrupt();
                     }
                 }
                 pane.updateSelection(currentGraph, currentState);

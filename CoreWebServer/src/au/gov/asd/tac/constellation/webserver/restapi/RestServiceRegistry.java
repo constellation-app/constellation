@@ -15,9 +15,8 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;

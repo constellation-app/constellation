@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetPluginDescription extends RestService {
     private static final String NAME = "get_plugin_description";
-    private static final String PLUGIN_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "plugin_name");
+    private static final String PLUGIN_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "plugin_name");
 
     @Override
     public String getName() {

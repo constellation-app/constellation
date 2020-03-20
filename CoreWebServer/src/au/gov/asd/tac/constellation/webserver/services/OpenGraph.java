@@ -17,18 +17,18 @@ package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonReader;
-import au.gov.asd.tac.constellation.graph.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class OpenGraph extends RestService {
     private static final String NAME = "open_graph";
-    private static final String FILE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "filename");
+    private static final String FILE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "filename");
 
     @Override
     public String getName() {
@@ -64,8 +64,8 @@ public class OpenGraph extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.POST;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.POST;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class OpenGraph extends RestService {
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String filePath = parameters.getStringValue(FILE_PARAMETER_ID);
 
-        final String existingId = ServiceUtilities.activeGraphId();
+        final String existingId = RestServiceUtilities.activeGraphId();
 
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
@@ -93,10 +93,10 @@ public class OpenGraph extends RestService {
         }
 
         try {
-            final Graph g = new GraphJsonReader().readGraphZip(fnam, new IoProgressHandle(String.format("Loading graph %s...", fnam)));
+            final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = ServiceUtilities.waitForGraphChange(existingId);
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId);
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();

@@ -15,31 +15,31 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecutor;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -57,11 +57,11 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class AddRecordStore extends RestService {
     private static final String NAME = "add_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
-    private static final String COMPLETE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "complete_with_schema");
-    private static final String ARRANGE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "arrange");
-    private static final String RESET_PARAMETER_ID = ServiceUtilities.buildId(NAME, "reset_view");
-    private static final String DATA_PARAMETER_ID = ServiceUtilities.buildId(NAME, "data");
+    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String COMPLETE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "complete_with_schema");
+    private static final String ARRANGE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "arrange");
+    private static final String RESET_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "reset_view");
+    private static final String DATA_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "data");
 
     private static final String API_SOURCE = "REST API";
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;
@@ -82,8 +82,8 @@ public class AddRecordStore extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.POST;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.POST;
     }
 
     @Override
@@ -211,7 +211,7 @@ public class AddRecordStore extends RestService {
         PluginExecutor pe = PluginExecutor.startWith(p);
 
         if(resetView) {
-            pe = pe.followedBy(CorePluginRegistry.RESET);
+            pe = pe.followedBy(InteractiveGraphPluginRegistry.RESET_VIEW);
         }
 
         try {

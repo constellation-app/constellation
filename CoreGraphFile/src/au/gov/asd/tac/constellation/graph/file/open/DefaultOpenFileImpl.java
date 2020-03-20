@@ -356,6 +356,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
                     EventQueue.invokeAndWait(SetCursorTask.this);
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
                 } catch (InvocationTargetException ex) {
                     Exceptions.printStackTrace(ex);
                 }

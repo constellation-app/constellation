@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class SetGraph extends RestService {
     private static final String NAME = "set_graph";
-    private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
 
     @Override
     public String getName() {
@@ -55,8 +55,8 @@ public class SetGraph extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.PUT;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.PUT;
     }
 
     @Override

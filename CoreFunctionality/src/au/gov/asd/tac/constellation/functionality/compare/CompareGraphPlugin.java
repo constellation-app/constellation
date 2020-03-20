@@ -15,37 +15,37 @@
  */
 package au.gov.asd.tac.constellation.functionality.compare;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
-import au.gov.asd.tac.constellation.functionality.copypaste.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.PrimaryKeyUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.attribute.AttributeUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.ColorParameterType.ColorParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -312,7 +312,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<List<String>, Integer> compareTransactionKeysToIndex = getTransactionKeysToRecordstoreIndex(compare, vertexPrimaryKeys, transactionPrimaryKeys);
 
         final Set<Set<String>> seenVertices = new HashSet<>();
-        final Set<List<String>> seenTransactions = new HashSet<>(); // TODO: this could be a list of Sets
+        // TODO: this could be a list of sets
+        final Set<List<String>> seenTransactions = new HashSet<>();
         final List<String> attributes = result.keys();
 
         final Map<String, String> vertexSourceRecordPrimaryValues = new HashMap<>();
@@ -533,7 +534,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final ReadableGraph rg = originalGraph.getReadableGraph();
         try {
             try {
-                final Plugin copyGraphPlugin = PluginRegistry.get(CorePluginRegistry.COPY_TO_NEW_GRAPH);
+                final Plugin copyGraphPlugin = PluginRegistry.get(InteractiveGraphPluginRegistry.COPY_TO_NEW_GRAPH);
                 final PluginParameters copyParams = copyGraphPlugin.createParameters();
                 copyParams.getParameters().get(CopyToNewGraphPlugin.COPY_ALL_PARAMETER_ID).setBooleanValue(true);
                 PluginExecution.withPlugin(copyGraphPlugin).withParameters(copyParams).executeNow(rg);
@@ -619,7 +620,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         final Map<Set<String>, Integer> keyToRecordIndex = new HashMap<>();
         recordstore.reset();
         while (recordstore.next()) {
-            final Set<String> vertex = new TreeSet();
+            final Set<String> vertex = new TreeSet<>();
 
             for (final String key : vertexKeys) {
                 if (!recordstore.hasValue(GraphRecordStoreUtilities.SOURCE + key)) {

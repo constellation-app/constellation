@@ -15,21 +15,19 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 import java.util.prefs.Preferences;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -144,7 +142,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode content = success.putObject("content");
                     final ObjectNode mime = content.putObject(rs.getMimeType());
                     final ObjectNode schema = mime.putObject("schema");
-                    if(rs.getMimeType().equals(ServiceUtilities.IMAGE_PNG)) {
+                    if(rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
                         schema.put("type", "string");
                         schema.put("format", "binary");
 //                    } else if(rs.getMimeType().equals(ServiceUtilities.APPLICATION_JSON)) {

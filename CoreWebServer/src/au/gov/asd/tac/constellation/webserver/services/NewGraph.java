@@ -24,19 +24,18 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class NewGraph extends RestService {
     private static final String NAME = "new_graph";
-    private static final String SCHEMA_PARAMETER_ID = ServiceUtilities.buildId(NAME, "schema_name");
+    private static final String SCHEMA_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "schema_name");
 
     @Override
     public String getName() {
@@ -76,8 +75,8 @@ public class NewGraph extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.POST;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.POST;
     }
 
     @Override
@@ -111,7 +110,7 @@ public class NewGraph extends RestService {
         final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().replace(" ", "").toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
-        final String newId = ServiceUtilities.waitForGraphChange(existingId);
+        final String newId = RestServiceUtilities.waitForGraphChange(existingId);
 
 //        // Now we wait for the new graph to become active.
 //        //

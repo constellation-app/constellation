@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -49,8 +49,8 @@ public class ReflectJSON extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.POST;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.POST;
     }
 
     @Override

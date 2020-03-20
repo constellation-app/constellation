@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
-import static au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.IMAGE_PNG;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetIcon extends RestService {
     private static final String NAME = "get_icon";
-    private static final String ICON_PARAMETER_ID = ServiceUtilities.buildId(NAME, "icon_name");
+    private static final String ICON_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "icon_name");
 
     @Override
     public String getName() {

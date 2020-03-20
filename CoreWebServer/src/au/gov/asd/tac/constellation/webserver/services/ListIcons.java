@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType.BooleanParameterValue;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class ListIcons extends RestService {
     private static final String NAME = "list_icons";
-    private static final String EDITABLE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "editable");
+    private static final String EDITABLE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "editable");
 
     @Override
     public String getName() {

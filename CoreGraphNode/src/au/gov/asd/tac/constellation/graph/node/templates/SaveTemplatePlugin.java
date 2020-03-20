@@ -18,20 +18,20 @@ package au.gov.asd.tac.constellation.graph.node.templates;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.io.GraphJsonWriter;
-import au.gov.asd.tac.constellation.graph.node.NewSchemaGraphAction;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginGraphs;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
+import au.gov.asd.tac.constellation.graph.node.create.NewSchemaGraphAction;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.IoProgressHandle;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.IOException;
 import java.util.prefs.Preferences;
@@ -113,7 +113,7 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final File saveFile = new File(schemaDir, templateName);
 
         try {
-            new GraphJsonWriter().writeTemplateToZip(graph, saveFile.getPath(), new IoProgressHandle("Saving Template..."));
+            new GraphJsonWriter().writeTemplateToZip(graph, saveFile.getPath(), new HandleIoProgress("Saving Template..."));
         } catch (IOException ex) {
             throw new PluginException(this, PluginNotificationLevel.ERROR, "Failed to save template", ex);
         }

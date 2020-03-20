@@ -6,12 +6,6 @@
             <file name="about" url="about.txt"/>
         </folder>
     </folder>
-    <folder name="Actions">
-        <folder name="Display">
-            <file name="au-gov-asd-tac-constellation-functionality-display-Menu3DAction.instance_hidden"/>
-            <file name="au-gov-asd-tac-constellation-functionality-display-MenuToggle3DAction.instance"/>
-        </folder>
-    </folder>
     <folder name="Menu">
         <folder name="File">
             <attr name="position" intvalue="100"/>
@@ -276,7 +270,7 @@
             <attr name="originalFile" stringvalue="Actions/Edit/org-openide-actions-UndoAction.instance"/>
         </file>
         <file name="C-F.shadow">
-            <attr name="originalFile" stringvalue="Actions/Selection/au-gov-asd-tac-constellation-views-find-ui-FindTopComponent.instance"/>
+            <attr name="originalFile" stringvalue="Actions/Selection/au-gov-asd-tac-constellation-views-find-gui-FindTopComponent.instance"/>
         </file>
     </folder>
 </filesystem>

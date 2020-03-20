@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.webserver;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -38,7 +38,7 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
-@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase="au/gov/asd/tac/constellation/webserver/jupyter.png")
+@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase="au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
 @ActionReference(path = "Menu/Tools", position = 1700)
 @NbBundle.Messages("CTL_StartJupyterNotebookAction=Start Jupyter Notebook")
 public class StartJupyterNotebookAction implements ActionListener {

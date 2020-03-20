@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class ListPlugins extends RestService {
     private static final String NAME = "list_plugins";
-    private static final String ALIAS_PARAMETER_ID = ServiceUtilities.buildId(NAME, "alias");
+    private static final String ALIAS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "alias");
 
     @Override
     public String getName() {

@@ -17,18 +17,18 @@ package au.gov.asd.tac.constellation.webserver.services;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -44,9 +44,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class RunPlugin extends RestService {
     private static final String NAME = "run_plugin";
-    private static final String PLUGIN_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "plugin_name");
-    private static final String GRAPHID_PARAMETER_ID = ServiceUtilities.buildId(NAME, "graph_id");
-    private static final String ARGS_PARAMETER_ID = ServiceUtilities.buildId(NAME, "args");
+    private static final String PLUGIN_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "plugin_name");
+    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String ARGS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "args");
 
     @Override
     public String getName() {
@@ -64,8 +64,8 @@ public class RunPlugin extends RestService {
     }
 
     @Override
-    public ServiceUtilities.HttpMethod getHttpMethod() {
-        return ServiceUtilities.HttpMethod.POST;
+    public RestServiceUtilities.HttpMethod getHttpMethod() {
+        return RestServiceUtilities.HttpMethod.POST;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class RunPlugin extends RestService {
             if(json.size() > 0) {
                 final Plugin plugin = PluginRegistry.get(pluginName);
                 final PluginParameters pluginParameters = plugin.createParameters();
-                ServiceUtilities.parametersFromJson((ObjectNode)json, pluginParameters);
+                RestServiceUtilities.parametersFromJson((ObjectNode)json, pluginParameters);
                 PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
             } else {
                 PluginExecution.withPlugin(pluginName).executeNow(graph);

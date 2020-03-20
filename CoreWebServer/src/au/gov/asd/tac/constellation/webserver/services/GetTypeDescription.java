@@ -15,16 +15,16 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetTypeDescription extends RestService {
     private static final String NAME = "get_type_description";
-    private static final String TYPE_PARAMETER_ID = ServiceUtilities.buildId(NAME, "type_name");
+    private static final String TYPE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "type_name");
 
     @Override
     public String getName() {

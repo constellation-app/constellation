@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-OpenIDE-Module: au.gov.asd.tac.constellation.pluginframework
-OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/pluginframework/Bundle.properties
+OpenIDE-Module: au.gov.asd.tac.constellation.plugins
+OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/plugins/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
 OpenIDE-Module-Specification-Version: 1.0

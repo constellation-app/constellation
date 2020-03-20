@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.testing.jdbc;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.MessageFormat;

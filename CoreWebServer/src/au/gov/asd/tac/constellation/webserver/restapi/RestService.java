@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -106,6 +106,6 @@ public abstract class RestService {
      * @return A String containing a MIME type.
      */
     public String getMimeType() {
-        return ServiceUtilities.APPLICATION_JSON;
+        return RestServiceUtilities.APPLICATION_JSON;
     }
 }

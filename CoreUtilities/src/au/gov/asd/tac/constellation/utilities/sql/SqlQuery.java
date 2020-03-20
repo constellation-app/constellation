@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.sql;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

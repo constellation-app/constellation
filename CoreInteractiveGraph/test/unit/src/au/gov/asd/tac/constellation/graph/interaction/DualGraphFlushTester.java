@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.Arrays;
 import org.openide.awt.UndoRedo;
 

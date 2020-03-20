@@ -17,15 +17,15 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.text.TextPluginInteraction;
-import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import java.util.ArrayList;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -63,61 +63,6 @@ public class SelectTopNNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getType method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetType() {
-//        System.out.println("getType");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPosition method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetPosition() {
-//        System.out.println("getPosition");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        int expResult = 0;
-//        int result = instance.getPosition();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDescription method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testGetDescription() {
-//        System.out.println("getDescription");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        String expResult = "";
-//        String result = instance.getDescription();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createParameters method, of class SelectTopNPlugin.
-//     */
-//    @Test
-//    public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        SelectTopNPlugin instance = new SelectTopNPlugin();
-//        PluginParameters expResult = null;
-//        PluginParameters result = instance.createParameters();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of edit method, of class SelectTopNPlugin.
      *

@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.webserver.services;
 
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceUtilities.HttpMethod;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,8 +38,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
-    private static final String SERVICE_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "service_name");
-    private static final String METHOD_NAME_PARAMETER_ID = ServiceUtilities.buildId(NAME, "http_method");
+    private static final String SERVICE_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "service_name");
+    private static final String METHOD_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "http_method");
 
     @Override
     public String getName() {
