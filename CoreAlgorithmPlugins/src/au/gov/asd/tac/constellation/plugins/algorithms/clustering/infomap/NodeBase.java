@@ -211,12 +211,7 @@ public class NodeBase {
 
     public Iterable<NodeBase> getChildren() {
 //        return new ChildrenIterable();
-        return new Iterable<NodeBase>() {
-            @Override
-            public Iterator<NodeBase> iterator() {
-                return new ChildrenIterator(NodeBase.this);
-            }
-        };
+        return () -> new ChildrenIterator(NodeBase.this);
     }
 
     @Override

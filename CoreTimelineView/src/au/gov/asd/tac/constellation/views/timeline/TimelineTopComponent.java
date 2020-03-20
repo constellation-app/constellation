@@ -148,47 +148,44 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
         // Populate the jfx container:
         Platform.setImplicitExit(false);
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                // No active graph view:
-                noActive = new BorderPane();
-                lblNoActive = new Label(Bundle.NoGraph());
-                lblNoActive.setTextFill(Color.LIGHTGREY);
-                BorderPane.setAlignment(lblNoActive, Pos.CENTER);
-                noActive.setCenter(lblNoActive);
-
-                timelinePanel = new TimelinePanel(thisComponent);
-                overviewPanel = new OverviewPanel(thisComponent);
-
-                SplitPane.setResizableWithParent(overviewPanel, false);
-                SplitPane.setResizableWithParent(timelinePanel, true);
-                splitPane = new SplitPane();
-                splitPane.setId("hiddenSplitter");
-                splitPane.getItems().addAll(timelinePanel, overviewPanel);
-                splitPane.setOrientation(Orientation.VERTICAL);
-                splitPane.getStylesheets().add(TimelineTopComponent.class.getResource(DARK_THEME).toExternalForm());
-                splitPane.setMinHeight(height * 0.8);
-                splitPane.setVisible(false);
-                splitPane.setDisable(true);
-
-                root = new StackPane();
-                root.getChildren().addAll(noActive, splitPane);
-
-                // Create the scene:
-                final Scene scene = new Scene(root);
-                scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-                scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-
-                splitPane.prefHeightProperty().bind(scene.heightProperty());
-                splitPane.prefWidthProperty().bind(scene.widthProperty());
-
-                // Set the split pane as the javafx scene:
-                container.setScene(scene);
-
-                // Now that the heights are known, set the position of the splitPane divider:
-                splitPane.getDividers().get(0).setPosition(splitPanePosition);
-            }
+        Platform.runLater(() -> {
+            // No active graph view:
+            noActive = new BorderPane();
+            lblNoActive = new Label(Bundle.NoGraph());
+            lblNoActive.setTextFill(Color.LIGHTGREY);
+            BorderPane.setAlignment(lblNoActive, Pos.CENTER);
+            noActive.setCenter(lblNoActive);
+            
+            timelinePanel = new TimelinePanel(thisComponent);
+            overviewPanel = new OverviewPanel(thisComponent);
+            
+            SplitPane.setResizableWithParent(overviewPanel, false);
+            SplitPane.setResizableWithParent(timelinePanel, true);
+            splitPane = new SplitPane();
+            splitPane.setId("hiddenSplitter");
+            splitPane.getItems().addAll(timelinePanel, overviewPanel);
+            splitPane.setOrientation(Orientation.VERTICAL);
+            splitPane.getStylesheets().add(TimelineTopComponent.class.getResource(DARK_THEME).toExternalForm());
+            splitPane.setMinHeight(height * 0.8);
+            splitPane.setVisible(false);
+            splitPane.setDisable(true);
+            
+            root = new StackPane();
+            root.getChildren().addAll(noActive, splitPane);
+            
+            // Create the scene:
+            final Scene scene = new Scene(root);
+            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
+            
+            splitPane.prefHeightProperty().bind(scene.heightProperty());
+            splitPane.prefWidthProperty().bind(scene.widthProperty());
+            
+            // Set the split pane as the javafx scene:
+            container.setScene(scene);
+            
+            // Now that the heights are known, set the position of the splitPane divider:
+            splitPane.getDividers().get(0).setPosition(splitPanePosition);
         });
     }
 
@@ -348,20 +345,17 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             GraphManager.getDefault().setDatetimeAttr(null);
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    timelinePanel.setExclusionState(0);
-                    //timelinePanel.setIsShowingNodeLabelAttributes(false);
-                    timelinePanel.setNodeLabelAttributes(null);
-                    timelinePanel.setNodeLabelAttribute(null);
-                    timelinePanel.setTimeZone(TimeZoneUtilities.UTC);
-                    splitPane.setVisible(false);
-                    timelinePanel.setDisable(true);
-                    // Clear charts:
-                    timelinePanel.clearTimeline();
-                    overviewPanel.clearHistogram();
-                }
+            Platform.runLater(() -> {
+                timelinePanel.setExclusionState(0);
+                //timelinePanel.setIsShowingNodeLabelAttributes(false);
+                timelinePanel.setNodeLabelAttributes(null);
+                timelinePanel.setNodeLabelAttribute(null);
+                timelinePanel.setTimeZone(TimeZoneUtilities.UTC);
+                splitPane.setVisible(false);
+                timelinePanel.setDisable(true);
+                // Clear charts:
+                timelinePanel.clearTimeline();
+                overviewPanel.clearHistogram();
             });
         }
 
@@ -407,21 +401,18 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     }
 
     private void hideTimeline(final String message) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                lblNoActive.setText(message);
-
-                timelinePanel.setDisable(true);
-                //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
-                //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
-                splitPane.setVisible(false);
-                splitPane.setDisable(true);
-
-                // Clear charts:
-                timelinePanel.clearTimeline();
-                overviewPanel.clearHistogram();
-            }
+        Platform.runLater(() -> {
+            lblNoActive.setText(message);
+            
+            timelinePanel.setDisable(true);
+            //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
+            //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
+            splitPane.setVisible(false);
+            splitPane.setDisable(true);
+            
+            // Clear charts:
+            timelinePanel.clearTimeline();
+            overviewPanel.clearHistogram();
         });
     }
 
@@ -469,67 +460,52 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                     if (currentDatetimeAttribute != null) {
                         currentTemporalAttributeModificationCount = rg.getValueModificationCounter(rg.getAttribute(GraphElementType.TRANSACTION, currentDatetimeAttribute));
                         // We've calculated everything, so start populating the graph:
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                final ReadableGraph rg = graph.getReadableGraph();
-                                try {
-                                    // Clear anything already on the charts:
-                                    timelinePanel.clearTimeline();
-                                    overviewPanel.clearHistogram(!isFullRefresh);
-
-                                    // Ensure that everything is visible:
-                                    timelinePanel.setDisable(false);
-                                    //splitPane.setVisible(true);
-                                    //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
-                                    //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
+                        Platform.runLater(() -> {
+                            final ReadableGraph rg1 = graph.getReadableGraph();
+                            try {
+                                // Clear anything already on the charts:
+                                timelinePanel.clearTimeline();
+                                overviewPanel.clearHistogram(!isFullRefresh);
+                                // Ensure that everything is visible:
+                                timelinePanel.setDisable(false);
+                                //splitPane.setVisible(true);
+                                //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
+                                //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
 //                                    splitPane.setOpacity(1);
-                                    splitPane.setVisible(true);
-                                    splitPane.setDisable(false);
+                                splitPane.setVisible(true);
+                                splitPane.setDisable(false);
 //                                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
-
-                                    // Add the datetime attributes:
-                                    timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
-
-                                    timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-
-                                    // Add the label attributes:
-                                    timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-
-                                    final boolean selectedOnly = state != null ? state.isShowingSelectedOnly() : false;
-                                    timelinePanel.setIsShowingSelectedOnly(selectedOnly);
-
-                                    if (state != null && state.getNodeLabelsAttr() != null) {
-                                        timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
-                                        timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
-                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
-                                    } else {
-                                        timelinePanel.populateFromGraph(rg, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
-                                    }
-                                    overviewPanel.populateHistogram(rg, currentDatetimeAttribute,
-                                            getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
-                                            isFullRefresh,
-                                            selectedOnly
-                                    );
-
-                                } finally {
-                                    rg.release();
-                                }
-
-                                // Restore the dimming state if we have it:
-                                if (state != null) //if(state != null && !isFullRefresh)
-                                {
-                                    if (state.getLowerTimeExtent() == 0) {
-                                        setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
-                                    }
-                                    timelinePanel.setExclusionState(state.exclusionState());
+                                // Add the datetime attributes:
+                                timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
+                                timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
+                                // Add the label attributes:
+                                timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
+                                final boolean selectedOnly = state != null ? state.isShowingSelectedOnly() : false;
+                                timelinePanel.setIsShowingSelectedOnly(selectedOnly);
+                                if (state != null && state.getNodeLabelsAttr() != null) {
+                                    timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());
+                                    timelinePanel.setIsShowingNodeLabelAttributes(state.isShowingNodeLabels());
+                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, state.getNodeLabelsAttr(), selectedOnly, state.getTimeZone());
                                 } else {
-                                    // There is no state, so lets create a new one:
-                                    state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
-                                            0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
+                                    timelinePanel.populateFromGraph(rg1, currentDatetimeAttribute, null, selectedOnly, state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
                                 }
-                                setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
+                                overviewPanel.populateHistogram(rg1, currentDatetimeAttribute, getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(), isFullRefresh, selectedOnly);
+                            } finally {
+                                rg1.release();
                             }
+                            // Restore the dimming state if we have it:
+                            if (state != null) //if(state != null && !isFullRefresh)
+                            {
+                                if (state.getLowerTimeExtent() == 0) {
+                                    setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
+                                }
+                                timelinePanel.setExclusionState(state.exclusionState());
+                            } else {
+                                // There is no state, so lets create a new one:
+                                state = new TimelineState(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent(),
+                                        0, false, currentDatetimeAttribute, false, null, TimeZoneUtilities.UTC);
+                            }
+                            setExtents(state.getLowerTimeExtent(), state.getUpperTimeExtent());
                         });
                     }
                 } finally {
@@ -559,14 +535,11 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         GraphManager.getDefault().setDatetimeAttr(currentDatetimeAttr);
 
         // Clear charts:
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                timelinePanel.clearTimeline();
-                overviewPanel.clearHistogram();
-
-                timelinePanel.setExclusionState(0);
-            }
+        Platform.runLater(() -> {
+            timelinePanel.clearTimeline();
+            overviewPanel.clearHistogram();
+            
+            timelinePanel.setExclusionState(0);
         });
 
         // Call for repopulation:
@@ -760,13 +733,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 }*/
                 // Detect graph changes to attributes:
                 if (currentAttributeModificationCount != oldAttributeModificationCount) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Re-populate charts:
-                            timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                            populateFromGraphNode(true);
-                        }
+                    Platform.runLater(() -> {
+                        // Re-populate charts:
+                        timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
+                        populateFromGraphNode(true);
                     });
                 } //Detect value change on the temporal attribute
                 else if (currentTemporalAttributeModificationCount != oldTemporalAttributeModificationCount) {

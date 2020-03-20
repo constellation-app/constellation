@@ -281,12 +281,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
 //        final String[] prefixes = elementType == GraphElementType.VERTEX ? vertexPrefixes : transactionPrefixes;
 
         // Form a sorted set of attribute names, with longer strings occuring first. This prevents attribute names which are substrings of other attribute names from matching when the attribute with a larger name should match first
-        SortedSet<String> attributeNames = new TreeSet<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.length() == o2.length() ? o1.compareTo(o2) : Integer.compare(o2.length(), o1.length());
-            }
-        });
+        SortedSet<String> attributeNames = new TreeSet<>((o1, o2) -> o1.length() == o2.length() ? o1.compareTo(o2) : Integer.compare(o2.length(), o1.length()));
         // Describes whether attribute names represent attributes for vertices, transactions, or both (eg. selected)
         Map<String, GraphElementType> attributeNameElementTypes = new HashMap<>();
 //        for (int i = 0; i < attributeCount; i++) {

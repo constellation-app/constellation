@@ -741,23 +741,20 @@ public abstract class InfomapGreedy extends InfomapBase {
          typedef std::map<NodePair, double> EdgeMap;
          EdgeMap moduleLinks;
          */
-        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>(new Comparator<Tuple<NodeBase, NodeBase>>() {
-            @Override
-            public int compare(final Tuple<NodeBase, NodeBase> lhs, final Tuple<NodeBase, NodeBase> rhs) {
-                if (lhs.getFirst().id < rhs.getFirst().id) {
-                    return -1;
-                }
-                if (lhs.getFirst().id > rhs.getFirst().id) {
-                    return 1;
-                }
-                if (lhs.getSecond().id < rhs.getSecond().id) {
-                    return -1;
-                }
-                if (lhs.getSecond().id > rhs.getSecond().id) {
-                    return 1;
-                }
-                return 0;
+        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
+            if (lhs.getFirst().id < rhs.getFirst().id) {
+                return -1;
             }
+            if (lhs.getFirst().id > rhs.getFirst().id) {
+                return 1;
+            }
+            if (lhs.getSecond().id < rhs.getSecond().id) {
+                return -1;
+            }
+            if (lhs.getSecond().id > rhs.getSecond().id) {
+                return 1;
+            }
+            return 0;
         });
         for (final NodeBase node : activeNetwork) {
             final NodeBase parent = node.parent;
@@ -841,12 +838,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             parent.getSubInfomap().sortTree();
         }
 
-        final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>(new Comparator<Double>() {
-            @Override
-            public int compare(final Double d1, final Double d2) {
-                return (int) Math.signum(d2 - d1);
-            }
-        });
+        final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>((d1, d2) -> (int) Math.signum(d2 - d1));
 
         if (Logf.DEBUGF && parent.getChildDegree() > 0) {
             for (final NodeBase child : parent.getChildren()) {

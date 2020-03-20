@@ -124,16 +124,13 @@ public class LayerArranger implements Arranger {
 
             // Figure out which value belongs in which level.
             final String[] valueArray = values.toArray(new String[values.size()]);
-            Arrays.sort(valueArray, new Comparator<String>() {
-                @Override
-                public int compare(final String s1, final String s2) {
-                    if (s1 == null) {
-                        return s2 == null ? 0 : -1;
-                    } else if (s2 == null) {
-                        return 1;
-                    } else {
-                        return s1.toLowerCase().compareTo(s2.toLowerCase());
-                    }
+            Arrays.sort(valueArray, (s1, s2) -> {
+                if (s1 == null) {
+                    return s2 == null ? 0 : -1;
+                } else if (s2 == null) {
+                    return 1;
+                } else {
+                    return s1.toLowerCase().compareTo(s2.toLowerCase());
                 }
             });
             final Map<String, Integer> attrLevel = new HashMap<>();

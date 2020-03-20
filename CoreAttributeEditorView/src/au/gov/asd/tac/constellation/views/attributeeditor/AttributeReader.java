@@ -248,12 +248,7 @@ public class AttributeReader {
                 AttributeData attrData = new AttributeData(attr.getName(), attr.getDescription(), attr.getId(), rg.getValueModificationCounter(attr.getId()), elementType, attr.getAttributeType(), attr.getDefaultValue(), rg.isPrimaryKey(attr.getId()), isSchemaAttr);
                 attributeNames.add(attrData);
             }
-            Collections.sort(attributeNames, new Comparator<AttributeData>() {
-                @Override
-                public int compare(final AttributeData o1, final AttributeData o2) {
-                    return o1.getAttributeName().compareTo(o2.getAttributeName());
-                }
-            });
+            Collections.sort(attributeNames, (o1, o2) -> o1.getAttributeName().compareTo(o2.getAttributeName()));
             elementAttributeCounts.put(elementType, attributeCount);
             elementAttributeData.put(elementType, attributeNames);
         }

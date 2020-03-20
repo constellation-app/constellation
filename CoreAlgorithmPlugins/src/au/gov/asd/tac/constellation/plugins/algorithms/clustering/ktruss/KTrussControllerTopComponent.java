@@ -668,13 +668,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             dp.calculateRectangles();
             nestedTrussPane.setViewportView(dp);
 
-            nestedTrussPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-
-                @Override
-                public void adjustmentValueChanged(AdjustmentEvent e) {
-                    dp.repaint();
-                }
-            });
+            nestedTrussPane.getVerticalScrollBar().addAdjustmentListener(e -> dp.repaint());
 
             nestedTrussPane.addComponentListener(new ComponentListener() {
                 @Override

@@ -274,13 +274,10 @@ public class HierarchicalArranger implements Arranger {
     }
 
     private static void sortLevelByWeight(final ArrayList<Integer> vxLevel, final float[] weights) {
-        Collections.sort(vxLevel, new Comparator<Integer>() {
-            @Override
-            public int compare(final Integer vxId1, final Integer vxId2) {
-                final float weight1 = weights[vxId1];
-                final float weight2 = weights[vxId2];
-                return Float.compare(weight1, weight2);
-            }
+        Collections.sort(vxLevel, (vxId1, vxId2) -> {
+            final float weight1 = weights[vxId1];
+            final float weight2 = weights[vxId2];
+            return Float.compare(weight1, weight2);
         });
     }
 

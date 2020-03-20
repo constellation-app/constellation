@@ -59,67 +59,52 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
-        return pluginExecutor.submit(new Callable<Object>() {
-            @Override
-            public Object call() {
-                Thread.currentThread().setName(THREAD_POOL_NAME);
-
-                // If a Future has been specified, don't do anything until the Future has completed.
-                // A typical use-case is an arrangement followed by a camera reset: obviously doing the reset before the
-                // vertices have been relocated is not sensible.
-                if (async != null) {
-                    for (Future<?> future : async) {
-                        if (future != null) {
-                            try {
-                                future.get();
-                            } catch (InterruptedException ex) {
-                                Exceptions.printStackTrace(ex);
-                                Thread.currentThread().interrupt();
-                            } catch (ExecutionException ex) {
-                                Exceptions.printStackTrace(ex);
-                            }
+        return pluginExecutor.submit(() -> {
+            Thread.currentThread().setName(THREAD_POOL_NAME);
+            
+            // If a Future has been specified, don't do anything until the Future has completed.
+            // A typical use-case is an arrangement followed by a camera reset: obviously doing the reset before the
+            // vertices have been relocated is not sensible.
+            if (async != null) {
+                for (Future<?> future : async) {
+                    if (future != null) {
+                        try {
+                            future.get();
+                        } catch (InterruptedException ex) {
+                            Exceptions.printStackTrace(ex);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException ex) {
+                            Exceptions.printStackTrace(ex);
                         }
                     }
                 }
-
-                final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
-                final boolean alwaysSilent = callingConstraints.isAlwaysSilent() || callingConstraints.getSilentCount() > 0;
-
-                PluginReport currentReport = null;
-                GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
-                if (graphReport != null) {
-                    currentReport = graphReport.addPluginReport(plugin);
-                    callingConstraints.setCurrentReport(currentReport);
+            }
+            
+            final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
+            final boolean alwaysSilent = callingConstraints.isAlwaysSilent() || callingConstraints.getSilentCount() > 0;
+            
+            PluginReport currentReport = null;
+            GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
+            if (graphReport != null) {
+                currentReport = graphReport.addPluginReport(plugin);
+                callingConstraints.setCurrentReport(currentReport);
+            }
+            
+            try {
+                ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
+            } catch (Exception ex) {
+            }
+            
+            PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
+            PluginGraphs graphs = new DefaultPluginGraphs(manager);
+            PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
+            
+            try {
+                if (parameters != null) {
+                    plugin.updateParameters(graph, parameters);
                 }
-
-                try {
-                    ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
-                } catch (Exception ex) {
-                }
-
-                PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
-                PluginGraphs graphs = new DefaultPluginGraphs(manager);
-                PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
-
-                try {
-                    if (parameters != null) {
-                        plugin.updateParameters(graph, parameters);
-                    }
-                    if (interactive && parameters != null) {
-                        if (interaction.prompt(plugin.getName(), parameters)) {
-                            ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
-                            calledConstraints.setAlwaysSilent(alwaysSilent);
-                            try {
-                                plugin.run(graphs, interaction, parameters);
-                            } finally {
-                                calledConstraints.setAlwaysSilent(false);
-                                calledConstraints.setSilentCount(0);
-                                if (synchronizer != null) {
-                                    synchronizer.finished();
-                                }
-                            }
-                        }
-                    } else {
+                if (interactive && parameters != null) {
+                    if (interaction.prompt(plugin.getName(), parameters)) {
                         ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
                         calledConstraints.setAlwaysSilent(alwaysSilent);
                         try {
@@ -132,42 +117,54 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                             }
                         }
                     }
-                } catch (InterruptedException ex) {
-                    auditPluginError(plugin, ex);
-                    interaction.notify(PluginNotificationLevel.INFO, "Plugin Cancelled: " + plugin.getName());
-                    Thread.currentThread().interrupt();
-                    if (currentReport != null) {
-                        currentReport.setError(ex);
-                    }
-                } catch (PluginException ex) {
-                    auditPluginError(plugin, ex);
-                    interaction.notify(ex.getNotificationLevel(), ex.getMessage());
-                    ex.printStackTrace();
-                    if (currentReport != null) {
-                        currentReport.setError(ex);
-                    }
-                } catch (Exception ex) {
-                    auditPluginError(plugin, ex);
-                    final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();\n", DefaultPluginEnvironment.class.getName());
-                    LOGGER.log(Level.WARNING, msg, ex);
-                    if (currentReport != null) {
-                        currentReport.setError(ex);
-                    }
-                } finally {
-                    if (currentReport != null) {
-                        currentReport.stop();
-                        callingConstraints.setCurrentReport(null);
-                        currentReport.firePluginReportChangedEvent();
-                    }
-
+                } else {
+                    ThreadConstraints calledConstraints = ThreadConstraints.getConstraints();
+                    calledConstraints.setAlwaysSilent(alwaysSilent);
                     try {
-                        ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
-                    } catch (Exception ex) {
+                        plugin.run(graphs, interaction, parameters);
+                    } finally {
+                        calledConstraints.setAlwaysSilent(false);
+                        calledConstraints.setSilentCount(0);
+                        if (synchronizer != null) {
+                            synchronizer.finished();
+                        }
                     }
                 }
-
-                return null;
+            } catch (InterruptedException ex) {
+                auditPluginError(plugin, ex);
+                interaction.notify(PluginNotificationLevel.INFO, "Plugin Cancelled: " + plugin.getName());
+                Thread.currentThread().interrupt();
+                if (currentReport != null) {
+                    currentReport.setError(ex);
+                }
+            } catch (PluginException ex) {
+                auditPluginError(plugin, ex);
+                interaction.notify(ex.getNotificationLevel(), ex.getMessage());
+                ex.printStackTrace();
+                if (currentReport != null) {
+                    currentReport.setError(ex);
+                }
+            } catch (Exception ex) {
+                auditPluginError(plugin, ex);
+                final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();\n", DefaultPluginEnvironment.class.getName());
+                LOGGER.log(Level.WARNING, msg, ex);
+                if (currentReport != null) {
+                    currentReport.setError(ex);
+                }
+            } finally {
+                if (currentReport != null) {
+                    currentReport.stop();
+                    callingConstraints.setCurrentReport(null);
+                    currentReport.firePluginReportChangedEvent();
+                }
+                
+                try {
+                    ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
+                } catch (Exception ex) {
+                }
             }
+            
+            return null;
         });
     }
 

@@ -173,12 +173,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Start with nothing visible:
         toggleUI(false);
 
-        jTabbedPane1.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                tabbedPaneChanged();
-            }
-        });
+        jTabbedPane1.addChangeListener(e -> tabbedPaneChanged());
     }
 
     /**

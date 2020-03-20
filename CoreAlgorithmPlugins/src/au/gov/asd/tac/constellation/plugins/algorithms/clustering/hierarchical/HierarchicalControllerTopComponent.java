@@ -124,13 +124,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         dp = new NestedHierarchicalDisplayPanel(this, nestedDiagramScrollPane);
         nestedDiagramScrollPane.setViewportView(dp);
         nestedDiagramScrollPane.setOpaque(true);
-        nestedDiagramScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                dp.repaint();
-            }
-        });
+        nestedDiagramScrollPane.getVerticalScrollBar().addAdjustmentListener(e -> dp.repaint());
         nestedDiagramScrollPane.addComponentListener(new ComponentListener() {
 
             @Override

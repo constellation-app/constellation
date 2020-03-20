@@ -123,12 +123,7 @@ public enum AttributeType {
                 attributes.add(attributeRecord);
             }
 
-            Collections.sort(attributes, new Comparator<Attribute>() {
-                @Override
-                public int compare(Attribute o1, Attribute o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
+            Collections.sort(attributes, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 
             AttributeBinCreatorProvider.init();
             binCreators.put("", DefaultBinCreators.NULL_BIN_CREATOR);

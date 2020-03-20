@@ -805,14 +805,11 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     public void resetPanel() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                clearHeaderTitledPanes();
-                for (Node n : titledPaneHeadingsContainer.getChildren()) {
-                    TitledPane tp = (TitledPane) n;
-                    tp.setExpanded(false);
-                }
+        Platform.runLater(() -> {
+            clearHeaderTitledPanes();
+            for (Node n : titledPaneHeadingsContainer.getChildren()) {
+                TitledPane tp = (TitledPane) n;
+                tp.setExpanded(false);
             }
         });
     }
