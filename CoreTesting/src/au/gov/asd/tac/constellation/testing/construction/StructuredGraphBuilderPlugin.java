@@ -55,6 +55,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_SIZE_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_size");
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
+    
+    private final Random r = new Random();
 
     @Override
     public String getDescription() {
@@ -99,7 +101,6 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         final int backboneDensity = params.get(BACKBONE_DENSITY_PARAMETER_ID).getIntegerValue();
         final int radiusFactor = params.get(RADIUS).getIntegerValue();
 
-        final Random r = new Random();
         long dt = new Date().getTime();
 
         //        InputOutput io = IOProvider.getDefault().getIO("Structured Graph", false);

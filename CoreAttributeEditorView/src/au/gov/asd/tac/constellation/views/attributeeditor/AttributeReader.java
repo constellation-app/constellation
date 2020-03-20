@@ -203,6 +203,7 @@ public class AttributeReader {
                 selectedNodethread.join();
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
         return (nodeSelectionChanged || transactionSelectionChanged);

@@ -22,6 +22,6 @@ package au.gov.asd.tac.constellation.plugins.parameters;
  */
 public class RecentParameterValuesKey {
 
-    public static String RECENT_VALUES = "recentValues";
+    public static final String RECENT_VALUES = "recentValues";
 
 }

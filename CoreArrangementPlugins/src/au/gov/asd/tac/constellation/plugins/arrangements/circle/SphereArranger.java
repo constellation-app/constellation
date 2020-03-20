@@ -36,6 +36,8 @@ import java.util.Random;
 public class SphereArranger implements Arranger {
 
     private boolean maintainMean = false;
+    
+    private static final Random RANDOM = new Random();
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
@@ -135,7 +137,6 @@ public class SphereArranger implements Arranger {
     }
 
     private static int[] shuffled(final int n) {
-        final Random random = new Random();
         final int[] a = new int[n];
         for (int i = 0; i < n; i++) {
             a[i] = i;
@@ -143,7 +144,7 @@ public class SphereArranger implements Arranger {
 
         // Shuffle the array.
         for (int i = n; i > 1; i--) {
-            final int ix = random.nextInt(i);
+            final int ix = RANDOM.nextInt(i);
             final int t = a[i - 1];
             a[i - 1] = a[ix];
             a[ix] = t;

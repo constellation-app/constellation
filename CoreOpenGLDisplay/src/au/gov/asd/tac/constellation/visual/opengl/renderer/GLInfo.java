@@ -33,7 +33,7 @@ import org.openide.NotifyDescriptor;
  */
 public class GLInfo {
 
-    public static String MINIMUM_OPEN_GL_VERSION = "3.3";
+    public static final String MINIMUM_OPEN_GL_VERSION = "3.3";
     private final String basicInfo;
     private final String extensions;
 

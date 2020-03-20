@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -45,6 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ImportFileParser.class)
 public class SQLiteImportFileParser extends ImportFileParser {
+    
+    private static final Logger LOGGER = Logger.getLogger(SQLiteImportFileParser.class.getName());
 
     private static final String SELECT_QUERY = "SELECT * FROM ?";
     private static final String SELECT_QUERY_WITH_LIMIT = "SELECT * FROM ? LIMIT ?";
@@ -98,7 +102,7 @@ public class SQLiteImportFileParser extends ImportFileParser {
                         }
                     }
                 } catch (IOException | SQLException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
             @SuppressWarnings("unchecked") //Table Parameter is created as a SingleChoiceParameter in this class on line 62.
@@ -176,7 +180,7 @@ public class SQLiteImportFileParser extends ImportFileParser {
             }
 
         } catch (IOException | ClassNotFoundException | SQLException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return result;

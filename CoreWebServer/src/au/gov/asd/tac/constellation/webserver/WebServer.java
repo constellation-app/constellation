@@ -180,6 +180,7 @@ public class WebServer {
                     try {
                         server.join();
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                         throw new RuntimeException(e);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).

@@ -582,7 +582,7 @@
 //                latch.await();
 //                waiting = false;
 //            } catch (InterruptedException ex) {
-//                // do nothing
+//                Thread.currentThread().interrupt();
 //            }
 //        }
 //    }

@@ -196,10 +196,8 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
                 final int ms = time.length() > 8 ? Integer.parseInt(time.substring(9, 12)) : 0;
 
                 return h * 3600000 + min * 60000 + sec * 1000 + ms;
-            } catch (StringIndexOutOfBoundsException ex) {
-                LOGGER.log(Level.WARNING, "Can't parse time string '{0}': '{1}'", new Object[]{time, ex.getMessage()});
-            } catch (NumberFormatException ex) {
-                LOGGER.log(Level.WARNING, "Can't parse time string '{0}': '{1}'", new Object[]{time, ex.getMessage()});
+            } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
+                LOGGER.log(Level.WARNING, "Can''t parse time string ''{0}'': {1}", new Object[]{time, ex.getMessage()});
             }
         } else {
             final String msg = String.format("Can't parse time string '%s'", time);

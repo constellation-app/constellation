@@ -75,6 +75,7 @@ public class GraphicsCardUtilities {
                         try {
                             LOCK.wait(1000);
                         } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
                         }
                     }
                     final long endTime = System.currentTimeMillis();

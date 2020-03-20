@@ -35,6 +35,8 @@ import java.util.Random;
  * @author twilight_sparkle
  */
 public class AttributeFillBuilder extends GraphBuilder {
+    
+    private static final Random R = new Random();
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID) {
         return fillAttribute(graph, attrID, null, null);
@@ -102,9 +104,8 @@ public class AttributeFillBuilder extends GraphBuilder {
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID, final int[] elementsToFill, final List<Object> options, final boolean sequential) {
 
-        Random r = new Random();
         for (int i = 0; i < elementsToFill.length; i++) {
-            graph.setObjectValue(attrID, elementsToFill[i], sequential ? options.get(i % options.size()) : options.get(r.nextInt(options.size())));
+            graph.setObjectValue(attrID, elementsToFill[i], sequential ? options.get(i % options.size()) : options.get(R.nextInt(options.size())));
         }
         return new AttributeFillBuilder(graph);
     }

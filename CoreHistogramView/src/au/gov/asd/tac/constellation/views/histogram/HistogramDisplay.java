@@ -337,8 +337,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
                     // Draw the unselected component of the bar
                     if (selectedLength < barLength) {
                         Paint paint = bin.activated
-                                ? new GradientPaint(0, barTop, activatedBarColor, 0, barTop + barHeight, darkerActivatedBarColor)
-                                : new GradientPaint(0, barTop, barColor, 0, barTop + barHeight, darkerBarColor);
+                                ? new GradientPaint(0, barTop, activatedBarColor, 0, (float) barTop + barHeight, darkerActivatedBarColor)
+                                : new GradientPaint(0, barTop, barColor, 0, (float) barTop + barHeight, darkerBarColor);
                         g2.setPaint(paint);
                         int unselectedStart = Math.max(0, selectedLength - 10);
                         g2.fillRoundRect(barLeft + unselectedStart, barTop, barLength - unselectedStart, barHeight, arc, arc);
@@ -347,8 +347,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
                     // Draw the selected component of the bar
                     if (selectedLength > 0) {
                         Paint paint = bin.activated
-                                ? new GradientPaint(0, barTop, activatedSelectedColor, 0, barTop + barHeight, darkerActivatedSelectedColor)
-                                : new GradientPaint(0, barTop, selectedColor, 0, barTop + barHeight, darkerSelectedColor);
+                                ? new GradientPaint(0, barTop, activatedSelectedColor, 0, (float) barTop + barHeight, darkerActivatedSelectedColor)
+                                : new GradientPaint(0, barTop, selectedColor, 0, (float) barTop + barHeight, darkerSelectedColor);
                         g2.setPaint(paint);
                         g2.fillRoundRect(barLeft, barTop, selectedLength, barHeight, arc, arc);
                     }

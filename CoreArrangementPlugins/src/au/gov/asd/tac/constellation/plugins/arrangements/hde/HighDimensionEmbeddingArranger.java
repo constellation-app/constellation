@@ -58,6 +58,8 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     private double[][] X;
 
     private static final boolean PART_ONLY = false;
+    
+    private final Random random = new Random();
 
     public HighDimensionEmbeddingArranger(final int dimensions) {
         this.dimensions = dimensions;
@@ -168,7 +170,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
         // Compute the first C eigenvectors of S.
         final double[][] U = new double[dimensions][M];
 
-        final Random random = new Random();
         for (int u = 0; u < dimensions; u++) {
             // Initialise uihat to a normalised random vector.
             double norm = 0;

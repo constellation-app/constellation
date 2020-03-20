@@ -114,7 +114,7 @@ public final class AutosaveStartup implements Runnable {
                         AutosaveUtilities.deleteAutosave(f);
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 

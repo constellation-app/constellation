@@ -30,6 +30,8 @@ public class RandomArranger implements Arranger {
 
     private final int dimensions;
     private boolean maintainMean = false;
+    
+    private final Random random = new Random();
 
     public RandomArranger(final int dimensions) {
         this.dimensions = dimensions;
@@ -51,7 +53,6 @@ public class RandomArranger implements Arranger {
         // We want the side to be long enough that a subsequent uncollide doesn't take too long.
         final float side = 4f * (float) Math.sqrt(vxCount);
 
-        final Random random = new Random();
         final Vector3f xyz = new Vector3f();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);

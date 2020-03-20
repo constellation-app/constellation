@@ -574,7 +574,10 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
             try {
                 future.get();
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
         } finally {
@@ -1087,6 +1090,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                     latch.countDown();
                 }
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         });
         thread.setName(TABLE_VIEW_STATE_UPDATER_THREAD_NAME);
@@ -1097,6 +1101,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 latch.await(1, TimeUnit.SECONDS);
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 

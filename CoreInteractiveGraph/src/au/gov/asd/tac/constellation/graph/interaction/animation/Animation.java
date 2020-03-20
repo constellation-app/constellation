@@ -175,6 +175,7 @@ public abstract class Animation {
                         wg = graph.getWritableGraph(getName(), isSignificant());
                         break;
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                     }
                 }
                 try {
@@ -203,6 +204,7 @@ public abstract class Animation {
             try {
                 Thread.sleep(getIntervalInMillis());
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 if (finished) {
                     reset(wg);
                     break;

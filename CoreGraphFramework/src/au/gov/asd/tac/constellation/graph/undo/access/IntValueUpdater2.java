@@ -54,7 +54,7 @@ public class IntValueUpdater2 implements ValueUpdater32 {
         INT_GETTERS[parameters & 3].getUndo(state);
     }
 
-    public static final ValueGetter[] INT_GETTERS = new ValueGetter[]{
+    private static final ValueGetter[] INT_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {

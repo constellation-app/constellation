@@ -191,6 +191,7 @@ public class ScatterChartPane extends BorderPane {
                         selectElementsOnGraph(selectedData, selectionMode);
                     } catch (InterruptedException e) {
                         ScatterPlotErrorDialog.create("Selection interrupted: " + e.getMessage());
+                        Thread.currentThread().interrupt();
                     }
 
                     // Hide selection rectangle
@@ -260,7 +261,10 @@ public class ScatterChartPane extends BorderPane {
         final Thread waitingThread = new Thread(() -> {
             try {
                 pluginFuture.get();
-            } catch (InterruptedException | ExecutionException e) {
+            } catch (InterruptedException e) {
+                ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException e) {
                 ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
             }
 

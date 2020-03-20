@@ -121,6 +121,7 @@ public class ExtendedBuffer {
                     available.getAndDecrement();
                     return inputBuffer.data[inputBuffer.position++];
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     throw new IOException(ex);
                 }
             }
@@ -143,6 +144,7 @@ public class ExtendedBuffer {
                         try {
                             inputBuffer = queue.take();
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             throw new IOException(ex);
                         }
                     }

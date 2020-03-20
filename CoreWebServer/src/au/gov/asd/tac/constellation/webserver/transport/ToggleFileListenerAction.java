@@ -79,6 +79,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
                 putValue(Action.SMALL_ICON, ICON_OFF);
             } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
         

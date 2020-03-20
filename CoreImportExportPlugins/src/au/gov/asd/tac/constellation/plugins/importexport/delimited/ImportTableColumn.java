@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.At
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -39,6 +41,8 @@ import javafx.scene.layout.BorderPane;
  * @author sirius
  */
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
+    
+    private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
 
     private final String label;
     private final int columnIndex;
@@ -103,7 +107,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                ex.printStackTrace();
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
             for (TableRow row : data) {

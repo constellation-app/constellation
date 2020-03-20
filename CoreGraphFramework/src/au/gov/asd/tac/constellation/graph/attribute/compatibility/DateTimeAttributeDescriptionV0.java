@@ -313,7 +313,7 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
             return cal.getTimeInMillis();
 
         } else {
-            LOGGER.log(Level.WARNING, "Can't parse datetime string '{0}': '{1}'", new Object[]{dt, "incorrect format"});
+            LOGGER.log(Level.WARNING, "Can''t parse datetime string ''{0}'': {1}", new Object[]{dt, "incorrect format"});
         }
 
         return NULL_VALUE;

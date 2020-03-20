@@ -130,7 +130,7 @@ public class GraphDisplayer implements GLRenderable {
             graphVp = getVertexShader();
             graphFp = getFragmentShader();
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Can't read graph texture shaders", ex);
+            LOGGER.log(Level.SEVERE, "Can''t read graph texture shaders", ex);
         }
         graphTextureShader = GLTools.loadShaderSourceWithAttributes(gl, "graphTex", graphVp, null, graphFp,
                 vertexTarget, "position",

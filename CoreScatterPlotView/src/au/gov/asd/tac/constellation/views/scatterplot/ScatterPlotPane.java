@@ -40,6 +40,7 @@ public class ScatterPlotPane extends BorderPane {
             scatterOptions.refreshOptions(scatterPlot.getState());
         } catch (InterruptedException e) {
             ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
         VBox.setVgrow(scatterOptions, Priority.NEVER);
 
@@ -48,6 +49,7 @@ public class ScatterPlotPane extends BorderPane {
             scatterChart.refreshChart(scatterPlot.getState());
         } catch (InterruptedException e) {
             ScatterPlotErrorDialog.create("Error refreshing scatter plot: " + e.getMessage());
+            Thread.currentThread().interrupt();
         }
         VBox.setVgrow(scatterChart, Priority.ALWAYS);
 

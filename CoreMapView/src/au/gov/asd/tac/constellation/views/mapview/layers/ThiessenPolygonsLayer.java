@@ -141,7 +141,7 @@ public class ThiessenPolygonsLayer extends MapLayer {
     }
 
     private double manhattanDistance(final int x1, final int y1, final int x2, final int y2) {
-        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+        return Math.abs((double) x1 - x2) + Math.abs((double) y1 - y2);
     }
 
     private double minkovskiDistance(final int x1, final int y1, final int x2, final int y2) {

@@ -126,6 +126,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 return null;
             }
         } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
             return null;
         }
     }

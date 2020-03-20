@@ -320,6 +320,7 @@ public class AnalyticConfigurationPane extends VBox {
         } catch (InterruptedException ex) {
             this.documentationView = null;
             documentationTab.setContent(null);
+            Thread.currentThread().interrupt();
         }
 
         // build the pane holding the parameters and documentation tabs
