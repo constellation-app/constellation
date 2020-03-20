@@ -70,9 +70,9 @@ public class CloseGraphPlugin extends SimplePlugin {
         final boolean forced = parameters.getBooleanValue(FORCED_PARAMETER_ID);
 
         if (forced) {
-            SwingUtilities.invokeLater(() -> ((VisualGraphTopComponent) gn.getTopComponent()).forceClose());
+            SwingUtilities.invokeLater(((VisualGraphTopComponent) gn.getTopComponent())::forceClose);
         } else {
-            SwingUtilities.invokeLater(() -> gn.getTopComponent().close());
+            SwingUtilities.invokeLater(gn.getTopComponent()::close);
         }
     }
 

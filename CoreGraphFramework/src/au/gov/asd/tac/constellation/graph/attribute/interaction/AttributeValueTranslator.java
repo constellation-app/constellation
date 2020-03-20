@@ -43,9 +43,7 @@ public interface AttributeValueTranslator {
     public static AttributeValueTranslator getNativeTranslator(final String attrType) {
         try {
             final AttributeDescription description = AttributeRegistry.getDefault().getAttributes().get(attrType).newInstance();
-            return (val) -> {
-                return description.convertToNativeValue(val);
-            };
+            return description::convertToNativeValue;
         } catch (InstantiationException | IllegalAccessException ex) {
             LOGGER.warning("Could not create attribute description corresponding to the given type");
             return IDENTITY;

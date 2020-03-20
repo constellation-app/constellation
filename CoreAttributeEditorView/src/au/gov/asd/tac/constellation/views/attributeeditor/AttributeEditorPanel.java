@@ -910,9 +910,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
             final ValueValidator validator = interaction.fromEditValidator(editType);
             final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter defaultGetter = () -> {
-                return attributeData.getDefaultValue();
-            };
+            final DefaultGetter defaultGetter = attributeData::getDefaultValue;
             final AbstractEditor editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
