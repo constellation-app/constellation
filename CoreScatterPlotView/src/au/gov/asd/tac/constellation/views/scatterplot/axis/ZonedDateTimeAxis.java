@@ -389,9 +389,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             switch (actualInterval.interval) {
                 case DAYS:
                 case WEEKS:
-                default:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-                    break;
                 case HOURS:
                 case MINUTES:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
@@ -401,6 +398,9 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                     break;
                 case MILLIS:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
+                    break;
+                default:
+                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
                     break;
             }
         }
