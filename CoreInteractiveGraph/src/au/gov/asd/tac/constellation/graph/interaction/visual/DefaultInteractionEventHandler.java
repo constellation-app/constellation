@@ -26,15 +26,14 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -48,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
@@ -413,6 +413,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case SELECTING:
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), event.getPoint()));
                             break;
+                        default:
                     }
                     updateCameraAndNewLine(wg, event.getPoint(), cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
                 }
@@ -519,6 +520,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                         eventState.setCurrentCreationMode(CreationMode.NONE);
                                         clearNewLineModel(camera);
                                     }
+                                default:
                             }
                             break;
                         case ROTATING:
@@ -549,6 +551,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 eventState.addEventName(PAN_ACTION_NAME);
                             }
                             break;
+                        default:
                     }
                 }
 
@@ -601,6 +604,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 from = eventState.getPoint(EventState.DRAG_POINT);
                                 performDrag(wg, camera, from, wheelPoint);
                                 break;
+                            default:
                         }
                     }
                 }
@@ -752,6 +756,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case HANDLE_ASYNCHRONOUSLY:
                 new Thread(handleResult).start();
                 break;
+            default:
         }
     }
 
@@ -863,6 +868,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 eventState.setAddTransactionDestinationVertex(eventState.getCurrentHitId());
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
                 break;
+            default:
         }
     }
 
@@ -981,6 +987,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case TRANSACTION:
                 txIds.add(elementId);
                 break;
+            default:
         }
 
         if (!(vxIds.isEmpty() && txIds.isEmpty() && !clearSelection)) {

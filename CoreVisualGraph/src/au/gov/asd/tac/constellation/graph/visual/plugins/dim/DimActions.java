@@ -180,6 +180,7 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
             case SELECT_UNDIMMED_ACTION:
                 PluginExecution.withPlugin(VisualGraphPluginRegistry.SELECT_UNDIMMED).executeLater(graph);
                 break;
+            default:
         }
     }
 

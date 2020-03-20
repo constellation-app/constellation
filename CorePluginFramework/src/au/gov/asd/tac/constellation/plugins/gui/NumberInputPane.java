@@ -146,6 +146,7 @@ public class NumberInputPane<T> extends Pane {
                                     case FloatParameterType.ID:
                                         parameter.setFloatValue(Float.valueOf(currentTextValue));
                                         break;
+                                    default:
                                 }
                             } catch (NumberFormatException ex) {
                                 field.setId("invalid");

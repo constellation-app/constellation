@@ -304,6 +304,7 @@ public class SqlQuery {
                         matchCondition.append("+").append(word).append(" ");
                     }
                     break;
+                default:
             }
             matchCondition.append(")");
         }
@@ -338,6 +339,7 @@ public class SqlQuery {
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
                     break;
+                default:
             }
             if (value instanceof String) {
                 addArgument((String) value);
@@ -375,6 +377,7 @@ public class SqlQuery {
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
                     break;
+                default:
             }
             if (value instanceof String) {
                 addArgument((String) value);

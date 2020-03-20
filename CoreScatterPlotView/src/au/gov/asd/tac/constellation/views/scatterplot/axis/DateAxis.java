@@ -483,7 +483,7 @@ public class DateAxis extends Axis<Date> {
                     case Calendar.SECOND:
                         calendar.set(Calendar.MILLISECOND, 0);
                         break;
-
+                    default:
                 }
                 evenDates.add(calendar.getTime());
             }

@@ -55,6 +55,7 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                                 popularityCount += 1;
                             }
                             break;
+                        default:
                     }
                 }
             } finally {

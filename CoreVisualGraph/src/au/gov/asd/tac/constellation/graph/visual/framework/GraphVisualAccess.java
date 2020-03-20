@@ -20,16 +20,16 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
@@ -721,6 +721,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     connectionElementTypes[currentPos] = GraphElementType.LINK;
                     connectionElementIds[currentPos] = linkId;
                     currentPos++;
+                default:
             }
         }
         connectionElementTypes = Arrays.copyOf(connectionElementTypes, currentPos);

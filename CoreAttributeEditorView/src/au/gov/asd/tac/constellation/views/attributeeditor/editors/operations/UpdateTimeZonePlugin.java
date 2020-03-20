@@ -84,6 +84,7 @@ public class UpdateTimeZonePlugin extends SimpleEditPlugin {
                     graph.setObjectValue(attrId, 0, ZonedDateTime.ofInstant(dateTime.toInstant(), zoneId));
                 }
                 break;
+            default:
         }
     }
 

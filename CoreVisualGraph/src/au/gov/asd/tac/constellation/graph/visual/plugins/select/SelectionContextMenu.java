@@ -53,11 +53,8 @@ public class SelectionContextMenu implements ContextMenuProvider {
 
     @Override
     public void selectItem(String item, Graph graph, GraphElementType elementType, int entity, Vector3f unprojected) {
-        switch (item) {
-
-            case INVERT_SELECTION:
-                PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
-                break;
+        if (INVERT_SELECTION.equals(item)) {
+            PluginExecution.withPlugin(VisualGraphPluginRegistry.INVERT_SELECTION).executeLater(graph);
         }
     }
 }

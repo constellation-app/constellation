@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -32,8 +28,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -119,6 +119,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             case GraphRecordStoreUtilities.ALL:
                 query = GraphRecordStoreUtilities.getAllSelected(graph);
                 break;
+            default:
         }
     }
 

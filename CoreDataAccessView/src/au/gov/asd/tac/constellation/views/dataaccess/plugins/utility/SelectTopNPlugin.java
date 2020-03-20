@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.utility;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
@@ -36,7 +37,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.ArrayList;
@@ -174,6 +174,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                                 }
                             }
                             break;
+                        default:
                     }
                     // update the sub level types
                     final PluginParameter<MultiChoiceParameterValue> typeParamter = (PluginParameter<MultiChoiceParameterValue>) parameters.get(TYPE_PARAMETER_ID);
@@ -279,6 +280,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             occurrences.put(targetVxId, occurrences.get(targetVxId) + 1);
                         }
                         break;
+                    default:
                 }
             }
 

@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.graph.schema.visual.compatibility;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import org.openide.util.lookup.ServiceProvider;
@@ -80,6 +80,7 @@ public class VisualSchemaV2UpdateProvider extends SchemaUpdateProvider {
                 case "Background.Soft Square":
                     graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Square"));
                     break;
+                default:
             }
         }
     }

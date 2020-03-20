@@ -160,6 +160,7 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 parameters.getParameters().get(HopOutPlugin.UNDIRECTED_PARAMETER_ID).setBooleanValue(undirected.isSelected());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 break;
+            default:
         }
     }
 

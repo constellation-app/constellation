@@ -202,6 +202,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             case DEBUG:
                 LOGGER.fine(String.format("%s: %s", title, message));
                 break;
+            default:
         }
     }
 

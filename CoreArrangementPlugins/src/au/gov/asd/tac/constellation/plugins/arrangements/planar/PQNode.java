@@ -275,6 +275,7 @@ class PQNode {
                         carry += grandchild.numLeafDescendants;
                         reverseCount += grandchild.numLeafDescendants;
                     }
+                default:
             }
             if (count > maxCount) {
                 maxCount = count;
@@ -333,6 +334,7 @@ class PQNode {
                             count += grandchild.numLeafDescendants;
                         }
                     }
+                default:
             }
             if (count <= countAtAnchor) {
                 final int zoneScore = maxCountSinceAnchor - countAtAnchor;

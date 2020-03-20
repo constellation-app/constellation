@@ -19,9 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
-import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
@@ -265,6 +265,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 break;
+            default:
         }
     }
 

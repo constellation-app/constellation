@@ -49,6 +49,7 @@ public class SchemaAttributeUtilities {
                         case TRANSACTION:
                             SCHEMA_TRANSACTION_ATTRIBUTES.add(schemaAttribute);
                             break;
+                        default:
                     }
                 });
             });

@@ -108,6 +108,7 @@ public class AttributeValueMonitor extends Monitor {
                 case PRESENT:
                     updateFromPresent(graph);
                     break;
+                default:
             }
         }
 

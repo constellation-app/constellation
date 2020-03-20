@@ -228,6 +228,7 @@ public class FileInputPane extends HBox {
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
                         break;
+                    default:
                 }
             });
         });

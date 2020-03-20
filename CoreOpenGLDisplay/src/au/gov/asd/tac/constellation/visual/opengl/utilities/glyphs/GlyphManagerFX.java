@@ -662,6 +662,7 @@
 //                case PathIterator.SEG_CLOSE:
 //                    currentGraphicsContext.closePath();
 //                    break;
+//                default: 
 //            }
 //
 //            glyphPathIterator.next();

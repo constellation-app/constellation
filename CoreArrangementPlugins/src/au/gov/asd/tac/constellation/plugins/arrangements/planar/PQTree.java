@@ -212,6 +212,7 @@ class PQTree {
                 if (node.virtualNum == currentNumber) {
                     frontier.add(node.realNum);
                 }
+            default:
         }
     }
 

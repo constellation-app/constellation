@@ -330,6 +330,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
                     panelCriteriaHolder.add(panelString);
                     handleUIString();
                     break;
+                default:
             }
         }
 

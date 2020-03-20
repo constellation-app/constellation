@@ -17,14 +17,14 @@ package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -133,6 +133,7 @@ public class ScriptingViewPane extends JPanel {
                         case KeyEvent.VK_S:
                             saveScript();
                             break;
+                        default:
                     }
                 }
             }
