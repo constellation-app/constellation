@@ -8,7 +8,7 @@
 
 
 .text-area .scroll-bar {
-    -fx-skin: ""; /* com.sun.javafx.scene.control.skin.ScrollBarSkin"; */
+    -fx-skin: ""; /* javafx.scene.control.skin.ScrollBarSkin"; */
     width: 0;
     display: none;
 }
