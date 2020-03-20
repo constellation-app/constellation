@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -29,6 +31,8 @@ import javafx.scene.layout.HBox;
  * @author sirius
  */
 public class ActionPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(ActionPane.class.getName());
 
     private final ImportController importController;
 
@@ -55,7 +59,7 @@ public class ActionPane extends BorderPane {
                 try {
                     importController.processImport();
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                 } catch (PluginException ex) {
