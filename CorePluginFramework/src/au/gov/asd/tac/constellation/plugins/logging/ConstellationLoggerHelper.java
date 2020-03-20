@@ -307,20 +307,20 @@ public class ConstellationLoggerHelper {
             return null;
         }
         
-        final MessageDigest md5Digest = MessageDigest.getInstance("SHA256");
-        md5Digest.reset();
+        final MessageDigest sha256Digest = MessageDigest.getInstance("SHA256");
+        sha256Digest.reset();
 
         final byte[] buffer = new byte[1024];
         try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
             int bytesRead = in.read(buffer);
             while (bytesRead >= 0) {
-                md5Digest.update(buffer, 0, bytesRead);
+                sha256Digest.update(buffer, 0, bytesRead);
                 bytesRead = in.read(buffer);
             }
         }
 
         final StringBuilder result = new StringBuilder();
-        final byte[] hash = md5Digest.digest();
+        final byte[] hash = sha256Digest.digest();
         for (byte b : hash) {
             int i = b;
             if (i < 0) {
