@@ -54,7 +54,7 @@ public class LongValueUpdater2 implements ValueUpdater64 {
         LONG_GETTERS[parameters & 3].getUndo(state);
     }
 
-    public static final ValueGetter[] LONG_GETTERS = new ValueGetter[]{
+    private static final ValueGetter[] LONG_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {
