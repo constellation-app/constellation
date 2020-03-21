@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200318
+__version__ = 20200321
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -191,7 +191,31 @@ class Constellation:
     def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over HTTP.
 
-        HTTP calls are only made to localhost for simplicity and security."""
+        HTTP calls are only made to localhost for simplicity and security.
+
+        If the request fails, the request object is stored as self.r,
+        to allow it to be inspected to find out more details from the HTML
+        error page returned by the server (or for other debugging).
+        Typically this would be done with:
+
+        self.r.content.decode('latin1')
+
+        In a Jupyter notebook:
+
+        import constellation_client
+        from IPython.display import display, HTML
+        cc = constellation_client.Constellation()
+        # Make a request that causes a server-side error.
+        display(HTML(cc.r.content.decode('latin1')))
+
+        The r name is deleted before the next request to avoid confusion.
+        """
+
+        # If we saved the request last time, delete it to avoid confusion.
+        # Is self.r from this request or a previous one?
+        #
+        if hasattr(self, 'r'):
+            del self.r
 
         if verb in REQUESTS:
             f = REQUESTS[verb]
@@ -204,16 +228,18 @@ class Constellation:
         url = f'http://localhost:{self.port}{endpoint}/{path}'
         r = f(url, params=params, json=json_, data=data, headers=h)
 
-        # Keep the response in case raise_for_status() raises.
-        # If it does, we can come back and use r.content.decode('latin1')
-        # to look at the HTML returned by Jetty to find out what happened (where
-        # 'latin1' is probably the encoding of the default HTML error page.)
-        #
-        self.r = r
-
         # Raise for status because we don't trust the users to check for errors.
         #
-        r.raise_for_status()
+        try:
+            r.raise_for_status()
+        except requests.HTTPError:
+            # Keep the response so the user can come back and use
+            # self.r.content.decode('latin1')
+            # to look at the HTML returned by Jetty to find out what happened (where
+            # 'latin1' is probably the encoding of the default HTML error page.)
+            #
+            self.r = r
+            raise
 
         return r
 
@@ -356,8 +382,7 @@ class Constellation:
 
         # Fetch the graph data.
         #
-        service = 'get_recordstore'
-        return self.call_service(service, args=params).content
+        return self.call_service('get_recordstore', args=params).content
 
     def get_json(self, params):
         """Get a Python data structure from the graph as specified by
@@ -414,14 +439,13 @@ class Constellation:
         :returns: A DataFrame containing the requested data.
         """
 
-        service = 'get_recordstore'
         args = {}
         for arg in ['graphid', 'selected', 'vx', 'tx', 'attrs']:
             if arg in kwargs:
                 value = kwargs[arg]
                 if arg=='attrs' and isinstance(value, list):
                     value = ','.join(value)
-                args[f'{service}.{arg}'] = value
+                args[arg] = value
 
         data = self.get_data(args)
 
@@ -471,14 +495,13 @@ class Constellation:
         :param graph_id: The id of the graph to be updated.
         """
 
-        service = 'add_recordstore'
         args = {}
         for arg in ['graphid', 'complete_with_schema', 'arrange', 'reset_view']:
             if arg in kwargs:
-                args[f'{service}.{arg}'] = kwargs[arg]
+                args[arg] = kwargs[arg]
 
         j = df.to_json(orient='split', date_format='iso')
-        self.call_service(service, verb='post', args=args, data=j.encode('utf-8'), headers={'Content-Type': 'application/json'})
+        self.call_service('add_recordstore', verb='post', args=args, data=j.encode('utf-8'), headers={'Content-Type': 'application/json'})
 
     def get_attributes(self, graph_id=None):
         """Get the graph, node, and transaction attributes of the current or specified graph.
@@ -487,20 +510,18 @@ class Constellation:
             attributes.
         """
 
-        service = 'get_attributes'
         params = {}
         if graph_id:
-            params = {f'{service}.graph_id':graph_id}
+            params = {'graph_id':graph_id}
 
         return self.call_service('get_attributes', args=params).json()
 
     def get_graph_attributes(self, graph_id=None):
         """Get the graph attribute values."""
 
-        service = 'get_graph_values'
         params = {}
         if graph_id:
-            params = {f'{service}.graph_id':graph_id}
+            params = {'graph_id':graph_id}
 
         r = self.call_service('get_graph_values', args=params)
 
@@ -516,10 +537,9 @@ class Constellation:
             or the active graph if not specified.
         """
 
-        service = 'set_graph_values'
         params = {}
         if graph_id:
-            params = {f'{service}.graph_id':graph_id}
+            params = {'graph_id':graph_id}
 
         j = df.to_json(orient='split', date_format='iso')
         self.call_service('set_graph_values', verb='post',  args=params, data=j, headers={'Content-Type': 'application/json'})
@@ -527,14 +547,12 @@ class Constellation:
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
 
-        service = 'set_graph'
-        self.call_service(service, verb='put', args={f'{service}.graph_id':graph_id})
+        self.call_service('set_graph', verb='put', args={f'{service}.graph_id':graph_id})
 
     def open_graph(self, filename):
         """Open the graph file specified by the filename."""
 
-        service = 'open_graph'
-        graph = self.call_service(service, verb='post', args={f'{service}.filename':filename}).json()
+        graph = self.call_service('open_graph', verb='post', args={f'{service}.filename':filename}).json()
 
         return graph['id']
 
@@ -548,11 +566,10 @@ class Constellation:
         :returns: The id of the new graph.
         """
 
-        service = 'new_graph'
         params = {}
         if schema_name:
-            params[f'{service}.schema_name'] = schema_name
-        graph = self.call_service(service, verb='post', args=params).json()
+            params['schema_name'] = schema_name
+        graph = self.call_service('new_graph', verb='post', args=params).json()
 
         return graph['id']
 
@@ -596,8 +613,7 @@ class Constellation:
         if not isinstance(args, dict):
             raise ValueError('args must be a dictionary')
 
-        service = 'run_plugin'
-        self.call_service(service, verb='post', args={f'{service}.plugin_name':plugin_name, f'{service}.graph_id':graph_id}, json=args)
+        self.call_service('run_plugin', verb='post', args={'plugin_name':plugin_name, 'graph_id':graph_id}, json=args)
 
     def list_plugins(self, alias=True):
         """List the available plugins.
@@ -605,8 +621,7 @@ class Constellation:
         :param alias: If True, list the plugins by alias rather than
             fully qualified name."""
 
-        service = 'list_plugins'
-        return self.call_service(service, args={f'{service}.alias':alias}).json()
+        return self.call_service('list_plugins', args={'alias':alias}).json()
 
     def list_graphs(self):
         """List the open graphs."""
@@ -620,8 +635,7 @@ class Constellation:
 
         :returns: A dictionary describing the named CONSTELLATION type."""
 
-        service = 'get_type_description'
-        return self.call_service(service, args={f'{service}.type_name':type_name}).json()
+        return self.call_service('get_type_description', args={'type_name':type_name}).json()
 
     def list_icons(self, editable=False):
         """List the icons known by CONSTELLATION.
@@ -629,8 +643,7 @@ class Constellation:
         :param editable: If False, return built-in icons, else return user icons.
         """
 
-        service = 'list_icons'
-        return self.call_service(service, args={f'{service}.editable':editable}).json()
+        return self.call_service('list_icons', args={'editable':editable}).json()
 
     def get_icon(self, icon_name):
         """Get the named icon in PNG format.
@@ -638,8 +651,7 @@ class Constellation:
         :param icon_name: The name of the icon to get.
         """
 
-        service = 'get_icon'
-        return self.call_service(service, args={f'{service}.icon_name':icon_name}).content
+        return self.call_service('get_icon', args={'icon_name':icon_name}).content
 
     def call_service(self, name, *, verb='get', args=None, json=None, data=None, headers=None):
         """Call a REST service and return a response.

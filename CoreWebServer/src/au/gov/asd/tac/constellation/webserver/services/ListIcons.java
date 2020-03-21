@@ -32,13 +32,14 @@ import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * List the available icons.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class ListIcons extends RestService {
     private static final String NAME = "list_icons";
-    private static final String EDITABLE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "editable");
+    private static final String EDITABLE_PARAMETER_ID = "editable";
 
     @Override
     public String getName() {

@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The id, name, and schema of the active graph as a JSON object.
  *
  * @author algol
  */

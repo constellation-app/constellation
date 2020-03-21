@@ -30,7 +30,8 @@ import java.util.Locale;
 import org.openide.util.Exceptions;
 
 /**
- *
+ * Various helper functions for REST services.
+ * 
  * @author algol
  */
 public class RestServiceUtilities {
@@ -58,8 +59,8 @@ public class RestServiceUtilities {
             }
             catch(final IllegalArgumentException ex) {
                 return null;
+            }
         }
-}
     }
 
     /**
@@ -68,18 +69,6 @@ public class RestServiceUtilities {
 
     public static final String APPLICATION_JSON = "application/json";
     public static final String IMAGE_PNG = "image/png";
-
-    /**
-     * Build a parameter id for a service parameter in a consistent way.
-     *
-     * @param serviceName The service name.
-     * @param parameterName The parameter name.
-     *
-     * @return A parameter id that is unique to the service.
-     */
-    public static String buildId(final String serviceName, final String parameterName) {
-        return String.format("%s.%s", serviceName, parameterName);
-    }
 
     /**
      * Convert a JSON ArrayNode to a Java List.

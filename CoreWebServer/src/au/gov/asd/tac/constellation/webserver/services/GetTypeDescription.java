@@ -33,13 +33,14 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Get the named type as a JSON document.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class GetTypeDescription extends RestService {
     private static final String NAME = "get_type_description";
-    private static final String TYPE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "type_name");
+    private static final String TYPE_PARAMETER_ID = "type_name";
 
     @Override
     public String getName() {

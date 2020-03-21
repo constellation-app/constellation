@@ -31,6 +31,7 @@ import javax.imageio.ImageIO;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * A screenshot of the graph in PNG format.
  *
  * @author algol
  */

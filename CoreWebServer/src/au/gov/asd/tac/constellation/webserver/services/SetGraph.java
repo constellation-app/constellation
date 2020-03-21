@@ -31,13 +31,14 @@ import javax.swing.SwingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Make the graph with the specified id the active graph.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class SetGraph extends RestService {
     private static final String NAME = "set_graph";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
 
     @Override
     public String getName() {

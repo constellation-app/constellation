@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * List the available services.
  *
  * @author algol
  */

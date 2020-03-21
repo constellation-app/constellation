@@ -39,13 +39,16 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Create a new graph using the specified schema.
+ * <p>
+ * If a schema is not specified, the default schema is used. Returns the id, name, and schema of the new graph.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class NewGraph extends RestService {
     private static final String NAME = "new_graph";
-    private static final String SCHEMA_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "schema_name");
+    private static final String SCHEMA_PARAMETER_ID = "schema_name";
 
     @Override
     public String getName() {

@@ -30,6 +30,7 @@ import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The id, name, and schema of each open graph as a JSON array of objects.
  *
  * @author algol
  */

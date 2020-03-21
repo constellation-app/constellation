@@ -29,13 +29,14 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * List the available plugins.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class ListPlugins extends RestService {
     private static final String NAME = "list_plugins";
-    private static final String ALIAS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "alias");
+    private static final String ALIAS_PARAMETER_ID = "alias";
 
     @Override
     public String getName() {

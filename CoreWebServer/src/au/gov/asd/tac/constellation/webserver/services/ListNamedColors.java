@@ -26,6 +26,7 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * List the colors that CONSTELLATION knows the names of, and their values in HTML format.
  *
  * @author algol
  */
@@ -40,7 +41,7 @@ public class ListNamedColors extends RestService {
 
     @Override
     public String getDescription() {
-        return "List the colors that CONSTELLATION knows the names of.";
+        return "List the colors that CONSTELLATION knows the names of, and their values in HTML format.";
     }
 
     @Override

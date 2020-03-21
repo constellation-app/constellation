@@ -34,13 +34,14 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * The graph, vertex, and transaction attributes as a JSON object.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class GetAttributes extends RestService {
     private static final String NAME = "get_attributes";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
 
     @Override
     public String getName() {

@@ -38,15 +38,17 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Open a .star graph file.
+ * <p>
  * TODO why does this not work exactly the same as opening manually?
  * Try this, then manually open recent a couple of times, for example.
- * 
+ *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class OpenGraph extends RestService {
     private static final String NAME = "open_graph";
-    private static final String FILE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "filename");
+    private static final String FILE_PARAMETER_ID = "filename";
 
     @Override
     public String getName() {

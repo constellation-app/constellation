@@ -26,6 +26,9 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Reflect the JSON in the request body as output to the response body.
+ * <p>
+ * This is an example to ensure JSON input and output works.
  *
  * @author algol
  */

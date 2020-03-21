@@ -38,15 +38,16 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Run a plugin, optionally specifying a graph.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class RunPlugin extends RestService {
     private static final String NAME = "run_plugin";
-    private static final String PLUGIN_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "plugin_name");
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
-    private static final String ARGS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "args");
+    private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String ARGS_PARAMETER_ID = "args";
 
     @Override
     public String getName() {

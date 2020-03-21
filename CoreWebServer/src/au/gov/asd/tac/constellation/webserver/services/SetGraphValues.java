@@ -41,13 +41,14 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Set the graph attribute values.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class SetGraphValues extends RestService {
     private static final String NAME = "set_graph_values";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
 
     @Override
     public String getName() {

@@ -37,14 +37,26 @@ import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * A web service for displaying the REST API using swagger-ui.
+ * A servlet that displays the REST API using swagger-ui.
  * <p>
+ * Swagger is obtained from https://github.com/swagger-api/swagger-ui.
  * The swagger packages contain the contents of swagger-ui/dist unzipped as-is
  * with the addition of the constellation.json swagger config file.
  * The index.html file has been modified to link to constellation.json
  * <p>
  * The JSON returned by the servlet is modified on the fly to contain
- * REST service information.
+ * REST service information, using the information from each service
+ * and the PluginParameters instance from each service's createParameters().
+ * <p>
+ *  Some heuristics are used.
+ * <ul>
+ * <li>If the getName() of a parameter contains the
+ * string "(body)", that parameter specified to Swagger as a body parameter
+ * instead of a query parameter.</li>
+ * <li>If the service returns JSON, and the name of the service starts with
+ * "list" (case-insensitive), the schema of the returned JSON is specified as
+ * a list of object; otherwise, the default schema is object.
+ * </ul>
  *
  * @author algol
  */
@@ -131,7 +143,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         param.put("name", "X-CONSTELLATION-SECRET");
                         param.put("in", "header");
                         param.put("required", true);
-                        param.put("description", "CONSTELLATION secret (from ~/.CONSTELLATION/rest.json)");
+                        param.put("description", "CONSTELLATION secret");
                         final ObjectNode schema = param.putObject("schema");
                         schema.put("type", "string");
                     }
@@ -145,30 +157,18 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     if(rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
                         schema.put("type", "string");
                         schema.put("format", "binary");
-//                    } else if(rs.getMimeType().equals(ServiceUtilities.APPLICATION_JSON)) {
-//                        // Make a wild guess about the response.
-//                        //
-//                        if(serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
-//                            schema.put("type", "array");
-//                        } else{
-//                            schema.put("type", "object");
-//                        }
+                    } else if(rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                        // Make a wild guess about the response.
+                        //
+                        if(serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
+                            schema.put("type", "array");
+                            final ObjectNode items = schema.putObject("items");
+                            items.put("type", "object");
+                        } else{
+                            schema.put("type", "object");
+                        }
                     }
                 });
-
-//                // Update the tags: discover which tags are already there, and add the rest.
-//                //
-//                final ArrayNode tagArray = (ArrayNode)root.get("tags");
-//                tagArray.forEach(existing -> {
-//                    final String name = existing.get("name").textValue();
-//                    serviceTags.remove(name);
-//                });
-//
-//                serviceTags.forEach(tag -> {
-//                    final ObjectNode newTag = tagArray.addObject();
-//                    newTag.put("name", tag);
-//                    newTag.put("description", String.format("Related to %s operations", tag));
-//                });
 
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);

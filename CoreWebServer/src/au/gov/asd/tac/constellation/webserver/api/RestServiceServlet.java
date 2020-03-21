@@ -32,6 +32,16 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A web service that allows a client to call CONSTELLATION REST services.
+ * <p>
+ * All services are accessed in the same way, regardless of the HTTP verb used.
+ * The plugin name is in the last part of the URL (request.getPathInfo()).
+ * This is used to look up the service in the ServiceRegistry.
+ * The service's createParameters() method is called to get a PluginParameters
+ * instance, which is then used to parse parameters from the query
+ * section of the URL (if any).
+ * <p>
+ * The service is then called, passing the populated PluginParameters instance,
+ * and the HTTP request's input and output streams.
  *
  * The URL pattern *must* match the FileListener and Swagger/OpenAPI patterns.
  *

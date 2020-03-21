@@ -47,17 +47,18 @@ import java.util.StringJoiner;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Get (parts of) the specified graph (default is the active graph) as a RecordStore.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class GetRecordStore extends RestService {
     private static final String NAME = "get_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
-    private static final String SELECTED_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "selected");
-    private static final String VX_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "vx");
-    private static final String TX_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "tx");
-    private static final String ATTRS_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "attrs");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String SELECTED_PARAMETER_ID = "selected";
+    private static final String VX_PARAMETER_ID = "vx";
+    private static final String TX_PARAMETER_ID = "tx";
+    private static final String ATTRS_PARAMETER_ID = "attrs";
 
     @Override
     public String getName() {
@@ -66,7 +67,7 @@ public class GetRecordStore extends RestService {
 
     @Override
     public String getDescription() {
-        return "Get (parts of) the specified graph (default is the active graph) as a RecordStore";
+        return "Get (parts of) the specified graph (default is the active graph) as a RecordStore.";
     }
 
     @Override

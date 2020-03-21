@@ -28,6 +28,13 @@ import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
+ * This class holds all REST services that have been registered using the
+ * ServiceProvider annotation. It is primarily used to get new instances of
+ * registered services from their class names.
+ *
+ * The preferred pattern for getting a registered service involves storing its
+ * name and HTTP method in the registry and then calling
+ * {@link #get RestServiceRegistry.get(serviceName, httpMethod)}
  *
  * @author algol
  */

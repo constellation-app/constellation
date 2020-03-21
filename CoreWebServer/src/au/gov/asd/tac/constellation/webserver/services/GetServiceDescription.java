@@ -32,14 +32,15 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Return the description and parameters of the named service.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class GetServiceDescription extends RestService {
     private static final String NAME = "get_service_description";
-    private static final String SERVICE_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "service_name");
-    private static final String METHOD_NAME_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "http_method");
+    private static final String SERVICE_NAME_PARAMETER_ID = "service_name";
+    private static final String METHOD_NAME_PARAMETER_ID = "http_method";
 
     @Override
     public String getName() {

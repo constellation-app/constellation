@@ -51,17 +51,18 @@ import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Add a RecordStore to a graph.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class AddRecordStore extends RestService {
     private static final String NAME = "add_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
-    private static final String COMPLETE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "complete_with_schema");
-    private static final String ARRANGE_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "arrange");
-    private static final String RESET_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "reset_view");
-    private static final String DATA_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "data");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String COMPLETE_PARAMETER_ID = "complete_with_schema";
+    private static final String ARRANGE_PARAMETER_ID = "arrange";
+    private static final String RESET_PARAMETER_ID = "reset_view";
+    private static final String DATA_PARAMETER_ID = "data";
 
     private static final String API_SOURCE = "REST API";
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;

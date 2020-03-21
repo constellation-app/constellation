@@ -23,9 +23,20 @@ import java.io.OutputStream;
 
 /**
  * The definition of a REST service.
- *
+ * <p>
  * REST services are accessed via the internal web server by REST clients.
  * They are not otherwise available from the CONSTELLATION user interface.
+ * <p>
+ * Services use createParameters() just like plugins. A PluginParameters
+ * instance is populated by reading from the URL, no matter whether GET, POST,
+ * or whatever is used. Service parameters are expected to be fairly simple,
+ * so this shouldn't be a problem. Anything complex probably belongs in
+ * a plugin, which you then use the run_plugin service to run.
+ * <p>
+ * The descriptive get() methods in RestService and PluginParameter are used to
+ * dynamically build a Swagger config file: see SwaggerServlet for details.
+ * <p>
+ * All services are accessed via RestServiceServlet; see that for more details.
  *
  * @author algol
  */

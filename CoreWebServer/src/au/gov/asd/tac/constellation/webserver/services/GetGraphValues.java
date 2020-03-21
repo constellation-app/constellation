@@ -35,13 +35,14 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Get the graph attribute values.
  *
  * @author algol
  */
 @ServiceProvider(service=RestService.class)
 public class GetGraphValues extends RestService {
     private static final String NAME = "get_graph_values";
-    private static final String GRAPHID_PARAMETER_ID = RestServiceUtilities.buildId(NAME, "graph_id");
+    private static final String GRAPHID_PARAMETER_ID = "graph_id";
 
     @Override
     public String getName() {
