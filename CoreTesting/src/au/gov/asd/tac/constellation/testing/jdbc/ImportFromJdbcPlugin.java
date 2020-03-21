@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -80,7 +81,10 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
                 } else {
                     interaction.setProgress(0, 0, "JDBC import interrupted, database may be inconsistent.", false);
                 }
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | MalformedURLException ex) {
+            } catch (final MalformedURLException | ClassNotFoundException
+                    | IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 notifyException(ex);
 //                throw new PluginException(PluginNotificationLevel.INFO, ex);
             }
@@ -120,7 +124,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
-        LOGGER.log(Level.INFO,"JDBC import vx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import vx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
@@ -186,7 +190,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
-        LOGGER.log(Level.INFO,"JDBC import tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import tx SQL: {0}", select.toString());
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {

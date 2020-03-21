@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -108,7 +109,7 @@ public class PluginRegistry {
         // update the maps with the overridden plugin
         pluginOverrides.forEach((pluginName, overridingPlugin) -> {
             try {
-                for (final String overriddenPlugin : overridingPlugin.newInstance().getOverriddenPlugins()) {
+                for (final String overriddenPlugin : overridingPlugin.getDeclaredConstructor().newInstance().getOverriddenPlugins()) {
 
                     if (pluginsMap.containsKey(overriddenPlugin)) {
                         pluginsMap.remove(overriddenPlugin);
@@ -122,7 +123,9 @@ public class PluginRegistry {
                             new Object[]{overriddenPlugin, overridingPlugin.getName()}
                     );
                 }
-            } catch (InstantiationException | IllegalAccessException ex) {
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 Exceptions.printStackTrace(ex);
             }
         });
@@ -165,8 +168,10 @@ public class PluginRegistry {
         if (pluginsMap.containsKey(name)) {
             final Class<? extends Plugin> c = pluginsMap.get(name);
             try {
-                return c.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
+                return c.getDeclaredConstructor().newInstance();
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
         } else {

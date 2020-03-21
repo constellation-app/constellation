@@ -125,22 +125,22 @@ public class GLVisualProcessorGraphTester {
     }
 
     public static void main(String[] args) {
-        GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
-        StoreGraph graph = createGraph();
-        Graph g = new DualGraph(graph, false);
-        GraphVisualAccess access2 = new GraphVisualAccess(g);
-        GLVisualProcessor processor = new GLVisualProcessor();
-        final VisualManager visualManager2 = new VisualManager(access2, processor);
-        processor.startVisualising(visualManager2);
-        demo.runDemo(processor, visualManager2);
-        GraphChangeListener gct = (event) -> visualManager2.updateFromIndigenousChanges();
+        final GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
+        final StoreGraph graph = createGraph();
+        final Graph dualGraph = new DualGraph(graph, false);
+        final GraphVisualAccess access = new GraphVisualAccess(dualGraph);
+        final GLVisualProcessor processor = new GLVisualProcessor();
+        final VisualManager visualManager = new VisualManager(access, processor);
+        processor.startVisualising(visualManager);
+        demo.runDemo(processor, visualManager);
+        final GraphChangeListener gct = (event) -> visualManager.updateFromIndigenousChanges();
         gct.graphChanged(null);
         try {
             Thread.sleep(3000);
         } catch (InterruptedException ex) {
         }
         try {
-            WritableGraph wg = g.getWritableGraph("linkmode", false);
+            WritableGraph wg = dualGraph.getWritableGraph("linkmode", false);
             try {
                 final int connectionModeAttr = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg);
                 wg.setObjectValue(connectionModeAttr, 0, ConnectionMode.LINK);
@@ -155,7 +155,7 @@ public class GLVisualProcessorGraphTester {
         } catch (InterruptedException ex) {
         }
         try {
-            WritableGraph wg = g.getWritableGraph("transmode", false);
+            WritableGraph wg = dualGraph.getWritableGraph("transmode", false);
             try {
                 final int connectionModeAttr = VisualConcept.GraphAttribute.CONNECTION_MODE.ensure(wg);
                 wg.setObjectValue(connectionModeAttr, 0, ConnectionMode.TRANSACTION);
@@ -171,7 +171,7 @@ public class GLVisualProcessorGraphTester {
         }
         final int[] changed = new int[]{0, 1};
         try {
-            WritableGraph wg = g.getWritableGraph("blazin", false);
+            WritableGraph wg = dualGraph.getWritableGraph("blazin", false);
             try {
                 final int blazeAttr = VisualConcept.VertexAttribute.BLAZE.ensure(wg);
                 for (int i = 0; i < 10000; i++) {
@@ -181,7 +181,7 @@ public class GLVisualProcessorGraphTester {
                     }
                     wg.setObjectValue(blazeAttr, 0, new Blaze(((Blaze) wg.getObjectValue(blazeAttr, 0)).getAngle() + 1, ConstellationColor.BLUE));
                     wg = wg.flush(false);
-                    visualManager2.addSingleChangeOperation(new VisualChangeBuilder(VisualProperty.VERTEX_BLAZE_ANGLE).forItems(changed).build());
+                    visualManager.addSingleChangeOperation(new VisualChangeBuilder(VisualProperty.VERTEX_BLAZE_ANGLE).forItems(changed).build());
                 }
             } finally {
                 wg.commit();
@@ -189,5 +189,4 @@ public class GLVisualProcessorGraphTester {
         } catch (InterruptedException ex) {
         }
     }
-
 }

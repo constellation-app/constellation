@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -52,13 +53,14 @@ class JdbcUtilities {
      * @throws IllegalAccessException
      * @throws MalformedURLException
      */
-    static Connection getConnection(final File jarFile, final String driverName, final String url, final String username, final char[] password) throws ClassNotFoundException, InstantiationException, SQLException, IllegalAccessException, MalformedURLException {
+    static Connection getConnection(final File jarFile, final String driverName, final String url, final String username, final char[] password) 
+            throws MalformedURLException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, SecurityException, InvocationTargetException, SQLException {
         final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
 
         // Note: we can't use DriverManager here: it only uses classes that have been loaded by the system class loader.
         // Since we're loading the class on the fly with our own Classloader, DriverManager will refuse to recognise it.
-        final Driver driver = (Driver) Class.forName(driverName, true, clloader).newInstance();
+        final Driver driver = (Driver) Class.forName(driverName, true, clloader).getDeclaredConstructor().newInstance();
 
         final Properties props = new Properties();
         props.put("user", username);

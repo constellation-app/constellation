@@ -74,10 +74,10 @@ public class GLVisualProcessorTester {
     }
 
     public static void main(String[] args) {
-        VisualAccess access = new DummyVisualAccess();
-        GLVisualProcessor processor = new GLVisualProcessor();
+        final GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
+        final VisualAccess access = new DummyVisualAccess();
+        final GLVisualProcessor processor = new GLVisualProcessor();
         final VisualManager visualManager = new VisualManager(access, processor);
-        GLVisualProcessorDemo demo = new GLVisualProcessorDemo();
         processor.startVisualising(visualManager);
         demo.runDemo(processor, visualManager);
         final List<VisualChange> changeSet = new ArrayList<>();
