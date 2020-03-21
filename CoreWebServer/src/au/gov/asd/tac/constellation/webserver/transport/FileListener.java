@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.webserver.transport;
 
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
-import au.gov.asd.tac.constellation.webserver.api.EndpointException;
-import au.gov.asd.tac.constellation.webserver.impl.GraphImpl;
-import au.gov.asd.tac.constellation.webserver.impl.IconImpl;
-import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
-import au.gov.asd.tac.constellation.webserver.impl.RecordStoreImpl;
-import au.gov.asd.tac.constellation.webserver.impl.TypeImpl;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,8 +36,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.awt.StatusDisplayer;
@@ -172,7 +170,7 @@ public class FileListener implements Runnable {
 
                                     parseAndExecute(verb, endpoint, path, args);
                                     response();
-                                } catch (final EndpointException ex) {
+                                } catch (final RestServiceException ex) {
                                     response(ex.getMessage());
                                 } catch (final Exception ex) {
                                     response(ex.getMessage());
@@ -196,7 +194,6 @@ public class FileListener implements Runnable {
         } catch (final InterruptedException ex) {
             stop();
             Exceptions.printStackTrace(ex);
-            Thread.currentThread().interrupt();
         }
 
         StatusDisplayer.getDefault().setStatusText(String.format("Stopped file listener in directory %s", restPath));
@@ -210,236 +207,30 @@ public class FileListener implements Runnable {
      * @throws Exception because of AutoCloseable
      */
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
-        final String graphId = getString(args, "graph_id");
         switch (endpoint) {
-            case "/v1/graph":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "getattrs":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_attributes(graphId, out);
-                                }
-                                break;
-                            case "get":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_get(graphId, out);
-                                }
-                                break;
-                            case "image":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_image(out);
-                                }
-                                break;
-                            case "schema":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_schema(out);
-                                }
-                                break;
-                            case "schema_all":
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    GraphImpl.get_schema_all(out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    case "post":
-                        switch (path) {
-                            case "set":
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    GraphImpl.post_set(graphId, in.in);
-                                }
-                                break;
-                            case "new":
-                                final String schemaParam = getString(args, "schema");
-                                GraphImpl.post_new(schemaParam);
-                                break;
-                            case "open":
-                                final String filenameParam = getString(args, "filename");
-                                if (filenameParam == null) {
-                                    throw new EndpointException("Required filename not found");
-                                }
+            case "/v2/service":
+                final HttpMethod httpMethod = HttpMethod.getValue(verb);
+                // Get an instance of the service (if it exists).
+                //
+                final RestService rs = RestServiceRegistry.get(path, httpMethod);
 
-                                GraphImpl.post_open(filenameParam);
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    case "put":
-                        switch (path) {
-                            case "current":
-                                final String gid = getString(args, "id");
-                                if (gid != null) {
-                                    GraphImpl.put_current(gid);
-                                } else {
-                                    throw new EndpointException("Must specify id");
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
+                // Convert the arguments to PluginParameters.
+                //
+                final PluginParameters parameters = rs.createParameters();
+                RestServiceUtilities.parametersFromJson((ObjectNode)args, parameters);
+
+                try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                    rs.callService(parameters, ins.in, out);
+                } catch(final IOException | RuntimeException ex) {
+                    throw new RestServiceException(ex);
                 }
+
                 break;
-            case "/v1/icon":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean editable = getBoolean(args, "editable");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_list(editable, out);
-                                }
-                                break;
-                            case "get":
-                                final String name = getString(args, "name");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_get(name, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/plugin":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean alias = getBooleanNonNull(args, "alias");
 
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    PluginImpl.get_list(alias, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                                break;
-                        }
-                        break;
-                    case "post":
-                        switch (path) {
-                            case "run":
-                                final String pluginName = getString(args, "name");
-                                if (pluginName == null) {
-                                    throw new EndpointException("No plugin specified!");
-                                }
-
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    PluginImpl.post_run(graphId, pluginName, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/recordstore":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "get":
-                                final boolean selected = getBooleanNonNull(args, "selected");
-                                final boolean vx = getBooleanNonNull(args, "vx");
-                                final boolean tx = getBooleanNonNull(args, "tx");
-
-                                // Allow the user to specify a specific set of attributes,
-                                // cutting down data transfer and processing a lot,
-                                // particularly on the Python side.
-                                final String attrsParam = getString(args, "attrs");
-                                final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
-                                final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-                                for (final String k : attrsArray) {
-                                    attrs.add(k);
-                                }
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    case "post":
-                        switch (path) {
-                            case "add":
-                                final Boolean completeWithSchemaParam = getBoolean(args, "complete_with_schema");
-                                final boolean completeWithSchema = completeWithSchemaParam == null ? true : completeWithSchemaParam;
-
-                                final String arrangeParam = getString(args, "arrange");
-                                final String arrange = arrangeParam == null ? null : arrangeParam;
-
-                                final Boolean resetViewParam = getBoolean(args, "reset_view");
-                                final boolean resetView = resetViewParam == null ? true : resetViewParam;
-
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
-            case "/v1/type":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "describe":
-                                final String type = getString(args, "type");
-                                if (type == null) {
-                                    throw new EndpointException("No type specified.");
-                                }
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    TypeImpl.get_describe(type, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
-                }
-                break;
             default:
                 unrec("endpoint", endpoint);
                 break;
         }
-    }
-
-    private static String getString(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).textValue() : null;
-    }
-
-    private static Boolean getBoolean(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).booleanValue() : null;
-    }
-
-    private static boolean getBooleanNonNull(final JsonNode j, final String key) {
-        return j != null && j.hasNonNull(key) ? j.get(key).booleanValue() : false;
     }
 
     /**
@@ -447,6 +238,11 @@ public class FileListener implements Runnable {
      * <p>
      * We don't want the input file left lying around after we're finished with
      * it.
+     * <p>
+     * Services may or may not require an input file, we don't know.
+     * Therefore the "optional" parameter allows the input file to not exist.
+     * If a service tries to use an InputStream that doesn't exist,
+     * things go bang.
      */
     private static class InStream implements AutoCloseable {
 
@@ -454,21 +250,29 @@ public class FileListener implements Runnable {
         final InputStream in;
 
         InStream(final Path p, final String name) throws FileNotFoundException {
-            fqp = p.resolve(name).toFile();
-            in = new FileInputStream(fqp);
+            this(p, name, false);
         }
 
-        InputStream in() {
-            return in;
+        InStream(final Path p, final String name, final boolean optional) throws FileNotFoundException {
+            fqp = p.resolve(name).toFile();
+            if(fqp.canRead()) {
+                in = new FileInputStream(fqp);
+            } else if(optional) {
+                in = null;
+            } else {
+                throw new FileNotFoundException(fqp.getAbsolutePath());
+            }
         }
 
         @Override
         public void close() {
-            try {
-                in.close();
-            } catch (IOException ex) {
+            if(in!=null) {
+                try {
+                    in.close();
+                } catch (IOException ex) {
+                }
+                fqp.delete();
             }
-            fqp.delete();
         }
     }
 
@@ -478,13 +282,13 @@ public class FileListener implements Runnable {
             final OutputStream out = new FileOutputStream(fqp.toFile());
             return out;
         } catch (final FileNotFoundException ex) {
-            throw new EndpointException(ex);
+            throw new RestServiceException(ex);
         }
     }
 
     private void unrec(final String type, final String name) {
         final String msg = String.format("Unrecognised %s '%s'", type, name);
-        throw new EndpointException(msg);
+        throw new RestServiceException(msg);
     }
 
     private void response() {

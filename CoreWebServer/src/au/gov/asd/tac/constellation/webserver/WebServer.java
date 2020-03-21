@@ -120,7 +120,6 @@ public class WebServer {
     private static int port = 0;
 
     static final String CONSTELLATION_CLIENT = "constellation_client.py";
-    static final String RESOURCES = "resources/";
     private static final String IPYTHON = ".ipython";
 
     public static synchronized int start() {
@@ -180,7 +179,6 @@ public class WebServer {
                     try {
                         server.join();
                     } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
                         throw new RuntimeException(e);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
@@ -227,7 +225,7 @@ public class WebServer {
         if (doDownload) {
             boolean complete = false;
             try (
-                    final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT);
+                    final InputStream in = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT);
                     final FileOutputStream out = new FileOutputStream(download)) {
                 final byte[] buf = new byte[64 * 1024];
                 while (true) {
@@ -285,7 +283,7 @@ public class WebServer {
      */
     static boolean equalScripts(final File scriptFile) {
         try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
+            try (final InputStream in2 = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT)) {
                 final byte[] dig1 = getDigest(in1);
                 final byte[] dig2 = getDigest(in2);
 
