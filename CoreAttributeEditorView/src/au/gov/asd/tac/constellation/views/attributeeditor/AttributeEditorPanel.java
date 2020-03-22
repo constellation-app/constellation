@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -24,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
@@ -35,7 +35,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AttributeEditorFactory;
@@ -52,11 +57,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Mod
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyDefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.UpdateTimeZonePlugin;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -317,7 +317,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         optionsButtons.setPadding(new Insets(2));
         final Text heading = new Text();
         heading.textProperty().bind(title);
-        heading.setStyle(String.format("-fx-font-family:\"Arial\"; -fx-font-weight:bold;"));
+        heading.setStyle("-fx-font-family:\"Arial\"; -fx-font-weight:bold;");
         heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);

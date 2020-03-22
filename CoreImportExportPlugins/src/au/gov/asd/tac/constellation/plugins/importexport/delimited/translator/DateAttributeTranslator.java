@@ -117,7 +117,7 @@ public class DateAttributeTranslator extends AttributeTranslator {
             }
         }
 
-        return String.format("d:%s\nc:%s", label, format);
+        return String.format("d:%s%nc:%s", label, format);
     }
 
     @Override

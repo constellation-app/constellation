@@ -81,7 +81,7 @@ public final class TimeZoneAttributeDescription extends AbstractAttributeDescrip
         } else if (value instanceof String) {
             return ZoneId.of((String) value);
         } else {
-            LOGGER.log(Level.WARNING, "Error converting Object '{0}' to time_zone", value.getClass());
+            LOGGER.log(Level.WARNING, "Error converting Object {0} to time_zone", value.getClass());
         }
         return null;
     }

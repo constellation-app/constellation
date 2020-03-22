@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
@@ -23,10 +27,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.CircleArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -323,12 +323,12 @@ public class HierarchicalArranger implements Arranger {
 
     private static void dump(final ArrayList<ArrayList<Integer>> vxLevels) {
         for (int i = 0; i < vxLevels.size(); i++) {
-            System.out.printf("@@H level %d:\n", i);
+            System.out.printf("@@H level %d:%n", i);
             final ArrayList<Integer> vxLevel = vxLevels.get(i);
             for (Integer vxLevel1 : vxLevel) {
                 System.out.printf(" %d", vxLevel1);
             }
-            System.out.printf("\n");
+            System.out.printf("%n");
         }
     }
 

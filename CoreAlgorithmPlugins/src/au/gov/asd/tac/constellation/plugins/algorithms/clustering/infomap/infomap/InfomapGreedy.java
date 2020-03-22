@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Edge;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
@@ -26,7 +27,6 @@ import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     public void initEnterExitFlow() {
         if (DEBUG) {
-            System.out.printf("%s.initEnterExitFlow()\n", getClass().getSimpleName());
+            System.out.printf("%s.initEnterExitFlow()%n", getClass().getSimpleName());
         }
 
         for (final NodeBase node : treeData.getLeaves()) {
@@ -115,7 +115,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
         if (DEBUG) {
-            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)\n", getClass().getSimpleName(), detailedBalance);
+            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
         }
 
         flow_log_flow = 0;
@@ -344,7 +344,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void generateNetworkFromChildren(final NodeBase parent) {
         if (DEBUG) {
-            System.out.printf("%s.generateNetworkFromChildren\n", getClass().getSimpleName());
+            System.out.printf("%s.generateNetworkFromChildren%n", getClass().getSimpleName());
         }
 
         exitNetworkFlow = 0;
@@ -396,7 +396,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void moveNodesToPredefinedModules() {
         if (DEBUG) {
-            System.out.printf("%s.moveNodesToPredefinedModules\n", getClass().getSimpleName());
+            System.out.printf("%s.moveNodesToPredefinedModules%n", getClass().getSimpleName());
         }
 
         // Size of active network and cluster array should match.
@@ -494,7 +494,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      */
     int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
-            System.out.printf("%s.tryMoveEachNodeIntoBestModule\n", getClass().getSimpleName());
+            System.out.printf("%s.tryMoveEachNodeIntoBestModule%n", getClass().getSimpleName());
         }
 
         final int numNodes = activeNetwork.size();
@@ -671,7 +671,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int consolidateModules(final boolean replaceExistingStructure, final boolean asSubModules) {
         if (DEBUG) {
-            System.out.printf("%s.consolidateModules(%s,%s)\n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            System.out.printf("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
         }
 
         final int numNodes = activeNetwork.size();
@@ -816,7 +816,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void printNodeRanks(final PrintWriter out) {
-        out.printf("#node-flow\n");
+        out.printf("#node-flow%n");
         for (final NodeBase node : treeData.getLeaves()) {
             out.printf("%f\n", getNode(node).getData().getFlow());
         }
