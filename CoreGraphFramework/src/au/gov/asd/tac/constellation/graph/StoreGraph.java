@@ -1027,6 +1027,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                         highState ^= (1 << UNDIRECTED);
                         break;
                     default:
+                        break;
                 }
 
                 vertexLinks.addElement(lowVertex, link << 1, STATE_TO_CATEGORY[lowState]);
@@ -1502,6 +1503,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
                 break;
             default:
+                break;
         }
 
         globalModificationCounter += operationMode.getModificationIncrement();
@@ -2165,6 +2167,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removedFromKeys[elementType.ordinal()] = new ElementList(tStore);
                     break;
                 default:
+                    break;
             }
 
         } else {

@@ -203,6 +203,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 LOGGER.fine(String.format("%s: %s", title, message));
                 break;
             default:
+                break;
         }
     }
 

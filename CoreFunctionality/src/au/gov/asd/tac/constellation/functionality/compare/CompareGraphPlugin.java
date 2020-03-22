@@ -416,6 +416,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                             case "transaction":
                                 break;
                             default:
+                                break;
                         }
                     }
                 }
@@ -488,6 +489,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                 }
                                 break;
                             default:
+                                break;
                         }
                     }
                 }

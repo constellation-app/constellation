@@ -266,6 +266,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 break;
             default:
+                break;
         }
     }
 

@@ -147,6 +147,7 @@ public class NumberInputPane<T> extends Pane {
                                         parameter.setFloatValue(Float.valueOf(currentTextValue));
                                         break;
                                     default:
+                                        break;
                                 }
                             } catch (NumberFormatException ex) {
                                 field.setId("invalid");
@@ -168,6 +169,7 @@ public class NumberInputPane<T> extends Pane {
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                        break;
                 }
             });
         });

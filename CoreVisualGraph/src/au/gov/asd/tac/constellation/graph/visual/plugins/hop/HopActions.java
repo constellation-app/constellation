@@ -161,6 +161,7 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 break;
             default:
+                break;
         }
     }
 

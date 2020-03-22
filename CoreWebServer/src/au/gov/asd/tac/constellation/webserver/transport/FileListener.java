@@ -243,6 +243,7 @@ public class FileListener implements Runnable {
                                 break;
                             default:
                                 unrec("path", path);
+                                break;
                         }
                         break;
                     case "post":
@@ -266,6 +267,7 @@ public class FileListener implements Runnable {
                                 break;
                             default:
                                 unrec("path", path);
+                                break;
                         }
                         break;
                     case "put":
@@ -302,6 +304,7 @@ public class FileListener implements Runnable {
                             break;
                         default:
                             unrec("path", path);
+                            break;
                     }
                 } else {
                     unrec("verb", verb);

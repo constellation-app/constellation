@@ -104,6 +104,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
                     break;
                 default:
+                    break;
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {

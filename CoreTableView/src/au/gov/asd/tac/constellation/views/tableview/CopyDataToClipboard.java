@@ -205,6 +205,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
                         colName = GraphRecordStoreUtilities.DESTINATION + colName;
                         break;
                     default:
+                        break;
                 }
             }
 
@@ -367,6 +368,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
                             colName = GraphRecordStoreUtilities.DESTINATION + colName;
                             break;
                         default:
+                            break;
                     }
                 }
 

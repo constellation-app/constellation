@@ -638,6 +638,7 @@ public final class TableViewPane extends BorderPane {
                                             this.getStyleClass().add("element-destination");
                                             break;
                                         default:
+                                            break;
                                     }
 
                                     // enable context menu on right-click
@@ -768,6 +769,7 @@ public final class TableViewPane extends BorderPane {
                                             break;
                                         default:
                                             attributeValue = null;
+                                            break;
                                     }
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);

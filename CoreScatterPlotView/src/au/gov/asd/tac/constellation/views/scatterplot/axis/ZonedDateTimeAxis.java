@@ -476,6 +476,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                         datetime = datetime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     default:
+                        break;
                 }
                 evenDateTimes.add(datetime);
             }

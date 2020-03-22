@@ -322,6 +322,7 @@ public final class DateTimeRangeInputPane extends Pane {
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                        break;
                 }
             });
         });

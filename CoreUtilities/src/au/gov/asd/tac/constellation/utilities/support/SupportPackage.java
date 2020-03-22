@@ -118,12 +118,6 @@ public class SupportPackage {
      * @return True to ignore the file, False otherwise
      */
     private boolean filesToIgnore(final String filename) {
-        switch (filename) {
-            case "heapdump.hprof":
-            case "heapdump.hprof.old":
-                return true;
-            default:
-                return false;
-        }
+        return "heapdump.hprof".equals(filename) || "heapdump.hprof.old".equals(filename);
     }
 }

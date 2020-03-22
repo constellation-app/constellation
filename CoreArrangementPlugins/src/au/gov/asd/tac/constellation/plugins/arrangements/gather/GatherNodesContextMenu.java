@@ -90,6 +90,7 @@ public class GatherNodesContextMenu implements ContextMenuProvider {
                 }).executeLater(graph);
                 break;
             default:
+                break;
         }
     }
 

@@ -209,6 +209,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                             }
                             break;
                         default:
+                            break;
                     }
                 }
             }).executeLater(getCurrentGraph());
@@ -245,6 +246,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                             }
                             break;
                         default:
+                            break;
                     }
                 } finally {
                     readableGraph.release();

@@ -132,6 +132,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 break;
             default:
+                break;
         }
 
         if (plugin != null && parameters != null) {

@@ -134,6 +134,7 @@ public class ScriptingViewPane extends JPanel {
                             saveScript();
                             break;
                         default:
+                            break;
                     }
                 }
             }

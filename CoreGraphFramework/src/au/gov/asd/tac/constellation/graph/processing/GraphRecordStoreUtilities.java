@@ -386,6 +386,7 @@ public class GraphRecordStoreUtilities {
                                 transactionValues.put(keyAttribute, value);
                                 break;
                             default:
+                                break;
                         }
                     }
                 }

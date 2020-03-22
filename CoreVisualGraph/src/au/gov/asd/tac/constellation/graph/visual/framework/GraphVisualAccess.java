@@ -722,6 +722,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     connectionElementIds[currentPos] = linkId;
                     currentPos++;
                 default:
+                    break;
             }
         }
         connectionElementTypes = Arrays.copyOf(connectionElementTypes, currentPos);
@@ -1063,6 +1064,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     color = accessGraph.getObjectValue(transactionColor, connectionElementIds[connection]);
+                    break;
             }
         }
         return color != null ? color : VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
@@ -1185,6 +1187,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     style = accessGraph.getObjectValue(transactionLineStyle, connectionElementIds[connection]);
+                    break;
             }
         }
         return style != null ? style : VisualGraphDefaults.DEFAULT_TRANSACTION_LINE_STYLE;
@@ -1231,6 +1234,7 @@ public final class GraphVisualAccess implements VisualAccess {
             case TRANSACTION:
             default:
                 linkId = accessGraph.getTransactionLink(connectionElementIds[connection]);
+                break;
         }
         return accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId));
     }
@@ -1248,6 +1252,7 @@ public final class GraphVisualAccess implements VisualAccess {
             case TRANSACTION:
             default:
                 linkId = accessGraph.getTransactionLink(connectionElementIds[connection]);
+                break;
         }
         return accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId));
     }

@@ -161,6 +161,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
                             localState.getStringCaseSensitivity(), localState.getStringUsingList(),
                             localState.getOperator().equals(FindTypeOperators.Operator.REGEX));
                     panelCriteriaHolder.add(panelString);
+                    break;
             }
         }
 
@@ -331,6 +332,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
                     handleUIString();
                     break;
                 default:
+                    break;
             }
         }
 

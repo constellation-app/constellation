@@ -59,6 +59,7 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
                         colorPositions[senderPosition] = rightVertexCount--;
                         break;
                     default:
+                        break;
                 }
             }
         }

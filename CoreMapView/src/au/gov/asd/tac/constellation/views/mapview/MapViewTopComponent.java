@@ -275,6 +275,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
                     }
                 default:
+                    break;
             }
         });
         zoomMenu.setToolTipText("Zoom based on markers or locations in the Map View");
@@ -484,6 +485,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                             .setDescription("Enter an MGRS value");
                     break;
                 default:
+                    break;
             }
         });
         parameters.addController(PARAMETER_TYPE, controller);
@@ -556,6 +558,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         }
                         break;
                     default:
+                        break;
                 }
             }
         }).executeLater(getCurrentGraph());

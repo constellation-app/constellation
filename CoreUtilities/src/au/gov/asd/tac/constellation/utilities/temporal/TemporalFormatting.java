@@ -300,6 +300,7 @@ public class TemporalFormatting {
             case YEAR_MONTH_FORMAT_LENGTH:
                 dateTimeStringBuilder.append("-01");
             default:
+                break;
         }
     }
 
@@ -316,6 +317,7 @@ public class TemporalFormatting {
             case HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
             default:
+                break;
         }
     }
 
@@ -332,6 +334,7 @@ public class TemporalFormatting {
             case DATE_HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
             default:
+                break;
         }
     }
 

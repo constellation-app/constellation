@@ -50,6 +50,7 @@ public class SchemaAttributeUtilities {
                             SCHEMA_TRANSACTION_ATTRIBUTES.add(schemaAttribute);
                             break;
                         default:
+                            break;
                     }
                 });
             });

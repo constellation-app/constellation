@@ -414,6 +414,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), event.getPoint()));
                             break;
                         default:
+                            break;
                     }
                     updateCameraAndNewLine(wg, event.getPoint(), cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
                 }
@@ -521,6 +522,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                         clearNewLineModel(camera);
                                     }
                                 default:
+                                    break;
                             }
                             break;
                         case ROTATING:
@@ -552,6 +554,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             }
                             break;
                         default:
+                            break;
                     }
                 }
 
@@ -605,6 +608,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 performDrag(wg, camera, from, wheelPoint);
                                 break;
                             default:
+                                break;
                         }
                     }
                 }
@@ -757,6 +761,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 new Thread(handleResult).start();
                 break;
             default:
+                break;
         }
     }
 
@@ -869,6 +874,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
                 break;
             default:
+                break;
         }
     }
 
@@ -988,6 +994,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 txIds.add(elementId);
                 break;
             default:
+                break;
         }
 
         if (!(vxIds.isEmpty() && txIds.isEmpty() && !clearSelection)) {

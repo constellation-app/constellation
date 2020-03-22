@@ -81,6 +81,7 @@ public class VisualSchemaV2UpdateProvider extends SchemaUpdateProvider {
                     graph.setObjectValue(backgroundIconAttribute, vertexId, IconManager.getIcon("Background.Flat Square"));
                     break;
                 default:
+                    break;
             }
         }
     }

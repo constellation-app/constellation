@@ -213,6 +213,7 @@ class PQTree {
                     frontier.add(node.realNum);
                 }
             default:
+                break;
         }
     }
 

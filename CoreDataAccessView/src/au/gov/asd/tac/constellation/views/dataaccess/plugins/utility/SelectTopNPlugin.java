@@ -175,6 +175,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             }
                             break;
                         default:
+                            break;
                     }
                     // update the sub level types
                     final PluginParameter<MultiChoiceParameterValue> typeParamter = (PluginParameter<MultiChoiceParameterValue>) parameters.get(TYPE_PARAMETER_ID);
@@ -281,6 +282,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                         }
                         break;
                     default:
+                        break;
                 }
             }
 

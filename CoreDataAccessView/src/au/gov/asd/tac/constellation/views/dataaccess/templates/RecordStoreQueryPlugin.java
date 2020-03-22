@@ -120,6 +120,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                 query = GraphRecordStoreUtilities.getAllSelected(graph);
                 break;
             default:
+                break;
         }
     }
 

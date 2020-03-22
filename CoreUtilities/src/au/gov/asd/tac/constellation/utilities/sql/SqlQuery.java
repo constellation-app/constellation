@@ -305,6 +305,7 @@ public class SqlQuery {
                     }
                     break;
                 default:
+                    break;
             }
             matchCondition.append(")");
         }
@@ -340,6 +341,7 @@ public class SqlQuery {
                     value = "%" + value + "%";
                     break;
                 default:
+                    break;
             }
             if (value instanceof String) {
                 addArgument((String) value);
@@ -378,6 +380,7 @@ public class SqlQuery {
                     value = "%" + value + "%";
                     break;
                 default:
+                    break;
             }
             if (value instanceof String) {
                 addArgument((String) value);

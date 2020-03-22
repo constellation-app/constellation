@@ -49,6 +49,7 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                             activityCount += 1;
                             break;
                         default:
+                            break;
                     }
                 }
             } finally {

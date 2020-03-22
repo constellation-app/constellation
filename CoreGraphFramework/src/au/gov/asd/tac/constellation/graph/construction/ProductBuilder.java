@@ -123,6 +123,7 @@ public class ProductBuilder extends GraphBuilder {
                     }
                     break;
                 default:
+                    break;
             }
 
             for (int j = 0; j < g1.getVertexNeighbourCount(g1Vertices[i]); j++) {
@@ -177,6 +178,7 @@ public class ProductBuilder extends GraphBuilder {
                         }
                         break;
                     default:
+                        break;
                 }
             }
         }

@@ -484,6 +484,7 @@ public class DateAxis extends Axis<Date> {
                         calendar.set(Calendar.MILLISECOND, 0);
                         break;
                     default:
+                        break;
                 }
                 evenDates.add(calendar.getTime());
             }
