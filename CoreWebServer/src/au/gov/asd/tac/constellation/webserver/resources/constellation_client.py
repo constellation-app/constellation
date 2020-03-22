@@ -547,12 +547,12 @@ class Constellation:
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
 
-        self.call_service('set_graph', verb='put', args={f'{service}.graph_id':graph_id})
+        self.call_service('set_graph', verb='put', args={'graph_id':graph_id})
 
     def open_graph(self, filename):
         """Open the graph file specified by the filename."""
 
-        graph = self.call_service('open_graph', verb='post', args={f'{service}.filename':filename}).json()
+        graph = self.call_service('open_graph', verb='post', args={'filename':filename}).json()
 
         return graph['id']
 
@@ -572,18 +572,6 @@ class Constellation:
         graph = self.call_service('new_graph', verb='post', args=params).json()
 
         return graph['id']
-
-        # params = {}
-        # if schema:
-        #     params['schema'] = schema
-
-        # r = self.rest_request(verb='post', endpoint='/v1/graph', path='new', params=params)
-
-        # r = self.rest_request(endpoint='/v1/graph', path='schema')
-        # data = json.loads(r.text)
-        # id = data.get('id', '')
-
-        # return id
 
     def get_graph_image(self):
         """Get the visualisation of the current active graph as an image encoded in PNG format.

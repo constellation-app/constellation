@@ -56,20 +56,20 @@ public class RestServiceServlet extends ConstellationApiServlet {
 
     @Override
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        call_service(HttpMethod.GET, request, response);
+        callService(HttpMethod.GET, request, response);
     }
 
     @Override
     protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        call_service(HttpMethod.POST, request, response);
+        callService(HttpMethod.POST, request, response);
     }
 
     @Override
     protected void put(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        call_service(HttpMethod.PUT, request, response);
+        callService(HttpMethod.PUT, request, response);
     }
 
-    private void call_service(final HttpMethod httpMethod, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException{
+    private void callService(final HttpMethod httpMethod, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException{
         // Which service is being called?
         //
         final String serviceName = request.getPathInfo().substring(1);
@@ -97,6 +97,8 @@ public class RestServiceServlet extends ConstellationApiServlet {
             }
         });
 
+        // Call the service.
+        //
         try {
             response.setContentType(rs.getMimeType());
             response.setStatus(HttpServletResponse.SC_OK);

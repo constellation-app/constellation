@@ -192,6 +192,7 @@ public class FileListener implements Runnable {
                 Thread.sleep(pollSleep);
             }
         } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
             stop();
             Exceptions.printStackTrace(ex);
         }

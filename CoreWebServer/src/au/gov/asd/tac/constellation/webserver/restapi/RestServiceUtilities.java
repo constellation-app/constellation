@@ -41,7 +41,7 @@ public class RestServiceUtilities {
     /**
      * Constants for the HTTP method used by a service.
      */
-    public static enum HttpMethod {
+    public enum HttpMethod {
         GET,
         POST,
         PUT;
@@ -152,9 +152,8 @@ public class RestServiceUtilities {
 
     public static String activeGraphId() {
         final Graph existingGraph = GraphManager.getDefault().getActiveGraph();
-        final String existingId = existingGraph != null ? existingGraph.getId() : null;
 
-        return existingId;
+        return existingGraph != null ? existingGraph.getId() : null;
     }
 
     /**
@@ -181,7 +180,8 @@ public class RestServiceUtilities {
             try {
                 Thread.sleep(1000);
             } catch(final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+                throw new RestServiceException(ex);
             }
 
             final Graph newGraph = GraphManager.getDefault().getActiveGraph();

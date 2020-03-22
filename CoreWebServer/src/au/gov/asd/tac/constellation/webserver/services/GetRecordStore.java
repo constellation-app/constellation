@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -39,6 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -123,9 +123,7 @@ public class GetRecordStore extends RestService {
         // particularly on the Python side.
         final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
         final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-        for(final String k : attrsArray) {
-            attrs.add(k);
-        }
+        Collections.addAll(attrs, attrsArray);
 
         // Build the JSON in a form suitable for passing to pandas.DataFrame.from_items().
         // This includes the datatypes with the names, so the client can do transforms
@@ -229,7 +227,7 @@ public class GetRecordStore extends RestService {
      * @return
      */
     private static String keyedName(final String attrWithType) {
-        final int ix = attrWithType.lastIndexOf("<");
+        final int ix = attrWithType.lastIndexOf('<');
 
         return attrWithType.substring(0, ix) + "|" + attrWithType.substring(ix + 1, attrWithType.length() - 1);
     }
