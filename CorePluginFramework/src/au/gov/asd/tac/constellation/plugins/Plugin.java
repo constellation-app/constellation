@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import org.openide.util.HelpCtx;
@@ -193,7 +194,8 @@ public interface Plugin {
      * , otherwise null.
      */
     public default List<String> getOverriddenPlugins() {
-        return null;
+        final List<String> strings = new ArrayList<>();   
+        return strings;
     }
 
 }

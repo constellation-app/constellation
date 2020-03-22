@@ -150,7 +150,7 @@ public class BlazeContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX) {
             return Arrays.asList(ADD_BLUE_BLAZE, ADD_RED_BLAZE, ADD_YELLOW_BLAZE, ADD_CUSTOM_BLAZE, UNSET_BLAZE);
         } else {
-            return null;
+            return Arrays.asList();
         }
     }
 }

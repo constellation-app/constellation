@@ -426,7 +426,7 @@ public final class DateTimeRangeInputPane extends Pane {
             }
         }
 
-        return null;
+        return new ZonedDateTime[]{};
     }
 
     /**
