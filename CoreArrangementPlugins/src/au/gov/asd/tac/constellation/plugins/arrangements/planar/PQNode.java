@@ -275,6 +275,7 @@ class PQNode {
                         carry += grandchild.numLeafDescendants;
                         reverseCount += grandchild.numLeafDescendants;
                     }
+                    break;
                 default:
                     break;
             }
@@ -335,6 +336,7 @@ class PQNode {
                             count += grandchild.numLeafDescendants;
                         }
                     }
+                    break;
                 default:
                     break;
             }

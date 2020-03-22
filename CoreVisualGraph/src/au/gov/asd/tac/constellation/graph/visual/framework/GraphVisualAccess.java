@@ -721,6 +721,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     connectionElementTypes[currentPos] = GraphElementType.LINK;
                     connectionElementIds[currentPos] = linkId;
                     currentPos++;
+                    break;
                 default:
                     break;
             }

@@ -274,6 +274,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         }
                         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
                     }
+                    break;
                 default:
                     break;
             }

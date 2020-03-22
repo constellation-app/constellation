@@ -521,6 +521,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                         eventState.setCurrentCreationMode(CreationMode.NONE);
                                         clearNewLineModel(camera);
                                     }
+                                    break;
                                 default:
                                     break;
                             }
