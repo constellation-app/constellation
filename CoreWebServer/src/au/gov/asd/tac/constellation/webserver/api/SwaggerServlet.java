@@ -131,22 +131,17 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         param.put("description", pp.getDescription());
                         final ObjectNode schema = param.putObject("schema");
                         schema.put("type", pp.getType().getId());
-//                        if(pp.getObjectValue()!=null) {
-//                            param.put("value", pp.getObjectValue().toString());
-//                        }
                     });
 
                     // Add the required CONSTELLATION secret header parameter.
                     //
-                    {
-                        final ObjectNode param = params.addObject();
-                        param.put("name", "X-CONSTELLATION-SECRET");
-                        param.put("in", "header");
-                        param.put("required", true);
-                        param.put("description", "CONSTELLATION secret");
-                        final ObjectNode schema = param.putObject("schema");
-                        schema.put("type", "string");
-                    }
+                    final ObjectNode secretParam = params.addObject();
+                    secretParam.put("name", "X-CONSTELLATION-SECRET");
+                    secretParam.put("in", "header");
+                    secretParam.put("required", true);
+                    secretParam.put("description", "CONSTELLATION secret");
+                    final ObjectNode secretSchema = secretParam.putObject("schema");
+                    secretSchema.put("type", "string");
 
                     final ObjectNode responses = httpMethod.putObject("responses");
                     final ObjectNode success = responses.putObject("200");

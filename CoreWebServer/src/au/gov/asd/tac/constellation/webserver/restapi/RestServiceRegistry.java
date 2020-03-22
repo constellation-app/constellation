@@ -39,7 +39,7 @@ import org.openide.util.Lookup;
  * @author algol
  */
 public class RestServiceRegistry {
-    private static final Logger LOGGER = Logger.getLogger(PluginRegistry.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RestServiceRegistry.class.getName());
 
     public static class ServiceKey {
         public final String name;

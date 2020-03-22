@@ -82,7 +82,10 @@ public class SetGraph extends RestService {
                 SwingUtilities.invokeAndWait(() -> {
                     graphNode.getTopComponent().requestActive();
                 });
-            } catch (final InterruptedException | InvocationTargetException ex) {
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new RestServiceException(ex);
+            } catch (final InvocationTargetException ex) {
                 throw new RestServiceException(ex);
             }
         } else {

@@ -108,7 +108,10 @@ public class RunPlugin extends RestService {
             } else {
                 PluginExecution.withPlugin(pluginName).executeNow(graph);
             }
-        } catch (final InterruptedException | PluginException | IllegalArgumentException ex) {
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RestServiceException(ex);
+        } catch (final PluginException | IllegalArgumentException ex) {
             throw new RestServiceException(ex);
         }
     }

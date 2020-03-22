@@ -115,40 +115,11 @@ public class NewGraph extends RestService {
 
         final String newId = RestServiceUtilities.waitForGraphChange(existingId);
 
-//        // Now we wait for the new graph to become active.
-//        //
-//        int waits = 0;
-//        while(true) {
-//            // Wait a bit to give the new graph time to become active.
-//            //
-//            try {
-//                Thread.sleep(1000);
-//            } catch(InterruptedException ex) {
-//                Exceptions.printStackTrace(ex);
-//            }
-//
-//            final Graph newGraph = GraphManager.getDefault().getActiveGraph();
-//            final String newId = newGraph != null ? newGraph.getId() : null;
-//            if((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
-//                // - there was no existing graph, and the new graph is active, or
-//                // - there was an existing graph, and the active graph is not the existing graph.
-//                // - we assume the user hasn't interfered by manually switching to another graph at the same time.
-//                //
-                final ObjectMapper mapper = new ObjectMapper();
-                final ObjectNode root = mapper.createObjectNode();
-                root.put("id", newId);
-                root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
-                root.put("schema", schemaName);
-                mapper.writeValue(out, root);
-//
-//                break;
-//            }
-//
-//            // We only have so much patience.
-//            //
-//            if (++waits > 10) {
-//                throw new EndpointException("The new graph has taken too long to become active");
-//            }
-//        }
+        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectNode root = mapper.createObjectNode();
+        root.put("id", newId);
+        root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
+        root.put("schema", schemaName);
+        mapper.writeValue(out, root);
     }
 }

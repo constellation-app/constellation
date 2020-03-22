@@ -142,8 +142,11 @@ public class SetGraphValues extends RestService {
 
         try {
             pe.executeNow(graph);
-        } catch (final InterruptedException | PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            throw new RestServiceException(ex);
+        } catch (final PluginException ex) {
+            throw new RestServiceException(ex);
         }
     }
 }
