@@ -103,7 +103,7 @@ public class NifiClient extends RestClient {
         final File file = new File(filePath);
         if (DEFAULT_CONFIG.duplicateFilterEnabled()) {
             final String hashString;
-            hashString = Files.asByteSource(file).hash(Hashing.md5()).toString();
+            hashString = Files.asByteSource(file).hash(Hashing.sha256()).toString();
             if (SUBMIT_CACHE.containsKey(hashString)) {
                 LOGGER.log(Level.SEVERE, "A file with matching contents has already been submitted (original: {0}).", SUBMIT_CACHE.get(hashString));
                 return null;

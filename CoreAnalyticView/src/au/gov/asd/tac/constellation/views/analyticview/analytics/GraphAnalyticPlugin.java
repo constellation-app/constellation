@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult.GraphScore;
+import java.lang.reflect.InvocationTargetException;
 import org.openide.util.Exceptions;
 
 /**
@@ -80,11 +81,13 @@ public abstract class GraphAnalyticPlugin extends AnalyticPlugin<GraphResult> {
             getAnalyticAttributes(parameters).forEach(schemaAttribute -> schemaAttribute.ensure(graph));
 
             // run analytic plugin on the entire graph and compute results
-            PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+            PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                     .withParameters(parameters)
                     .executeNow(graph);
             computeResultsFromGraph(graph, parameters);
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
     }

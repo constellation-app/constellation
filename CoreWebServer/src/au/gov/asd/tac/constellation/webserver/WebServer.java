@@ -252,21 +252,17 @@ public class WebServer {
     }
 
     /**
-     * Get the MD5 digest of an InputStream.
-     * <p>
-     * MD5 isn't particularly secure, but we don't really care. This is a
-     * pseudo-equality check; if the user wants to break it, that's their
-     * problem.
-     *
+     * Get the SHA256 digest of an InputStream.
+     * 
      * @param in An InputStream.
      *
-     * @return A digest.
+     * @return A SHA256 digest.
      *
      * @throws IOException
      * @throws NoSuchAlgorithmException
      */
     private static byte[] getDigest(final InputStream in) throws IOException, NoSuchAlgorithmException {
-        final MessageDigest md5 = MessageDigest.getInstance("MD5");
+        final MessageDigest sha256 = MessageDigest.getInstance("SHA256");
         final byte[] buf = new byte[64 * 1024];
         while (true) {
             final int len = in.read(buf);
@@ -274,10 +270,10 @@ public class WebServer {
                 break;
             }
 
-            md5.update(buf, 0, len);
+            sha256.update(buf, 0, len);
         }
 
-        return md5.digest();
+        return sha256.digest();
     }
 
     /**

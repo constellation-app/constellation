@@ -44,6 +44,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -185,7 +186,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             final List<ParameterValue> chosenTransactionTypes = MultiChoiceParameterType.getChoicesData(transactionTypesParameter);
             if (chosenTransactionTypes.equals(allTransactionTypes)) {
                 // run analytic plugin on the entire graph and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(graph);
                 computeResultsFromGraph(graph, parameters);
@@ -199,13 +200,15 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 
                 // run analytic plugin on the subgraph and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(subgraph);
                 copySubgraphToGraph(graph, subgraph);
                 computeResultsFromGraph(graph, parameters);
             }
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
     }

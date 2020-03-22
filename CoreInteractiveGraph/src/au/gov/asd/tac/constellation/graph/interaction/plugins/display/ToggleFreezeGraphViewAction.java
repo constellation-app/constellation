@@ -19,66 +19,57 @@ import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.event.ActionEvent;
 import java.util.prefs.Preferences;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
-import org.openide.util.actions.BooleanStateAction;
 
 /**
  * Toggle the freeze graph view preference and toolbar icon.
  *
  * @author arcturus
  */
-@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.functionality.display.ToggleFreezeGraphViewAction")
-@ActionRegistration(displayName = "#CTL_ToggleFreezeGraphViewAction", surviveFocusChange = true, lazy = false)
+@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.graph.interaction.plugins.display.ToggleFreezeGraphViewAction")
+@ActionRegistration(displayName = "#CTL_FreezeGraphViewListenerAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/display/resources/snowflake_alternate.png",
+        surviveFocusChange = true, lazy = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 500),
     @ActionReference(path = "Toolbars/Visualisation", position = 800)
 })
-@Messages("CTL_ToggleFreezeGraphViewAction=Freeze Graph View")
-public final class ToggleFreezeGraphViewAction extends BooleanStateAction {
+@Messages({
+    "CTL_FreezeGraphViewListenerAction=Freeze Graph View",
+    "CTL_UnfreezeGraphViewListenerAction=Unfreeze Graph View"
+})
+public final class ToggleFreezeGraphViewAction extends AbstractAction {
+
+    private static final String ICON_ON_RESOURCE = "resources/snowflake.png";
+    private static final String ICON_OFF_RESOURCE = "resources/snowflake_alternate.png";
+    private static final ImageIcon ICON_ON = new ImageIcon(ToggleFreezeGraphViewAction.class.getResource(ICON_ON_RESOURCE));
+    private static final ImageIcon ICON_OFF = new ImageIcon(ToggleFreezeGraphViewAction.class.getResource(ICON_OFF_RESOURCE));
+
+    private boolean graphFrozen;
+
+    public ToggleFreezeGraphViewAction() {
+        graphFrozen = PreferenceUtilites.isGraphViewFrozen();
+    }
 
     @Override
-    public void actionPerformed(final ActionEvent ev) {
-        final boolean freezeGraphView = PreferenceUtilites.isGraphViewFrozen();
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    public void actionPerformed(final ActionEvent event) {
+        graphFrozen = !PreferenceUtilites.isGraphViewFrozen();
 
         // update the preference and icon
-        prefs.put(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, String.valueOf(!freezeGraphView));
-
-        // this will trigger a call to iconResource() which will set the icon, so no point doing it twice; hence setting it to null
-        putValue(Action.SMALL_ICON, null);
-
-        setBooleanState(PreferenceUtilites.isGraphViewFrozen());
+        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        prefs.put(ApplicationPreferenceKeys.FREEZE_GRAPH_VIEW, String.valueOf(graphFrozen));
+        putValue(Action.NAME, graphFrozen
+                ? NbBundle.getMessage(ToggleFreezeGraphViewAction.class, "CTL_UnfreezeGraphViewListenerAction")
+                : NbBundle.getMessage(ToggleFreezeGraphViewAction.class, "CTL_FreezeGraphViewListenerAction"));
+        putValue(Action.SMALL_ICON, graphFrozen ? ICON_ON : ICON_OFF);
     }
-
-    @Override
-    protected void initialize() {
-        super.initialize();
-        setBooleanState(PreferenceUtilites.isGraphViewFrozen());
-    }
-
-    @Override
-    public String getName() {
-        return NbBundle.getMessage(ToggleFreezeGraphViewAction.class, "CTL_ToggleFreezeGraphViewAction");
-    }
-
-    @Override
-    protected String iconResource() {
-        return PreferenceUtilites.isGraphViewFrozen()
-                ? "au/gov/asd/tac/constellation/graph/interaction/plugins/display/resources/snowflake.png"
-                : "au/gov/asd/tac/constellation/graph/interaction/plugins/display/resources/snowflake_alternate.png";
-    }
-
-    @Override
-    public HelpCtx getHelpCtx() {
-        return HelpCtx.DEFAULT_HELP;
-    }
-
 }
