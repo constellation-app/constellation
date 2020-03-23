@@ -75,21 +75,18 @@ public class SwaggerServlet extends ConstellationHttpServlet {
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         final String requestPath = request.getPathInfo();
-        final String fnam = request.getServletPath().substring(1) + requestPath;
+        final String fileName = request.getServletPath().substring(1) + requestPath;
 
         try {
-            final InputStream in = SwaggerServlet.class.getResourceAsStream(fnam);
+            final InputStream in = SwaggerServlet.class.getResourceAsStream(fileName);
 
-            if(fnam.equals("swagger/constellation.json")) {
+            if(fileName.equals("swagger/constellation.json")) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
-                //
-
                 final ObjectMapper mapper = new ObjectMapper();
                 final ObjectNode root = (ObjectNode)mapper.readTree(in);
 
                 // Get the hostname:port right.
-                //
                 final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
                 final int port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
                 final ArrayNode servers = root.putArray("servers");
@@ -97,7 +94,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 server.put("url", String.format("http://localhost:%d", port));
 
                 // Add the REST services.
-                //
                 final ObjectNode paths = (ObjectNode)root.get("paths");
                 RestServiceRegistry.getServices().forEach(serviceKey -> {
                     final ObjectNode path = paths.putObject(String.format(SERVICE_PATH, serviceKey.name));
@@ -120,7 +116,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     // this, we'll improvise and look for "(body)" in the
                     // parameter name. These will be dummy parameters;
                     // unused except for their swagger description.
-                    //
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
@@ -134,7 +129,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     });
 
                     // Add the required CONSTELLATION secret header parameter.
-                    //
                     final ObjectNode secretParam = params.addObject();
                     secretParam.put("name", "X-CONSTELLATION-SECRET");
                     secretParam.put("in", "header");
@@ -154,7 +148,6 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         schema.put("format", "binary");
                     } else if(rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
                         // Make a wild guess about the response.
-                        //
                         if(serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
                             schema.put("type", "array");
                             final ObjectNode items = schema.putObject("items");
@@ -168,14 +161,12 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
-                if(fnam.endsWith(".js")) {
+                if(fileName.endsWith(".js")) {
                     response.setContentType("text/javascript");
                 }
 
-                // This is every other file.
-                // Just transfer the bytes.
-                //
-                try(OutputStream out = response.getOutputStream()) {
+                // This is every other file, just transfer the bytes.
+                try(final OutputStream out = response.getOutputStream()) {
                     final byte[] buf = new byte[8192];
                     while (true) {
                         final int len = in.read(buf);

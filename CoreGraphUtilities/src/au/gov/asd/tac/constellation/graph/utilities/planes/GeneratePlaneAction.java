@@ -42,7 +42,7 @@ import org.openide.util.NbBundle.Messages;
  *
  * @author algol
  */
-@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.visual.planes.GeneratePlaneAction")
+@ActionID(category = "Experimental", id = "au.gov.asd.tac.constellation.graph.utilities.planes.GeneratePlaneAction")
 @ActionRegistration(displayName = "#CTL_GeneratePlaneAction", surviveFocusChange = true)
 @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 @Messages("CTL_GeneratePlaneAction=Generate Plane")

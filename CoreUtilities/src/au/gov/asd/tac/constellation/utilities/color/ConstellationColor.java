@@ -355,9 +355,8 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      */
     public static ConstellationColor fromRgbWithCommaColor(final String color) {
         // If the color string has surrounding "[]", remove them.
-        //
-        final String c = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length()-1) : color;
-        final String[] fields = split(c, 4, ',');
+        final String fixedColor = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length()-1) : color;
+        final String[] fields = split(fixedColor, 4, ',');
         final float red = Float.parseFloat(fields[0]);
         final float green = Float.parseFloat(fields[1]);
         final float blue = Float.parseFloat(fields[2]);
