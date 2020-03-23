@@ -39,12 +39,7 @@ public class CollFrame extends javax.swing.JFrame {
     }
 
     private void repaintPanel() {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                drawPanel.repaint();
-            }
-        });
+        SwingUtilities.invokeLater(() -> drawPanel.repaint());
     }
 
     private void uncollide(final Orb2D[] orbs, final int iter, final Callback callback) {
@@ -203,12 +198,9 @@ public class CollFrame extends javax.swing.JFrame {
         final CirclePanel cp = (CirclePanel) drawPanel;
         final Orb2D[] orbs = cp.getOrbs();
 
-        uncollide(orbs, 10000, new Callback() {
-            @Override
-            public void call(final List<Box2D> boxes, final boolean isEnd) {
-                cp.setBoxes(boxes, isEnd);
-                repaintPanel();
-            }
+        uncollide(orbs, 10000, (boxes, isEnd) -> {
+            cp.setBoxes(boxes, isEnd);
+            repaintPanel();
         });
     }//GEN-LAST:event_uncollideButtonActionPerformed
 
@@ -247,12 +239,9 @@ public class CollFrame extends javax.swing.JFrame {
     {//GEN-HEADEREND:event_uncollide1ButtonActionPerformed
         final CirclePanel cp = (CirclePanel) drawPanel;
         final Orb2D[] orbs = cp.getOrbs();
-        uncollide(orbs, 1, new Callback() {
-            @Override
-            public void call(final List<Box2D> boxes, final boolean isEnd) {
-                cp.setBoxes(boxes, isEnd);
-                repaintPanel();
-            }
+        uncollide(orbs, 1, (boxes, isEnd) -> {
+            cp.setBoxes(boxes, isEnd);
+            repaintPanel();
         });
     }//GEN-LAST:event_uncollide1ButtonActionPerformed
 
@@ -260,11 +249,8 @@ public class CollFrame extends javax.swing.JFrame {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new CollFrame().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new CollFrame().setVisible(true);
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables

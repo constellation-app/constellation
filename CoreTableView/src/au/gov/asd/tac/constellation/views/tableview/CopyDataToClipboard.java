@@ -36,13 +36,13 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
@@ -204,6 +204,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                     case VX_DST:
                         colName = GraphRecordStoreUtilities.DESTINATION + colName;
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -364,6 +366,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                             break;
                         case VX_DST:
                             colName = GraphRecordStoreUtilities.DESTINATION + colName;
+                            break;
+                        default:
                             break;
                     }
                 }

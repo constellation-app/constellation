@@ -15,17 +15,16 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.tree.SpanningTree;
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.tree.SpanningTree;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Set;
 
 /**
@@ -253,20 +252,17 @@ public class BubbleTreeArranger implements Arranger {
                 index[i] = i;
             }
 
-            Arrays.sort(index, new Comparator<Integer>() {
-                @Override
-                public int compare(final Integer lhsIx, final Integer rhsIx) {
-                    final double lhs = realCircleRadius[lhsIx];
-                    final double rhs = realCircleRadius[rhsIx];
-
-                    if (lhs < rhs) {
-                        return 1;
-                    } else if (lhs > rhs) {
-                        return -1;
-                    }
-
-                    return 0;
+            Arrays.sort(index, (lhsIx, rhsIx) -> {
+                final double lhs = realCircleRadius[lhsIx];
+                final double rhs = realCircleRadius[rhsIx];
+                
+                if (lhs < rhs) {
+                    return 1;
+                } else if (lhs > rhs) {
+                    return -1;
                 }
+                
+                return 0;
             });
 
             int i = 0;

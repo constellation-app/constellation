@@ -276,7 +276,7 @@ public final class TutorialTopComponent extends TopComponent {
             }
 
             if (dt != null) {
-                buf.append(String.format("<dl><dt>%s</dt>\n<dd>", dt));
+                buf.append(String.format("<dl><dt>%s</dt>%n<dd>", dt));
                 buf.append(wne.text);
                 buf.append("</dd></dl>\n");
             }

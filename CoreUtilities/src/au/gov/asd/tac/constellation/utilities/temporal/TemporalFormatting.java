@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.utilities.temporal;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.Instant;
-import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -299,6 +299,8 @@ public class TemporalFormatting {
                 dateTimeStringBuilder.append("-01");
             case YEAR_MONTH_FORMAT_LENGTH:
                 dateTimeStringBuilder.append("-01");
+            default:
+                break;
         }
     }
 
@@ -314,6 +316,8 @@ public class TemporalFormatting {
                 dateTimeStringBuilder.append(":00");
             case HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
+            default:
+                break;
         }
     }
 
@@ -329,14 +333,15 @@ public class TemporalFormatting {
                 dateTimeStringBuilder.append(":00");
             case DATE_HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
+            default:
+                break;
         }
     }
 
     private static void completeZoneInDateTimeString(final StringBuilder dateTimeStringBuilder) {
         final int currentLength = dateTimeStringBuilder.length();
-        switch (currentLength) {
-            case DATE_TIME_FORMAT_LENGTH:
-                dateTimeStringBuilder.append(" +00:00 [UTC]");
+        if (currentLength == DATE_TIME_FORMAT_LENGTH) {
+            dateTimeStringBuilder.append(" +00:00 [UTC]");
         }
     }
 

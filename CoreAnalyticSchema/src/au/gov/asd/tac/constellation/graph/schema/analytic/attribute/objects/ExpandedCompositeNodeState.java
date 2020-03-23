@@ -185,9 +185,7 @@ public class ExpandedCompositeNodeState {
             GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr));
         });
         // Remove each expanded vertex from the graph
-        idToCopiedId.keySet().forEach(vxId -> {
-            wg.removeVertex(vxId);
-        });
+        idToCopiedId.keySet().forEach(wg::removeVertex);
 
         // Add all the transactions between the expanded nodes to the expansion record store
         // Add the contraction record store to the graph, which creates the composite node and all its relevant transactions

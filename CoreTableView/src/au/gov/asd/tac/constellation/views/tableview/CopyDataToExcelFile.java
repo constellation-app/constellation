@@ -161,6 +161,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                             case VX_DST:
                                 colName = GraphRecordStoreUtilities.DESTINATION + colName;
                                 break;
+                            default:
+                                break;
                         }
                     }
                     Cell cell = headerRow.createCell(colIndex);

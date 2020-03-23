@@ -74,16 +74,16 @@ public class GLInfo {
         gl.glGetIntegerv(GL3.GL_MAX_DRAW_BUFFERS, v, 8);
         gl.glGetIntegerv(GL3.GL_MAX_COLOR_ATTACHMENTS, v, 9);
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d\n", v[0]));
-        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d\n", v[1]));
-        b.append(String.format("GL: MAX_TEXTURE_SIZE %d\n", v[2]));
-        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d\n", v[3]));
-        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d\n", v[4]));
-        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d\n", v[5]));
-        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d\n", v[6]));
-        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d\n", v[7]));
-        b.append(String.format("GL: MAX_DRAW_BUFFERS %d\n", v[8]));
-        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d\n", v[9]));
+        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
+        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));
+        b.append(String.format("GL: MAX_TEXTURE_SIZE %d%n", v[2]));
+        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d%n", v[3]));
+        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d%n", v[4]));
+        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d%n", v[5]));
+        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d%n", v[6]));
+        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
+        b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
+        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
         System.out.printf(b.toString());
     }
 

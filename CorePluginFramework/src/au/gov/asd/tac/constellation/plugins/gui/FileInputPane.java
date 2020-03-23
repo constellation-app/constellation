@@ -123,6 +123,7 @@ public class FileInputPane extends HBox {
                     break;
                 default:
                     LOGGER.log(Level.FINE, "ignoring file selection type {0}.", paramaterValue.getKind());
+                    break;
             }
 
             if (!files.isEmpty()) {
@@ -227,6 +228,8 @@ public class FileInputPane extends HBox {
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
+                        break;
+                    default:
                         break;
                 }
             });

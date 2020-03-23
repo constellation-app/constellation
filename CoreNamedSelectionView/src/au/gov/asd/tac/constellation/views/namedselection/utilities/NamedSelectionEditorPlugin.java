@@ -207,6 +207,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
                 break;
             default:
             // No default case.
+                break;
         }
     }
 

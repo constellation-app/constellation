@@ -65,7 +65,6 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -400,21 +399,12 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     @Override
     public synchronized void removePropertyChangeListener(final PropertyChangeListener listener) {
         super.removePropertyChangeListener(listener);
-        Mutex.EVENT.readAccess(new Runnable() { // might be called off EQ by WeakListeners
-            public @Override
-            void run() {
-                refreshListeners();
-            }
-        });
+        Mutex.EVENT.readAccess(this::refreshListeners // might be called off EQ by WeakListeners
+        );
     }
 
     private PropertyChangeListener createRegistryListener() {
-        return WeakListeners.propertyChange(new PropertyChangeListener() {
-            @Override
-            public void propertyChange(final PropertyChangeEvent evt) {
-                isDirty = true;
-            }
-        }, TopComponent.getRegistry());
+        return WeakListeners.propertyChange(evt -> isDirty = true, TopComponent.getRegistry());
     }
 
     private LookupListener createLookupListener() {

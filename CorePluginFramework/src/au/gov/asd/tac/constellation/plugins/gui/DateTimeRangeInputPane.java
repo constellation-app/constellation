@@ -322,6 +322,7 @@ public final class DateTimeRangeInputPane extends Pane {
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                        break;
                 }
             });
         });
@@ -611,9 +612,7 @@ public final class DateTimeRangeInputPane extends Pane {
         final Instant instant = Instant.now();
         final Set<String> zoneSet = ZoneId.getAvailableZoneIds();
         final List<ZoneId> zoned = new ArrayList<>();
-        zoneSet.stream().map(z -> ZoneId.of(z)).forEach(zi -> {
-            zoned.add(zi);
-        });
+        zoneSet.stream().map(ZoneId::of).forEach(zoned::add);
 
         Collections.sort(zoned, (final ZoneId zi1, final ZoneId zi2) -> {
             final ZonedDateTime z1 = ZonedDateTime.ofInstant(instant, zi1);

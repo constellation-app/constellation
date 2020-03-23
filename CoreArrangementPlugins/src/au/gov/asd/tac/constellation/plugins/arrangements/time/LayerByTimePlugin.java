@@ -452,9 +452,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 }
             }
 
-            vertices.stream().forEach(vxId -> {
-                wgcopy.removeVertex(vxId);
-            });
+            vertices.stream().forEach(wgcopy::removeVertex);
 
             if (drawTxGuides) {
                 interaction.setProgress(5, 6, "Draw guide lines", false);

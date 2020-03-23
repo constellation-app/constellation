@@ -24,12 +24,12 @@ import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttribut
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -73,9 +73,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-//import javafx.scene.text.Font;
-//import javafx.tk.FontMetrics;
-//import javafx.tk.Toolkit;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
 
@@ -640,6 +637,8 @@ public final class TableViewPane extends BorderPane {
                                         case GraphRecordStoreUtilities.DESTINATION:
                                             this.getStyleClass().add("element-destination");
                                             break;
+                                        default:
+                                            break;
                                     }
 
                                     // enable context menu on right-click
@@ -770,6 +769,7 @@ public final class TableViewPane extends BorderPane {
                                             break;
                                         default:
                                             attributeValue = null;
+                                            break;
                                     }
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);
@@ -885,7 +885,7 @@ public final class TableViewPane extends BorderPane {
                     }
 
                     // update table selection
-                    final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                    final int[] selectedIndices = selectedIds.stream().map(elementIdToRowIndex::get)
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
 
                     Platform.runLater(() -> {

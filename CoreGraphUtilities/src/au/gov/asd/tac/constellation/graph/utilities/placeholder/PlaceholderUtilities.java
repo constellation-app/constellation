@@ -260,12 +260,12 @@ public class PlaceholderUtilities {
 
                 // calculate lead vertex
                 final SchemaVertexType leadVertexType = placeholderCorrelationList.stream()
-                        .map(transactionId -> placeholderNeighbours.get(transactionId))
+                        .map(placeholderNeighbours::get)
                         .map(neighbourId -> (SchemaVertexType) graph.getObjectValue(vertexTypeAttributeId, neighbourId))
                         .sorted(dominanceComparator)
                         .findFirst().get();
                 leadVertex = placeholderCorrelationList.stream()
-                        .map(transactionId -> placeholderNeighbours.get(transactionId))
+                        .map(placeholderNeighbours::get)
                         .filter(neighbourId -> graph.getObjectValue(vertexTypeAttributeId, neighbourId).equals(leadVertexType))
                         .findFirst().get();
 
@@ -298,8 +298,6 @@ public class PlaceholderUtilities {
         }
 
         // remove all placeholders
-        placeholderIds.forEach(placeholderId -> {
-            graph.removeVertex(placeholderId);
-        });
+        placeholderIds.forEach(graph::removeVertex);
     }
 }

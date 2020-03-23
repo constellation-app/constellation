@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Edge;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
@@ -26,12 +27,10 @@ import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -65,7 +64,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     public void initEnterExitFlow() {
         if (DEBUG) {
-            System.out.printf("%s.initEnterExitFlow()\n", getClass().getSimpleName());
+            System.out.printf("%s.initEnterExitFlow()%n", getClass().getSimpleName());
         }
 
         for (final NodeBase node : treeData.getLeaves()) {
@@ -115,7 +114,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     void calculateCodelengthFromActiveNetwork(final boolean detailedBalance) {
         if (DEBUG) {
-            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)\n", getClass().getSimpleName(), detailedBalance);
+            System.out.printf("%s.calculateCodelengthFromActiveNetwork(%s)%n", getClass().getSimpleName(), detailedBalance);
         }
 
         flow_log_flow = 0;
@@ -344,7 +343,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void generateNetworkFromChildren(final NodeBase parent) {
         if (DEBUG) {
-            System.out.printf("%s.generateNetworkFromChildren\n", getClass().getSimpleName());
+            System.out.printf("%s.generateNetworkFromChildren%n", getClass().getSimpleName());
         }
 
         exitNetworkFlow = 0;
@@ -396,7 +395,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected void moveNodesToPredefinedModules() {
         if (DEBUG) {
-            System.out.printf("%s.moveNodesToPredefinedModules\n", getClass().getSimpleName());
+            System.out.printf("%s.moveNodesToPredefinedModules%n", getClass().getSimpleName());
         }
 
         // Size of active network and cluster array should match.
@@ -494,7 +493,7 @@ public abstract class InfomapGreedy extends InfomapBase {
      */
     int tryMoveEachNodeIntoBestModule() {
         if (DEBUG) {
-            System.out.printf("%s.tryMoveEachNodeIntoBestModule\n", getClass().getSimpleName());
+            System.out.printf("%s.tryMoveEachNodeIntoBestModule%n", getClass().getSimpleName());
         }
 
         final int numNodes = activeNetwork.size();
@@ -671,7 +670,7 @@ public abstract class InfomapGreedy extends InfomapBase {
     @Override
     protected int consolidateModules(final boolean replaceExistingStructure, final boolean asSubModules) {
         if (DEBUG) {
-            System.out.printf("%s.consolidateModules(%s,%s)\n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
+            System.out.printf("%s.consolidateModules(%s,%s)%n", getClass().getSimpleName(), replaceExistingStructure, asSubModules);
         }
 
         final int numNodes = activeNetwork.size();
@@ -741,23 +740,20 @@ public abstract class InfomapGreedy extends InfomapBase {
          typedef std::map<NodePair, double> EdgeMap;
          EdgeMap moduleLinks;
          */
-        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>(new Comparator<Tuple<NodeBase, NodeBase>>() {
-            @Override
-            public int compare(final Tuple<NodeBase, NodeBase> lhs, final Tuple<NodeBase, NodeBase> rhs) {
-                if (lhs.getFirst().id < rhs.getFirst().id) {
-                    return -1;
-                }
-                if (lhs.getFirst().id > rhs.getFirst().id) {
-                    return 1;
-                }
-                if (lhs.getSecond().id < rhs.getSecond().id) {
-                    return -1;
-                }
-                if (lhs.getSecond().id > rhs.getSecond().id) {
-                    return 1;
-                }
-                return 0;
+        final TreeMap<Tuple<NodeBase, NodeBase>, Double> moduleLinks = new TreeMap<>((lhs, rhs) -> {
+            if (lhs.getFirst().id < rhs.getFirst().id) {
+                return -1;
             }
+            if (lhs.getFirst().id > rhs.getFirst().id) {
+                return 1;
+            }
+            if (lhs.getSecond().id < rhs.getSecond().id) {
+                return -1;
+            }
+            if (lhs.getSecond().id > rhs.getSecond().id) {
+                return 1;
+            }
+            return 0;
         });
         for (final NodeBase node : activeNetwork) {
             final NodeBase parent = node.parent;
@@ -816,7 +812,7 @@ public abstract class InfomapGreedy extends InfomapBase {
 
     @Override
     protected void printNodeRanks(final PrintWriter out) {
-        out.printf("#node-flow\n");
+        out.printf("#node-flow%n");
         for (final NodeBase node : treeData.getLeaves()) {
             out.printf("%f\n", getNode(node).getData().getFlow());
         }
@@ -841,12 +837,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             parent.getSubInfomap().sortTree();
         }
 
-        final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>(new Comparator<Double>() {
-            @Override
-            public int compare(final Double d1, final Double d2) {
-                return (int) Math.signum(d2 - d1);
-            }
-        });
+        final MultiMap<Double, NodeBase> sortedModules = new MultiMap<>((d1, d2) -> (int) Math.signum(d2 - d1));
 
         if (Logf.DEBUGF && parent.getChildDegree() > 0) {
             for (final NodeBase child : parent.getChildren()) {

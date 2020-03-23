@@ -117,6 +117,7 @@ public class MultiChoiceInputPane extends HBox {
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                        break;
                 }
             });
         });

@@ -73,14 +73,11 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
         final float centreX = (minx + maxx) / 2f;
         final float centreY = (miny + maxy) / 2f;
 
-        final Comparator<Blob> sorter = new Comparator<Blob>() {
-            @Override
-            public int compare(final Blob o1, final Blob o2) {
-                final float d1 = o1.distanceFrom(centreX, centreY);
-                final float d2 = o2.distanceFrom(centreX, centreY);
-
-                return (int) Math.signum(d1 - d2);
-            }
+        final Comparator<Blob> sorter = (o1, o2) -> {
+            final float d1 = o1.distanceFrom(centreX, centreY);
+            final float d2 = o2.distanceFrom(centreX, centreY);
+            
+            return (int) Math.signum(d1 - d2);
         };
 
         // Move the first blob to 0,0; move the other blobs with it.
