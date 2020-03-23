@@ -89,9 +89,7 @@ public abstract class RestService {
      * @return
      */
     public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        return parameters;
+        return new PluginParameters();
     }
 
     /**

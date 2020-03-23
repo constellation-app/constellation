@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import org.openide.util.Exceptions;
 
 /**
  * Various helper functions for REST services.

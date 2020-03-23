@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.webserver.restapi;
 
-import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
