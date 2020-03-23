@@ -62,12 +62,14 @@ public class OverviewPanel extends Pane {
     private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
     private final AreaChart histogram;
-    private NumberAxis xAxis, yAxis;
+    private NumberAxis xAxis;
+    private NumberAxis yAxis;
     private final Rectangle pov;
     // Panes:
     private final AnchorPane innerPane = new AnchorPane();
     private TimelineTopComponent coordinator;
-    private double lowestTimeExtent, highestTimeExtent;
+    private double lowestTimeExtent;
+    private double highestTimeExtent;
     private double range;
 
     /**

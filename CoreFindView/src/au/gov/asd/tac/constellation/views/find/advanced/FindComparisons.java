@@ -186,7 +186,8 @@ public class FindComparisons {
             boolean result;
 
             if (item != null) {
-                final Date lower, upper;
+                final Date lower;
+                final Date upper;
 
                 if (comparisonA.before(comparisonB)) {
                     lower = comparisonA;

@@ -170,8 +170,19 @@ public final class Mathd {
 //    void m3dRotationMatrix33(M3DMatrix33d m, double angle, double x, double y, double z);
     public static void makeRotationMatrix(final Matrix33d m, final double angle, double x, double y, double z) {
 
-        double mag, s, c;
-        double xx, yy, zz, xy, yz, zx, xs, ys, zs, one_c;
+        double mag;
+        double s;
+        double c;
+        double xx;
+        double yy;
+        double zz;
+        double xy;
+        double yz;
+        double zx;
+        double xs;
+        double ys;
+        double zs;
+        double one_c;
 
         s = Math.sin(angle);
         c = Math.cos(angle);
@@ -223,8 +234,19 @@ public final class Mathd {
      * @param z
      */
     public static void makeRotationMatrix(final Matrix44d m, final double angle, double x, double y, double z) {
-        double mag, s, c;
-        double xx, yy, zz, xy, yz, zx, xs, ys, zs, one_c;
+        double mag;
+        double s;
+        double c;
+        double xx;
+        double yy;
+        double zz;
+        double xy;
+        double yz;
+        double zx;
+        double xs;
+        double ys;
+        double zs;
+        double one_c;
 
         s = Math.sin(angle);
         c = Math.cos(angle);
@@ -282,7 +304,10 @@ public final class Mathd {
     }
 
     private static double detIJ(final Matrix44d m, final int i, final int j) {
-        int x, y, ii, jj;
+        int x;
+        int y;
+        int ii;
+        int jj;
         double ret;
         double[][] mat = new double[3][3];
 
@@ -311,7 +336,8 @@ public final class Mathd {
 
 //    void m3dInvertMatrix44(M3DMatrix44d mInverse, final M3DMatrix44d m);
     public static void invertMatrix(final Matrix44d mInverse, final Matrix44d m) {
-        double det, detij;
+        double det;
+        double detij;
 
         // calculate 4x4 determinant
         det = 0.0;

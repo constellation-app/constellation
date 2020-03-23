@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss.KTrussResultHandler;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -70,8 +70,10 @@ public class SpectralArranger implements Arranger {
         double averageOverlap = 0;
         Iterator<Double> xValIter = xValues.iterator();
         Iterator<Double> yValIter = yValues.iterator();
-        double currentX, nextX = xValIter.next();
-        double currentY, nextY = yValIter.next();
+        double currentX;
+        double nextX = xValIter.next();
+        double currentY;
+        double nextY = yValIter.next();
         while (xValIter.hasNext()) {
             currentX = nextX;
             currentY = nextY;

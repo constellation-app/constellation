@@ -47,7 +47,8 @@ import org.openide.util.NbBundle;
 public class DateRangePanel extends javax.swing.JPanel {
 
     private final DateTimeListenerInterface parentPanel;
-    private JSpinner.DateEditor de1, de2;
+    private JSpinner.DateEditor de1;
+    private JSpinner.DateEditor de2;
     private Date firstDate = null;
     private Date secondDate = null;
     private Date minDate = null;

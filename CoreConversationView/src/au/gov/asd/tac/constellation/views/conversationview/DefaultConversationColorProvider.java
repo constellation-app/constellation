@@ -88,7 +88,8 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
     private class DefaultConversationColor implements ConversationColor {
 
-        private final float saturation, brightness;
+        private final float saturation;
+        private final float brightness;
 
         private int hue = 0;
         private int total = 1;

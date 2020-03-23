@@ -48,8 +48,10 @@ public class Geohash {
 
         private final char charset[];
         private final int inverseCharset[] = new int[128];
-        private final double minLatitude, maxLatitude;
-        private final double minLongitude, maxLongitude;
+        private final double minLatitude;
+        private final double maxLatitude;
+        private final double minLongitude;
+        private final double maxLongitude;
         private final int base;
         private final int bits[];
 

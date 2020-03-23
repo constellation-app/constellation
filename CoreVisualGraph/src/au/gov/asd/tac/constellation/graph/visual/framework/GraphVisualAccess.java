@@ -175,7 +175,9 @@ public final class GraphVisualAccess implements VisualAccess {
                 globalModCount = currentGlobalModCount;
             }
             long count;
-            boolean attributesChanged = false, verticesRebuilding = false, connectionsRebuilding = false;
+            boolean attributesChanged = false;
+            boolean verticesRebuilding = false;
+            boolean connectionsRebuilding = false;
 
             // Handle structural changes
             count = accessGraph.getStructureModificationCounter();
