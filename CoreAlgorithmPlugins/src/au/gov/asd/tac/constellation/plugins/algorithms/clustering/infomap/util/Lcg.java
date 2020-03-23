@@ -68,7 +68,7 @@ public class Lcg {
         rand.seed(1984);
 
         for (int i = 0; i < 100; i++) {
-            System.out.printf("%d %d %d\n", i, rand.nextInt(10), rand.s);
+            System.out.printf("%d %d %d%n", i, rand.nextInt(10), rand.s);
         }
     }
 }

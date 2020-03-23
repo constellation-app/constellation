@@ -317,7 +317,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         optionsButtons.setPadding(new Insets(2));
         final Text heading = new Text();
         heading.textProperty().bind(title);
-        heading.setStyle(String.format("-fx-font-family:\"Arial\"; -fx-font-weight:bold;"));
+        heading.setStyle("-fx-font-family:\"Arial\"; -fx-font-weight:bold;");
         heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);

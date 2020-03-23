@@ -123,7 +123,7 @@ public class Network {
             Logf.printf("%d self-connections was ignored. ");
         }
 
-        System.out.printf("\n");
+        System.out.printf("%n");
     }
 
     public int getNumNodes() {

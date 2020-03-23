@@ -102,7 +102,7 @@ public final class SimpleGraphOpener extends GraphOpener {
                 if (exName.lastIndexOf('.') != -1) {
                     exName = exName.substring(exName.lastIndexOf('.') + 1);
                 }
-                final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:\n%s", exName, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:%n%s", exName, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(d);
             } else if (graph != null) {
                 StatusDisplayer.getDefault().setStatusText(String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f));

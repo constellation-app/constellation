@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
-import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
+import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
 import java.util.Map;
 import java.util.Set;
 
@@ -224,7 +224,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
 
     public static void dump(final Map<Integer, Set<Integer>> taxa) {
         for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-            System.out.printf("tax %d: size %d\n", entry.getKey(), entry.getValue().size());
+            System.out.printf("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
         }
     }
 }

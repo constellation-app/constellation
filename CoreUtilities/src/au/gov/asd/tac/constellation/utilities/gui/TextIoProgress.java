@@ -36,42 +36,42 @@ public class TextIoProgress implements IoProgress {
     @Override
     public void start() {
         if (display) {
-            System.out.printf("start\n");
+            System.out.printf("start%n");
         }
     }
 
     @Override
     public void start(final int workunits) {
         if (display) {
-            System.out.printf("start(%d)\n", workunits);
+            System.out.printf("start(%d)%n", workunits);
         }
     }
 
     @Override
     public void progress(final int workunit) {
         if (display) {
-            System.out.printf("progress(%d)\n", workunit);
+            System.out.printf("progress(%d)%n", workunit);
         }
     }
 
     @Override
     public void progress(final String message) {
         if (display) {
-            System.out.printf("progress(%s)\n", message);
+            System.out.printf("progress(%s)%n", message);
         }
     }
 
     @Override
     public void progress(final String message, final int workunit) {
         if (display) {
-            System.out.printf("progress(%s,%d)\n", message, workunit);
+            System.out.printf("progress(%s,%d)%n", message, workunit);
         }
     }
 
     @Override
     public void finish() {
         if (display) {
-            System.out.printf("finish\n");
+            System.out.printf("finish%n");
         }
     }
 }
