@@ -43,6 +43,7 @@ import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -162,7 +163,11 @@ public class AddRecordStore extends RestService {
                 final String h = headers[ix];
                 final JsonNode jn = jrow.get(ix);
                 if (!jn.isNull()) {
-                    rs.set(h, jn.asText());
+                    if(jn.getNodeType()==JsonNodeType.ARRAY) {
+                        rs.set(h, RestServiceUtilities.toList((ArrayNode)jn));
+                    } else {
+                        rs.set(h, jn.asText());
+                    }
                 }
                 txFound |= h.startsWith(GraphRecordStoreUtilities.TRANSACTION);
                 txSourceFound |= TX_SOURCE.equals(h);

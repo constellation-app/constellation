@@ -77,9 +77,9 @@ public class RestServiceUtilities {
      *
      * @param array A JSON ArrayNode.
      *
-     * @return A List<Float>, List<Integer>, or List<String>.
+     * @return A List&lt;Float&gt;, List&lt;Integer&gt;, or List&lt;String&gt;.
      */
-    private static List<?> toList(final ArrayNode array) {
+    public static List<?> toList(final ArrayNode array) {
         final int size = array.size();
         List<?> list;
         if (size == 0) {
