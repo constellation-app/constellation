@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview;
 
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -35,11 +34,12 @@ import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
-import au.gov.asd.tac.constellation.views.tableview.state.TableState;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
+import au.gov.asd.tac.constellation.views.tableview.state.TableState;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dialog;
@@ -695,15 +695,13 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-        if ("HEADER.HP_HEADERITEM".equals(evt.getPropertyName())) {
-            // Attempt to do updates only when necessary (not when the mouse is just moving over the column headers).
-            if (evt.getOldValue() != null && evt.getNewValue() != null) {
-                final String oldv = evt.getOldValue().toString();
-                final String newv = evt.getNewValue().toString();
-                if (!((oldv.equals("HOT") && newv.equals("NORMAL")) || (oldv.equals("NORMAL") && newv.equals("HOT")))) {
-                    final Graph graph = graphNode.getGraph();
-                    updateStateOnGraph(graph, currentElementType, false);
-                }
+        // Attempt to do updates only when necessary (not when the mouse is just moving over the column headers).
+        if ("HEADER.HP_HEADERITEM".equals(evt.getPropertyName()) && evt.getOldValue() != null && evt.getNewValue() != null) {
+            final String oldv = evt.getOldValue().toString();
+            final String newv = evt.getNewValue().toString();
+            if (!((oldv.equals("HOT") && newv.equals("NORMAL")) || (oldv.equals("NORMAL") && newv.equals("HOT")))) {
+                final Graph graph = graphNode.getGraph();
+                updateStateOnGraph(graph, currentElementType, false);
             }
         }
     }
@@ -731,10 +729,8 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
         @Override
         public void keyTyped(final KeyEvent e) {
-            if (graphNode != null) {
-                if (e.getKeyChar() == KeyEvent.VK_DELETE) {
-                    PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
-                }
+            if (graphNode != null && e.getKeyChar() == KeyEvent.VK_DELETE) {
+                PluginExecution.withPlugin(PluginRegistry.get(InteractiveGraphPluginRegistry.DELETE_SELECTION)).interactively(true).executeLater(graphNode.getGraph());
             }
         }
     }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.PartitionQueue;
@@ -27,7 +28,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.T
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -334,12 +334,10 @@ public abstract class InfomapBase {
         boolean tryIndexing = true;
         final boolean replaceExistingModules = config.fastHierarchicalSolution == 0;
         while (tryIndexing) {
-            if (verbose) {
-                if (config.verbosity > 0) {
-                    System.out.printf("Trying to find super modules... ");
-                    if (config.verbosity >= 3) {
-                        System.out.printf("\n");
-                    }
+            if (verbose && config.verbosity > 0) {
+                System.out.printf("Trying to find super modules... ");
+                if (config.verbosity >= 3) {
+                    System.out.printf("\n");
                 }
             }
 

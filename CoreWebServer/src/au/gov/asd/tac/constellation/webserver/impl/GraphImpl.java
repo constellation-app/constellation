@@ -21,16 +21,15 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -38,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.webserver.api.EndpointException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -290,11 +290,9 @@ public class GraphImpl {
     public static void post_new(final String schemaParam) {
         String schemaName = null;
         for (final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
-            if (schemaFactory.isPrimarySchema()) {
-                if (schemaParam == null || schemaParam.equals(schemaFactory.getName())) {
-                    schemaName = schemaFactory.getName();
-                    break;
-                }
+            if (schemaFactory.isPrimarySchema() && (schemaParam == null || schemaParam.equals(schemaFactory.getName()))) {
+                schemaName = schemaFactory.getName();
+                break;
             }
         }
 

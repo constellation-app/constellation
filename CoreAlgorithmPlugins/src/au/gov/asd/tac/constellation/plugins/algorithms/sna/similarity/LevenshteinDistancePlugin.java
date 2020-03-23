@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -28,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -144,17 +144,13 @@ public class LevenshteinDistancePlugin extends SimpleEditPlugin {
         final int vertexCount = graph.getVertexCount();
         for (int one = 0; one < vertexCount; one++) {
             final int vxOneId = graph.getVertex(one);
-            if (selectedOnly) {
-                if (!graph.getBooleanValue(vertexSelectedAttributeId, vxOneId)) {
-                    continue;
-                }
+            if (selectedOnly && !graph.getBooleanValue(vertexSelectedAttributeId, vxOneId)) {
+                continue;
             }
             for (int two = one + 1; two < vertexCount; two++) {
                 final int vxTwoId = graph.getVertex(two);
-                if (selectedOnly) {
-                    if (!graph.getBooleanValue(vertexSelectedAttributeId, vxTwoId)) {
-                        continue;
-                    }
+                if (selectedOnly && !graph.getBooleanValue(vertexSelectedAttributeId, vxTwoId)) {
+                    continue;
                 }
 
                 String stringOne = graph.getStringValue(vertexCompareAttributeId, vxOneId);

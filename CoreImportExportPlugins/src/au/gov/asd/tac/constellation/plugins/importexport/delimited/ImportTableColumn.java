@@ -73,11 +73,9 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
             String defaultValue = attributeNode.getDefaultValue();
 
             Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault().getAttributes().get(attributeNode.getAttribute().getAttributeType());
-            if (attributeDescriptionClass == null) {
-                // Handle pseudo-attributes
-                if (attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {
-                    attributeDescriptionClass = BooleanAttributeDescription.class;
-                }
+            // Handle pseudo-attributes
+            if (attributeDescriptionClass == null && attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {               
+                attributeDescriptionClass = BooleanAttributeDescription.class;
             }
             try {
                 AttributeDescription attributeDescription = attributeDescriptionClass.getDeclaredConstructor().newInstance();

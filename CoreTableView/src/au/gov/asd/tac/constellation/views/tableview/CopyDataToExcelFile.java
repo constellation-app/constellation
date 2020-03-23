@@ -108,10 +108,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                 return "Excel files";
             }
         }).showSaveDialog();
-        if (f != null) {
-            if (!f.getName().toLowerCase().endsWith(".xlsx")) {
-                f = new File(f.getAbsolutePath() + ".xlsx");
-            }
+        if (f != null && !f.getName().toLowerCase().endsWith(".xlsx")) {
+            f = new File(f.getAbsolutePath() + ".xlsx");
         }
 
         return f;

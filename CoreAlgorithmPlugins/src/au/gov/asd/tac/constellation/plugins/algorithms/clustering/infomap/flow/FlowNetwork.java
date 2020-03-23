@@ -206,12 +206,10 @@ public class FlowNetwork {
             }
 
             // Normalize if needed.
-            if (sum != 0) {
-                if (Math.abs(sum - 1.0) > 1.0e-10) {
-                    System.out.printf("(Normalizing ranks after %d power iterations with error) ", numIterations, sum - 1.0);
-                    for (int i = 0; i < numNodes; ++i) {
-                        nodeFlow[i] /= sum;
-                    }
+            if (sum != 0 && Math.abs(sum - 1.0) > 1.0e-10) {
+                System.out.printf("(Normalizing ranks after %d power iterations with error) ", numIterations, sum - 1.0);
+                for (int i = 0; i < numNodes; ++i) {
+                    nodeFlow[i] /= sum;
                 }
             }
 

@@ -22,10 +22,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -241,12 +241,10 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
                 expandedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
                     DataAccessPreferences.setExpanded(plugin.getName(), newValue);
-                    if (newValue) {
-                        if (!isLoaded) {
-                            isLoaded = true;
-                            final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
-                            setContent(parametersPane);
-                        }
+                    if (newValue && !isLoaded) {
+                        isLoaded = true;
+                        final PluginParametersPane parametersPane = PluginParametersPane.buildPane(dataSourceParameters, this, globalParamLabels);
+                        setContent(parametersPane);
                     }
                 });
             } else {

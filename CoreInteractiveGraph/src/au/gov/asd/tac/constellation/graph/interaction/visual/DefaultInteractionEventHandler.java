@@ -26,15 +26,14 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -48,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
@@ -588,20 +588,18 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 // If the mouse is currently pressed and the mouse wheel was moved somewhere
                 // other than the mouse pressed point, then we need to recalculate our
                 // reference point for further action, and in some cases simulate a drag.
-                if (eventState.isMousePressed()) {
-                    if (!wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
-                        final Point from;
-                        switch (eventState.getCurrentAction()) {
-                            case PANNING:
-                                from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                                final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
-                                CameraUtilities.pan(camera, translation.getX(), translation.getY());
-                                break;
-                            case DRAG_NODES:
-                                from = eventState.getPoint(EventState.DRAG_POINT);
-                                performDrag(wg, camera, from, wheelPoint);
-                                break;
-                        }
+                if (eventState.isMousePressed() && !wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
+                    final Point from;
+                    switch (eventState.getCurrentAction()) {
+                        case PANNING:
+                            from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
+                            final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
+                            CameraUtilities.pan(camera, translation.getX(), translation.getY());
+                            break;
+                        case DRAG_NODES:
+                            from = eventState.getPoint(EventState.DRAG_POINT);
+                            performDrag(wg, camera, from, wheelPoint);
+                            break;
                     }
                 }
 

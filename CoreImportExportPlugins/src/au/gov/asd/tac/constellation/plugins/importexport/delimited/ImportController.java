@@ -27,12 +27,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.File;
 import java.io.IOException;
@@ -389,18 +389,16 @@ public class ImportController {
 
                 @Override
                 public synchronized void newActiveGraph(Graph graph) {
-                    if (graph == importGraph) {
-                        if (!opened) {
-                            opened = true;
-                            GraphManager.getDefault().removeGraphManagerListener(this);
-                            PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
-                                    .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
-                                    .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
-                                    .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
-                                    .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
-                                    .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
-                                    .executeWriteLater(importGraph);
-                        }
+                    if (graph == importGraph && !opened) {
+                        opened = true;
+                        GraphManager.getDefault().removeGraphManagerListener(this);
+                        PluginExecutor.startWith(ImportExportPluginRegistry.IMPORT_DELIMITED, false)
+                                .set(ImportDelimitedPlugin.DEFINITIONS_PARAMETER_ID, definitions)
+                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_ID, parser)
+                                .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
+                                .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
+                                .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
+                                .executeWriteLater(importGraph);
                     }
                 }
 
