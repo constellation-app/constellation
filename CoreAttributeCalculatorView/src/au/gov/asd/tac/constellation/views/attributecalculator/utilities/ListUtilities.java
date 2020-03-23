@@ -98,7 +98,7 @@ public class ListUtilities extends AbstractCalculatorUtilities {
     }
 
     public Object defined_values(final Collection<Object> collection) throws ScriptException {
-        collection.removeIf((Object t) -> nullCheck(t));
+        collection.removeIf(AbstractCalculatorUtilities::nullCheck);
         return collection;
     }
 

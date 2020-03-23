@@ -225,7 +225,7 @@ public class VisualGraphUtilities {
                 }
             };
         } else {
-            worldLocations = () -> Collections.<Vector3f>emptyIterator();
+            worldLocations = Collections::emptyIterator;
         }
 
         return StreamSupport.stream(worldLocations.spliterator(), false);

@@ -119,7 +119,7 @@ public class NewDefaultSchemaGraphAction extends AbstractAction implements Prefe
     @Override
     public void preferenceChange(PreferenceChangeEvent evt) {
         if (evt.getKey().equals(ApplicationPreferenceKeys.DEFAULT_TEMPLATE)) {
-            SwingUtilities.invokeLater(() -> recreateAction());
+            SwingUtilities.invokeLater(this::recreateAction);
         }
     }
 }

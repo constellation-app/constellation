@@ -40,9 +40,7 @@ public class VertexListInclusionGraph extends AbstractInclusionGraph {
     public VertexListInclusionGraph(final GraphWriteMethods wg, final Connections connections, final List<Integer> vertices) {
         super(wg, connections);
         vertexSet = new BitSet();
-        vertices.stream().forEach((vxId) -> {
-            vertexSet.set(vxId);
-        });
+        vertices.stream().forEach(vertexSet::set);
     }
 
     @Override

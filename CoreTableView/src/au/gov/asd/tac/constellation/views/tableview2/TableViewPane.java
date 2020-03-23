@@ -885,7 +885,7 @@ public final class TableViewPane extends BorderPane {
                     }
 
                     // update table selection
-                    final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                    final int[] selectedIndices = selectedIds.stream().map(elementIdToRowIndex::get)
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
 
                     Platform.runLater(() -> {

@@ -57,12 +57,7 @@ public class MultiMap<K, V> {
     }
 
     public Iterable<Map.Entry<K, V>> entrySet() {
-        return new Iterable<Map.Entry<K, V>>() {
-            @Override
-            public Iterator<Map.Entry<K, V>> iterator() {
-                return new MultiMapIterator<>(map);
-            }
-        };
+        return () -> new MultiMapIterator<>(map);
     }
 
     public int size() {

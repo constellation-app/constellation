@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config.ConnectionType;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 /**
@@ -58,18 +57,15 @@ public class Network {
         Arrays.fill(nodeWeights, 1);
         sumNodeWeights = rg.getVertexCount();
 
-        graphConnections = new Iterable<Connection>() {
-            @Override
-            public Iterator<Connection> iterator() {
-                if (config.connectionType == ConnectionType.LINKS) {
-                    return new LinkIterator(rg);
-                } else if (config.connectionType == ConnectionType.EDGES) {
-                    return new EdgeIterator(rg);
-                } else if (config.connectionType == ConnectionType.TRANSACTIONS) {
-                    return new TransactionIterator(rg);
-                } else {
-                    throw new IllegalStateException(String.format("Unexpected connection type %s", config.connectionType));
-                }
+        graphConnections = () -> {
+            if (config.connectionType == ConnectionType.LINKS) {
+                return new LinkIterator(rg);
+            } else if (config.connectionType == ConnectionType.EDGES) {
+                return new EdgeIterator(rg);
+            } else if (config.connectionType == ConnectionType.TRANSACTIONS) {
+                return new TransactionIterator(rg);
+            } else {
+                throw new IllegalStateException(String.format("Unexpected connection type %s", config.connectionType));
             }
         };
     }

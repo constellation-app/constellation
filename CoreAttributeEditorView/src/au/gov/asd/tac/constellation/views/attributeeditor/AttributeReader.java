@@ -23,13 +23,12 @@ import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -248,12 +247,7 @@ public class AttributeReader {
                 AttributeData attrData = new AttributeData(attr.getName(), attr.getDescription(), attr.getId(), rg.getValueModificationCounter(attr.getId()), elementType, attr.getAttributeType(), attr.getDefaultValue(), rg.isPrimaryKey(attr.getId()), isSchemaAttr);
                 attributeNames.add(attrData);
             }
-            Collections.sort(attributeNames, new Comparator<AttributeData>() {
-                @Override
-                public int compare(final AttributeData o1, final AttributeData o2) {
-                    return o1.getAttributeName().compareTo(o2.getAttributeName());
-                }
-            });
+            Collections.sort(attributeNames, (o1, o2) -> o1.getAttributeName().compareTo(o2.getAttributeName()));
             elementAttributeCounts.put(elementType, attributeCount);
             elementAttributeData.put(elementType, attributeNames);
         }
