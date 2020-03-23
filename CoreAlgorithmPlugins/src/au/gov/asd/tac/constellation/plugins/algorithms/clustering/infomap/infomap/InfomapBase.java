@@ -337,7 +337,7 @@ public abstract class InfomapBase {
             if (verbose && config.verbosity > 0) {
                 System.out.print("Trying to find super modules... ");
                 if (config.verbosity >= 3) {
-                    System.out.printf("\n");
+                    System.out.printf("%n");
                 }
             }
 
