@@ -344,13 +344,19 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     /**
-     * Convert a RGB color string (r,g,b,a) to a ColorValue.
+     * Convert an RGBA color string "r,g,b,a" or "[r,g,b,a]" to a ColorValue.
+     * <p>
+     * Since colors end up as actual Python lists in pandas dataframes,
+     * they get back to here as strings surrounded by brackets, hence we
+     * conveniently look for the brackets and remove them.
      *
      * @param color The RGB color string
      * @return A new ColorValue.
      */
     public static ConstellationColor fromRgbWithCommaColor(final String color) {
-        final String[] fields = split(color, 4, ',');
+        // If the color string has surrounding "[]", remove them.
+        final String fixedColor = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length()-1) : color;
+        final String[] fields = split(fixedColor, 4, ',');
         final float red = Float.parseFloat(fields[0]);
         final float green = Float.parseFloat(fields[1]);
         final float blue = Float.parseFloat(fields[2]);
