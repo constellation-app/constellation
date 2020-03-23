@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +143,9 @@ public class ExpandedCompositeNodeState {
         // Iterate through each vertex on the graph, and if it has an expanded composite state with the same composite id
         // as this state, perform the single vertex contraction. Keep track of x, y and z as we go so that we can set
         // the coordinates of the contracted composite to be at the centre of the expanded constituents.
-        float x = 0, y = 0, z = 0;
+        float x = 0;
+        float y = 0;
+        float z = 0;
         final Map<Integer, String> idToCopiedId = new HashMap<>();
 
         final int vertexCount = wg.getVertexCount();

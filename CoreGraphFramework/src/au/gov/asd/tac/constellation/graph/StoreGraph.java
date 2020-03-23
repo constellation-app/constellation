@@ -57,10 +57,22 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private static final int OUTGOING_INCOMING_3 = 4;
     private static final int ALL_7 = 5;
     private static final int INCOMING_2 = 6;
-    private final ElementStore vStore, lStore, eStore, tStore, aStore;
-    private final ListStore vertexLinks, linkTransactions, vertexTransactions, linkEdges, vertexEdges, typeAttributes;
-    private int linkHashLength, linkHashMask;
-    private int[] linkHash, linkNext, linkPrev;
+    private final ElementStore vStore;
+    private final ElementStore lStore;
+    private final ElementStore eStore;
+    private final ElementStore tStore;
+    private final ElementStore aStore;
+    private final ListStore vertexLinks;
+    private final ListStore linkTransactions;
+    private final ListStore vertexTransactions;
+    private final ListStore linkEdges;
+    private final ListStore vertexEdges;
+    private final ListStore typeAttributes;
+    private int linkHashLength;
+    private int linkHashMask;
+    private int[] linkHash;
+    private int[] linkNext;
+    private int[] linkPrev;
     private AttributeDescription[] attributeDescriptions;
     protected GraphAttribute[] attributes;
     private GraphIndexType[] attributeIndexTypes;
@@ -810,7 +822,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         tStore.setUID(transaction, structureModificationCounter);
 
-        final int lowVertex, highVertex, lowDirection, highDirection, sourceDirection, destinationDirection;
+        final int lowVertex;
+        final int highVertex;
+        final int lowDirection;
+        final int highDirection;
+        final int sourceDirection;
+        final int destinationDirection;
         if (sourceVertex <= destinationVertex) {
             lowVertex = sourceVertex;
             highVertex = destinationVertex;

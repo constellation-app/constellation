@@ -243,7 +243,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         }
 
         ReadableGraph rg;
-        final GraphRecordStore originalAll, compareAll;
+        final GraphRecordStore originalAll;
+        final GraphRecordStore compareAll;
 //        final Map<String, Integer> originalStatistics, compareStatistics;
 
         Set<String> vertexPrimaryKeys = new HashSet<>();

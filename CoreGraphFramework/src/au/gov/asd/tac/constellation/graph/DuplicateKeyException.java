@@ -34,7 +34,8 @@ package au.gov.asd.tac.constellation.graph;
 public class DuplicateKeyException extends RuntimeException {
 
     private final GraphElementType elementType;
-    private final int existingId, newId;
+    private final int existingId;
+    private final int newId;
 
     /**
      * Creates a new DuplicateKeyException.

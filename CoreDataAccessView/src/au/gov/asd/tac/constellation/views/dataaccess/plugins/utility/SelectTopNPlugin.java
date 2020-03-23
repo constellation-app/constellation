@@ -243,7 +243,10 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
 
         // calculate the occurrences of destination vertices
-        int txId, sourceVxId, destinationVxId, targetVxId;
+        int txId;
+        int sourceVxId;
+        int destinationVxId;
+        int targetVxId;
         int step = 0;
         SchemaVertexType destinationVertexType;
         SchemaTransactionType transactionType;

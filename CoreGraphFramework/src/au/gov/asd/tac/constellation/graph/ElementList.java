@@ -31,7 +31,10 @@ public class ElementList {
     private int[] prev;
     private int[] next;
 
-    private int capacity, size, first, last;
+    private int capacity;
+    private int size;
+    private int first;
+    private int last;
 
     /**
      * Creates a new ElementList with the specified capacity.

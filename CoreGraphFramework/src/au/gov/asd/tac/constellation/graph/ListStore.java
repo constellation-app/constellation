@@ -35,8 +35,10 @@ public class ListStore implements Serializable {
     private static final int POSITION_MASK = 0x1FFFFFFF;
     private static final int[] EMPTY_ARRAY = new int[0];
 
-    private final int categories, countLength;
-    private int listCapacity, elementCapacity;
+    private final int categories;
+    private final int countLength;
+    private int listCapacity;
+    private int elementCapacity;
     private int[] categoryCounts;
     private int[][] elements;
     private int[] elementLists;

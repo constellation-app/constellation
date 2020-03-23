@@ -25,7 +25,8 @@ public class NestedIncircleDrawing {
 
     static class Point {
 
-        double x, y;
+        double x;
+        double y;
 
         public Point() {
             this(0, 0);

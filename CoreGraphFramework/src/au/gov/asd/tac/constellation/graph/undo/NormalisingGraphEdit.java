@@ -260,7 +260,10 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     private class Transaction extends Element<Transaction> {
 
-        public Vertex newSource, oldSource, newDestination, oldDestination;
+        public Vertex newSource;
+        public Vertex oldSource;
+        public Vertex newDestination;
+        public Vertex oldDestination;
         public boolean directed;
 
         public Transaction(int id) {

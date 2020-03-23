@@ -106,7 +106,8 @@ public class ConversationBubble extends VBox {
 
         tail = new Path();
         final MoveTo start;
-        final ArcTo curve1, curve2;
+        final ArcTo curve1;
+        final ArcTo curve2;
         if (message.getConversationSide() == ConversationSide.LEFT) {
             start = new MoveTo(TAIL_OFFSET, 0);
             start.yProperty().bind(bubbleContent.heightProperty());

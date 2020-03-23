@@ -94,7 +94,8 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
     private int activeBin = -1;
     private int dragStart = -1;
     private int dragEnd = -1;
-    private boolean shiftDown, controlDown;
+    private boolean shiftDown;
+    private boolean controlDown;
     private boolean binCollectionOutOfDate = true;
 
     public HistogramDisplay(HistogramTopComponent topComponent) {

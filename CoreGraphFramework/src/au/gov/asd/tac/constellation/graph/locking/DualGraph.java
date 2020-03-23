@@ -74,7 +74,8 @@ public class DualGraph implements Graph, Serializable {
     private static final Logger LOGGER = Logger.getLogger(DualGraph.class.getName());
 
     private final ArrayList<GraphChangeListener> graphChangeListeners = new ArrayList<>();
-    private final LockingStoreGraph a, b;
+    private final LockingStoreGraph a;
+    private final LockingStoreGraph b;
     private final LockingManager<LockingStoreGraph> lockingManager;
     private final String id;
     private GraphChangeEvent previousEvent = null;

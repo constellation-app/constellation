@@ -41,7 +41,8 @@ public class ManualGraphMonitor {
     private long attributeModificationCounter = Long.MIN_VALUE;
 
     // Listeners that get run for structure/attribute changes respectively
-    private ListenerRecord structureListener, attributeListener;
+    private ListenerRecord structureListener;
+    private ListenerRecord attributeListener;
 
     // Attribute records mapped by their elementTypes and labels
     // This map is iterated through each time we need to rediscover the attributes so a LinkedHashMap is faster

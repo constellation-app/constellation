@@ -52,7 +52,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 
     // the min and max datetime of the data provided. 
     // if {@link #autoRanging} is true, these are used as lower and upper bounds.
-    private ZonedDateTime minZonedDateTime, maxZonedDateTime;
+    private ZonedDateTime minZonedDateTime;
+    private ZonedDateTime maxZonedDateTime;
 
     private ObjectProperty<ZonedDateTime> lowerBound = new ObjectPropertyBase<ZonedDateTime>() {
         @Override

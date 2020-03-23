@@ -829,7 +829,10 @@ public class MapViewTileRenderer extends PApplet {
     private boolean checkForIntersection(final Edge markerEdge, final Edge selectionEdge) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        double x, y, T, U;
+        double x;
+        double y;
+        double T;
+        double U;
 
         if (selectionEdge.pointOneX == selectionEdge.pointTwoX) {
             final double markerDeltaX = markerEdge.pointTwoX - markerEdge.pointOneX;

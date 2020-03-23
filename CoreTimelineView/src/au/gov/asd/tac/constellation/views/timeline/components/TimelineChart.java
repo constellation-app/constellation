@@ -87,7 +87,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     // JavaFX Components:
     private final TimelinePanel parent;
     private final TimelineChart timeline;
-    private final NumberAxis xAxis, yAxis;
+    private final NumberAxis xAxis;
+    private final NumberAxis yAxis;
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:

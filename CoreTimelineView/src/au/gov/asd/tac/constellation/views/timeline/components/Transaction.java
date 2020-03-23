@@ -47,7 +47,8 @@ public final class Transaction extends Group {
     private boolean isSelected = false;
 
     private Line transactionLine = new Line();
-    private ArrowHead north = null, south = null;
+    private ArrowHead north = null;
+    private ArrowHead south = null;
 
     /**
      * Creates a new 'directionless' transaction.

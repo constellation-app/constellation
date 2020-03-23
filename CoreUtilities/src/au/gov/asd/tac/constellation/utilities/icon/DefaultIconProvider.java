@@ -112,7 +112,8 @@ public class DefaultIconProvider implements ConstellationIconProvider {
     }
 
     private static float calculateAlpha(float x, float y, float radius) {
-        float xDiameter = 0.0f, yDiameter = 0.0f;
+        float xDiameter = 0.0f;
+        float yDiameter = 0.0f;
 
         if (x < radius) {
             xDiameter = radius - x;

@@ -61,7 +61,8 @@ public class GraphDisplayer implements GLRenderable {
     final int[] graphDrawBuffers = new int[1];
 
     // GL canvas dimension tracking
-    private int width, height;
+    private int width;
+    private int height;
     private boolean needsResize;
 
     // Shader and shader locations
