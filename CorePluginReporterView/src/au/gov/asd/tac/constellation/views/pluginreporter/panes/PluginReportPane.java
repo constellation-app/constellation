@@ -412,9 +412,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
     @Override
     public void pluginReportChanged(PluginReport pluginReport) {
-        Platform.runLater(() -> {
-            update();
-        });
+        Platform.runLater(this::update);
     }
 
     @Override

@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -30,10 +30,9 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
-import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
@@ -203,12 +202,9 @@ public final class VisualGraphOpener extends GraphOpener {
                 }
 
                 final String name = exName;
-                final ActionListener al = new ActionListener() {
-                    @Override
-                    public void actionPerformed(final ActionEvent e) {
-                        final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:\n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
-                        DialogDisplayer.getDefault().notify(d);
-                    }
+                final ActionListener al = e -> {
+                    final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:\n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                    DialogDisplayer.getDefault().notify(d);
                 };
 
                 NotificationDisplayer.getDefault().notify("Reading " + gdo.getPrimaryFile().getName(),

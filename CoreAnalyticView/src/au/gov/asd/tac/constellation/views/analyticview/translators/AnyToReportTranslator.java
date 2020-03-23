@@ -49,9 +49,7 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
 
         if (result.hasMetadata()) {
             final Map<String, String> metadata = result.getMetadata();
-            metadata.forEach((metadataKey, metadataValue) -> {
-                report.extendReport(metadataKey, metadataValue);
-            });
+            metadata.forEach(report::extendReport);
         }
         return report;
     }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -25,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -32,8 +32,6 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Hashtable;
@@ -668,13 +666,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             dp.calculateRectangles();
             nestedTrussPane.setViewportView(dp);
 
-            nestedTrussPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-
-                @Override
-                public void adjustmentValueChanged(AdjustmentEvent e) {
-                    dp.repaint();
-                }
-            });
+            nestedTrussPane.getVerticalScrollBar().addAdjustmentListener(e -> dp.repaint());
 
             nestedTrussPane.addComponentListener(new ComponentListener() {
                 @Override

@@ -453,9 +453,7 @@ public class ConnectionPanel extends JPanel {
         }
 
         lines.sort(String::compareTo);
-        lines.stream().forEach((line) -> {
-            buf.append(line);
-        });
+        lines.stream().forEach(buf::append);
 
         if (etype == GraphElementType.VERTEX) {
             buf.append("    PRIMARY KEY (vx_id_)%n");

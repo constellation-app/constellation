@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
@@ -23,15 +27,10 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.circle.CircleArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.InducedSubgraph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -274,13 +273,10 @@ public class HierarchicalArranger implements Arranger {
     }
 
     private static void sortLevelByWeight(final ArrayList<Integer> vxLevel, final float[] weights) {
-        Collections.sort(vxLevel, new Comparator<Integer>() {
-            @Override
-            public int compare(final Integer vxId1, final Integer vxId2) {
-                final float weight1 = weights[vxId1];
-                final float weight2 = weights[vxId2];
-                return Float.compare(weight1, weight2);
-            }
+        Collections.sort(vxLevel, (vxId1, vxId2) -> {
+            final float weight1 = weights[vxId1];
+            final float weight2 = weights[vxId2];
+            return Float.compare(weight1, weight2);
         });
     }
 

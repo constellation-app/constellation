@@ -93,9 +93,7 @@ public class ImportController {
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
 
-    private final RefreshRequest refreshRequest = () -> {
-        updateSampleData();
-    };
+    private final RefreshRequest refreshRequest = this::updateSampleData;
 
     public ImportController(final DelimitedFileImporterStage stage) {
         this.stage = stage;

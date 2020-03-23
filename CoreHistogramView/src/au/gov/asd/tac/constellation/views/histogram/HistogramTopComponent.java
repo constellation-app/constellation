@@ -586,12 +586,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                         currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            display.repaint();
-                        }
-                    });
+                    SwingUtilities.invokeLater(display::repaint);
                 }
             }).executeLater(currentGraph);
         }
@@ -630,12 +625,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                         currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            display.repaint();
-                        }
-                    });
+                    SwingUtilities.invokeLater(display::repaint);
                 }
             }).executeLater(currentGraph);
         }

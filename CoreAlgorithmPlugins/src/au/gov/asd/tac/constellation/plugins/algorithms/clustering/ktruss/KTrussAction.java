@@ -58,17 +58,14 @@ public final class KTrussAction extends AbstractAction {
             @Override
             public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
-                SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        final TopComponent tc = WindowManager.getDefault().findTopComponent(KTrussControllerTopComponent.class.getSimpleName());
-                        if (tc != null) {
-                            if (!tc.isOpened()) {
-                                tc.open();
-                            }
-                            tc.setEnabled(true);
-                            tc.requestActive();
+                SwingUtilities.invokeLater(() -> {
+                    final TopComponent tc = WindowManager.getDefault().findTopComponent(KTrussControllerTopComponent.class.getSimpleName());
+                    if (tc != null) {
+                        if (!tc.isOpened()) {
+                            tc.open();
                         }
+                        tc.setEnabled(true);
+                        tc.requestActive();
                     }
                 });
             }

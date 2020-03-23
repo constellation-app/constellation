@@ -791,14 +791,10 @@ public final class PluginParametersPane extends GridPane {
                         } else {
                             validParams--;
                         }
-                        Platform.runLater(() -> {
-                            parameterHasChanged();
-                        });
+                        Platform.runLater(this::parameterHasChanged);
                         break;
                     case VALUE:
-                        Platform.runLater(() -> {
-                            parameterHasChanged();
-                        });
+                        Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
                     // do nothing

@@ -848,28 +848,25 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
     private void updateState(final boolean openTopComponent) {
         // Force execution onto the EDT using SwingUtilities.invokeLater and an anonymous class:
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                final NamedSelectionTopComponent tc
-                        = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
-
-                if (tc != null) {
-                    if (openTopComponent && !tc.isOpened()) {
-                        tc.open();
-                        tc.requestActive();
-                    }
-
-                    // If there is no graph, set logical defaults, then disable UI:
-                    if (graphNode == null) {
-                        tc.updateState(null);
-                        tc.updateDimOthers(false);
-                        tc.updateSelectResults(true);
-                    } else { // Update the browser based on information from the current state:
-                        tc.updateState(state.getNamedSelections());
-                        tc.updateDimOthers(state.isDimOthers());
-                        tc.updateSelectResults(state.isSelectResults());
-                    }
+        SwingUtilities.invokeLater(() -> {
+            final NamedSelectionTopComponent tc
+                    = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
+            
+            if (tc != null) {
+                if (openTopComponent && !tc.isOpened()) {
+                    tc.open();
+                    tc.requestActive();
+                }
+                
+                // If there is no graph, set logical defaults, then disable UI:
+                if (graphNode == null) {
+                    tc.updateState(null);
+                    tc.updateDimOthers(false);
+                    tc.updateSelectResults(true);
+                } else { // Update the browser based on information from the current state:
+                    tc.updateState(state.getNamedSelections());
+                    tc.updateDimOthers(state.isDimOthers());
+                    tc.updateSelectResults(state.isSelectResults());
                 }
             }
         });
