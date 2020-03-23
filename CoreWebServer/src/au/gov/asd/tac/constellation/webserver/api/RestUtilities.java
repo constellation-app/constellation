@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
@@ -38,7 +39,7 @@ public class RestUtilities {
     public static Graph getActiveGraph() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
-            throw new EndpointException("No active graph!");
+            throw new RestServiceException("No active graph!");
         }
 
         return graph;

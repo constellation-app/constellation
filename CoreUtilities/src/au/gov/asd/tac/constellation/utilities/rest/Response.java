@@ -198,13 +198,11 @@ public abstract class Response {
             }
         }
 
-        if (!jsonShown) {
-            if (bytes != null) {
-                try {
-                    b.append(new String(bytes, StandardCharsets.UTF_8.name()));
-                } catch (UnsupportedEncodingException ex) {
-                    b.append(String.format("(bytes: length %d)", bytes.length));
-                }
+        if (!jsonShown && bytes != null) {
+            try {
+                b.append(new String(bytes, StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException ex) {
+                b.append(String.format("(bytes: length %d)", bytes.length));
             }
         }
 

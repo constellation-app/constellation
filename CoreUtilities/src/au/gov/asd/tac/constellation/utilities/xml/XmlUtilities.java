@@ -419,10 +419,8 @@ public class XmlUtilities {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE) {
-                        if (data.getNodeName().equalsIgnoreCase(attrName)) {
-                            return data.getNodeValue();
-                        }
+                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
+                        return data.getNodeValue();
                     }
                 }
             }
@@ -449,10 +447,8 @@ public class XmlUtilities {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE) {
-                        if (data.getNodeName().equalsIgnoreCase(attrName)) {
-                            return data.getNodeValue();
-                        }
+                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
+                        return data.getNodeValue();
                     }
                 }
             }

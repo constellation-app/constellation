@@ -222,19 +222,17 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 } 
             }
             // when no graph present, create new graph
-            if(graphId == null){
-                if (pluginSelected && selectedPluginsValid) {
-                    NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
-                    graphAction.actionPerformed(null);
-                    while(GraphManager.getDefault().getActiveGraph() == null){
-                        // Wait and do nothing while graph is getting made
-                    }
-                    graphId = GraphManager.getDefault().getActiveGraph().getId();
-                    if (!graphState.containsKey(graphId)) {
-                        graphState.put(graphId, new GraphState());
-                    }
-                    currentGraphState = graphState.get(graphId);
+            if(graphId == null && pluginSelected && selectedPluginsValid){
+                NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+                graphAction.actionPerformed(null);
+                while(GraphManager.getDefault().getActiveGraph() == null){
+                    // Wait and do nothing while graph is getting made
                 }
+                graphId = GraphManager.getDefault().getActiveGraph().getId();
+                if (!graphState.containsKey(graphId)) {
+                    graphState.put(graphId, new GraphState());
+                }
+                currentGraphState = graphState.get(graphId);
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();

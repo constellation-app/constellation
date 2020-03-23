@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.panes;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
-import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
-import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -25,6 +22,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
+import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
+import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -285,10 +285,8 @@ public final class AttributeCalculatorPane extends GridPane {
             ListCell<InsertListItem> l = new InsertListCell();
             l.getStyleClass().add("variableListCell");
             l.setOnMouseClicked((MouseEvent event) -> {
-                if (event.getClickCount() == 2) {
-                    if (l.getItem() != null) {
-                        l.getItem().insertValue();
-                    }
+                if (event.getClickCount() == 2 && l.getItem() != null) {
+                    l.getItem().insertValue();
                 }
             });
             return l;

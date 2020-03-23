@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import java.awt.Dimension;
 import java.util.BitSet;
 
@@ -253,12 +253,10 @@ public class GridArranger implements Arranger {
 //                {
 //                    y += rowHeights[row]/2 - radius;
 //                }
-
-                if (params.hasRowOffsets()) {
-                    // Offset even columns vertically so side-by-side labels don't overlap.
-                    if (col % 2 == 0) {
-                        y += rowHeights[row] / 2;
-                    }
+                
+                // Offset even columns vertically so side-by-side labels don't overlap.
+                if (params.hasRowOffsets() && col % 2 == 0) {                  
+                    y += rowHeights[row] / 2;
                 }
 
                 wg.setFloatValue(xAttr, vxId, x);

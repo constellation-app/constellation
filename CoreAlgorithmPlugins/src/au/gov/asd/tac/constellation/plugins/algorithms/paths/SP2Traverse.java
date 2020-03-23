@@ -105,16 +105,10 @@ public class SP2Traverse {
                 start = 0;
             }
             for (int two = seeds.nextSetBit(start); two >= 0; two = seeds.nextSetBit(two + 1)) {
-                if (!specialcase) {
-                    if (one > two) {
-                        continue;
-                    }
-                    if (one == two) {
-                        if (!check.get(one)) {
-                            continue;
-                        }
-                    }
+                if (!specialcase && one > two || (one == two && !check.get(one))) {
+                    continue;
                 }
+                
                 if (!connectedTo[one].get(two)) {
                     pairCounter++;
                     if (pairCounter == pairsize) {
@@ -196,15 +190,13 @@ public class SP2Traverse {
                                         }
                                         removeFromCheck = true;
                                     } else {
-                                        if (receivedFrom[two].get(dst)) {
-                                            if (ecc[src] == ecc[dst] - 1 || ecc[src] == ecc[dst] + 1) {
-                                                graph.setBooleanValue(selectedNodeAttrId, srcId, true);
-                                                graph.setBooleanValue(selectedNodeAttrId, dstId, true);
-                                                if (!graph.getBooleanValue(selectedTransactionAttrId, graph.getLinkTransaction(lxId, 0))) {
-                                                    for (int t = 0; t < graph.getLinkTransactionCount(lxId); t++) {
-                                                        final int txId = graph.getLinkTransaction(lxId, t);
-                                                        graph.setBooleanValue(selectedTransactionAttrId, txId, true);
-                                                    }
+                                        if (receivedFrom[two].get(dst) && (ecc[src] == ecc[dst] - 1 || ecc[src] == ecc[dst] + 1)) {
+                                            graph.setBooleanValue(selectedNodeAttrId, srcId, true);
+                                            graph.setBooleanValue(selectedNodeAttrId, dstId, true);
+                                            if (!graph.getBooleanValue(selectedTransactionAttrId, graph.getLinkTransaction(lxId, 0))) {
+                                                for (int t = 0; t < graph.getLinkTransactionCount(lxId); t++) {
+                                                    final int txId = graph.getLinkTransaction(lxId, t);
+                                                    graph.setBooleanValue(selectedTransactionAttrId, txId, true);
                                                 }
                                             }
                                         }

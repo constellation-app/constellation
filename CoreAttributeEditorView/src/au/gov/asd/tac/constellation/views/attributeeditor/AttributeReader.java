@@ -234,10 +234,8 @@ public class AttributeReader {
                 Attribute attr = new GraphAttribute(rg, rg.getAttribute(elementType, i));
                 //do check only if not showing all
 
-                if (!showAll) {
-                    if (hiddenAttrsSet.contains(attr.getElementType().toString() + attr.getName())) {
-                        continue;
-                    }
+                if (!showAll && hiddenAttrsSet.contains(attr.getElementType().toString() + attr.getName())) {
+                    continue;
                 }
 
                 final boolean isSchemaAttr = rg.getSchema() != null

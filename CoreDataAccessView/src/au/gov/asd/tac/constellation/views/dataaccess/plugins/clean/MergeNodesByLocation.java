@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
@@ -192,28 +192,26 @@ public class MergeNodesByLocation implements MergeNodeType {
                     for (int vertexTwoId : vertexOneToVertexTwoDistances.keySet()) {
                         final double vertexOneToVertexTwoDistance = vertexOneToVertexTwoDistances.get(vertexTwoId);
                         // ...if vertex two's distance to vertex one meets the threshold requirement...
-                        if (vertexOneToVertexTwoDistance <= (threshold / 1000)) {
-                            // ...check that vertex two doesn't have a closer vertex than vertex one...
-                            if (distanceMap.containsKey(vertexTwoId)) {
-                                boolean vertexTwoHasCloserVertex = false;
-                                final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap(distanceMap.get(vertexTwoId));
-                                if (vertexTwoToOtherDistances.size() > 0) {
-                                    for (int otherId : vertexTwoToOtherDistances.keySet()) {
-                                        final double vertexTwoToOtherDistance = vertexTwoToOtherDistances.get(otherId);
-                                        if (vertexTwoToOtherDistance < vertexOneToVertexTwoDistance) {
-                                            vertexTwoHasCloserVertex = true;
-                                            break;
-                                        }
+                        // ...check that vertex two doesn't have a closer vertex than vertex one...
+                        if (vertexOneToVertexTwoDistance <= (threshold / 1000) && distanceMap.containsKey(vertexTwoId)) {
+                            boolean vertexTwoHasCloserVertex = false;
+                            final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap(distanceMap.get(vertexTwoId));
+                            if (vertexTwoToOtherDistances.size() > 0) {
+                                for (int otherId : vertexTwoToOtherDistances.keySet()) {
+                                    final double vertexTwoToOtherDistance = vertexTwoToOtherDistances.get(otherId);
+                                    if (vertexTwoToOtherDistance < vertexOneToVertexTwoDistance) {
+                                        vertexTwoHasCloserVertex = true;
+                                        break;
                                     }
-                                    if (vertexTwoHasCloserVertex) {
-                                        // ...if it does, then remove vertex one from vertex two's distance map as it should merge into another local group
-                                        distanceMap.get(vertexOneId).remove(vertexTwoId);
-                                        distanceMap.get(vertexTwoId).remove(vertexOneId);
-                                    } else {
-                                        // ...if it does not, then remove vertex two's distances map altogether and register vertex two to the current local group
-                                        distanceMap.remove(vertexTwoId);
-                                        cluster.add(vertexTwoId);
-                                    }
+                                }
+                                if (vertexTwoHasCloserVertex) {
+                                    // ...if it does, then remove vertex one from vertex two's distance map as it should merge into another local group
+                                    distanceMap.get(vertexOneId).remove(vertexTwoId);
+                                    distanceMap.get(vertexTwoId).remove(vertexOneId);
+                                } else {
+                                    // ...if it does not, then remove vertex two's distances map altogether and register vertex two to the current local group
+                                    distanceMap.remove(vertexTwoId);
+                                    cluster.add(vertexTwoId);
                                 }
                             }
                         }
