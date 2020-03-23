@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.time.Instant;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -390,9 +389,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             switch (actualInterval.interval) {
                 case DAYS:
                 case WEEKS:
-                default:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-                    break;
                 case HOURS:
                 case MINUTES:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
@@ -402,6 +398,9 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                     break;
                 case MILLIS:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
+                    break;
+                default:
+                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
                     break;
             }
         }
@@ -476,7 +475,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                     case SECONDS:
                         datetime = datetime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
-
+                    default:
+                        break;
                 }
                 evenDateTimes.add(datetime);
             }

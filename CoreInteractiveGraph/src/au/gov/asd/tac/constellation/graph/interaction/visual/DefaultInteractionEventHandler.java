@@ -413,6 +413,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case SELECTING:
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), event.getPoint()));
                             break;
+                        default:
+                            break;
                     }
                     updateCameraAndNewLine(wg, event.getPoint(), cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
                 }
@@ -519,6 +521,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                         eventState.setCurrentCreationMode(CreationMode.NONE);
                                         clearNewLineModel(camera);
                                     }
+                                    break;
+                                default:
+                                    break;
                             }
                             break;
                         case ROTATING:
@@ -548,6 +553,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             } else {
                                 eventState.addEventName(PAN_ACTION_NAME);
                             }
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -599,6 +606,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case DRAG_NODES:
                             from = eventState.getPoint(EventState.DRAG_POINT);
                             performDrag(wg, camera, from, wheelPoint);
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -750,6 +759,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case HANDLE_ASYNCHRONOUSLY:
                 new Thread(handleResult).start();
                 break;
+            default:
+                break;
         }
     }
 
@@ -860,6 +871,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             case CREATING_TRANSACTION:
                 eventState.setAddTransactionDestinationVertex(eventState.getCurrentHitId());
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
+                break;
+            default:
                 break;
         }
     }
@@ -978,6 +991,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 break;
             case TRANSACTION:
                 txIds.add(elementId);
+                break;
+            default:
                 break;
         }
 

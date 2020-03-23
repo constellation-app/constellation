@@ -240,6 +240,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             case VERTEX:
             default:
                 cmbGraphElementType.setSelectedItem(Bundle.Find_VERTEX());
+                break;
         }
 
         // Start with a blank slate:

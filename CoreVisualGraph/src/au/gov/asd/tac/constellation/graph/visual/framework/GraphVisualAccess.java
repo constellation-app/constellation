@@ -20,16 +20,16 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
@@ -721,6 +721,9 @@ public final class GraphVisualAccess implements VisualAccess {
                     connectionElementTypes[currentPos] = GraphElementType.LINK;
                     connectionElementIds[currentPos] = linkId;
                     currentPos++;
+                    break;
+                default:
+                    break;
             }
         }
         connectionElementTypes = Arrays.copyOf(connectionElementTypes, currentPos);
@@ -1062,6 +1065,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     color = accessGraph.getObjectValue(transactionColor, connectionElementIds[connection]);
+                    break;
             }
         }
         return color != null ? color : VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
@@ -1184,6 +1188,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 case TRANSACTION:
                 default:
                     style = accessGraph.getObjectValue(transactionLineStyle, connectionElementIds[connection]);
+                    break;
             }
         }
         return style != null ? style : VisualGraphDefaults.DEFAULT_TRANSACTION_LINE_STYLE;
@@ -1230,6 +1235,7 @@ public final class GraphVisualAccess implements VisualAccess {
             case TRANSACTION:
             default:
                 linkId = accessGraph.getTransactionLink(connectionElementIds[connection]);
+                break;
         }
         return accessGraph.getVertexPosition(accessGraph.getLinkLowVertex(linkId));
     }
@@ -1247,6 +1253,7 @@ public final class GraphVisualAccess implements VisualAccess {
             case TRANSACTION:
             default:
                 linkId = accessGraph.getTransactionLink(connectionElementIds[connection]);
+                break;
         }
         return accessGraph.getVertexPosition(accessGraph.getLinkHighVertex(linkId));
     }

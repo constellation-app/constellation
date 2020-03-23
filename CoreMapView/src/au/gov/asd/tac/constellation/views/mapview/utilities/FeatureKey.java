@@ -56,6 +56,7 @@ public class FeatureKey {
             default:
                 this.featureClass = null;
                 this.featureLocations = null;
+                break;
         }
     }
 

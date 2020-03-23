@@ -97,6 +97,8 @@ public enum AttributeType {
                 case TRANSACTION:
                     binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
                     break;
+                default:
+                    break;
             }
         }
 

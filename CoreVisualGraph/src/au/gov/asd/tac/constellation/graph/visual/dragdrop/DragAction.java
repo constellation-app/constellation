@@ -75,7 +75,7 @@ public class DragAction extends AbstractAction {//implements Presenter.Toolbar {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        System.out.printf("action performed\n");
+        System.out.printf("action performed%n");
     }
 
 //    @Override

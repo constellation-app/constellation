@@ -226,6 +226,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                     case VALUE:
                         parameterHasChanged();
                         break;
+                    default:
+                        break;
                 }
             });
         }

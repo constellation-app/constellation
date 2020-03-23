@@ -202,6 +202,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                     case VX_DST:
                         colName = GraphRecordStoreUtilities.DESTINATION + colName;
                         break;
+                    default:
+                        break;
                 }
             }
 
@@ -362,6 +364,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                             break;
                         case VX_DST:
                             colName = GraphRecordStoreUtilities.DESTINATION + colName;
+                            break;
+                        default:
                             break;
                     }
                 }

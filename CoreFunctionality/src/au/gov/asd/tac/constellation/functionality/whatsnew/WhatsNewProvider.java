@@ -187,7 +187,7 @@ public abstract class WhatsNewProvider {
 
         @Override
         public String toString() {
-            return String.format("[\n%s %s %s\n%s\n]", date, header, section, text);
+            return String.format("[%n%s %s %s%n%s%n]", date, header, section, text);
         }
 
         @Override

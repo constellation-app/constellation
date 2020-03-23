@@ -778,6 +778,7 @@ public final class PluginParametersPane extends GridPane {
                         break;
                     default:
                     // do nothing
+                        break;
                 }
             });
         }
@@ -798,6 +799,7 @@ public final class PluginParametersPane extends GridPane {
                         break;
                     default:
                     // do nothing
+                        break;
                 }
             });
         }

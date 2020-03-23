@@ -319,12 +319,12 @@ public class HierarchicalArranger implements Arranger {
 
     private static void dump(final ArrayList<ArrayList<Integer>> vxLevels) {
         for (int i = 0; i < vxLevels.size(); i++) {
-            System.out.printf("@@H level %d:\n", i);
+            System.out.printf("@@H level %d:%n", i);
             final ArrayList<Integer> vxLevel = vxLevels.get(i);
             for (Integer vxLevel1 : vxLevel) {
                 System.out.printf(" %d", vxLevel1);
             }
-            System.out.printf("\n");
+            System.out.printf("%n");
         }
     }
 

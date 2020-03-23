@@ -48,6 +48,8 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                         case TRANSACTION:
                             activityCount += 1;
                             break;
+                        default:
+                            break;
                     }
                 }
             } finally {
