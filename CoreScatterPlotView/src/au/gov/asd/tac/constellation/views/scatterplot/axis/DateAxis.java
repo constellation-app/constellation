@@ -397,9 +397,6 @@ public class DateAxis extends Axis<Date> {
             switch (actualInterval.interval) {
                 case Calendar.DATE:
                 case Calendar.WEEK_OF_YEAR:
-                default:
-                    dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
-                    break;
                 case Calendar.HOUR:
                 case Calendar.MINUTE:
                     dateFormat = DateFormat.getTimeInstance(DateFormat.SHORT);
@@ -409,6 +406,9 @@ public class DateAxis extends Axis<Date> {
                     break;
                 case Calendar.MILLISECOND:
                     dateFormat = DateFormat.getTimeInstance(DateFormat.FULL);
+                    break;
+                default:
+                    dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM);
                     break;
             }
         }
@@ -483,7 +483,8 @@ public class DateAxis extends Axis<Date> {
                     case Calendar.SECOND:
                         calendar.set(Calendar.MILLISECOND, 0);
                         break;
-
+                    default:
+                        break;
                 }
                 evenDates.add(calendar.getTime());
             }

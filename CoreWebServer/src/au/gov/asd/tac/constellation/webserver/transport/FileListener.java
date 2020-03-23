@@ -243,6 +243,7 @@ public class FileListener implements Runnable {
                                 break;
                             default:
                                 unrec("path", path);
+                                break;
                         }
                         break;
                     case "post":
@@ -266,20 +267,19 @@ public class FileListener implements Runnable {
                                 break;
                             default:
                                 unrec("path", path);
+                                break;
                         }
                         break;
                     case "put":
-                        switch (path) {
-                            case "current":
-                                final String gid = getString(args, "id");
-                                if (gid != null) {
-                                    GraphImpl.put_current(gid);
-                                } else {
-                                    throw new EndpointException("Must specify id");
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
+                        if ("current".equals(path)) {
+                            final String gid = getString(args, "id");
+                            if (gid != null) {
+                                GraphImpl.put_current(gid);
+                            } else {
+                                throw new EndpointException("Must specify id");
+                            }
+                        } else {
+                            unrec("path", path);
                         }
                         break;
                     default:
@@ -288,60 +288,53 @@ public class FileListener implements Runnable {
                 }
                 break;
             case "/v1/icon":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean editable = getBoolean(args, "editable");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_list(editable, out);
-                                }
-                                break;
-                            case "get":
-                                final String name = getString(args, "name");
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    IconImpl.get_get(name, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                        }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
+                if ("get".equals(verb)) {
+                    switch (path) {
+                        case "list":
+                            final Boolean editable = getBoolean(args, "editable");
+                            try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                IconImpl.get_list(editable, out);
+                            }
+                            break;
+                        case "get":
+                            final String name = getString(args, "name");
+                            try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                IconImpl.get_get(name, out);
+                            }
+                            break;
+                        default:
+                            unrec("path", path);
+                            break;
+                    }
+                } else {
+                    unrec("verb", verb);
                 }
                 break;
             case "/v1/plugin":
                 switch (verb) {
                     case "get":
-                        switch (path) {
-                            case "list":
-                                final Boolean alias = getBooleanNonNull(args, "alias");
+                        if ("list".equals(path)) {
+                            final Boolean alias = getBooleanNonNull(args, "alias");
 
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    PluginImpl.get_list(alias, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
-                                break;
+                            try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                PluginImpl.get_list(alias, out);
+                            }
+                        } else {
+                            unrec("path", path);
                         }
                         break;
                     case "post":
-                        switch (path) {
-                            case "run":
-                                final String pluginName = getString(args, "name");
-                                if (pluginName == null) {
-                                    throw new EndpointException("No plugin specified!");
-                                }
+                        if ("run".equals(path)) {
+                            final String pluginName = getString(args, "name");
+                            if (pluginName == null) {
+                                throw new EndpointException("No plugin specified!");
+                            }
 
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    PluginImpl.post_run(graphId, pluginName, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
+                            try (final InStream in = new InStream(restPath, CONTENT_IN)) {
+                                PluginImpl.post_run(graphId, pluginName, in.in);
+                            }
+                        } else {
+                            unrec("path", path);
                         }
                         break;
                     default:
@@ -352,48 +345,44 @@ public class FileListener implements Runnable {
             case "/v1/recordstore":
                 switch (verb) {
                     case "get":
-                        switch (path) {
-                            case "get":
-                                final boolean selected = getBooleanNonNull(args, "selected");
-                                final boolean vx = getBooleanNonNull(args, "vx");
-                                final boolean tx = getBooleanNonNull(args, "tx");
+                        if ("get".equals(path)) {
+                            final boolean selected = getBooleanNonNull(args, "selected");
+                            final boolean vx = getBooleanNonNull(args, "vx");
+                            final boolean tx = getBooleanNonNull(args, "tx");
 
-                                // Allow the user to specify a specific set of attributes,
-                                // cutting down data transfer and processing a lot,
-                                // particularly on the Python side.
-                                final String attrsParam = getString(args, "attrs");
-                                final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
-                                final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-                                for (final String k : attrsArray) {
-                                    attrs.add(k);
-                                }
+                            // Allow the user to specify a specific set of attributes,
+                            // cutting down data transfer and processing a lot,
+                            // particularly on the Python side.
+                            final String attrsParam = getString(args, "attrs");
+                            final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
+                            final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
+                            for (final String k : attrsArray) {
+                                attrs.add(k);
+                            }
 
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
+                            try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                                RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
+                            }
+                        } else {
+                            unrec("path", path);
                         }
                         break;
                     case "post":
-                        switch (path) {
-                            case "add":
-                                final Boolean completeWithSchemaParam = getBoolean(args, "complete_with_schema");
-                                final boolean completeWithSchema = completeWithSchemaParam == null ? true : completeWithSchemaParam;
+                        if ("add".equals(path)) {
+                            final Boolean completeWithSchemaParam = getBoolean(args, "complete_with_schema");
+                            final boolean completeWithSchema = completeWithSchemaParam == null ? true : completeWithSchemaParam;
 
-                                final String arrangeParam = getString(args, "arrange");
-                                final String arrange = arrangeParam == null ? null : arrangeParam;
+                            final String arrangeParam = getString(args, "arrange");
+                            final String arrange = arrangeParam == null ? null : arrangeParam;
 
-                                final Boolean resetViewParam = getBoolean(args, "reset_view");
-                                final boolean resetView = resetViewParam == null ? true : resetViewParam;
+                            final Boolean resetViewParam = getBoolean(args, "reset_view");
+                            final boolean resetView = resetViewParam == null ? true : resetViewParam;
 
-                                try (final InStream in = new InStream(restPath, CONTENT_IN)) {
-                                    RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
+                            try (final InStream in = new InStream(restPath, CONTENT_IN)) {
+                                RecordStoreImpl.post_add(graphId, completeWithSchema, arrange, resetView, in.in);
+                            }
+                        } else {
+                            unrec("path", path);
                         }
                         break;
                     default:
@@ -402,26 +391,21 @@ public class FileListener implements Runnable {
                 }
                 break;
             case "/v1/type":
-                switch (verb) {
-                    case "get":
-                        switch (path) {
-                            case "describe":
-                                final String type = getString(args, "type");
-                                if (type == null) {
-                                    throw new EndpointException("No type specified.");
-                                }
-
-                                try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                                    TypeImpl.get_describe(type, out);
-                                }
-                                break;
-                            default:
-                                unrec("path", path);
+                if ("get".equals(verb)) {
+                    if ("describe".equals(path)) {
+                        final String type = getString(args, "type");
+                        if (type == null) {
+                            throw new EndpointException("No type specified.");
                         }
-                        break;
-                    default:
-                        unrec("verb", verb);
-                        break;
+
+                        try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                            TypeImpl.get_describe(type, out);
+                        }
+                    } else {
+                        unrec("path", path);
+                    }
+                } else {
+                    unrec("verb", verb);
                 }
                 break;
             default:

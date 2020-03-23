@@ -38,21 +38,18 @@ public class TypeServlet extends ConstellationApiServlet {
 
     @Override
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        switch (request.getPathInfo()) {
-            case "/describe":
-                final String type = request.getParameter("type");
-                if (type == null) {
-                    throw new ServletException("No type specified.");
-                }
+        if ("/describe".equals(request.getPathInfo())) {
+            final String type = request.getParameter("type");
+            if (type == null) {
+                throw new ServletException("No type specified.");
+            }
 
-                TypeImpl.get_describe(type, response.getOutputStream());
-                response.setContentType("application/json");
-                response.setStatus(HttpServletResponse.SC_OK);
-                break;
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
+            TypeImpl.get_describe(type, response.getOutputStream());
+            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }
-
         response.getOutputStream().close();
     }
 }

@@ -122,6 +122,8 @@ public class ProductBuilder extends GraphBuilder {
                         }
                     }
                     break;
+                default:
+                    break;
             }
 
             for (int j = 0; j < g1.getVertexNeighbourCount(g1Vertices[i]); j++) {
@@ -174,6 +176,8 @@ public class ProductBuilder extends GraphBuilder {
                                 addLinkProduct(graph, g1, g2, transactionsList, rightGraphs, g1Vertices, g2Vertices, i, k, pos, l, true, false);
                             }
                         }
+                        break;
+                    default:
                         break;
                 }
             }

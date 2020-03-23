@@ -546,6 +546,7 @@ public class QueryServices {
                                 break;
                             default:
                             // Ignore
+                                break;
                         }
 
                         // Update the bitset:
@@ -675,6 +676,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -726,6 +728,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -768,6 +771,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -810,6 +814,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -902,6 +907,7 @@ public class QueryServices {
                     default:
                         // Unable to pass any form of test:
                         queryResult = false;
+                        break;
                 }
                 i++;
             }
@@ -950,6 +956,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
