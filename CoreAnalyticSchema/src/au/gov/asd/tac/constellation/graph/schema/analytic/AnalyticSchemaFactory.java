@@ -20,9 +20,12 @@ import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
@@ -31,13 +34,10 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.utilities.geospatial.Country;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.geospatial.Country;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -221,16 +221,14 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexColorAttribute, vertexId))) {
-                if (!Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
-                    graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
-                }
+            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexColorAttribute, vertexId)) && 
+                    !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
+                graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))) {
-                if (!Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
-                    graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
-                }
+            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId)) && 
+                    !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
+                graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }
 
             if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexForegroundIconAttribute, vertexId))) {
@@ -339,16 +337,14 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setStringValue(transactionLabelAttribute, transactionId, label);
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId))) {
-                if (!Objects.equals(type.getColor(), graph.getObjectValue(transactionColorAttribute, transactionId))) {
-                    graph.setObjectValue(transactionColorAttribute, transactionId, type.getColor());
-                }
+            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId)) && 
+                    !Objects.equals(type.getColor(), graph.getObjectValue(transactionColorAttribute, transactionId))) {
+                graph.setObjectValue(transactionColorAttribute, transactionId, type.getColor());
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId))) {
-                if (!Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
-                    graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
-                }
+            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId)) && 
+                    !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
+                graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
 
             if (type != null && type != SchemaTransactionTypeUtilities.getDefaultType()

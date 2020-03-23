@@ -830,15 +830,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                             if (xData != null) {
                                 xData.add(data.getXValue());
                             }
-                            if (yData != null) {
-                                if (data.getExtraValue() instanceof Interaction) {
-                                    final Interaction intr = (Interaction) data.getExtraValue();
-                                    if (intr != null) {
-                                        yData.add(intr.getTopVertex().getDisplayPos());
-                                        yData.add(intr.getBottomVertex().getDisplayPos());
-                                    } else {
-                                        yData.add(data.getYValue());
-                                    }
+                            if (yData != null && data.getExtraValue() instanceof Interaction) {
+                                final Interaction intr = (Interaction) data.getExtraValue();
+                                if (intr != null) {
+                                    yData.add(intr.getTopVertex().getDisplayPos());
+                                    yData.add(intr.getBottomVertex().getDisplayPos());
+                                } else {
+                                    yData.add(data.getYValue());
                                 }
                             }
                         }

@@ -240,10 +240,8 @@ public class QueryServices {
 
             if (type.elementExists(graph, id) && uid == result.getUID()) {
                 // Select relevant:
-                if (result.getType() == GraphElementType.VERTEX) {
-                    if (selectedVertexAttr != Graph.NOT_FOUND) {
-                        graph.setBooleanValue(selectedVertexAttr, result.getID(), true);
-                    }
+                if (result.getType() == GraphElementType.VERTEX && selectedVertexAttr != Graph.NOT_FOUND) {
+                    graph.setBooleanValue(selectedVertexAttr, result.getID(), true);
                 }
                 if (result.getType() == GraphElementType.LINK) {
                     if (selectedLinkAttr != Graph.NOT_FOUND) {

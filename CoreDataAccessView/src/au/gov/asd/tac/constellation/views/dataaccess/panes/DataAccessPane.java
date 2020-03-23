@@ -31,6 +31,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -40,9 +43,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -222,19 +222,17 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 } 
             }
             // when no graph present, create new graph
-            if(graphId == null){
-                if (pluginSelected && selectedPluginsValid) {
-                    NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
-                    graphAction.actionPerformed(null);
-                    while(GraphManager.getDefault().getActiveGraph() == null){
-                        // Wait and do nothing while graph is getting made
-                    }
-                    graphId = GraphManager.getDefault().getActiveGraph().getId();
-                    if (!graphState.containsKey(graphId)) {
-                        graphState.put(graphId, new GraphState());
-                    }
-                    currentGraphState = graphState.get(graphId);
+            if(graphId == null && pluginSelected && selectedPluginsValid){
+                NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
+                graphAction.actionPerformed(null);
+                while(GraphManager.getDefault().getActiveGraph() == null){
+                    // Wait and do nothing while graph is getting made
                 }
+                graphId = GraphManager.getDefault().getActiveGraph().getId();
+                if (!graphState.containsKey(graphId)) {
+                    graphState.put(graphId, new GraphState());
+                }
+                currentGraphState = graphState.get(graphId);
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();

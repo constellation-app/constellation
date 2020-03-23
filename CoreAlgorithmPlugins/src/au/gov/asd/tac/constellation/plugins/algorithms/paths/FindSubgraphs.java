@@ -65,10 +65,8 @@ public class FindSubgraphs {
             sendBuffer[vxId] = new BitSet(vxCount);
 
             // set up an initial message for this node if it is a seed
-            if (vxCount > kThreshold) {
-                if (!seeds.get(vxId)) {
-                    continue;
-                }
+            if (vxCount > kThreshold && !seeds.get(vxId)) {
+                continue;
             }
             // assuming the node has neighbours
             if (graph.getVertexNeighbourCount(position) > 0) {

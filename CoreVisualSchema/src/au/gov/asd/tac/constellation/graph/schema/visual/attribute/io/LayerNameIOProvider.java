@@ -18,11 +18,11 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,13 +49,11 @@ public class LayerNameIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        if (!jnode.isNull()) {
-            if (jnode.has(NAME_TAG) && jnode.has(LAYER_TAG)) {
-                final String name = jnode.get(NAME_TAG).textValue();
-                final int layer = jnode.get(LAYER_TAG).intValue();
-                final LayerName ln = new LayerName(layer, name);
-                graph.setObjectValue(attributeId, elementId, ln);
-            }
+        if (!jnode.isNull() && jnode.has(NAME_TAG) && jnode.has(LAYER_TAG)) {
+            final String name = jnode.get(NAME_TAG).textValue();
+            final int layer = jnode.get(LAYER_TAG).intValue();
+            final LayerName ln = new LayerName(layer, name);
+            graph.setObjectValue(attributeId, elementId, ln);
         }
     }
 

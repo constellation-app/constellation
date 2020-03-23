@@ -731,10 +731,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         removeElementFromIndices(GraphElementType.VERTEX, vertex);
 
         IntHashSet index = primaryKeyIndices[GraphElementType.VERTEX.ordinal()];
-        if (index != null) {
-            if (!removedFromKeys[GraphElementType.VERTEX.ordinal()].remove(vertex)) {
-                index.remove(vertex);
-            }
+        if (index != null && !removedFromKeys[GraphElementType.VERTEX.ordinal()].remove(vertex)) {
+            index.remove(vertex);
         }
 
         vStore.remove(vertex);
@@ -944,10 +942,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         removeElementFromIndices(GraphElementType.TRANSACTION, transaction);
 
         IntHashSet index = primaryKeyIndices[GraphElementType.TRANSACTION.ordinal()];
-        if (index != null) {
-            if (!removedFromKeys[GraphElementType.TRANSACTION.ordinal()].remove(transaction)) {
-                index.remove(transaction);
-            }
+        if (index != null && !removedFromKeys[GraphElementType.TRANSACTION.ordinal()].remove(transaction)) {
+            index.remove(transaction);
         }
 
         // Get the link that holds the transaction
@@ -2320,10 +2316,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     private void removeFromIndex(final int elementType, final int id) {
         IntHashSet index = primaryKeyIndices[elementType];
-        if (index != null) {
-            if (removedFromKeys[elementType].addToBack(id)) {
-                index.remove(id);
-            }
+        if (index != null && removedFromKeys[elementType].addToBack(id)) {
+            index.remove(id);
         }
     }
 

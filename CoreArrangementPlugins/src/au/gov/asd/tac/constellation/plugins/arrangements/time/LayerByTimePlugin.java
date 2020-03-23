@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.time;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -24,9 +23,12 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerName;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -47,10 +49,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LayerNameAttributeDescription;
-import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -459,25 +459,23 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
                 // Draw a grey vertical indicator line connecting the same nodes in each layer.
                 // We have to do this after the "remove node without transactions" step because we're adding more transactions.
-                if (!isTransactionLayers) {
-                    if (remappedLayers.keySet().size() > 1) {
-                        nodeIdToLayers.keySet().stream().forEach(origNodeId -> {
-                            int prevNodeId = -1;
-                            final BitSet layers = nodeIdToLayers.get(origNodeId);
-                            for (int layer = layers.nextSetBit(0); layer >= 0; layer = layers.nextSetBit(layer + 1)) {
-                                final int nodeId = layer == 0 ? origNodeId : nodeDups.get(String.format("%s/%s", origNodeId, layer));
-                                if (prevNodeId != -1) {
-                                    final int sTxId = wgcopy.addTransaction(prevNodeId, nodeId, false);
-                                    wgcopy.setBooleanValue(txGuideline, sTxId, true);
-                                    wgcopy.setObjectValue(txColorAttr, sTxId, guidelineColor);
-                                    wgcopy.setFloatValue(txVisibilityAttr, sTxId, 1.1f);
-                                    LayerName dn = new LayerName(1107, "Guideline");
-                                    wgcopy.setObjectValue(timeLayerAttr, sTxId, dn);
-                                }
-                                prevNodeId = nodeId;
+                if (!isTransactionLayers && remappedLayers.keySet().size() > 1) {
+                    nodeIdToLayers.keySet().stream().forEach(origNodeId -> {
+                        int prevNodeId = -1;
+                        final BitSet layers = nodeIdToLayers.get(origNodeId);
+                        for (int layer = layers.nextSetBit(0); layer >= 0; layer = layers.nextSetBit(layer + 1)) {
+                            final int nodeId = layer == 0 ? origNodeId : nodeDups.get(String.format("%s/%s", origNodeId, layer));
+                            if (prevNodeId != -1) {
+                                final int sTxId = wgcopy.addTransaction(prevNodeId, nodeId, false);
+                                wgcopy.setBooleanValue(txGuideline, sTxId, true);
+                                wgcopy.setObjectValue(txColorAttr, sTxId, guidelineColor);
+                                wgcopy.setFloatValue(txVisibilityAttr, sTxId, 1.1f);
+                                LayerName dn = new LayerName(1107, "Guideline");
+                                wgcopy.setObjectValue(timeLayerAttr, sTxId, dn);
                             }
-                        });
-                    }
+                            prevNodeId = nodeId;
+                        }
+                    });
                 }
             }
 

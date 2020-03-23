@@ -156,10 +156,8 @@ public class NifiClient extends RestClient {
         final String fileOnServer = DEFAULT_CONFIG.getNifiUri() + fileName;
         final File file = new File(fileOnServer);
 
-        if (!file.getParentFile().exists()) {
-            if (!file.getParentFile().mkdirs()) {
-                throw new IOException("Parent directory doesn't exist and couldn't create it: " + file.getParentFile());
-            }
+        if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+            throw new IOException("Parent directory doesn't exist and couldn't create it: " + file.getParentFile());
         }
 
         java.nio.file.Files.copy(is, new File(fileOnServer).toPath(), StandardCopyOption.REPLACE_EXISTING);

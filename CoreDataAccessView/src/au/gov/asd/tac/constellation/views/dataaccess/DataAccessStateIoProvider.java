@@ -50,21 +50,19 @@ public class DataAccessStateIoProvider extends AbstractGraphIOProvider {
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
         final DataAccessState state = new DataAccessState();
 
-        if (!jnode.isNull()) {
-            if (jnode.isArray()) {
-                for (int i = 0; i < jnode.size(); i++) {
-                    state.newTab();
+        if (!jnode.isNull() && jnode.isArray()) {
+            for (int i = 0; i < jnode.size(); i++) {
+                state.newTab();
 
-                    final JsonNode tab = jnode.get(i).get(GLOBAL_OBJECT);
-                    final Iterator<String> globalParameterNames = tab.fieldNames();
-                    while (globalParameterNames.hasNext()) {
-                        final String globalParameterName = globalParameterNames.next();
-                        state.add(globalParameterName, tab.get(globalParameterName).isNull()
-                                ? null : tab.get(globalParameterName).textValue());
-                    }
-
-                    // TODO: retrieve plugin state information
+                final JsonNode tab = jnode.get(i).get(GLOBAL_OBJECT);
+                final Iterator<String> globalParameterNames = tab.fieldNames();
+                while (globalParameterNames.hasNext()) {
+                    final String globalParameterName = globalParameterNames.next();
+                    state.add(globalParameterName, tab.get(globalParameterName).isNull()
+                            ? null : tab.get(globalParameterName).textValue());
                 }
+
+                // TODO: retrieve plugin state information
             }
         }
 
