@@ -122,9 +122,7 @@ public class PluginParameters implements PluginParameterListener {
         public void resetFormatting() {
             this.formatter = formatter == null ? null : formatter.copy();
             if (!isLeaf()) {
-                children.forEach((child) -> {
-                    child.resetFormatting();
-                });
+                children.forEach(PluginParametersNode::resetFormatting);
             }
         }
 

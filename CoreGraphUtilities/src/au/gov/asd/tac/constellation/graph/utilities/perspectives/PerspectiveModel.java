@@ -34,9 +34,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
 
     public PerspectiveModel(final PerspectiveModel other) {
         perspectives = new ArrayList<>();
-        other.perspectives.stream().forEach((p) -> {
-            perspectives.add(p);
-        });
+        other.perspectives.stream().forEach(perspectives::add);
     }
 
     @Override

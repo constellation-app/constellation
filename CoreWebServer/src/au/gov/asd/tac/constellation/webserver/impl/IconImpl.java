@@ -47,7 +47,7 @@ public class IconImpl {
 
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
-        names.forEach(name -> root.add(name));
+        names.forEach(root::add);
 
         mapper.writeValue(out, root);
     }

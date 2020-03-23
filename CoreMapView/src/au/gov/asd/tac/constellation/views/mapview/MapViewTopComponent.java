@@ -342,7 +342,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         markerLabelComboBox.setToolTipText("Chose the label for markers displayed in the Map View");
         toolBar.add(markerLabelComboBox);
 
-        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(exporter -> new MapExporterWrapper(exporter)).collect(Collectors.toList());
+        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
         this.exportMenu = new JDropDownMenu(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
         exportMenu.addActionListener(event -> {
             final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();

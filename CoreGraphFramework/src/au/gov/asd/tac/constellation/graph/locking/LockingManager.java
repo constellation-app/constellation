@@ -405,12 +405,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 writeContext = originalReadContext;
 
                 if (undoManager != null) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this));
-                        }
-                    });
+                    SwingUtilities.invokeLater(() -> undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this)));
                 }
                 currentEdit = null;
                 initialEdit = null;
@@ -454,12 +449,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                 writeContext = originalReadContext;
 
                 if (undoManager != null) {
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this));
-                        }
-                    });
+                    SwingUtilities.invokeLater(() -> undoManager.undoableEditHappened(new UndoableEditEvent(LockingManager.this, LockingEdit.this)));
                 }
                 currentEdit = new LockingEdit(name, false, editor);
                 writeContext.target.setGraphEdit(currentEdit.graphEdit);

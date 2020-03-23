@@ -674,8 +674,7 @@ public class Shape {
         featureTypeBuilder.add(CENTROID_LONGITUDE_ATTRIBUTE, Double.class);
         featureTypeBuilder.add(RADIUS_ATTRIBUTE, Double.class);
         if (attributes != null) {
-            attributes.forEach((attributeName, attributeClass)
-                    -> featureTypeBuilder.add(attributeName, attributeClass));
+            attributes.forEach(featureTypeBuilder::add);
         }
         return featureTypeBuilder.buildFeatureType();
     }

@@ -31,13 +31,10 @@ public class ReserveLock {
     // Stores the current ReserveLock for each thread allowing ReserveLocks to be reentrantly acquired
     private static final ThreadLocal<ReserveLock> THREAD_LOCAL = new ThreadLocal<>();
     // A comparator allowing Reservables to be consistently sorted
-    private static final Comparator<Reservable> RESERVABLE_COMPARATOR = new Comparator<Reservable>() {
-        @Override
-        public int compare(final Reservable r1, final Reservable r2) {
-            int x = System.identityHashCode(r1);
-            int y = System.identityHashCode(r2);
-            return (x < y) ? -1 : ((x == y) ? 0 : 1);
-        }
+    private static final Comparator<Reservable> RESERVABLE_COMPARATOR = (r1, r2) -> {
+        int x = System.identityHashCode(r1);
+        int y = System.identityHashCode(r2);
+        return (x < y) ? -1 : ((x == y) ? 0 : 1);
     };
     private final ReentrantLock lock = new ReentrantLock(true);
     private final Reservable[] reserved;
