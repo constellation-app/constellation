@@ -22,5 +22,4 @@ package au.gov.asd.tac.constellation.graph.utilities.widgets;
 public interface DateTimeListenerInterface {
 
     public void focusChanged();
-
 }

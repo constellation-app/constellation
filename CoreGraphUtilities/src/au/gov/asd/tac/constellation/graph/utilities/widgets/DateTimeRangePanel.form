@@ -31,7 +31,7 @@
               <Component id="calendarButton2" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="presetDateRanges" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <EmptySpace pref="191" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -77,7 +77,7 @@
     <Component class="javax.swing.JLabel" name="lblDateTime1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/dsd/tac/constellation/support/widgets/Bundle.properties" key="DateCriteriaPanel.lblDate1.text_2" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/widgets/Bundle.properties" key="DateTimeRangePanel.lblDate1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>

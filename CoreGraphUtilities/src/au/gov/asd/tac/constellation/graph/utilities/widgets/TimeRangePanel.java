@@ -138,7 +138,7 @@ public class TimeRangePanel extends javax.swing.JPanel {
 
         setOpaque(false);
 
-        lblTime1.setText(org.openide.util.NbBundle.getMessage(TimeRangePanel.class, "DateCriteriaPanel.lblDate1.text_1")); // NOI18N
+        lblTime1.setText(org.openide.util.NbBundle.getMessage(TimeRangePanel.class, "DateCriteriaPanel.lblDate1.text")); // NOI18N
 
         spnTime1.setModel(new javax.swing.SpinnerDateModel(new java.util.Date(1366083314466L), null, null, java.util.Calendar.HOUR));
 

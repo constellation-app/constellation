@@ -119,8 +119,9 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    private static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
+    private static final String RESOURCES = "resources/";
 
     public static synchronized int start() {
         if (!running) {
@@ -178,8 +179,9 @@ public class WebServer {
                 final Thread webserver = new Thread(() -> {
                     try {
                         server.join();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    } catch (final InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
                         restFile.delete();
@@ -225,7 +227,7 @@ public class WebServer {
         if (doDownload) {
             boolean complete = false;
             try (
-                    final InputStream in = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT);
+                    final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT);
                     final FileOutputStream out = new FileOutputStream(download)) {
                 final byte[] buf = new byte[64 * 1024];
                 while (true) {
