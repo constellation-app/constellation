@@ -105,7 +105,7 @@ public class AnalyticConfigurationPane extends VBox {
         createGlobalParameters();
 
         // set up the list of available analytic plugins
-        Lookup.getDefault().lookupAll(AnalyticPlugin.class).forEach((plugin) -> {
+        Lookup.getDefault().lookupAll(AnalyticPlugin.class).forEach(plugin -> {
             final SelectableAnalyticPlugin selectablePlugin = new SelectableAnalyticPlugin(plugin);
             SELECTABLE_PLUGINS.add(selectablePlugin);
             PLUGIN_TO_SELECTABLE_PLUGIN_MAP.put(plugin, selectablePlugin);
@@ -199,7 +199,7 @@ public class AnalyticConfigurationPane extends VBox {
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 currentQuestion = newValue;
-                SingleChoiceParameterType.getOptionsData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID)).forEach((aggregatorParameterValue) -> {
+                SingleChoiceParameterType.getOptionsData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID)).forEach(aggregatorParameterValue -> {
                     if (((AnalyticAggregatorParameterValue) aggregatorParameterValue).getObjectValue().getClass().equals(currentQuestion.getAggregatorType())) {
                         SingleChoiceParameterType.setChoiceData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID), (AnalyticAggregatorParameterValue) aggregatorParameterValue);
                     }
@@ -382,7 +382,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         // add and set parameters for each plugin in the question
         final List<SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
-        pluginList.getItems().forEach((selectablePlugin) -> {
+        pluginList.getItems().forEach(selectablePlugin -> {
             if (selectablePlugin.checkbox.isSelected()) {
                 selectedPlugins.add(selectablePlugin);
                 question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());
@@ -427,7 +427,7 @@ public class AnalyticConfigurationPane extends VBox {
             stateChanged = false;
             if (categoryListPane.isExpanded()) {
                 final List<SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
-                pluginList.getItems().forEach((selectablePlugin) -> {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     if (selectablePlugin.isSelected()) {
                         selectedPlugins.add(selectablePlugin);
                     }
@@ -495,7 +495,7 @@ public class AnalyticConfigurationPane extends VBox {
     private void setPluginsFromSelectedQuestion() {
         final List<SelectableAnalyticPlugin> questionPlugins = new ArrayList<>();
         final AnalyticQuestionDescription selectedQuestion = questionList.getSelectionModel().getSelectedItem();
-        SELECTABLE_PLUGINS.forEach((selectablePlugin) -> {
+        SELECTABLE_PLUGINS.forEach(selectablePlugin -> {
             if (selectedQuestion != null && selectedQuestion.getPluginClasses().contains(selectablePlugin.plugin.getClass())) {
                 questionPlugins.add(selectablePlugin);
             }
@@ -573,12 +573,12 @@ public class AnalyticConfigurationPane extends VBox {
             this.plugin = plugin;
             this.parameters = new PluginParameters();
             parameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
-            globalAnalyticParameters.getParameters().values().forEach((parameter) -> {
+            globalAnalyticParameters.getParameters().values().forEach(parameter -> {
                 parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP);
             });
             final String parameterSpecificGroupName = plugin.getName() + " Parameters";
             parameters.addGroup(parameterSpecificGroupName, new PluginParametersPane.TitledSeparatedParameterLayout(parameterSpecificGroupName, 14, false));
-            plugin.createParameters().getParameters().values().forEach((parameter) -> {
+            plugin.createParameters().getParameters().values().forEach(parameter -> {
                 parameters.addParameter(parameter, parameterSpecificGroupName);
             });
             plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), parameters);
@@ -607,7 +607,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         public final PluginParameters getPluginSpecificParameters() {
             PluginParameters pluginParameters = new PluginParameters();
-            parameters.getParameters().entrySet().forEach((parameter) -> {
+            parameters.getParameters().entrySet().forEach(parameter -> {
                 if (!globalAnalyticParameters.hasParameter(parameter.getKey())) {
                     pluginParameters.addParameter(parameter.getValue());
                 }

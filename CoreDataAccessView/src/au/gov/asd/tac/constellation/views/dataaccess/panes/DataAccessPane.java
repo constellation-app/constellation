@@ -31,6 +31,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -40,9 +43,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -467,9 +467,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
                     // Use a pre-filled LinkedHashMap to keep the types in the correct order.
                     final List<String> typeList = DataAccessPluginType.getTypes();
-                    typeList.stream().forEach((type) -> {
-                        plugins.put(type, new ArrayList<>());
-                    });
+                    typeList.stream().forEach(type -> plugins.put(type, new ArrayList<>()));
 
                     // create the favourites category
                     if (plugins.get(DataAccessPluginCoreType.FAVOURITES) == null) {
@@ -1041,10 +1039,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     private void deselectAllPlugins() {
-        dataAccessTabPane.getTabs().stream().filter((tab) -> (tabHasEnabledPlugins(tab))).forEachOrdered((tab) -> {
-            getQueryPhasePane(tab).getDataAccessPanes().forEach((dataAccessPane) -> {
-                dataAccessPane.validityChanged(false);
-            });
+        dataAccessTabPane.getTabs().stream().filter(this::tabHasEnabledPlugins).forEachOrdered(tab -> {
+            getQueryPhasePane(tab).getDataAccessPanes().forEach(dataAccessPane -> dataAccessPane.validityChanged(false));
         });
     }
 

@@ -46,9 +46,7 @@ public final class MostRecentModuleAction implements ActionListener {
         final List<ModuleInfo> moduleList = MostRecentModules.getModules();
 
         final StringBuilder sb = new StringBuilder();
-        moduleList.stream().forEach((mi) -> {
-            sb.append(String.format("%-40s %20s\n", mi.getDisplayName(), mi.getSpecificationVersion()));
-        });
+        moduleList.stream().forEach(mi -> sb.append(String.format("%-40s %20s\n", mi.getDisplayName(), mi.getSpecificationVersion())));
 
         final InfoTextPanel itp = new InfoTextPanel(sb.toString());
         final NotifyDescriptor.Message msg = new NotifyDescriptor.Message(itp);

@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttribute
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager;
 import au.gov.asd.tac.constellation.views.timeline.clustering.TreeElement;
@@ -31,8 +33,6 @@ import au.gov.asd.tac.constellation.views.timeline.components.Interaction;
 import au.gov.asd.tac.constellation.views.timeline.components.TimelineChart;
 import au.gov.asd.tac.constellation.views.timeline.components.Transaction;
 import au.gov.asd.tac.constellation.views.timeline.components.Vertex;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
@@ -469,9 +469,7 @@ public class TimelinePanel extends Region {
         timeZoneComboBox.setPrefWidth(150.0);
 
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-        ZoneId.getAvailableZoneIds().forEach((id) -> {
-            timeZones.add(ZoneId.of(id));
-        });
+        ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
         timeZoneComboBox.setItems(timeZones.sorted(TimeZoneUtilities.ZONE_ID_COMPARATOR));
         final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
             @Override

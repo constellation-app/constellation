@@ -124,7 +124,7 @@ public class ImportDelimitedIO {
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
             final List<ImportDefinition> definitions = importController.getDefinitions();
             final String[] columns = importController.getCurrentColumns();
-            definitions.stream().forEach((impdef) -> {
+            definitions.stream().forEach(impdef -> {
                 final ObjectNode def = definitionArray.addObject();
 
                 def.put(FIRST_ROW, impdef.getFirstRow());
@@ -148,7 +148,7 @@ public class ImportDelimitedIO {
                 for (final AttributeType attrType : AttributeType.values()) {
                     final ArrayNode typeArray = attrDefs.putArray(attrType.name());
                     final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
-                    iadefs.stream().forEach((iadef) -> {
+                    iadefs.stream().forEach(iadef -> {
                         if (hasSavableAttribute(iadef)) {
                             final ObjectNode type = typeArray.addObject();
 

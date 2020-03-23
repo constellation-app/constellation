@@ -181,11 +181,9 @@ public abstract class Response {
         b.append(String.format("code    : %d\n", code));
         b.append(String.format("message : %s\n", message));
         b.append("----\n");
-        headers.entrySet().stream().forEach((header) -> {
+        headers.entrySet().stream().forEach(header -> {
             b.append(String.format("header  : %s\n", header.getKey()));
-            header.getValue().stream().forEach((v) -> {
-                b.append(String.format("        : %s\n", v));
-            });
+            header.getValue().stream().forEach(v -> b.append(String.format("        : %s\n", v)));
         });
 
         b.append("----\n");

@@ -62,9 +62,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     public HeadingPane(String headingText, List<DataAccessPlugin> plugins, PluginParametersPaneListener top, final Set<String> globalParamLabels) {
         this.top = top;
         boxes.setHgap(5);
-        plugins.stream().forEach((_item) -> {
-            boxes.getChildren().add(makeInactiveSquare());
-        });
+        plugins.stream().forEach(_item -> boxes.getChildren().add(makeInactiveSquare()));
         setText(headingText);
         setGraphic(boxes);
         setContentDisplay(ContentDisplay.RIGHT);

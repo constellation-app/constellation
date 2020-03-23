@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,9 +110,7 @@ public class ExpandedCompositeNodeState {
         idToCopiedId.put(vxId, copiedId[0]);
 
         // Add to the expansion store those transactions between this vertex and all vertices already added to the expansion store
-        idToCopiedId.entrySet().stream().forEach((entry) -> {
-            GraphRecordStoreUtilities.copyTransactionsBetweenVertices(wg, constituentNodeStore, vxId, entry.getKey(), copiedId[0], entry.getValue());
-        });
+        idToCopiedId.entrySet().stream().forEach(entry -> GraphRecordStoreUtilities.copyTransactionsBetweenVertices(wg, constituentNodeStore, vxId, entry.getKey(), copiedId[0], entry.getValue()));
 
         // Add the copied id of the expanded vertex to the relevant lists in the contracted composite state.
         expandedIds.add(copiedId[0]);

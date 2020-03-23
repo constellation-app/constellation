@@ -276,7 +276,7 @@ public class GraphRecordStoreUtilities {
             }
         }
 
-        values.entrySet().stream().forEach((entry) -> {
+        values.entrySet().stream().forEach(entry -> {
             String key = entry.getKey();
             String type = "string";
             if (key.endsWith(">")) {

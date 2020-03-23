@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.graph.*;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -207,7 +207,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -231,7 +231,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -256,7 +256,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -280,7 +280,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }

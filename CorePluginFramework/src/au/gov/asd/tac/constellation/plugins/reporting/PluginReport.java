@@ -100,9 +100,7 @@ public class PluginReport {
      * several changes and only notify the listeners once for efficiency.
      */
     public synchronized void firePluginReportChangedEvent() {
-        listeners.forEach((listener) -> {
-            listener.pluginReportChanged(this);
-        });
+        listeners.forEach(listener -> listener.pluginReportChanged(this));
     }
 
     /**
@@ -317,9 +315,7 @@ public class PluginReport {
     public PluginReport addChildReport(Plugin plugin) {
         PluginReport childReport = new PluginReport(graphReport, plugin);
         childReports.add(childReport);
-        listeners.stream().forEach((listener) -> {
-            listener.addedChildReport(this, childReport);
-        });
+        listeners.stream().forEach(listener -> listener.addedChildReport(this, childReport));
         return childReport;
     }
 

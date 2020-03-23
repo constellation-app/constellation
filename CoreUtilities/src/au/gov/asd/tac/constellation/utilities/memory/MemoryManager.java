@@ -73,9 +73,7 @@ public class MemoryManager {
         }
 
         synchronized (LISTENERS) {
-            LISTENERS.stream().forEach((listener) -> {
-                listener.newObject(c);
-            });
+            LISTENERS.stream().forEach(listener -> listener.newObject(c));
         }
     }
 
@@ -96,9 +94,7 @@ public class MemoryManager {
         }
 
         synchronized (LISTENERS) {
-            LISTENERS.stream().forEach((listener) -> {
-                listener.finalizeObject(c);
-            });
+            LISTENERS.stream().forEach(listener -> listener.finalizeObject(c));
         }
     }
 
