@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,37 +15,42 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipUtilities;
-import com.sun.javafx.css.converters.EnumConverter;
-import com.sun.javafx.scene.control.skin.TextAreaSkin;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableObjectProperty;
 import javafx.css.StyleableProperty;
+import javafx.css.converter.EnumConverter;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.CacheHint;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Skin;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.skin.TextAreaSkin;
 
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
  * layout behaviour to a Label.
+ * 
+ * TODO: {@link TextArea#populateContextMenu) no longer exists, fix it.
  *
  * @author sirius
  */
 public class SelectableLabel extends TextArea {
+    
+    private static final Logger LOGGER = Logger.getLogger(SelectableLabel.class.getName());
 
     private Node content = null;
     private TextAreaSkin skin = null;
@@ -63,13 +68,13 @@ public class SelectableLabel extends TextArea {
             super(textArea);
         }
 
-        @Override
-        public void populateContextMenu(final ContextMenu contextMenu) {
-            super.populateContextMenu(contextMenu);
-            if (contextMenuItems != null) {
-                contextMenu.getItems().addAll(contextMenuItems);
-            }
-        }
+//        @Override
+//        public void populateContextMenu(final ContextMenu contextMenu) {
+//            super.populateContextMenu(contextMenu);
+//            if (contextMenuItems != null) {
+//                contextMenu.getItems().addAll(contextMenuItems);
+//            }
+//        }
     }
 
     @Override
@@ -176,7 +181,7 @@ public class SelectableLabel extends TextArea {
             viewportBoundsField.setAccessible(true);
             viewportBoundsField.set(scrollPane, new EmptyBoundingBoxProperty(scrollPane, "viewportBounds"));
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

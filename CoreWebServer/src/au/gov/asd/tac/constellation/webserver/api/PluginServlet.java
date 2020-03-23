@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.webserver.api;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.impl.PluginImpl;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,8 @@ import org.openide.util.lookup.ServiceProvider;
         description = "REST API for plugins",
         urlPatterns = {"/v1/plugin/*"})
 public class PluginServlet extends ConstellationApiServlet {
+    
+    private static final Logger LOGGER = Logger.getLogger(PluginServlet.class.getName());
 
     @Override
     protected void get(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
@@ -58,24 +62,22 @@ public class PluginServlet extends ConstellationApiServlet {
 
     @Override
     protected void post(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
-        switch (request.getPathInfo()) {
-            case "/run":
-                // Run a plugin, optionally with parameters.
-                final String graphId = request.getParameter("graph_id");
-                final String pluginName = request.getParameter("name");
-                if (pluginName == null) {
-                    throw new ServletException("No plugin specified!");
-                } else {
-                    try {
-                        PluginImpl.post_run(graphId, pluginName, request.getInputStream());
-                    } catch (final Exception ex) {
-                        ex.printStackTrace();
-                        throw new ServletException(ex);
-                    }
+        if ("/run".equals(request.getPathInfo())) {
+            // Run a plugin, optionally with parameters.
+            final String graphId = request.getParameter("graph_id");
+            final String pluginName = request.getParameter("name");
+            if (pluginName == null) {
+                throw new ServletException("No plugin specified!");
+            } else {
+                try {
+                    PluginImpl.post_run(graphId, pluginName, request.getInputStream());
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                    throw new ServletException(ex);
                 }
-                break;
-            default:
-                throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
+            }
+        } else {
+            throw new ServletException(String.format("Unknown API path %s", request.getPathInfo()));
         }
     }
 }

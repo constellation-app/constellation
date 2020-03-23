@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import java.util.Queue;
 import java.util.function.Consumer;
 

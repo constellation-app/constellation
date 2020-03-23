@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,12 +77,7 @@ public final class AutosaveUtilities {
             return new File[0];
         }
 
-        final File[] saveFiles = saveDir.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(final File dir, final String name) {
-                return name.endsWith(ext);
-            }
-        });
+        final File[] saveFiles = saveDir.listFiles((dir, name) -> name.endsWith(ext));
 
         return saveFiles;
     }

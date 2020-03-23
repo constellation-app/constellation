@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector2f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.icons.ConstellationIcon;
-import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLContext;
@@ -200,7 +200,7 @@ public final class GLTools {
             if (geometryShader != -1) {
                 gl.glDeleteShader(geometryShader);
             }
-            throw new RenderException(String.format("Invalid vertex shader '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid vertex shader '%s':%n%n%s", label, log));
         }
 
         gl.glGetShaderiv(fragmentShader, GL3.GL_COMPILE_STATUS, testVal, 0);
@@ -211,7 +211,7 @@ public final class GLTools {
             if (geometryShader != -1) {
                 gl.glDeleteShader(geometryShader);
             }
-            throw new RenderException(String.format("Invalid fragment shader '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid fragment shader '%s':%n%n%s", label, log));
         }
 
         if (geometryShader != -1) {
@@ -221,7 +221,7 @@ public final class GLTools {
                 gl.glDeleteShader(vertexShader);
                 gl.glDeleteShader(fragmentShader);
                 gl.glDeleteShader(geometryShader);
-                throw new RenderException(String.format("Invalid geometry shader '%s':\n\n%s", label, log));
+                throw new RenderException(String.format("Invalid geometry shader '%s':%n%n%s", label, log));
             }
         }
 
@@ -259,7 +259,7 @@ public final class GLTools {
         if (testVal[0] == GL3.GL_FALSE) {
             final String log = getProgramLog(gl, progid);
             gl.glDeleteProgram(progid);
-            throw new RenderException(String.format("Invalid program link '%s':\n\n%s", label, log));
+            throw new RenderException(String.format("Invalid program link '%s':%n%n%s", label, log));
         }
 
         LOGGER.log(Level.FINE, "PROGRAMLOG::{0}::{1}", new Object[]{label, getProgramLog(gl, progid)});

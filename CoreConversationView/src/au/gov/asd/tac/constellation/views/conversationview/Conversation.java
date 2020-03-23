@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateController;
-import au.gov.asd.tac.constellation.pluginframework.update.GraphUpdateManager;
-import au.gov.asd.tac.constellation.pluginframework.update.MultiAttributeUpdateComponent;
-import au.gov.asd.tac.constellation.pluginframework.update.UpdateComponent;
-import au.gov.asd.tac.constellation.pluginframework.update.UpdateController;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
+import au.gov.asd.tac.constellation.plugins.update.GraphUpdateManager;
+import au.gov.asd.tac.constellation.plugins.update.MultiAttributeUpdateComponent;
+import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
+import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.views.conversationview.TextConversationContributionProvider.TextContribution;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
 import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
@@ -295,6 +295,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -341,6 +342,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -392,6 +394,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -433,6 +436,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 
@@ -474,6 +478,7 @@ public class Conversation {
 
                 latch.await();
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 return false;
             }
 

@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -155,21 +155,22 @@ public class ConnectionPanel extends JPanel {
                         // The JAR file hasn't told us what the possible driver classes are,
                         // so do it the hard way.
                         final URL[] searchPath = new URL[]{new URL("file:///" + jarfile)};
-                        final ClassLoader clloader = new URLClassLoader(searchPath);
-                        for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
-                            final JarEntry je = e.nextElement();
-                            final String classname = je.getName();
-                            if (classname.endsWith(".class")) {
-                                try {
-                                    // Remove ".class", convert '/' to '.' to create a proper class name.
-                                    final int len = classname.length();
-                                    final String name = classname.substring(0, len - 6).replace('/', '.');
-                                    final Class<?> cl = clloader.loadClass(name);
-                                    if (Driver.class.isAssignableFrom(cl)) {
-                                        driverList.add(name);
+                        try (final URLClassLoader clloader = new URLClassLoader(searchPath)) {
+                            for (final Enumeration<JarEntry> e = jf.entries(); e.hasMoreElements();) {
+                                final JarEntry je = e.nextElement();
+                                final String classname = je.getName();
+                                if (classname.endsWith(".class")) {
+                                    try {
+                                        // Remove ".class", convert '/' to '.' to create a proper class name.
+                                        final int len = classname.length();
+                                        final String name = classname.substring(0, len - 6).replace('/', '.');
+                                        final Class<?> cl = clloader.loadClass(name);
+                                        if (Driver.class.isAssignableFrom(cl)) {
+                                            driverList.add(name);
+                                        }
+                                    } catch (ClassNotFoundException ex) {
+                                        // Not a valid class; ignore it.
                                     }
-                                } catch (ClassNotFoundException ex) {
-                                    // Not a valid class; ignore it.
                                 }
                             }
                         }
@@ -452,9 +453,7 @@ public class ConnectionPanel extends JPanel {
         }
 
         lines.sort(String::compareTo);
-        lines.stream().forEach((line) -> {
-            buf.append(line);
-        });
+        lines.stream().forEach(buf::append);
 
         if (etype == GraphElementType.VERTEX) {
             buf.append("    PRIMARY KEY (vx_id_)%n");

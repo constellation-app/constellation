@@ -2,7 +2,7 @@
 <!-- You may freely edit this file. See harness/README in the NetBeans platform -->
 <!-- for some information on what you could do (e.g. targets to override). -->
 <!-- If you delete this file and reopen the project it will be recreated. -->
-<project name="CONSTELLATION" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="CONSTELLATION" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:if="ant:if" xmlns:unless="ant:unless">
     <description>Builds the module suite CONSTELLATION.</description>
 
     <import file="nbproject/build-impl.xml"/>
@@ -14,9 +14,9 @@
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
-    <property name="jre.filename.windows" value="zulu8.38.0.13-ca-fx-jre8.0.212-win_x64" />
+    <property name="jre.filename.windows" value="zulu11.37.19-ca-fx-jre11.0.6-win_x64" />
     <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
-    <property name="jre.filename.linux" value="zulu8.38.0.13-ca-fx-jre8.0.212-linux_x64" />
+    <property name="jre.filename.linux" value="zulu11.37.19-ca-fx-jre11.0.6-linux_x64" />
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
     <property name="dist.filename.linux" value="constellation-linux" />
     <property name="dist.filename.windows" value="constellation-win" />
@@ -64,8 +64,88 @@
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
-		
-    <target name="download-dependencies" depends="-load-ivy-tasks,-download-unfolding-maps" description="Download dependent libraries.">
+    
+    <target name="-download-gluegen" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing gluegen..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/gluegen-rt-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-jocl" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing jocl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jocl-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-jogl" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing jogl..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-linux-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-linux-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-macosx-universal.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-windows-amd64.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/jogl-all-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-newt" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing newt..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/newt-natives-windows-i586.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-mainwindow" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing mainwindow..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar?raw=true"/>
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/JOGL%202.4.0/nativewindow.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-processing" >
+        <mkdir dir="${ivy.lib.dir}"/>
+        <echo message="installing processing..."/>
+        <get dest="${ivy.lib.dir}" usetimestamp="true">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/Processing%204.0/core.jar?raw=true"/>
+        </get>
+    </target>
+    
+    <target name="-download-javahelp" >
+        <echo message="installing netbeans help module..."/>
+        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" property="javahelp.present"/>
+        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true" if:blank="javahelp.present">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true"/>
+        </get>
+        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" property="jhall.present"/>
+        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true" if:blank="jhall.present">
+            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true"/>
+        </get>
+    </target>
+  	
+    <target name="download-dependencies" 
+            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
+            description="Download dependent libraries.">
+        <mkdir dir="${ivy.lib.dir}"/>
         <ivy:resolve/>
         <ivy:retrieve/>
 
@@ -138,14 +218,13 @@
                  preservelastmodified="true"
                  eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
-            <!--
-            Using pre-built executable files that come with the Constellation icon
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
-            -->
-            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}/"/>
+            <!-- Using pre-built executable files that come with the Constellation icon -->
+            <!--<zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
+            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
+            <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
             <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
             <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
@@ -181,11 +260,9 @@
                  preservelastmodified="true"
                  eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
-            <!--
-            Using pre-built executable files that come with the Constellation icon
-            <zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>
-            -->
-            <zipfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}/"/>
+            <!-- Using pre-built executable files that come with the Constellation icon -->
+            <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
+            <tarfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}"/>
             <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <tarfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
@@ -214,13 +291,12 @@
         <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
     </target>
 
-    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
-        <ivy:resolve/>
-        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
-    </target>
-
     <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>
 
+    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+        <ivy:resolve/>
+        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
+    </target>
 </project>

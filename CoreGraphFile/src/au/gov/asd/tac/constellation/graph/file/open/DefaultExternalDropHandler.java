@@ -89,7 +89,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     }
 
     boolean canDrop(final DataFlavor[] flavors) {
-        for (int i = 0; null != flavors && i < flavors.length; i++) {
+        for (int i = 0; flavors != null && i < flavors.length; i++) {
             if (DataFlavor.javaFileListFlavor.equals(flavors[i])
                     || getUriListDataFlavor().equals(flavors[i])) {
 
@@ -102,7 +102,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     @Override
     public boolean handleDrop(final DropTargetDropEvent e) {
         Transferable t = e.getTransferable();
-        if (null == t) {
+        if (t != null) {
             return false;
         }
         List<File> fileList = getFileList(t);
@@ -204,7 +204,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     private static DataFlavor uriListDataFlavor;
 
     DataFlavor getUriListDataFlavor() {
-        if (null == uriListDataFlavor) {
+        if (uriListDataFlavor != null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
             } catch (ClassNotFoundException cnfE) {

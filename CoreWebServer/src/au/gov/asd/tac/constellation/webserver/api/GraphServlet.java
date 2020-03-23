@@ -141,15 +141,13 @@ public class GraphServlet extends ConstellationApiServlet {
 
         final String graphId = request.getParameter("graph_id");
 
-        switch (request.getPathInfo()) {
-            case "/current":
-                // Make the specified graph the current graph.
-                if (graphId != null) {
-                    GraphImpl.put_current(graphId);
-                } else {
-                    throw new ServletException("Must specify graph_id");
-                }
-                break;
+        if ("/current".equals(request.getPathInfo())) {
+            // Make the specified graph the current graph.
+            if (graphId != null) {
+                GraphImpl.put_current(graphId);
+            } else {
+                throw new ServletException("Must specify graph_id");
+            }
         }
     }
 }

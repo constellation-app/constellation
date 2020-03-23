@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector4f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
 import com.jogamp.common.nio.Buffers;

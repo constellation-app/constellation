@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.geospatial;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import org.locationtech.jts.geom.Geometry;
 import org.locationtech.jts.geom.LineString;
 import org.locationtech.jts.geom.MultiLineString;
@@ -674,8 +674,7 @@ public class Shape {
         featureTypeBuilder.add(CENTROID_LONGITUDE_ATTRIBUTE, Double.class);
         featureTypeBuilder.add(RADIUS_ATTRIBUTE, Double.class);
         if (attributes != null) {
-            attributes.forEach((attributeName, attributeClass)
-                    -> featureTypeBuilder.add(attributeName, attributeClass));
+            attributes.forEach(featureTypeBuilder::add);
         }
         return featureTypeBuilder.buildFeatureType();
     }

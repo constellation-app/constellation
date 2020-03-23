@@ -3,7 +3,7 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>au.gov.asd.tac.constellation.pluginframework</code-name-base>
+            <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
             <suite-component/>
             <module-dependencies>
                 <dependency>
@@ -28,14 +28,6 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.3</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -132,16 +124,16 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.pluginframework</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.gui</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.logging</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.parameters</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.parameters.types</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.popup</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.reporting</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.templates</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.text</package>
-                <package>au.gov.asd.tac.constellation.pluginframework.update</package>
+                <package>au.gov.asd.tac.constellation.plugins</package>
+                <package>au.gov.asd.tac.constellation.plugins.gui</package>
+                <package>au.gov.asd.tac.constellation.plugins.logging</package>
+                <package>au.gov.asd.tac.constellation.plugins.parameters</package>
+                <package>au.gov.asd.tac.constellation.plugins.parameters.types</package>
+                <package>au.gov.asd.tac.constellation.plugins.popup</package>
+                <package>au.gov.asd.tac.constellation.plugins.reporting</package>
+                <package>au.gov.asd.tac.constellation.plugins.templates</package>
+                <package>au.gov.asd.tac.constellation.plugins.text</package>
+                <package>au.gov.asd.tac.constellation.plugins.update</package>
                 <package>au.gov.asd.tac.constellation.pluginparameters</package>
             </public-packages>
         </data>

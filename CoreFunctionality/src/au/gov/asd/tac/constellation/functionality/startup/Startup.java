@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.functionality.startup;
 
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import javax.swing.JFrame;
 import org.openide.windows.OnShowing;
 import org.openide.windows.WindowManager;

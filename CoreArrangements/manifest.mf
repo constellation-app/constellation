@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: au.gov.asd.tac.constellation.arrangements
-OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/arrangements/Bundle.properties
-OpenIDE-Module-Specification-Version: 1.0

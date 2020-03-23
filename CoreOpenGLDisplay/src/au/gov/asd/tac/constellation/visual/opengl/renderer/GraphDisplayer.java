@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
@@ -130,7 +130,7 @@ public class GraphDisplayer implements GLRenderable {
             graphVp = getVertexShader();
             graphFp = getFragmentShader();
         } catch (final IOException ex) {
-            LOGGER.log(Level.SEVERE, "Can't read graph texture shaders", ex);
+            LOGGER.log(Level.SEVERE, "Can''t read graph texture shaders", ex);
         }
         graphTextureShader = GLTools.loadShaderSourceWithAttributes(gl, "graphTex", graphVp, null, graphFp,
                 vertexTarget, "position",

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.sql;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -304,6 +304,8 @@ public class SqlQuery {
                         matchCondition.append("+").append(word).append(" ");
                     }
                     break;
+                default:
+                    break;
             }
             matchCondition.append(")");
         }
@@ -337,6 +339,8 @@ public class SqlQuery {
                     break;
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
+                    break;
+                default:
                     break;
             }
             if (value instanceof String) {
@@ -374,6 +378,8 @@ public class SqlQuery {
                     break;
                 case MATCH_CONTAINS:
                     value = "%" + value + "%";
+                    break;
+                default:
                     break;
             }
             if (value instanceof String) {

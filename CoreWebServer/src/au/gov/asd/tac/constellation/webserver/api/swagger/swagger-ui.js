@@ -2085,7 +2085,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 }
                 else {
                 var obj = {
-                useJQuery: false, // TODO
+                useJQuery: false,
                         url: item.root,
                         method: 'get',
                         headers: {
@@ -3297,7 +3297,6 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 }
                 };
                 SwaggerSpecConverter.prototype.authorizations = function(obj) {
-                // TODO
                 if (!_.isObject(obj)) {
                 return;
                 }
@@ -4544,7 +4543,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 return encodeURIComponent(arg);
                 };
                 /**
-                 * TODO revisit, might not want to leave '/'
+                 * TODO: revisit, might not want to leave '/'
                  **/
                 Operation.prototype.encodePathParam = function (pathParam) {
                 return encodeURIComponent(pathParam);
@@ -4611,9 +4610,8 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                 process.removeAllListeners = noop;
                 process.emit = noop;
                 process.binding = function (name) {
-                throw new Error('process.binding is not supported');
+                    throw new Error('process.binding is not supported');
                 };
-// TODO(shtylman)
                 process.cwd = function () { return '/' };
                 process.chdir = function (dir) {
                 throw new Error('process.chdir is not supported');
@@ -21138,7 +21136,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                 return value;
                                                                 });
                                                                 }, function (reason) {
-                                                                // TODO attempt to recycle the rejection with "this".
+                                                                // TODO: attempt to recycle the rejection with "this".
                                                                 return callback.fcall().then(function () {
                                                                 throw reason;
                                                                 });
@@ -24208,7 +24206,7 @@ return buffer + "    </tbody>\n  </table>\n</td>";
                                                                                                                                         // Fix for bug in IE 10/11 which causes placeholder text to be copied to "value"
                                                                                                                                         if ($.trim(textArea.val()) === '' || textArea.prop('placeholder') === textArea.val()) {
                                                                                                                                 textArea.val(this.model.sampleJSON);
-                                                                                                                                        // TODO move this code outside of the view and expose an event instead
+                                                                                                                                        // TODO: move this code outside of the view and expose an event instead
                                                                                                                                         if (this.model.jsonEditor && this.model.jsonEditor.isEnabled()){
                                                                                                                                 this.model.jsonEditor.setValue(JSON.parse(this.model.sampleJSON));
                                                                                                                                 }

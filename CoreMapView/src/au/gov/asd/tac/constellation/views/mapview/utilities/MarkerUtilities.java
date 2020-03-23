@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview.utilities;
 
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractMarker;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import de.fhpotsdam.unfolding.geo.Location;
 import java.util.ArrayList;
 import java.util.List;
