@@ -36,6 +36,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -355,10 +356,7 @@ public class FileListener implements Runnable {
                             // particularly on the Python side.
                             final String attrsParam = getString(args, "attrs");
                             final String[] attrsArray = attrsParam != null ? attrsParam.split(",") : new String[0];
-                            final Set<String> attrs = new LinkedHashSet<>(); // Maintain the order specified by the user.
-                            for (final String k : attrsArray) {
-                                attrs.add(k);
-                            }
+                            final Set<String> attrs = new LinkedHashSet<>(Arrays.asList(attrsArray)); // Maintain the order specified by the user.
 
                             try (final OutputStream out = outStream(restPath, CONTENT_OUT)) {
                                 RecordStoreImpl.get_get(graphId, vx, tx, selected, attrs, out);
