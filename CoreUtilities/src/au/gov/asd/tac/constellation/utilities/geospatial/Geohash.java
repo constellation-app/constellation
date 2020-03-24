@@ -46,14 +46,14 @@ public class Geohash {
         B8("01234567", -90.0, 90.0, -180.0, 180.0, 8),
         B4("0123", -180.0, 180.0, -180.0, 180.0, 4);
 
-        private final char charset[];
-        private final int inverseCharset[] = new int[128];
+        private final char[] charset;
+        private final int[] inverseCharset = new int[128];
         private final double minLatitude;
         private final double maxLatitude;
         private final double minLongitude;
         private final double maxLongitude;
         private final int base;
-        private final int bits[];
+        private final int[] bits;
 
         private Base(final String charset, final double minLatitude, final double maxLatitude,
                 final double minLongitude, final double maxLongitude, final int base) {
@@ -126,9 +126,9 @@ public class Geohash {
      * @return a String representation of the geohash
      */
     public static String encode(final double latitude, final double longitude, final int length, final Base base) {
-        final char geohash[] = new char[length];
-        final double latitudeRange[] = new double[]{base.minLatitude, base.maxLatitude};
-        final double longitudeRange[] = new double[]{base.minLongitude, base.maxLongitude};
+        final char[] geohash = new char[length];
+        final double[] latitudeRange = new double[]{base.minLatitude, base.maxLatitude};
+        final double[] longitudeRange = new double[]{base.minLongitude, base.maxLongitude};
 
         double mid;
         int c = 0;
@@ -180,8 +180,8 @@ public class Geohash {
             throw new IllegalArgumentException("The provided geohash is null");
         }
 
-        final double latitudeRange[] = new double[]{base.minLatitude, base.maxLatitude};
-        final double longitudeRange[] = new double[]{base.minLongitude, base.maxLongitude};
+        final double[] latitudeRange = new double[]{base.minLatitude, base.maxLatitude};
+        final double[] longitudeRange = new double[]{base.minLongitude, base.maxLongitude};
         double latitudeError = base.maxLatitude;
         double longitudeError = base.maxLongitude;
 

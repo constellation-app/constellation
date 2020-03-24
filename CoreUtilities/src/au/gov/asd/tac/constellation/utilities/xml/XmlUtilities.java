@@ -664,7 +664,7 @@ public class XmlUtilities {
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
             final int bytes = in.read(b, off, len);
             if (bytes != -1) {
                 for (int ix = off; ix < off + bytes; ix++) {

@@ -421,7 +421,7 @@ public class GlyphsFrame extends JFrame {
      * @param args the command line arguments
      * @throws java.io.IOException
      */
-    public static void main(String args[]) throws IOException {
+    public static void main(String[] args) throws IOException {
         final String[] fontNames = loadText("fonts.txt", true);
         final String[] text = loadText("text.txt", false);
 

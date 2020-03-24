@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.graph.file.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
-import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -198,7 +196,7 @@ public final class IoUtilities {
     public static float[] parseColor(final String s) throws IllegalArgumentException {
         float[] vec = new float[4];
 
-        String f[] = split(s, 4, ',');
+        String[] f = split(s, 4, ',');
         if (f[3] == null) {
             f[3] = "1.0";
         }
