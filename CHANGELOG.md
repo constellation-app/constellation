@@ -1,6 +1,7 @@
 # CONSTELLATION Changes
 
 ## 2020-03-01 Changes in March 2020
+* Core Web Server module rewritten to add REST services; the REST API has changed.
 * Added new module Core View Framework containing AbstractTopComponent and other related classes.
 * Added new module Core Plugin Reporter to separate it from the plugin framework.
 * Added new module Core Named Selections to break it out of Core Functionality.
