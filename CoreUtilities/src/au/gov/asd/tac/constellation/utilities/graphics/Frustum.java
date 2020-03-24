@@ -26,17 +26,32 @@ public final class Frustum {
     private Matrix44f projMatrix;
 
     // Untransformed corners of this frustum.
-    private Vector4f nearUL, nearLL, nearUR, nearLR;
-    private Vector4f farUL, farLL, farUR, farLR;
+    private Vector4f nearUL;
+    private Vector4f nearLL;
+    private Vector4f nearUR;
+    private Vector4f nearLR;
+    private Vector4f farUL;
+    private Vector4f farLL;
+    private Vector4f farUR;
+    private Vector4f farLR;
 
     // Transformed corners of this frustum.
-    private Vector4f nearULT, nearLLT, nearURT, nearLRT;
-    private Vector4f farULT, farLLT, farURT, farLRT;
+    private Vector4f nearULT;
+    private Vector4f nearLLT;
+    private Vector4f nearURT;
+    private Vector4f nearLRT;
+    private Vector4f farULT;
+    private Vector4f farLLT;
+    private Vector4f farURT;
+    private Vector4f farLRT;
 
     // Base and transformed plane equations.
-    private Vector4f nearPlane, farPlane;
-    private Vector4f leftPlane, rightPlane;
-    private Vector4f topPlane, bottomPlane;
+    private Vector4f nearPlane;
+    private Vector4f farPlane;
+    private Vector4f leftPlane;
+    private Vector4f rightPlane;
+    private Vector4f topPlane;
+    private Vector4f bottomPlane;
 
     /**
      * A symmetric perspective projection.

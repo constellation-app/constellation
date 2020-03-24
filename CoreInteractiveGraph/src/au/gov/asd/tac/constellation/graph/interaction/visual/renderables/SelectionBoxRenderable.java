@@ -106,7 +106,8 @@ public class SelectionBoxRenderable implements GLRenderable {
         modelQueue.add(model);
     }
 
-    private int width, height;
+    private int width;
+    private int height;
 
     @Override
     public void reshape(final int x, final int y, final int width, final int height) {

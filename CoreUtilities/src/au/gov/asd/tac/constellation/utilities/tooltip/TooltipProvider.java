@@ -70,7 +70,8 @@ public abstract class TooltipProvider {
     public static class TooltipDefinition {
 
         private final Pane pane;
-        private int start = -1, finish = -1;
+        private int start = -1;
+        private int finish = -1;
 
         public TooltipDefinition(Pane pane) {
             this.pane = pane;

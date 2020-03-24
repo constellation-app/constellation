@@ -121,10 +121,8 @@ public class CopyDataToClipboard implements ActionListener, Action {
                 return "CSV files";
             }
         }).showSaveDialog();
-        if (f != null) {
-            if (!f.getName().toLowerCase().endsWith(".csv")) {
-                f = new File(f.getAbsolutePath() + ".csv");
-            }
+        if (f != null && !f.getName().toLowerCase().endsWith(".csv")) {
+            f = new File(f.getAbsolutePath() + ".csv");
         }
 
         return f;

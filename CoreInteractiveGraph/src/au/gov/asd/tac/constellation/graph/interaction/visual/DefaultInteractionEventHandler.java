@@ -383,7 +383,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (eventState.isMousePressed()) {
                 if (wg != null) {
                     final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     boolean cameraChange = false;
                     switch (eventState.getCurrentAction()) {
                         case ROTATING:
@@ -491,7 +492,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     setHitTestingEnabled(true);
 
                     final Camera camera = VisualGraphUtilities.getCamera(wg);
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     switch (eventState.getCurrentAction()) {
                         case SELECTING:
                             if (eventState.isMouseDragged()) {
@@ -595,22 +597,20 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 // If the mouse is currently pressed and the mouse wheel was moved somewhere
                 // other than the mouse pressed point, then we need to recalculate our
                 // reference point for further action, and in some cases simulate a drag.
-                if (eventState.isMousePressed()) {
-                    if (!wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
-                        final Point from;
-                        switch (eventState.getCurrentAction()) {
-                            case PANNING:
-                                from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                                final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
-                                CameraUtilities.pan(camera, translation.getX(), translation.getY());
-                                break;
-                            case DRAG_NODES:
-                                from = eventState.getPoint(EventState.DRAG_POINT);
-                                performDrag(wg, camera, from, wheelPoint);
-                                break;
-                            default:
-                                break;
-                        }
+                if (eventState.isMousePressed() && !wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
+                    final Point from;
+                    switch (eventState.getCurrentAction()) {
+                        case PANNING:
+                            from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
+                            final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
+                            CameraUtilities.pan(camera, translation.getX(), translation.getY());
+                            break;
+                        case DRAG_NODES:
+                            from = eventState.getPoint(EventState.DRAG_POINT);
+                            performDrag(wg, camera, from, wheelPoint);
+                            break;
+                        default:
+                            break;
                     }
                 }
 

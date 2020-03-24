@@ -46,7 +46,8 @@ public class ExtendedBuffer {
 
     private final BlockingQueue<Buffer> queue = new LinkedBlockingQueue<>();
 
-    private Buffer outputBuffer, inputBuffer;
+    private Buffer outputBuffer;
+    private Buffer inputBuffer;
 
     private AtomicLong available = new AtomicLong(0L);
 

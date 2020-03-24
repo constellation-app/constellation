@@ -42,28 +42,42 @@ public class UndoGraphEditState {
     public int operationCount = 0;
 
     public byte[] byteStack = new byte[1];
-    public int byteCount = 0, bytePointer;
+    public int byteCount = 0;
+    public int bytePointer;
 
     public short[] shortStack = new short[1];
-    public int shortCount = 0, shortPointer;
+    public int shortCount = 0;
+    public int shortPointer;
 
     public int[] intStack = new int[1];
-    public int intCount = 0, intPointer;
+    public int intCount = 0;
+    public int intPointer;
 
     public long[] longStack = new long[1];
-    public int longCount = 0, longPointer;
+    public int longCount = 0;
+    public int longPointer;
 
     public Object[] objectStack = new Object[1];
     public int objectCount = 0;
     public Map<Object, Integer> objectMap = new HashMap<>();
 
-    public int currentAttribute = 0, currentId = 0, currentInt, currentObject = 0, currentFloat = 0;
-    ;
-    public long currentLong = 0, currentDouble = 0;
-    ;
+    public int currentAttribute = 0;
+    public int currentId = 0;
+    public int currentInt;
+    public int currentObject = 0;
+    public int currentFloat = 0;
 
-    public int finalAttribute, finalId, finalInt, finalObject, finalFloat;
-    public long finalLong, finalDouble;
+    public long currentLong = 0;
+    public long currentDouble = 0;
+
+
+    public int finalAttribute;
+    public int finalId;
+    public int finalInt;
+    public int finalObject;
+    public int finalFloat;
+    public long finalLong;
+    public long finalDouble;
 
     private short currentOperation = 0xFF;
     private int extraOperationsCount = 0;

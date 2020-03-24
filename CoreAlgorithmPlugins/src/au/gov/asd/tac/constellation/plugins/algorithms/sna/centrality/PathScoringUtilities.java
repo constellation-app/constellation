@@ -201,15 +201,13 @@ public class PathScoringUtilities {
                         }
                     }
 
-                    if (isRequestedDirection) {
-                        if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
-                            turn.set(neighbourPosition, true);
+                    if (isRequestedDirection && !traversal[vertexPosition].equals(traversal[neighbourPosition])) {
+                        turn.set(neighbourPosition, true);
 
-                            final BitSet diff = (BitSet) traversal[vertexPosition].clone();
-                            diff.andNot(traversal[neighbourPosition]);
-                            sendBuffer[neighbourPosition].or(diff);
-                            newUpdate.set(neighbourPosition);
-                        }
+                        final BitSet diff = (BitSet) traversal[vertexPosition].clone();
+                        diff.andNot(traversal[neighbourPosition]);
+                        sendBuffer[neighbourPosition].or(diff);
+                        newUpdate.set(neighbourPosition);
                     }
                 }
             }
@@ -366,14 +364,12 @@ public class PathScoringUtilities {
                         }
                     }
 
-                    if (isRequestedDirection) {
-                        if (!traversal[vertexPosition].equals(traversal[neighbourPosition])) {
-                            final BitSet diff = (BitSet) traversal[vertexPosition].clone();
-                            diff.andNot(traversal[neighbourPosition]);
-                            turn.or(diff);
-                            sendBuffer[neighbourPosition].or(diff);
-                            newUpdate.set(neighbourPosition);
-                        }
+                    if (isRequestedDirection && !traversal[vertexPosition].equals(traversal[neighbourPosition])) {
+                        final BitSet diff = (BitSet) traversal[vertexPosition].clone();
+                        diff.andNot(traversal[neighbourPosition]);
+                        turn.or(diff);
+                        sendBuffer[neighbourPosition].or(diff);
+                        newUpdate.set(neighbourPosition);
                     }
                 }
             }
@@ -594,16 +590,14 @@ public class PathScoringUtilities {
                         }
                     }
 
-                    if (isRequestedDirection) {
-                        if (!traversalF[vertexPosition].equals(traversalF[neighbourPosition])) {
-                            turn.set(neighbourPosition, true);
+                    if (isRequestedDirection && !traversalF[vertexPosition].equals(traversalF[neighbourPosition])) {
+                        turn.set(neighbourPosition, true);
 
-                            final BitSet diff = (BitSet) traversalF[vertexPosition].clone();
-                            diff.andNot(traversalF[neighbourPosition]);
-                            sendBufferF[neighbourPosition].or(diff);
-                            sendFailsF[vertexPosition].andNot(diff);
-                            newUpdateF.set(neighbourPosition);
-                        }
+                        final BitSet diff = (BitSet) traversalF[vertexPosition].clone();
+                        diff.andNot(traversalF[neighbourPosition]);
+                        sendBufferF[neighbourPosition].or(diff);
+                        sendFailsF[vertexPosition].andNot(diff);
+                        newUpdateF.set(neighbourPosition);
                     }
                 }
                 for (int neighbourPosition = sendFailsF[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFailsF[vertexPosition].nextSetBit(neighbourPosition + 1)) {
@@ -632,14 +626,12 @@ public class PathScoringUtilities {
                         }
                     }
 
-                    if (isOppositeDirection) {
-                        if (!traversalB[vertexPosition].equals(traversalB[neighbourPosition])) {
-                            final BitSet diff = (BitSet) traversalB[vertexPosition].clone();
-                            diff.andNot(traversalB[neighbourPosition]);
-                            sendBufferB[neighbourPosition].or(diff);
-                            sendFailsB[vertexPosition].andNot(diff);
-                            newUpdateB.set(neighbourPosition);
-                        }
+                    if (isOppositeDirection && !traversalB[vertexPosition].equals(traversalB[neighbourPosition])) {
+                        final BitSet diff = (BitSet) traversalB[vertexPosition].clone();
+                        diff.andNot(traversalB[neighbourPosition]);
+                        sendBufferB[neighbourPosition].or(diff);
+                        sendFailsB[vertexPosition].andNot(diff);
+                        newUpdateB.set(neighbourPosition);
                     }
                 }
                 for (int neighbourPosition = sendFailsB[vertexPosition].nextSetBit(0); neighbourPosition >= 0; neighbourPosition = sendFailsB[vertexPosition].nextSetBit(neighbourPosition + 1)) {

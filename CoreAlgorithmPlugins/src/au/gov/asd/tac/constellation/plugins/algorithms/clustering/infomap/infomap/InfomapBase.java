@@ -334,12 +334,10 @@ public abstract class InfomapBase {
         boolean tryIndexing = true;
         final boolean replaceExistingModules = config.fastHierarchicalSolution == 0;
         while (tryIndexing) {
-            if (verbose) {
-                if (config.verbosity > 0) {
-                    System.out.print("Trying to find super modules... ");
-                    if (config.verbosity >= 3) {
-                        System.out.printf("%n");
-                    }
+            if (verbose && config.verbosity > 0) {
+                System.out.print("Trying to find super modules... ");
+                if (config.verbosity >= 3) {
+                    System.out.printf("%n");
                 }
             }
 

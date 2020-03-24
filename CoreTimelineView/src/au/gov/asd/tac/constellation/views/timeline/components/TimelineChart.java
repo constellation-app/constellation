@@ -87,7 +87,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     // JavaFX Components:
     private final TimelinePanel parent;
     private final TimelineChart timeline;
-    private final NumberAxis xAxis, yAxis;
+    private final NumberAxis xAxis;
+    private final NumberAxis yAxis;
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:
@@ -830,15 +831,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                             if (xData != null) {
                                 xData.add(data.getXValue());
                             }
-                            if (yData != null) {
-                                if (data.getExtraValue() instanceof Interaction) {
-                                    final Interaction intr = (Interaction) data.getExtraValue();
-                                    if (intr != null) {
-                                        yData.add(intr.getTopVertex().getDisplayPos());
-                                        yData.add(intr.getBottomVertex().getDisplayPos());
-                                    } else {
-                                        yData.add(data.getYValue());
-                                    }
+                            if (yData != null && data.getExtraValue() instanceof Interaction) {
+                                final Interaction intr = (Interaction) data.getExtraValue();
+                                if (intr != null) {
+                                    yData.add(intr.getTopVertex().getDisplayPos());
+                                    yData.add(intr.getBottomVertex().getDisplayPos());
+                                } else {
+                                    yData.add(data.getYValue());
                                 }
                             }
                         }

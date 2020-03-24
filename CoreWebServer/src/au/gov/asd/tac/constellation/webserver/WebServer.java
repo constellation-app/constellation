@@ -119,9 +119,9 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    static final String CONSTELLATION_CLIENT = "constellation_client.py";
-    static final String RESOURCES = "resources/";
+    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
+    private static final String RESOURCES = "resources/";
 
     public static synchronized int start() {
         if (!running) {
@@ -179,9 +179,9 @@ public class WebServer {
                 final Thread webserver = new Thread(() -> {
                     try {
                         server.join();
-                    } catch (InterruptedException e) {
+                    } catch (final InterruptedException ex) {
                         Thread.currentThread().interrupt();
-                        throw new RuntimeException(e);
+                        throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
                         restFile.delete();
@@ -285,7 +285,7 @@ public class WebServer {
      */
     static boolean equalScripts(final File scriptFile) {
         try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
+            try (final InputStream in2 = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT)) {
                 final byte[] dig1 = getDigest(in1);
                 final byte[] dig2 = getDigest(in2);
 

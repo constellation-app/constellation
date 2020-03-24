@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.broccoli;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -81,10 +81,8 @@ public final class BroccoliArranger implements Arranger {
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
-            if (wg.getVertexNeighbourCount(vxId) > 1) {
-                if (noneSelected || wg.getBooleanValue(selectedId, vxId)) {
-                    arrangeVertex(centre, vxId);
-                }
+            if (wg.getVertexNeighbourCount(vxId) > 1 && (noneSelected || wg.getBooleanValue(selectedId, vxId))) {
+                arrangeVertex(centre, vxId);
             }
         }
     }

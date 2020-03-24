@@ -230,10 +230,8 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         int mergedCount = 0;
 
         for (final int vertex : verticesToMerge) {
-            if (vertex != leadVertex) {
-                if (merger.mergeElement(graph, GraphElementType.VERTEX, leadVertex, vertex)) {
-                    mergedCount++;
-                }
+            if (vertex != leadVertex && merger.mergeElement(graph, GraphElementType.VERTEX, leadVertex, vertex)) {
+                mergedCount++;
             }
         }
 

@@ -34,7 +34,9 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("ArrangeInCirclesPlugin=Arrange in Circles")
 public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
-    private int xAttribute, yAttribute, zAttribute;
+    private int xAttribute;
+    private int yAttribute;
+    private int zAttribute;
     private int selectedAttribute;
 
     @Override

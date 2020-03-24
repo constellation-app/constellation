@@ -877,7 +877,9 @@ public class GraphRecordStoreUtilities {
             final int destination = graph.getTransactionDestinationVertex(transaction);
             final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr.getId(), transaction));
 
-            String sourceId = null, destId = null, uniqueId;
+            String sourceId = null;
+            String destId = null;
+            String uniqueId;
             if (compositeVxId == source) {
                 destId = String.valueOf(destination);
                 if (compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {
@@ -965,7 +967,9 @@ public class GraphRecordStoreUtilities {
             }
             final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr.getId(), transaction));
 
-            String sourceId = null, destId = null, uniqueId;
+            String sourceId = null;
+            String destId = null;
+            String uniqueId;
             if (expandedVxId == source) {
                 destId = String.valueOf(destination);
                 if (!compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {

@@ -137,7 +137,10 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setObjectValue(vxColorAttr, nodeId, randomColorWithAlpha(r));
             graph.setFloatValue(vxVisibilityAttr, nodeId, 1.0f);
 
-            float x, y, z, length;
+            float x;
+            float y;
+            float z;
+            float length;
             do {
                 x = r.nextFloat() * 2 - 1;
                 y = r.nextFloat() * 2 - 1;

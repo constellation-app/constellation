@@ -250,7 +250,10 @@ public enum BinSelectionMode {
     };
 
     private final String label;
-    private final Color barColor, activatedBarColor, selectedColor, activatedSelectedColor;
+    private final Color barColor;
+    private final Color activatedBarColor;
+    private final Color selectedColor;
+    private final Color activatedSelectedColor;
 
     private BinSelectionMode(String label, Color barColor, Color activatedBarColor, Color selectedColor, Color activatedSelectedColor) {
         this.label = label;

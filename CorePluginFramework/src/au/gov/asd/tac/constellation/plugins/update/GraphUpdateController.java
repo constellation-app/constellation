@@ -74,7 +74,10 @@ public class GraphUpdateController {
     private long structureModificationCounter = -1;
     private long attributeModificationCounter = -1;
 
-    private final SimpleUpdateComponent newGraphUpdateComponent, globalUpdateComponent, structureUpdateComponent, attributeUpdateComponent;
+    private final SimpleUpdateComponent newGraphUpdateComponent;
+    private final SimpleUpdateComponent globalUpdateComponent;
+    private final SimpleUpdateComponent structureUpdateComponent;
+    private final SimpleUpdateComponent attributeUpdateComponent;
 
     private final List<AttributeUpdateComponent> attributeUpdateComponents = new ArrayList<>();
 

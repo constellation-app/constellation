@@ -314,10 +314,8 @@ public class MapViewTileRenderer extends PApplet {
             glComponent = null;
         }
         finished = true;
-        if (surface != null && surface.stopThread()) {
-            if (g != null) {
-                g.dispose();
-            }
+        if (surface != null && surface.stopThread() && g != null) {
+            g.dispose();
         }
         surface = null;
 
@@ -520,21 +518,19 @@ public class MapViewTileRenderer extends PApplet {
                 boxDeltaY = -1;
                 boxZoomEnabled = false;
             }
-        } else if (event.getButton() == PConstants.RIGHT) {
+        } else if (event.getButton() == PConstants.RIGHT && boxSelectionEnabled) {
             // select markers
-            if (boxSelectionEnabled) {
-                // update the box
-                boxDeltaX = event.getX();
-                boxDeltaY = event.getY();
+            // update the box
+            boxDeltaX = event.getX();
+            boxDeltaY = event.getY();
 
-                handleMouseSelection(event, calculateBoxSelection());
+            handleMouseSelection(event, calculateBoxSelection());
 
-                boxOriginX = -1;
-                boxOriginY = -1;
-                boxDeltaX = -1;
-                boxDeltaY = -1;
-                boxSelectionEnabled = false;
-            }
+            boxOriginX = -1;
+            boxOriginY = -1;
+            boxDeltaX = -1;
+            boxDeltaY = -1;
+            boxSelectionEnabled = false;
         }
 
         layers.forEach(layer -> layer.mouseReleased(event));
@@ -829,7 +825,10 @@ public class MapViewTileRenderer extends PApplet {
     private boolean checkForIntersection(final Edge markerEdge, final Edge selectionEdge) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        double x, y, T, U;
+        double x;
+        double y;
+        double T;
+        double U;
 
         if (selectionEdge.pointOneX == selectionEdge.pointTwoX) {
             final double markerDeltaX = markerEdge.pointTwoX - markerEdge.pointOneX;

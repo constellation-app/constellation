@@ -96,7 +96,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private final JMenuBar menuBar;
     private final JMenu menu;
     private Graph graph;
-    private final SliderMenuItem sizeSlider, opacitySlider;
+    private final SliderMenuItem sizeSlider;
+    private final SliderMenuItem opacitySlider;
     private final ChangeListener sliderChangeListener;
 
     public BlazeActions() {
