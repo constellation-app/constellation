@@ -175,7 +175,7 @@ public class Geohash {
      * error on longitude at index 3
      * @throws IllegalArgumentException
      */
-    public static double[] decode(final String geohash, final Base base) throws IllegalArgumentException {
+    public static double[] decode(final String geohash, final Base base) {
         if (geohash == null) {
             throw new IllegalArgumentException("The provided geohash is null");
         }

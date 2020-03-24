@@ -120,7 +120,7 @@ public class XmlUtilities {
      * writing to.
      * @throws IOException if an error occurs while writing to the file.
      */
-    public void write(final Document document, final File file) throws FileNotFoundException, IOException, TransformerException {
+    public void write(final Document document, final File file) throws IOException, TransformerException {
         write(document, new FileOutputStream(file));
     }
 

@@ -59,7 +59,7 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    public void setDefault(final Object value) throws IllegalArgumentException {
+    public void setDefault(final Object value) {
         super.setDefault(value);
 
         // Ensure that the default is a registered type.
