@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.utilities.geospatial.Country;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
@@ -49,11 +48,10 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
+import java.util.stream.Collectors;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -61,6 +59,10 @@ import org.openide.util.lookup.ServiceProviders;
 
 /**
  * A data access plugin that builds a random sphere graph.
+ * <p>
+ * The sphere graph is not just a random graph, it is meant to exercise
+ * renderer functionality: visibility, dimness, color combinations of
+ * transactions, many transactions between nodes, etc.
  *
  * @author canis_majoris
  */
@@ -79,7 +81,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "use_all_displayable_chars");
     public static final String DRAW_MANY_TX_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_tx");
     public static final String DRAW_MANY_DECORATORS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_deco");
-    
+
     private final Random random = new Random();
 
     @Override
@@ -94,8 +96,8 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<IntegerParameterValue> n = IntegerParameterType.build(N_PARAMETER_ID);
         n.setName("Number of nodes");
         n.setDescription("The number of nodes on the graph");
-        n.setIntegerValue(10);
-        IntegerParameterType.setMinimum(n, 0);
+        n.setIntegerValue(20);
+        IntegerParameterType.setMinimum(n, 6);
         params.addParameter(n);
 
         final PluginParameter<IntegerParameterValue> t = IntegerParameterType.build(T_PARAMETER_ID);
@@ -160,20 +162,24 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
 
-        // the default icon
+        // The default icon.
+        //
         final String DEFAULT_ICON = "HAL-9000";
-        // the first of a sequence of random characters.
+
+        // The first of a sequence of random characters..
+        //
         final int PLAY_CHARS = 0x261A;
-        // the number of random characters.
+
+        // The number of random characters.
+        //
         final int PLAY_CHARS_LEN = 86;
 
-        // other variables
-        final IconRandomiser iconRandomiser = new IconRandomiser();
         final int vertexCount = graph.getVertexCount();
 
-        // parameter values
+        // Parameter values.
+        //
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        final int nVx = params.get(N_PARAMETER_ID).getIntegerValue();
+        final int nVx = Math.max(params.get(N_PARAMETER_ID).getIntegerValue()-6, 0);
         final int nTx = params.get(T_PARAMETER_ID).getIntegerValue();
         final String option = params.get(OPTION_PARAMETER_ID).getStringValue();
         final boolean addChars = params.get(ADD_CHARS_PARAMETER_ID).getBooleanValue();
@@ -191,11 +197,16 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             });
         }
 
-        // select some countries to put in the graph
-        final List<String> countries = new ArrayList<>();
-        for (final Country country : Country.values()) {
-            countries.add(country.getDisplayName());
-        }
+        // Select some countries to put in the graph.
+        // Since it's entirely possible that the country names will be used for decorators,
+        // we only want countries that have flags.
+        // Therefore we'll look for flags, not countries.
+        //
+        final List<String> countries = IconManager.getIcons()
+                .stream()
+                .filter(icon -> icon.getExtendedName().startsWith("Flag."))
+                .map(icon -> icon.getName())
+                .collect(Collectors.toUnmodifiableList());
 
         final int maxTxId = VisualConcept.GraphAttribute.MAX_TRANSACTIONS.ensure(graph);
         if (drawManyTx) {
@@ -416,7 +427,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         // Find out where the extremes of the new sphere are and select every 10th vertex.
+        // Provide a lower limit on the radius in case the existing nodes are too close together.
+        //
         final BBoxf box = new BBoxf();
+        box.add(8, 8, 8);
+        box.add(-8, -8, -8);
         for (int position = 0; position < nVx; position++) {
             final int vxId = graph.getVertex(position);
 
@@ -436,15 +451,15 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             Arrays.fill(max, 0);
         }
         char circleChar = 0x2460;
-        int radius = 3;
+        int nodeRadius = 3;
 
         final int vx0 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx0, vxXAttr, vxYAttr, vxZAttr, 0, 0, max[BBoxf.Z] + 2);
-        ConstructionUtilities.setxyz(graph, vx0, vxX2Attr, vxY2Attr, vxZ2Attr, 0, 0, max[BBoxf.Z] + 2);
+        ConstructionUtilities.setxyz(graph, vx0, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], max[BBoxf.Y], max[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx0, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, max[BBoxf.Y]/2, max[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx0, "~Node " + vx0 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx0, String.valueOf(vx0));
         graph.setStringValue(vxTypeAttr, vx0, "~Type " + vx0);
-        graph.setFloatValue(vxRadiusAttr, vx0, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx0, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx0, 1);
         graph.setObjectValue(vxColorAttr, vx0, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx0, DEFAULT_ICON);
@@ -454,12 +469,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxNormalisedAttr, vx0, (float) Math.random());
 
         final int vx1 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx1, vxXAttr, vxYAttr, vxZAttr, 0, 0, min[BBoxf.Z] - 2);
-        ConstructionUtilities.setxyz(graph, vx1, vxX2Attr, vxY2Attr, vxZ2Attr, 0, 0, min[BBoxf.Z] - 2);
+        ConstructionUtilities.setxyz(graph, vx1, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], max[BBoxf.Y], max[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx1, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, max[BBoxf.Y]/2, max[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx1, "~Node " + vx1 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx1, String.valueOf(vx1));
         graph.setStringValue(vxTypeAttr, vx1, "~Type " + vx1);
-        graph.setFloatValue(vxRadiusAttr, vx1, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx1, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx1, 1);
         graph.setObjectValue(vxColorAttr, vx1, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx1, DEFAULT_ICON);
@@ -469,12 +484,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxNormalisedAttr, vx1, (float) Math.random());
 
         final int vx2 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx2, vxXAttr, vxYAttr, vxZAttr, 0, max[BBoxf.Y] + 2, 0);
-        ConstructionUtilities.setxyz(graph, vx2, vxX2Attr, vxY2Attr, vxZ2Attr, 0, max[BBoxf.Y] + 2, 0);
+        ConstructionUtilities.setxyz(graph, vx2, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], min[BBoxf.Y], max[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx2, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, min[BBoxf.Y]/2, max[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx2, "~Node " + vx2 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx2, String.valueOf(vx2));
         graph.setStringValue(vxTypeAttr, vx2, "~Type " + vx2);
-        graph.setFloatValue(vxRadiusAttr, vx2, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx2, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx2, 1);
         graph.setObjectValue(vxColorAttr, vx2, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx2, DEFAULT_ICON);
@@ -484,12 +499,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxNormalisedAttr, vx2, (float) Math.random());
 
         final int vx3 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx3, vxXAttr, vxYAttr, vxZAttr, 0, min[BBoxf.Y] - 2, 0);
-        ConstructionUtilities.setxyz(graph, vx3, vxX2Attr, vxY2Attr, vxZ2Attr, 0, min[BBoxf.Y] - 2, 0);
+        ConstructionUtilities.setxyz(graph, vx3, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], min[BBoxf.Y], min[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx3, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, min[BBoxf.Y]/2, min[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx3, "~Node " + vx3 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx3, String.valueOf(vx3));
         graph.setStringValue(vxTypeAttr, vx3, "~Type " + vx3);
-        graph.setFloatValue(vxRadiusAttr, vx3, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx3, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx3, 1);
         graph.setObjectValue(vxColorAttr, vx3, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx3, DEFAULT_ICON);
@@ -499,12 +514,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxNormalisedAttr, vx3, (float) Math.random());
 
         final int vx4 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx4, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X] + 2, 0, 0);
-        ConstructionUtilities.setxyz(graph, vx4, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X] + 2, 0, 0);
+        ConstructionUtilities.setxyz(graph, vx4, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], max[BBoxf.Y], min[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx4, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, max[BBoxf.Y]/2, min[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx4, "~Node " + vx4 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx4, String.valueOf(vx4));
         graph.setStringValue(vxTypeAttr, vx4, "~Type " + vx4);
-        graph.setFloatValue(vxRadiusAttr, vx4, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx4, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx4, 1);
         graph.setObjectValue(vxColorAttr, vx4, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx4, DEFAULT_ICON);
@@ -514,12 +529,12 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setFloatValue(vxNormalisedAttr, vx4, (float) Math.random());
 
         final int vx5 = graph.addVertex();
-        ConstructionUtilities.setxyz(graph, vx5, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X] - 2, 0, 0);
-        ConstructionUtilities.setxyz(graph, vx5, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X] - 2, 0, 0);
+        ConstructionUtilities.setxyz(graph, vx5, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], max[BBoxf.Y], min[BBoxf.Z]);
+        ConstructionUtilities.setxyz(graph, vx5, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, max[BBoxf.Y]/2, min[BBoxf.Z]/2);
         graph.setStringValue(vxLabelAttr, vx5, "~Node " + vx5 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx5, String.valueOf(vx5));
         graph.setStringValue(vxTypeAttr, vx5, "~Type " + vx5);
-        graph.setFloatValue(vxRadiusAttr, vx5, (nVx + radius++) / (float) (nVx + 6));
+        graph.setFloatValue(vxRadiusAttr, vx5, (nVx + nodeRadius++) / (float) (nVx + 6));
         graph.setFloatValue(vxVisibilityAttr, vx5, 1);
         graph.setObjectValue(vxColorAttr, vx5, randomColor3(random));
         graph.setStringValue(vxForegroundIconAttr, vx5, DEFAULT_ICON);
@@ -638,35 +653,5 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
      */
     private static ConstellationColor randomColor3(Random r) {
         return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
-    }
-}
-
-class IconRandomiser {
-
-    private static final int MAX_ICONS = 65535;
-
-    private final ArrayList<String> iconNames;
-    private final Random random;
-
-    IconRandomiser() {
-        random = new Random();
-        Set<String> t = IconManager.getIconNames(null);
-        if (t.size() > MAX_ICONS) {
-            final Set<String> tt = new HashSet<>(t);
-            final ArrayList<String> tl = new ArrayList<>(tt);
-            while (tt.size() > MAX_ICONS) {
-                final String name = tl.get(random.nextInt(tl.size()));
-                tt.remove(name);
-            }
-
-            t = tt;
-        }
-
-        iconNames = new ArrayList<>(t);
-        System.out.printf("Sphere decorator icons: %d\n", iconNames.size());
-    }
-
-    public String getRandomName() {
-        return iconNames.get(random.nextInt(iconNames.size()));
     }
 }
