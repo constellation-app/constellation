@@ -285,7 +285,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
             }
 
             for (int j = 1; j < (k / 2) + 1; j++) {
-                List<Integer> destinations = new ArrayList<>();
+                ArrayList<Integer> destinations = new ArrayList<>();
                 for (int i = j; i < n; i++) {
                     destinations.add(vxIds[i]);
                 }
