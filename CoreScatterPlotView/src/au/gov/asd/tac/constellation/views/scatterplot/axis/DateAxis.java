@@ -53,7 +53,8 @@ public class DateAxis extends Axis<Date> {
      * the min and max date of the data provided. if {@link #autoRanging} is
      * true, these are used as lower and upper bounds.
      */
-    private Date minDate, maxDate;
+    private Date minDate;
+    private Date maxDate;
 
     private ObjectProperty<Date> lowerBound = new ObjectPropertyBase<Date>() {
         @Override

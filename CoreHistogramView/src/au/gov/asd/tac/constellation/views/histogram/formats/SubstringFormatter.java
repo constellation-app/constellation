@@ -86,7 +86,8 @@ public class SubstringFormatter extends BinFormatter {
     private class SubstringFormatBin extends StringBin {
 
         private final StringBin bin;
-        private final int start, end;
+        private final int start;
+        private final int end;
 
         public SubstringFormatBin(StringBin bin, int start, int end) {
             this.bin = bin;

@@ -295,7 +295,10 @@ public final class Matrix44f {
      * @return the determinant.
      */
     private static float detIJ(final Matrix44f m, final int i, final int j) {
-        int x, y, ii, jj;
+        int x;
+        int y;
+        int ii;
+        int jj;
         float ret;
         float[][] mat = new float[3][3];
 

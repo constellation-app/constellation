@@ -29,7 +29,9 @@ import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 public class NewAttribute implements Attribute {
 
     private final GraphElementType elementType;
-    private final String attributeType, name, description;
+    private final String attributeType;
+    private final String name;
+    private final String description;
     private int id = ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
 
     public NewAttribute(final Attribute original) {

@@ -371,7 +371,10 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     public static boolean insidePythonString(String s, int position) {
 
         // Split up the components of the graph labels and decorators string by toSplitOn, checking for escaped toSplitOns in attribute names.
-        boolean insideSingle = false, insideDouble = false, insideThreeSingle = false, insideThreeDouble = false;
+        boolean insideSingle = false;
+        boolean insideDouble = false;
+        boolean insideThreeSingle = false;
+        boolean insideThreeDouble = false;
         int currentPos = 0;
         int currentNumSlashes = 0;
         while (currentPos <= position) {
@@ -406,7 +409,9 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     }
 
     private static int findNextPythonArgumentStart(String s, int startPosition) {
-        int braceCount = 0, parenCount = 0, bracketCount = 0;
+        int braceCount = 0;
+        int parenCount = 0;
+        int bracketCount = 0;
         int position = startPosition;
         while (position < s.length() && parenCount >= 0) {
             if (!insidePythonString(s, position)) {

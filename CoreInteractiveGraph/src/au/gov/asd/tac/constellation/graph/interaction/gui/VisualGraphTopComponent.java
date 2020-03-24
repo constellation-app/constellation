@@ -587,7 +587,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             // Read relevant visual attributes from the graph and update the sidebar.
             final DrawFlags drawFlags;
             final ConnectionMode connectionMode;
-            final boolean visibleAboveThreshold, isDisplay3D, isDrawingMode, isDrawingDirectedTransactions;
+            final boolean visibleAboveThreshold;
+            final boolean isDisplay3D;
+            final boolean isDrawingMode;
+            final boolean isDrawingDirectedTransactions;
             drawFlags = drawFlagsAttribute != Graph.NOT_FOUND ? rg.getObjectValue(drawFlagsAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
             visibleAboveThreshold = visibleAboveThresholdAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(visibleAboveThresholdAttribute, 0) : VisualGraphDefaults.DEFAULT_GRAPH_VISIBILITY;
             isDisplay3D = displayModeIs3DAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(displayModeIs3DAttribute, 0) : VisualGraphDefaults.DEFAULT_DISPLAY_MODE_3D;

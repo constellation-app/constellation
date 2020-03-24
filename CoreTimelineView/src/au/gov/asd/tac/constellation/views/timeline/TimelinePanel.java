@@ -91,7 +91,8 @@ public class TimelinePanel extends Region {
     public final TimelineTopComponent coordinator;
     private final AnchorPane innerPane = new AnchorPane();
     private final ToolBar toolbar;
-    private final Label lowerTime, upperTime;
+    private final Label lowerTime;
+    private final Label upperTime;
     private String nodeLabelAttr = null;
     private final ClusteringManager clusteringManager = new ClusteringManager();
     private final TimelineChart timeline;

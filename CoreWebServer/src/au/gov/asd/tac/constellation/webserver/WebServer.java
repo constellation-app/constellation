@@ -119,7 +119,7 @@ public class WebServer {
     private static boolean running = false;
     private static int port = 0;
 
-    private static final String CONSTELLATION_CLIENT = "constellation_client.py";
+    protected static final String CONSTELLATION_CLIENT = "constellation_client.py";
     private static final String IPYTHON = ".ipython";
     private static final String RESOURCES = "resources/";
 

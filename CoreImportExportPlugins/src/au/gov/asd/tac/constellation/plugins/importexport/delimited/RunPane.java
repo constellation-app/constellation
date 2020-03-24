@@ -70,7 +70,9 @@ public class RunPane extends BorderPane {
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
-    private final AttributeList sourceVertexAttributeList, destinationVertexAttributeList, transactionAttributeList;
+    private final AttributeList sourceVertexAttributeList;
+    private final AttributeList destinationVertexAttributeList;
+    private final AttributeList transactionAttributeList;
     public Point2D draggingOffset;
     public AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn = null;

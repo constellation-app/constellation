@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.graph.visual.dragdrop;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -64,7 +64,8 @@ public class ImageIconDropper implements GraphDropper {
     private static final DataFlavor IMAGE_FILE_FLAVOR;
 
     static {
-        DataFlavor imageFlavor = null, imageFileFlavor = null;
+        DataFlavor imageFlavor = null;
+        DataFlavor imageFileFlavor = null;
         try {
             imageFlavor = new DataFlavor("image/x-java-image;class=java.awt.Image");
             imageFileFlavor = new DataFlavor("application/x-java-file-list;class=java.util.List");

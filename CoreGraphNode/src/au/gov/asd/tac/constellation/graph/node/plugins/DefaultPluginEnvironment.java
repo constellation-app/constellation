@@ -177,7 +177,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
 
         GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
-        PluginReport parentReport = null, currentReport = null;
+        PluginReport parentReport = null;
+        PluginReport currentReport = null;
         if (graphReport != null) {
             parentReport = callingConstraints.getCurrentReport();
             if (parentReport == null) {
@@ -242,7 +243,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
 
         final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
-        PluginReport parentReport = null, currentReport = null;
+        PluginReport parentReport = null;
+        PluginReport currentReport = null;
         if (graphReport != null) {
             parentReport = callingConstraints.getCurrentReport();
             if (parentReport == null) {
@@ -298,7 +300,8 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         callingConstraints.setAlwaysSilent(alwaysSilent || silentCount > 0);
 
         GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
-        PluginReport parentReport = null, currentReport = null;
+        PluginReport parentReport = null;
+        PluginReport currentReport = null;
         if (graphReport != null) {
             parentReport = callingConstraints.getCurrentReport();
             if (parentReport == null) {

@@ -383,7 +383,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (eventState.isMousePressed()) {
                 if (wg != null) {
                     final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     boolean cameraChange = false;
                     switch (eventState.getCurrentAction()) {
                         case ROTATING:
@@ -491,7 +492,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     setHitTestingEnabled(true);
 
                     final Camera camera = VisualGraphUtilities.getCamera(wg);
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     switch (eventState.getCurrentAction()) {
                         case SELECTING:
                             if (eventState.isMouseDragged()) {

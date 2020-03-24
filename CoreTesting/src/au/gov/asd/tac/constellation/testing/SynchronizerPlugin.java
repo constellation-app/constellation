@@ -36,7 +36,9 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
 
     public static final String COPY_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "copy");
     public static final String NAME_PARAMETER_ID = PluginParameter.buildId(SynchronizerPlugin.class, "name");
-    private final int readTime, queryTime, writeTime;
+    private final int readTime;
+    private final int queryTime;
+    private final int writeTime;
     private final String name;
 
     public SynchronizerPlugin() {

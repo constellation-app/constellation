@@ -25,7 +25,8 @@ import java.util.function.Consumer;
  */
 public class HitTestRequest {
 
-    private final int x, y;
+    private final int x;
+    private final int y;
     private final Consumer<HitState> followUpOperation;
     private final HitState hitState;
     private final Queue<HitState> notificationQueue;

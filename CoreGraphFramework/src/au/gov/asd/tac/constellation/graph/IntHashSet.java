@@ -47,7 +47,10 @@ public abstract class IntHashSet implements Serializable {
      * this set.
      */
     protected abstract boolean equals(int element1, int element2);
-    private int[] buckets, next, prev, hashCache;
+    private int[] buckets;
+    private int[] next;
+    private int[] prev;
+    private int[] hashCache;
 
     public IntHashSet(final int capacity) {
         buckets = new int[capacity];

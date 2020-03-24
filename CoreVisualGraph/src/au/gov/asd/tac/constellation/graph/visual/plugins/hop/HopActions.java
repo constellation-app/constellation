@@ -65,7 +65,9 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
     private final JMenuBar menuBar;
     private final JMenu menu;
     private Graph graph;
-    private final JCheckBox outgoing, incoming, undirected;
+    private final JCheckBox outgoing;
+    private final JCheckBox incoming;
+    private final JCheckBox undirected;
 
     public HopActions() {
         panel = new JPanel();

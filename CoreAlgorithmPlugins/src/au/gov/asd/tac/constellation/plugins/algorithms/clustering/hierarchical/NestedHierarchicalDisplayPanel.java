@@ -152,7 +152,9 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     private static class LinePositioning {
 
-        public int xstop, ystart, ystop;
+        public int xstop;
+        public int ystart;
+        public int ystop;
         public Color color;
         public GroupTreeNode n;
     }
