@@ -74,7 +74,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
          * Connection.
          */
         CONNECTION
-    };
+    }
 
     /**
      * Decorator corner.
@@ -105,7 +105,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
         public String toString() {
             return name().toLowerCase();
         }
-    };
+    }
     private final List<GraphLabelV0> bottomLabels;
     private final List<GraphLabelV0> topLabels;
     private final List<GraphLabelV0> connLabels;

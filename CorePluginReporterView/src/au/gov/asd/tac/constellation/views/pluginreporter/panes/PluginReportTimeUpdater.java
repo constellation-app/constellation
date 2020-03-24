@@ -69,7 +69,7 @@ public class PluginReportTimeUpdater {
                 Platform.runLater(UPDATE_PANES);
             }
         }
-    };
+    }
 
     /**
      * Add a plugin report to the set of plugin reports that will have their
