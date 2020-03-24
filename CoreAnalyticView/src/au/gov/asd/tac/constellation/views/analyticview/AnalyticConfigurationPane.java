@@ -185,8 +185,8 @@ public class AnalyticConfigurationPane extends VBox {
             return question1.getName().compareToIgnoreCase(question2.getName());
         });
         questionList.getItems().addAll(questions);
-        questionList.setCellFactory((ListView<AnalyticQuestionDescription> list) -> {
-            ListCell<AnalyticQuestionDescription> cell = new ListCell<AnalyticQuestionDescription>() {
+        questionList.setCellFactory(list -> {
+            return new ListCell<AnalyticQuestionDescription>() {
 
                 @Override
                 protected void updateItem(final AnalyticQuestionDescription item, final boolean empty) {
@@ -194,7 +194,6 @@ public class AnalyticConfigurationPane extends VBox {
                     setText(item == null ? "" : item.getName());
                 }
             };
-            return cell;
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
@@ -244,8 +243,8 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set up the list of analytic plugins
         this.pluginList = new ListView();
-        pluginList.setCellFactory((ListView<SelectableAnalyticPlugin> selectableAnalytics) -> {
-            ListCell<SelectableAnalyticPlugin> cell = new ListCell<SelectableAnalyticPlugin>() {
+        pluginList.setCellFactory(selectableAnalytics -> {
+            return new ListCell<SelectableAnalyticPlugin>() {
 
                 @Override
                 protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
@@ -260,7 +259,6 @@ public class AnalyticConfigurationPane extends VBox {
                     }
                 }
             };
-            return cell;
         });
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!selectionSuppressed) {

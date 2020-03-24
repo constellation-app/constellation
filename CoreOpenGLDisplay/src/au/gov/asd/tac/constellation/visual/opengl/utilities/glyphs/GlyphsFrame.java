@@ -413,8 +413,7 @@ public class GlyphsFrame extends JFrame {
     private static String[] loadText(final String fnam, final boolean raw) throws IOException {
         try (final BufferedReader in = new BufferedReader(new InputStreamReader(GlyphsFrame.class.getResourceAsStream(fnam), StandardCharsets.UTF_8))) {
             final List<String> ls = in.lines().filter(line -> raw || (line.length() > 0 && !line.startsWith("#"))).collect(Collectors.toList());
-            final String[] text = ls.toArray(new String[ls.size()]);
-            return text;
+            return ls.toArray(new String[ls.size()]);
         }
     }
 

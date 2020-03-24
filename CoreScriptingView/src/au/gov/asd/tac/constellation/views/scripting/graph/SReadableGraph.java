@@ -456,9 +456,7 @@ public class SReadableGraph {
             throw new NoSuchAttributeException(key);
         }
 
-        final Object value = readableGraph.getObjectValue(attributeId, 0);
-
-        return value;
+        return readableGraph.getObjectValue(attributeId, 0);
     }
 
     /**

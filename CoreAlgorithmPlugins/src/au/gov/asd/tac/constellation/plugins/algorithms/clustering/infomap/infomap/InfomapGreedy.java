@@ -229,9 +229,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        double deltaL = delta_enter - delta_enter_log_enter - delta_exit_log_exit + delta_flow_log_flow;
-
-        return deltaL;
+        return delta_enter - delta_enter_log_enter - delta_exit_log_exit + delta_flow_log_flow;
     }
 
     /**

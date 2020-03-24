@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
@@ -170,10 +170,7 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
         if (!Objects.equals(this.attributeName, other.attributeName)) {
             return false;
         }
-        if (!Objects.equals(this.color, other.color)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.color, other.color);
     }
 
     @Override

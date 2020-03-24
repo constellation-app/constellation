@@ -96,8 +96,7 @@ public class IntegerLogarithmicRangeBinFormatter extends BinFormatter {
 
         @Override
         public Bin create() {
-            IntRangeBin f = new IntRangeBin(bin, base);
-            return f;
+            return new IntRangeBin(bin, base);
         }
     }
 }

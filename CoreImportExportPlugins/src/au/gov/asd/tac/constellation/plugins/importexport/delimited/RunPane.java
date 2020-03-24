@@ -339,8 +339,7 @@ public class RunPane extends BorderPane {
             column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
                 @Override
                 public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {
-                    final ImportTableCell cell = new ImportTableCell();
-                    return cell;
+                    return new ImportTableCell();
                 }
             });
 

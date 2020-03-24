@@ -152,18 +152,15 @@ public enum CalculatorConstant {
 
     private static int[] getDefaultSelectionIndex(String name) {
         if (!name.contains("(")) {
-            final int[] selIndices = {name.length()};
-            return selIndices;
+            return new int[]{name.length()};
         } else {
             final int startIndex = name.indexOf('(') + 1;
             final int endIndex = name.contains(",") ? name.indexOf(',') : name.indexOf(')');
             // If the function takes no parameters, don't select anything just move the cursor to the end of the inserted text
             if (startIndex == endIndex) {
-                final int[] selIndeices = {name.length()};
-                return selIndeices;
+                return new int[]{name.length()};
             } else {
-                final int[] selIndices = {startIndex, endIndex};
-                return selIndices;
+                return new int[]{startIndex, endIndex};
             }
         }
     }

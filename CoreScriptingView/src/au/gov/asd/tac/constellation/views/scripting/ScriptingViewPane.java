@@ -251,11 +251,7 @@ public class ScriptingViewPane extends JPanel {
     }
 
     public void update(final Graph graph) {
-        if (graph == null) {
-            executeButton.setEnabled(false);
-        } else {
-            executeButton.setEnabled(true);
-        }
+        executeButton.setEnabled(graph != null);
     }
 
     private void openScript() {

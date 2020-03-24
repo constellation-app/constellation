@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.plugins;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -169,9 +169,8 @@ public class CalculatorAttributeValue extends AbstractCalculatorValue {
 
     public boolean isTemporalAttribute(final GraphReadMethods graph, final int attrID) {
         final Class<?> type = graph.getAttributeDataType(attrID);
-        if (type.equals(DateAttributeDescription.class) || type.equals(ZonedDateTimeAttributeDescription.class) || type.equals(TimeAttributeDescription.class)) {
-            return true;
-        }
-        return false;
+        return type.equals(DateAttributeDescription.class) 
+                || type.equals(ZonedDateTimeAttributeDescription.class) 
+                || type.equals(TimeAttributeDescription.class);
     }
 }

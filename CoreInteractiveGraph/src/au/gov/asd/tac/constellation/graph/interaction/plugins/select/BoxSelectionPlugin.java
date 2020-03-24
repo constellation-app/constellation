@@ -449,10 +449,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         }
 
         x = (maxY - y1) / m + x1;
-        if (x > minX && x < maxX) {
-            return true;
-        }
 
-        return false;
+        return x > minX && x < maxX;
     }
 }

@@ -34,9 +34,7 @@ public final class DateChooserPanel extends JPanel implements ActionListener {
     private final Calendar calendar;
 
     private String fmtDate() {
-        final String s = String.format("%4d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-
-        return s;
+        return String.format("%4d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     /**

@@ -153,8 +153,6 @@ public class Network {
         }
 
         final int vxId = rg.getVertex(position);
-        final String name = String.format("[Node position=%d, vxId=%d]", position, vxId);
-
-        return name;
+        return String.format("[Node position=%d, vxId=%d]", position, vxId);
     }
 }
