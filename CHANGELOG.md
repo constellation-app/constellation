@@ -1,8 +1,7 @@
-# CONSTELLATION Changes
+# Constellation Changes
 
 ## 2020-03-01 Changes in March 2020
-* Core Web Server module rewritten to add REST services; the REST API has changed.
-* Added new module Core View Framework containing AbstractTopComponent and other related classes.
+* Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
 * Added new module Core Plugin Reporter to separate it from the plugin framework.
 * Added new module Core Named Selections to break it out of Core Functionality.
 * Added new module Core Analytic Calculator to separate it from the Scripting View.
@@ -21,6 +20,8 @@
 * Renamed base package of Core Import Export to `au.gov.asd.tac.constellation.plugins.importexport`.
 * Updated Core Visual Schema with all attribute classes relevant to it.
 * Updated Core Analytic Schema with all attribute classes relevant to it.
+* Updated the Core Web Server module with a commplete rewrite regarding adding REST services.
+* Updated the REST API with a major refactor.
 * Updated the `README.MD` instructions to explain the NetBeans 11 installation workaround.
 * Updated the Travis run image to use NetBeans 11.3 and include the workaround for NetBeans 11.
 
