@@ -253,30 +253,27 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     int dxId = destination;
                     if (randomWeights) {
                         switch (reciprocity) {
-                            case 0: {
-                                boolean random = r.nextBoolean();
-                                if (random) {
+                            case 0:
+                                boolean random0 = r.nextBoolean();
+                                if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
-                            case 1: {
-                                int random = r.nextInt(5);
-                                if (random == 0) {
+                            case 1: 
+                                int random1 = r.nextInt(5);
+                                if (random1 == 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
-                            default: {
-                                int random = r.nextInt(5);
-                                if (random != 0) {
+                            default:
+                                int randomDefault = r.nextInt(5);
+                                if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
-                            }
                         }
                     }
                     final int e = graph.addTransaction(sxId, dxId, true);
