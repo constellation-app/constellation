@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.camera;
 
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
@@ -267,13 +266,11 @@ public class Graphics3DUtilities {
     public static Vector3f mix(final Vector3f v1, final Vector3f v2, final float a) {
         final float a1 = 1 - a;
 
-        final Vector3f v = new Vector3f(
+        return new Vector3f(
                 v1.getX() * a1 + v2.getX() * a,
                 v1.getY() * a1 + v2.getY() * a,
                 v1.getZ() * a1 + v2.getZ() * a
         );
-
-        return v;
     }
 
     public static float mix(final float f1, final float f2, final float a) {

@@ -435,10 +435,7 @@ public final class Frustum {
         }
 
         fDist = Mathf.distanceToPlane(point, topPlane);
-        if (fDist + radius <= 0.0) {
-            return false;
-        }
 
-        return true;
+        return fDist + radius > 0.0;
     }
 }

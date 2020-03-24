@@ -203,9 +203,7 @@ public final class BoundingBox implements Serializable {
         final float dx = max.getX() - cx;
         final float dy = max.getY() - cy;
         final float dz = max.getZ() - cz;
-        final float radius = Math.max(Math.max(dx, dy), dz);
-
-        return radius;
+        return Math.max(Math.max(dx, dy), dz);
     }
 
     /**

@@ -77,9 +77,7 @@ public final class AutosaveUtilities {
             return new File[0];
         }
 
-        final File[] saveFiles = saveDir.listFiles((dir, name) -> name.endsWith(ext));
-
-        return saveFiles;
+        return saveDir.listFiles((dir, name) -> name.endsWith(ext));
     }
 
     /**

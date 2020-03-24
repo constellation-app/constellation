@@ -89,11 +89,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
         final GraphOptionsPanel graphOptionsPanel = getPanel();
-        final boolean changed
-                = !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
+        return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
                 && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
-
-        return changed;
     }
 
     @Override

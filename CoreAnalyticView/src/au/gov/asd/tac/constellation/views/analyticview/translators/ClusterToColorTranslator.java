@@ -27,11 +27,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -57,8 +57,7 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
 
     @Override
     public ColorVisualisation buildControl() {
-        final ColorVisualisation<ClusterData> colorVisualisation = new ColorVisualisation(this);
-        return colorVisualisation;
+        return new ColorVisualisation(this);
     }
 
     @Override

@@ -441,9 +441,7 @@ public final class DateTimeRangeInputPane extends Pane {
      */
     private int getSpinnerValue(final int ix) {
         final Number num = timeSpinners.get(ix).getValue();
-        final int n = num != null ? num.intValue() : 0;
-
-        return n;
+        return num != null ? num.intValue() : 0;
     }
 
     /**
@@ -490,9 +488,7 @@ public final class DateTimeRangeInputPane extends Pane {
     private ZoneId getZoneId(final String tz) {
         if (tz != null) {
             final String id = tz.split(" ", 3)[1];
-            final ZoneId zi = ZoneId.of(id);
-
-            return zi;
+            return ZoneId.of(id);
         }
 
         return null;

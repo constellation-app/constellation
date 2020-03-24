@@ -470,10 +470,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 return false;
             }
             final SingleChoiceParameterValue other = (SingleChoiceParameterValue) obj;
-            if (!Objects.equals(this.choice, other.choice)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(this.choice, other.choice);
         }
 
         @Override

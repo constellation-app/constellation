@@ -164,11 +164,9 @@ public final class GraphUtilities {
             mean[2] /= vxCount;
         }
 
-        final float[] fmean = new float[]{
+        return new float[]{
             (float) mean[0], (float) mean[1], (float) mean[2]
         };
-
-        return fmean;
     }
 
     /**
@@ -242,11 +240,9 @@ public final class GraphUtilities {
             mean[2] /= n;
         }
 
-        final float[] fmean = new float[]{
+        return new float[]{
             (float) mean[0], (float) mean[1], (float) mean[2]
         };
-
-        return fmean;
     }
 
     /**

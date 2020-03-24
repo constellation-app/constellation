@@ -125,8 +125,7 @@ public class NifiClient extends RestClient {
         // routed on instead.
         final Map<String, String> headers = new TreeMap<>();
         headers.put("flexloader.type", "flowfile-v3");
-        final NifiFileSubmitResponse response = postToNodes(headers, os.toByteArray(), true);
-        return response;
+        return postToNodes(headers, os.toByteArray(), true);
     }
 
     public NifiFileSubmitResponse submitAndDelete(final String fileHandle, final Map<String, String> attributes) throws IOException {

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
@@ -22,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowUndirected;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  *
@@ -76,9 +76,7 @@ public class InfomapUndirected extends InfomapGreedy {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        final double deltaL = delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
-
-        return deltaL;
+        return delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
     }
 
     @Override

@@ -61,9 +61,7 @@ public final class DataAccessPreferenceKeys {
      * @return The directory where data access results should be written to.
      */
     public static File getDataAccessResultsDirEx() {
-        final File f = getDir(SAVE_DATA_DIR_PREF);
-
-        return f;
+        return getDir(SAVE_DATA_DIR_PREF);
     }
 
     /**

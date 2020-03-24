@@ -153,11 +153,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         params.addController(BUILD_MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = master.getStringValue();
-                if (mode.equals("Connected")) {
-                    parameters.get(T_PARAMETER_ID).setEnabled(true);
-                } else {
-                    parameters.get(T_PARAMETER_ID).setEnabled(false);
-                }
+                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals("Connected"));
             }
         });
 

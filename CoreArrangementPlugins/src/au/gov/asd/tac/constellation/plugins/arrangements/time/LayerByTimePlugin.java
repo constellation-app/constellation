@@ -685,9 +685,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             graph.setIntValue(nodeAttr, dupNodeId, nodeId);
         }
 
-        final int dupId = nodeDups.get(key);
-
-        return dupId;
+        return nodeDups.get(key);
     }
 
     private void copyAttributes(final GraphWriteMethods graph, final int fromId, final int toId, final GraphElementType type) {
