@@ -48,7 +48,7 @@
 
 ## 2019-08-01 Changes in August 2019
 * Added `BrandingUtilities` to Core Utilities to maintain the application name "Constellation".
-    * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "`Development",` "QA" and "`Production"` versions.
+    * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.
 * Added `PluginParameters.hasParameter()` to the Core Plugin Framework module as a convenient way to check if a parameter exists.
 * Fixed a Null Pointer Exception when selecting Circle arrangements.
 * Fixed the `GitHub` url used by Help -> Submit a ticket.
@@ -387,7 +387,7 @@
 * Added `HttpsUtilities.readErrorStreamAndThrow` in the Core Utilities module to make reporting errors from services consistent.
 * Added `IntegerObjectAttributeInteraction,` `LongAttributeInteraction` and `LongObjectAttributeInteraction` classes so that the corresponding attribute types are properly represented in the user interface.
 * Added `LongObjectAttributeDescription` class for completeness.
-* Added a "`Start` Jupyter notebook" capability.
+* Added a "Start Jupyter notebook" capability.
 * Added the ability to add plugins to your favourites in the Data Access View.
 * Fixed a bug in `ConsolidatedDialog` that would not deselect correctly.
 * Fixed a major performance issue where table view state updates where running on the EDT causing CONSTELLATION to lock up.
@@ -471,7 +471,7 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
     * Direction indicators no longer move when the mouse cursor moves (only when you rotate/pan the graph). They should be re-implemented as an animation, which would require a reasonably simple expansion of the animation framework to cater for utilising non-graph visual operations.
     * Lines and nodes are no longer `Anti-Aliased`. The old method, however, was slow, deprecated and caused artifacts when AA was turned off in the graphics card settings. Graphs now render correctly regardless of the AA settings on the card (although currently enabling AA gives no visual improvement). `AAing` may be implemented in the future by multisampling the graph texture.
     * On large graphs, the renderer will update slightly later than the rest of the views (when creating nodes etc.). The display always took (at least) this long to update, but other views used to wait. This may be tricky to fix, but is not considered critical.
-    * Note that whilst the graph will display that it is busy and prevent interaction during a write lock, the same will not occur during read locks. When a read lock is in progress, events will be queued and the display will not be updated until the read lock is released at which point all queued events will be processed in quick succession so that the event handler 'catches up'. This effect can be seen by running "`Experimental` > Five Second Read Lock" and then trying to rotate/pan the graph. While this looks bad in this instance, in practice due to the brevity of read locks (but also their potential to be obtained at any point in time during the possession of a write lock), holding up but not terminating the event handler's main loop is the most sensible course of action.
+    * Note that whilst the graph will display that it is busy and prevent interaction during a write lock, the same will not occur during read locks. When a read lock is in progress, events will be queued and the display will not be updated until the read lock is released at which point all queued events will be processed in quick succession so that the event handler 'catches up'. This effect can be seen by running "Experimental > Five Second Read Lock" and then trying to rotate/pan the graph. While this looks bad in this instance, in practice due to the brevity of read locks (but also their potential to be obtained at any point in time during the possession of a write lock), holding up but not terminating the event handler's main loop is the most sensible course of action.
 * Fixed all known memory leaks.
 * Fixed failing unit tests.
 * Fixed some dialogs fading to the back.
@@ -498,8 +498,8 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
 
 ## 2016-10-01 Changes in October 2016
 * Added `LogAction` to show the CONSTELLATION logs to the user.
-* Added a "`Support` Package" menu item under help which zips the CONSTELLATION logs.
-* Added a `DataAccessState` object which currently saves the String parameter values in the "`Gobal` Parameters" section of the Data Access View when you press Go. This parameters are saved with the graph so that they can be loaded when the graph opens.
+* Added a "Support Package" menu item under help which zips the CONSTELLATION logs.
+* Added a `DataAccessState` object which currently saves the String parameter values in the "Gobal Parameters" section of the Data Access View when you press Go. This parameters are saved with the graph so that they can be loaded when the graph opens.
 * Added an option for `RecordStoreServlet` to return JSON suitable for `Pandas.DataFrame.from_items()`. The `DataFrame` JSON parser is much faster.
 * Added missing type qualifiers in `GraphRecordStoreUtilities` methods.
 * Added support back for attr_list attribute type which were found in legacy graphs. The attr_list attribute is converted to the currently supported Graph attributes in `SimpleSchemaV1UpdateProvider`.
@@ -521,7 +521,7 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
 * Added a REST API. Initially this allows a `RecordStore` to be added to the active graph.
 * Added a `ScriptingAction` lookup to allow more actions to be added to the Scripting view Actions drop-down menu.
 * Fixed various bugs.
-* Renamed `FeedbackHandler` to `SupportHandler` and changed the menu name from "`Feedback..."` to "`Support"`
+* Renamed `FeedbackHandler` to `SupportHandler` and changed the menu name from "Feedback..." to "Support"
 * Renamed `IconManager.getIconObjects` to `IconManager.getIcons`.
 * Updated `SaveResultsFileWriter.writeRecordStore` to be memory efficient which fixes a `java.lang.OutOfMemoryError` exception and removed `SaveResultsFileWriter.write`.
 * Updated plugins to provide their own arrangements after being run by overriding `RecordStoreQueryPlugin.completionArrangement()`. By default any `RecordStoreQueryPlugin` will now finish with an Grid arrangement (which is fast). This is a breaking change which replaces `RecordStoreQueryPlugin.arrangeOnCompletion()`.
@@ -554,7 +554,7 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
 * Updated various menu item positions.
 
 ## 2016-07-01 Changes in July 2016
-* Added "`Templates"` which allow users to save multiple custom visualisations. Templates are essentially constellation files in disguise - however only the graph attributes are saved, no graph element data.
+* Added "Templates" which allow users to save multiple custom visualisations. Templates are essentially constellation files in disguise - however only the graph attributes are saved, no graph element data.
     * Menu items (including icons) have been added to allow easy creation of graphs from templates, saving templates, and management of templates.
     * Management of templates allows templates to be deleted, and also set as the default graph to open when the user selects New Graph (or hits `control+N)`.
 * Added `HttpsUrlConnection` class, a builder pattern to create a `HttpsUrlConnection` with sensible defaults like using GZIP compression and the user agent string set to 'CONSTELLATION'.
@@ -569,7 +569,7 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
 * Fixed various bugs.
 * Moved some preferences from the `ApplicationPreferenceKeys` to `DebuggingPreferenceKeys`.
 * Removed ability to set default values for visual attributes through preferences in favour of the new template system. The changes have been explained in a what's new entry to avoid user confusion.
-* Removed bespoke editors such as "`Edit` > Labels" in favour of using the streamlined approach provided by the attribute editor.
+* Removed bespoke editors such as "Edit > Labels" in favour of using the streamlined approach provided by the attribute editor.
 * Removed the `CorePluginGuide` module.
 * Renamed `VisualConcept.TransactionAttribute.COLOR_REFERENCE` to `VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE`.
 * Renamed `VisualConcept.VertexAttribute.COLOR_REFERENCE` to `VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE`.
@@ -588,8 +588,8 @@ final float x = `xAttribute` != `Graph.NOT_FOUND` ? `readableGraph.getFloatValue
 * Fixed various bugs.
 * Improved Schema API.
     * The way in which graph schemas are created and controlled within CONSTELLATION has been overhauled, resulting in a more consolidated, and overall simpler API.
-    * The most notable change is the introduction of "`Schema` Concepts" which collect related attributes, vertex types and transaction types into conceptual groups which can then be registered to a schema. Schema concepts will replace "`Attribute` Providers", "`Vertex` Type Providers", and "`Transaction` Type Providers" and are now hierarchical by default, making it easier to extend an existing concept.
-    * Other changes include the simplification of "`Schema"` and "`Schema` Factory", and new utility classes for interacting with schema concepts, vertex types and transaction types. In addition to this, we also now have a new convention where schemas should no longer extend each other, but rather inheritance should be limited to schema concepts.
+    * The most notable change is the introduction of "Schema Concepts" which collect related attributes, vertex types and transaction types into conceptual groups which can then be registered to a schema. Schema concepts will replace "Attribute Providers", "Vertex Type Providers", and "Transaction Type Providers" and are now hierarchical by default, making it easier to extend an existing concept.
+    * Other changes include the simplification of "Schema" and "Schema Factory", and new utility classes for interacting with schema concepts, vertex types and transaction types. In addition to this, we also now have a new convention where schemas should no longer extend each other, but rather inheritance should be limited to schema concepts.
 * Improved performance of `IconManager` and added new icons, `BAGEL_BLUE,` `BAGEL_GREY` and CHART.
 * Improved the Scripting View API by adding support for LINK and EDGE types.
 * Moved the `WhatsNewProvider` from `au.gov.asd.tac.constellation.core.tutorial.whatsnew` to `au.gov.asd.tac.constellation.core.whatsnew`.
