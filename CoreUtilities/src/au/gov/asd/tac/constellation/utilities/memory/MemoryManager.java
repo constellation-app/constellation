@@ -111,8 +111,7 @@ public class MemoryManager {
      */
     public static Map<Class<?>, ClassStats> getObjectCounts() {
         synchronized (OBJECT_COUNTS) {
-            Map<Class<?>, ClassStats> counts = new HashMap<>(OBJECT_COUNTS);
-            return counts;
+            return new HashMap<>(OBJECT_COUNTS);
         }
     }
 

@@ -100,8 +100,7 @@ public class IntegerRangeBinFormatter extends BinFormatter {
 
         @Override
         public Bin create() {
-            IntRangeBin f = new IntRangeBin(bin, zero, bucketSize);
-            return f;
+            return new IntRangeBin(bin, zero, bucketSize);
         }
     }
 }

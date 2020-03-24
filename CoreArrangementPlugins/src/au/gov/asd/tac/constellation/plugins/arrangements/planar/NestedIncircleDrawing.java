@@ -65,9 +65,7 @@ public class NestedIncircleDrawing {
     public static Point getIncircleRadius(final List<Point> polygon) {
         final double minimumRadius = Double.MIN_VALUE;
 
-        Point centre = new Point();
-        return centre;
-
+        return new Point();
     }
 
 }

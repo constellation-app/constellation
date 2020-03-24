@@ -761,7 +761,7 @@ public class MapViewTileRenderer extends PApplet {
         pairedCounters.put(counterTopRightVertical, counterBottomRightVertical);
 
         // get the selected markers
-        final Set<ConstellationAbstractMarker> selection = markerCache.keys().stream().filter(marker -> {
+        return markerCache.keys().stream().filter(marker -> {
             // clear all counters
             edgeCounters.forEach((edge, counter) -> {
                 counter.reset();
@@ -808,8 +808,6 @@ public class MapViewTileRenderer extends PApplet {
                     || pairedCounters.entrySet().stream().anyMatch(
                             entry -> entry.getKey().get() != entry.getValue().get());
         }).collect(Collectors.toSet());
-
-        return selection;
     }
 
     /**

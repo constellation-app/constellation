@@ -468,8 +468,7 @@ public enum CalculatorVariable {
     private final int[] selectionIndices;
 
     private static int[] getDefaultSelectionIndex(String name) {
-        int[] selIndices = {name.length()};
-        return selIndices;
+        return new int[]{name.length()};
     }
 
     private CalculatorVariable(GraphElementType elementType, String variableName, String variableLabel, CalculatorTemplateDescription description, String... directory) {

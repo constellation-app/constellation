@@ -100,8 +100,6 @@ class LineDragger {
         final Vector3f muDelta = new Vector3f();
         Graphics3DUtilities.unproject(mpDelta, mvpMatrix, viewport, muDelta);
 
-        final Vector3f translation = new Vector3f(muDelta.getX() - mouseUnprojected.getX(), muDelta.getY() - mouseUnprojected.getY(), muDelta.getZ() - mouseUnprojected.getZ());
-
-        return translation;
+        return new Vector3f(muDelta.getX() - mouseUnprojected.getX(), muDelta.getY() - mouseUnprojected.getY(), muDelta.getZ() - mouseUnprojected.getZ());
     }
 }

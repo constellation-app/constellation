@@ -97,8 +97,7 @@ public class FloatRangeLogarithmicBinFormatter extends BinFormatter {
 
         @Override
         public Bin create() {
-            FloatRangeBin f = new FloatRangeBin(bin, base);
-            return f;
+            return new FloatRangeBin(bin, base);
         }
     }
 }

@@ -126,8 +126,7 @@ public class STransaction {
         if (attrId == Graph.NOT_FOUND) {
             throw new NoSuchAttributeException(key);
         }
-        final Object value = readableGraph.getObjectValue(attrId, id);
-        return value;
+        return readableGraph.getObjectValue(attrId, id);
     }
 
     /**

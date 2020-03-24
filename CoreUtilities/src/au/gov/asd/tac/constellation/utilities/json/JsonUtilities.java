@@ -310,8 +310,7 @@ public class JsonUtilities {
 
         try {
             JsonNode node = mapper.readTree(rawString);
-            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-            return prettyJson;
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
         } catch (IOException ex) {
             // If there is a formatting issue, just return the raw JSON as it was passed in
             return rawString;
