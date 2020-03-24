@@ -130,10 +130,10 @@ public class PlaceholderUtilities {
         // remove all transactions with type 'unknown' and all nodes with identifier 'unknown'
         if (cleanupGraph) {
             g.streamTransactions()
-                    .filter(t -> t.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
+                    .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter(v -> v.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }

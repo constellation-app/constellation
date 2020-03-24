@@ -863,7 +863,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     private void updateTimeZoneAction(final AttributeData attr) {
-        final EditOperation editOperation = zoneId -> PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
+        final EditOperation editOperation = zoneId -> 
+                PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
         final AbstractEditor editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
