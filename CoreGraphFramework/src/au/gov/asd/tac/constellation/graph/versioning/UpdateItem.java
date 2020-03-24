@@ -32,7 +32,7 @@ public abstract class UpdateItem implements Comparable<UpdateItem> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || !(o instanceof UpdateItem)) {
+        if (!(o instanceof UpdateItem)) {
             return false;
         }
         return getPriority() == ((UpdateItem) o).getPriority() && getName().equals(((UpdateItem) o).getName());

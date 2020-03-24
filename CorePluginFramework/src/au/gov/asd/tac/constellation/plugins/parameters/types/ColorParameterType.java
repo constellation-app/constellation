@@ -178,7 +178,7 @@ public class ColorParameterType extends PluginParameterType<ColorParameterValue>
 
         @Override
         public boolean equals(final Object o) {
-            return o != null && o instanceof ColorParameterValue && c.equals(((ColorParameterValue) o).c);
+            return o instanceof ColorParameterValue && c.equals(((ColorParameterValue) o).c);
         }
 
         @Override

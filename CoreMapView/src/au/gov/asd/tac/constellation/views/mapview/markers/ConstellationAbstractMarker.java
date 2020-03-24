@@ -185,7 +185,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public String getStringProperty(final String key) {
         final Object value = properties.get(key);
-        if (value != null && value instanceof String) {
+        if (value instanceof String) {
             return (String) value;
         } else {
             return null;
@@ -195,7 +195,7 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public Integer getIntegerProperty(final String key) {
         final Object value = properties.get(key);
-        if (value != null && value instanceof Integer) {
+        if (value instanceof Integer) {
             return (Integer) value;
         } else {
             return null;

@@ -206,7 +206,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
 
         @Override
         public boolean equals(final Object o) {
-            return o != null && o instanceof LocalDateParameterValue && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
+            return o instanceof LocalDateParameterValue && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
         }
 
         @Override
