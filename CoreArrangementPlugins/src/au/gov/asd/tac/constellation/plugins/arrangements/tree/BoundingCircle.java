@@ -54,9 +54,7 @@ public class BoundingCircle {
         final float maxy = max[BBoxf.Y];
         final float radius = Math.max((maxx - minx) / 2, (maxy - miny) / 2);
 
-        final BoundingCircle enclosing = new BoundingCircle(centre[BBoxf.X], centre[BBoxf.Y], radius);
-
-        return enclosing;
+        return new BoundingCircle(centre[BBoxf.X], centre[BBoxf.Y], radius);
     }
 
     @Override

@@ -15,22 +15,25 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -45,10 +48,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Date;
@@ -153,11 +153,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         params.addController(BUILD_MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = master.getStringValue();
-                if (mode.equals("Connected")) {
-                    parameters.get(T_PARAMETER_ID).setEnabled(true);
-                } else {
-                    parameters.get(T_PARAMETER_ID).setEnabled(false);
-                }
+                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals("Connected"));
             }
         });
 

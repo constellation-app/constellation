@@ -223,8 +223,7 @@ public final class GlyphManagerBI implements GlyphManager {
         final Graphics2D g2d = tmpBI.createGraphics();
         maxFontHeight = Arrays.stream(this.fontsInfo).map(fil -> {
             final FontMetrics fm = g2d.getFontMetrics(fil.font);
-            final int height = fm.getHeight();
-            return height;
+            return fm.getHeight();
         }).mapToInt(i -> i).max().orElseThrow(NoSuchElementException::new);
         g2d.dispose();
 
@@ -560,9 +559,7 @@ public final class GlyphManagerBI implements GlyphManager {
         g2d.fillRect(0, 0, size, size);
         g2d.dispose();
 
-        final int position = textureBuffer.addRectImage(bg, extra);
-
-        return position;
+        return textureBuffer.addRectImage(bg, extra);
     }
 
     @Override

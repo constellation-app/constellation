@@ -1062,9 +1062,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
         //Title
-        final Text attributeTitleText = new Text(attributeTitle + ":");
+        return new Text(attributeTitle + ":");
 //        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
-        return attributeTitleText;
     }
 
 }

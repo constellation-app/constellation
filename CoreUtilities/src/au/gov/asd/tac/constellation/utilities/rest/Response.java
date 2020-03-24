@@ -166,8 +166,7 @@ public abstract class Response {
 
     public String getLogMessage() {
         if (json != null && json.get("logMessage") != null) {
-            final String logMessage = json.get("logMessage").textValue();
-            return logMessage;
+            return json.get("logMessage").textValue();
         }
 
         return String.format("Invalid response %d: %s\n%s\n", code, message, Arrays.toString(bytes));

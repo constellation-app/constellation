@@ -59,7 +59,6 @@ public class ContractAllCompositesAction extends AbstractAction implements Prese
 
     @Override
     public Component getToolbarPresenter() {
-        final JButton tb = new JButton(this);
-        return tb;
+        return new JButton(this);
     }
 }

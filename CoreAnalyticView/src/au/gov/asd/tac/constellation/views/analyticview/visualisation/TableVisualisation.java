@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult.ResultListener;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractTableTranslator;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,10 +114,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
                 }
 
                 final String lowerCaseFilter = newValue.toLowerCase();
-                if (item.getIdentifier().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
+                return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
             });
         });
 

@@ -374,10 +374,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             if (!Objects.equals(value.parameterPanes, other.parameterPanes)) {
                 return false;
             }
-            if (!Objects.equals(value.enclosingParameter, other.enclosingParameter)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(value.enclosingParameter, other.enclosingParameter);
         }
 
         public List<PluginParameters> getListOfPluginParameters() {

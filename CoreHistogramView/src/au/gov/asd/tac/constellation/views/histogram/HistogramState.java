@@ -36,7 +36,7 @@ public class HistogramState {
     private BinComparator binComparator;
     private BinFormatter binFormatter;
     private BinSelectionMode binSelectionMode;
-    private final ElementSet[] filters = new ElementSet[GraphElementType.values().length];
+    private ElementSet[] filters = new ElementSet[GraphElementType.values().length];
 
     private PluginParameters binFormatterParameters;
 
@@ -80,9 +80,7 @@ public class HistogramState {
             this.binFormatter.updateParameters(this.binFormatterParameters);
             this.binSelectionMode = original.binSelectionMode;
 
-            for (int i = 0; i < filters.length; i++) {
-                this.filters[i] = original.filters[i];
-            }
+            this.filters = Arrays.copyOf(original.filters, original.filters.length); 
         }
     }
 

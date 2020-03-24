@@ -84,14 +84,12 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
 
     @Override
     public WritableGraph flush(final boolean announce) {
-        WritableGraph wg = (WritableGraph) lockingManager.flush(null, announce);
-        return wg;
+        return (WritableGraph) lockingManager.flush(null, announce);
     }
 
     @Override
     public WritableGraph flush(final Object description, final boolean announce) {
-        WritableGraph wg = (WritableGraph) lockingManager.flush(description, announce);
-        return wg;
+        return (WritableGraph) lockingManager.flush(description, announce);
     }
 
     @Override

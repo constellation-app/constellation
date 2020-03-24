@@ -240,9 +240,6 @@ public class GraphAttribute implements Attribute, Serializable {
         if (!Objects.equals(this.dataType, other.dataType)) {
             return false;
         }
-        if (!Objects.equals(this.defaultValue, other.defaultValue)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.defaultValue, other.defaultValue);
     }
 }

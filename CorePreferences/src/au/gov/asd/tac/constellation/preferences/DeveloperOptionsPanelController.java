@@ -89,14 +89,11 @@ public final class DeveloperOptionsPanelController extends OptionsPanelControlle
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         final DeveloperOptionsPanel developerOptionsPanel = getPanel();
-        final boolean changed
-                = !(developerOptionsPanel.getGcOnOpen() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT)
+        return !(developerOptionsPanel.getGcOnOpen() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_OPEN, DeveloperPreferenceKeys.FORCE_GC_ON_OPEN_DEFAULT)
                 && developerOptionsPanel.getGcOnClose() == prefs.getBoolean(DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE, DeveloperPreferenceKeys.FORCE_GC_ON_CLOSE_DEFAULT)
                 && developerOptionsPanel.getDebugGl() == prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT)
                 && developerOptionsPanel.getPrintGl() == prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT)
                 && developerOptionsPanel.getDisplayFps() == prefs.getBoolean(DeveloperPreferenceKeys.DISPLAY_FRAME_RATE, DeveloperPreferenceKeys.DISPLAY_FRAME_RATE_DEFAULT));
-
-        return changed;
     }
 
     @Override

@@ -118,10 +118,7 @@ public final class Blaze implements Serializable, Comparable<Blaze> {
         if (this.angle != other.angle) {
             return false;
         }
-        if (this.color != other.color && (this.color == null || !this.color.equals(other.color))) {
-            return false;
-        }
-        return true;
+        return this.color == other.color || (this.color != null && this.color.equals(other.color));
     }
 
     @Override

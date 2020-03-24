@@ -102,6 +102,8 @@ The packaged file should be available from the `dist` directory.
 
 ## Contributing to Constellation
 
+***Please note that all development effort is focused on upgrading Constellation to NetBeans 11 with support for Java 11. Please make sure that contributions are aligned with the branch master-nb11.***
+
 For more information please see the [contributing guide](CONTRIBUTING.md).
 
 ## Documentation
