@@ -246,7 +246,7 @@ public final class Frame implements Serializable {
         matrix.a[11] = 0;
 
         // Translation (already done)
-        if (rotationOnly == true) {
+        if (rotationOnly) {
             matrix.a[12] = 0.0f;
             matrix.a[13] = 0.0f;
             matrix.a[14] = 0.0f;

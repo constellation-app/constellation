@@ -246,7 +246,7 @@ public class ImportDelimitedIO {
                     final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
                     importController.setSchemaInitialised(schemaInit);
 
-                    final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) == null ? false : source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
+                    final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
                     importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
 
                     final String destination = source.get(DESTINATION).textValue();

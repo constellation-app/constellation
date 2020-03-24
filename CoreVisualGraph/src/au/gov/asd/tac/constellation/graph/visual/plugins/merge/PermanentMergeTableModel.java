@@ -67,7 +67,7 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
      * otherwise
      */
     public boolean headerExists() {
-        return vertex_attributes != null && vertex_attributes.size() > 0 ? true : false;
+        return vertex_attributes != null && vertex_attributes.size() > 0;
     }
 
     /**

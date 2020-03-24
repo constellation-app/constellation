@@ -357,7 +357,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (parent == null) {
                 if (lastDir.isEmpty()) {
                     //Check prefferences for last saved directory
-                    if (lastFileSaveLocation.isEmpty() || rememberSaveLocation == false) {
+                    if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
                         return new File(System.getProperty("user.home"));
                     } else {
                         return new File(lastFileSaveLocation);

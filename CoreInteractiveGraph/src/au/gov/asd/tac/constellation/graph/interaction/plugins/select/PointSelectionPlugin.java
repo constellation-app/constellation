@@ -19,12 +19,12 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import org.openide.util.NbBundle;
 
@@ -79,14 +79,14 @@ public final class PointSelectionPlugin extends SimpleEditPlugin {
 
         if (vertexSelectedAttribute != Graph.NOT_FOUND) {
             vertexIds.forEach(vertexId -> {
-                final boolean select = isToggle ? !graph.getBooleanValue(vertexSelectedAttribute, vertexId) : true;
+                final boolean select = !isToggle || !graph.getBooleanValue(vertexSelectedAttribute, vertexId);
                 graph.setBooleanValue(vertexSelectedAttribute, vertexId, select);
             });
         }
 
         if (transactionSelectedAttribute != Graph.NOT_FOUND) {
             transactionIds.forEach(transactionId -> {
-                final boolean select = isToggle ? !graph.getBooleanValue(transactionSelectedAttribute, transactionId) : true;
+                final boolean select = !isToggle || !graph.getBooleanValue(transactionSelectedAttribute, transactionId);
                 // When a line is selected using the mouse, it may represent a single transaction or multiple transactions, depending on what the current ConnectionMode is.
                 // The line is given the id of whichever transaction SceneBatchStore happens to see first. We use that id to select the other transactions represented by that id (if any).
                 // We also have to take into account that the renderer draws transactions as edges if there are more than maxTxDrawn transactions between two vertices.
