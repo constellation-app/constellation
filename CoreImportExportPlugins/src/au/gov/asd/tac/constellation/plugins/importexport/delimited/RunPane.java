@@ -482,13 +482,13 @@ public class RunPane extends BorderPane {
     private void updateColumns(final ImportDefinition impdef, final AttributeList attrList, final AttributeType atype, final Set<Integer> keys) {
         final ObservableList<TableColumn<TableRow, ?>> columns = sampleDataView.getColumns();
         final Map<String, ImportTableColumn> labelToColumn = new HashMap<>();
-        columns.stream().forEach((column) -> {
+        columns.stream().forEach(column -> {
             final ImportTableColumn itc = (ImportTableColumn) column;
             labelToColumn.put(itc.getLabel(), itc);
         });
 
         final List<ImportAttributeDefinition> elementList = impdef.getDefinitions(atype);
-        elementList.stream().forEach((iad) -> {
+        elementList.stream().forEach(iad -> {
             final String importLabel = iad.getColumnLabel();
             final ImportTableColumn column = labelToColumn.get(importLabel);
 

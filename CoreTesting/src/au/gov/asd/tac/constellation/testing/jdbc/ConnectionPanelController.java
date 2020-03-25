@@ -112,9 +112,7 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        listeners.stream().forEach((l) -> {
-            l.stateChanged(null);
-        });
+        listeners.stream().forEach(l -> l.stateChanged(null));
     }
 
     @Override

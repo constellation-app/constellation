@@ -28,8 +28,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterListParame
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterListParameterType.ParameterListParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -585,9 +585,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void fireChangeEvent(ParameterChange change) {
         if (!eventIsSuppressed(change)) {
-            listeners.stream().forEach((listener) -> {
-                listener.parameterChanged(this, change);
-            });
+            listeners.stream().forEach(listener -> listener.parameterChanged(this, change));
             if (enclosingParameter != null && !change.equals(ParameterChange.ERROR)) {
                 enclosingParameter.fireChangeEvent(change);
             }

@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +43,7 @@ public class DataAccessSearchProvider implements SearchProvider {
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessPane.lookupPlugins();
 
         final List<String> pluginNames = new ArrayList<>();
-        plugins.values().stream().forEach((dapl) -> {
+        plugins.values().stream().forEach(dapl -> {
             for (final DataAccessPlugin dap : dapl) {
                 if (dap.getName().toLowerCase().contains(text)) {
                     pluginNames.add(dap.getName());

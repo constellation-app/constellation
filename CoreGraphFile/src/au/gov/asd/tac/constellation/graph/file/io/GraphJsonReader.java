@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -32,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -82,9 +82,7 @@ public final class GraphJsonReader {
         providers = new HashMap<>();
 
         Lookup.Result<AbstractGraphIOProvider> providerResults = Lookup.getDefault().lookupResult(AbstractGraphIOProvider.class);
-        providerResults.allInstances().forEach((provider) -> {
-            providers.put(provider.getName(), provider);
-        });
+        providerResults.allInstances().forEach(provider -> providers.put(provider.getName(), provider));
 
         byteReader = null;
     }

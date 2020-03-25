@@ -54,7 +54,7 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         tableVisualisation.populateTable(result.getIgnoreNullResults()
                 ? result.get().stream().filter(elementScore -> !elementScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;

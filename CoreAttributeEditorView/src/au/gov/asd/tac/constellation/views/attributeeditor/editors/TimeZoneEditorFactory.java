@@ -88,7 +88,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
             controls.setAlignment(Pos.CENTER);
 
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-            ZoneId.getAvailableZoneIds().forEach((id) -> {
+            ZoneId.getAvailableZoneIds().forEach(id -> {
                 timeZones.add(ZoneId.of(id));
             });
             timeZoneComboBox = new ComboBox<>();
