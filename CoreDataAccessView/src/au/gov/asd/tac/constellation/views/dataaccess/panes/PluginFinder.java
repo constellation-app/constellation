@@ -106,7 +106,7 @@ public class PluginFinder {
             }
         });
 
-        lv.setOnKeyPressed((event) -> {
+        lv.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
             if (c == KeyCode.ENTER) {
                 final ObservableList<String> items = lv.getSelectionModel().getSelectedItems();

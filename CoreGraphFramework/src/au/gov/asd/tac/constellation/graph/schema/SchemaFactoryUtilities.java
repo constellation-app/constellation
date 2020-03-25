@@ -53,9 +53,7 @@ public class SchemaFactoryUtilities {
             final Collection<? extends SchemaFactory> schemaFactories = Lookup.getDefault().lookupAll(SchemaFactory.class);
 
             SCHEMA_FACTORIES = new LinkedHashMap<>();
-            schemaFactories.forEach((schemaFactory) -> {
-                SCHEMA_FACTORIES.put(schemaFactory.getName(), schemaFactory);
-            });
+            schemaFactories.forEach(schemaFactory -> SCHEMA_FACTORIES.put(schemaFactory.getName(), schemaFactory));
 
             SCHEMA_FACTORIES = Collections.unmodifiableMap(SCHEMA_FACTORIES);
         }

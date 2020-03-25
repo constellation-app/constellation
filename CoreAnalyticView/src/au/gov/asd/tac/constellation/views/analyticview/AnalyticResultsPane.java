@@ -101,7 +101,7 @@ public class AnalyticResultsPane extends VBox {
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
-            AnalyticUtilities.getInternalVisualisationTranslators().forEach((translator) -> {
+            AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
                     translator.setResult(result);
@@ -113,7 +113,7 @@ public class AnalyticResultsPane extends VBox {
                 }
             });
             graphVisualisationPane.getItems().clear();
-            AnalyticUtilities.getGraphVisualisationTranslators().forEach((translator) -> {
+            AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
                     translator.setResult(result);

@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
@@ -63,7 +63,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;

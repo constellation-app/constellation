@@ -50,9 +50,7 @@ public abstract class ImportFileParser {
             Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> {
                 return Integer.compare(o1.position, o2.position);
             });
-            parsers.stream().forEach((parser) -> {
-                PARSERS.put(parser.label, parser);
-            });
+            parsers.stream().forEach(parser -> PARSERS.put(parser.label, parser));
         }
     }
 
