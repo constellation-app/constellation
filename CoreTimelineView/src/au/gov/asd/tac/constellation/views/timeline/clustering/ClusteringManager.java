@@ -397,8 +397,6 @@ public class ClusteringManager {
                 wg.commit();
             }
         }
-    ;
-
     }
 
     @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
@@ -704,5 +702,5 @@ public class ClusteringManager {
                 wg.commit();
             }
         }
-    };
+    }
 }

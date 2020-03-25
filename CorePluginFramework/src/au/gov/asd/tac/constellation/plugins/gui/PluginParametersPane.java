@@ -99,7 +99,7 @@ public final class PluginParametersPane extends GridPane {
      * An abstract class which describes the visual layout of a
      * {@link PluginParametersNode} within a {@link PluginParametersPane}.
      */
-    public static abstract class ParameterLayout {
+    public abstract static class ParameterLayout {
 
         private boolean firstElement = true;
 

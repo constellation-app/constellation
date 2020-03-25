@@ -133,9 +133,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             state = updateQualityControlState(null);
         }
 
-        listeners.stream().forEach((listener) -> {
-            listener.qualityControlChanged(state);
-        });
+        listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
     }
 
     /**
@@ -267,7 +265,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      *
      * @return singleton instance of QualityControlAutoVetter
      */
-    public synchronized static QualityControlAutoVetter getInstance() {
+    public static synchronized QualityControlAutoVetter getInstance() {
         if(INSTANCE == null){
             INSTANCE = new QualityControlAutoVetter();
         }

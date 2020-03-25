@@ -130,10 +130,10 @@ public class PlaceholderUtilities {
         // remove all transactions with type 'unknown' and all nodes with identifier 'unknown'
         if (cleanupGraph) {
             g.streamTransactions()
-                    .filter((t) -> t.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
+                    .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter((v) -> v.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }
@@ -166,8 +166,8 @@ public class PlaceholderUtilities {
 
         // replace nodes with type 'placeholder' with the dominant correlated node
         g.streamVertices()
-                .filter((v) -> v.getTypeValue().equals(AnalyticConcept.VertexType.PLACEHOLDER))
-                .forEach((v) -> {
+                .filter(v -> v.getTypeValue().equals(AnalyticConcept.VertexType.PLACEHOLDER))
+                .forEach(v -> {
                     Optional<GraphVertex> dominant = v.streamNeighbours()
                             .filter(n -> n.getDirection() != GraphDirection.LOOPBACK)
                             .filter(n -> n.getTransaction().getTypeValue().isSubTypeOf(AnalyticConcept.TransactionType.CORRELATION))

@@ -62,9 +62,7 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
         super.setDefault(value);
 
         // Ensure that the default is a registered type.
-        if (defaultValue != null
-                && defaultValue instanceof SchemaTransactionType
-                && defaultValue.isIncomplete()) {
+        if (defaultValue instanceof SchemaTransactionType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }
     }

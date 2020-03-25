@@ -110,7 +110,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         menu = new JMenu();
         menu.setIcon(ImageUtilities.loadImageIcon(BLAZE_ACTIONS_ICON, false));
         menu.setToolTipText("Blaze Controls");
-        menu.addChangeListener((e) -> {
+        menu.addChangeListener(e -> {
             if (graph != null) {
                 updateSliders(graph);
             }

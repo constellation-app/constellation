@@ -193,10 +193,10 @@ public final class IoUtilities {
      *
      * @throws IllegalArgumentException if the color cannot be parsed.
      */
-    public static float[] parseColor(final String s) throws IllegalArgumentException {
+    public static float[] parseColor(final String s) {
         float[] vec = new float[4];
 
-        String f[] = split(s, 4, ',');
+        String[] f = split(s, 4, ',');
         if (f[3] == null) {
             f[3] = "1.0";
         }

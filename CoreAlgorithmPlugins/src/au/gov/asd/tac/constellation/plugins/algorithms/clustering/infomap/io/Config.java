@@ -24,7 +24,7 @@ public final class Config {
     public static enum ConnectionType {
 
         TRANSACTIONS, EDGES, LINKS
-    };
+    }
 
     public Config() {
         noInfomap = false;
@@ -161,4 +161,4 @@ public final class Config {
 
     // Custom for Graph.
     public ConnectionType connectionType;
-};
+}

@@ -167,7 +167,7 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
 
         @Override
         public boolean equals(final Object o) {
-            return o != null && o instanceof BooleanParameterValue && b == ((BooleanParameterValue) o).b;
+            return o instanceof BooleanParameterValue && b == ((BooleanParameterValue) o).b;
         }
 
         @Override

@@ -63,7 +63,7 @@ public interface Record {
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    default public void set(String key, Object value) {
+    public default void set(String key, Object value) {
         set(key, value == null ? null : value.toString());
     }
 

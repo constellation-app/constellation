@@ -465,9 +465,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
                     // Use a pre-filled LinkedHashMap to keep the types in the correct order.
                     final List<String> typeList = DataAccessPluginType.getTypes();
-                    typeList.stream().forEach((type) -> {
-                        plugins.put(type, new ArrayList<>());
-                    });
+                    typeList.stream().forEach(type -> plugins.put(type, new ArrayList<>()));
 
                     // create the favourites category
                     if (plugins.get(DataAccessPluginCoreType.FAVOURITES) == null) {
@@ -1039,10 +1037,8 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     }
 
     private void deselectAllPlugins() {
-        dataAccessTabPane.getTabs().stream().filter((tab) -> (tabHasEnabledPlugins(tab))).forEachOrdered((tab) -> {
-            getQueryPhasePane(tab).getDataAccessPanes().forEach((dataAccessPane) -> {
-                dataAccessPane.validityChanged(false);
-            });
+        dataAccessTabPane.getTabs().stream().filter(this::tabHasEnabledPlugins).forEachOrdered(tab -> {
+            getQueryPhasePane(tab).getDataAccessPanes().forEach(dataAccessPane -> dataAccessPane.validityChanged(false));
         });
     }
 

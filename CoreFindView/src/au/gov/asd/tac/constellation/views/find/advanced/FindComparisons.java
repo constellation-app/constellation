@@ -89,7 +89,7 @@ public class FindComparisons {
          * @see Color
          */
         public static boolean evaluateIs(final Color item, final Color comparison) {
-            return item == null ? false : comparison.equals(item);
+            return item != null && comparison.equals(item);
         }
 
         /**
@@ -103,7 +103,7 @@ public class FindComparisons {
          * @see Color
          */
         public static boolean evaluateIsNot(final Color item, final Color comparison) {
-            return item == null ? true : !comparison.equals(item);
+            return item == null || !comparison.equals(item);
         }
     }
 
@@ -126,7 +126,7 @@ public class FindComparisons {
          * @see Date
          */
         public static boolean evaluateOccurredOn(final Date item, final Date comparison) {
-            return item == null || comparison == null ? false : item.equals(comparison);
+            return item != null && comparison != null && item.equals(comparison);
         }
 
         /**
@@ -140,7 +140,7 @@ public class FindComparisons {
          * @see Date
          */
         public static boolean evaluateNotOccurredOn(final Date item, final Date comparison) {
-            return item == null || comparison == null ? true : !item.equals(comparison);
+            return item == null || comparison == null || !item.equals(comparison);
         }
 
         /**
@@ -154,7 +154,7 @@ public class FindComparisons {
          * @see Date
          */
         public static boolean evaluateBefore(final Date item, final Date comparison) {
-            return item == null || comparison == null ? false : item.before(comparison);
+            return item != null && comparison != null && item.before(comparison);
         }
 
         /**
@@ -168,7 +168,7 @@ public class FindComparisons {
          * @see Date
          */
         public static boolean evaluateAfter(final Date item, final Date comparison) {
-            return item == null || comparison == null ? false : item.after(comparison);
+            return item != null && comparison != null && item.after(comparison);
         }
 
         /**
@@ -226,7 +226,7 @@ public class FindComparisons {
          * @see Calendar
          */
         public static boolean evaluateOccurredOn(final Calendar item, final Calendar comparison) {
-            return item == null || comparison == null ? false : item.equals(comparison);
+            return item != null && comparison != null && item.equals(comparison);
         }
 
         /**
@@ -241,7 +241,7 @@ public class FindComparisons {
          * @see Calendar
          */
         public static boolean evaluateNotOccurredOn(final Calendar item, final Calendar comparison) {
-            return item == null || comparison == null ? true : !item.equals(comparison);
+            return item == null || comparison == null || !item.equals(comparison);
         }
 
         /**
@@ -256,7 +256,7 @@ public class FindComparisons {
          * @see Calendar
          */
         public static boolean evaluateBefore(final Calendar item, final Calendar comparison) {
-            return item == null || comparison == null ? false : item.before(comparison);
+            return item != null && comparison != null && item.before(comparison);
         }
 
         /**
@@ -271,7 +271,7 @@ public class FindComparisons {
          * @see Calendar
          */
         public static boolean evaluateAfter(final Calendar item, final Calendar comparison) {
-            return item == null || comparison == null ? false : item.after(comparison);
+            return item != null && comparison != null && item.after(comparison);
         }
 
         /**
@@ -480,7 +480,7 @@ public class FindComparisons {
          * it does not.
          */
         public static boolean evaluateIs(final String item, final String comparison) {
-            return item == null || comparison == null ? false : comparison.equals(item);
+            return item != null && comparison != null && comparison.equals(item);
         }
 
         /**
@@ -494,7 +494,7 @@ public class FindComparisons {
          * <code>false</code> if it does.
          */
         public static boolean evaluateIsNot(final String item, final String comparison) {
-            return item == null || comparison == null ? true : !comparison.equals(item);
+            return item == null || comparison == null || !comparison.equals(item);
         }
     }
 
@@ -523,7 +523,7 @@ public class FindComparisons {
             if (!isCaseSensitive) {
                 return item == null ? false : item.equalsIgnoreCase(comparison);
             } else {
-                return item == null ? false : item.equals(comparison);
+                return item != null && item.equals(comparison);
             }
         }
 
@@ -545,7 +545,7 @@ public class FindComparisons {
             if (!isCaseSensitive) {
                 return item == null ? true : !item.equalsIgnoreCase(comparison);
             } else {
-                return item == null ? true : !item.equals(comparison);
+                return item == null || !item.equals(comparison);
             }
         }
 
@@ -565,9 +565,9 @@ public class FindComparisons {
          */
         public static boolean evaluateContains(final String item, final String substring, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? false : item.toLowerCase().contains(substring.toLowerCase());
+                return item != null && item.toLowerCase().contains(substring.toLowerCase());
             } else {
-                return item == null ? false : item.contains(substring);
+                return item != null && item.contains(substring);
             }
         }
 
@@ -587,9 +587,9 @@ public class FindComparisons {
          */
         public static boolean evaluateNotContains(final String item, final String substring, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? true : !item.toLowerCase().contains(substring.toLowerCase());
+                return item == null || !item.toLowerCase().contains(substring.toLowerCase());
             } else {
-                return item == null ? true : !item.contains(substring);
+                return item == null || !item.contains(substring);
             }
         }
 
@@ -609,9 +609,9 @@ public class FindComparisons {
          */
         public static boolean evaluateBeginsWith(final String item, final String prefix, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? false : item.toLowerCase().startsWith(prefix.toLowerCase());
+                return item != null && item.toLowerCase().startsWith(prefix.toLowerCase());
             } else {
-                return item == null ? false : item.startsWith(prefix);
+                return item != null && item.startsWith(prefix);
             }
         }
 
@@ -631,9 +631,9 @@ public class FindComparisons {
          */
         public static boolean evaluateEndsWith(final String item, final String suffix, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? false : item.toLowerCase().endsWith(suffix.toLowerCase());
+                return item != null && item.toLowerCase().endsWith(suffix.toLowerCase());
             } else {
-                return item == null ? false : item.endsWith(suffix);
+                return item != null && item.endsWith(suffix);
             }
         }
 
@@ -647,7 +647,7 @@ public class FindComparisons {
          * expression, <code>false</code> if it does not.
          */
         public static boolean evaluateRegex(final String item, final String regex) {
-            return item == null ? false : item.matches(regex);
+            return item != null && item.matches(regex);
         }
     }
 

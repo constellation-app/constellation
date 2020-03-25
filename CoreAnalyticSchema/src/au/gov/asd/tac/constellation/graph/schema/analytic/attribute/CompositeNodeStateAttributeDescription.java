@@ -50,7 +50,7 @@ public class CompositeNodeStateAttributeDescription extends AbstractObjectAttrib
     }
 
     @Override
-    protected CompositeNodeState convertFromObject(Object object) throws IllegalArgumentException {
+    protected CompositeNodeState convertFromObject(Object object) {
         if (object == null) {
             return DEFAULT_VALUE;
         } else if (object instanceof CompositeNodeState) {

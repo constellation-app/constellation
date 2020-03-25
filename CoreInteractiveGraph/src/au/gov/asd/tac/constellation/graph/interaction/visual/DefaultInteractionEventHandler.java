@@ -656,9 +656,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         // We need to wait for the results of the hit test if we are creating a transaction
 //        orderHitTest(point, newLine);
         if (newLine) {
-            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, (eventState) -> {
-                scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState);
-            });
+            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
         } else {
             orderHitTest(point, HitTestMode.REQUEST_ONLY);
         }
@@ -723,9 +721,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * results and the synchronicity.
      */
     private void orderHitTest(final Point point, final HitTestMode mode) {
-        orderHitTest(point, mode, (e) -> {
-            eventState = e;
-        });
+        orderHitTest(point, mode, e -> eventState = e);
     }
 
     /**
@@ -973,7 +969,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
-        draggedNodeIds.forEach((vertexId) -> {
+        draggedNodeIds.forEach(vertexId -> {
             final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
             currentPos.add(delta);
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
@@ -1062,7 +1058,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (items != null && !items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (menuPath == null || menuPath.isEmpty()) {
-                    items.forEach((item) -> {
+                    items.forEach(item -> {
                         popup.add(new AbstractAction(item) {
                             @Override
                             public void actionPerformed(final ActionEvent event) {
