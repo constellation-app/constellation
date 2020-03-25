@@ -176,7 +176,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                     }
 
                     // Set up and run each rule.
-                    if (vertexList.size() > 0) {
+                    if (!vertexList.isEmpty()) {
                         for (final QualityControlRule rule : getRules()) {
                             rule.clearResults();
                             rule.executeRule(graph, vertexList);

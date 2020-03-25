@@ -136,7 +136,7 @@ public class Cluster extends Group {
         setCursor(Cursor.DEFAULT);
 
         if (selectedCount > 0) {
-            lblCount = new Label(String.valueOf(selectedCount) + " / " + String.valueOf(count) + " " + Bundle.EventLabel());
+            lblCount = new Label(String.valueOf(selectedCount) + " / " + count + " " + Bundle.EventLabel());
         } else {
             lblCount = new Label(String.valueOf(count) + " " + Bundle.EventLabel());
         }

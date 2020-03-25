@@ -521,7 +521,7 @@ public class FindComparisons {
          */
         public static boolean evaluateIs(final String item, final String comparison, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item != null && item.toLowerCase().equals(comparison.toLowerCase());
+                return item == null ? false : item.equalsIgnoreCase(comparison);
             } else {
                 return item != null && item.equals(comparison);
             }
@@ -543,7 +543,7 @@ public class FindComparisons {
          */
         public static boolean evaluateIsNot(final String item, final String comparison, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null || !item.toLowerCase().equals(comparison.toLowerCase());
+                return item == null ? true : !item.equalsIgnoreCase(comparison);
             } else {
                 return item == null || !item.equals(comparison);
             }

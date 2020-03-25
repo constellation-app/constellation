@@ -256,7 +256,7 @@ public class PlaceholderUtilities {
         placeholderIds.forEach(placeholderId -> {
             final int leadVertex;
             final List<Integer> placeholderCorrelationList = placeholderCorrelations.get(placeholderId);
-            if (placeholderCorrelationList.size() > 0) {
+            if (!placeholderCorrelationList.isEmpty()) {
 
                 // calculate lead vertex
                 final SchemaVertexType leadVertexType = placeholderCorrelationList.stream()
