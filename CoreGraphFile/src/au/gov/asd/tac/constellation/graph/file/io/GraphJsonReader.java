@@ -470,7 +470,7 @@ public final class GraphJsonReader {
      * @throws IOException If there is an IOException.
      * @throws GraphParseException If there is a GraphParseException.
      */
-    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws IOException, GraphParseException, Exception {
+    private void parseElement(final GraphWriteMethods graph, final GraphElementType elementType, final Map<Integer, Integer> vertexPositions, final Map<Integer, Integer> transactionPositions, final IoProgress ph, final long entrySize, ImmutableObjectCache immutableObjectCache) throws GraphParseException, Exception {
         final String elementTypeLabel = IoUtilities.getGraphElementTypeString(elementType);
 
         JsonToken current;

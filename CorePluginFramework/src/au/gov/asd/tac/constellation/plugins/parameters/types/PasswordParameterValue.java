@@ -100,7 +100,7 @@ public class PasswordParameterValue extends ParameterValue {
 
     @Override
     public boolean equals(final Object o) {
-        return o != null && o instanceof PasswordParameterValue && Objects.equals(s, ((PasswordParameterValue) o).s);
+        return o instanceof PasswordParameterValue && Objects.equals(s, ((PasswordParameterValue) o).s);
     }
 
     @Override

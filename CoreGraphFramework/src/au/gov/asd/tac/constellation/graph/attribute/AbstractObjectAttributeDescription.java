@@ -94,7 +94,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     }
     
     @Override
-    public void setString(final int id, final String value) throws IllegalArgumentException {
+    public void setString(final int id, final String value) {
         data[id] = convertFromString(value);
     }
     
@@ -104,7 +104,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     }
     
     @Override
-    public void setObject(final int id, final Object value) throws IllegalArgumentException {
+    public void setObject(final int id, final Object value) {
         data[id] = convertFromObject(value);
     }
     
