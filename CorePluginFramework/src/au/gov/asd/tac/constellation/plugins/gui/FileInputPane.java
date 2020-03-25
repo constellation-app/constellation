@@ -56,8 +56,8 @@ public class FileInputPane extends HBox {
 
     public static final int DEFAULT_WIDTH = 300;
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    final private Button fileAddButton;
-    final private TextInputControl field;
+    private final Button fileAddButton;
+    private final TextInputControl field;
     private String parameterId;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
 

@@ -40,8 +40,7 @@ public class TableViewState {
     }
 
     public TableViewState(final TableViewState state) {
-        this.selectedOnly = state == null
-                ? false : state.selectedOnly;
+        this.selectedOnly = state != null && state.selectedOnly;
         this.elementType = state == null
                 ? GraphElementType.TRANSACTION : state.elementType;
         this.transactionColumnAttributes = state == null

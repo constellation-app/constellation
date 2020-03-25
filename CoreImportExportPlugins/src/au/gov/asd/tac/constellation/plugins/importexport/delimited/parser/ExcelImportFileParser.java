@@ -78,7 +78,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                 for (int r = 0; r < rows; r++) {
                     row = sheet.getRow(r);
                     if (row != null) {
-                        String line[] = new String[cols];
+                        String[] line = new String[cols];
                         for (int c = 0; c < cols; c++) {
                             cell = row.getCell(c);
                             if (cell != null) {
@@ -116,7 +116,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                 for (int r = 0; r < rows; r++) {
                     row = sheet.getRow(r);
                     if (row != null) {
-                        String line[] = new String[cols];
+                        String[] line = new String[cols];
                         for (int c = 0; c < cols; c++) {
                             cell = row.getCell(c);
                             if (cell != null) {
@@ -166,7 +166,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                         if (count >= limit) {
                             break;
                         }
-                        String line[] = new String[cols];
+                        String[] line = new String[cols];
                         for (int c = 0; c < cols; c++) {
                             cell = row.getCell(c);
                             if (cell != null) {
@@ -208,7 +208,7 @@ public class ExcelImportFileParser extends ImportFileParser {
                         if (count >= limit) {
                             break;
                         }
-                        String line[] = new String[cols];
+                        String[] line = new String[cols];
                         for (int c = 0; c < cols; c++) {
                             cell = row.getCell(c);
                             if (cell != null) {

@@ -139,7 +139,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public boolean getBoolean(final int id) {
-        return data[id] == null || data[id].isEmpty() ? false : Boolean.parseBoolean(data[id]);
+        return data[id] != null && !data[id].isEmpty() && Boolean.parseBoolean(data[id]);
     }
 
     @Override

@@ -462,7 +462,7 @@ public class DijkstraServices {
             for (int workPackage = workloadLBound; workPackage <= workloadUBound; workPackage++) {
                 final int pivottedVertex = (Integer) parent.collection.keySet().toArray()[workPackage];
 
-                if (followDirection == false || (followDirection && pivottedVertex == selectedVertices.get(0))) {
+                if (!followDirection || (followDirection && pivottedVertex == selectedVertices.get(0))) {
                     //Set each selected vertex as a target
                     for (int vertex : parent.collection.get(pivottedVertex).keySet()) {
                         //Check to make sure this vertex is selected, otherwise skip it

@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hde;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -143,7 +143,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
         // Compute the covariance matrix.
         // S = *X*X^T)/n.
-        final double S[][] = new double[M][M];
+        final double[][] S = new double[M][M];
 
         for (int r = 0; r < M; r++) {
             for (int c = 0; c < M; c++) {
@@ -239,7 +239,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
         // Now compute actual coordinates.
         // Initialise coordinates in case C<3.
-        final double pos[] = new double[3];
+        final double[] pos = new double[3];
         Arrays.fill(pos, 0);
 
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());

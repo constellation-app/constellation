@@ -115,7 +115,7 @@ public interface Graph extends GraphConstants {
      * @throws InterruptedException if the specified GraphReader throws an
      * InterruptedException.
      */
-    default public <V> V readFromGraph(GraphReader<V> reader) throws InterruptedException {
+    public default <V> V readFromGraph(GraphReader<V> reader) throws InterruptedException {
         final ReadableGraph rg = getReadableGraph();
         try {
             return reader.read(rg);
@@ -167,7 +167,7 @@ public interface Graph extends GraphConstants {
      * @throws InterruptedException if the specified Writer throws an
      * InterruptedException.
      */
-    default public <V> V writeToGraph(String name, boolean significant, GraphWriter<V> writer) throws InterruptedException {
+    public default <V> V writeToGraph(String name, boolean significant, GraphWriter<V> writer) throws InterruptedException {
         WritableGraph wg = getWritableGraph(name, significant);
         boolean error = false;
         try {

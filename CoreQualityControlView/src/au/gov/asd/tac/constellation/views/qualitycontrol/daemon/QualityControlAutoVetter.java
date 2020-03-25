@@ -265,7 +265,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      *
      * @return singleton instance of QualityControlAutoVetter
      */
-    public synchronized static QualityControlAutoVetter getInstance() {
+    public static synchronized QualityControlAutoVetter getInstance() {
         if(INSTANCE == null){
             INSTANCE = new QualityControlAutoVetter();
         }

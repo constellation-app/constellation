@@ -170,7 +170,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
 //    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
-    final private TooltipPane tooltipPane = new TooltipPane();
+    private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
         MenuItem copyItem = new MenuItem("Copy");

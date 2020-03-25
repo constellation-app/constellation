@@ -188,7 +188,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @return true if the event is suppressed, false otherwise
      */
     public boolean eventIsSuppressed(ParameterChange event) {
-        return suppressedEvents.contains(event) ? isSuppressed : false;
+        return suppressedEvents.contains(event) && isSuppressed;
     }
 
     /**

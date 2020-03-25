@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttributeDescription;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttributeDescription;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -178,7 +178,7 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
      */
     private static BoundingBox getBoundingBox(final BoundingBox bb, final JsonNode node, final String label) {
         final JsonNode bbNode = node.isNull() ? null : node.get(label);
-        final boolean isEmpty = bbNode != null ? bbNode.get("is_empty").asBoolean() : true;
+        final boolean isEmpty = bbNode == null || bbNode.get("is_empty").asBoolean();
         if (isEmpty) {
             bb.setEmpty(true);
         } else {

@@ -260,7 +260,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     graph.getSchema().completeVertex(graph, destinationVertexId);
                 }
 
-                final boolean isDirected = directedIx != ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN ? Boolean.parseBoolean(row[directedIx]) : true;
+                final boolean isDirected = directedIx == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
                 final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
                 for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                     if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {
