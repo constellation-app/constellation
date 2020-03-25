@@ -539,11 +539,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
-    public void componentActivated() {
-        super.componentActivated();
-    }
-
-    @Override
     public void graphChanged(final GraphChangeEvent evt) {
         long modificationCount;
 
