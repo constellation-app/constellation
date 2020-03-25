@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public final class TimeZoneAttributeDescription extends AbstractAttributeDescription {
 
     private static final int DESCRIPTION_VERSION = 1;
-    private static final Logger LOGGER = Logger.getLogger(ZonedDateTimeAttributeDescription.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TimeZoneAttributeDescription.class.getName());
     private static final ZoneId DEFAULT_VALUE = TimeZoneUtilities.UTC;
     private ZoneId[] data = new ZoneId[0];
     private ZoneId defaultValue = DEFAULT_VALUE;
