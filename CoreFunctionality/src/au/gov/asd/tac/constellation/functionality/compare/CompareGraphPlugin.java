@@ -600,7 +600,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      */
     protected Map<String, Integer> calculateStatisticalDifferences(final Map<String, Integer> originalStatistics, final Map<String, Integer> compareStatistics) {
         final Map<String, Integer> statisticalDifferences = new HashMap<>();
-        for (Map.Entry<String, Integer> entry : originalStatistics.entrySet()) {
+        for (final Map.Entry<String, Integer> entry : originalStatistics.entrySet()) {
             statisticalDifferences.put(entry.getKey(), compareStatistics.get(entry.getKey()) - entry.getValue());
         }
         return statisticalDifferences;
@@ -722,7 +722,7 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * @param recordPrimaryValues
      */
     private void addPrimaryKeyValuesToRecord(final GraphRecordStore changes, final String type, final Map<String, String> recordPrimaryValues) {
-        for (Map.Entry<String, String> entry : recordPrimaryValues.entrySet()) {
+        for (final Map.Entry<String, String> entry : recordPrimaryValues.entrySet()) {
             changes.set(type + entry.getKey(), entry.getValue());
         }
     }

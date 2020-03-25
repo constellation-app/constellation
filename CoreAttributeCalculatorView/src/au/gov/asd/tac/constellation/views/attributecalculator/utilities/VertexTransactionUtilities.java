@@ -66,7 +66,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     private boolean checkTransactions(final PyFunction condition, final PyFunction nodeCondition, final int direction) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
-        for (Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             boolean conditionMatches = isTrueValue(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -133,7 +133,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     public boolean has_edge(final PyFunction condition, final PyFunction nodeCondition) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
-        for (Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.EDGE);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -154,7 +154,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     public boolean has_link(final PyFunction condition, final PyFunction nodeCondition) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
-        for (Map.Entry<Integer, Integer> entry : links.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.LINK);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -176,7 +176,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
         int count = 0;
-        for (Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             boolean conditionMatches = isTrueValue(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -245,7 +245,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
         int count = 0;
-        for (Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.EDGE);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -267,7 +267,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
         int count = 0;
-        for (Map.Entry<Integer, Integer> entry : links.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.LINK);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
             context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -293,7 +293,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
         final List<Object> results = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             if (condition == null || isTrueValue(condition.__call__())) {
                 context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -458,7 +458,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
         final List<Object> results = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.EDGE);
             if (condition == null || isTrueAndContainsNonNulls(condition.__call__())) {
                 context.enter(entry.getValue(), GraphElementType.VERTEX);
@@ -488,7 +488,7 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
         final List<Object> results = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : links.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
             context.enter(entry.getKey(), GraphElementType.LINK);
             if (condition == null || isTrueAndContainsNonNulls(condition.__call__())) {
                 context.enter(entry.getValue(), GraphElementType.VERTEX);

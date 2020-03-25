@@ -106,7 +106,7 @@ public class MultiplexityPlugin extends SimpleEditPlugin {
 
         // update the graph with multiplexity values
         final int multiplexityAttribute = MULTIPLEXITY_ATTRIBUTE.ensure(graph);
-        for (Map.Entry<Integer, Float> entry : multiplexities.entrySet()) {
+        for (final Map.Entry<Integer, Float> entry : multiplexities.entrySet()) {
             final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);

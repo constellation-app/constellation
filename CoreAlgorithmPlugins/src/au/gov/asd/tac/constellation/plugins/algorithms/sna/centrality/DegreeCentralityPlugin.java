@@ -163,7 +163,7 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (Map.Entry<Integer, Float> entry : degrees.entrySet()) {
+        for (final Map.Entry<Integer, Float> entry : degrees.entrySet()) {
             if (normaliseByPossible) {
                 graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / (vertexCount - 1));
             } else if (normaliseByAvailable && maxDegree > 0) {

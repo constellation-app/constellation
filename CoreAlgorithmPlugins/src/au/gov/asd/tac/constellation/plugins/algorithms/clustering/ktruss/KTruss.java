@@ -259,7 +259,7 @@ public class KTruss {
         for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
             getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, currentComponentNum, linkPosition);
             int componentCounter = 0;
-            for (Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
+            for (final Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
                 if (entry.getValue() == currentComponentNum) {
                     componentCounter++;
                 }

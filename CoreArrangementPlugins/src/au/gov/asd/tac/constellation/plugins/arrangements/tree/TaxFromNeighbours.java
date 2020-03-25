@@ -63,7 +63,7 @@ public class TaxFromNeighbours {
         // Now each key (a set of neighbours) maps to a set of vertices that have those neighbours in common).
         final Map<Integer, Set<Integer>> tax = new HashMap<>();
         final Map<Integer, Integer> nodeToTaxa = new HashMap<>();
-        for (Map.Entry<Set<Integer>, Set<Integer>> entry : commonNeighbours.entrySet()) {
+        for (final Map.Entry<Set<Integer>, Set<Integer>> entry : commonNeighbours.entrySet()) {
             final Set<Integer> vertices = entry.getValue();
             final Integer key = vertices.iterator().next();
             tax.put(key, vertices);

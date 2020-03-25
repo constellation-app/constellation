@@ -93,7 +93,7 @@ public class MergeNodesByLocation implements MergeNodeType {
         final Map<Integer, Tuple<Float, Float>> mergedCentroids = calculateCentroids(graph, mergedClusters);
 
         // add vertices to the graph representing the clusters and assign their children to be merged
-        for (Map.Entry<Integer, Set<Integer>> entry : mergedClusters.entrySet()) {
+        for (final Map.Entry<Integer, Set<Integer>> entry : mergedClusters.entrySet()) {
             final String clusterId = String.format("Geospatial Cluster #%d", entry.getKey());
             final Set<Integer> cluster = entry.getValue();
 
@@ -189,7 +189,7 @@ public class MergeNodesByLocation implements MergeNodeType {
                     // ...then for each vertex two...
                     final Set<Integer> cluster = new HashSet<>();
                     cluster.add(vertexOneId);
-                    for (Map.Entry<Integer, Double> entry : vertexOneToVertexTwoDistances.entrySet()) {
+                    for (final Map.Entry<Integer, Double> entry : vertexOneToVertexTwoDistances.entrySet()) {
                         final double vertexOneToVertexTwoDistance = entry.getValue();
                         // ...if vertex two's distance to vertex one meets the threshold requirement...
                         // ...check that vertex two doesn't have a closer vertex than vertex one...
@@ -197,7 +197,7 @@ public class MergeNodesByLocation implements MergeNodeType {
                             boolean vertexTwoHasCloserVertex = false;
                             final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap(distanceMap.get(entry.getKey()));
                             if (vertexTwoToOtherDistances.size() > 0) {
-                                for (Map.Entry<Integer, Double> innerEntry : vertexTwoToOtherDistances.entrySet()) {
+                                for (final Map.Entry<Integer, Double> innerEntry : vertexTwoToOtherDistances.entrySet()) {
                                     final double vertexTwoToOtherDistance = innerEntry.getValue();
                                     if (vertexTwoToOtherDistance < vertexOneToVertexTwoDistance) {
                                         vertexTwoHasCloserVertex = true;
@@ -233,7 +233,7 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
 
         // for each cluster...
-        for (Map.Entry<Integer, Set<Integer>> entry : clusters.entrySet()) {
+        for (final Map.Entry<Integer, Set<Integer>> entry : clusters.entrySet()) {
             final Set<Integer> cluster = entry.getValue();
             // ... calculate the average location for that cluster...
             final float centroidLatitude = cluster.stream().map(memberId -> graph.getFloatValue(latitudeAttribute, memberId)).reduce((lat1, lat2) -> lat1 + lat2).get() / (float) cluster.size();
@@ -274,7 +274,7 @@ public class MergeNodesByLocation implements MergeNodeType {
             final Map<Integer, Set<Integer>> reassignedClusters = assignClusters(centroidDistanceMap, threshold);
             if (!reassignedClusters.isEmpty()) {
                 // ...if there are assigned clusters, then merge all the vertices of each corresponding centroid cluster
-                for (Map.Entry<Integer, Set<Integer>> entry : reassignedClusters.entrySet()) {
+                for (final Map.Entry<Integer, Set<Integer>> entry : reassignedClusters.entrySet()) {
                     final Set<Integer> mergedClusterIndices = entry.getValue();
                     if (mergedClusterIndices.size() > 1) {
                         final Set<Integer> mergedCluster = new HashSet<>();

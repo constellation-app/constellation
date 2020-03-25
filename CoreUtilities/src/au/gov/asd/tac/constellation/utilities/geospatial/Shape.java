@@ -289,7 +289,7 @@ public class Shape {
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey())) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -312,7 +312,7 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
@@ -362,7 +362,7 @@ public class Shape {
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey())) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -385,7 +385,7 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
@@ -440,7 +440,7 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey())) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -480,7 +480,7 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+        for (final Map.Entry<String, String> entry : shapes.entrySet()) {
             final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
@@ -550,7 +550,7 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+            for (final Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
                 if (shapes.keySet().contains(entry.getKey())) {
                     entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
@@ -605,7 +605,7 @@ public class Shape {
 
         // copy features of the desired type from geojson to shapefile
         try (final FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore.getFeatureWriterAppend(datastore.getTypeNames()[0], Transaction.AUTO_COMMIT)) {
-            for (Map.Entry<String, String> entry : shapes.entrySet()) {
+            for (final Map.Entry<String, String> entry : shapes.entrySet()) {
                 final String shape = entry.getValue();
                 final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
                 try {

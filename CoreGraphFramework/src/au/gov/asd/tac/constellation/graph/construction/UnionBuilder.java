@@ -35,7 +35,7 @@ public class UnionBuilder extends GraphBuilder {
         // Remap vertex IDs in the identificaiton mapping for the union
         final Map<Integer, Integer> addedOldToNewIDs = a.addedOldToNewIDs;
         final Map<Integer, Integer> newIDVertexMapping = new HashMap<>();
-        for (Map.Entry<Integer, Integer> entry : identificationMapping.entrySet()) {
+        for (final Map.Entry<Integer, Integer> entry : identificationMapping.entrySet()) {
             newIDVertexMapping.put(addedOldToNewIDs.get(entry.getKey()), entry.getValue());
         }
 

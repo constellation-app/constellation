@@ -86,7 +86,7 @@ public class PlaceholderUtilities {
             recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, getPlaceholderLabel(groupName));
             recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, node);
             recordStore.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, transactionType);
-            for (Map.Entry<String, String> entry : enrichmentAttributes.entrySet()) {
+            for (final Map.Entry<String, String> entry : enrichmentAttributes.entrySet()) {
                 recordStore.set(GraphRecordStoreUtilities.TRANSACTION + entry.getKey(), entry.getValue());
             }
         }

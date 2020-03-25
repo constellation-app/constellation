@@ -107,7 +107,7 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
 
         // update the graph with ratio of reciprocity values
         final int ratioOfReciprocityAttribute = RATIO_OF_RECIPROCITY_ATTRIBUTE.ensure(graph);
-        for (Map.Entry<Integer, Float> entry : ratioOfReciprocities.entrySet()) {
+        for (final Map.Entry<Integer, Float> entry : ratioOfReciprocities.entrySet()) {
             final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);

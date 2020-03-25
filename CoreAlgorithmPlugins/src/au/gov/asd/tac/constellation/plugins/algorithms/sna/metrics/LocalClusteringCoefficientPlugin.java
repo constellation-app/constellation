@@ -86,7 +86,7 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         // compute the local clustering coefficient for each vertex
         float maxLocalClusteringCoefficient = 0;
         final Map<Integer, Float> localClusteringCoefficients = new HashMap<>();
-        for (Map.Entry<Integer, BitSet> entry : neighbourMap.entrySet()) {
+        for (final Map.Entry<Integer, BitSet> entry : neighbourMap.entrySet()) {
             final int vertexId = graph.getVertex(entry.getKey());
             final BitSet vertexNeighbours = entry.getValue();
 
@@ -113,7 +113,7 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (Map.Entry<Integer, Float> entry : localClusteringCoefficients.entrySet()) {
+        for (final Map.Entry<Integer, Float> entry : localClusteringCoefficients.entrySet()) {
             if (normaliseByAvailable && maxLocalClusteringCoefficient > 0) {
                 graph.setFloatValue(localClusteringCoefficientAttribute, entry.getKey(), entry.getValue() / maxLocalClusteringCoefficient);
             } else {

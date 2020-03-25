@@ -138,7 +138,7 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
      */
     private int createVertex(final GraphWriteMethods graph, final Map<Integer, String> attributes) {
         final int vxId = graph.addVertex();
-        for (Map.Entry<Integer, String> entry : attributes.entrySet()) {
+        for (final Map.Entry<Integer, String> entry : attributes.entrySet()) {
             graph.setObjectValue(entry.getKey(), vxId, entry.getValue());
         }
 

@@ -150,7 +150,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final Map<Integer, Set<Integer>> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
-            for (Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
+            for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
                 if (taxonomy.getArrangeRectangularly(entry.getKey())) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange grid...", true);

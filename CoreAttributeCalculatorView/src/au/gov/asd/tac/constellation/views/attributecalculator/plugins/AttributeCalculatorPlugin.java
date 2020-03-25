@@ -182,7 +182,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             }
 
             // Edit the actual attribute values for the desired attribute
-            for (Map.Entry<Integer, Object> entry : editedAttributeValues.entrySet()) {
+            for (final Map.Entry<Integer, Object> entry : editedAttributeValues.entrySet()) {
                 graph.setObjectValue(editAttributeId, entry.getKey(), entry.getValue());
                 if (!completeWithSchema) {
                     // do nothing
