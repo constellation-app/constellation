@@ -329,7 +329,8 @@ public final class GraphTaxonomy {
                 for (int position = 0; position < nNeighbours; position++) {
                     final int nbId = wg.getVertexNeighbour(m, position);
                     final Integer dst = nodeToTaxa != null ? nodeToTaxa.get(nbId) : findTaxonContainingVertex(sources, nbId);
-                    if (dst != Graph.NOT_FOUND && !found.contains(dst)) {
+                    // Found the test for null was required to avoid issues
+                    if (dst != null && dst != Graph.NOT_FOUND && !found.contains(dst)) {
                         //                            Debug.debug("condense src=%s(%s) dst=%s(%s)\n", src, taxonKeyToVxId.get(src), dst, taxonKeyToVxId.get(dst));
                         condensedGraph.addTransaction(taxonKeyToVxId.get(src), taxonKeyToVxId.get(dst), true);
                         found.add(dst);

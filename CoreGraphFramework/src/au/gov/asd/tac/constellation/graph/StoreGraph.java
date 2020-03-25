@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.*;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -26,16 +27,29 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.utilities.postfix.PostfixEvaluator;
+import au.gov.asd.tac.constellation.utilities.postfix.ShuntingYard;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.StreamSupport;
+
+enum Operator {
+    EQUALS,
+    NOTEQUALS,
+    GREATERTHAN,
+    LESSTHAN,
+    NOTFOUND
+}
 
 /**
  * A StoreGraph is an array-based implementation of GraphWriteMethods designed
@@ -46,6 +60,10 @@ import java.util.stream.StreamSupport;
  */
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
 
+    private boolean avoidUpdate = false;
+    private static final String SELECTED_FILTERMASK_ATTRIBUTE_LABEL = "selected_filter_bitmask";
+    private static final String FILTERMASK_ATTRIBUTE_LABEL = "filter_bitmask";
+    private static final String FILTERVISIBILITY_ATTRIBUTE_LABEL = "filter_visibility";
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
     private static final int[] CATEGORY_TO_STATE = new int[]{6, 4, 5, 1, 3, 7, 2};
@@ -95,6 +113,30 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private NativeValue oldValue = new NativeValue();
     private NativeValue newValue = new NativeValue();
     private GraphEdit graphEdit;
+    private int selectedFilterBitmaskAttrId = -1;
+    private int vertexFilterBitmaskAttrId = -1;
+    private int transactionFilterBitmaskAttrId = -1;
+    private int vertexFilterVisibilityAttrId = -1;
+    private int transactionFilterVisibilityAttrId = -1;
+    private int cameraAttrId = -1;
+    private int vSelectedAttrId = -1;
+    private int tSelectedAttrId = -1;
+    private int vXAttrId = -1;
+    private int vYAttrId = -1;
+    private int vZAttrId = -1;
+    private int tXAttrId = -1;
+    private int tYAttrId = -1;
+    private int tZAttrId = -1;
+
+    // TODO: TEMP VARIABLE to test updates - This will have to be migrated to a graph attribute
+    public static int currentVisibleMask = 1;
+
+    // 0000
+    // first two bits are not used XX00
+    // second bit from right is boolean for if you have to display the layer 00X0
+    // last bit on right is whether it is a dynamic layer 000X
+    private final List<Byte> layerPrefs = new ArrayList<>();
+    public final static List<String> LAYER_QUERIES = new ArrayList<>();
 
     /**
      * Creates a new StoreGraph with the specified capacities.
@@ -119,6 +161,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     @Override
     public boolean isRecordingEdit() {
         return graphEdit != null;
+    }
+
+    public static void setLayerQueries(final List<String> queries) {
+        LAYER_QUERIES.clear();
+        LAYER_QUERIES.addAll(queries);
     }
 
     /**
@@ -366,6 +413,24 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 setAttributeIndexType(attribute, original.attributeIndexTypes[attribute]);
             }
         }
+
+        // New Parameters copied
+        this.selectedFilterBitmaskAttrId = original.selectedFilterBitmaskAttrId;
+        this.vertexFilterBitmaskAttrId = original.vertexFilterBitmaskAttrId;
+        this.transactionFilterBitmaskAttrId = original.transactionFilterBitmaskAttrId;
+        this.vertexFilterVisibilityAttrId = original.vertexFilterVisibilityAttrId;
+        this.transactionFilterVisibilityAttrId = original.transactionFilterVisibilityAttrId;
+        this.tXAttrId = original.tXAttrId;
+        this.tYAttrId = original.tYAttrId;
+        this.tZAttrId = original.tZAttrId;
+        this.vXAttrId = original.vXAttrId;
+        this.vYAttrId = original.vYAttrId;
+        this.vZAttrId = original.vZAttrId;
+        this.vSelectedAttrId = original.vSelectedAttrId;
+        this.tSelectedAttrId = original.tSelectedAttrId;
+        this.cameraAttrId = original.cameraAttrId;
+        this.layerPrefs.addAll(original.layerPrefs);
+        this.setLayerQueries(original.LAYER_QUERIES); // TODO: Static queries arent going to be any good, a copy will result in editing of same query - Fix this
 
         MemoryManager.newObject(StoreGraph.class);
     }
@@ -1619,6 +1684,33 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             graphEdit.addAttribute(elementType, attributeType, label, description, defaultValue, attributeMergerId, attributeId);
         }
 
+        // Store IDs of key attributes used in subsequent ongoing calculations
+        if (FILTERMASK_ATTRIBUTE_LABEL.equals(label)) {
+            if (elementType == GraphElementType.VERTEX) {
+                vertexFilterBitmaskAttrId = attributeId;
+            } else if (elementType == GraphElementType.TRANSACTION) {
+                transactionFilterBitmaskAttrId = attributeId;
+            }
+        }
+        if (FILTERVISIBILITY_ATTRIBUTE_LABEL.equals(label)) {
+            if (elementType == GraphElementType.VERTEX) {
+                vertexFilterVisibilityAttrId = attributeId;
+            } else if (elementType == GraphElementType.TRANSACTION) {
+                transactionFilterVisibilityAttrId = attributeId;
+            }
+        }
+        
+        selectedFilterBitmaskAttrId = SELECTED_FILTERMASK_ATTRIBUTE_LABEL.equals(label) ? attributeId : selectedFilterBitmaskAttrId;
+        cameraAttrId = Camera.ATTRIBUTE_NAME.equals(label) ? attributeId : cameraAttrId;
+        vSelectedAttrId = "selected".equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vSelectedAttrId) : vSelectedAttrId;
+        vXAttrId = "x".equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vXAttrId) : vXAttrId;
+        vYAttrId = "y".equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vYAttrId) : vYAttrId;
+        vZAttrId = "z".equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vZAttrId) : vZAttrId;
+        tSelectedAttrId = "selected".equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : tSelectedAttrId) : tSelectedAttrId;
+        tXAttrId = "x".equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : tXAttrId) : tXAttrId;
+        tYAttrId = "y".equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : tYAttrId) : tYAttrId;
+        tZAttrId = "z".equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : tZAttrId) : tZAttrId;
+        
         return attributeId;
     }
 
@@ -1835,6 +1927,323 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
     }
 
+    /**
+     * TODO: There is a possibility of making only the new nodes which have had
+     * values change, be the rechecked nodes Allows the recalculation of layer
+     * visibilities with respect to which layers are toggled layerPrefs holds
+     * information about whether a graph is shown, or if it needs to be
+     * dynamically calculated dynamically calculated meaning does the element
+     * need to be rechecked on change of value
+     */
+    private void recalculateVisibilities() {
+        layerPrefs.clear();
+
+        int i = 0;
+        for (String query : LAYER_QUERIES) {
+            if (LAYER_QUERIES.get(i) == null || LAYER_QUERIES.get(i).equals(" ")) {
+                // Static layers or layer 1 (default - show all)
+                // if layerNo has a bit set in the current mask, set it to show
+                layerPrefs.add(i, (currentVisibleMask & (1 << (i++))) > 0 ? (byte) 0b0010 : (byte) 0b0000);
+            } else {
+                // dynamic
+                layerPrefs.add(i, (currentVisibleMask & (1 << (i++))) > 0 ? (byte) 0b0011 : (byte) 0b0001);
+            }
+        }
+    }
+
+    /**
+     * Loop over all queries, recalculate dynamic ones. Append bit flag to
+     * bitmask when it satifies the query.
+     *
+     * TODO: possibly can get rid of the else if case; as when new queries or
+     * filters are added they can be bitmasked then. (more efficient)
+     *
+     * @param id the id of the element
+     * @return bitmask a 32 bit integer which represents a flagset of which
+     * layer to show it on.
+     */
+    private int recalculateBitmask(final GraphElementType elementType, final int id) {
+        int bitmask = 0;//getIntValue(vertexFilterBitmaskAttrId, id);
+        if (elementType == GraphElementType.VERTEX) {
+            if (vertexFilterBitmaskAttrId >= 0 && vertexFilterVisibilityAttrId >= 0) {
+                bitmask = getIntValue(vertexFilterBitmaskAttrId, id);
+            }
+        } else if (elementType == GraphElementType.TRANSACTION) {
+            if (transactionFilterBitmaskAttrId >= 0 && transactionFilterVisibilityAttrId >= 0) {
+                bitmask = getIntValue(transactionFilterBitmaskAttrId, id);
+            }
+        }
+
+        int i = 0;
+        for (String query : LAYER_QUERIES) { // TODO: Concurrent Modification Exception sometiems - maybe with update of the queries?
+            if ((layerPrefs.get(i) & 0b0011) == 3 && LAYER_QUERIES.get(i) != null) { // calculate bitmask for dynamic layers that are displayed
+                bitmask = (evaluateQuery(ShuntingYard.postfix(LAYER_QUERIES.get(i)), id) ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
+            } else if (i == 0 && (layerPrefs.get(i) & 0b0010) == 2) { // layer 1 and layer is enabled
+                //bitmask |= (1 << 1);
+            }
+            i++;
+        }
+        return bitmask;
+    }
+
+    // TODO: Check other operators for functionality andimplement them
+    // TODO: Implement all other transaction types
+    // TODO: Possibly parse a boolean in as to wether the query is on a vertex or transaction
+    // TODO: Clean up this code and cases
+    /**
+     * Evaluates a string representation of a query in relation to a single
+     * element on the graph returns true when the node satisfies the condition.
+     * False otherwise. Query is structured as below:
+     * vertex_color:<=:0,0,0 vertex_selected:==:true vertex_color:>:255,255,255
+     *
+     * @param postfixQuery the string query
+     * @param id the id of the element
+     * @return a boolean result determining whether the element satisfied the
+     * constraints.
+     */
+    private boolean evaluateQuery(final String postfixQuery, final int id) {
+        // Exit condition for show all
+        if (postfixQuery.equals("")) {
+            return true;
+        }
+
+        Operator currentOperand = Operator.NOTFOUND;
+
+        String[] rules = postfixQuery.split(" "); // TODO: maybe we cannot split by space as it will cause issues if a space is parsed into the checking argument
+        //System.out.println("Rules: " + rules.length);
+        String evaluatedResult = "";
+        boolean finalRes = true;
+        boolean ignoreRes = false;
+
+        for (String rule : rules) {
+            //System.out.println("Rule: " + rule);
+            String[] ruleSegments = rule.split(":");
+            int segCount = 0;
+            AttributeDescription ad = null;
+            boolean isEquals = false;
+            int attrID = 1;
+            // iterate over each section and grab the values.
+            for (String segment : ruleSegments) {
+                //System.out.println("Current: " + segment);
+                segCount++;
+                switch (segCount) {
+                    case 1: {
+                        attrID = getAttribute(GraphElementType.VERTEX, segment);
+                        if (attrID != Graph.NOT_FOUND) {
+                            ad = attributeDescriptions[attrID];
+                        }
+                        break;
+                    }
+                    case 2: {
+                        switch (segment) {
+                            case "=": {// equality
+                                currentOperand = Operator.EQUALS;
+                                isEquals = true; // Possibly use an enum to handle multiple different conclusions?
+                                break;
+                            }
+                            case "!=": {// not equality
+                                currentOperand = Operator.NOTEQUALS;
+                                break;
+                            }
+                            case ">": {// greater than - how to handle things which can't be compared GT or LT?
+                                currentOperand = Operator.GREATERTHAN;
+                                break;
+                            }
+                            case "<": {// Less than
+                                currentOperand = Operator.LESSTHAN;
+                                break;
+                            }
+                            default: {// Default do nothing - unsure of operator - Error?
+                                currentOperand = Operator.NOTFOUND;
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    case 3: {
+                        switch (currentOperand) {
+                            case EQUALS: {
+                                if (ad != null && ad.getString(id) != null && (ad.getString(id)).equals(segment)) { // not null
+                                    //System.out.println("Values are the same! name: " + segment);
+                                    finalRes = true;
+                                } else {
+
+                                    // System.out.print("Vals dont match: " + segment + " and: ");
+                                    if (ad != null && ad.getString(id) != null) {
+                                        //System.out.println(ad.getString(id));
+                                    } else {
+                                        //System.out.println("noval");
+                                    }
+                                    finalRes = false;
+                                }
+                                break;
+                            }
+                            case NOTEQUALS: {
+                                finalRes = (ad != null && ad.getString(id) != null && !(ad.getString(id)).equals(segment));
+                                /*
+                                if (ad != null && ad.getString(id) != null && !(ad.getString(id)).equals(segment)) {
+                                    finalRes = true;
+                                } else {
+                                    finalRes = false;
+                                }
+                                 */
+                                break;
+                            }
+                            case GREATERTHAN: {
+                                break;
+                            }
+                            case LESSTHAN: {
+                                break;
+                            }
+                            case NOTFOUND: {
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                // build the string to evaluate
+                if (segment.equals("&&")) {
+                    evaluatedResult += "&&" + ":";
+                    ignoreRes = true;
+                } else if (segment.equals("||")) {
+                    evaluatedResult += "||" + ":";
+                    ignoreRes = true;
+                }
+            }
+
+            // when you need to ignore the result and just use an operator || &&
+            if (ignoreRes) {
+                ignoreRes = false;
+            } else {
+                evaluatedResult += finalRes + ":";
+            }
+        }
+
+        evaluatedResult = evaluatedResult.length() == 0 ? evaluatedResult : evaluatedResult.substring(0, evaluatedResult.length() - 1);
+        String[] splitted = evaluatedResult.split(":");
+
+        String postfix = "";
+        for (String s : splitted) {
+            postfix += s + " ";
+            //System.out.print(s + " ");
+        }
+        postfix = postfix.substring(0, postfix.length() - 1);
+        //System.out.println("before eval: " + postfix);
+
+        String result = PostfixEvaluator.evaluatePostfix(postfix);
+        //System.out.println("Result calculated: " + result);
+
+        if (result.equals("true")) {
+            return true;
+        } else if (result.equals("false")) {
+            return false;
+        } else {
+            //error here
+            return false;
+        }
+    }
+
+    // DFetermine the visibility bitmask of the obkect in question.
+    private void updateBitmask(final GraphElementType elementType, final int attribute, final int selectedFilterBitmask, final int id) {
+
+        // TODO: Ultimately, loop through elements bitmask and determine if each layer (1-32) should be turned on or off.
+        //       There are 2 types of layers, static and dynamic, if static, the layer is turned on if user has set it.
+        // TODO: Eventually store a static bitmask, and then append to it any dynamic bits based on rules. For now assume all
+        //       entries are dynamic for the sake of calculations
+        int bitmask = recalculateBitmask(elementType, id);
+
+        if (elementType == GraphElementType.VERTEX) {
+
+            // when attr ids are found
+            if (vertexFilterBitmaskAttrId >= 0 && vertexFilterVisibilityAttrId >= 0) {
+                // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
+                // is non-zero value then the element can be displayed, if not, layer filters will result in it being hidden.
+
+                if (attribute != vertexFilterBitmaskAttrId) { // set filter bitmask when not updating (prevents infinite loop)
+                    avoidUpdate = true; // cancels out the re-update when setting the int vals
+                    setIntValue(vertexFilterBitmaskAttrId, id, bitmask);
+                    avoidUpdate = false;
+                }
+                final float existingVisibility = getFloatValue(vertexFilterVisibilityAttrId, id);
+                if ((bitmask & currentVisibleMask) > 0) {
+                    // A value > 0 indicates the object is mapped to at least one visible layer
+                    if (existingVisibility != 1.0f) {
+                        attributeDescriptions[vertexFilterVisibilityAttrId].setFloat(id, 1.0f);
+                        attributeIndices[vertexFilterVisibilityAttrId].updateElement(id);
+                        attributeModificationCounters[vertexFilterVisibilityAttrId] += operationMode.getModificationIncrement();
+                    }
+                } else {
+                    // A value = 0 indicates the object is not mapped to at least one visible layer
+                    if (existingVisibility != 0.0f) {
+                        attributeDescriptions[vertexFilterVisibilityAttrId].setFloat(id, 0.0f);
+                        attributeIndices[vertexFilterVisibilityAttrId].updateElement(id);
+                        attributeModificationCounters[vertexFilterVisibilityAttrId] += operationMode.getModificationIncrement();
+                    }
+                }
+            }
+        } else if (elementType == GraphElementType.TRANSACTION) {
+            if (transactionFilterBitmaskAttrId >= 0 && transactionFilterVisibilityAttrId >= 0) {
+                if (attribute != transactionFilterBitmaskAttrId) {
+                    avoidUpdate = true;
+                    setIntValue(transactionFilterBitmaskAttrId, id, bitmask);
+                    avoidUpdate = false;
+                }
+                final float existingVisibility = getFloatValue(transactionFilterVisibilityAttrId, id);
+                if ((bitmask & currentVisibleMask) > 0) {
+                    if (existingVisibility != 1.0f) {
+                        attributeDescriptions[transactionFilterVisibilityAttrId].setFloat(id, 1.0f);
+                        attributeIndices[transactionFilterVisibilityAttrId].updateElement(id);
+                        attributeModificationCounters[transactionFilterVisibilityAttrId] += operationMode.getModificationIncrement();
+                    }
+                } else {
+                    if (existingVisibility != 0.0f) {
+                        attributeDescriptions[transactionFilterVisibilityAttrId].setFloat(id, 0.0f);
+                        attributeIndices[transactionFilterVisibilityAttrId].updateElement(id);
+                        attributeModificationCounters[transactionFilterVisibilityAttrId] += operationMode.getModificationIncrement();
+                    }
+                }
+            }
+        }
+    }
+
+    // Check attribute being changed and make a decision on whehter object visibility needs to be recalculated
+    private void updateBitmask(final int attribute, final int id) {
+        if (attribute != vertexFilterVisibilityAttrId && attribute != transactionFilterVisibilityAttrId) {
+            // Extract graphs current selected filter bitmask and element type use to recalculate element bitmask
+            int selectedFilterBitmask = (selectedFilterBitmaskAttrId >= 0) ? getIntValue(selectedFilterBitmaskAttrId, 0) : 1;
+            GraphElementType elementType = getAttributeElementType(attribute);
+
+            // Preloading layerPrefs JIT incase of no instantiation
+            if (layerPrefs.isEmpty()) {
+                for (int j = 0; j < 31; j++) {
+                    layerPrefs.add((byte) 0b0000);
+                }
+            }
+            updateBitmask(elementType, attribute, selectedFilterBitmask, id);
+        }
+    }
+
+    // Force a visibility update of all objects
+    private void updateAllBitmasks() {
+        int selectedFilterBitmask = (selectedFilterBitmaskAttrId >= 0) ? getIntValue(selectedFilterBitmaskAttrId, 0) : 1;
+
+        currentVisibleMask = selectedFilterBitmask;
+        recalculateVisibilities();
+        // Loop through all vertexes and recalculate bitmasks
+        final int vertexCount = getVertexCount();
+        for (int i = 0; i < vertexCount; i++) {
+            updateBitmask(GraphElementType.VERTEX, -1, selectedFilterBitmask, vStore.getElement(i));
+        }
+
+        // Loop through all transactions and recalculate bitmasks
+        final int transactionCount = getTransactionCount();
+        for (int i = 0; i < transactionCount; i++) {
+            updateBitmask(GraphElementType.TRANSACTION, -1, selectedFilterBitmask, tStore.getElement(i));
+        }
+    }
+
     @Override
     public void setByteValue(final int attribute, final int id, final byte value) {
         if (graphEdit == null) {
@@ -1863,6 +2272,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -1893,6 +2303,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -1922,6 +2333,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removeFromIndex(keyType, id);
                 }
             }
+        }
+
+        // If the selected layers to display value has changed then recalculate visibility of all objects, otherwise,
+        // check if the change impacts an objects visibility
+        if (selectedFilterBitmaskAttrId >= 0 && selectedFilterBitmaskAttrId == attribute) {
+            updateAllBitmasks();
+        } else if (!avoidUpdate) {
+            updateBitmask(attribute, id);
         }
     }
 
@@ -1953,6 +2372,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -1983,6 +2403,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        // when not any movement of nodes
+        if(attribute != vXAttrId && attribute != vYAttrId  &&attribute != vZAttrId && attribute != tXAttrId && attribute != tYAttrId  &&attribute != tZAttrId ){
+            updateBitmask(attribute, id);
+        }
+        
     }
 
     @Override
@@ -2013,6 +2438,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -2043,6 +2469,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        if(attribute != vSelectedAttrId && attribute != tSelectedAttrId){ // selected node ignore
+            updateBitmask(attribute, id);
+        }
+        
     }
 
     @Override
@@ -2073,6 +2503,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -2103,6 +2534,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
+        updateBitmask(attribute, id);
     }
 
     @Override
@@ -2132,6 +2564,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     removeFromIndex(keyType, id);
                 }
             }
+        } 
+        // when not a camera change
+        if(attribute != cameraAttrId){
+            updateBitmask(attribute, id);
         }
     }
 

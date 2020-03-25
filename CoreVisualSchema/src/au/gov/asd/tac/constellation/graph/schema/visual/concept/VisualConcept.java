@@ -182,6 +182,11 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(50000)
                 .create()
                 .build();
+        public static final SchemaAttribute SELECTEDFILTERMASK = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "selected_filter_bitmask")
+                .setDescription("Bitmask identifying filter layers enabled for display")
+                .setDefaultValue(1)
+                .create()
+                .build();
     }
 
     public static class VertexAttribute {
@@ -269,6 +274,16 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(0.0f)
                 .create()
                 .build();
+        public static final SchemaAttribute FILTERMASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "filter_bitmask")
+                .setDescription("Bitmask identifying filter layers item belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute FILTERVISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "filter_visibility")
+                .setDescription("The layer visibility of the vertex")
+                .setDefaultValue(1.0f)
+                .create()
+                .build();
     }
 
     public static class TransactionAttribute {
@@ -319,6 +334,16 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(1.0f)
                 .create()
                 .build();
+        public static final SchemaAttribute FILTERMASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "filter_bitmask")
+                .setDescription("Bitmask identifying filter layers item belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute FILTERVISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "filter_visibility")
+                .setDescription("The layer visibility of the transaction")
+                .setDefaultValue(1.0f)
+                .create()
+                .build();
     }
 
     @Override
@@ -345,6 +370,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.TRANSACTION_LABELS);
         schemaAttributes.add(GraphAttribute.VISIBLE_ABOVE_THRESHOLD);
         schemaAttributes.add(GraphAttribute.VISIBILITY_THRESHOLD);
+        schemaAttributes.add(GraphAttribute.SELECTEDFILTERMASK);
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);
@@ -363,6 +389,8 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.Y2);
         schemaAttributes.add(VertexAttribute.Z);
         schemaAttributes.add(VertexAttribute.Z2);
+        schemaAttributes.add(VertexAttribute.FILTERMASK);
+        schemaAttributes.add(VertexAttribute.FILTERVISIBILITY);
         schemaAttributes.add(TransactionAttribute.COLOR);
         schemaAttributes.add(TransactionAttribute.DIMMED);
         schemaAttributes.add(TransactionAttribute.DIRECTED);
@@ -373,6 +401,8 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(TransactionAttribute.SELECTED);
         schemaAttributes.add(TransactionAttribute.VISIBILITY);
         schemaAttributes.add(TransactionAttribute.WIDTH);
+        schemaAttributes.add(TransactionAttribute.FILTERMASK);
+        schemaAttributes.add(TransactionAttribute.FILTERVISIBILITY);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }
