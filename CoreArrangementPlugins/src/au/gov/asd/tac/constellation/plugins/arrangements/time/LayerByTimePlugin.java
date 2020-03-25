@@ -592,7 +592,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                 final float convUnit = dtg.get(unit);
-                final float layer = ((convUnit / maxUnit));
+                final float layer = convUnit / maxUnit;
                 if (transactionLayers.containsKey(layer)) {
                     transactionLayers.get(layer).add(txId);
                 } else {
