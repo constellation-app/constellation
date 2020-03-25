@@ -327,9 +327,12 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         public void propertyChange(final PropertyChangeEvent e) {
             LOGGER.finer("SetCursorTask: propertyChange()");               //NOI18N
 
-            assert PROP_OPENED_PANES.equals(e.getPropertyName());
-            observable.removePropertyChangeListener(this);
-            Mutex.EVENT.writeAccess(this);
+            if(!PROP_OPENED_PANES.equals(e.getPropertyName())) {
+                throw new IllegalArgumentException();
+            } else {
+                observable.removePropertyChangeListener(this);
+                Mutex.EVENT.writeAccess(this);
+            }
         }
 
         private void trySeveralTimes() {
