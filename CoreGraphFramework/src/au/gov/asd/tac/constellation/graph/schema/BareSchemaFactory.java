@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.schema;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.io.Serializable;
 import java.util.Collections;
@@ -68,21 +67,6 @@ public class BareSchemaFactory extends SchemaFactory implements Serializable {
 
         public BareSchema(final SchemaFactory factory) {
             super(factory);
-        }
-
-        @Override
-        public void newGraph(final GraphWriteMethods graph) {
-            super.newGraph(graph);
-        }
-
-        @Override
-        public void newVertex(final GraphWriteMethods graph, final int vertexId) {
-            super.newVertex(graph, vertexId);
-        }
-
-        @Override
-        public void newTransaction(final GraphWriteMethods graph, final int transactionId) {
-            super.newTransaction(graph, transactionId);
         }
     }
 }

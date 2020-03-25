@@ -872,7 +872,7 @@ public class QueryServices {
             int i = 0;
 
             // Query the graph:
-            while (i < terms.length && queryResult == false) {
+            while (i < terms.length && !queryResult) {
                 switch (rule.getOperator()) {
                     case IS:
                         queryResult = FindComparisons.StringComparisons.evaluateIs(item,

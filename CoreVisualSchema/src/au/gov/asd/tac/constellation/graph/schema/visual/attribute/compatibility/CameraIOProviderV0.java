@@ -182,7 +182,7 @@ public final class CameraIOProviderV0 extends AbstractGraphIOProvider {
      */
     private static BoundingBox getBoundingBox(final BoundingBox bb, final JsonNode node, final String label) {
         final JsonNode bbNode = node.isNull() ? null : node.get(label);
-        final boolean isEmpty = bbNode != null ? bbNode.get("is_empty").asBoolean() : true;
+        final boolean isEmpty = bbNode == null || bbNode.get("is_empty").asBoolean();
         if (isEmpty) {
             bb.setEmpty(true);
         } else {

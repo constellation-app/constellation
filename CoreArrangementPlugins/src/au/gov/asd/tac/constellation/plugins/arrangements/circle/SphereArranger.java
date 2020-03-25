@@ -20,29 +20,24 @@ import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import java.util.Random;
 
 /**
  * Arrange in a sphere.
  * <p>
- * The arrangement is actually done by laying out six grids to form a cube (with
- * a bump to avoid overlaps), then normalising the distance of each vertex from
- * the centre.
+ * The arrangement uses the Fibonacci sphere algorithm.
  * <p>
- * The cube can be seen in the alternate x,y,z.
+ * The previous x,y,z values are copied to x2,y2,z2.
  *
  * @author algol
  */
 public class SphereArranger implements Arranger {
 
     private boolean maintainMean = false;
-    
-    private static final Random RANDOM = new Random();
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         final int vxCount = wg.getVertexCount();
-        if (vxCount < 2) {
+        if(vxCount < 2) {
             return;
         }
 
@@ -51,111 +46,45 @@ public class SphereArranger implements Arranger {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
-        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
-        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
+        final int x2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
+        final int y2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
+        final int z2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
 
-        // If we have less than 2 vertices, we'll get divide-by-zero NaNs.
-        // Pretend we have at least 2 vertices for sizing purposes.
-        final int sideLen = Math.max((int) Math.sqrt(vxCount / 6.0) + (vxCount % 6 == 0 ? 0 : 1), 2);
+        final float rnd = 1f; // Use new Random().nextFloat() * vxCount to add some randomess.
+        final float offset = 2f/vxCount;
+        final float increment = (float)(Math.PI * (3.0 - Math.sqrt(5)));
 
-        // We should be taking actual vertex radiuses into account...
-        float radius = sideLen * 3f;
-        final int sideLen2 = sideLen * sideLen;
-        final float sideLen1 = (float) (sideLen - 1);
+        // Make the radius dependent on the number of vertices, with a lower limit.
+        //
+        final float radius = 8f + (float)(1.0 * Math.sqrt(vxCount));
 
-        // If we lay the vertices out on the sides of a (unit) cube, then the rows/columns along the edges of each side
-        // will overlap, which results in "missing" icons.
-        // Therefore we "bump" each side of the cube out from the centre, so the edges don't overlap.
-        final float bump = 1f + 1f / sideLen;
+        for(int position = 0; position < vxCount; position++) {
+            final float y = ((position*offset)-1) + (offset/2f);
+            final float r = (float)Math.sqrt(1.0 - Math.pow(y, 2.0));
+            final float phi = ((position + rnd) % vxCount) * increment;
+            final float x = (float)Math.cos(phi)*r;
+            final float z = (float)Math.sin(phi)*r;
 
-        // Don't use the position directly; if the number of vertices on a cube face isn't square,
-        // the leftover blank spots will be at the end and look ugly.
-        // Instead, select from shuffled positions, so the blank spots are randomly distributed across the faces.
-        final int[] shuffled = shuffled(sideLen2);
-        for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
-            final int face = position % 6;
+            // Copy the old x,y,z to x2,y2,z2.
+            //
+            wg.setFloatValue(x2Id, vxId, wg.getFloatValue(xId, vxId));
+            wg.setFloatValue(y2Id, vxId, wg.getFloatValue(yId, vxId));
+            wg.setFloatValue(z2Id, vxId, wg.getFloatValue(zId, vxId));
 
-            // A (slightly bumped) point on the surface of the unit cube.
-            final int p = shuffled[(position / 6) % sideLen2];
-            final float x;
-            final float y;
-            final float z;
-            switch (face) {
-                default:
-                case 0:
-                    x = -bump;
-                    y = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    z = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-                case 1:
-                    x = bump;
-                    y = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    z = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-                case 2:
-                    y = -bump;
-                    x = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    z = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-                case 3:
-                    y = bump;
-                    x = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    z = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-                case 4:
-                    z = -bump;
-                    x = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    y = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-                case 5:
-                    z = bump;
-                    x = (((float) p / sideLen) / sideLen1) * 2 - 1;
-                    y = ((p % sideLen) / sideLen1) * 2 - 1;
-                    break;
-            }
-
-            // Normalise to the surface of a sphere.
-            final float f = 1 / (float) Math.sqrt(x * x + y * y + z * z);
-            final float x0 = x * f;
-            final float y0 = y * f;
-            final float z0 = z * f;
-
-            wg.setFloatValue(xId, vxId, radius * x0);
-            wg.setFloatValue(yId, vxId, radius * y0);
-            wg.setFloatValue(zId, vxId, radius * z0);
-            wg.setFloatValue(x2Id, vxId, radius * x);
-            wg.setFloatValue(y2Id, vxId, radius * y);
-            wg.setFloatValue(z2Id, vxId, radius * z);
+            wg.setFloatValue(xId, vxId, x * radius);
+            wg.setFloatValue(yId, vxId, y * radius);
+            wg.setFloatValue(zId, vxId, z * radius);
         }
 
-        if (maintainMean) {
+        if(maintainMean) {
             GraphUtilities.moveMean(wg, oldMean);
         }
-    }
-
-    private static int[] shuffled(final int n) {
-        final int[] a = new int[n];
-        for (int i = 0; i < n; i++) {
-            a[i] = i;
-        }
-
-        // Shuffle the array.
-        for (int i = n; i > 1; i--) {
-            final int ix = RANDOM.nextInt(i);
-            final int t = a[i - 1];
-            a[i - 1] = a[ix];
-            a[ix] = t;
-        }
-
-        return a;
     }
 
     @Override
     public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
-
 }

@@ -109,7 +109,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                 } else if (e.isShortcutDown() && e.isShiftDown() && (e.getCode() == KeyCode.LEFT)) {
                     textArea.selectPreviousWord();
                     e.consume();
-                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {;
+                } else if (e.isShortcutDown() && (e.getCode() == KeyCode.RIGHT)) {
                     textArea.nextWord();
                     e.consume();
                 } else if (e.isShortcutDown() && (e.getCode() == KeyCode.LEFT)) {

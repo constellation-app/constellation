@@ -51,7 +51,7 @@ public class UriIconData extends IconData {
         InputStream stream;
         HttpsURLConnection connection = null;
         try {
-            if (uri.getScheme().toUpperCase().equals("HTTPS")) {
+            if (uri.getScheme().equalsIgnoreCase("HTTPS")) {
                 connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {

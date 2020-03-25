@@ -276,7 +276,7 @@ public class GraphRecordStoreUtilities {
             }
         }
 
-        values.entrySet().stream().forEach((entry) -> {
+        values.entrySet().stream().forEach(entry -> {
             String key = entry.getKey();
             String type = "string";
             if (key.endsWith(">")) {
@@ -539,7 +539,7 @@ public class GraphRecordStoreUtilities {
                     recordStore.set(SOURCE + attribute.getName() + "<" + type + ">", graph.getStringValue(attribute.getId(), vxId));
                 }
 
-                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + String.valueOf(vxId) : String.valueOf(vxId));
+                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + vxId : String.valueOf(vxId));
                 if (limit > 0 && recordStore.size() >= limit) {
                     offset[0] = v + 1;
                     limitReached = true;
@@ -755,9 +755,9 @@ public class GraphRecordStoreUtilities {
                 if (graph.getTransactionDirection(txId) == Graph.UNDIRECTED) {
                     recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
                 }
-                recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + String.valueOf(txId) : String.valueOf(txId));
-                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + String.valueOf(source) : String.valueOf(source));
-                recordStore.set(DESTINATION + ID, disassociateIds ? "id-" + String.valueOf(destination) : String.valueOf(destination));
+                recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + txId : String.valueOf(txId));
+                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + source : String.valueOf(source));
+                recordStore.set(DESTINATION + ID, disassociateIds ? "id-" + destination : String.valueOf(destination));
             }
         }
 

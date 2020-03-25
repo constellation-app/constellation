@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.nifi;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 /**
@@ -64,7 +65,7 @@ public class FlowFileV3Utilities {
     }
 
     private static void writeString(final byte[] writeBuffer, final String value, final OutputStream out) throws IOException {
-        final byte[] bytes = value.getBytes("UTF-8");
+        final byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
         writeFieldLength(writeBuffer, out, bytes.length);
         out.write(bytes);
     }

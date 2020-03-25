@@ -207,7 +207,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -231,7 +231,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -256,7 +256,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }
@@ -280,7 +280,7 @@ public final class QualityControlViewPane extends BorderPane {
                         }
                     };
 
-                    cell.setOnMouseClicked((value) -> {
+                    cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
                             showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
                         }

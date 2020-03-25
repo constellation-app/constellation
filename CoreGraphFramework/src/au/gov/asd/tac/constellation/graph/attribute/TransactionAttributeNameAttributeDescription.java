@@ -39,7 +39,7 @@ public final class TransactionAttributeNameAttributeDescription extends Abstract
     }
 
     @Override
-    protected String convertFromString(final String string) throws IllegalArgumentException {
+    protected String convertFromString(final String string) {
         return string;
     }
 }

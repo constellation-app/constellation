@@ -26,8 +26,8 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -132,7 +132,7 @@ public class VisualSchemaFactory extends SchemaFactory {
         Collections.sort(decorators);
 
         return new VertexDecorators(
-                decorators.size() > 0 ? decorators.get(0) : null,
+                !decorators.isEmpty() ? decorators.get(0) : null,
                 decorators.size() > 1 ? decorators.get(1) : null,
                 decorators.size() > 2 ? decorators.get(2) : null,
                 decorators.size() > 3 ? decorators.get(3) : null

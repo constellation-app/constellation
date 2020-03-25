@@ -512,7 +512,7 @@ public class FindRule {
      * Sensitivity' value in this <code>FindRule</code>
      */
     public boolean getStringCaseSensitivity() {
-        return args.containsKey(STR_CASE) ? (boolean) args.get(STR_CASE) : false;
+        return args.containsKey(STR_CASE) && (boolean) args.get(STR_CASE);
     }
 
     /**
@@ -523,7 +523,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public boolean getStringUsingList() {
-        return args.containsKey(STR_LIST) ? (boolean) args.get(STR_LIST) : false;
+        return args.containsKey(STR_LIST) && (boolean) args.get(STR_LIST);
     }
 
     /**

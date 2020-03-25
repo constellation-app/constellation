@@ -539,11 +539,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
-    public void componentActivated() {
-        super.componentActivated();
-    }
-
-    @Override
     public void graphChanged(final GraphChangeEvent evt) {
         long modificationCount;
 
@@ -791,7 +786,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static List<Savable> getNebulaSavables(final NebulaDataObject nebula) {
         final List<Savable> savableList = new ArrayList<>();
         final Collection<? extends Savable> savables = Savable.REGISTRY.lookupAll(Savable.class);
-        savables.stream().filter(s -> (s instanceof MySavable)).forEach((s) -> {
+        savables.stream().filter(s -> (s instanceof MySavable)).forEach(s -> {
             final NebulaDataObject otherNDO = ((MySavable) s).tc().getGraphNode().getDataObject().getNebulaDataObject();
             if (nebula.equalsPath(otherNDO)) {
                 savableList.add(s);

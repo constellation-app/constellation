@@ -44,15 +44,13 @@ public abstract class ImportFileParser {
 
     public static final ImportFileParser DEFAULT_PARSER = getParsers().values().iterator().next();
 
-    private synchronized static void init() {
+    private static synchronized void init() {
         if (PARSERS.isEmpty()) {
             final List<ImportFileParser> parsers = new ArrayList<>(Lookup.getDefault().lookupAll(ImportFileParser.class));
             Collections.sort(parsers, (ImportFileParser o1, ImportFileParser o2) -> {
                 return Integer.compare(o1.position, o2.position);
             });
-            parsers.stream().forEach((parser) -> {
-                PARSERS.put(parser.label, parser);
-            });
+            parsers.stream().forEach(parser -> PARSERS.put(parser.label, parser));
         }
     }
 

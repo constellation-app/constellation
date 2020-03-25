@@ -480,7 +480,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
                                 // Add the label attributes:
                                 timelinePanel.setNodeLabelAttributes(GraphManager.getDefault().getVertexAttributeNames());
-                                final boolean selectedOnly = state != null ? state.isShowingSelectedOnly() : false;
+                                final boolean selectedOnly = state != null && state.isShowingSelectedOnly();
                                 timelinePanel.setIsShowingSelectedOnly(selectedOnly);
                                 if (state != null && state.getNodeLabelsAttr() != null) {
                                     timelinePanel.setNodeLabelAttribute(state.getNodeLabelsAttr());

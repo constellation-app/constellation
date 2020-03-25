@@ -59,6 +59,5 @@ public class PrimaryKeyEditOperation implements EditOperation {
             }
             graph.setPrimaryKey(elementType, keyIds);
         }
-    };
-
+    }
 }

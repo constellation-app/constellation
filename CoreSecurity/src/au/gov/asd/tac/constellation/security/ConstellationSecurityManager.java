@@ -68,7 +68,7 @@ public class ConstellationSecurityManager {
 
             final List<ConstellationSecurityProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationSecurityProvider.class));
             LOGGER.log(LEVEL, "Found {0} security provider{1}", new Object[]{providers.size(), providers.size() == 1 ? "" : "s"});
-            providers.stream().forEach((provider) -> {
+            providers.stream().forEach(provider -> {
                 LOGGER.log(LEVEL, "  {0}", provider);
             });
 

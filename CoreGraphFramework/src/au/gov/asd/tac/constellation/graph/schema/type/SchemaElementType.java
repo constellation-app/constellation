@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.schema.type;
 
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.Collections;
 import java.util.Map;
 
@@ -205,7 +205,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
                 return true;
             }
         } while (current != next);
-        return overridenType != null ? overridenType.isSubTypeOf(type) : false;
+        return overridenType != null && overridenType.isSubTypeOf(type);
     }
 
     /**

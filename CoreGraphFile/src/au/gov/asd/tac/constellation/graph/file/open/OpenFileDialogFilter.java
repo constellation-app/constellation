@@ -258,7 +258,7 @@ public abstract class OpenFileDialogFilter extends FileFilter {
      * @see FileNameExtensionFilter
      *
      */
-    public static abstract class ExtensionFilter extends OpenFileDialogFilter {
+    public abstract static class ExtensionFilter extends OpenFileDialogFilter {
 
         private static final char EXTENSION_SEPARATOR = '.';
 

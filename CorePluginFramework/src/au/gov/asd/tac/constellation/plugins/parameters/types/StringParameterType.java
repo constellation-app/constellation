@@ -125,7 +125,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
     public static boolean isLabel(final PluginParameter<?> parameter) {
         final Boolean isLabel = (Boolean) parameter.getProperty(IS_LABEL);
 
-        return isLabel != null ? isLabel : false;
+        return isLabel != null && isLabel;
     }
 
     /**

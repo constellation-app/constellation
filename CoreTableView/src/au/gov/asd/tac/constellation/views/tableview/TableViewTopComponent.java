@@ -619,7 +619,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 // Something major has happened to the graph (a new graph, deleted nodes, etc) that makes us set a new model.
                 // This means we need to preserve the table state and restore it.
                 final TableState state = TableState.getMetaState(rg, elementType);
-                selectedOnlyButton.setSelected(state != null ? state.getSelectedOnly() : false);
+                selectedOnlyButton.setSelected(state != null && state.getSelectedOnly());
                 setNewModel();
                 setDefaultColumns(dataTable);
                 TableState.applyMetaState(rg, state, elementType, dataTable);
@@ -984,7 +984,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
             final ReadableGraph rg = graph.getReadableGraph();
             try {
                 final TableState state = TableState.getMetaState(rg, currentElementType);
-                selectedOnly = state != null ? state.getSelectedOnly() : false;
+                selectedOnly = state != null && state.getSelectedOnly();
                 TableState.applyMetaState(rg, state, currentElementType, dataTable);
             } finally {
                 rg.release();
