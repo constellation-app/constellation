@@ -26,19 +26,19 @@ import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphDirection;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphStep;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphTransaction;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphVertex;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphWrapper;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -256,7 +256,7 @@ public class PlaceholderUtilities {
         placeholderIds.forEach(placeholderId -> {
             final int leadVertex;
             final List<Integer> placeholderCorrelationList = placeholderCorrelations.get(placeholderId);
-            if (placeholderCorrelationList.size() > 0) {
+            if (!placeholderCorrelationList.isEmpty()) {
 
                 // calculate lead vertex
                 final SchemaVertexType leadVertexType = placeholderCorrelationList.stream()
