@@ -155,7 +155,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         BIN_CALENDAR_UNITS.put("Month", Calendar.MONTH);
         BIN_CALENDAR_UNITS.put("Year", Calendar.YEAR);
     }
-    ;
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
     private final HashMap<String, Integer> nodeDups = new HashMap<>();

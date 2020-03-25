@@ -98,8 +98,6 @@ public class SpectralArranger implements Arranger {
 
     }
 
-    ;
-
     private static class GetTrussResultHandler implements KTrussResultHandler {
 
         private final Set<Integer> verticesInHighestTruss = new HashSet<>();

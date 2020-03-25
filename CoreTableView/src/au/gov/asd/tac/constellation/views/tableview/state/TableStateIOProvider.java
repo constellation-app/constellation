@@ -47,7 +47,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final int posx = jnode.get("posx").asInt(0);
             final int posy = jnode.get("posy").asInt(0);
-            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) ? jnode.get(SELECTED_ONLY).asBoolean(false) : false;
+            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) && jnode.get(SELECTED_ONLY).asBoolean(false);
 
             final TableState state = new TableState(new Point(posx, posy), selectedOnly);
 

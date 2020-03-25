@@ -185,7 +185,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     public void actionPerformed(final ActionEvent e) {
         refreshListeners();
         Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
-        if (inst.size() > 0) {
+        if (!inst.isEmpty()) {
             SaveAsCapable saveAs = inst.iterator().next();
             File newFile = getNewFileName();
             if (newFile != null) {
@@ -357,7 +357,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
             if (parent == null) {
                 if (lastDir.isEmpty()) {
                     //Check prefferences for last saved directory
-                    if (lastFileSaveLocation.isEmpty() || rememberSaveLocation == false) {
+                    if (lastFileSaveLocation.isEmpty() || !rememberSaveLocation) {
                         return new File(System.getProperty("user.home"));
                     } else {
                         return new File(lastFileSaveLocation);

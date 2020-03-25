@@ -33,7 +33,7 @@ import javax.imageio.ImageIO;
  */
 public final class Plane {
 
-    private static final Logger LOGGER = Logger.getLogger(PlaneState.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Plane.class.getName());
 
     private final BufferedImage image;
     private final String label;

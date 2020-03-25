@@ -90,9 +90,7 @@ public class GraphReportManager {
     }
 
     static synchronized void fireNewPluginReport(PluginReport pluginReport) {
-        LISTENERS.stream().forEach((listener) -> {
-            listener.newPluginReport(pluginReport);
-        });
+        LISTENERS.stream().forEach(listener -> listener.newPluginReport(pluginReport));
     }
 
     public static GraphReport getGraphReport(String graphId) {

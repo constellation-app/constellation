@@ -59,13 +59,11 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    public void setDefault(final Object value) throws IllegalArgumentException {
+    public void setDefault(final Object value) {
         super.setDefault(value);
 
         // Ensure that the default is a registered type.
-        if (defaultValue != null
-                && defaultValue instanceof SchemaVertexType
-                && defaultValue.isIncomplete()) {
+        if (defaultValue instanceof SchemaVertexType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }
     }

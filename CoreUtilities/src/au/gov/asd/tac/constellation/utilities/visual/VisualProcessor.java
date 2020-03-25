@@ -250,7 +250,7 @@ public abstract class VisualProcessor {
      */
     @SuppressWarnings("unchecked")
     protected Set<VisualProperty> getTrumpedProperties(final VisualProperty property) {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
 
     /**

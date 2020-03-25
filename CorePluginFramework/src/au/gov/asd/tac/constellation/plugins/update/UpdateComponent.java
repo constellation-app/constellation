@@ -71,7 +71,7 @@ public abstract class UpdateComponent<U> implements Comparable<UpdateComponent<U
 
     private static int NEXT_ID = 0;
 
-    private synchronized static int getNextId() {
+    private static synchronized int getNextId() {
         return NEXT_ID++;
     }
 

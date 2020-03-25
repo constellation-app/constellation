@@ -425,9 +425,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
         }
 
         final ArrayList<Integer> result = new ArrayList<>();
-        attrsegs.stream().forEach((attrseg) -> {
-            result.add(attrseg2index.get(attrseg.toString()));
-        });
+        attrsegs.stream().forEach(attrseg -> result.add(attrseg2index.get(attrseg.toString())));
 
         return result;
     }

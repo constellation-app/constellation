@@ -19,11 +19,11 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -278,7 +278,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach((p) -> {
+                        paramList.stream().forEach(p -> {
                             sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
                                     .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
                                     .append(p.getId()).append(SeparatorConstants.COMMA)

@@ -80,35 +80,35 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return false;
     }
 
-    public boolean has_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.NOT_FOUND);
     }
 
-    public boolean has_outgoing_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_outgoing_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.OUTGOING);
     }
 
-    public boolean has_incoming_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_incoming_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.INCOMING);
     }
 
-    public boolean has_undirected_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_undirected_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.UNDIRECTED);
     }
 
-    public boolean has_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.NOT_FOUND);
     }
 
-    public boolean has_outgoing_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_outgoing_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.OUTGOING);
     }
 
-    public boolean has_incoming_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_incoming_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.INCOMING);
     }
 
-    public boolean has_undirected_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_undirected_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.UNDIRECTED);
     }
 
@@ -190,35 +190,35 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return count;
     }
 
-    public int count_transactions(final PyFunction condition) throws ScriptException {
+    public int count_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.NOT_FOUND);
     }
 
-    public int count_outgoing_transactions(final PyFunction condition) throws ScriptException {
+    public int count_outgoing_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.OUTGOING);
     }
 
-    public int count_incoming_transactions(final PyFunction condition) throws ScriptException {
+    public int count_incoming_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.INCOMING);
     }
 
-    public int count_undirected_transactions(final PyFunction condition) throws ScriptException {
+    public int count_undirected_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.UNDIRECTED);
     }
 
-    public int count_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.NOT_FOUND);
     }
 
-    public int count_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.OUTGOING);
     }
 
-    public int count_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.INCOMING);
     }
 
-    public int count_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.UNDIRECTED);
     }
 
@@ -311,51 +311,51 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return new PyList(results);
     }
 
-    public PyList for_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.UNDIRECTED);
     }
 
-    public PyList for_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.UNDIRECTED);
     }
 
-    public PyList for_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.UNDIRECTED);
     }
 
