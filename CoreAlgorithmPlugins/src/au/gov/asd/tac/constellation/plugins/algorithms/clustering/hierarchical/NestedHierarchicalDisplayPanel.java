@@ -179,20 +179,20 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
             if (node == null) {
                 continue;
             }
-            int nodeMergeStep = node.mergeStep == Integer.MAX_VALUE ? stepLimit : node.mergeStep;
+            int nodeMergeStep = node.getMergeStep() == Integer.MAX_VALUE ? stepLimit : node.getMergeStep();
 
-            GroupTreeNode treeNode = treeNodes.get(node.vertex);
+            GroupTreeNode treeNode = treeNodes.get(node.getVertex());
             if (treeNode == null) {
-                treeNode = new GroupTreeNode(node.vertex, nodeMergeStep, node.color.getJavaColor());
-                treeNodes.put(node.vertex, treeNode);
+                treeNode = new GroupTreeNode(node.getVertex(), nodeMergeStep, node.getColor().getJavaColor());
+                treeNodes.put(node.getVertex(), treeNode);
             }
 
-            FastNewman.Group parentGroup = node.parent;
+            FastNewman.Group parentGroup = node.getParent();
             if (parentGroup != null) {
-                int parentVertex = parentGroup.vertex;
-                int parentMergeStep = parentGroup.mergeStep == Integer.MAX_VALUE ? stepLimit : parentGroup.mergeStep;
+                int parentVertex = parentGroup.getVertex();
+                int parentMergeStep = parentGroup.getMergeStep() == Integer.MAX_VALUE ? stepLimit : parentGroup.getMergeStep();
                 if (!treeNodes.containsKey(parentVertex)) {
-                    GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.color.getJavaColor());
+                    GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.getColor().getJavaColor());
                     treeNodes.put(parentVertex, parentTreeNode);
                 }
                 if (treeNodes.get(parentVertex).children == null) {
