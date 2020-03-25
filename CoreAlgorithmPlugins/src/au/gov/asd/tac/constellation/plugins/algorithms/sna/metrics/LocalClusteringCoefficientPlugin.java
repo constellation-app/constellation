@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -86,15 +86,15 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         // compute the local clustering coefficient for each vertex
         float maxLocalClusteringCoefficient = 0;
         final Map<Integer, Float> localClusteringCoefficients = new HashMap<>();
-        for (final int vertexPosition : neighbourMap.keySet()) {
-            final int vertexId = graph.getVertex(vertexPosition);
-            final BitSet vertexNeighbours = neighbourMap.get(vertexPosition);
+        for (Map.Entry<Integer, BitSet> entry : neighbourMap.entrySet()) {
+            final int vertexId = graph.getVertex(entry.getKey());
+            final BitSet vertexNeighbours = entry.getValue();
 
             // calculate the number of connected neighbours (remembering to divide
             // by two as we will see each pair twice, once from each direction)
             int connectedNeighbourPairs = 0;
             for (int neighbourPosition = vertexNeighbours.nextSetBit(0); neighbourPosition >= 0; neighbourPosition = vertexNeighbours.nextSetBit(neighbourPosition + 1)) {
-                if (neighbourPosition == vertexPosition) {
+                if (neighbourPosition == entry.getKey()) {
                     continue;
                 }
                 final BitSet neighbourNeighbours = neighbourMap.get(neighbourPosition);
@@ -113,11 +113,11 @@ public class LocalClusteringCoefficientPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (final int vertexId : localClusteringCoefficients.keySet()) {
+        for (Map.Entry<Integer, Float> entry : localClusteringCoefficients.entrySet()) {
             if (normaliseByAvailable && maxLocalClusteringCoefficient > 0) {
-                graph.setFloatValue(localClusteringCoefficientAttribute, vertexId, localClusteringCoefficients.get(vertexId) / maxLocalClusteringCoefficient);
+                graph.setFloatValue(localClusteringCoefficientAttribute, entry.getKey(), entry.getValue() / maxLocalClusteringCoefficient);
             } else {
-                graph.setFloatValue(localClusteringCoefficientAttribute, vertexId, localClusteringCoefficients.get(vertexId));
+                graph.setFloatValue(localClusteringCoefficientAttribute, entry.getKey(), entry.getValue());
             }
         }
     }

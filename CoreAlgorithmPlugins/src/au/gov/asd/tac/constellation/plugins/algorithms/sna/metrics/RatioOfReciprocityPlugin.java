@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -107,14 +107,14 @@ public class RatioOfReciprocityPlugin extends SimpleEditPlugin {
 
         // update the graph with ratio of reciprocity values
         final int ratioOfReciprocityAttribute = RATIO_OF_RECIPROCITY_ATTRIBUTE.ensure(graph);
-        for (int linkId : ratioOfReciprocities.keySet()) {
-            final int transactionCount = graph.getLinkTransactionCount(linkId);
+        for (Map.Entry<Integer, Float> entry : ratioOfReciprocities.entrySet()) {
+            final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getLinkTransaction(linkId, transactionPosition);
+                final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
                 if (normaliseByAvailable && maxRatioOfReciprocity > 0) {
-                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, ratioOfReciprocities.get(linkId) / maxRatioOfReciprocity);
+                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, entry.getValue() / maxRatioOfReciprocity);
                 } else {
-                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, ratioOfReciprocities.get(linkId));
+                    graph.setFloatValue(ratioOfReciprocityAttribute, transactionId, entry.getValue());
                 }
             }
         }

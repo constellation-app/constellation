@@ -17,13 +17,6 @@ package au.gov.asd.tac.constellation.utilities.geospatial;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import org.locationtech.jts.geom.Geometry;
-import org.locationtech.jts.geom.LineString;
-import org.locationtech.jts.geom.MultiLineString;
-import org.locationtech.jts.geom.MultiPoint;
-import org.locationtech.jts.geom.MultiPolygon;
-import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.geom.Polygon;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,6 +53,13 @@ import org.geotools.kml.v22.KML;
 import org.geotools.kml.v22.KMLConfiguration;
 import org.geotools.referencing.CRS;
 import org.geotools.xsd.Encoder;
+import org.locationtech.jts.geom.Geometry;
+import org.locationtech.jts.geom.LineString;
+import org.locationtech.jts.geom.MultiLineString;
+import org.locationtech.jts.geom.MultiPoint;
+import org.locationtech.jts.geom.MultiPolygon;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.geom.Polygon;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.referencing.FactoryException;
@@ -289,9 +289,9 @@ public class Shape {
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (final String shapeId : attributes.keySet()) {
-                if (shapes.keySet().contains(shapeId)) {
-                    attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+                if (shapes.keySet().contains(entry.getKey())) {
+                    entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             schemaAttributes.put(attributeName, attributeValue.getClass());
                         }
@@ -312,15 +312,15 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final String shapeId : shapes.keySet()) {
-            final String shape = shapes.get(shapeId);
+        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+            final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(shapeId)) {
-                        attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                        attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             if (attributeValue != null) {
                                 feature.setAttribute(attributeName, attributeValue);
                             }
@@ -362,9 +362,9 @@ public class Shape {
         // modify schema to handle any additional attributes
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         if (attributes != null) {
-            for (final String shapeId : attributes.keySet()) {
-                if (shapes.keySet().contains(shapeId)) {
-                    attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+                if (shapes.keySet().contains(entry.getKey())) {
+                    entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             schemaAttributes.put(attributeName, attributeValue.getClass());
                         }
@@ -385,15 +385,15 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final String shapeId : shapes.keySet()) {
-            final String shape = shapes.get(shapeId);
+        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+            final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(shapeId)) {
-                        attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                        attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             if (attributeValue != null) {
                                 feature.setAttribute(attributeName, attributeValue);
                             }
@@ -440,9 +440,9 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (final String shapeId : attributes.keySet()) {
-                if (shapes.keySet().contains(shapeId)) {
-                    attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+                if (shapes.keySet().contains(entry.getKey())) {
+                    entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             boolean validType = false;
                             for (final Class<?> validClass : GEOPACKAGE_ATTRIBUTE_TYPES) {
@@ -454,10 +454,10 @@ public class Shape {
 
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
                             if (validType) {
-                                if (!attributesOfValidType.containsKey(shapeId)) {
-                                    attributesOfValidType.put(shapeId, new ArrayList<>());
+                                if (!attributesOfValidType.containsKey(entry.getKey())) {
+                                    attributesOfValidType.put(entry.getKey(), new ArrayList<>());
                                 }
-                                attributesOfValidType.get(shapeId).add(compatibleAttributeName);
+                                attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
                                 schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
                             } else {
                                 schemaAttributes.put(compatibleAttributeName, String.class);
@@ -480,18 +480,18 @@ public class Shape {
 
         // extract all features from shapes
         final List<SimpleFeature> features = new ArrayList<>();
-        for (final String shapeId : shapes.keySet()) {
-            final String shape = shapes.get(shapeId);
+        for (Map.Entry<String, String> entry : shapes.entrySet()) {
+            final String shape = entry.getValue();
             final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
             try {
                 final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
                 while (featureIterator.hasNext()) {
                     final SimpleFeature feature = featureIterator.next();
-                    if (attributes != null && attributes.containsKey(shapeId)) {
-                        attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+                    if (attributes != null && attributes.containsKey(entry.getKey())) {
+                        attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
                             if (schemaAttributes.containsKey(compatibleAttributeName)) {
-                                if (attributesOfValidType.get(shapeId).contains(compatibleAttributeName)) {
+                                if (attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                     feature.setAttribute(compatibleAttributeName, attributeValue);
                                 } else {
                                     feature.setAttribute(compatibleAttributeName, attributeValue == null
@@ -550,9 +550,9 @@ public class Shape {
         final Map<String, Class<?>> schemaAttributes = new HashMap<>();
         final Map<String, List<String>> attributesOfValidType = new HashMap<>();
         if (attributes != null) {
-            for (final String shapeId : attributes.keySet()) {
-                if (shapes.keySet().contains(shapeId)) {
-                    attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+            for (Map.Entry<String, Map<String, Object>> entry : attributes.entrySet()) {
+                if (shapes.keySet().contains(entry.getKey())) {
+                    entry.getValue().forEach((attributeName, attributeValue) -> {
                         if (attributeValue != null) {
                             boolean validType = false;
                             for (final Class<?> validClass : SHAPEFILE_ATTRIBUTE_TYPES.keySet()) {
@@ -564,10 +564,10 @@ public class Shape {
 
                             final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
                             if (validType) {
-                                if (!attributesOfValidType.containsKey(shapeId)) {
-                                    attributesOfValidType.put(shapeId, new ArrayList<>());
+                                if (!attributesOfValidType.containsKey(entry.getKey())) {
+                                    attributesOfValidType.put(entry.getKey(), new ArrayList<>());
                                 }
-                                attributesOfValidType.get(shapeId).add(compatibleAttributeName);
+                                attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
                                 schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
                             } else {
                                 schemaAttributes.put(compatibleAttributeName, String.class);
@@ -605,8 +605,8 @@ public class Shape {
 
         // copy features of the desired type from geojson to shapefile
         try (final FeatureWriter<SimpleFeatureType, SimpleFeature> writer = datastore.getFeatureWriterAppend(datastore.getTypeNames()[0], Transaction.AUTO_COMMIT)) {
-            for (final String shapeId : shapes.keySet()) {
-                final String shape = shapes.get(shapeId);
+            for (Map.Entry<String, String> entry : shapes.entrySet()) {
+                final String shape = entry.getValue();
                 final InputStream shapeStream = new ByteArrayInputStream(shape.getBytes(StandardCharsets.UTF_8));
                 try {
                     final FeatureIterator<SimpleFeature> featureIterator = featureJson.streamFeatureCollection(shapeStream);
@@ -637,11 +637,11 @@ public class Shape {
                                 writableFeature.getUserData().putAll(feature.getUserData());
                             }
 
-                            if (attributes != null && attributes.containsKey(shapeId)) {
-                                attributes.get(shapeId).forEach((attributeName, attributeValue) -> {
+                            if (attributes != null && attributes.containsKey(entry.getKey())) {
+                                attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                                     final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
                                     if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
-                                        if (attributesOfValidType.get(shapeId).contains(compatibleAttributeName)) {
+                                        if (attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                             writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                         } else {
                                             writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());

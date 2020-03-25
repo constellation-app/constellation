@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -259,8 +259,8 @@ public class KTruss {
         for (int linkPosition = links.nextSetBit(0); linkPosition >= 0; linkPosition = links.nextSetBit(linkPosition + 1)) {
             getComponentsHopper(graph, links, nodeToComponent, linkToComponent, componentTree, currentComponentNum, linkPosition);
             int componentCounter = 0;
-            for (Integer key : nodeToComponent.keySet()) {
-                if (nodeToComponent.get(key) == currentComponentNum) {
+            for (Map.Entry<Integer, Integer> entry : nodeToComponent.entrySet()) {
+                if (entry.getValue() == currentComponentNum) {
                     componentCounter++;
                 }
             }

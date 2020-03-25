@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -25,7 +26,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import java.util.HashMap;
 import java.util.Map;
 import org.openide.util.NbBundle;
@@ -78,14 +78,14 @@ public class WeightPlugin extends SimpleEditPlugin {
 
         // update the graph with weight values
         final int weightAttribute = WEIGHT_ATTRIBUTE.ensure(graph);
-        for (int linkId : weights.keySet()) {
-            final int transactionCount = graph.getLinkTransactionCount(linkId);
+        for (Map.Entry<Integer, Float> entry : weights.entrySet()) {
+            final int transactionCount = graph.getLinkTransactionCount(entry.getKey());
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getLinkTransaction(linkId, transactionPosition);
+                final int transactionId = graph.getLinkTransaction(entry.getKey(), transactionPosition);
                 if (normaliseByAvailable && maxWeight > 0) {
-                    graph.setFloatValue(weightAttribute, transactionId, weights.get(linkId) / maxWeight);
+                    graph.setFloatValue(weightAttribute, transactionId, entry.getValue() / maxWeight);
                 } else {
-                    graph.setFloatValue(weightAttribute, transactionId, weights.get(linkId));
+                    graph.setFloatValue(weightAttribute, transactionId, entry.getValue());
                 }
             }
         }

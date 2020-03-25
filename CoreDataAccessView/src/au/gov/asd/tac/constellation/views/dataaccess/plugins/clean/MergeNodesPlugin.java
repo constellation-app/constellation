@@ -217,8 +217,8 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
 
         // perform the merge
-        for (final Integer leadVertex : nodesToMerge.keySet()) {
-            mergedCount += mergeVertices(graph, nodesToMerge.get(leadVertex), leadVertex, merger);
+        for (Map.Entry<Integer, Set<Integer>> entry : nodesToMerge.entrySet()) {
+            mergedCount += mergeVertices(graph, entry.getValue(), entry.getKey(), merger);
         }
 
         interaction.setProgress(1, 0, "Merged " + mergedCount + " nodes.", true);

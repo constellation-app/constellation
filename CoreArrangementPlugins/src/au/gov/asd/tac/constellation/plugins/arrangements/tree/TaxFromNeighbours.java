@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -63,8 +63,8 @@ public class TaxFromNeighbours {
         // Now each key (a set of neighbours) maps to a set of vertices that have those neighbours in common).
         final Map<Integer, Set<Integer>> tax = new HashMap<>();
         final Map<Integer, Integer> nodeToTaxa = new HashMap<>();
-        for (Set<Integer> neighbours : commonNeighbours.keySet()) {
-            final Set<Integer> vertices = commonNeighbours.get(neighbours);
+        for (Map.Entry<Set<Integer>, Set<Integer>> entry : commonNeighbours.entrySet()) {
+            final Set<Integer> vertices = entry.getValue();
             final Integer key = vertices.iterator().next();
             tax.put(key, vertices);
             for (int vertex : vertices) {
