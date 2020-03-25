@@ -318,7 +318,7 @@ public class ExtractFromContentPluginNGTest {
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
                 .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(ExtractWordsFromTextPlugin.CASE_INSENSITIVE_PARAMETER_ID, false)
+                .withParameter(ExtractWordsFromTextPlugin.LOWER_CASE_PARAMETER_ID, false)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
