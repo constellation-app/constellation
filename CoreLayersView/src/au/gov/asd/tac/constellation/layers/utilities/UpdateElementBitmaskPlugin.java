@@ -30,16 +30,22 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
  */
 public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
-    final int targetMask;
+    private final int targetMask;
+    private final Action layerAction;
 
-    public UpdateElementBitmaskPlugin(final int bitmask) {
-        targetMask = bitmask;
+    public UpdateElementBitmaskPlugin(final int bitmask, final Action layerAction) {
+        this.targetMask = bitmask;
+        this.layerAction = layerAction;
     }
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         int graphCurrentBitMask = VisualConcept.GraphAttribute.SELECTEDFILTERMASK.get(graph);
-
+        setVertexes(graph, graphCurrentBitMask);
+        setTransactions(graph, graphCurrentBitMask);
+    }
+    
+    private void setVertexes(final GraphWriteMethods graph, final int currentBitmask) {
         // VERTEXES
         int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
         int vxBitmaskAttributeId = VisualConcept.VertexAttribute.FILTERMASK.get(graph);
@@ -50,11 +56,17 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
                 final int vxId = graph.getVertex(position);
 
                 if (graph.getBooleanValue(vxSelectedAttr, vxId)) {
-                    graph.setIntValue(vxBitmaskAttributeId, vxId, graphCurrentBitMask == 1 ? 0b1 : graph.getIntValue(vxBitmaskAttributeId, vxId) | (1 << targetMask - 1));
+                    if(layerAction.equals(Action.ADD)) {
+                        graph.setIntValue(vxBitmaskAttributeId, vxId, currentBitmask == 1 ? 0b1 : graph.getIntValue(vxBitmaskAttributeId, vxId) | (1 << targetMask - 1));
+                    } else if (layerAction.equals(Action.REMOVE)) {
+                        graph.setIntValue(vxBitmaskAttributeId, vxId, currentBitmask == 1 ? 0b1 : graph.getIntValue(vxBitmaskAttributeId, vxId) & ~(1 << targetMask - 1));
+                    }
                 }
             }
         }
-
+    }
+    
+    private void setTransactions(final GraphWriteMethods graph, final int currentBitmask) {
         // TRANSACTIONS
         int txSelected = VisualConcept.TransactionAttribute.SELECTED.get(graph);
         int txBitmaskAttributeId = VisualConcept.TransactionAttribute.FILTERMASK.get(graph);
@@ -65,7 +77,11 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
                 final int txId = graph.getTransaction(position);
 
                 if (graph.getBooleanValue(txSelected, txId)) {
-                    graph.setIntValue(txBitmaskAttributeId, txId, graphCurrentBitMask == 1 ? 0b1 : graph.getIntValue(txBitmaskAttributeId, txId) | (1 << targetMask - 1));
+                    if(layerAction.equals(Action.ADD)) {
+                        graph.setIntValue(txBitmaskAttributeId, txId, currentBitmask == 1 ? 0b1 : graph.getIntValue(txBitmaskAttributeId, txId) | (1 << targetMask - 1));
+                    } else if(layerAction.equals(Action.REMOVE)) {
+                        graph.setIntValue(txBitmaskAttributeId, txId, currentBitmask == 1 ? 0b1 : graph.getIntValue(txBitmaskAttributeId, txId) & ~(1 << targetMask - 1));
+                    }
                 }
             }
         }
