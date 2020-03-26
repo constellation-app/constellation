@@ -344,7 +344,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
      * @return
      */
     private TreeItem<SchemaVertexType> createNode(final SchemaVertexType vxtype) {
-        final TreeItem<SchemaVertexType> ti = new TreeItem<SchemaVertexType>(vxtype) {
+        return new TreeItem<SchemaVertexType>(vxtype) {
             // We cache whether the vertextype is a leaf or not.
             private boolean isLeaf;
 
@@ -409,8 +409,6 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 return children;
             }
         };
-
-        return ti;
     }
 
     @Override

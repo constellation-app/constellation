@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
-import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
+import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -432,11 +432,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                 return false;
             }
             final IconNode other = (IconNode) obj;
-            if ((this.getName() == null)
-                    ? (other.getName() != null) : !this.name.equals(other.name)) {
-                return false;
-            }
-            return true;
+            return (this.getName() == null) ? (other.getName() == null) : this.name.equals(other.name);
         }
 
         @Override

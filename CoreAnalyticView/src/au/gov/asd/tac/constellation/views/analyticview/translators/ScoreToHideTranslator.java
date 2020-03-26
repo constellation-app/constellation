@@ -54,8 +54,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
 
     @Override
     public HideVisualisation buildControl() {
-        final HideVisualisation<ElementScore> hideVisualisation = new HideVisualisation(this);
-        return hideVisualisation;
+        return new HideVisualisation(this);
     }
 
     @Override

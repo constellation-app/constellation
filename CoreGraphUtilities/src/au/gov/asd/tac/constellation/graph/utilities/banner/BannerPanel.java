@@ -106,8 +106,7 @@ public class BannerPanel extends javax.swing.JPanel {
         final DialogDescriptor dd = new DialogDescriptor(chooser, msg, true, null);
         final Object n = DialogDisplayer.getDefault().notify(dd);
         if (n == NotifyDescriptor.OK_OPTION) {
-            final Color bgColor = chooser.getColor();
-            return bgColor;
+            return chooser.getColor();
         }
 
         return null;

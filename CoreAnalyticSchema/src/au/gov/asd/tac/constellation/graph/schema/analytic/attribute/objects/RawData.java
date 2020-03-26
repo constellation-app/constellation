@@ -157,10 +157,7 @@ public class RawData implements Comparable<RawData> {
         if (!Objects.equals(this.rawIdentifier, other.rawIdentifier)) {
             return false;
         }
-        if (!Objects.equals(this.rawType, other.rawType)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.rawType, other.rawType);
     }
 
     @Override

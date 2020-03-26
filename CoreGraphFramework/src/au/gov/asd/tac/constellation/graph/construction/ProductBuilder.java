@@ -202,8 +202,8 @@ public class ProductBuilder extends GraphBuilder {
 
         int g1Link = g1.getLink(g1Vertices[x], g1Vertices[x2]);
         int g2Link = g2.getLink(g2Vertices[y], g2Vertices[y2]);
-        final boolean g1Reverse = !g1Counts ? false : g1.getLinkLowVertex(g1Link) != g1Vertices[x];
-        final boolean g2Reverse = !g2Counts ? false : g2.getLinkLowVertex(g2Link) != g2Vertices[y];
+        final boolean g1Reverse = g1Counts && g1.getLinkLowVertex(g1Link) != g1Vertices[x];
+        final boolean g2Reverse = g2Counts && g2.getLinkLowVertex(g2Link) != g2Vertices[y];
 
         final int g1Flat = !g1Counts ? 1 : g1.getLinkTransactionCount(g1Link, Graph.FLAT);
         final int g1Uphill = !g1Counts ? 1 : g1Reverse ? g1.getLinkTransactionCount(g1Link, Graph.DOWNHILL) : g1.getLinkTransactionCount(g1Link, Graph.UPHILL);

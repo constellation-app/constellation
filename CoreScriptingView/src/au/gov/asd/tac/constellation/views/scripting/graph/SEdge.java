@@ -136,8 +136,7 @@ public class SEdge {
         if (attributeId == Graph.NOT_FOUND) {
             throw new NoSuchAttributeException(key);
         }
-        final Object value = readableGraph.getObjectValue(attributeId, id);
-        return value;
+        return readableGraph.getObjectValue(attributeId, id);
     }
 
     /**

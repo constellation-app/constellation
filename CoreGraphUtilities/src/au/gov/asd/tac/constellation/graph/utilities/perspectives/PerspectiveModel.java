@@ -113,7 +113,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
      * doesn't.
      */
     private boolean exists(final String label) {
-        return perspectives.stream().anyMatch((p) -> (p.label.equals(label)));
+        return perspectives.stream().anyMatch(p -> p.label.equals(label));
     }
 
     /**

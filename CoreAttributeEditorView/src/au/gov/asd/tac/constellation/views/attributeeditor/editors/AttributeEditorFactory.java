@@ -135,7 +135,7 @@ public class AttributeEditorFactory extends AbstractEditorFactory<AttributeProto
 
             // Populate the type combo with all of the possible graph types.
             final ArrayList<String> attributeTypes = new ArrayList<>();
-            AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach((entry) -> {
+            AttributeRegistry.getDefault().getAttributes().entrySet().stream().forEach(entry -> {
                 final Class<? extends AttributeDescription> attrTypeDescr = entry.getValue();
                 final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attrTypeDescr);
                 if (!isObject) {

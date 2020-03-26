@@ -27,8 +27,8 @@ import java.util.ArrayList;
  */
 public class ReplaceCriteriaPanel extends javax.swing.JPanel {
 
-    final private FindCriteriaPanel findCriteriaPanel;
-    final private FindCriteriaPanel replaceCriteriaPanel;
+    private final FindCriteriaPanel findCriteriaPanel;
+    private final FindCriteriaPanel replaceCriteriaPanel;
 
     /**
      * Creates new form ReplaceCriteriaPanel

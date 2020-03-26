@@ -108,7 +108,7 @@ public class GLInfo {
      * @return True if the extension is supported, false if not.
      */
     public boolean isExtensionSupported(final String ext) {
-        return extensions == null ? false : extensions.contains(ext);
+        return extensions != null && extensions.contains(ext);
     }
 
     /**

@@ -236,10 +236,8 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         final Calendar calendar = GregorianCalendar.getInstance();
         calendar.setTime(new Date(time));
-        final String s = String.format("%4d-%02d-%02d",
+        return String.format("%4d-%02d-%02d",
                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-
-        return s;
     }
 
     @Override

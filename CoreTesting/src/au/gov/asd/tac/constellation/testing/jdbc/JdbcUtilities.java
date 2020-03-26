@@ -65,9 +65,7 @@ class JdbcUtilities {
         final Properties props = new Properties();
         props.put("user", username);
         props.put("password", new String(password));
-        final Connection conn = driver.connect(url, props);
-
-        return conn;
+        return driver.connect(url, props);
     }
 
     /**

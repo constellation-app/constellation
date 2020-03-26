@@ -46,9 +46,7 @@ public class PasteFromClipboardPlugin extends SimpleEditPlugin {
 
     @Override
     public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        return parameters;
+        return new PluginParameters();
     }
 
     @Override

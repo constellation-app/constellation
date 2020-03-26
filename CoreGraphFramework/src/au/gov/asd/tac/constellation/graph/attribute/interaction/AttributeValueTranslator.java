@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
 
 /**
@@ -37,7 +36,7 @@ public interface AttributeValueTranslator {
 
     static final Logger LOGGER = Logger.getLogger(AttributeValueTranslator.class.getName());
 
-    public static AttributeValueTranslator IDENTITY = (val) -> {
+    public static AttributeValueTranslator IDENTITY = val -> {
         return val;
     };
 

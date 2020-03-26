@@ -59,7 +59,6 @@ public class ExpandAllCompositesAction extends AbstractAction implements Present
 
     @Override
     public Component getToolbarPresenter() {
-        final JButton tb = new JButton(this);
-        return tb;
+        return new JButton(this);
     }
 }

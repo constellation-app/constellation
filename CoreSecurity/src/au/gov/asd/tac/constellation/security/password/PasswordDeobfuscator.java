@@ -87,7 +87,7 @@ public class PasswordDeobfuscator {
      * @throws IOException
      */
     @SuppressWarnings("unused")
-    public static void main(final String[] args) throws UnsupportedEncodingException, IOException {
+    public static void main(final String[] args) throws IOException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         System.out.print("Enter the obfuscated password to decrypt: ");
         System.out.flush();

@@ -74,9 +74,6 @@ public class LayerName implements Comparable<LayerName> {
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
-        if (this.layer != other.layer) {
-            return false;
-        }
-        return true;
+        return this.layer == other.layer;
     }
 }

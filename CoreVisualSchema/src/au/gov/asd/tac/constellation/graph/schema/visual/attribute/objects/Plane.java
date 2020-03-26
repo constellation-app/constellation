@@ -33,7 +33,7 @@ import javax.imageio.ImageIO;
  */
 public final class Plane {
 
-    private static final Logger LOGGER = Logger.getLogger(PlaneState.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Plane.class.getName());
 
     private final BufferedImage image;
     private final String label;
@@ -212,9 +212,7 @@ public final class Plane {
         final byte[] bytes = byteReader.read(reference).getData();
         final BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
 
-        final Plane p = new Plane(label, x, y, z, width, height, image, imageWidth, imageHeight);
-
-        return p;
+        return new Plane(label, x, y, z, width, height, image, imageWidth, imageHeight);
     }
 
     public void writeNode(final JsonGenerator jg, final GraphByteWriter byteWriter) throws IOException {

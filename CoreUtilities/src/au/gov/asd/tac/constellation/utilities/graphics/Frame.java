@@ -93,9 +93,7 @@ public final class Frame implements Serializable {
     }
 
     public Vector3f getOrigin() {
-        final Vector3f v = new Vector3f(origin);
-
-        return v;
+        return new Vector3f(origin);
     }
 
     public void setForwardVector(final Vector3f point) {
@@ -111,9 +109,7 @@ public final class Frame implements Serializable {
     }
 
     public Vector3f getForwardVector() {
-        final Vector3f v = new Vector3f(forward);
-
-        return v;
+        return new Vector3f(forward);
     }
 
     public void setUpVector(final Vector3f point) {
@@ -129,9 +125,7 @@ public final class Frame implements Serializable {
     }
 
     public Vector3f getUpVector() {
-        final Vector3f v = new Vector3f(up);
-
-        return v;
+        return new Vector3f(up);
     }
 
     public void getXAxis(final Vector3f vector) {
@@ -246,7 +240,7 @@ public final class Frame implements Serializable {
         matrix.a[11] = 0;
 
         // Translation (already done)
-        if (rotationOnly == true) {
+        if (rotationOnly) {
             matrix.a[12] = 0.0f;
             matrix.a[13] = 0.0f;
             matrix.a[14] = 0.0f;

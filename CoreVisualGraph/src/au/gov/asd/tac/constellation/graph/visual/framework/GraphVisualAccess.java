@@ -148,8 +148,7 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public List<VisualChange> getIndigenousChanges() {
-        final List<VisualChange> internalChangeList = update(true);
-        return internalChangeList;
+        return update(true);
     }
 
     @Override

@@ -98,8 +98,6 @@ public class SpectralArranger implements Arranger {
 
     }
 
-    ;
-
     private static class GetTrussResultHandler implements KTrussResultHandler {
 
         private final Set<Integer> verticesInHighestTruss = new HashSet<>();
@@ -168,10 +166,10 @@ public class SpectralArranger implements Arranger {
         final int radiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         // Position vertices in the most interconnected truss by their spectra.
-        for (int positionedVert : vertexToCoordinates.keySet()) {
-            wg.setDoubleValue(xAttr, positionedVert, vertexToCoordinates.get(positionedVert)[0]);
-            wg.setDoubleValue(yAttr, positionedVert, vertexToCoordinates.get(positionedVert)[1]);
-            wg.setDoubleValue(zAttr, positionedVert, 0);
+        for (final Map.Entry<Integer, double[]> entry : vertexToCoordinates.entrySet()) {
+            wg.setDoubleValue(xAttr, entry.getKey(), entry.getValue()[0]);
+            wg.setDoubleValue(yAttr, entry.getKey(), entry.getValue()[1]);
+            wg.setDoubleValue(zAttr, entry.getKey(), 0);
         }
 
         // Position all the other vertices at a level (z-position) corresponding to their distance from the most interconnected truss, and at the centre (x,y-position) of their neighbours on the level above them.

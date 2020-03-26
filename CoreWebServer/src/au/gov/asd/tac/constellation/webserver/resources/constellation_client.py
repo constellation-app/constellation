@@ -611,6 +611,16 @@ class Constellation:
 
         return self.call_service('list_plugins', args={'alias':alias}).json()
 
+    def describe_plugin(self, plugin_name):
+        """Describe the specified plugin.
+
+        :param plugin_name: The name of the plugin to describe.
+
+        :returns: A dictionary describing the named CONSTELLATION plugin.
+        """
+
+        return self.call_service('get_plugin_description', args={'plugin_name':plugin_name}).json()
+
     def list_graphs(self):
         """List the open graphs."""
 
@@ -732,11 +742,11 @@ def nx_from_dataframe(df, g=None, src_col=None, dst_col=None):
     SID = 'source.[id]'
     DID = 'destination.[id]'
 
-    for i in range(len(df)):
-        row = df.iloc[i]
+    for ix in df.index:
+        row = df.iloc[ix]
         sid = row[SID]
         did = row[DID]
-        if np.isnan(did):
+        if did is None:
             # This is a singleton.
             #
             if src_col:
@@ -763,9 +773,9 @@ def get_nx_pos(g):
     The returned dictionary is suitable to pass to networkx.draw(g, pos)."""
 
     pos = {}
-    for n in g.nodes():
-        x = g.node[n]['x']
-        y = g.node[n]['y']
+    for n in g.nodes:
+        x = g.nodes[n]['x']
+        y = g.nodes[n]['y']
         pos[n] = x, y
 
     return pos

@@ -545,8 +545,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         if ((line != -1)
                 && (((cookie = dataObject.getCookie(cookieClass = EditorCookie.Observable.class)) != null)
                 || ((cookie = dataObject.getCookie(cookieClass = EditorCookie.class)) != null))) {
-            boolean ret = openByCookie(cookie, cookieClass, line);
-            return ret;
+            return openByCookie(cookie, cookieClass, line);
         }
 
         /* Attempt to open the DataObject using its default action */

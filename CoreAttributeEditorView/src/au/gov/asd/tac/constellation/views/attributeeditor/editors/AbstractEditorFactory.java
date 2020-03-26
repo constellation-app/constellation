@@ -51,7 +51,7 @@ public abstract class AbstractEditorFactory<V> {
 
     public abstract AbstractEditor<V> createEditor(final EditOperation editOperation, final DefaultGetter<V> defaultGetter, final ValueValidator<V> validator, final String editedItemName, final V initialValue);
 
-    public static abstract class AbstractEditor<V> {
+    public abstract static class AbstractEditor<V> {
 
         private static final String HEADING_DEFAULT_STYLE = "header";
         protected static final String NO_VALUE_LABEL = "No Value";

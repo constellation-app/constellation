@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.LookupEvent;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -56,10 +55,5 @@ public class MenuSetDrawModeAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         menuButton.setSelected(VisualGraphUtilities.getIsDrawingMode(getContext().getGraph()));
-    }
-
-    @Override
-    public void resultChanged(final LookupEvent le) {
-        super.resultChanged(le);
     }
 }

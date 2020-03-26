@@ -155,7 +155,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
         BIN_CALENDAR_UNITS.put("Month", Calendar.MONTH);
         BIN_CALENDAR_UNITS.put("Year", Calendar.YEAR);
     }
-    ;
 
     // Quick and dirty way of mapping existing nodeid + layer number to new nodeid.
     private final HashMap<String, Integer> nodeDups = new HashMap<>();
@@ -592,7 +591,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
                 final float convUnit = dtg.get(unit);
-                final float layer = ((convUnit / maxUnit));
+                final float layer = convUnit / maxUnit;
                 if (transactionLayers.containsKey(layer)) {
                     transactionLayers.get(layer).add(txId);
                 } else {
@@ -685,9 +684,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             graph.setIntValue(nodeAttr, dupNodeId, nodeId);
         }
 
-        final int dupId = nodeDups.get(key);
-
-        return dupId;
+        return nodeDups.get(key);
     }
 
     private void copyAttributes(final GraphWriteMethods graph, final int fromId, final int toId, final GraphElementType type) {

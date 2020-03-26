@@ -154,7 +154,7 @@ public class CompositeNodeState {
      * @throws IllegalArgumentException If there is an issue with building the
      * JSON from this state.
      */
-    public String convertToString() throws IllegalArgumentException {
+    public String convertToString() {
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             try (final JsonGenerator jg = new JsonFactory().createGenerator(outputStream)) {
@@ -214,7 +214,7 @@ public class CompositeNodeState {
      * @throws IllegalArgumentException If there is an issue with reading the
      * JSON.
      */
-    public static CompositeNodeState createFromString(final String s) throws IllegalArgumentException {
+    public static CompositeNodeState createFromString(final String s) {
 
         if (s == null || s.isEmpty()) {
             return null;

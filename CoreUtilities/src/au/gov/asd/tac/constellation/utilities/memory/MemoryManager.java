@@ -73,9 +73,7 @@ public class MemoryManager {
         }
 
         synchronized (LISTENERS) {
-            LISTENERS.stream().forEach((listener) -> {
-                listener.newObject(c);
-            });
+            LISTENERS.stream().forEach(listener -> listener.newObject(c));
         }
     }
 
@@ -96,9 +94,7 @@ public class MemoryManager {
         }
 
         synchronized (LISTENERS) {
-            LISTENERS.stream().forEach((listener) -> {
-                listener.finalizeObject(c);
-            });
+            LISTENERS.stream().forEach(listener -> listener.finalizeObject(c));
         }
     }
 
@@ -111,8 +107,7 @@ public class MemoryManager {
      */
     public static Map<Class<?>, ClassStats> getObjectCounts() {
         synchronized (OBJECT_COUNTS) {
-            Map<Class<?>, ClassStats> counts = new HashMap<>(OBJECT_COUNTS);
-            return counts;
+            return new HashMap<>(OBJECT_COUNTS);
         }
     }
 

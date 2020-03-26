@@ -211,7 +211,7 @@ public final class TableState {
         final int tableStateAttr = rg.getAttribute(GraphElementType.META, getAttrLabel(elementType));
         if (tableStateAttr != Graph.NOT_FOUND) {
             final Object o = rg.getObjectValue(tableStateAttr, 0);
-            if (o != null && o instanceof TableState) {
+            if (o instanceof TableState) {
                 return (TableState) o;
             }
         }

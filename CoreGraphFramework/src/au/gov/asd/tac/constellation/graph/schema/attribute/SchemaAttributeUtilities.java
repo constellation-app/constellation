@@ -74,7 +74,7 @@ public class SchemaAttributeUtilities {
             case TRANSACTION:
                 return Collections.unmodifiableCollection(SCHEMA_TRANSACTION_ATTRIBUTES);
             default:
-                return Collections.EMPTY_SET;
+                return Collections.emptySet();
         }
     }
 

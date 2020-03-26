@@ -124,7 +124,7 @@ public class ImportDelimitedIO {
             final ArrayNode definitionArray = rootNode.putArray(DEFINITIONS);
             final List<ImportDefinition> definitions = importController.getDefinitions();
             final String[] columns = importController.getCurrentColumns();
-            definitions.stream().forEach((impdef) -> {
+            definitions.stream().forEach(impdef -> {
                 final ObjectNode def = definitionArray.addObject();
 
                 def.put(FIRST_ROW, impdef.getFirstRow());
@@ -148,7 +148,7 @@ public class ImportDelimitedIO {
                 for (final AttributeType attrType : AttributeType.values()) {
                     final ArrayNode typeArray = attrDefs.putArray(attrType.name());
                     final List<ImportAttributeDefinition> iadefs = impdef.getDefinitions(attrType);
-                    iadefs.stream().forEach((iadef) -> {
+                    iadefs.stream().forEach(iadef -> {
                         if (hasSavableAttribute(iadef)) {
                             final ObjectNode type = typeArray.addObject();
 
@@ -246,7 +246,7 @@ public class ImportDelimitedIO {
                     final boolean schemaInit = source.get(SCHEMA_INIT).booleanValue();
                     importController.setSchemaInitialised(schemaInit);
 
-                    final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) == null ? false : source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
+                    final boolean showAllSchemaAttributes = source.get(SHOW_ALL_SCHEMA_ATTRIBUTES) != null && source.get(SHOW_ALL_SCHEMA_ATTRIBUTES).booleanValue();
                     importController.setShowAllSchemaAttributes(showAllSchemaAttributes);
 
                     final String destination = source.get(DESTINATION).textValue();

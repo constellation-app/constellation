@@ -80,6 +80,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -169,7 +170,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
 //    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
-    final private TooltipPane tooltipPane = new TooltipPane();
+    private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
         MenuItem copyItem = new MenuItem("Copy");
@@ -585,12 +586,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         // the one the Node has by default, and the one we added to the AttributeTitledPane.
         // We'll consume the context menu event so it doesn't bubble up to the TitledPane.
         // Ditto for the button.
-        attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, (eventHandler) -> {
-            eventHandler.consume();
-        });
-        editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, (eventHandler) -> {
-            eventHandler.consume();
-        });
+        attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
+        editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
         //Title
         ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
@@ -739,16 +736,14 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
         AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(dataType);
         StringBuilder buffer = new StringBuilder();
-        selectedItems.stream().map((item) -> {
+        selectedItems.stream().map(item -> {
             if (item == null) {
                 buffer.append("<No Value>");
             } else {
                 buffer.append(interaction.getDisplayText(item));
             }
             return item;
-        }).forEach((_item) -> {
-            buffer.append("\n");
-        });
+        }).forEach(_item -> buffer.append("\n"));
 
         ClipboardUtilities.copyToClipboard(buffer.toString());
     }
@@ -868,9 +863,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     private void updateTimeZoneAction(final AttributeData attr) {
-        final EditOperation editOperation = (zoneId) -> {
-            PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        };
+        final EditOperation editOperation = zoneId -> 
+                PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
         final AbstractEditor editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
@@ -1062,9 +1056,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
         //Title
-        final Text attributeTitleText = new Text(attributeTitle + ":");
+        return new Text(attributeTitle + ":");
 //        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
-        return attributeTitleText;
     }
 
 }
