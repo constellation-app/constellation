@@ -48,7 +48,8 @@ public class ThreadConstraints {
     public static ThreadConstraints getConstraints() {
         ThreadConstraints constraints = THREAD_LOCAL.get();
         if (constraints == null) {
-            THREAD_LOCAL.set(constraints = new ThreadConstraints());
+            constraints = new ThreadConstraints();
+            THREAD_LOCAL.set(constraints);
         }
         return constraints;
     }

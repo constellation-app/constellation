@@ -172,8 +172,8 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         } else {
             totalRadius = 0f;
         }
-
-        return radii[vertex] = totalRadius + 2;
+        radii[vertex] = totalRadius + 2;
+        return radii[vertex];
     }
 
     private void offset(final GraphWriteMethods graph, final int vertex, final int[][] children, final float x, final float y, final float z) {
