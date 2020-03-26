@@ -123,34 +123,40 @@ public class IdValueUpdater3 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentId += edit.byteStack[edit.bytePointer++];
+                edit.currentId += edit.getByteStack()[edit.getBytePointer()];
+                edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentId -= edit.byteStack[--edit.bytePointer];
+                edit.setBytePointer(edit.getBytePointer() - 1);
+                edit.currentId -= edit.getByteStack()[edit.getBytePointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentId += edit.shortStack[edit.shortPointer++];
+                edit.currentId += edit.getShortStack()[edit.getShortPointer()];
+                edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentId -= edit.shortStack[--edit.shortPointer];
+                edit.setShortPointer(edit.getShortPointer() - 1);
+                edit.currentId -= edit.getShortStack()[edit.getShortPointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentId += edit.intStack[edit.intPointer++];
+                edit.currentId += edit.getIntStack()[edit.getIntPointer()];
+                edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentId -= edit.intStack[--edit.intPointer];
+                edit.setIntPointer(edit.getIntPointer() - 1);
+                edit.currentId -= edit.getIntStack()[edit.getIntPointer()];
             }
         }
     };

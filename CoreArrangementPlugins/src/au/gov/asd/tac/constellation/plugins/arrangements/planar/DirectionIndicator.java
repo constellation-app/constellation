@@ -21,8 +21,8 @@ package au.gov.asd.tac.constellation.plugins.arrangements.planar;
  */
 class DirectionIndicator {
 
-    public boolean reversed;
-    public final int number;
+    private boolean reversed;
+    private final int number;
 
     public DirectionIndicator(final int number, final boolean reversed) {
         this.number = number;
@@ -33,4 +33,11 @@ class DirectionIndicator {
         reversed = !reversed;
     }
 
+    public boolean isReversed() {
+        return reversed;
+    }
+
+    public int getNumber() {
+        return number;
+    }   
 }

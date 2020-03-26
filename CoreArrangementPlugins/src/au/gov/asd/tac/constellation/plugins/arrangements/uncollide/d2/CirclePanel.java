@@ -91,7 +91,7 @@ public final class CirclePanel extends JPanel {
             final float r = orb.r;
             final int d = Math.round(2 * r);
             g2d.setColor(c);
-            g2d.fillOval(Math.round(orb.x - r), Math.round(orb.y - r), d, d);
+            g2d.fillOval(Math.round(orb.getX() - r), Math.round(orb.getY() - r), d, d);
         }
 
         if (boxes != null) {

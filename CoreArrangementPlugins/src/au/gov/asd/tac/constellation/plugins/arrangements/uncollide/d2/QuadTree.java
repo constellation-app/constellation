@@ -120,18 +120,18 @@ public class QuadTree {
         final double midy = box.miny + ((box.maxy - box.miny) / 2f);
 
         // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = orb.y + orb.r < midy;
-        final boolean bottomQuadrant = orb.y - orb.r > midy;
+        final boolean topQuadrant = orb.getY() + orb.r < midy;
+        final boolean bottomQuadrant = orb.getY() - orb.r > midy;
 
         // Object can completely fit within the left quadrants.
-        if (orb.x + orb.r < midx) {
+        if (orb.getX() + orb.r < midx) {
             if (topQuadrant) {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
             }
         } // Object can completely fit within the right quadrants.
-        else if (orb.x - orb.r > midx) {
+        else if (orb.getX() - orb.r > midx) {
             if (topQuadrant) {
                 index = TOP_R;
             } else if (bottomQuadrant) {
@@ -211,8 +211,8 @@ public class QuadTree {
         int collided = 0;
         for (final Orb2D possible : possibles) {
             if (orb != possible) {
-                float x = orb.x - possible.x;
-                float y = orb.y - possible.y;
+                float x = orb.getX() - possible.getX();
+                float y = orb.getY() - possible.getY();
                 final double ll = x * x + y * y;
                 final double r = possible.r + orb.r + padding;
                 if (ll <= r * r) {
@@ -225,10 +225,10 @@ public class QuadTree {
                     y += perturbation;
                     perturbation = -perturbation;
 //                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
-                    orb.x -= x;
-                    orb.y -= y;
-                    possible.x += x;
-                    possible.y += y;
+                    orb.setX(orb.getX() - x);
+                    orb.setY(orb.getY() - y);
+                    possible.setX(possible.getX() + x);
+                    possible.setY(possible.getY() + y);
                 }
             }
         }

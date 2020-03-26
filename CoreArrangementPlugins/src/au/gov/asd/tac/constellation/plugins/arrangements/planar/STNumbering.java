@@ -42,16 +42,17 @@ public class STNumbering {
     public static class TreeNode {
 
         public final int vxID;
-        public TreeNode parent;
-        public int vLow;
-        public int preorder;
+        private TreeNode parent;
+        private int vLow;
+        private int preorder;
         public final Set<TreeNode> children;
         public final Set<TreeNode> descendants;
         public final Set<TreeNode> ancestors;
         public final Set<TreeNode> defactoPendants;
         public final Set<Integer> pendants;
-        public Set<TreeNode> componentNeighours = null;
-        public boolean old = false;
+        private Set<TreeNode> componentNeighours = null;
+        //TODO: Determine whether this is still required
+        private boolean old = false;
 
         public TreeNode(final int vxID) {
             this(vxID, null);

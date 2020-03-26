@@ -1047,9 +1047,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
      */
     private static class GraphState {
 
-        public boolean queriesRunning = false;
-        public boolean goButtonIsGo = true;
-        public Map<Future<?>, String> runningPlugins = new HashMap<>();
+        private boolean queriesRunning = false;
+        private boolean goButtonIsGo = true;
+        private Map<Future<?>, String> runningPlugins = new HashMap<>();
     }
 
 }

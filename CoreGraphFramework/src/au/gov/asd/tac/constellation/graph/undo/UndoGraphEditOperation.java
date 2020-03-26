@@ -41,12 +41,12 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.setPrimaryKey(GraphElementType.values()[state.currentAttribute], (int[]) state.objectStack[state.currentObject]);
+            graph.setPrimaryKey(GraphElementType.values()[state.currentAttribute], (int[]) state.getObjectStack()[state.currentObject]);
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.setPrimaryKey(GraphElementType.values()[state.currentAttribute], (int[]) state.objectStack[state.currentId]);
+            graph.setPrimaryKey(GraphElementType.values()[state.currentAttribute], (int[]) state.getObjectStack()[state.currentId]);
         }
 
         @Override
@@ -350,7 +350,7 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
-            Object[] params = (Object[]) state.objectStack[state.currentObject];
+            Object[] params = (Object[]) state.getObjectStack()[state.currentObject];
             graph.addAttribute((GraphElementType) params[0], (String) params[1], (String) params[2], (String) params[3], params[4], (String) params[5]);
         }
 
@@ -388,7 +388,7 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            Object[] params = (Object[]) state.objectStack[state.currentObject];
+            Object[] params = (Object[]) state.getObjectStack()[state.currentObject];
             graph.addAttribute((GraphElementType) params[0], (String) params[1], (String) params[2], (String) params[3], params[4], (String) params[5]);
         }
 
@@ -416,12 +416,12 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeName(state.currentAttribute, (String) state.objectStack[state.currentObject]);
+            graph.updateAttributeName(state.currentAttribute, (String) state.getObjectStack()[state.currentObject]);
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeName(state.currentAttribute, (String) state.objectStack[state.currentInt]);
+            graph.updateAttributeName(state.currentAttribute, (String) state.getObjectStack()[state.currentInt]);
         }
 
         @Override
@@ -451,12 +451,12 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeDescription(state.currentAttribute, (String) state.objectStack[state.currentObject]);
+            graph.updateAttributeDescription(state.currentAttribute, (String) state.getObjectStack()[state.currentObject]);
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeDescription(state.currentAttribute, (String) state.objectStack[state.currentInt]);
+            graph.updateAttributeDescription(state.currentAttribute, (String) state.getObjectStack()[state.currentInt]);
         }
 
         @Override
@@ -486,12 +486,12 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeDefaultValue(state.currentAttribute, state.objectStack[state.currentObject]);
+            graph.updateAttributeDefaultValue(state.currentAttribute, state.getObjectStack()[state.currentObject]);
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.updateAttributeDefaultValue(state.currentAttribute, state.objectStack[state.currentInt]);
+            graph.updateAttributeDefaultValue(state.currentAttribute, state.getObjectStack()[state.currentInt]);
         }
 
         @Override
@@ -862,14 +862,14 @@ public enum UndoGraphEditOperation {
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
             if (VERBOSE) {
-                System.out.println("setObjectValueOperation.execute(" + state.currentAttribute + ", " + state.currentId + ", " + state.objectStack[state.currentObject] + ")");
+                System.out.println("setObjectValueOperation.execute(" + state.currentAttribute + ", " + state.currentId + ", " + state.getObjectStack()[state.currentObject] + ")");
             }
-            graph.setObjectValue(state.currentAttribute, state.currentId, state.objectStack[state.currentObject]);
+            graph.setObjectValue(state.currentAttribute, state.currentId, state.getObjectStack()[state.currentObject]);
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.setObjectValue(state.currentAttribute, state.currentId, state.objectStack[state.currentInt]);
+            graph.setObjectValue(state.currentAttribute, state.currentId, state.getObjectStack()[state.currentInt]);
         }
 
         @Override
@@ -903,9 +903,9 @@ public enum UndoGraphEditOperation {
         @Override
         public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
             if (VERBOSE) {
-                System.out.println("setObjectValueFromNullOperation.execute(" + state.currentAttribute + ", " + state.currentId + ", " + state.objectStack[state.currentObject] + ")");
+                System.out.println("setObjectValueFromNullOperation.execute(" + state.currentAttribute + ", " + state.currentId + ", " + state.getObjectStack()[state.currentObject] + ")");
             }
-            graph.setObjectValue(state.currentAttribute, state.currentId, state.objectStack[state.currentObject]);
+            graph.setObjectValue(state.currentAttribute, state.currentId, state.getObjectStack()[state.currentObject]);
         }
 
         @Override
@@ -948,7 +948,7 @@ public enum UndoGraphEditOperation {
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.setObjectValue(state.currentAttribute, state.currentId, state.objectStack[state.currentObject]);
+            graph.setObjectValue(state.currentAttribute, state.currentId, state.getObjectStack()[state.currentObject]);
         }
 
         @Override
@@ -981,7 +981,7 @@ public enum UndoGraphEditOperation {
             if (VERBOSE) {
                 System.out.println("executeChildOperation.execute(" + state.currentObject + ")");
             }
-            ((GraphEdit) state.objectStack[state.currentObject]).execute(graph);
+            ((GraphEdit) state.getObjectStack()[state.currentObject]).execute(graph);
         }
 
         @Override
@@ -989,7 +989,7 @@ public enum UndoGraphEditOperation {
             if (VERBOSE) {
                 System.out.println("undoChildOperation.execute(" + state.currentObject + ")");
             }
-            ((GraphEdit) state.objectStack[state.currentObject]).undo(graph);
+            ((GraphEdit) state.getObjectStack()[state.currentObject]).undo(graph);
         }
 
         @Override
@@ -1054,7 +1054,7 @@ public enum UndoGraphEditOperation {
             if (VERBOSE) {
                 System.out.println("executeGraphOperation.execute(" + state.currentObject + ")");
             }
-            ((GraphOperation) state.objectStack[state.currentObject]).execute(graph);
+            ((GraphOperation) state.getObjectStack()[state.currentObject]).execute(graph);
         }
 
         @Override
@@ -1062,7 +1062,7 @@ public enum UndoGraphEditOperation {
             if (VERBOSE) {
                 System.out.println("executeGraphOperation.undo(" + state.currentObject + ")");
             }
-            ((GraphOperation) state.objectStack[state.currentObject]).undo(graph);
+            ((GraphOperation) state.getObjectStack()[state.currentObject]).undo(graph);
         }
 
         @Override

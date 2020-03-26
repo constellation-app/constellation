@@ -33,7 +33,7 @@ public class JellyfishGraphBuilder extends GraphBuilder {
         TOWARD_CENTRE(StarGraphBuilder.StarDirection.CENTRE_IS_SINK),
         UNDIRECTED(StarGraphBuilder.StarDirection.UNDIRECTED);
 
-        public StarGraphBuilder.StarDirection starDirection;
+        private final StarGraphBuilder.StarDirection starDirection;
 
         TentacleDirection(final StarGraphBuilder.StarDirection starDirection) {
             this.starDirection = starDirection;

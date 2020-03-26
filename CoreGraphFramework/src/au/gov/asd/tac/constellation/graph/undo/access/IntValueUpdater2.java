@@ -67,34 +67,40 @@ public class IntValueUpdater2 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentInt += edit.byteStack[edit.bytePointer++];
+                edit.currentInt += edit.getByteStack()[edit.getBytePointer()];
+                edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentInt -= edit.byteStack[--edit.bytePointer];
+                edit.setBytePointer(edit.getBytePointer() - 1);
+                edit.currentInt -= edit.getByteStack()[edit.getBytePointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentInt += edit.shortStack[edit.shortPointer++];
+                edit.currentInt += edit.getShortStack()[edit.getShortPointer()];
+                edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentInt -= edit.shortStack[--edit.shortPointer];
+                edit.setShortPointer(edit.getShortPointer() - 1);
+                edit.currentInt -= edit.getShortStack()[edit.getShortPointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentInt += edit.intStack[edit.intPointer++];
+                edit.currentInt += edit.getIntStack()[edit.getIntPointer()];
+                edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentInt -= edit.intStack[--edit.intPointer];
+                edit.setIntPointer(edit.getIntPointer() - 1);
+                edit.currentInt -= edit.getIntStack()[edit.getIntPointer()];
             }
         }
     };

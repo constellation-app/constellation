@@ -314,16 +314,16 @@ public class BubbleTreeArranger implements Arranger {
             }
 
             final BoundingCircle circle = circles.get(i);
-            circle.x = packRadius * Math.cos(angle);
-            circle.y = packRadius * Math.sin(angle);
-            circle.radius = realCircleRadius[i];
+            circle.setX(packRadius * Math.cos(angle));
+            circle.setY(packRadius * Math.sin(angle));
+            circle.setRadius(realCircleRadius[i]);
         }
 
         final BoundingCircle circleH = BoundingCircle.enclosingCircle(circles);
         final double[] relpos = relativePositions[vxId];
-        relpos[2] = -circleH.x;
-        relpos[3] = -circleH.y;
-        relpos[4] = Math.sqrt(circleH.radius * circleH.radius - circleH.y * circleH.y) - Math.abs(circleH.x);
+        relpos[2] = -circleH.getX();
+        relpos[3] = -circleH.getY();
+        relpos[4] = Math.sqrt(circleH.getRadius() * circleH.getRadius() - circleH.getY() * circleH.getY()) - Math.abs(circleH.getX());
 
         // Set relative position of all children
         // according to the centre of the enclosing circle.
@@ -333,11 +333,11 @@ public class BubbleTreeArranger implements Arranger {
 
             final int outVxId = tree.getTransactionDestinationVertex(txId);
             final double[] outrelpos = relativePositions[outVxId];
-            outrelpos[0] = circles.get(position + 1).x - circleH.x;
-            outrelpos[1] = circles.get(position + 1).y - circleH.y;
+            outrelpos[0] = circles.get(position + 1).getX() - circleH.getX();
+            outrelpos[1] = circles.get(position + 1).getY() - circleH.getY();
         }
 
-        return circleH.radius;
+        return circleH.getRadius();
     }
 
     private void calcLayout2(final int vxId, final double[][] relativePositions, final Vector3d enclosingCircleCentre, final Vector3d originalNodePosition) {

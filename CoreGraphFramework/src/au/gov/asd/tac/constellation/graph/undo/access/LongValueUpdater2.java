@@ -67,34 +67,40 @@ public class LongValueUpdater2 implements ValueUpdater64 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {
-                state.currentLong += state.shortStack[state.shortPointer++];
+                state.currentLong += state.getShortStack()[state.getShortPointer()];
+                state.setShortPointer(state.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState state) {
-                state.currentLong -= state.shortStack[--state.shortPointer];
+                state.setShortPointer(state.getShortPointer() - 1);
+                state.currentLong -= state.getShortStack()[state.getShortPointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {
-                state.currentLong += state.intStack[state.intPointer++];
+                state.currentLong += state.getIntStack()[state.getIntPointer()];
+                state.setIntPointer(state.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState state) {
-                state.currentLong -= state.intStack[--state.intPointer];
+                state.setIntPointer(state.getIntPointer() - 1);
+                state.currentLong -= state.getIntStack()[state.getIntPointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {
-                state.currentLong += state.longStack[state.longPointer++];
+                state.currentLong += state.getLongStack()[state.getLongPointer()];
+                state.setLongPointer(state.getLongPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState state) {
-                state.currentLong -= state.longStack[--state.longPointer];
+                state.setLongPointer(state.getLongPointer() - 1);
+                state.currentLong -= state.getLongStack()[state.getLongPointer()];
             }
         }
     };

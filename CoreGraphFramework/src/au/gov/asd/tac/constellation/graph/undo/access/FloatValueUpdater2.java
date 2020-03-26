@@ -67,34 +67,40 @@ public class FloatValueUpdater2 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.byteStack[edit.bytePointer++];
+                edit.currentFloat += edit.getByteStack()[edit.getBytePointer()];
+                edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.byteStack[--edit.bytePointer];
+                edit.setBytePointer(edit.getBytePointer() - 1);
+                edit.currentFloat -= edit.getByteStack()[edit.getBytePointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.shortStack[edit.shortPointer++];
+                edit.currentFloat += edit.getShortStack()[edit.getShortPointer()];
+                edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.shortStack[--edit.shortPointer];
+                edit.setShortPointer(edit.getShortPointer() - 1);
+                edit.currentFloat -= edit.getShortStack()[edit.getShortPointer()];
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.intStack[edit.intPointer++];
+                edit.currentFloat += edit.getIntStack()[edit.getIntPointer()];
+                edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.intStack[--edit.intPointer];
+                edit.setIntPointer(edit.getIntPointer() - 1);
+                edit.currentFloat -= edit.getIntStack()[edit.getIntPointer()];
             }
         }
     };
