@@ -165,10 +165,8 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
                 }
             }
 
-            if (elementType == GraphElementType.VERTEX) {
-                if (includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
-                    labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
-                }
+            if (elementType == GraphElementType.VERTEX && includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
+                labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
             }
 
             if (elementType == GraphElementType.TRANSACTION) {

@@ -22,9 +22,9 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import java.util.ArrayList;
@@ -133,9 +133,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             state = updateQualityControlState(null);
         }
 
-        listeners.stream().forEach((listener) -> {
-            listener.qualityControlChanged(state);
-        });
+        listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
     }
 
     /**
@@ -178,7 +176,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                     }
 
                     // Set up and run each rule.
-                    if (vertexList.size() > 0) {
+                    if (!vertexList.isEmpty()) {
                         for (final QualityControlRule rule : getRules()) {
                             rule.clearResults();
                             rule.executeRule(graph, vertexList);
@@ -195,6 +193,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                 countDownLatch.await();
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             }
         }
 
@@ -266,7 +265,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      *
      * @return singleton instance of QualityControlAutoVetter
      */
-    public synchronized static QualityControlAutoVetter getInstance() {
+    public static synchronized QualityControlAutoVetter getInstance() {
         if(INSTANCE == null){
             INSTANCE = new QualityControlAutoVetter();
         }

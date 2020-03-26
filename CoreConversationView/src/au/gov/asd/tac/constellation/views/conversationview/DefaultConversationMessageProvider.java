@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.views.conversationview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
 import java.util.List;
 import javax.swing.SwingUtilities;
 
@@ -68,7 +68,8 @@ public class DefaultConversationMessageProvider implements ConversationMessagePr
             int transactionCount = 0;
             int[] transactionPositions = new int[graph.getTransactionCount()];
 
-            int vertexA = -1, vertexB = -1;
+            int vertexA = -1;
+            int vertexB = -1;
             int transaction = transactionResult.getNextElement();
             while (transaction != Graph.NOT_FOUND) {
                 if (graph.getTransactionDirection(transaction) != Graph.FLAT) {

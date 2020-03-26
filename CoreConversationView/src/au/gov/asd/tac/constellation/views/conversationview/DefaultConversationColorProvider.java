@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,8 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
                     case RIGHT:
                         colorPositions[senderPosition] = rightVertexCount--;
                         break;
+                    default:
+                        break;
                 }
             }
         }
@@ -86,7 +88,8 @@ public class DefaultConversationColorProvider implements ConversationColorProvid
 
     private class DefaultConversationColor implements ConversationColor {
 
-        private final float saturation, brightness;
+        private final float saturation;
+        private final float brightness;
 
         private int hue = 0;
         private int total = 1;

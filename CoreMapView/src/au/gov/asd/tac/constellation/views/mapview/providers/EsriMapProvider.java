@@ -77,7 +77,7 @@ public abstract class EsriMapProvider extends MapProvider {
         }
 
         if (url == null || url.isEmpty()) {
-            LOGGER.log(Level.WARNING, "Tile URL, %s, is invalid", url);
+            LOGGER.log(Level.WARNING, "Tile URL, {0}, is invalid", url);
         }
 
         return new String[]{url};

@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.file;
 
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.OpenFileDialogFilter;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

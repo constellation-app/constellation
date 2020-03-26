@@ -35,7 +35,7 @@ import org.openide.windows.TopComponent;
 )
 @TopComponent.Description(
         preferredID = "MemoryManagerTopComponent",
-        //iconBase="SET/PATH/TO/ICON/HERE",
+        iconBase = "au/gov/asd/tac/constellation/testing/memory/resources/memory-manager.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(

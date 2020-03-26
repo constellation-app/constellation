@@ -15,23 +15,23 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.IntegerParameterType.IntegerParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.DefaultIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.IconManager;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -55,6 +55,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_SIZE_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_size");
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
+    
+    private final Random r = new Random();
 
     @Override
     public String getDescription() {
@@ -99,7 +101,6 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         final int backboneDensity = params.get(BACKBONE_DENSITY_PARAMETER_ID).getIntegerValue();
         final int radiusFactor = params.get(RADIUS).getIntegerValue();
 
-        final Random r = new Random();
         long dt = new Date().getTime();
 
         //        InputOutput io = IOProvider.getDefault().getIO("Structured Graph", false);
@@ -136,7 +137,10 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setObjectValue(vxColorAttr, nodeId, randomColorWithAlpha(r));
             graph.setFloatValue(vxVisibilityAttr, nodeId, 1.0f);
 
-            float x, y, z, length;
+            float x;
+            float y;
+            float z;
+            float length;
             do {
                 x = r.nextFloat() * 2 - 1;
                 y = r.nextFloat() * 2 - 1;
@@ -228,11 +232,11 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        int selectedPosition = (int) (Math.random() * backboneVertexCount);
+        int selectedPosition = r.nextInt(backboneVertexCount);
         int selectedVertex = graph.getVertex(selectedPosition);
         graph.setBooleanValue(vxSelectedAttr, selectedVertex, true);
 
-        PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
 
     }
@@ -250,6 +254,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
                 transaction = graph.addTransaction(source, destination, false);
                 break;
             default:
+                break;
         }
 
         graph.setLongValue(attrTxDatetime, transaction, dt++);

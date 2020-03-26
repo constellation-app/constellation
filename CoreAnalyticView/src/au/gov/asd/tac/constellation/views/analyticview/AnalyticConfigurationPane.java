@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,16 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
@@ -105,7 +105,7 @@ public class AnalyticConfigurationPane extends VBox {
         createGlobalParameters();
 
         // set up the list of available analytic plugins
-        Lookup.getDefault().lookupAll(AnalyticPlugin.class).forEach((plugin) -> {
+        Lookup.getDefault().lookupAll(AnalyticPlugin.class).forEach(plugin -> {
             final SelectableAnalyticPlugin selectablePlugin = new SelectableAnalyticPlugin(plugin);
             SELECTABLE_PLUGINS.add(selectablePlugin);
             PLUGIN_TO_SELECTABLE_PLUGIN_MAP.put(plugin, selectablePlugin);
@@ -185,8 +185,8 @@ public class AnalyticConfigurationPane extends VBox {
             return question1.getName().compareToIgnoreCase(question2.getName());
         });
         questionList.getItems().addAll(questions);
-        questionList.setCellFactory((ListView<AnalyticQuestionDescription> list) -> {
-            ListCell<AnalyticQuestionDescription> cell = new ListCell<AnalyticQuestionDescription>() {
+        questionList.setCellFactory(list -> {
+            return new ListCell<AnalyticQuestionDescription>() {
 
                 @Override
                 protected void updateItem(final AnalyticQuestionDescription item, final boolean empty) {
@@ -194,12 +194,11 @@ public class AnalyticConfigurationPane extends VBox {
                     setText(item == null ? "" : item.getName());
                 }
             };
-            return cell;
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             Platform.runLater(() -> {
                 currentQuestion = newValue;
-                SingleChoiceParameterType.getOptionsData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID)).forEach((aggregatorParameterValue) -> {
+                SingleChoiceParameterType.getOptionsData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID)).forEach(aggregatorParameterValue -> {
                     if (((AnalyticAggregatorParameterValue) aggregatorParameterValue).getObjectValue().getClass().equals(currentQuestion.getAggregatorType())) {
                         SingleChoiceParameterType.setChoiceData((PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID), (AnalyticAggregatorParameterValue) aggregatorParameterValue);
                     }
@@ -244,8 +243,8 @@ public class AnalyticConfigurationPane extends VBox {
 
         // set up the list of analytic plugins
         this.pluginList = new ListView();
-        pluginList.setCellFactory((ListView<SelectableAnalyticPlugin> selectableAnalytics) -> {
-            ListCell<SelectableAnalyticPlugin> cell = new ListCell<SelectableAnalyticPlugin>() {
+        pluginList.setCellFactory(selectableAnalytics -> {
+            return new ListCell<SelectableAnalyticPlugin>() {
 
                 @Override
                 protected void updateItem(final SelectableAnalyticPlugin item, final boolean empty) {
@@ -260,7 +259,6 @@ public class AnalyticConfigurationPane extends VBox {
                     }
                 }
             };
-            return cell;
         });
         pluginList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (!selectionSuppressed) {
@@ -320,6 +318,7 @@ public class AnalyticConfigurationPane extends VBox {
         } catch (InterruptedException ex) {
             this.documentationView = null;
             documentationTab.setContent(null);
+            Thread.currentThread().interrupt();
         }
 
         // build the pane holding the parameters and documentation tabs
@@ -381,7 +380,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         // add and set parameters for each plugin in the question
         final List<SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
-        pluginList.getItems().forEach((selectablePlugin) -> {
+        pluginList.getItems().forEach(selectablePlugin -> {
             if (selectablePlugin.checkbox.isSelected()) {
                 selectedPlugins.add(selectablePlugin);
                 question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());
@@ -426,7 +425,7 @@ public class AnalyticConfigurationPane extends VBox {
             stateChanged = false;
             if (categoryListPane.isExpanded()) {
                 final List<SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
-                pluginList.getItems().forEach((selectablePlugin) -> {
+                pluginList.getItems().forEach(selectablePlugin -> {
                     if (selectablePlugin.isSelected()) {
                         selectedPlugins.add(selectablePlugin);
                     }
@@ -494,7 +493,7 @@ public class AnalyticConfigurationPane extends VBox {
     private void setPluginsFromSelectedQuestion() {
         final List<SelectableAnalyticPlugin> questionPlugins = new ArrayList<>();
         final AnalyticQuestionDescription selectedQuestion = questionList.getSelectionModel().getSelectedItem();
-        SELECTABLE_PLUGINS.forEach((selectablePlugin) -> {
+        SELECTABLE_PLUGINS.forEach(selectablePlugin -> {
             if (selectedQuestion != null && selectedQuestion.getPluginClasses().contains(selectablePlugin.plugin.getClass())) {
                 questionPlugins.add(selectablePlugin);
             }
@@ -572,12 +571,12 @@ public class AnalyticConfigurationPane extends VBox {
             this.plugin = plugin;
             this.parameters = new PluginParameters();
             parameters.addGroup(GLOBAL_PARAMS_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout(GLOBAL_PARAMS_GROUP, 14, false));
-            globalAnalyticParameters.getParameters().values().forEach((parameter) -> {
+            globalAnalyticParameters.getParameters().values().forEach(parameter -> {
                 parameters.addParameter(parameter, GLOBAL_PARAMS_GROUP);
             });
             final String parameterSpecificGroupName = plugin.getName() + " Parameters";
             parameters.addGroup(parameterSpecificGroupName, new PluginParametersPane.TitledSeparatedParameterLayout(parameterSpecificGroupName, 14, false));
-            plugin.createParameters().getParameters().values().forEach((parameter) -> {
+            plugin.createParameters().getParameters().values().forEach(parameter -> {
                 parameters.addParameter(parameter, parameterSpecificGroupName);
             });
             plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), parameters);
@@ -606,7 +605,7 @@ public class AnalyticConfigurationPane extends VBox {
 
         public final PluginParameters getPluginSpecificParameters() {
             PluginParameters pluginParameters = new PluginParameters();
-            parameters.getParameters().entrySet().forEach((parameter) -> {
+            parameters.getParameters().entrySet().forEach(parameter -> {
                 if (!globalAnalyticParameters.hasParameter(parameter.getKey())) {
                     pluginParameters.addParameter(parameter.getValue());
                 }
@@ -696,7 +695,7 @@ public class AnalyticConfigurationPane extends VBox {
                 analyticConfigurationPane.saveState();
             }
             
-            // Utilized for Question pane - TODO: When multiple tabs + saving of
+            // Utilized for Question pane - TODO: when multiple tabs + saving of
             // questions is supported, link this currentquestion variable with 
             // the saved/loaded question
             analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null :

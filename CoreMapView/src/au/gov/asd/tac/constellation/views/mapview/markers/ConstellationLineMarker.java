@@ -93,10 +93,7 @@ public class ConstellationLineMarker extends ConstellationAbstractMarker {
         if (!Objects.equals(this.getLocations(), other.getLocations())) {
             return false;
         }
-        if (!Objects.equals(this.getProperties(), other.getProperties())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getProperties(), other.getProperties());
     }
 
     @Override

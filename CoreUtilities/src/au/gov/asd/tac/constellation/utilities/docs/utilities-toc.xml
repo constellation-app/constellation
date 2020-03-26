@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
+    <tocitem text="Graph" mergetype="javax.help.SortMerge">
+        <tocitem text="Visualisation" mergetype="javax.help.SortMerge">
+            <tocitem text="Decorators" target="au.gov.asd.tac.constellation.utilities.decorators"/>
+            <tocitem text="Icons" target="au.gov.asd.tac.constellation.utilities.icons"/>
+        </tocitem>
+    </tocitem>
     <tocitem text="Jupyter">
         <tocitem text="About Jupyter Notebook server" target="au.gov.asd.tac.constellation.utilities.jupyter"/>
         <tocitem text="About the CONSTELLATION REST Server" target="au.gov.asd.tac.constellation.utilities.rest"/>

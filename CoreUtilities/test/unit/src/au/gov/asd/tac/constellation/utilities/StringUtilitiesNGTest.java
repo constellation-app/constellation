@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.util.Arrays;
 import java.util.List;
 import static org.testng.Assert.assertEquals;

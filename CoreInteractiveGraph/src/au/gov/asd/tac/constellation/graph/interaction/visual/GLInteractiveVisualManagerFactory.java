@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.GraphVisualManagerFactory;
+import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.visual.display.GraphVisualAccess;
+import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualManager;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -48,15 +48,15 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         final InteractiveGLVisualProcessor processor = new InteractiveGLVisualProcessor(prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT), prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT));
         final VisualManager manager = new VisualManager(access, processor);
-        final GraphChangeListener changeDetector = (event) -> manager.updateFromIndigenousChanges();
+        final GraphChangeListener changeDetector = event -> manager.updateFromIndigenousChanges();
         final DefaultInteractionEventHandler eventHandler = new DefaultInteractionEventHandler(graph, manager, processor, processor);
-        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
 
+        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
         graph.addGraphChangeListener(changeDetector);
         changeDetector.graphChanged(null);
         processor.startVisualising(manager);
         processor.setEventHandler(eventHandler);
+        
         return manager;
     }
-
 }

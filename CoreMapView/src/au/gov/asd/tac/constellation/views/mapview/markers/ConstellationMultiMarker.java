@@ -232,10 +232,7 @@ public class ConstellationMultiMarker extends ConstellationAbstractMarker {
         if (!Objects.equals(this.getProperties(), other.getProperties())) {
             return false;
         }
-        if (!Objects.equals(this.getMarkers(), other.getMarkers())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getMarkers(), other.getMarkers());
     }
 
     @Override

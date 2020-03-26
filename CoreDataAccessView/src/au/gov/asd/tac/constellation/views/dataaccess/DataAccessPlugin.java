@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess;
 
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
+import au.gov.asd.tac.constellation.plugins.Plugin;
 
 /**
  * A data access plugin should appear in the data access panel.

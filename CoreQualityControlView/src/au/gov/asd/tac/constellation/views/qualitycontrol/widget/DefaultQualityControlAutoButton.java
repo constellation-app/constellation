@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol.widget;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.javafx.JavafxStyleManager;
 import javafx.application.Platform;
 import javafx.scene.control.Tooltip;
 import javax.swing.SwingUtilities;
@@ -49,7 +49,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
 
-        setOnAction((value) -> {
+        setOnAction(value -> {
             SwingUtilities.invokeLater(() -> {
                 final TopComponent qualityControlView = WindowManager.getDefault().findTopComponent(QualityControlViewTopComponent.class.getSimpleName());
                 if (qualityControlView != null) {

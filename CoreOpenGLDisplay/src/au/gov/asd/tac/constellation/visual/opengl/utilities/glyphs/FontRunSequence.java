@@ -114,7 +114,7 @@ class FontRunSequence {
             offset += cc;
         }
 
-        // TODO: Fix non-displayable codepoints when a font doesn't exist.
+        // TODO: fix non-displayable codepoints when a font doesn't exist.
         // Add the end of the final run.
         final String t = s.substring(start, length);
         frs.add(new FontRunSequence(t, fontsInfo[currFontIx].font));

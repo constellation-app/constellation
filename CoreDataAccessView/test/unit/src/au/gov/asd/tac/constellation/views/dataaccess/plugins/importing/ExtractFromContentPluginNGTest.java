@@ -17,21 +17,12 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.schema.analyticschema.AnalyticSchemaFactory;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.ContentConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.CASE_INSENSITIVE_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.MIN_WORD_LENGTH_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.REMOVE_SPECIAL_CHARS_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.SCHEMA_TYPES_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.WHOLE_WORDS_ONLY_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -92,7 +83,7 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "word");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
                 .executeNow(graph);
 
         // Assert that there are now 3 nodes on the graph and one of them has the name word and type Word
@@ -124,8 +115,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "#Word1 #Word2");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(WORDS_PARAMETER_ID, "word1")
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "word1")
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -156,9 +147,9 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "bag beg big bog bug");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(WORDS_PARAMETER_ID, "b[eo]g")
-                .withParameter(USE_REGEX_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "b[eo]g")
+                .withParameter(ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID, true)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -191,8 +182,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "Word1 Word11 Word111");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(MIN_WORD_LENGTH_PARAMETER_ID, 6)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.MIN_WORD_LENGTH_PARAMETER_ID, 6)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -224,9 +215,9 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "word or word");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(WORDS_PARAMETER_ID, "or")
-                .withParameter(WHOLE_WORDS_ONLY_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "or")
+                .withParameter(ExtractWordsFromTextPlugin.WHOLE_WORDS_ONLY_PARAMETER_ID, true)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -257,9 +248,9 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "word1 or word2");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(WORDS_PARAMETER_ID, "or")
-                .withParameter(WHOLE_WORDS_ONLY_PARAMETER_ID, false)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "or")
+                .withParameter(ExtractWordsFromTextPlugin.WHOLE_WORDS_ONLY_PARAMETER_ID, false)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -293,8 +284,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "1234567890");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(SCHEMA_TYPES_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.SCHEMA_TYPES_PARAMETER_ID, true)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -326,8 +317,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "#Word1 $Word2");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(CASE_INSENSITIVE_PARAMETER_ID, false)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.CASE_INSENSITIVE_PARAMETER_ID, false)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -360,8 +351,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setStringValue(transactionContentAttributeId, txId, "#Word1 $Word2");
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(REMOVE_SPECIAL_CHARS_PARAMETER_ID, false)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.REMOVE_SPECIAL_CHARS_PARAMETER_ID, false)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -400,8 +391,8 @@ public class ExtractFromContentPluginNGTest {
         graph.setBooleanValue(transactionSelectedAttributeId, txId2, true);
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(SELECTED_ONLY_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID, true)
                 .executeNow(graph);
 
         // Assert that there are now 3 nodes on the graph and one of them has the name word and type Word
@@ -437,13 +428,12 @@ public class ExtractFromContentPluginNGTest {
         graph.setBooleanValue(transactionSelectedAttributeId, txId2, true);
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
-                .withParameter(ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(SELECTED_ONLY_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID, true)
                 .executeNow(graph);
 
         // Assert that there are now 3 nodes on the graph and one of them has the name word and type Word
         assertEquals(graph.getVertexCount(), 3);
         assertEquals(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(2)), "word2");
     }
-
 }

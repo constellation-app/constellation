@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,9 +62,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     public HeadingPane(String headingText, List<DataAccessPlugin> plugins, PluginParametersPaneListener top, final Set<String> globalParamLabels) {
         this.top = top;
         boxes.setHgap(5);
-        plugins.stream().forEach((_item) -> {
-            boxes.getChildren().add(makeInactiveSquare());
-        });
+        plugins.stream().forEach(_item -> boxes.getChildren().add(makeInactiveSquare()));
         setText(headingText);
         setGraphic(boxes);
         setContentDisplay(ContentDisplay.RIGHT);

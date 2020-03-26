@@ -26,7 +26,7 @@ import java.nio.Buffer;
  */
 public abstract class TextureBuffer<BufferType extends Buffer> {
 
-    private final int bufferName[];
+    private final int[] bufferName;
     private final int[] textureName;
     protected final BufferType buffer;
 

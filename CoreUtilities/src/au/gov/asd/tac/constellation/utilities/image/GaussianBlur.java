@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.image;
 
 import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Gaussian Blur.
@@ -146,11 +147,9 @@ public class GaussianBlur {
         }
     }
 
-    private static void boxBlurF(final float[] sourceChannel, final float[] targetChannel,
+    private static void boxBlurF(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius) {
-        for (int i = 0; i < sourceChannel.length; i++) {
-            targetChannel[i] = sourceChannel[i];
-        }
+        targetChannel = ArrayUtils.addAll(sourceChannel);
         boxBlurFH(sourceChannel, targetChannel, width, height, radius);
         boxBlurFT(sourceChannel, targetChannel, width, height, radius);
     }
@@ -183,11 +182,9 @@ public class GaussianBlur {
         }
     }
 
-    private static void boxBlurFF(final float[] sourceChannel, final float[] targetChannel,
+    private static void boxBlurFF(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius) {
-        for (int i = 0; i < sourceChannel.length; i++) {
-            targetChannel[i] = sourceChannel[i];
-        }
+        targetChannel = ArrayUtils.addAll(sourceChannel);
         boxBlurFFH(sourceChannel, targetChannel, width, height, radius);
         boxBlurFFT(sourceChannel, targetChannel, width, height, radius);
     }

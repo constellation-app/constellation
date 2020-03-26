@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.nifi.rest;
 
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.nifi.FlowFileV3Utilities;
 import au.gov.asd.tac.constellation.utilities.nifi.NifiConfig;
@@ -52,7 +52,7 @@ public class NifiClient extends RestClient {
     private static final NifiConfig DEFAULT_CONFIG = Lookup.getDefault().lookup(NifiConfig.class);
 
     // This is used to prevent the same file being submitted multiple times.
-    // TODO: Make this more robust and efficient.
+    // TODO: make this more robust and efficient.
     private static final HashMap<String, String> SUBMIT_CACHE = new HashMap<>();
 
     private NifiFileSubmitResponse postToNodes(final Map<String, String> headers, final byte[] bytes, final Boolean stopAfterFirstAccept) throws IOException {
@@ -103,7 +103,7 @@ public class NifiClient extends RestClient {
         final File file = new File(filePath);
         if (DEFAULT_CONFIG.duplicateFilterEnabled()) {
             final String hashString;
-            hashString = Files.asByteSource(file).hash(Hashing.md5()).toString();
+            hashString = Files.asByteSource(file).hash(Hashing.sha256()).toString();
             if (SUBMIT_CACHE.containsKey(hashString)) {
                 LOGGER.log(Level.SEVERE, "A file with matching contents has already been submitted (original: {0}).", SUBMIT_CACHE.get(hashString));
                 return null;
@@ -125,8 +125,7 @@ public class NifiClient extends RestClient {
         // routed on instead.
         final Map<String, String> headers = new TreeMap<>();
         headers.put("flexloader.type", "flowfile-v3");
-        final NifiFileSubmitResponse response = postToNodes(headers, os.toByteArray(), true);
-        return response;
+        return postToNodes(headers, os.toByteArray(), true);
     }
 
     public NifiFileSubmitResponse submitAndDelete(final String fileHandle, final Map<String, String> attributes) throws IOException {
@@ -156,10 +155,8 @@ public class NifiClient extends RestClient {
         final String fileOnServer = DEFAULT_CONFIG.getNifiUri() + fileName;
         final File file = new File(fileOnServer);
 
-        if (!file.getParentFile().exists()) {
-            if (!file.getParentFile().mkdirs()) {
-                throw new IOException("Parent directory doesn't exist and couldn't create it: " + file.getParentFile());
-            }
+        if (!file.getParentFile().exists() && !file.getParentFile().mkdirs()) {
+            throw new IOException("Parent directory doesn't exist and couldn't create it: " + file.getParentFile());
         }
 
         java.nio.file.Files.copy(is, new File(fileOnServer).toPath(), StandardCopyOption.REPLACE_EXISTING);
