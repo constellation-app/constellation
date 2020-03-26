@@ -296,10 +296,10 @@ public class ConstellationLoggerHelper {
     }
 
     /**
-     * Create an SHA256 hash for a file
+     * Create an SHA-256 hash for a file
      *
      * @param file The file being opened
-     * @return The MD5 hash or null if the file does not exist
+     * @return The SHA-256 hash or null if the file does not exist
      * @throws Exception if an error occurs creating the hash.
      */
     private static String createHash(final File file) throws IOException, NoSuchAlgorithmException {
@@ -307,7 +307,7 @@ public class ConstellationLoggerHelper {
             return null;
         }
         
-        final MessageDigest sha256Digest = MessageDigest.getInstance("SHA256");
+        final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
         sha256Digest.reset();
 
         final byte[] buffer = new byte[1024];
