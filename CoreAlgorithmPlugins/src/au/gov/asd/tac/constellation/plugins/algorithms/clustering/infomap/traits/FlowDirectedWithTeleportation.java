@@ -21,11 +21,11 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.trait
  */
 public class FlowDirectedWithTeleportation implements FlowBase {
 
-    public double flow;
-    public double exitFlow;
-    public double teleportWeight;
-    public double danglingFlow;
-    public double teleportSourceFlow;
+    private double flow;
+    private double exitFlow;
+    private double teleportWeight;
+    private double danglingFlow;
+    private double teleportSourceFlow;
 
     public FlowDirectedWithTeleportation() {
         this(1, 1);
@@ -69,6 +69,18 @@ public class FlowDirectedWithTeleportation implements FlowBase {
         return exitFlow;
     }
 
+    public double getTeleportWeight() {
+        return teleportWeight;
+    }
+
+    public double getDanglingFlow() {
+        return danglingFlow;
+    }
+
+    public double getTeleportSourceFlow() {
+        return teleportSourceFlow;
+    }
+    
     @Override
     public void add(final FlowBase other) {
         final FlowDirectedWithTeleportation f = (FlowDirectedWithTeleportation) other;

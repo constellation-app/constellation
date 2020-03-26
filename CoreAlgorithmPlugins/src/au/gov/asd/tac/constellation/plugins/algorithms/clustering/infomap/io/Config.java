@@ -109,56 +109,354 @@ public final class Config {
     }
 
     // Input
-    public String networkFile;
-    public String inputFormat;
-    public boolean parseWithoutIOStreams;
-    public boolean zeroBasedNodeNumbers;
-    public boolean includeSelfLinks;
-    public boolean ignoreEdgeWeights;
-    public int nodeLimit;
-    public String clusterDataFile;
-    public boolean noInfomap;
+    //TODO: Check whether unused fields are needed
+    private String networkFile;
+    private String inputFormat;
+    private boolean parseWithoutIOStreams;
+    private boolean zeroBasedNodeNumbers;
+    private boolean includeSelfLinks;
+    private boolean ignoreEdgeWeights;
+    private int nodeLimit;
+    private String clusterDataFile;
+    private boolean noInfomap;
 
     // Core algorithm
-    public boolean twoLevel;
-    public boolean directed;
-    public boolean undirdir;
-    public boolean outdirdir;
-    public boolean rawdir;
-    public boolean recordedTeleportation;
-    public boolean teleportToNodes;
-    public double teleportationProbability;
-    public double selfTeleportationProbability;
-    public long seedToRandomNumberGenerator;
+    private boolean twoLevel;
+    private boolean directed;
+    private boolean undirdir;
+    private boolean outdirdir;
+    private boolean rawdir;
+    private boolean recordedTeleportation;
+    private boolean teleportToNodes;
+    private double teleportationProbability;
+    private double selfTeleportationProbability;
+    private long seedToRandomNumberGenerator;
 
     // Performance and accuracy
-    public int numTrials;
-    public double minimumCodelengthImprovement;
-    public boolean randomizeCoreLoopLimit;
-    public int coreLoopLimit;
-    public int levelAggregationLimit;
-    public int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
-    public double minimumRelativeTuneIterationImprovement;
-    public boolean fastCoarseTunePartition;
-    public boolean alternateCoarseTuneLevel;
-    public int coarseTuneLevel;
-    public int fastHierarchicalSolution;
+    private int numTrials;
+    private double minimumCodelengthImprovement;
+    private boolean randomizeCoreLoopLimit;
+    private int coreLoopLimit;
+    private int levelAggregationLimit;
+    private int tuneIterationLimit; // num iterations of fine-tune/coarse-tune in two-level partition)
+    private double minimumRelativeTuneIterationImprovement;
+    private boolean fastCoarseTunePartition;
+    private boolean alternateCoarseTuneLevel;
+    private int coarseTuneLevel;
+    private int fastHierarchicalSolution;
 
     // Output
-    public String outDirectory;
-    public boolean printTree;
-    public boolean printMap;
-    public boolean printClu;
-    public boolean printNodeRanks;
-    public boolean printFlowNetwork;
-    public boolean printPajekNetwork;
-    public boolean printBinaryTree;
-    public boolean printBinaryFlowTree; // tree including horizontal links (hierarchical network)
-    public boolean noFileOutput;
-    public int verbosity;
-    public int verboseNumberPrecision;
-    public boolean benchmark;
+    //TODO: Check whether unused fields are needed
+    private String outDirectory;
+    private boolean printTree;
+    private boolean printMap;
+    private boolean printClu;
+    private boolean printNodeRanks;
+    private boolean printFlowNetwork;
+    private boolean printPajekNetwork;
+    private boolean printBinaryTree;
+    private boolean printBinaryFlowTree; // tree including horizontal links (hierarchical network)
+    private boolean noFileOutput;
+    private int verbosity;
+    private int verboseNumberPrecision;
+    private boolean benchmark;
 
     // Custom for Graph.
-    public ConnectionType connectionType;
+    private ConnectionType connectionType;
+
+    public String getNetworkFile() {
+        return networkFile;
+    }
+
+    public void setNetworkFile(String networkFile) {
+        this.networkFile = networkFile;
+    }
+
+    public boolean isIncludeSelfLinks() {
+        return includeSelfLinks;
+    }
+
+    public void setIncludeSelfLinks(boolean includeSelfLinks) {
+        this.includeSelfLinks = includeSelfLinks;
+    }
+
+    public String getClusterDataFile() {
+        return clusterDataFile;
+    }
+
+    public void setClusterDataFile(String clusterDataFile) {
+        this.clusterDataFile = clusterDataFile;
+    }
+
+    public boolean isNoInfomap() {
+        return noInfomap;
+    }
+
+    public void setNoInfomap(boolean noInfomap) {
+        this.noInfomap = noInfomap;
+    }
+
+    public boolean isTwoLevel() {
+        return twoLevel;
+    }
+
+    public void setTwoLevel(boolean twoLevel) {
+        this.twoLevel = twoLevel;
+    }
+
+    public boolean isDirected() {
+        return directed;
+    }
+
+    public void setDirected(boolean directed) {
+        this.directed = directed;
+    }
+
+    public boolean isUndirdir() {
+        return undirdir;
+    }
+
+    public void setUndirdir(boolean undirdir) {
+        this.undirdir = undirdir;
+    }
+
+    public boolean isOutdirdir() {
+        return outdirdir;
+    }
+
+    public void setOutdirdir(boolean outdirdir) {
+        this.outdirdir = outdirdir;
+    }
+
+    public boolean isRawdir() {
+        return rawdir;
+    }
+
+    public void setRawdir(boolean rawdir) {
+        this.rawdir = rawdir;
+    }
+
+    public boolean isRecordedTeleportation() {
+        return recordedTeleportation;
+    }
+
+    public void setRecordedTeleportation(boolean recordedTeleportation) {
+        this.recordedTeleportation = recordedTeleportation;
+    }
+
+    public boolean isTeleportToNodes() {
+        return teleportToNodes;
+    }
+
+    public void setTeleportToNodes(boolean teleportToNodes) {
+        this.teleportToNodes = teleportToNodes;
+    }
+
+    public double getTeleportationProbability() {
+        return teleportationProbability;
+    }
+
+    public void setTeleportationProbability(double teleportationProbability) {
+        this.teleportationProbability = teleportationProbability;
+    }
+
+    public double getSelfTeleportationProbability() {
+        return selfTeleportationProbability;
+    }
+
+    public void setSelfTeleportationProbability(double selfTeleportationProbability) {
+        this.selfTeleportationProbability = selfTeleportationProbability;
+    }
+
+    public long getSeedToRandomNumberGenerator() {
+        return seedToRandomNumberGenerator;
+    }
+
+    public void setSeedToRandomNumberGenerator(long seedToRandomNumberGenerator) {
+        this.seedToRandomNumberGenerator = seedToRandomNumberGenerator;
+    }
+
+    public int getNumTrials() {
+        return numTrials;
+    }
+
+    public void setNumTrials(int numTrials) {
+        this.numTrials = numTrials;
+    }
+
+    public double getMinimumCodelengthImprovement() {
+        return minimumCodelengthImprovement;
+    }
+
+    public void setMinimumCodelengthImprovement(double minimumCodelengthImprovement) {
+        this.minimumCodelengthImprovement = minimumCodelengthImprovement;
+    }
+
+    public boolean isRandomizeCoreLoopLimit() {
+        return randomizeCoreLoopLimit;
+    }
+
+    public void setRandomizeCoreLoopLimit(boolean randomizeCoreLoopLimit) {
+        this.randomizeCoreLoopLimit = randomizeCoreLoopLimit;
+    }
+
+    public int getCoreLoopLimit() {
+        return coreLoopLimit;
+    }
+
+    public void setCoreLoopLimit(int coreLoopLimit) {
+        this.coreLoopLimit = coreLoopLimit;
+    }
+
+    public int getLevelAggregationLimit() {
+        return levelAggregationLimit;
+    }
+
+    public void setLevelAggregationLimit(int levelAggregationLimit) {
+        this.levelAggregationLimit = levelAggregationLimit;
+    }
+
+    public int getTuneIterationLimit() {
+        return tuneIterationLimit;
+    }
+
+    public void setTuneIterationLimit(int tuneIterationLimit) {
+        this.tuneIterationLimit = tuneIterationLimit;
+    }
+
+    public double getMinimumRelativeTuneIterationImprovement() {
+        return minimumRelativeTuneIterationImprovement;
+    }
+
+    public void setMinimumRelativeTuneIterationImprovement(double minimumRelativeTuneIterationImprovement) {
+        this.minimumRelativeTuneIterationImprovement = minimumRelativeTuneIterationImprovement;
+    }
+
+    public boolean isFastCoarseTunePartition() {
+        return fastCoarseTunePartition;
+    }
+
+    public void setFastCoarseTunePartition(boolean fastCoarseTunePartition) {
+        this.fastCoarseTunePartition = fastCoarseTunePartition;
+    }
+
+    public boolean isAlternateCoarseTuneLevel() {
+        return alternateCoarseTuneLevel;
+    }
+
+    public void setAlternateCoarseTuneLevel(boolean alternateCoarseTuneLevel) {
+        this.alternateCoarseTuneLevel = alternateCoarseTuneLevel;
+    }
+
+    public int getCoarseTuneLevel() {
+        return coarseTuneLevel;
+    }
+
+    public void setCoarseTuneLevel(int coarseTuneLevel) {
+        this.coarseTuneLevel = coarseTuneLevel;
+    }
+
+    public int getFastHierarchicalSolution() {
+        return fastHierarchicalSolution;
+    }
+
+    public void setFastHierarchicalSolution(int fastHierarchicalSolution) {
+        this.fastHierarchicalSolution = fastHierarchicalSolution;
+    }
+
+    public String getOutDirectory() {
+        return outDirectory;
+    }
+
+    public void setOutDirectory(String outDirectory) {
+        this.outDirectory = outDirectory;
+    }
+
+    public boolean isPrintTree() {
+        return printTree;
+    }
+
+    public void setPrintTree(boolean printTree) {
+        this.printTree = printTree;
+    }
+
+    public boolean isPrintMap() {
+        return printMap;
+    }
+
+    public void setPrintMap(boolean printMap) {
+        this.printMap = printMap;
+    }
+
+    public boolean isPrintClu() {
+        return printClu;
+    }
+
+    public void setPrintClu(boolean printClu) {
+        this.printClu = printClu;
+    }
+
+    public boolean isPrintNodeRanks() {
+        return printNodeRanks;
+    }
+
+    public void setPrintNodeRanks(boolean printNodeRanks) {
+        this.printNodeRanks = printNodeRanks;
+    }
+
+    public boolean isPrintFlowNetwork() {
+        return printFlowNetwork;
+    }
+
+    public void setPrintFlowNetwork(boolean printFlowNetwork) {
+        this.printFlowNetwork = printFlowNetwork;
+    }
+
+    public boolean isPrintBinaryTree() {
+        return printBinaryTree;
+    }
+
+    public void setPrintBinaryTree(boolean printBinaryTree) {
+        this.printBinaryTree = printBinaryTree;
+    }
+
+    public boolean isPrintBinaryFlowTree() {
+        return printBinaryFlowTree;
+    }
+
+    public void setPrintBinaryFlowTree(boolean printBinaryFlowTree) {
+        this.printBinaryFlowTree = printBinaryFlowTree;
+    }
+
+    public boolean isNoFileOutput() {
+        return noFileOutput;
+    }
+
+    public void setNoFileOutput(boolean noFileOutput) {
+        this.noFileOutput = noFileOutput;
+    }
+
+    public int getVerbosity() {
+        return verbosity;
+    }
+
+    public void setVerbosity(int verbosity) {
+        this.verbosity = verbosity;
+    }
+
+    public int getVerboseNumberPrecision() {
+        return verboseNumberPrecision;
+    }
+
+    public void setVerboseNumberPrecision(int verboseNumberPrecision) {
+        this.verboseNumberPrecision = verboseNumberPrecision;
+    }
+
+    public ConnectionType getConnectionType() {
+        return connectionType;
+    }
+
+    public void setConnectionType(ConnectionType connectionType) {
+        this.connectionType = connectionType;
+    }
 }
