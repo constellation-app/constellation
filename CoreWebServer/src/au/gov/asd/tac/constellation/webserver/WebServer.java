@@ -252,7 +252,7 @@ public class WebServer {
     }
 
     /**
-     * Get the SHA256 digest of an InputStream.
+     * Get the SHA-256 digest of an InputStream.
      * 
      * @param in An InputStream.
      *
@@ -262,7 +262,7 @@ public class WebServer {
      * @throws NoSuchAlgorithmException
      */
     private static byte[] getDigest(final InputStream in) throws IOException, NoSuchAlgorithmException {
-        final MessageDigest sha256 = MessageDigest.getInstance("SHA256");
+        final MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
         final byte[] buf = new byte[64 * 1024];
         while (true) {
             final int len = in.read(buf);
