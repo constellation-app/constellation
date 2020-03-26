@@ -1928,25 +1928,36 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * TODO: There is a possibility of making only the new nodes which have had
-     * values change, be the rechecked nodes Allows the recalculation of layer
-     * visibilities with respect to which layers are toggled layerPrefs holds
-     * information about whether a graph is shown, or if it needs to be
-     * dynamically calculated dynamically calculated meaning does the element
-     * need to be rechecked on change of value
+     * 
+     * Allows the recalculation of layer visibilities with respect to which 
+     * layers are toggled.
+     * Loops all queries and determines if they are dynamic, static, activated or
+     * deactivated and appends certain bits in response.
+     * 
+     * Does not check all layers - only recalculates layers which are selected.
+     * 
+     * **KEY**
+     * STATIC
+     * 0b00 - NOT SHOWN
+     * 0b10 - SHOWN
+     * 
+     * DYNAMIC
+     * 0b10 - NOT SHOWN
+     * 0b11 - SHOWN
+     * 
      */
     private void recalculateVisibilities() {
-        layerPrefs.clear();
-
-        int i = 0;
-        for (String query : LAYER_QUERIES) {
-            if (LAYER_QUERIES.get(i) == null || LAYER_QUERIES.get(i).equals(" ")) {
-                // Static layers or layer 1 (default - show all)
-                // if layerNo has a bit set in the current mask, set it to show
-                layerPrefs.add(i, (currentVisibleMask & (1 << (i++))) > 0 ? (byte) 0b0010 : (byte) 0b0000);
-            } else {
-                // dynamic
-                layerPrefs.add(i, (currentVisibleMask & (1 << (i++))) > 0 ? (byte) 0b0011 : (byte) 0b0001);
+        for (int i = 0; i < LAYER_QUERIES.size(); i++) {
+            // if current mask has bit set, recheck
+            if((currentVisibleMask & (1 << (i))) > 0){
+                // " " Is a placeholder for Layer 1. 
+                if (LAYER_QUERIES.get(i) == null || LAYER_QUERIES.get(i).equals(" ")) {
+                    layerPrefs.remove(i);
+                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
+                } else {
+                    layerPrefs.remove(i);
+                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b11 : (byte) 0b1);
+                }
             }
         }
     }
@@ -1955,33 +1966,24 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * Loop over all queries, recalculate dynamic ones. Append bit flag to
      * bitmask when it satifies the query.
      *
-     * TODO: possibly can get rid of the else if case; as when new queries or
-     * filters are added they can be bitmasked then. (more efficient)
      *
      * @param id the id of the element
      * @return bitmask a 32 bit integer which represents a flagset of which
      * layer to show it on.
      */
     private int recalculateBitmask(final GraphElementType elementType, final int id) {
-        int bitmask = 0;//getIntValue(vertexFilterBitmaskAttrId, id);
-        if (elementType == GraphElementType.VERTEX) {
-            if (vertexFilterBitmaskAttrId >= 0 && vertexFilterVisibilityAttrId >= 0) {
-                bitmask = getIntValue(vertexFilterBitmaskAttrId, id);
-            }
-        } else if (elementType == GraphElementType.TRANSACTION) {
-            if (transactionFilterBitmaskAttrId >= 0 && transactionFilterVisibilityAttrId >= 0) {
-                bitmask = getIntValue(transactionFilterBitmaskAttrId, id);
-            }
+        int bitmask = 0;
+        
+        if (elementType == GraphElementType.VERTEX && vertexFilterBitmaskAttrId >= 0 && vertexFilterVisibilityAttrId >= 0) {
+            bitmask = getIntValue(vertexFilterBitmaskAttrId, id);
+        } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId >= 0 && transactionFilterVisibilityAttrId >= 0) {
+            bitmask = getIntValue(transactionFilterBitmaskAttrId, id);
         }
 
-        int i = 0;
-        for (String query : LAYER_QUERIES) { // TODO: Concurrent Modification Exception sometiems - maybe with update of the queries?
-            if ((layerPrefs.get(i) & 0b0011) == 3 && LAYER_QUERIES.get(i) != null) { // calculate bitmask for dynamic layers that are displayed
-                bitmask = (evaluateQuery(ShuntingYard.postfix(LAYER_QUERIES.get(i)), id) ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
-            } else if (i == 0 && (layerPrefs.get(i) & 0b0010) == 2) { // layer 1 and layer is enabled
-                //bitmask |= (1 << 1);
+        for (int j = 0; j < LAYER_QUERIES.size(); j++) { // TODO: Concurrent Modification Exception sometiems - maybe with update of the queries?
+            if (j < layerPrefs.size() && (layerPrefs.get(j) & 0b11) == 3 && LAYER_QUERIES.get(j) != null) { // calculate bitmask for dynamic layers that are displayed
+                bitmask = (evaluateQuery(ShuntingYard.postfix(LAYER_QUERIES.get(j)), id) ? bitmask | (1 << j) : bitmask & ~(1 << j)); // set bit to false
             }
-            i++;
         }
         return bitmask;
     }
@@ -2153,6 +2155,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // TODO: Eventually store a static bitmask, and then append to it any dynamic bits based on rules. For now assume all
         //       entries are dynamic for the sake of calculations
         int bitmask = recalculateBitmask(elementType, id);
+        // avoid recalc of bitmask if it is a static layer
 
         if (elementType == GraphElementType.VERTEX) {
 
@@ -2218,7 +2221,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             // Preloading layerPrefs JIT incase of no instantiation
             if (layerPrefs.isEmpty()) {
                 for (int j = 0; j < 31; j++) {
-                    layerPrefs.add((byte) 0b0000);
+                    layerPrefs.add((byte) 0b0);
                 }
             }
             updateBitmask(elementType, attribute, selectedFilterBitmask, id);
@@ -2338,7 +2341,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // If the selected layers to display value has changed then recalculate visibility of all objects, otherwise,
         // check if the change impacts an objects visibility
         if (selectedFilterBitmaskAttrId >= 0 && selectedFilterBitmaskAttrId == attribute) {
-            updateAllBitmasks();
+            // one node changes, pass to change list then only iterate that?
+            updateAllBitmasks(); // hits here when changing layers only. not on update of elements to layers
         } else if (!avoidUpdate) {
             updateBitmask(attribute, id);
         }

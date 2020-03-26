@@ -39,7 +39,7 @@ import org.openide.windows.TopComponent;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
-        mode = "output",
+        mode = "explorer",
         openAtStartup = false
 )
 @ActionID(
