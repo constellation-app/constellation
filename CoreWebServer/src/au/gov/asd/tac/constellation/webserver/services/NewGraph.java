@@ -28,8 +28,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -88,11 +88,9 @@ public class NewGraph extends RestService {
 
         String schemaName = null;
         for(final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
-            if(schemaFactory.isPrimarySchema()) {
-                if(schemaParam == null || schemaParam.equals(schemaFactory.getName())) {
-                    schemaName = schemaFactory.getName();
-                    break;
-                }
+            if(schemaFactory.isPrimarySchema() && (schemaParam == null || schemaParam.equals(schemaFactory.getName()))) {
+                schemaName = schemaFactory.getName();
+                break;
             }
         }
 

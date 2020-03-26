@@ -182,17 +182,17 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             }
 
             // Edit the actual attribute values for the desired attribute
-            for (int id : editedAttributeValues.keySet()) {
-                graph.setObjectValue(editAttributeId, id, editedAttributeValues.get(id));
+            for (final Map.Entry<Integer, Object> entry : editedAttributeValues.entrySet()) {
+                graph.setObjectValue(editAttributeId, entry.getKey(), entry.getValue());
                 if (!completeWithSchema) {
                     // do nothing
                 } else if (elementType == GraphElementType.VERTEX) {
                     if (graph.getSchema() != null) {
-                        graph.getSchema().completeVertex(graph, id);
+                        graph.getSchema().completeVertex(graph, entry.getKey());
                     }
                 } else {
                     if (graph.getSchema() != null) {
-                        graph.getSchema().completeTransaction(graph, id);
+                        graph.getSchema().completeTransaction(graph, entry.getKey());
                     }
                 }
             }
