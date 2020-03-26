@@ -477,15 +477,15 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      */
     private boolean openDataObjectByCookie(final DataObject dataObject,
             final int line) {
-
-        Class<? extends Node.Cookie> cookieClass;
-        Node.Cookie cookie;
-        if ((cookie = dataObject.getCookie(cookieClass = OpenCookie.class)) != null
-                || (cookie = dataObject.getCookie(cookieClass = EditCookie.class)) != null
-                || (cookie = dataObject.getCookie(cookieClass = ViewCookie.class)) != null) {
-            return openByCookie(cookie, cookieClass, line);
+        if(dataObject.getCookie(OpenCookie.class) != null) {
+            return openByCookie(dataObject.getCookie(OpenCookie.class), OpenCookie.class, line);
+        } else if (dataObject.getCookie(EditCookie.class) != null) {
+            return openByCookie(dataObject.getCookie(EditCookie.class), EditCookie.class, line);
+        } else if (dataObject.getCookie(ViewCookie.class) != null) {
+            return openByCookie(dataObject.getCookie(ViewCookie.class), ViewCookie.class, line);
+        } else {
+            return false;
         }
-        return false;
     }
 
     /**
@@ -540,12 +540,12 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
                         fileName));
 
         /* Look for an EditorCookie indicating a text file */
-        Class<? extends Node.Cookie> cookieClass;
-        Node.Cookie cookie;
-        if ((line != -1)
-                && (((cookie = dataObject.getCookie(cookieClass = EditorCookie.Observable.class)) != null)
-                || ((cookie = dataObject.getCookie(cookieClass = EditorCookie.class)) != null))) {
-            return openByCookie(cookie, cookieClass, line);
+        if ((line != -1) && dataObject.getCookie(EditorCookie.Observable.class) != null) {
+            return openByCookie(dataObject.getCookie(EditorCookie.Observable.class), EditorCookie.Observable.class, line);
+        } 
+        
+        if (dataObject.getCookie(EditorCookie.class) != null) {
+            return openByCookie(dataObject.getCookie(EditorCookie.class), EditorCookie.class, line);
         }
 
         /* Attempt to open the DataObject using its default action */
