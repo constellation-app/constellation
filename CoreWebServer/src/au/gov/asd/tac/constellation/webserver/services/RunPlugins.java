@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -155,29 +154,24 @@ public class RunPlugins extends RestService {
         // If parallel, do the things with threads.
         // Either way, any errors in execution will be caught and written to the error queue.
         //
-        switch(runStyle) {
-            case RUN_STYLE_SERIES:
-                pluginInstances.forEach(pi -> {
-                    pi.run();
-                });
-                break;
-            case RUN_STYLE_PARALLEL:
-                final List<Thread> pluginThreads = new ArrayList<>();
-                pluginInstances.forEach(pi -> {
-                    final Thread thread = new Thread(pi, pi.plugin.getName());
-                    pluginThreads.add(thread);
-                    thread.start();
-                });
+        if(runStyle.equals(RUN_STYLE_SERIES)) {
+            pluginInstances.forEach(PluginInstance::run);
+        } else {
+            final List<Thread> pluginThreads = new ArrayList<>();
+            pluginInstances.forEach(pi -> {
+                final Thread thread = new Thread(pi, pi.plugin.getName());
+                pluginThreads.add(thread);
+                thread.start();
+            });
 
-                pluginThreads.forEach(thread -> {
-                    try {
-                        thread.join();
-                    } catch(final InterruptedException ex) {
-                        thread.interrupt();
-                        errorQueue.add(new PluginError(String.format("Thread %s", thread.getName()), ex));
-                    }
-                });
-                break;
+            pluginThreads.forEach(thread -> {
+                try {
+                    thread.join();
+                } catch(final InterruptedException ex) {
+                    thread.interrupt();
+                    errorQueue.add(new PluginError(String.format("Thread %s", thread.getName()), ex));
+                }
+            });
         }
 
         // The plugins have finished, so look at the error queue to see if anything

@@ -87,8 +87,6 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     public static final String WHOLE_WORDS_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "whole_words_only");
     public static final String LOWER_CASE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "lower_case");
     public static final String SCHEMA_TYPES_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "schema_types");
-    public static final String OUTGOING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "outgoing");
-    public static final String INCOMING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "incoming");
     public static final String IN_OUT_OUT_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "in_or_out");
     public static final String SELECTED_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "selected_only");
     public static final String REGEX_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "regex_only");
@@ -170,7 +168,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         inOrOutParam.setName("Transactions");
         inOrOutParam.setDescription("Link nodes to outgoing or incoming words: 'outgoing' or 'incoming'");
         SingleChoiceParameterType.setOptions(inOrOutParam, List.of(OUTGOING, INCOMING));
-        inOrOutParam.setStringValue("outgoing");
+        inOrOutParam.setStringValue(OUTGOING);
         params.addParameter(inOrOutParam);
 
         final PluginParameter<BooleanParameterValue> selected = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
