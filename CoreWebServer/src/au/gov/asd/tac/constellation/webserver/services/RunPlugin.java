@@ -46,7 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class RunPlugin extends RestService {
     private static final String NAME = "run_plugin";
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
-    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String ARGS_PARAMETER_ID = "args";
 
     @Override
@@ -78,7 +78,7 @@ public class RunPlugin extends RestService {
         nameParam.setDescription("The name of the plugin to run.");
         parameters.addParameter(nameParam);
 
-        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
         graphIdParam.setDescription("The id of a graph to run the plugin on (optional).");
         parameters.addParameter(graphIdParam);
@@ -94,7 +94,7 @@ public class RunPlugin extends RestService {
     @Override
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
-        final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
+        final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
         try {

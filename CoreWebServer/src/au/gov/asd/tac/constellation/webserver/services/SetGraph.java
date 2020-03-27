@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class SetGraph extends RestService {
     private static final String NAME = "set_graph";
-    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
 
     @Override
     public String getName() {
@@ -64,7 +64,7 @@ public class SetGraph extends RestService {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
         graphIdParam.setDescription("The id of a graph to make active.");
         parameters.addParameter(graphIdParam);
@@ -74,7 +74,7 @@ public class SetGraph extends RestService {
 
     @Override
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
-        final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
+        final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final GraphNode graphNode = GraphNode.getGraphNode(graphId);
         if (graphNode != null) {
