@@ -96,7 +96,7 @@ To package Constellation in a zip bundle do the following:
 
 * In NetBeans, expand `Constellation` > `Important Files`
 * Right click on `Build Script` and run the `build-zip-with-windows-jre` or 
-`build-zip-with-linux-jre` target
+`build-zip-with-linux-jre`
 
 The packaged file should be available from the `dist` directory.
 
