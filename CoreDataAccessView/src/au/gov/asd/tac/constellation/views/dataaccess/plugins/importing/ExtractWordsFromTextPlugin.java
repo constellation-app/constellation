@@ -85,7 +85,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     public static final String REMOVE_SPECIAL_CHARS_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "ignore_special_chars");
     public static final String USE_REGEX_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "use_regex");
     public static final String WHOLE_WORDS_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "whole_words_only");
-    public static final String LOWER_CASE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "case_insensitive");
+    public static final String LOWER_CASE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "lower_case");
     public static final String SCHEMA_TYPES_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "schema_types");
     public static final String OUTGOING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "outgoing");
     public static final String INCOMING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "incoming");
