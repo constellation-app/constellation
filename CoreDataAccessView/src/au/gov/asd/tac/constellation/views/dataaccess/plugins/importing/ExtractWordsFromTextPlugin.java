@@ -420,7 +420,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         else
         // The original logic.
         {
-            final List<Pattern> patterns = patternsFromWords(words, useRegex, wholeWordOnly, toLowerCase);
+            final List<Pattern> patterns = patternsFromWords(words, useRegex, wholeWordOnly);
 
             /*
              Iterating over all the transactions in the graph
@@ -559,7 +559,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
      * @param ignoreCase
      * @return
      */
-    private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly, final boolean ignoreCase) {
+    private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly) {
         final List<Pattern> patterns = new ArrayList<>();
         if(words!=null && !words.isEmpty()) {
             for (String word : words.split("\n")) {

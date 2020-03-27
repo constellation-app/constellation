@@ -57,7 +57,7 @@ public class RunPlugins extends RestService {
 
     // Run style.
     //
-    private static final String RUN_STYLE_SERIAL = "serial";
+    private static final String RUN_STYLE_SERIES = "series";
     private static final String RUN_STYLE_PARALLEL = "parallel";
 
     // Plugin argument keys.
@@ -96,8 +96,8 @@ public class RunPlugins extends RestService {
 
         final PluginParameter<StringParameterValue> runInParam = StringParameterType.build(RUN_IN_PARAMETER_ID);
         runInParam.setName("Run in");
-        runInParam.setDescription("Run in 'serial' (the default) or 'parallel'.");
-        runInParam.setStringValue(RUN_STYLE_SERIAL);
+        runInParam.setDescription("Run in 'series' (the default) or 'parallel'.");
+        runInParam.setStringValue(RUN_STYLE_SERIES);
         parameters.addParameter(runInParam);
 
         final PluginParameter<StringParameterValue> pluginsParam = StringParameterType.build(PLUGINS_PARAMETER_ID);
@@ -114,8 +114,8 @@ public class RunPlugins extends RestService {
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final String runStyle = parameters.getStringValue(RUN_IN_PARAMETER_ID);
-        if(!RUN_STYLE_SERIAL.equals(runStyle) && !RUN_STYLE_PARALLEL.equals(runStyle)) {
-            final String msg = String.format("%s must be '%s' or '%s'", RUN_IN_PARAMETER_ID, RUN_STYLE_SERIAL, RUN_STYLE_PARALLEL);
+        if(!RUN_STYLE_SERIES.equals(runStyle) && !RUN_STYLE_PARALLEL.equals(runStyle)) {
+            final String msg = String.format("%s must be '%s' or '%s'", RUN_IN_PARAMETER_ID, RUN_STYLE_SERIES, RUN_STYLE_PARALLEL);
             throw new RestServiceException(msg);
         }
 
@@ -151,12 +151,12 @@ public class RunPlugins extends RestService {
         });
 
         // Time to execute.
-        // If serial, just run them sequentially.
+        // If series, just run them sequentially.
         // If parallel, do the things with threads.
         // Either way, any errors in execution will be caught and written to the error queue.
         //
         switch(runStyle) {
-            case RUN_STYLE_SERIAL:
+            case RUN_STYLE_SERIES:
                 pluginInstances.forEach(pi -> {
                     pi.run();
                 });
@@ -164,7 +164,7 @@ public class RunPlugins extends RestService {
             case RUN_STYLE_PARALLEL:
                 final List<Thread> pluginThreads = new ArrayList<>();
                 pluginInstances.forEach(pi -> {
-                    final Thread thread = new Thread(pi);
+                    final Thread thread = new Thread(pi, pi.plugin.getName());
                     pluginThreads.add(thread);
                     thread.start();
                 });
@@ -173,7 +173,8 @@ public class RunPlugins extends RestService {
                     try {
                         thread.join();
                     } catch(final InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
+                        thread.interrupt();
+                        errorQueue.add(new PluginError(String.format("Thread %s", thread.getName()), ex));
                     }
                 });
                 break;

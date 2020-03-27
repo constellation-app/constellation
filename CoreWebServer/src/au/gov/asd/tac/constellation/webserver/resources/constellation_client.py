@@ -225,7 +225,13 @@ class Constellation:
         h = dict(self.headers)
         if headers:
             h.update(headers)
-        url = f'http://localhost:{self.port}{endpoint}/{path}'
+
+        # Note: use 127.0.0.1, not localhost, to avoid a two second delay.
+        # I suspect Windows is trying to connect to the IPv6 localhost first,
+        # waiting a couple of seconds to fail, then trying IPv4.
+        # Using the IPv4 127.0.0.1 goes directly to the right place.
+        #
+        url = f'http://127.0.0.1:{self.port}{endpoint}/{path}'
         r = f(url, params=params, json=json_, data=data, headers=h)
 
         # Raise for status because we don't trust the users to check for errors.
