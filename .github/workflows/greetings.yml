@@ -12,8 +12,6 @@ jobs:
         pr-message: >
           Hello @${{ github.actor }}, thank you for submitting a PR! We will respond as soon as possible.
           
-          Note that we are in the process of migraing to NetBeans 11 so all PR's should be sent to `master-nb11`.
-          
         issue-message: >
           Hello @${{ github.actor }}, thank you for your interest in our work!
           
