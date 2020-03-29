@@ -1982,7 +1982,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         for (int j = 0; j < LAYER_QUERIES.size(); j++) { // TODO: Concurrent Modification Exception sometiems - maybe with update of the queries?
             if (j < layerPrefs.size() && (layerPrefs.get(j) & 0b11) == 3 && LAYER_QUERIES.get(j) != null) { // calculate bitmask for dynamic layers that are displayed
-                bitmask = (evaluateQuery(ShuntingYard.postfix(LAYER_QUERIES.get(j)), id) ? bitmask | (1 << j) : bitmask & ~(1 << j)); // set bit to false
+                bitmask = (evaluateQuery(ShuntingYard.postfix(LAYER_QUERIES.get(j)), id, elementType) ? bitmask | (1 << j) : bitmask & ~(1 << j)); // set bit to false
             }
         }
         return bitmask;
@@ -2003,7 +2003,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * @return a boolean result determining whether the element satisfied the
      * constraints.
      */
-    private boolean evaluateQuery(final String postfixQuery, final int id) {
+    private boolean evaluateQuery(final String postfixQuery, final int id, final GraphElementType elementType) {
         // Exit condition for show all
         if (postfixQuery.equals("")) {
             return true;
@@ -2030,7 +2030,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 segCount++;
                 switch (segCount) {
                     case 1: {
-                        attrID = getAttribute(GraphElementType.VERTEX, segment);
+                        if (elementType == GraphElementType.VERTEX) {
+                            attrID = getAttribute(GraphElementType.VERTEX, segment);
+                        } else if (elementType == GraphElementType.TRANSACTION) {
+                            attrID = getAttribute(GraphElementType.TRANSACTION, segment);
+                        }
+                        
                         if (attrID != Graph.NOT_FOUND) {
                             ad = attributeDescriptions[attrID];
                         }
