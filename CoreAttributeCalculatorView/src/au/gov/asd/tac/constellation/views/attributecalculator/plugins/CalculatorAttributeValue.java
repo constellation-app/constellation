@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.plugins;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -95,7 +95,6 @@ public class CalculatorAttributeValue extends AbstractCalculatorValue {
         // If the element type is a vertex or this is a source/dest attribute, set the attributeElementType to vertex. Otherwise attributeElementType is transaction.
         final GraphElementType attributeElementType = elementType == GraphElementType.VERTEX || !attributeOf.equals(AttributeOf.THIS_ELEMENT) ? GraphElementType.VERTEX : GraphElementType.TRANSACTION;
         final int attrId = graph.getAttribute(attributeElementType, attributeName);
-        final boolean isTemporal = isTemporalAttribute(graph, attrId);
         switch (attributeOf) {
             case SOURCE_NODE:
                 if (elementType.equals(GraphElementType.TRANSACTION)) {

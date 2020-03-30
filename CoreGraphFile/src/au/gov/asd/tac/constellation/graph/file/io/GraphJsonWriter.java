@@ -29,8 +29,6 @@ import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -397,8 +395,6 @@ public final class GraphJsonWriter implements Cancellable {
 
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
-                final ObjectMapper om = new ObjectMapper();
-                final ObjectNode root = om.createObjectNode();
                 for (Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {

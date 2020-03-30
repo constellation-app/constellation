@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -525,11 +525,9 @@ class IconListModel implements ListModel<IconListElement> {
     public IconListModel(final TreeMap<String, ConstellationIcon> icons) {
         names = new ArrayList<>(icons.size());
         iconValue = new ArrayList<>(icons.size());
-        int i = 0;
         for (String part : icons.navigableKeySet()) {
             names.add(part);
             iconValue.add(icons.get(part));
-            i++;
         }
 
         listeners = new ArrayList<>();

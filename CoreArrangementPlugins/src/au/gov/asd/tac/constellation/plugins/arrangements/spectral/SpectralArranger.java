@@ -165,7 +165,6 @@ public class SpectralArranger implements Arranger {
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
-        final int radiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         // Position vertices in the most interconnected truss by their spectra.
         for (int positionedVert : vertexToCoordinates.keySet()) {

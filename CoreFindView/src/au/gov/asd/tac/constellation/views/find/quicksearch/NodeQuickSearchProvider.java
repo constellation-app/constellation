@@ -53,7 +53,6 @@ public class NodeQuickSearchProvider implements SearchProvider {
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final Graph graph = graphRetriever.getGraph();
-        int i = 0;
 
         if (graph != null) {
             final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.VERTEX, request.getText());

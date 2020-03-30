@@ -177,8 +177,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     @Override
     protected void setRange(Object range, boolean animating) {
         final Object[] dateTimeRange = (Object[]) range;
-        final ZonedDateTime oldLowerBound = getLowerBound();
-        final ZonedDateTime oldUpperBound = getUpperBound();
         final ZonedDateTime newLowerBound = (ZonedDateTime) dateTimeRange[0];
         final ZonedDateTime newUpperBound = (ZonedDateTime) dateTimeRange[1];
         setLowerBound(newLowerBound);

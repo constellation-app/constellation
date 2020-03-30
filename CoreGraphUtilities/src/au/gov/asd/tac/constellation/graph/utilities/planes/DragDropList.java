@@ -15,15 +15,14 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
-import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyElement;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
+import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyElement;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
@@ -205,7 +204,7 @@ final class DragDropList extends JList<MyElement> {
         public MyDragListener(final DragDropList list) {
             this.list = list;
             ds = new DragSource();
-            DragGestureRecognizer dgr = ds.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_MOVE, this);
+            ds.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_MOVE, this);
         }
 
         @Override
