@@ -35,7 +35,7 @@ public class PieChartIconProvider implements ConstellationIconProvider {
         BufferedImage[] pieChartIcons = createPieChartImages(256, 0.375f, 4);
 
         for (int i = 0; i < pieChartIcons.length; i++) {
-            String iconName = String.valueOf(i) + "/" + String.valueOf(PIE_CHART_LEVELS) + " Pie";
+            String iconName = String.valueOf(i) + "/" + PIE_CHART_LEVELS + " Pie";
             ConstellationIcon pieChartIcon = new ConstellationIcon.Builder(iconName, new ImageIconData(pieChartIcons[i]))
                     .addCategory("Pie Chart")
                     .build();

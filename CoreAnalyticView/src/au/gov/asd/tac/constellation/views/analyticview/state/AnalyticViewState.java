@@ -67,7 +67,7 @@ public class AnalyticViewState {
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
         if (activeAnalyticQuestions.contains(question)) {
             setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
-            selectablePlugins.forEach((plugin) -> {
+            selectablePlugins.forEach(plugin -> {
                 if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
                     activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
                 }

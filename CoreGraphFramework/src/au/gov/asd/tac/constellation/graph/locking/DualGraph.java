@@ -203,8 +203,7 @@ public class DualGraph implements Graph, Serializable {
     @Override
     public WritableGraph getWritableGraphOnEDT(final String name, final boolean significant) throws InterruptedException {
         LOGGER.log(Level.WARNING, "LOCKING GRAPH ON EDT: {0}", new Exception().getStackTrace()[1]);
-        WritableGraph wg = lockingManager.startWriting(name, significant, null);
-        return wg;
+        return lockingManager.startWriting(name, significant, null);
     }
 
     @Override
@@ -220,8 +219,7 @@ public class DualGraph implements Graph, Serializable {
         if (Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Attempting to write on the JavaFX Application Thread");
         }
-        WritableGraph wg = lockingManager.startWriting(name, significant, editor);
-        return wg;
+        return lockingManager.startWriting(name, significant, editor);
     }
 
     @Override
@@ -235,9 +233,7 @@ public class DualGraph implements Graph, Serializable {
             throw new IllegalStateException("Attempting to write on the EDT");
         }
 
-        WritableGraph wg = lockingManager.tryStartWriting(name, significant, editor);
-
-        return wg;
+        return lockingManager.tryStartWriting(name, significant, editor);
     }
 
     @Override

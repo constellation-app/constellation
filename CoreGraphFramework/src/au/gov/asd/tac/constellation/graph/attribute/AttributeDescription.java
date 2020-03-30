@@ -441,7 +441,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getObject(int)
      */
-    public void setObject(int id, Object value) throws IllegalArgumentException;
+    public void setObject(int id, Object value);
 
     /**
      * Returns the value for the specified element as a String. In general, the

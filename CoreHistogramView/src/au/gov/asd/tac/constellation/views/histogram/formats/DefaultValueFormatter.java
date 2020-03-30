@@ -56,7 +56,7 @@ public class DefaultValueFormatter extends BinFormatter {
 
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
-            key = attribute == Graph.NOT_FOUND ? true : !graph.isDefaultValue(attribute, element);
+            key = attribute == Graph.NOT_FOUND || !graph.isDefaultValue(attribute, element);
         }
 
         @Override

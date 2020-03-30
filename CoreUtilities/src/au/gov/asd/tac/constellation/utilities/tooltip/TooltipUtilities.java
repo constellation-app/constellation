@@ -36,7 +36,7 @@ public class TooltipUtilities {
         final int[] characterIndex = new int[1];
         final TooltipNode[] tooltipNode = new TooltipNode[1];
 
-        textInputControl.setOnMouseEntered((event) -> {
+        textInputControl.setOnMouseEntered(event -> {
             if (tooltipPane.isEnabled()) {
                 TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
@@ -53,7 +53,7 @@ public class TooltipUtilities {
             }
         });
 
-        textInputControl.setOnMouseMoved((event) -> {
+        textInputControl.setOnMouseMoved(event -> {
             if (tooltipPane.isEnabled()) {
                 TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
                 HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
@@ -81,7 +81,7 @@ public class TooltipUtilities {
             }
         });
 
-        textInputControl.setOnMouseExited((event) -> {
+        textInputControl.setOnMouseExited(event -> {
             if (tooltipPane.isEnabled()) {
                 tooltipPane.hideTooltip();
             }
@@ -94,7 +94,7 @@ public class TooltipUtilities {
 
         final TooltipNode[] tooltipNode = new TooltipNode[1];
 
-        hyperlink.setOnMouseEntered((event) -> {
+        hyperlink.setOnMouseEntered(event -> {
             if (tooltipPane.isEnabled()) {
                 List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getAllTooltips(hyperlink.getText());
                 hyperlink.requestFocus();
@@ -107,7 +107,7 @@ public class TooltipUtilities {
             }
         });
 
-        hyperlink.setOnMouseExited((event) -> {
+        hyperlink.setOnMouseExited(event -> {
             if (tooltipPane.isEnabled()) {
                 tooltipPane.hideTooltip();
             }

@@ -129,7 +129,7 @@ public class ExtendedBuffer {
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
 
             int byteCount = 0;
 
@@ -178,7 +178,7 @@ public class ExtendedBuffer {
         }
 
         @Override
-        public void write(byte b[], int off, int len) throws IOException {
+        public void write(byte[] b, int off, int len) throws IOException {
 
             while (len > 0) {
                 int bytesToCopy = Math.min(bufferSize - outputBuffer.position, len);

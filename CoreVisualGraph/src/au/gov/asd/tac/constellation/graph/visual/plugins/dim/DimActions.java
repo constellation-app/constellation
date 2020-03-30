@@ -200,11 +200,7 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
     public void newActiveGraph(final Graph graph) {
         if (this.graph != graph) {
             this.graph = graph;
-            if (graph == null) {
-                menu.setEnabled(false);
-            } else {
-                menu.setEnabled(true);
-            }
+            menu.setEnabled(graph != null);
         }
     }
 }

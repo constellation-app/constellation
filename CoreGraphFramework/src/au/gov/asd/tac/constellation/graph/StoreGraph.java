@@ -2267,10 +2267,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             if (getTransactionSourceVertex(element1) != getTransactionSourceVertex(element2)) {
                 return false;
             }
-            if (getTransactionDestinationVertex(element1) != getTransactionDestinationVertex(element2)) {
-                return false;
-            }
-            return true;
+            return getTransactionDestinationVertex(element1) == getTransactionDestinationVertex(element2);
         }
     }
 

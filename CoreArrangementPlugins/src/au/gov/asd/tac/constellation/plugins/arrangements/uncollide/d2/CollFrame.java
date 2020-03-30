@@ -244,7 +244,7 @@ public class CollFrame extends javax.swing.JFrame {
         });
     }//GEN-LAST:event_uncollide1ButtonActionPerformed
 
-    public static void main(String args[]) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+    public static void main(String[] args) throws ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         /* Create and display the form */

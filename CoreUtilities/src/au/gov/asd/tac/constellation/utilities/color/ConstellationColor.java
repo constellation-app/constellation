@@ -402,13 +402,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (o.name != null) {
             return -1;
         } else {
-            final int b
-                    = red != o.red ? (int) (red - o.red)
+             return red != o.red ? (int) (red - o.red)
                             : green != o.green ? (int) (green - o.green)
-                                    : blue != o.blue ? (int) ((blue - o.blue))
+                                    : blue != o.blue ? (int) (blue - o.blue)
                                             : (int) (alpha - o.alpha);
-
-            return b;
         }
     }
 

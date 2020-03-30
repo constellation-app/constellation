@@ -77,10 +77,7 @@ public class XMLImportFileParser extends ImportFileParser {
             final List<Map<List<String>, String>> table = new ArrayList<>();
             findRowElements(documentElement, path, bestTag, globalKeys, table);
 
-            final List<String[]> result = createResult(globalKeys, table);
-
-            return result;
-
+            return createResult(globalKeys, table);
         } catch (TransformerException ex) {
             throw new IOException("Error reading XML file", ex);
         }

@@ -43,7 +43,9 @@ public class UriIconData extends IconData {
 
     public UriIconData(final URI uri) {
         this.uri = uri;
-        assert uri.isAbsolute();
+        if(!uri.isAbsolute()){
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override
@@ -51,7 +53,7 @@ public class UriIconData extends IconData {
         InputStream stream;
         HttpsURLConnection connection = null;
         try {
-            if (uri.getScheme().toUpperCase().equals("HTTPS")) {
+            if (uri.getScheme().equalsIgnoreCase("HTTPS")) {
                 connection = HttpsConnection.withUrl(uri.toURL().toString()).get();
                 stream = HttpsUtilities.getInputStream(connection);
             } else {

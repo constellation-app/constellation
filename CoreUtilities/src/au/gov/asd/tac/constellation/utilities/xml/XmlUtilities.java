@@ -120,7 +120,7 @@ public class XmlUtilities {
      * writing to.
      * @throws IOException if an error occurs while writing to the file.
      */
-    public void write(final Document document, final File file) throws FileNotFoundException, IOException, TransformerException {
+    public void write(final Document document, final File file) throws IOException, TransformerException {
         write(document, new FileOutputStream(file));
     }
 
@@ -664,7 +664,7 @@ public class XmlUtilities {
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
             final int bytes = in.read(b, off, len);
             if (bytes != -1) {
                 for (int ix = off; ix < off + bytes; ix++) {

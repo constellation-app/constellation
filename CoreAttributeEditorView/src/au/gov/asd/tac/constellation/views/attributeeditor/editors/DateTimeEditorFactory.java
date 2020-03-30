@@ -150,7 +150,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             });
 
             final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-            ZoneId.getAvailableZoneIds().forEach((id) -> {
+            ZoneId.getAvailableZoneIds().forEach(id -> {
                 timeZones.add(ZoneId.of(id));
             });
             timeZoneComboBox = new ComboBox<>();

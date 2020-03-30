@@ -92,10 +92,7 @@ public class FeatureKey {
         if (!Objects.equals(featureClass, other.featureClass)) {
             return false;
         }
-        if (!Objects.equals(featureLocations, other.featureLocations)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(featureLocations, other.featureLocations);
     }
 
     @Override

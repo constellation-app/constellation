@@ -594,9 +594,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      * @return A newly created tooltip.
      */
     private Tooltip createTooltip() {
-        final Tooltip tt = new Tooltip();
-
-        return tt;
+        return new Tooltip();
     }
 
     /**

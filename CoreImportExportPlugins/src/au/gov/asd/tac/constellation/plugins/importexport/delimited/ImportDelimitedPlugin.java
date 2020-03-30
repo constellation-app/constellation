@@ -15,17 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
@@ -33,6 +28,11 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -180,11 +180,11 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     private static boolean attributeDefintionIsPositional(List<ImportAttributeDefinition> srcAttributeDefinitions, List<ImportAttributeDefinition> destAttributeDefinitions) {
 
         // Check if srcAttributeDefintions contain positional attributes
-        if (srcAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)))) {
+        if (srcAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)))) {
             return true;
         }
         // Check if destAttributeDefintions contain positional attributes
-        return destAttributeDefinitions.stream().map((attribute) -> attribute.getAttribute().getName()).anyMatch((name) -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
+        return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
     private static void processVertices(ImportDefinition definition, GraphWriteMethods graph, List<String[]> data, AttributeType attributeType, boolean initialiseWithSchema, PluginInteraction interaction, String source, final List<Integer> newVertices) throws InterruptedException {
@@ -260,7 +260,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     graph.getSchema().completeVertex(graph, destinationVertexId);
                 }
 
-                final boolean isDirected = directedIx != ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN ? Boolean.parseBoolean(row[directedIx]) : true;
+                final boolean isDirected = directedIx == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
                 final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
                 for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                     if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {

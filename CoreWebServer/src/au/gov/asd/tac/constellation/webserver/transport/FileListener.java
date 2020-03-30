@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.webserver.transport;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.webserver.WebServer;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
@@ -280,8 +280,7 @@ public class FileListener implements Runnable {
     private static OutputStream outStream(final Path p, final String name) {
         final Path fqp = p.resolve(name);
         try {
-            final OutputStream out = new FileOutputStream(fqp.toFile());
-            return out;
+            return new FileOutputStream(fqp.toFile());
         } catch (final FileNotFoundException ex) {
             throw new RestServiceException(ex);
         }

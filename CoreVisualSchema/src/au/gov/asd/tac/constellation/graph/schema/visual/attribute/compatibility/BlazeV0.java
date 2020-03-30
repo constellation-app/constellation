@@ -151,10 +151,7 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
         if ((this.iconLabel == null) ? (other.iconLabel != null) : !this.iconLabel.equals(other.iconLabel)) {
             return false;
         }
-        if (this.iconEnabled != other.iconEnabled) {
-            return false;
-        }
-        return true;
+        return this.iconEnabled == other.iconEnabled;
     }
 
     @Override

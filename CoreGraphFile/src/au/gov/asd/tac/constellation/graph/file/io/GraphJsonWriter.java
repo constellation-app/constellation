@@ -62,7 +62,7 @@ public final class GraphJsonWriter implements Cancellable {
     private int counter;
     private volatile boolean isCancelled;
     private final GraphByteWriter byteWriter;
-    final private HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
+    private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
 
     /**
      * Construct a new GraphJsonWriter.
@@ -285,7 +285,7 @@ public final class GraphJsonWriter implements Cancellable {
      *
      * @throws IOException
      */
-    private void writeElements(final JsonGenerator jg, final GraphReadMethods graph, final GraphElementType elementType, final boolean verbose, final boolean writeData) throws IOException, Exception {
+    private void writeElements(final JsonGenerator jg, final GraphReadMethods graph, final GraphElementType elementType, final boolean verbose, final boolean writeData) throws Exception {
         final String elementTypeLabel = IoUtilities.getGraphElementTypeString(elementType);
 
         if (progress != null) {

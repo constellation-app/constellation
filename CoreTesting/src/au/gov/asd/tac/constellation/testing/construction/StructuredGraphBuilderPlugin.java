@@ -232,7 +232,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        int selectedPosition = (int) (Math.random() * backboneVertexCount);
+        int selectedPosition = r.nextInt(backboneVertexCount);
         int selectedVertex = graph.getVertex(selectedPosition);
         graph.setBooleanValue(vxSelectedAttr, selectedVertex, true);
 

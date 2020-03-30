@@ -470,9 +470,7 @@ public class TimelinePanel extends Region {
         timeZoneComboBox.setPrefWidth(150.0);
 
         final ObservableList<ZoneId> timeZones = FXCollections.observableArrayList();
-        ZoneId.getAvailableZoneIds().forEach((id) -> {
-            timeZones.add(ZoneId.of(id));
-        });
+        ZoneId.getAvailableZoneIds().forEach(id -> timeZones.add(ZoneId.of(id)));
         timeZoneComboBox.setItems(timeZones.sorted(TimeZoneUtilities.ZONE_ID_COMPARATOR));
         final Callback<ListView<ZoneId>, ListCell<ZoneId>> cellFactory = (final ListView<ZoneId> p) -> new ListCell<ZoneId>() {
             @Override

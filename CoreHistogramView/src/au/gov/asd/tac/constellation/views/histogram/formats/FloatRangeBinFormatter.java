@@ -97,8 +97,7 @@ public class FloatRangeBinFormatter extends BinFormatter {
 
         @Override
         public Bin create() {
-            FloatRangeBin f = new FloatRangeBin(bin, zero, bucketSize);
-            return f;
+            return new FloatRangeBin(bin, zero, bucketSize);
         }
     }
 }

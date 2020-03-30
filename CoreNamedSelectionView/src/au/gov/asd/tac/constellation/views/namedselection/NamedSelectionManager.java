@@ -15,11 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection;
 
-import au.gov.asd.tac.constellation.views.namedselection.utilities.NamedSelectionEditorPlugin;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionAllAllocPanel;
-import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionStatePlugin;
-import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -29,6 +24,11 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionAllAllocPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
+import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
+import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionStatePlugin;
+import au.gov.asd.tac.constellation.views.namedselection.utilities.NamedSelectionEditorPlugin;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -943,6 +943,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     public boolean isManagingActiveGraph() {
-        return !(graphNode == null);
+        return graphNode != null;
     }
 }

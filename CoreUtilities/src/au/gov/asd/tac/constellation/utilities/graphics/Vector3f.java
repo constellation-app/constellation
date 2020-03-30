@@ -97,9 +97,7 @@ public final class Vector3f implements Serializable {
      * @return the sum of the 2 given vectors.
      */
     public static Vector3f add(final Vector3f u, final Vector3f v) {
-        final Vector3f t = new Vector3f(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
-
-        return t;
+        return new Vector3f(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
     }
 
     /**
@@ -194,9 +192,7 @@ public final class Vector3f implements Serializable {
      * @return the difference between the 2 given vectors.
      */
     public static Vector3f subtract(final Vector3f u, final Vector3f v) {
-        final Vector3f t = new Vector3f(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
-
-        return t;
+        return new Vector3f(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
     }
 
     /**

@@ -366,7 +366,7 @@ public class ReplacePanel extends javax.swing.JPanel {
 
         if (validationListener != null) {
 
-            boolean newValidity = selectedAttributes.size() > 0;
+            boolean newValidity = !selectedAttributes.isEmpty();
             currValidity = newValidity;
             validationListener.validityChanged(currValidity);
         }

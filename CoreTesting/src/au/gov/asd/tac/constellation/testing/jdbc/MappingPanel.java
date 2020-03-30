@@ -240,24 +240,24 @@ public class MappingPanel extends javax.swing.JPanel {
                 // There are no existing mappings, so attempt to create some reasonable defaults.
                 final HashMap<String, String> canonical = new HashMap<>();
                 if (showTableColumns) {
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
                         }
                     });
                 } else {
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));

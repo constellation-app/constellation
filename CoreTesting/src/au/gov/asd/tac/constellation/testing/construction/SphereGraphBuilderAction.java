@@ -50,15 +50,6 @@ public final class SphereGraphBuilderAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent ev) {
         PluginExecution.withPlugin(CoreTestingPluginRegistry.SPHERE_GRAPH_BUILDER)
-                .withParameter(SphereGraphBuilderPlugin.N_PARAMETER_ID, 10)
-                .withParameter(SphereGraphBuilderPlugin.T_PARAMETER_ID, 10)
-                .withParameter(SphereGraphBuilderPlugin.OPTION_PARAMETER_ID, "Random vertices")
-                .withParameter(SphereGraphBuilderPlugin.ADD_CHARS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_LABELS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_RANDOM_ICONS_PARAMETER_ID, true)
-                .withParameter(SphereGraphBuilderPlugin.USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID, false)
-                .withParameter(SphereGraphBuilderPlugin.DRAW_MANY_TX_PARAMETER_ID, false)
-                .withParameter(SphereGraphBuilderPlugin.DRAW_MANY_DECORATORS_PARAMETER_ID, false)
                 .interactively(true)
                 .executeLater(context.getGraph());
     }

@@ -114,8 +114,7 @@ public class SqlQuery {
 
             // execute the query and return the results.
             if (isQuery) {
-                ResultSet results = statement.executeQuery();
-                return results;
+                return statement.executeQuery();
             } else {
                 statement.execute();
                 return null;

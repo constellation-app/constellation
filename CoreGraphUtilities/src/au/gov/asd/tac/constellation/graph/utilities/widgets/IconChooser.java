@@ -145,21 +145,21 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
             if (element.iconValue.buildByteArray() == null) {
                 name = null;
             } else {
-                String fnam = "";
+                StringBuilder fnam = new StringBuilder();
                 final TreePath path = iconFolders.getSelectionPath();
                 for (int i = 0; i < path.getPathCount(); i++) {
                     if (fnam.length() > 0) {
-                        fnam += SeparatorConstants.PERIOD;
+                        fnam.append(SeparatorConstants.PERIOD);
                     }
 
                     // Don't include the root name: it's just there to be selected in the JTree.
-                    fnam += i > 0 ? path.getPathComponent(i) : "";
+                    fnam.append(i > 0 ? path.getPathComponent(i) : "");
                 }
 
                 if (fnam.length() > 0) {
-                    fnam += SeparatorConstants.PERIOD;
+                    fnam.append(SeparatorConstants.PERIOD);
                 }
-                name = fnam + element.name;
+                name = fnam.toString() + element.name;
             }
         } else {
             name = null;

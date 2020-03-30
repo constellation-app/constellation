@@ -229,9 +229,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        double deltaL = delta_enter - delta_enter_log_enter - delta_exit_log_exit + delta_flow_log_flow;
-
-        return deltaL;
+        return delta_enter - delta_enter_log_enter - delta_exit_log_exit + delta_flow_log_flow;
     }
 
     /**
@@ -598,7 +596,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             addTeleportationDeltaFlowIfMove(current, moduleDeltaEnterExit, numModuleLinks);
 
             // Option to move to empty module (if node not already alone).
-            if (moduleMembers[current.index] > 1 && emptyModules.size() > 0) {
+            if (moduleMembers[current.index] > 1 && !emptyModules.isEmpty()) {
                 moduleDeltaEnterExit[numModuleLinks].module = emptyModules.get(emptyModules.size() - 1);
                 moduleDeltaEnterExit[numModuleLinks].deltaExit = 0;
                 moduleDeltaEnterExit[numModuleLinks].deltaEnter = 0;

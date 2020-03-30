@@ -225,13 +225,11 @@ public class OverviewPanel extends Pane {
                     }
 
                     // Work out if we have selected values for the current interval:
-                    if (selectedTransAttributeId != Graph.NOT_FOUND) {
-                        if (graph.getBooleanValue(selectedTransAttributeId, transactionID)) {
-                            if (itemsSelected[interval] > 0) {
-                                itemsSelected[interval]++;
-                            } else {
-                                itemsSelected[interval] = 1;
-                            }
+                    if (selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) {
+                        if (itemsSelected[interval] > 0) {
+                            itemsSelected[interval]++;
+                        } else {
+                            itemsSelected[interval] = 1;
                         }
                     }
                 }

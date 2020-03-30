@@ -26,19 +26,19 @@ import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.Record;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphDirection;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphStep;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphTransaction;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphVertex;
 import au.gov.asd.tac.constellation.graph.utilities.wrapper.GraphWrapper;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -86,8 +86,8 @@ public class PlaceholderUtilities {
             recordStore.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, getPlaceholderLabel(groupName));
             recordStore.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, node);
             recordStore.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, transactionType);
-            for (String enrichmentAttribute : enrichmentAttributes.keySet()) {
-                recordStore.set(GraphRecordStoreUtilities.TRANSACTION + enrichmentAttribute, enrichmentAttributes.get(enrichmentAttribute));
+            for (final Map.Entry<String, String> entry : enrichmentAttributes.entrySet()) {
+                recordStore.set(GraphRecordStoreUtilities.TRANSACTION + entry.getKey(), entry.getValue());
             }
         }
     }
@@ -130,10 +130,10 @@ public class PlaceholderUtilities {
         // remove all transactions with type 'unknown' and all nodes with identifier 'unknown'
         if (cleanupGraph) {
             g.streamTransactions()
-                    .filter((t) -> t.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
+                    .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter((v) -> v.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }
@@ -166,8 +166,8 @@ public class PlaceholderUtilities {
 
         // replace nodes with type 'placeholder' with the dominant correlated node
         g.streamVertices()
-                .filter((v) -> v.getTypeValue().equals(AnalyticConcept.VertexType.PLACEHOLDER))
-                .forEach((v) -> {
+                .filter(v -> v.getTypeValue().equals(AnalyticConcept.VertexType.PLACEHOLDER))
+                .forEach(v -> {
                     Optional<GraphVertex> dominant = v.streamNeighbours()
                             .filter(n -> n.getDirection() != GraphDirection.LOOPBACK)
                             .filter(n -> n.getTransaction().getTypeValue().isSubTypeOf(AnalyticConcept.TransactionType.CORRELATION))
@@ -256,7 +256,7 @@ public class PlaceholderUtilities {
         placeholderIds.forEach(placeholderId -> {
             final int leadVertex;
             final List<Integer> placeholderCorrelationList = placeholderCorrelations.get(placeholderId);
-            if (placeholderCorrelationList.size() > 0) {
+            if (!placeholderCorrelationList.isEmpty()) {
 
                 // calculate lead vertex
                 final SchemaVertexType leadVertexType = placeholderCorrelationList.stream()

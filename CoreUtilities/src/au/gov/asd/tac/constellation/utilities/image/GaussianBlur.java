@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.image;
 
 import java.util.Arrays;
+import org.apache.commons.lang3.ArrayUtils;
 
 /**
  * Gaussian Blur.
@@ -60,26 +61,34 @@ public class GaussianBlur {
 
     public static void gaussianBlurReal(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        assert sourceChannel.length == width * height : "Source channel does not have the dimensions provided.";
-        assert sourceChannel.length <= targetChannel.length : "Target channel is smaller than source channel.";
-        final int rs = (int) Math.ceil(radius * 2.57);
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                double val = 0;
-                double wsum = Double.MIN_VALUE;
-                for (int iy = (i - rs); iy < (i + rs + 1); iy++) {
-                    for (int ix = (j - rs); ix < (j + rs + 1); ix++) {
-                        int x = Math.min(width - 1, Math.max(0, ix));
-                        int y = Math.min(height - 1, Math.max(0, iy));
-                        int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
-                        double wght = Math.exp(-dsq / (2.0 * radius * radius)) / (Math.PI * 2.0 * radius * radius);
-                        val += sourceChannel[y * width + x] * wght;
-                        wsum += wght;
+        if(sourceChannel.length == width * height){
+            if(sourceChannel.length <= targetChannel.length){
+                final int rs = (int) Math.ceil(radius * 2.57);
+                for (int i = 0; i < height; i++) {
+                    for (int j = 0; j < width; j++) {
+                        double val = 0;
+                        double wsum = Double.MIN_VALUE;
+                        for (int iy = (i - rs); iy < (i + rs + 1); iy++) {
+                            for (int ix = (j - rs); ix < (j + rs + 1); ix++) {
+                                int x = Math.min(width - 1, Math.max(0, ix));
+                                int y = Math.min(height - 1, Math.max(0, iy));
+                                int dsq = (ix - j) * (ix - j) + (iy - i) * (iy - i);
+                                double wght = Math.exp(-dsq / (2.0 * radius * radius)) / (Math.PI * 2.0 * radius * radius);
+                                val += sourceChannel[y * width + x] * wght;
+                                wsum += wght;
+                            }
+                        }
+                        targetChannel[i * width + j] = (float) (val / wsum);
                     }
                 }
-                targetChannel[i * width + j] = (float) (val / wsum);
+            } else {
+                throw new IllegalArgumentException("Target channel is smaller than source channel.");
             }
+        } else {
+            throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
         }
+        
+        
     }
 
     public enum BoxBlurType {
@@ -90,24 +99,32 @@ public class GaussianBlur {
 
     public static void gaussianBlurBox(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
-        assert sourceChannel.length == width * height : "Source channel does not have the dimensions provided.";
-        assert sourceChannel.length <= targetChannel.length : "Target channel is smaller than source channel.";
-        float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
-        int[] boxes = boxesForGauss(radius, passes);
-        for (int i = 0; i < passes; i++) {
-            switch (type) {
-                case STANDARD:
-                    boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FAST:
-                    boxBlurF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
-                case FASTEST:
-                    boxBlurFF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
-                    break;
+        
+        if(sourceChannel.length == width * height){
+            if(sourceChannel.length <= targetChannel.length){
+                float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
+                int[] boxes = boxesForGauss(radius, passes);
+                for (int i = 0; i < passes; i++) {
+                    switch (type) {
+                        case STANDARD:
+                            boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            break;
+                        case FAST:
+                            boxBlurF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            break;
+                        case FASTEST:
+                            boxBlurFF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            break;
+                    }
+                    tempChannel = targetChannel;
+                }
+            } else {
+                throw new IllegalArgumentException("Target channel is smaller than source channel.");
             }
-            tempChannel = targetChannel;
+        } else {
+            throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
         }
+        
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {
@@ -146,11 +163,9 @@ public class GaussianBlur {
         }
     }
 
-    private static void boxBlurF(final float[] sourceChannel, final float[] targetChannel,
+    private static void boxBlurF(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius) {
-        for (int i = 0; i < sourceChannel.length; i++) {
-            targetChannel[i] = sourceChannel[i];
-        }
+        targetChannel = ArrayUtils.addAll(sourceChannel);
         boxBlurFH(sourceChannel, targetChannel, width, height, radius);
         boxBlurFT(sourceChannel, targetChannel, width, height, radius);
     }
@@ -183,11 +198,9 @@ public class GaussianBlur {
         }
     }
 
-    private static void boxBlurFF(final float[] sourceChannel, final float[] targetChannel,
+    private static void boxBlurFF(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius) {
-        for (int i = 0; i < sourceChannel.length; i++) {
-            targetChannel[i] = sourceChannel[i];
-        }
+        targetChannel = ArrayUtils.addAll(sourceChannel);
         boxBlurFFH(sourceChannel, targetChannel, width, height, radius);
         boxBlurFFT(sourceChannel, targetChannel, width, height, radius);
     }
@@ -269,13 +282,16 @@ public class GaussianBlur {
 
     public static void colorise(final float[] sourceChannel, final int[] targetChannel,
             final int threshold, final float severity) {
-        assert threshold >= 0 && threshold < 255 : "Threshold must be a value between 0 and 255";
-        GaussianBlur.normalise(sourceChannel, 255);
-        for (int i = 0; i < sourceChannel.length; i++) {
-            final int paletteIndex = (int) Math.floor(sourceChannel[i]);
-            final int alpha = paletteIndex < threshold ? 0
-                    : Math.min((int) Math.floor((paletteIndex * severity) - threshold), 192);
-            targetChannel[i] = GaussianBlur.RAINBOW[paletteIndex] + (alpha << 24);
+        if(threshold >= 0 && threshold < 255){   
+            GaussianBlur.normalise(sourceChannel, 255);
+            for (int i = 0; i < sourceChannel.length; i++) {
+                final int paletteIndex = (int) Math.floor(sourceChannel[i]);
+                final int alpha = paletteIndex < threshold ? 0
+                        : Math.min((int) Math.floor((paletteIndex * severity) - threshold), 192);
+                targetChannel[i] = GaussianBlur.RAINBOW[paletteIndex] + (alpha << 24);
+            }
+        } else {
+            throw new IllegalArgumentException("Threshold must be a value between 0 and 255");
         }
     }
 }

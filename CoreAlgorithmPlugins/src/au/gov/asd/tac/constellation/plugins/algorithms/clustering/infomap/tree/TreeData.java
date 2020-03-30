@@ -73,9 +73,12 @@ public class TreeData {
     }
 
     public NodeBase getLeafNode(final int index) {
-        assert index < leafNodes.size();
+        if(index < leafNodes.size()){
+            return leafNodes.get(index);
+        } else {
+            throw new IllegalArgumentException();
+        }
 
-        return leafNodes.get(index);
     }
 
     public NodeBase getFirstLeaf() {

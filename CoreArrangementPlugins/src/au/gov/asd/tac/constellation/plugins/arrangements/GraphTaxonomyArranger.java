@@ -150,28 +150,28 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final Map<Integer, Set<Integer>> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
-            for (final int k : taxa.keySet()) {
-                if (taxonomy.getArrangeRectangularly(k)) {
+            for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
+                if (taxonomy.getArrangeRectangularly(entry.getKey())) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange grid...", true);
                     }
-                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
-                } else if (k == singletonsKey) {
+                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                } else if (entry.getKey() == singletonsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange singletons...", true);
                     }
-                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
-                } else if (k == doubletsKey) {
+                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                } else if (entry.getKey() == doubletsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange doublets...", true);
                     }
-                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
+                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
                 } else {
                     if (interaction != null) {
                         final String msg = String.format("Arrange inner (%s)...", inner.getClass().getSimpleName());
                         interaction.setProgress(step, steps, msg, true);
                     }
-                    inner.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
+                    inner.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
                 }
                 step++;
             }

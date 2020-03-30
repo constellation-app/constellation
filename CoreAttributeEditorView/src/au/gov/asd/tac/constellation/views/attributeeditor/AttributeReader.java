@@ -239,8 +239,7 @@ public class AttributeReader {
                 }
 
                 final boolean isSchemaAttr = rg.getSchema() != null
-                        ? rg.getSchema().getFactory().getRegisteredAttributes(attr.getElementType()).containsKey(attr.getName())
-                        : false;
+                        && rg.getSchema().getFactory().getRegisteredAttributes(attr.getElementType()).containsKey(attr.getName());
 
                 AttributeData attrData = new AttributeData(attr.getName(), attr.getDescription(), attr.getId(), rg.getValueModificationCounter(attr.getId()), elementType, attr.getAttributeType(), attr.getDefaultValue(), rg.isPrimaryKey(attr.getId()), isSchemaAttr);
                 attributeNames.add(attrData);

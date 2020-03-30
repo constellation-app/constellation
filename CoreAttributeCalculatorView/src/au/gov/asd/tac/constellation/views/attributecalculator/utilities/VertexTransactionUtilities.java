@@ -66,10 +66,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     private boolean checkTransactions(final PyFunction condition, final PyFunction nodeCondition, final int direction) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
-        for (int elementId : transactions.keySet()) {
-            context.enter(elementId, GraphElementType.TRANSACTION);
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             boolean conditionMatches = isTrueValue(condition.__call__());
-            context.enter(transactions.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -80,35 +80,35 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return false;
     }
 
-    public boolean has_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.NOT_FOUND);
     }
 
-    public boolean has_outgoing_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_outgoing_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.OUTGOING);
     }
 
-    public boolean has_incoming_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_incoming_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.INCOMING);
     }
 
-    public boolean has_undirected_transaction(final PyFunction condition) throws ScriptException {
+    public boolean has_undirected_transaction(final PyFunction condition) {
         return checkTransactions(condition, Graph.UNDIRECTED);
     }
 
-    public boolean has_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.NOT_FOUND);
     }
 
-    public boolean has_outgoing_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_outgoing_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.OUTGOING);
     }
 
-    public boolean has_incoming_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_incoming_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.INCOMING);
     }
 
-    public boolean has_undirected_transaction(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public boolean has_undirected_transaction(final PyFunction condition, final PyFunction nodeCondition) {
         return checkTransactions(condition, nodeCondition, Graph.UNDIRECTED);
     }
 
@@ -133,10 +133,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     public boolean has_edge(final PyFunction condition, final PyFunction nodeCondition) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
-        for (int elementId : edges.keySet()) {
-            context.enter(elementId, GraphElementType.EDGE);
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.EDGE);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
-            context.enter(edges.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -154,10 +154,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
     public boolean has_link(final PyFunction condition, final PyFunction nodeCondition) {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
-        for (int elementId : links.keySet()) {
-            context.enter(elementId, GraphElementType.LINK);
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.LINK);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
-            context.enter(links.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -176,10 +176,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
         int count = 0;
-        for (int elementId : transactions.keySet()) {
-            context.enter(elementId, GraphElementType.TRANSACTION);
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             boolean conditionMatches = isTrueValue(condition.__call__());
-            context.enter(transactions.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -190,35 +190,35 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return count;
     }
 
-    public int count_transactions(final PyFunction condition) throws ScriptException {
+    public int count_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.NOT_FOUND);
     }
 
-    public int count_outgoing_transactions(final PyFunction condition) throws ScriptException {
+    public int count_outgoing_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.OUTGOING);
     }
 
-    public int count_incoming_transactions(final PyFunction condition) throws ScriptException {
+    public int count_incoming_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.INCOMING);
     }
 
-    public int count_undirected_transactions(final PyFunction condition) throws ScriptException {
+    public int count_undirected_transactions(final PyFunction condition) {
         return countTransactions(condition, Graph.UNDIRECTED);
     }
 
-    public int count_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.NOT_FOUND);
     }
 
-    public int count_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.OUTGOING);
     }
 
-    public int count_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.INCOMING);
     }
 
-    public int count_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition) throws ScriptException {
+    public int count_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition) {
         return countTransactions(condition, nodeCondition, Graph.UNDIRECTED);
     }
 
@@ -245,10 +245,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
         int count = 0;
-        for (int elementId : edges.keySet()) {
-            context.enter(elementId, GraphElementType.EDGE);
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.EDGE);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
-            context.enter(edges.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -267,10 +267,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
         int count = 0;
-        for (int elementId : links.keySet()) {
-            context.enter(elementId, GraphElementType.LINK);
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.LINK);
             boolean conditionMatches = isTrueAndContainsNonNulls(condition.__call__());
-            context.enter(links.get(elementId), GraphElementType.VERTEX);
+            context.enter(entry.getValue(), GraphElementType.VERTEX);
             boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
             context.exit();
             context.exit();
@@ -293,10 +293,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> transactions = getTransactions(context.current(), direction);
         final List<Object> results = new ArrayList<>();
-        for (int elementId : transactions.keySet()) {
-            context.enter(elementId, GraphElementType.TRANSACTION);
+        for (final Map.Entry<Integer, Integer> entry : transactions.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.TRANSACTION);
             if (condition == null || isTrueValue(condition.__call__())) {
-                context.enter(transactions.get(elementId), GraphElementType.VERTEX);
+                context.enter(entry.getValue(), GraphElementType.VERTEX);
                 boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
                 context.exit();
                 if (otherNodeMatches) {
@@ -311,51 +311,51 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         return new PyList(results);
     }
 
-    public PyList for_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction computation) {
         return forTransactions(computation, Graph.UNDIRECTED);
     }
 
-    public PyList for_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction computation) {
         return forTransactions(condition, computation, Graph.UNDIRECTED);
     }
 
-    public PyList for_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.NOT_FOUND);
     }
 
-    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_outgoing_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.OUTGOING);
     }
 
-    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_incoming_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.INCOMING);
     }
 
-    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) throws ScriptException {
+    public PyList for_undirected_transactions(final PyFunction condition, final PyFunction nodeCondition, final PyFunction computation) {
         return forTransactions(condition, nodeCondition, computation, Graph.UNDIRECTED);
     }
 
@@ -458,10 +458,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> edges = getEdges(context.current());
         final List<Object> results = new ArrayList<>();
-        for (int elementId : edges.keySet()) {
-            context.enter(elementId, GraphElementType.EDGE);
+        for (final Map.Entry<Integer, Integer> entry : edges.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.EDGE);
             if (condition == null || isTrueAndContainsNonNulls(condition.__call__())) {
-                context.enter(edges.get(elementId), GraphElementType.VERTEX);
+                context.enter(entry.getValue(), GraphElementType.VERTEX);
                 boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
                 context.exit();
                 if (otherNodeMatches) {
@@ -488,10 +488,10 @@ public class VertexTransactionUtilities extends AbstractCalculatorUtilities {
         context.require(GraphElementType.VERTEX);
         final Map<Integer, Integer> links = getLinks(context.current());
         final List<Object> results = new ArrayList<>();
-        for (int elementId : links.keySet()) {
-            context.enter(elementId, GraphElementType.LINK);
+        for (final Map.Entry<Integer, Integer> entry : links.entrySet()) {
+            context.enter(entry.getKey(), GraphElementType.LINK);
             if (condition == null || isTrueAndContainsNonNulls(condition.__call__())) {
-                context.enter(links.get(elementId), GraphElementType.VERTEX);
+                context.enter(entry.getValue(), GraphElementType.VERTEX);
                 boolean otherNodeMatches = nodeCondition == null || isTrueValue(nodeCondition.__call__());
                 context.exit();
                 if (otherNodeMatches) {

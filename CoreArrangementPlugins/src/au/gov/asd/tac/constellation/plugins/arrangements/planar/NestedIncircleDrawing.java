@@ -64,9 +64,7 @@ public class NestedIncircleDrawing {
 
     public static Point getIncircleRadius(final List<Point> polygon) {
 
-        Point centre = new Point();
-        return centre;
-
+        return new Point();
     }
 
 }

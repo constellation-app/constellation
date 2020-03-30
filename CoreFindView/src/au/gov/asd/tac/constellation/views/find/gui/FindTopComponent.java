@@ -716,11 +716,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         }
 
         // Save the AND/OR mode ('any'/'all'):
-        if (this.cmbMatch.getSelectedItem().equals(Bundle.Find_ANY())) {
-            newState.setAny(true);
-        } else {
-            newState.setAny(false);
-        }
+        newState.setAny(this.cmbMatch.getSelectedItem().equals(Bundle.Find_ANY()));
 
         // Save the hold selection mode:
         newState.setHeld(chkAddToSelection.isSelected());

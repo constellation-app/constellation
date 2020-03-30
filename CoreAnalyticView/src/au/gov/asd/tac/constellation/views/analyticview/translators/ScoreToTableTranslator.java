@@ -54,7 +54,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         tableVisualisation.populateTable(result.getIgnoreNullResults()
                 ? result.get().stream().filter(elementMultiScore -> !elementMultiScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;

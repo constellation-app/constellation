@@ -240,7 +240,7 @@ public class DayNightLayer extends MapLayer {
                 + Math.sin(rad * 3 * meanAnomSun) * 0.000289;
         final double sunTrueLong = meanLongSun + sunEq;
         final double sunAppLong = sunTrueLong - 0.00569 - 0.00478 * Math.sin(rad * 125.04 - 1934.136 * jc);
-        final double meanObliqueEcliptic = 23 + (26 + ((21.448 - jc * (46.815 + jc * (0.00059 - jc * 0.001813)))) / 60) / 60;
+        final double meanObliqueEcliptic = 23 + (26 + (21.448 - jc * (46.815 + jc * (0.00059 - jc * 0.001813))) / 60) / 60;
         final double obliqueCorr = meanObliqueEcliptic + 0.00256 * Math.cos(rad * 125.04 - 1934.136 * jc);
 
         final double lat = Math.asin(Math.sin(rad * obliqueCorr) * Math.sin(rad * sunAppLong)) / rad;

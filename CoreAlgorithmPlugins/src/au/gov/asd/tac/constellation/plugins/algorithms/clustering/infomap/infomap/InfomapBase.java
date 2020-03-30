@@ -839,7 +839,7 @@ public abstract class InfomapBase {
             }
 
             // If no improvement, revert codelength terms to the actual structure.
-            if (!(codelength < consolidatedCodelength - config.minimumCodelengthImprovement)) {
+            if (codelength >= consolidatedCodelength - config.minimumCodelengthImprovement) {
                 indexCodelength = consolidatedIndexLength;
                 moduleCodelength = consolidatedModuleLength;
                 codelength = consolidatedCodelength;

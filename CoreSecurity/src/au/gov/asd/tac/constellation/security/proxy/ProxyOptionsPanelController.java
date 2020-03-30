@@ -87,25 +87,19 @@ public class ProxyOptionsPanelController extends OptionsPanelController implemen
     @Override
     public boolean isValid() {
         final ProxyOptionsPanel proxyOptionsPanel = getPanel();
-        final boolean valid
-                = ProxyUtilities.parseProxy(proxyOptionsPanel.getDefaultProxy(), true) != null
+        return ProxyUtilities.parseProxy(proxyOptionsPanel.getDefaultProxy(), true) != null
                 && ProxyUtilities.parseProxies(proxyOptionsPanel.getAdditionalProxies(), false) != null
                 && proxyOptionsPanel.getBypassProxyHosts() != null;
-
-        return valid;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ProxyPreferenceKeys.class);
         final ProxyOptionsPanel proxyOptionsPanel = getPanel();
-        final boolean changed
-                = !(proxyOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
+        return !(proxyOptionsPanel.getUseDefaultSettings() == prefs.getBoolean(ProxyPreferenceKeys.USE_DEFAULTS, ProxyPreferenceKeys.USE_DEFAULTS_DEFAULT)
                 && proxyOptionsPanel.getDefaultProxy().equals(prefs.get(ProxyPreferenceKeys.DEFAULT, ProxyPreferenceKeys.DEFAULT_DEFAULT))
                 && proxyOptionsPanel.getAdditionalProxies().equals(prefs.get(ProxyPreferenceKeys.ADDITIONAL, ProxyPreferenceKeys.ADDITIONAL_DEFAULT))
                 && proxyOptionsPanel.getBypassProxyHosts().equals(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT)));
-
-        return changed;
     }
 
     @Override

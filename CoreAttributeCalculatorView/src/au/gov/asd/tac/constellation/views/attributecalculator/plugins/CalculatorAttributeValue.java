@@ -168,9 +168,8 @@ public class CalculatorAttributeValue extends AbstractCalculatorValue {
 
     public boolean isTemporalAttribute(final GraphReadMethods graph, final int attrID) {
         final Class<?> type = graph.getAttributeDataType(attrID);
-        if (type.equals(DateAttributeDescription.class) || type.equals(ZonedDateTimeAttributeDescription.class) || type.equals(TimeAttributeDescription.class)) {
-            return true;
-        }
-        return false;
+        return type.equals(DateAttributeDescription.class) 
+                || type.equals(ZonedDateTimeAttributeDescription.class) 
+                || type.equals(TimeAttributeDescription.class);
     }
 }
