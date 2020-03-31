@@ -105,8 +105,12 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
 
     @Override
     public void setLocations(final List<Location> locations) {
-        assert locations.size() == 1 : "A point marker can only have one location.";
-        super.setLocations(locations);
+        if(locations.size() == 1){
+            super.setLocations(locations);
+        } else {
+            throw new IllegalArgumentException("A point marker can only have one location.");
+        }
+        
     }
 
     @Override

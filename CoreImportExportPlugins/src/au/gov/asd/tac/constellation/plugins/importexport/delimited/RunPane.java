@@ -386,9 +386,10 @@ public class RunPane extends BorderPane {
             }
             columnIndex++;
         }
-
-        rowFilter.setColumns(currentColumnLabels = columnLabels);
-        sampleDataView.setItems(currentRows = newRows);
+        currentColumnLabels = columnLabels;
+        rowFilter.setColumns(currentColumnLabels);
+        currentRows = newRows;
+        sampleDataView.setItems(currentRows);
         setFilter(filter);
     }
 
