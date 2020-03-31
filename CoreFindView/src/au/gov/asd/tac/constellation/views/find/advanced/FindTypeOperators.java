@@ -28,7 +28,7 @@ public class FindTypeOperators {
     /**
      * Supported Find types.
      */
-    public static enum Type {
+    public enum Type {
 
         /**
          * BOOLEAN types.
@@ -135,7 +135,7 @@ public class FindTypeOperators {
         "Oper_ENDS_WITH=ends with",
         "Oper_REGEX=matches (regex)"
     })
-    public static enum Operator {
+    public enum Operator {
 
         /**
          * Temporal: '=='.

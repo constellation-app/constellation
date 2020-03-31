@@ -27,7 +27,7 @@ public class TreeGraphBuilder extends GraphBuilder {
     private static final int[] CHILDREN_AT_DEPTHS_DEFAULT = {2, 2, 2};
     private static final TreeDirection DIRECTION_DEFAULT = TreeDirection.UNDIRECTED;
 
-    public static enum TreeDirection {
+    public enum TreeDirection {
 
         AWAY_FROM_ROOT,
         TOWARDS_ROOT,

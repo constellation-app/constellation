@@ -32,7 +32,7 @@ import java.util.BitSet;
  */
 public class PathScoringUtilities {
 
-    public static enum ScoreType {
+    public enum ScoreType {
 
         AVERAGE_DISTANCE(false),
         ECCENTRICITY(false),

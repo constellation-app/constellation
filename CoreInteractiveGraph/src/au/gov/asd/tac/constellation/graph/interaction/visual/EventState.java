@@ -43,7 +43,7 @@ final class EventState extends HitState {
     /**
      * Constants defining the various actions that may be performed.
      */
-    static enum SceneAction {
+    enum SceneAction {
 
         ROTATING("Rotate"),
         PANNING("Pan"),
@@ -62,7 +62,7 @@ final class EventState extends HitState {
     /**
      * Constants defining the various modes of creating graph elements.
      */
-    static enum CreationMode {
+    enum CreationMode {
 
         CREATING_VERTEX,
         CREATING_TRANSACTION,

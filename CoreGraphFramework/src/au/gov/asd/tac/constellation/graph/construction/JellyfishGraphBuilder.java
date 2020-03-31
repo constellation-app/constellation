@@ -27,7 +27,7 @@ public class JellyfishGraphBuilder extends GraphBuilder {
     private static final int[] TENTACLE_LENGTHS_DEFAULT = {2, 2, 2, 2, 2};
     private static final TentacleDirection TENTACLE_DIRECTION_DEFAULT = TentacleDirection.UNDIRECTED;
 
-    public static enum TentacleDirection {
+    public enum TentacleDirection {
 
         AWAY_FROM_CENTRE(StarGraphBuilder.StarDirection.CENTRE_IS_SOURCE),
         TOWARD_CENTRE(StarGraphBuilder.StarDirection.CENTRE_IS_SINK),

@@ -46,7 +46,7 @@ public class GraphTableModel implements TableModel {
     /**
      * Which part of the table a given attribute is in.
      */
-    public static enum Segment {
+    public enum Segment {
 
         TX, VX_SRC, VX_DST;
     }
