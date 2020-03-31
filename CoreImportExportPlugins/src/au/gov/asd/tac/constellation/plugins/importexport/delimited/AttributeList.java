@@ -88,7 +88,7 @@ public class AttributeList extends VBox {
 
         attributeNode.setOnMousePressed((final MouseEvent t) -> {
             if (t.isPrimaryButtonDown()) {
-                runPane.draggingOffset = new Point2D(t.getX(), t.getY());
+                runPane.setDraggingOffset(new Point2D(t.getX(), t.getY()));
                 final Point2D location = runPane.sceneToLocal(t.getSceneX(), t.getSceneY());
 
                 // If the attribute node is currently assigned to a column then remove it.
@@ -102,10 +102,10 @@ public class AttributeList extends VBox {
                 runPane.getChildren().add(attributeNode);
 
                 attributeNode.setManaged(false);
-                attributeNode.setLayoutX(location.getX() - runPane.draggingOffset.getX());
-                attributeNode.setLayoutY(location.getY() - runPane.draggingOffset.getY());
+                attributeNode.setLayoutX(location.getX() - runPane.getDraggingOffset().getX());
+                attributeNode.setLayoutY(location.getY() - runPane.getDraggingOffset().getY());
 
-                runPane.draggingAttributeNode = attributeNode;
+                runPane.setDraggingAttributeNode(attributeNode);
 
                 runPane.handleAttributeMoved(t.getSceneX(), t.getSceneY());
             }

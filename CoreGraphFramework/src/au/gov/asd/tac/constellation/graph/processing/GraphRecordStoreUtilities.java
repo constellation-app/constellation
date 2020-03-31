@@ -882,24 +882,24 @@ public class GraphRecordStoreUtilities {
             String uniqueId;
             if (compositeVxId == source) {
                 destId = String.valueOf(destination);
-                if (compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {
-                    sourceId = compositeTransactionId.originalSourceNode;
-                    compositeTransactionId.originalSourceNode = null;
+                if (compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
+                    sourceId = compositeTransactionId.getOriginalSourceNode();
+                    compositeTransactionId.setOriginalSourceNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
-                    compositeTransactionId.sourceContracted = false;
-                    compositeTransactionId.originalSourceNode = compositeStoredId;
+                    compositeTransactionId.setSourceContracted(false);
+                    compositeTransactionId.setOriginalSourceNode(compositeStoredId);
                     uniqueId = compositeTransactionId.toString();
                 }
             } else {
                 sourceId = String.valueOf(source);
-                if (compositeTransactionId.destContracted && compositeTransactionId.originalDestinationNode != null) {
-                    destId = compositeTransactionId.originalDestinationNode;
-                    compositeTransactionId.originalDestinationNode = null;
+                if (compositeTransactionId.isDestContracted() && compositeTransactionId.getOriginalDestinationNode() != null) {
+                    destId = compositeTransactionId.getOriginalDestinationNode();
+                    compositeTransactionId.setOriginalDestinationNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
-                    compositeTransactionId.destContracted = false;
-                    compositeTransactionId.originalDestinationNode = compositeStoredId;
+                    compositeTransactionId.setDestContracted(false);
+                    compositeTransactionId.setOriginalDestinationNode(compositeStoredId);
                     uniqueId = compositeTransactionId.toString();
                 }
             }
@@ -972,26 +972,26 @@ public class GraphRecordStoreUtilities {
             String uniqueId;
             if (expandedVxId == source) {
                 destId = String.valueOf(destination);
-                if (!compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {
-                    sourceId = compositeTransactionId.originalSourceNode;
-                    compositeTransactionId.originalSourceNode = null;
+                if (!compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
+                    sourceId = compositeTransactionId.getOriginalSourceNode();
+                    compositeTransactionId.setOriginalSourceNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
                     sourceId = toId;
-                    compositeTransactionId.sourceContracted = true;
-                    compositeTransactionId.originalSourceNode = expandedId;
+                    compositeTransactionId.setSourceContracted(true);
+                    compositeTransactionId.setOriginalSourceNode(expandedId);
                     uniqueId = compositeTransactionId.toString();
                 }
             } else {
                 sourceId = String.valueOf(source);
-                if (!compositeTransactionId.destContracted && compositeTransactionId.originalDestinationNode != null) {
-                    destId = compositeTransactionId.originalDestinationNode;
-                    compositeTransactionId.originalDestinationNode = null;
+                if (!compositeTransactionId.isDestContracted() && compositeTransactionId.getOriginalDestinationNode() != null) {
+                    destId = compositeTransactionId.getOriginalDestinationNode();
+                    compositeTransactionId.setOriginalDestinationNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
                     destId = toId;
-                    compositeTransactionId.destContracted = true;
-                    compositeTransactionId.originalDestinationNode = expandedId;
+                    compositeTransactionId.setDestContracted(true);
+                    compositeTransactionId.setOriginalDestinationNode(expandedId);
                     uniqueId = compositeTransactionId.toString();
                 }
             }

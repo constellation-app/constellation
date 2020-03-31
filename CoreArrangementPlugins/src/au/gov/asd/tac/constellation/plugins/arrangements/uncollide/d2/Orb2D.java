@@ -21,8 +21,8 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2;
  */
 public final class Orb2D {
 
-    public float x;
-    public float y;
+    private float x;
+    private float y;
     public final float r;
 
     public Orb2D(final float x, final float y, final float r) {
@@ -31,6 +31,22 @@ public final class Orb2D {
         this.r = r;
     }
 
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+    
 //    public boolean contains(final float x2, final float y2)
 //    {
 //        final double dx = x - x2;

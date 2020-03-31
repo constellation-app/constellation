@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.planar;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.planar.STNumbering.TreeNode;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.plugins.arrangements.planar.STNumbering.TreeNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,7 +72,7 @@ public class PQTreeEmbedding {
 
     public void embedComponent() {
         // Add leaf nodes for the root of the tree
-        tree.addLeaves(tree.root, adjacencyLists.get(0));
+        tree.addLeaves(tree.getRoot(), adjacencyLists.get(0));
         adjacencyLists.set(0, new LinkedList<>());
 
         // create the upward embedding

@@ -252,7 +252,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     private class Timer extends Thread {
 
-        public long startTime = System.currentTimeMillis();
+        private final long startTime = System.currentTimeMillis();
 
         public String getTime() {
             long now = System.currentTimeMillis();

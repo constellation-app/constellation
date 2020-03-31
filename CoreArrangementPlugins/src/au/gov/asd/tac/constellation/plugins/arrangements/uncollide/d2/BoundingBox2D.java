@@ -23,14 +23,14 @@ public class BoundingBox2D {
 
     public static Box2D getBox(final Orb2D[] orbs) {
         final Orb2D orb0 = orbs[0];
-        float minx = orb0.x;
-        float miny = orb0.y;
+        float minx = orb0.getX();
+        float miny = orb0.getY();
         float maxx = minx;
         float maxy = miny;
 
         for (final Orb2D orb : orbs) {
-            final float x = orb.x;
-            final float y = orb.y;
+            final float x = orb.getX();
+            final float y = orb.getY();
             if (x < minx) {
                 minx = x;
             }

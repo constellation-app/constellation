@@ -23,11 +23,27 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infoma
  */
 public class SubStructure {
 
-    public InfomapBase subInfomap;
-    public boolean exploredWithoutImprovement;
+    private InfomapBase subInfomap;
+    private boolean exploredWithoutImprovement;
 
     public SubStructure() {
         subInfomap = null;
         exploredWithoutImprovement = false;
+    }
+
+    public InfomapBase getSubInfomap() {
+        return subInfomap;
+    }
+
+    public void setSubInfomap(InfomapBase subInfomap) {
+        this.subInfomap = subInfomap;
+    }
+
+    public boolean isExploredWithoutImprovement() {
+        return exploredWithoutImprovement;
+    }
+
+    public void setExploredWithoutImprovement(boolean exploredWithoutImprovement) {
+        this.exploredWithoutImprovement = exploredWithoutImprovement;
     }
 }

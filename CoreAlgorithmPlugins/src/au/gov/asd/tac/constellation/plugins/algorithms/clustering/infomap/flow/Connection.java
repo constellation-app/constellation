@@ -21,15 +21,47 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.flow;
  */
 public class Connection {
 
-    public int source;
-    public int target;
-    public double weight;
-    public double flow;
+    private int source;
+    private int target;
+    private double weight;
+    private double flow;
 
     public Connection(final int end1, final int end2, final double weight) {
         this.source = end1;
         this.target = end2;
         this.weight = weight;
         flow = weight;
+    }
+
+    public int getSource() {
+        return source;
+    }
+
+    public void setSource(int source) {
+        this.source = source;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+
+    public double getFlow() {
+        return flow;
+    }
+
+    public void setFlow(double flow) {
+        this.flow = flow;
     }
 }

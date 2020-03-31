@@ -190,7 +190,7 @@ public final class PluginParametersPane extends GridPane {
         }
 
         private boolean nextChildElement(final PluginParametersNode node) {
-            return node.getChildren().get(currentChild).formatter.nextElement(node.getChildren().get(currentChild));
+            return node.getChildren().get(currentChild).getFormatter().nextElement(node.getChildren().get(currentChild));
         }
 
         @Override
@@ -213,7 +213,7 @@ public final class PluginParametersPane extends GridPane {
                 return null;
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
-            return child.formatter.getParamLabel(child);
+            return child.getFormatter().getParamLabel(child);
         }
 
         @Override
@@ -229,7 +229,7 @@ public final class PluginParametersPane extends GridPane {
                 return separatorBox;
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
-            return child.formatter.getParamPane(child);
+            return child.getFormatter().getParamPane(child);
         }
 
         @Override
@@ -242,7 +242,7 @@ public final class PluginParametersPane extends GridPane {
                 return null;
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
-            return child.formatter.getParamHelp(child);
+            return child.getFormatter().getParamHelp(child);
         }
     }
 
@@ -469,8 +469,8 @@ public final class PluginParametersPane extends GridPane {
             paramGroupGridPane = new GridPane();
 
             final PluginParametersNode firstChild = node.getChildren().get(0);
-            final Pane firstPane = firstChild.formatter.getParamPane(firstChild);
-            final Button firstButton = firstChild.formatter.getParamHelp(firstChild);
+            final Pane firstPane = firstChild.getFormatter().getParamPane(firstChild);
+            final Button firstButton = firstChild.getFormatter().getParamHelp(firstChild);
             addElements(firstChild, firstPane, firstButton);
             HBox.setHgrow(firstPane, shouldHGrow ? Priority.ALWAYS : Priority.NEVER);
             if (firstButton != null) {
@@ -478,10 +478,10 @@ public final class PluginParametersPane extends GridPane {
             }
 
             for (PluginParametersNode child : node.getChildren().subList(1, node.getChildren().size() - 1)) {
-                final LabelDescriptionBox label = child.formatter.getParamLabel(child);
+                final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
                 label.setStyle("-fx-label-padding: " + -PADDING);
-                final Pane paramPane = child.formatter.getParamPane(child);
-                final Button paramHelp = child.formatter.getParamHelp(child);
+                final Pane paramPane = child.getFormatter().getParamPane(child);
+                final Button paramHelp = child.getFormatter().getParamHelp(child);
                 label.bindDescriptionToLabel();
                 label.setMinWidth(USE_PREF_SIZE);
                 addElements(child, label, paramPane, paramHelp);
@@ -492,11 +492,11 @@ public final class PluginParametersPane extends GridPane {
             }
 
             final PluginParametersNode lastChild = node.getChildren().get(node.getChildren().size() - 1);
-            final LabelDescriptionBox lastLabel = lastChild.formatter.getParamLabel(lastChild);
+            final LabelDescriptionBox lastLabel = lastChild.getFormatter().getParamLabel(lastChild);
             lastLabel.setStyle("-fx-label-padding: " + -PADDING);
             lastLabel.bindDescriptionToLabel();
             lastLabel.setMinWidth(USE_PREF_SIZE);
-            final Pane lastPane = lastChild.formatter.getParamPane(lastChild);
+            final Pane lastPane = lastChild.getFormatter().getParamPane(lastChild);
             addElements(lastChild, lastLabel, lastPane);
             HBox.setHgrow(lastPane, shouldHGrow ? Priority.ALWAYS : Priority.NEVER);
             paramGroupGridPane.setPrefWidth(0);
@@ -510,7 +510,7 @@ public final class PluginParametersPane extends GridPane {
             }
 
             final PluginParametersNode firstChild = node.getChildren().get(0);
-            return firstChild.formatter.getParamLabel(firstChild);
+            return firstChild.getFormatter().getParamLabel(firstChild);
         }
 
         @Override
@@ -519,7 +519,7 @@ public final class PluginParametersPane extends GridPane {
                 return null;
             }
             final PluginParametersNode lastChild = node.getChildren().get(node.getChildren().size() - 1);
-            return lastChild.formatter.getParamHelp(lastChild);
+            return lastChild.getFormatter().getParamHelp(lastChild);
         }
     }
 
@@ -555,13 +555,13 @@ public final class PluginParametersPane extends GridPane {
             DoubleProperty maxLabelWidth = new SimpleDoubleProperty();
 
             for (final PluginParametersNode child : node.getChildren()) {
-                while (child.formatter.nextElement(child)) {
+                while (child.getFormatter().nextElement(child)) {
                     final RowConstraints rowConstraints = new RowConstraints();
                     rowConstraints.setVgrow(Priority.NEVER);
                     rowConstraints.setFillHeight(true);
                     paramGroupPane.getRowConstraints().addAll(rowConstraints);
 
-                    final LabelDescriptionBox label = child.formatter.getParamLabel(child);
+                    final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
                     if (label != null) {
                         paramGroupPane.add(label, 0, row);
                         GridPane.setValignment(label, VPos.TOP);
@@ -571,7 +571,7 @@ public final class PluginParametersPane extends GridPane {
                         maxLabelWidth = label.updateBindingWithLabelWidth(maxLabelWidth);
                     }
 
-                    final Pane paramPane = child.formatter.getParamPane(child);
+                    final Pane paramPane = child.getFormatter().getParamPane(child);
                     if (paramPane != null) {
                         paramPane.setStyle("-fx-padding: " + PADDING);
                         GridPane.setValignment(paramPane, VPos.TOP);
@@ -583,7 +583,7 @@ public final class PluginParametersPane extends GridPane {
                         }
                     }
 
-                    final Button paramHelp = child.formatter.getParamHelp(child);
+                    final Button paramHelp = child.getFormatter().getParamHelp(child);
                     if (paramHelp != null) {
                         paramGroupPane.add(paramHelp, 2, row);
                         GridPane.setMargin(paramHelp, new Insets(PADDING, PADDING, 0, 0));
@@ -661,7 +661,7 @@ public final class PluginParametersPane extends GridPane {
                     displayedParams++;
                 }
             }
-            pane = (PluginParametersPane) root.formatter.getParamPane(root);
+            pane = (PluginParametersPane) root.getFormatter().getParamPane(root);
         }
         if (pane == null) {
             pane = new PluginParametersPane();

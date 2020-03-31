@@ -106,12 +106,12 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                 } else {
                     group = new FastNewman.Group();
                     final int jsonId = jn.get("vertex").asInt();
-                    group.vertex = vertexMap.get(jsonId);
-                    group.mergeStep = jn.get("merge_step").asInt();
-                    group.singleStep = jn.get("single_step").asInt();
-                    group.color = ConstellationColor.getColorValue(jn.get("color").asText());
+                    group.setVertex(vertexMap.get(jsonId));
+                    group.setMergeStep(jn.get("merge_step").asInt());
+                    group.setSingleStep(jn.get("single_step").asInt());
+                    group.setColor(ConstellationColor.getColorValue(jn.get("color").asText()));
 
-                    final int groupIx = graph.getVertexPosition(group.vertex);
+                    final int groupIx = graph.getVertexPosition(group.getVertex());
                     coi.groups[groupIx] = group;
 
                     if (jn.has("parent")) {
@@ -124,7 +124,7 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
             // Use the parentLinks indices to hook up the Group parents.
             for (int i = 0; i < parentLinks.length; i++) {
                 if (parentLinks[i] != Graph.NOT_FOUND) {
-                    coi.groups[i].parent = coi.groups[parentLinks[i]];
+                    coi.groups[i].setParent(coi.groups[parentLinks[i]]);
                 }
             }
 
@@ -170,14 +170,14 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                     if (group != null) {
                         jsonGenerator.writeStartObject();
                         graph.getVertexPosition(state.steps);
-                        jsonGenerator.writeNumberField("vertex", group.vertex);
-                        jsonGenerator.writeNumberField("merge_step", group.mergeStep);
-                        jsonGenerator.writeNumberField("single_step", group.singleStep);
-                        jsonGenerator.writeStringField("color", group.color.toString());
+                        jsonGenerator.writeNumberField("vertex", group.getVertex());
+                        jsonGenerator.writeNumberField("merge_step", group.getMergeStep());
+                        jsonGenerator.writeNumberField("single_step", group.getSingleStep());
+                        jsonGenerator.writeStringField("color", group.getColor().toString());
 
-                        if (group.parent != null) {
+                        if (group.getParent() != null) {
                             // Get the vertex of the parent of this Group.
-                            final int parentVxId = group.parent.vertex;
+                            final int parentVxId = group.getParent().getVertex();
                             jsonGenerator.writeNumberField("parent", parentVxId);
                         }
                         jsonGenerator.writeEndObject();

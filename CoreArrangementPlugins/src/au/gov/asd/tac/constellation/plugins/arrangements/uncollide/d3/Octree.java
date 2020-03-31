@@ -133,22 +133,22 @@ public class Octree {
         final double midz = box.minz + ((box.minz - box.maxz) / 2f);
 
         // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = orb.y + orb.r < midy;
-        final boolean bottomQuadrant = orb.y - orb.r > midy;
+        final boolean topQuadrant = orb.getY() + orb.r < midy;
+        final boolean bottomQuadrant = orb.getY() - orb.r > midy;
 
         // Object can completely fit within the front/back quadrants.
-        final boolean frontQuadrant = orb.z - orb.r > midz;
-        final boolean backQuadrant = orb.z + orb.r < midz;
+        final boolean frontQuadrant = orb.getZ() - orb.r > midz;
+        final boolean backQuadrant = orb.getZ() + orb.r < midz;
 
         // Object can completely fit within the left quadrants.
-        if (orb.x + orb.r < midx) {
+        if (orb.getX() + orb.r < midx) {
             if (topQuadrant) {
                 index = frontQuadrant ? TOP_L_F : backQuadrant ? TOP_L_B : -1;
             } else if (bottomQuadrant) {
                 index = frontQuadrant ? BOT_L_F : backQuadrant ? BOT_L_B : -1;
             }
         } // Object can completely fit within the right quadrants.
-        else if (orb.x - orb.r > midx) {
+        else if (orb.getX() - orb.r > midx) {
             if (topQuadrant) {
                 index = frontQuadrant ? TOP_R_F : backQuadrant ? TOP_R_B : -1;
             } else if (bottomQuadrant) {
@@ -228,9 +228,9 @@ public class Octree {
         int collided = 0;
         for (final Orb3D possible : possibles) {
             if (orb != possible) {
-                float x = orb.x - possible.x;
-                float y = orb.y - possible.y;
-                float z = orb.z - possible.z;
+                float x = orb.getX() - possible.getX();
+                float y = orb.getY() - possible.getY();
+                float z = orb.getZ() - possible.getZ();
                 final double ll = x * x + y * y + z * z;
                 final double r = possible.r + orb.r + padding;
                 if (ll <= r * r) {
@@ -245,12 +245,12 @@ public class Octree {
                     z += perturbation;
                     perturbation = -perturbation;
 //                    System.out.printf("-Collided %f %f %f x=%f y=%f z=%f\n  %s <> %s\n", l, r, nudge, x, y, z, orb, possible);
-                    orb.x -= x;
-                    orb.y -= y;
-                    orb.z -= z;
-                    possible.x += x;
-                    possible.y += y;
-                    possible.z += z;
+                    orb.setX(orb.getX() - x);
+                    orb.setY(orb.getY() - y);
+                    orb.setZ(orb.getZ() - z);
+                    possible.setX(possible.getX() + x);
+                    possible.setY(possible.getY() + y);
+                    possible.setZ(possible.getZ() + z);
                 }
             }
         }

@@ -63,12 +63,16 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
 
     private static final String GRAPH_ACTION_THREAD_NAME = "New Schema Graph Action";
     private static final String TEMPLATE_DIR_NAME = "Graph Templates";
-    public static File TEMPLATE_DIRECTORY = null;
+    private static File TEMPLATE_DIRECTORY = null;
     private static final List<JMenuItem> TEMPLATES_MENU = new ArrayList<>();
     private static Map<String, String> templates;
     private static JMenu menu;
     private static final Map<String, Icon> ICON_CACHE = new HashMap<>();
 
+    public static File getTemplateDirectory() {
+        return TEMPLATE_DIRECTORY;
+    }
+    
     @Override
     public void actionPerformed(ActionEvent e) {
     }

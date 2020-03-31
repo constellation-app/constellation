@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapDirectedUnrecordedTeleportation;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirdir;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapUndirected;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  *
@@ -34,9 +34,9 @@ public class InfoMapContext {
     public InfoMapContext(final Config config, final GraphReadMethods rg) {
         if (config.isUndirected()) {
             infoMap = new InfomapUndirected(config, rg);
-        } else if (config.undirdir || config.outdirdir || config.rawdir) {
+        } else if (config.isUndirdir() || config.isOutdirdir() || config.isRawdir()) {
             infoMap = new InfomapUndirdir(config, rg);
-        } else if (config.recordedTeleportation) {
+        } else if (config.isRecordedTeleportation()) {
             infoMap = new InfomapDirected(config, rg);
         } else {
             infoMap = new InfomapDirectedUnrecordedTeleportation(config, rg);

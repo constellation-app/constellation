@@ -127,7 +127,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 //        setActivatedNodes(null);
         planeList.addListSelectionListener(e -> {
             if (!isAdjustingList) {
-                final DragDropList.MyListModel listModel = ((DragDropList) planeList).model;
+                final DragDropList.MyListModel listModel = ((DragDropList) planeList).getModel();
                 final BitSet visibleLayers = new BitSet();
                 final int[] selectedIndices = planeList.getSelectedIndices();
                 for (int i = 0; i < selectedIndices.length; i++) {

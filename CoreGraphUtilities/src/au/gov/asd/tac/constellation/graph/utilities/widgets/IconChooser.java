@@ -393,9 +393,9 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 
 class IconTreeFolder implements Comparable<IconTreeFolder> {
 
-    public String name;
-    public ArrayList<IconTreeFolder> children;
-    public TreeMap<String, ConstellationIcon> icons;
+    protected String name;
+    protected ArrayList<IconTreeFolder> children;
+    protected TreeMap<String, ConstellationIcon> icons;
 
     public IconTreeFolder(final String name) {
         this.name = name;
