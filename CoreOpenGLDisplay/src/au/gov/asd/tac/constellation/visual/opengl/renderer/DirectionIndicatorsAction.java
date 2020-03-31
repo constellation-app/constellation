@@ -36,13 +36,17 @@ public final class DirectionIndicatorsAction extends AbstractAction implements P
 
     // Not a particularly nice way of making a global state available,
     // but it has to be fast because it's used at every call to display().
-    public static volatile boolean showIndicators = false;
+    private static volatile boolean showIndicators = false;
 
     public DirectionIndicatorsAction() {
         menuItem = new JCheckBoxMenuItem(this);
         menuItem.setSelected(showIndicators);
     }
 
+    public static boolean isShowIndicators() {
+        return showIndicators;
+    }
+    
     @Override
     public void actionPerformed(final ActionEvent e) {
         showIndicators = !showIndicators;

@@ -27,9 +27,9 @@ public class ObjectValueUpdater2 implements ValueUpdater32 {
 
     @Override
     public int store(UndoGraphEditState state, int o) {
-        if (o != state.currentObject) {
-            int delta = o ^ state.currentObject;
-            state.currentObject = o;
+        if (o != state.getCurrentObject()) {
+            int delta = o ^ state.getCurrentObject();
+            state.setCurrentObject(o);
             if (delta >= 0 && delta <= 255) {
                 state.addByte((byte) (delta + Byte.MIN_VALUE));
                 return 1;
@@ -67,40 +67,40 @@ public class ObjectValueUpdater2 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentObject ^= (int) edit.getByteStack()[edit.getBytePointer()] - Byte.MIN_VALUE;
+                edit.setCurrentObject(edit.getCurrentObject() ^ ((int) edit.getByteStack()[edit.getBytePointer()] - Byte.MIN_VALUE));
                 edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
                 edit.setBytePointer(edit.getBytePointer() - 1);
-                edit.currentObject ^= (int) edit.getByteStack()[edit.getBytePointer()] - Byte.MIN_VALUE;
+                edit.setCurrentObject(edit.getCurrentObject() ^ ((int) edit.getByteStack()[edit.getBytePointer()] - Byte.MIN_VALUE));
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentObject ^= (int) edit.getShortStack()[edit.getShortPointer()] - Short.MIN_VALUE;
+                edit.setCurrentObject(edit.getCurrentObject() ^ ((int) edit.getShortStack()[edit.getShortPointer()] - Short.MIN_VALUE));
                 edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
                 edit.setShortPointer(edit.getShortPointer() - 1);
-                edit.currentObject ^= (int) edit.getShortStack()[edit.getShortPointer()] - Short.MIN_VALUE;
+                edit.setCurrentObject(edit.getCurrentObject() ^ ((int) edit.getShortStack()[edit.getShortPointer()] - Short.MIN_VALUE));
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentObject ^= edit.getIntStack()[edit.getIntPointer()];
+                edit.setCurrentObject(edit.getCurrentObject() ^ edit.getIntStack()[edit.getIntPointer()]);
                 edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
                 edit.setIntPointer(edit.getIntPointer() - 1);
-                edit.currentObject ^= edit.getIntStack()[edit.getIntPointer()];
+                edit.setCurrentObject(edit.getCurrentObject() ^ edit.getIntStack()[edit.getIntPointer()]);
             }
         }
     };

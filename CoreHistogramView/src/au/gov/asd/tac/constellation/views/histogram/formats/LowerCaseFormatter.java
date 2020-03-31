@@ -55,7 +55,7 @@ public class LowerCaseFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? null : bin.key.toLowerCase();
+            key = bin.getKey() == null ? null : bin.getKey().toLowerCase();
         }
 
         @Override

@@ -29,9 +29,9 @@ public class AttributeValueUpdater2 implements ValueUpdater32 {
 
     @Override
     public int store(UndoGraphEditState state, int attribute) {
-        if (attribute != state.currentAttribute) {
-            int delta = attribute - state.currentAttribute;
-            state.currentAttribute = attribute;
+        if (attribute != state.getCurrentAttribute()) {
+            int delta = attribute - state.getCurrentAttribute();
+            state.setCurrentAttribute(attribute);
             if (delta == 1) {
                 return 1;
             } else if (delta >= Byte.MIN_VALUE && delta <= Byte.MAX_VALUE) {
@@ -69,38 +69,38 @@ public class AttributeValueUpdater2 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentAttribute++;
+                edit.setCurrentAttribute(edit.getCurrentAttribute() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentAttribute--;
+                edit.setCurrentAttribute(edit.getCurrentAttribute() - 1);
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentAttribute += edit.getByteStack()[edit.getBytePointer()];
+                edit.setCurrentAttribute(edit.getCurrentAttribute() + edit.getByteStack()[edit.getBytePointer()]);
                 edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
                 edit.setBytePointer(edit.getBytePointer() - 1);
-                edit.currentAttribute -= edit.getByteStack()[edit.getBytePointer()];
+                edit.setCurrentAttribute(edit.getCurrentAttribute() - edit.getByteStack()[edit.getBytePointer()]);
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentAttribute += edit.getIntStack()[edit.getIntPointer()];
+                edit.setCurrentAttribute(edit.getCurrentAttribute() + edit.getIntStack()[edit.getIntPointer()]);
                 edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
                 edit.setIntPointer(edit.getIntPointer() - 1);
-                edit.currentAttribute -= edit.getIntStack()[edit.getIntPointer()];
+                edit.setCurrentAttribute(edit.getCurrentAttribute() - edit.getIntStack()[edit.getIntPointer()]);
             }
         }
     };

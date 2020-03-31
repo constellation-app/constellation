@@ -122,7 +122,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
         }
         ((Compilable) engine).compile(r).eval();
 
-        AbstractCalculatorValue.the_obliterator = ((PyObject) ((Compilable) engine).compile("Obliterator()").eval());
+        AbstractCalculatorValue.setTheObliterator(((PyObject) ((Compilable) engine).compile("Obliterator()").eval()));
 
     }
 
@@ -173,7 +173,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
                     if (functionWrapperScript != null) {
                         result = functionWrapperScript.eval();
                     }
-                    if (result == AbstractCalculatorValue.the_obliterator) {
+                    if (result == AbstractCalculatorValue.getTheObliterator()) {
                         result = null;
                     }
                     editedAttributeValues.put(elementId, result);

@@ -61,23 +61,23 @@ public class UndoGraphEditState {
     private int objectCount = 0;
     private Map<Object, Integer> objectMap = new HashMap<>();
 
-    public int currentAttribute = 0;
-    public int currentId = 0;
-    public int currentInt;
-    public int currentObject = 0;
-    public int currentFloat = 0;
+    private int currentAttribute = 0;
+    private int currentId = 0;
+    private int currentInt;
+    private int currentObject = 0;
+    private int currentFloat = 0;
 
-    public long currentLong = 0;
-    public long currentDouble = 0;
+    private long currentLong = 0;
+    private long currentDouble = 0;
 
 
-    public int finalAttribute;
-    public int finalId;
-    public int finalInt;
-    public int finalObject;
-    public int finalFloat;
-    public long finalLong;
-    public long finalDouble;
+    private int finalAttribute;
+    private int finalId;
+    private int finalInt;
+    private int finalObject;
+    private int finalFloat;
+    private long finalLong;
+    private long finalDouble;
 
     private short currentOperation = 0xFF;
     private int extraOperationsCount = 0;
@@ -211,6 +211,62 @@ public class UndoGraphEditState {
 
     public void setObjectStack(Object[] objectStack) {
         this.objectStack = objectStack;
+    }
+
+    public int getCurrentAttribute() {
+        return currentAttribute;
+    }
+
+    public void setCurrentAttribute(int currentAttribute) {
+        this.currentAttribute = currentAttribute;
+    }
+
+    public int getCurrentId() {
+        return currentId;
+    }
+
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
+    }
+
+    public int getCurrentInt() {
+        return currentInt;
+    }
+
+    public void setCurrentInt(int currentInt) {
+        this.currentInt = currentInt;
+    }
+
+    public int getCurrentObject() {
+        return currentObject;
+    }
+
+    public void setCurrentObject(int currentObject) {
+        this.currentObject = currentObject;
+    }
+
+    public int getCurrentFloat() {
+        return currentFloat;
+    }
+
+    public void setCurrentFloat(int currentFloat) {
+        this.currentFloat = currentFloat;
+    }
+
+    public long getCurrentLong() {
+        return currentLong;
+    }
+
+    public void setCurrentLong(long currentLong) {
+        this.currentLong = currentLong;
+    }
+
+    public long getCurrentDouble() {
+        return currentDouble;
+    }
+
+    public void setCurrentDouble(long currentDouble) {
+        this.currentDouble = currentDouble;
     }
     
     public void addInstruction(short operation) {

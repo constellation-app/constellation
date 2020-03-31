@@ -77,7 +77,7 @@ public class DateTimeCustomFormatter extends BinFormatter {
         @Override
         public void setKey(final GraphReadMethods graph, final int attribute, final int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? null : ((ZonedDateTime) bin.key).format(formattter);
+            key = bin.getKeyAsObject() == null ? null : ((ZonedDateTime) bin.getKeyAsObject()).format(formattter);
         }
 
         @Override
