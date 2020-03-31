@@ -40,6 +40,7 @@ import java.awt.BorderLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -114,7 +115,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         add(controls, BorderLayout.SOUTH);
 
         display = new HistogramDisplay(this);
-        final JScrollPane displayScroll = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
         add(displayScroll, BorderLayout.CENTER);
     }

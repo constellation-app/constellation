@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.scripting;
 
-import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
-import javax.swing.JScrollPane;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
+import javax.swing.ScrollPaneConstants;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -70,12 +70,12 @@ public final class ScriptingViewTopComponent extends SwingTopComponent {
 
     @Override
     protected int getHorizontalScrollPolicy() {
-        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
     }
 
     @Override
     protected int getVerticalScrollPolicy() {
-        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
     }
 
     @Override
