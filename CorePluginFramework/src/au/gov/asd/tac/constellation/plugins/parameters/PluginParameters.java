@@ -199,7 +199,7 @@ public class PluginParameters implements PluginParameterListener {
             if (children != null) {
                 return Collections.unmodifiableList(children);
             }
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
 
     }

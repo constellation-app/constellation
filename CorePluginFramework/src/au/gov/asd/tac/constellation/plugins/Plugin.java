@@ -194,8 +194,7 @@ public interface Plugin {
      * , otherwise null.
      */
     public default List<String> getOverriddenPlugins() {
-        final List<String> strings = new ArrayList<>();   
-        return strings;
+        return new ArrayList<>();   
     }
 
 }
