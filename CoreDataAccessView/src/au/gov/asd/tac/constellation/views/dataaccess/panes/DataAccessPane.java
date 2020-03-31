@@ -490,11 +490,9 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 LOGGER.log(Level.INFO, "Discovered data access plugin {0} ({1})", new Object[]{plugin.getName(), plugin.getType()});
 
                                 // If plugin overrides another, record which plugin should be removed for later processing.
-                                if (plugin.getOverriddenPlugins() != null) {
-                                    for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
-                                        pluginOverrides.put(overriddenPluginName, plugin);
-                                    }
-                                }
+                                for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
+                                    pluginOverrides.put(overriddenPluginName, plugin);
+                                }                                
                             } else {
                                 // If a plugin type is invalid (that is, not registered as a DataAccessPluginType), ignore the plugin.
                                 LOGGER.log(Level.SEVERE, "Unexpected data access plugin type '{0}' for plugin {1}", new Object[]{type, plugin.getName()});

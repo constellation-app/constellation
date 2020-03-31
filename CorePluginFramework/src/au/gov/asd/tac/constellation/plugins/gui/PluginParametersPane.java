@@ -209,7 +209,7 @@ public final class PluginParametersPane extends GridPane {
         @Override
         public LabelDescriptionBox getParamLabel(final PluginParametersNode node) {
             if (currentChild == -1 || currentChild == node.getChildren().size()
-                    || node.getChildren() == null || node.getChildren().isEmpty()) {
+                    || node.getChildren().isEmpty()) {
                 return null;
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
@@ -218,7 +218,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Pane getParamPane(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
             if (currentChild == -1 || currentChild == node.getChildren().size()) {
@@ -238,7 +238,7 @@ public final class PluginParametersPane extends GridPane {
                 return buildHelpButton(helpId, "this group");
             }
             if (currentChild == -1 || currentChild == node.getChildren().size()
-                    || node.getChildren() == null || node.getChildren().isEmpty()) {
+                    || node.getChildren().isEmpty()) {
                 return null;
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
@@ -275,7 +275,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Pane getParamPane(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
             if (currentChild == -1) {
@@ -337,7 +337,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Pane getParamPane(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
             if (currentChild == -1) {
@@ -462,7 +462,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Pane getParamPane(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
             currentCol = 0;
@@ -505,7 +505,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public LabelDescriptionBox getParamLabel(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
 
@@ -515,7 +515,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Button getParamHelp(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
             final PluginParametersNode lastChild = node.getChildren().get(node.getChildren().size() - 1);
@@ -541,7 +541,7 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public Pane getParamPane(final PluginParametersNode node) {
-            if (node.getChildren() == null || node.getChildren().isEmpty()) {
+            if (node.getChildren().isEmpty()) {
                 return null;
             }
 
