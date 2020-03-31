@@ -287,7 +287,8 @@ public class FindComparisons {
          */
         public static boolean evaluateBetween(final Calendar item, final Calendar comparisonA, final Calendar comparisonB) {
             if (item != null) {
-                final Calendar lower, upper;
+                final Calendar lower;
+                final Calendar upper;
 
                 if (comparisonA.before(comparisonB)) {
                     lower = comparisonA;
@@ -521,7 +522,7 @@ public class FindComparisons {
          */
         public static boolean evaluateIs(final String item, final String comparison, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? false : item.equalsIgnoreCase(comparison);
+                return item != null && item.equalsIgnoreCase(comparison);
             } else {
                 return item != null && item.equals(comparison);
             }
@@ -543,7 +544,7 @@ public class FindComparisons {
          */
         public static boolean evaluateIsNot(final String item, final String comparison, final boolean isCaseSensitive) {
             if (!isCaseSensitive) {
-                return item == null ? true : !item.equalsIgnoreCase(comparison);
+                return item == null || !item.equalsIgnoreCase(comparison);
             } else {
                 return item == null || !item.equals(comparison);
             }

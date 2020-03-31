@@ -60,7 +60,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     /**
      * What kind of label?
      */
-    public static enum LabelType {
+    public enum LabelType {
 
         /**
          * Bottom of node.
@@ -82,7 +82,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
      * Don't change the order: SceneBatchStore and the shader rely on a specific
      * order.
      */
-    public static enum Decorator {
+    public enum Decorator {
 
         /**
          * Northwest.

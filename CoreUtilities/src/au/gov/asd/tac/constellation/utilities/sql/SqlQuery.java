@@ -46,7 +46,7 @@ public class SqlQuery {
 
     // Constants representing different type of value comparisons that can be done
     // in an SqlQuery using = or LIKE.
-    public static enum MatchType {
+    public enum MatchType {
 
         MATCH_EXACT,
         MATCH_BEGINS_WITH,
@@ -56,7 +56,7 @@ public class SqlQuery {
 
     // Constants representing different type of text matching that can be done
     // in an SqlQuery using MATCH AGAINST on a fulltext index.
-    public static enum TextMatchType {
+    public enum TextMatchType {
 
         MATCH_EXACT,
         MATCH_PHRASE,

@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorUtilities;
 import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
 import au.gov.asd.tac.constellation.views.attributecalculator.utilities.CalculatorContextManager;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -115,8 +114,6 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             InputStream f = AttributeCalculatorPlugin.class.getResource("resources/obliterator.py").openStream();
             LOGGER.log(Level.INFO, "input stream={0}", f);
             r = new InputStreamReader(f, StandardCharsets.UTF_8.name());
-        } catch (FileNotFoundException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }

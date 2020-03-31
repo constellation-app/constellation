@@ -26,7 +26,7 @@ import java.util.HashMap;
  */
 public class ConstellationAbstractFeature {
 
-    public static enum ConstellationFeatureType {
+    public enum ConstellationFeatureType {
         POINT, LINE, POLYGON, MULTI, CLUSTER
     }
 

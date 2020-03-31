@@ -518,7 +518,7 @@ public interface VisualAccess {
     /**
      * The options for the 'directedness' of connections.
      */
-    public static enum ConnectionDirection {
+    public enum ConnectionDirection {
 
         LOW_TO_HIGH,
         HIGH_TO_LOW,

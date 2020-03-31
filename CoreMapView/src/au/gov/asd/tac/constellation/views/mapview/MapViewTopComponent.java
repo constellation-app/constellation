@@ -71,8 +71,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -164,7 +165,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
         // initialise toolbar
-        this.toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        this.toolBar = new JToolBar(SwingConstants.HORIZONTAL);
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         this.mapProviderMenu = new JSingleChoiceComboBoxMenu(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
@@ -579,12 +580,12 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected int getVerticalScrollPolicy() {
-        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
     }
 
     @Override
     protected int getHorizontalScrollPolicy() {
-        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
     }
 
     @Override

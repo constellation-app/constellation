@@ -118,6 +118,7 @@ import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.netbeans.api.actions.Savable;
@@ -306,7 +307,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         toggleDrawDirectedAction = new ToggleDrawDirectedAction(graphNode, directedModeButtonGroup);
         toggleGraphVisibilityAction = new ToggleGraphVisibilityAction(graphNode);
 
-        final JToolBar sidebar = new JToolBar(JToolBar.VERTICAL);
+        final JToolBar sidebar = new JToolBar(SwingConstants.VERTICAL);
         sidebar.setFloatable(false);
         sidebar.setRollover(true);
         sidebar.add(display3dAction.getToolbarPresenter());
