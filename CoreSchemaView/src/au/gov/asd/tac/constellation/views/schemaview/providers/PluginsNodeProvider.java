@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -301,8 +300,6 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 final File file = new File(dir, String.format("Plugin Details - %s.csv", dateFormatter.format(new Date())));
                 try (final FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                     fileOutputStream.write(sb.toString().getBytes(StandardCharsets.UTF_8.name()));
-                } catch (FileNotFoundException ex) {
-                    LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 } catch (IOException ex) {
                     LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 }
