@@ -43,7 +43,6 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
         int graphCurrentBitMask = VisualConcept.GraphAttribute.SELECTEDFILTERMASK.get(graph);
         setVertexes(graph, graphCurrentBitMask);
         setTransactions(graph, graphCurrentBitMask);
-        graph.setBooleanValue(targetMask, targetMask, true);
     }
     
     private void setVertexes(final GraphWriteMethods graph, final int currentBitmask) {
