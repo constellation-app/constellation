@@ -51,10 +51,10 @@ public class InfomapUndirected extends InfomapGreedy {
 
     @Override
     protected double getDeltaCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         // Double the effect as each link works in both directions.
         deltaEnterExitOldModule *= 2;
@@ -81,10 +81,10 @@ public class InfomapUndirected extends InfomapGreedy {
 
     @Override
     protected void updateCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         // Double the effect as each link works in both directions.
         deltaEnterExitOldModule *= 2;

@@ -27,7 +27,7 @@ public class StarGraphBuilder extends GraphBuilder {
     private static final int PENDANTS_DEFAULT = 5;
     private static final StarDirection DIRECTION_DEFAULT = StarDirection.UNDIRECTED;
 
-    public static enum StarDirection {
+    public enum StarDirection {
 
         CENTRE_IS_SOURCE,
         CENTRE_IS_SINK,

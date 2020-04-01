@@ -27,7 +27,8 @@ import java.util.Comparator;
  */
 public class AttributeBin extends ObjectBin {
 
-    public boolean isComparable;
+    //TODO: Determine whether isComparable needed
+    private boolean isComparable;
     private String attributeType;
     private Comparator<Object> comparator;
 

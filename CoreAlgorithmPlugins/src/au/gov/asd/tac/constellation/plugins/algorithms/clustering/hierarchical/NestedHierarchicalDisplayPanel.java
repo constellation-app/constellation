@@ -49,7 +49,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     // The width in pixels of the rectangles representing connected components
     private final int lineThickness = 1;
     private final int progressBarThickness = 3;
-    public int neededHeight = 0;
+    private int neededHeight = 0;
     private int stepLimit = 0;
     private double xseparation;
     private final int minimum_yseparation = 3;
@@ -126,12 +126,12 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     private static class GroupTreeNode implements Comparable<GroupTreeNode> {
 
-        public final int vertNum;
-        public final int mergeStep; // will determine x end of horizontal line
-        public final Color color;
-        public SortedSet<GroupTreeNode> children;
-        public GroupTreeNode parent;
-        public int childSpan; // will determine height of vertical line
+        private final int vertNum;
+        private final int mergeStep; // will determine x end of horizontal line
+        private final Color color;
+        private SortedSet<GroupTreeNode> children;
+        private GroupTreeNode parent;
+        private int childSpan; // will determine height of vertical line
 
         public GroupTreeNode(int vertNum, int mergeStep, Color color) {
             this.vertNum = vertNum;
@@ -152,11 +152,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     private static class LinePositioning {
 
-        public int xstop;
-        public int ystart;
-        public int ystop;
-        public Color color;
-        public GroupTreeNode n;
+        private int xstop;
+        private int ystart;
+        private int ystop;
+        private Color color;
+        private GroupTreeNode n;
     }
 
     // Calculates the relative sizes and positions of the rectangles based on the connected component information stored in the KTrussState.
@@ -179,20 +179,20 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
             if (node == null) {
                 continue;
             }
-            int nodeMergeStep = node.mergeStep == Integer.MAX_VALUE ? stepLimit : node.mergeStep;
+            int nodeMergeStep = node.getMergeStep() == Integer.MAX_VALUE ? stepLimit : node.getMergeStep();
 
-            GroupTreeNode treeNode = treeNodes.get(node.vertex);
+            GroupTreeNode treeNode = treeNodes.get(node.getVertex());
             if (treeNode == null) {
-                treeNode = new GroupTreeNode(node.vertex, nodeMergeStep, node.color.getJavaColor());
-                treeNodes.put(node.vertex, treeNode);
+                treeNode = new GroupTreeNode(node.getVertex(), nodeMergeStep, node.getColor().getJavaColor());
+                treeNodes.put(node.getVertex(), treeNode);
             }
 
-            FastNewman.Group parentGroup = node.parent;
+            FastNewman.Group parentGroup = node.getParent();
             if (parentGroup != null) {
-                int parentVertex = parentGroup.vertex;
-                int parentMergeStep = parentGroup.mergeStep == Integer.MAX_VALUE ? stepLimit : parentGroup.mergeStep;
+                int parentVertex = parentGroup.getVertex();
+                int parentMergeStep = parentGroup.getMergeStep() == Integer.MAX_VALUE ? stepLimit : parentGroup.getMergeStep();
                 if (!treeNodes.containsKey(parentVertex)) {
-                    GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.color.getJavaColor());
+                    GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.getColor().getJavaColor());
                     treeNodes.put(parentVertex, parentTreeNode);
                 }
                 if (treeNodes.get(parentVertex).children == null) {

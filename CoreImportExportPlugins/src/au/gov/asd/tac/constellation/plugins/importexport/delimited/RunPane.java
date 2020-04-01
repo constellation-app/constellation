@@ -73,8 +73,8 @@ public class RunPane extends BorderPane {
     private final AttributeList sourceVertexAttributeList;
     private final AttributeList destinationVertexAttributeList;
     private final AttributeList transactionAttributeList;
-    public Point2D draggingOffset;
-    public AttributeNode draggingAttributeNode;
+    private Point2D draggingOffset;
+    private AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn = null;
     private Rectangle columnRectangle = new Rectangle();
 
@@ -237,6 +237,22 @@ public class RunPane extends BorderPane {
         });
     }
 
+    public Point2D getDraggingOffset() {
+        return draggingOffset;
+    }
+
+    public void setDraggingOffset(Point2D draggingOffset) {
+        this.draggingOffset = draggingOffset;
+    }
+
+    public AttributeNode getDraggingAttributeNode() {
+        return draggingAttributeNode;
+    }
+
+    public void setDraggingAttributeNode(AttributeNode draggingAttributeNode) {
+        this.draggingAttributeNode = draggingAttributeNode;
+    }
+    
     public void handleAttributeMoved(double sceneX, double sceneY) {
         if (draggingAttributeNode != null) {
             Point2D location = sceneToLocal(sceneX, sceneY);

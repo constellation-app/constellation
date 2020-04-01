@@ -90,11 +90,7 @@ public final class AutosaveStartup implements Runnable {
                                             GraphOpener.getDefault().openGraph(g, name, false);
 
                                             AutosaveUtilities.deleteAutosave(f);
-                                        } catch (GraphParseException ex) {
-                                            LOGGER.log(Level.WARNING, "Error loading graph", ex);
-                                            final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                            DialogDisplayer.getDefault().notify(nderr);
-                                        } catch (IOException ex) {
+                                        } catch (GraphParseException | IOException ex) {
                                             LOGGER.log(Level.WARNING, "Error loading graph", ex);
                                             final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                             DialogDisplayer.getDefault().notify(nderr);

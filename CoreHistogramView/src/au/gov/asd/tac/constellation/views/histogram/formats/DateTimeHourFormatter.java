@@ -60,12 +60,12 @@ public class DateTimeHourFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? NULL_HOUR : ((ZonedDateTime) bin.key).getHour();
+            key = bin.getKeyAsObject() == null ? NULL_HOUR : ((ZonedDateTime) bin.getKeyAsObject()).getHour();
         }
 
         @Override
         public void prepareForPresentation() {
-            label = bin.key == null ? null : String.format("%02d00h", key);
+            label = bin.getKeyAsObject() == null ? null : String.format("%02d00h", key);
         }
 
         @Override

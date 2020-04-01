@@ -21,11 +21,11 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.trait
  */
 public class FlowDirectedNonDetailedBalanceWithTeleportation implements FlowBase {
 
-    public double flow;
-    public double enterFlow;
-    public double exitFlow;
-    public double teleportWeight;
-    public double danglingFlow;
+    private double flow;
+    private double enterFlow;
+    private double exitFlow;
+    private double teleportWeight;
+    private double danglingFlow;
 
     public FlowDirectedNonDetailedBalanceWithTeleportation() {
         this(1, 1);

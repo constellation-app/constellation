@@ -25,7 +25,7 @@ public class ConnectionBuilder extends GraphBuilder {
 
     private static final ConnectionDirection DIRECTION_DEFAULT = ConnectionDirection.UNDIRECTED;
 
-    public static enum ConnectionDirection {
+    public enum ConnectionDirection {
 
         LEFT_TO_RIGHT,
         RIGHT_TO_LEFT,

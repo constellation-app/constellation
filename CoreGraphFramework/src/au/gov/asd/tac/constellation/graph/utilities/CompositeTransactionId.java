@@ -21,11 +21,11 @@ package au.gov.asd.tac.constellation.graph.utilities;
  */
 public class CompositeTransactionId {
 
-    public String originalSourceNode;
-    public String originalDestinationNode;
-    public boolean sourceContracted;
-    public boolean destContracted;
-    public String suffix;
+    private String originalSourceNode;
+    private String originalDestinationNode;
+    private boolean sourceContracted;
+    private boolean destContracted;
+    private final String suffix;
 
     public CompositeTransactionId(final String originalSourceNode, final String originalDestinationNode, final String suffix, final boolean sourceContracted, final boolean destContracted) {
         this.originalSourceNode = originalSourceNode;
@@ -35,6 +35,38 @@ public class CompositeTransactionId {
         this.suffix = suffix;
     }
 
+    public String getOriginalSourceNode() {
+        return originalSourceNode;
+    }
+
+    public void setOriginalSourceNode(String originalSourceNode) {
+        this.originalSourceNode = originalSourceNode;
+    }
+
+    public String getOriginalDestinationNode() {
+        return originalDestinationNode;
+    }
+
+    public void setOriginalDestinationNode(String originalDestinationNode) {
+        this.originalDestinationNode = originalDestinationNode;
+    }
+
+    public boolean isSourceContracted() {
+        return sourceContracted;
+    }
+
+    public void setSourceContracted(boolean sourceContracted) {
+        this.sourceContracted = sourceContracted;
+    }
+
+    public boolean isDestContracted() {
+        return destContracted;
+    }
+
+    public void setDestContracted(boolean destContracted) {
+        this.destContracted = destContracted;
+    }
+    
     public static CompositeTransactionId fromString(final String id) {
         if (id == null || !id.startsWith("composite:")) {
             return new CompositeTransactionId(null, null, id, false, false);

@@ -21,6 +21,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import javafx.application.Platform;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 
 /**
@@ -44,7 +45,7 @@ public abstract class SwingTopComponent<P extends Component> extends ListeningTo
      * @return an integer representing the desired horizontal scroll bar policy.
      */
     protected int getHorizontalScrollPolicy() {
-        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
     }
 
     /**
@@ -56,7 +57,7 @@ public abstract class SwingTopComponent<P extends Component> extends ListeningTo
      * @return an integer representing the desired vertical scroll bar policy.
      */
     protected int getVerticalScrollPolicy() {
-        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
     }
 
     @Override

@@ -44,13 +44,21 @@ class PQNodeList implements Iterable<PQNode> {
 
     private ListItem first;
     private ListItem last;
-    public int size;
+    private int size;
 
     public PQNodeList() {
         first = last = null;
         size = 0;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+    
     private void link(ListItem left, ListItem right) {
         if (left != null) {
             left.next = right;

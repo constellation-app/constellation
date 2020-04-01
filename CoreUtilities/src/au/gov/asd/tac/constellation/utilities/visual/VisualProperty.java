@@ -91,7 +91,7 @@ public enum VisualProperty {
     // Usually this is state information specific to a VisualProcessor.
     EXTERNAL_CHANGE(PropertyType.STATUS, ElementType.NONE),;
 
-    public static enum PropertyType {
+    public enum PropertyType {
 
         FLOAT,
         INT,
@@ -101,7 +101,7 @@ public enum VisualProperty {
         TASK;
     }
 
-    public static enum ElementType {
+    public enum ElementType {
 
         GRAPH,
         VERTEX,

@@ -693,7 +693,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * made.
      *
      */
-    private static enum HitTestMode {
+    private enum HitTestMode {
 
         /**
          * Make the request but ignore the resulting EventState.

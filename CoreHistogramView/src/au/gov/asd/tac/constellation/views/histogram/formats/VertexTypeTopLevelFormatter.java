@@ -61,7 +61,7 @@ public class VertexTypeTopLevelFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key instanceof SchemaVertexType ? ((SchemaVertexType) bin.key).getTopLevelType().getName() : null;
+            key = bin.getKeyAsObject() instanceof SchemaVertexType ? ((SchemaVertexType) bin.getKeyAsObject()).getTopLevelType().getName() : null;
         }
 
         @Override

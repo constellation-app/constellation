@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.BrokenBarrierException;
@@ -701,7 +700,7 @@ public class QueryServices {
             if (retrieved == null) {
                 item = null;
             } else {
-                item = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+                item = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 item.setTimeInMillis(retrieved.getTime());
                 item.set(Calendar.MILLISECOND, 0);
             }

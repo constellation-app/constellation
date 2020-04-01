@@ -160,7 +160,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
     private int currentFontSize;
 
-    private static enum HeadingType {
+    private enum HeadingType {
 
         GRAPH, NODE, TRANSACTION;
     }

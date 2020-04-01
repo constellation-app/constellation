@@ -407,7 +407,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      */
     public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
-        this.currentTimezone = SimpleTimeZone.getTimeZone(zoneId);
+        this.currentTimezone = TimeZone.getTimeZone(zoneId);
         this.lowestObservedDisplayPos = lowestObservedDisplayPos;
         this.highestObservedDisplayPos = highestObservedDisplayPos;
         yAxis.setLowerBound(this.lowestObservedDisplayPos);

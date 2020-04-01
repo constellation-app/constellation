@@ -24,12 +24,12 @@ import au.gov.asd.tac.constellation.graph.mergers.PrioritySurvivingGraphElementM
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.ContractedCompositeNodeState;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.ExpandedCompositeNodeState;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,11 +47,11 @@ public class CompositeUtilities {
             final int source = graph.getTransactionSourceVertex(txId);
             final int dest = graph.getTransactionDestinationVertex(txId);
             final CompositeTransactionId uniqueId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr, txId));
-            if (source == vxId && uniqueId.originalSourceNode != null) {
-                uniqueId.originalSourceNode = null;
+            if (source == vxId && uniqueId.getOriginalSourceNode() != null) {
+                uniqueId.setOriginalSourceNode(null);
             }
-            if (dest == vxId && uniqueId.originalDestinationNode != null) {
-                uniqueId.originalDestinationNode = null;
+            if (dest == vxId && uniqueId.getOriginalDestinationNode() != null) {
+                uniqueId.setOriginalDestinationNode(null);
             }
             graph.setStringValue(uniqueIdAttr, txId, uniqueId.toString());
         }

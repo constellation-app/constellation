@@ -45,7 +45,7 @@ import javax.swing.event.ListDataListener;
  */
 final class DragDropList extends JList<MyElement> {
 
-    public MyListModel model;
+    private MyListModel model;
 
     DragDropList() {
         setDragEnabled(true);

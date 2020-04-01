@@ -245,13 +245,53 @@ public class FastNewman {
 
     public static class Group {
 
-        public int vertex;
+        private int vertex;
         private float weight = 0.0f;
-        public Group parent = null;
-        public int mergeStep = Integer.MAX_VALUE;
+        private Group parent = null;
+        private int mergeStep = Integer.MAX_VALUE;
         private Map<Group, Link> links = new HashMap<>();
-        public ConstellationColor color;
-        public int singleStep = Integer.MAX_VALUE;
+        private ConstellationColor color;
+        private int singleStep = Integer.MAX_VALUE;
+
+        public int getVertex() {
+            return vertex;
+        }
+
+        public void setVertex(int vertex) {
+            this.vertex = vertex;
+        }
+
+        public Group getParent() {
+            return parent;
+        }
+
+        public void setParent(Group parent) {
+            this.parent = parent;
+        }
+
+        public int getMergeStep() {
+            return mergeStep;
+        }
+
+        public void setMergeStep(int mergeStep) {
+            this.mergeStep = mergeStep;
+        }
+
+        public ConstellationColor getColor() {
+            return color;
+        }
+
+        public void setColor(ConstellationColor color) {
+            this.color = color;
+        }
+
+        public int getSingleStep() {
+            return singleStep;
+        }
+
+        public void setSingleStep(int singleStep) {
+            this.singleStep = singleStep;
+        }
     }
 
     private static class Link implements Comparable<Link> {

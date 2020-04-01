@@ -24,14 +24,14 @@ import java.util.ArrayList;
  */
 public class PartitionQueue {
 
-    public int level;
-    public int numNonTrivialModules;
-    public double flow;
-    public double nonTrivialFlow;
-    public boolean skip;
-    public double indexCodelength; // Consolidated
-    public double leafCodelength; // Consolidated
-    public double moduleCodelength; // Left to improve on next level
+    private int level;
+    private int numNonTrivialModules;
+    private double flow;
+    private double nonTrivialFlow;
+    private boolean skip;
+    private double indexCodelength; // Consolidated
+    private double leafCodelength; // Consolidated
+    private double moduleCodelength; // Left to improve on next level
 
     private ArrayList<NodeBase> queue;
 
@@ -48,6 +48,78 @@ public class PartitionQueue {
         queue = new ArrayList<>();
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public int getNumNonTrivialModules() {
+        return numNonTrivialModules;
+    }
+
+    public void setNumNonTrivialModules(int numNonTrivialModules) {
+        this.numNonTrivialModules = numNonTrivialModules;
+    }
+
+    public double getFlow() {
+        return flow;
+    }
+
+    public void setFlow(double flow) {
+        this.flow = flow;
+    }
+
+    public double getNonTrivialFlow() {
+        return nonTrivialFlow;
+    }
+
+    public void setNonTrivialFlow(double nonTrivialFlow) {
+        this.nonTrivialFlow = nonTrivialFlow;
+    }
+
+    public boolean isSkip() {
+        return skip;
+    }
+
+    public void setSkip(boolean skip) {
+        this.skip = skip;
+    }
+
+    public double getIndexCodelength() {
+        return indexCodelength;
+    }
+
+    public void setIndexCodelength(double indexCodelength) {
+        this.indexCodelength = indexCodelength;
+    }
+
+    public double getLeafCodelength() {
+        return leafCodelength;
+    }
+
+    public void setLeafCodelength(double leafCodelength) {
+        this.leafCodelength = leafCodelength;
+    }
+
+    public double getModuleCodelength() {
+        return moduleCodelength;
+    }
+
+    public void setModuleCodelength(double moduleCodelength) {
+        this.moduleCodelength = moduleCodelength;
+    }
+
+    public ArrayList<NodeBase> getQueue() {
+        return queue;
+    }
+
+    public void setQueue(ArrayList<NodeBase> queue) {
+        this.queue = queue;
+    }
+    
     public void swap(final PartitionQueue other) {
         int ti;
         double td;
