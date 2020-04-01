@@ -225,6 +225,16 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The radius of the label")
                 .setDefaultValue(1.0f)
                 .build();
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+                .setDescription("Bitmask identifying the layers this vertex belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
+                .setDescription("The visibility of the vertex given the layers it belongs to")
+                .setDefaultValue(1.0f)
+                .create()
+                .build();
         public static final SchemaAttribute NODE_RADIUS = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "nradius")
                 .setDescription("The radius of the vertex")
                 .setDefaultValue(1.0f)
@@ -274,16 +284,6 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(0.0f)
                 .create()
                 .build();
-        public static final SchemaAttribute FILTERMASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "filter_bitmask")
-                .setDescription("Bitmask identifying filter layers item belongs to")
-                .setDefaultValue(1)
-                .create()
-                .build();
-        public static final SchemaAttribute FILTERVISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "filter_visibility")
-                .setDescription("The layer visibility of the vertex")
-                .setDefaultValue(1.0f)
-                .create()
-                .build();
     }
 
     public static class TransactionAttribute {
@@ -315,6 +315,16 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The label of the transaction")
                 .create()
                 .build();
+                public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+                .setDescription("Bitmask identifying the layers this transaction belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
+                .setDescription("The visibility of the transaction given the layers it belongs to")
+                .setDefaultValue(1.0f)
+                .create()
+                .build();
         public static final SchemaAttribute OVERLAY_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "overlay_color")
                 .setDescription("The overlay colore of the transaction")
                 .build();
@@ -331,16 +341,6 @@ public class VisualConcept extends SchemaConcept {
                 .build();
         public static final SchemaAttribute WIDTH = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "width")
                 .setDescription("The width of the transaction")
-                .setDefaultValue(1.0f)
-                .create()
-                .build();
-        public static final SchemaAttribute FILTERMASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "filter_bitmask")
-                .setDescription("Bitmask identifying filter layers item belongs to")
-                .setDefaultValue(1)
-                .create()
-                .build();
-        public static final SchemaAttribute FILTERVISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "filter_visibility")
-                .setDescription("The layer visibility of the transaction")
                 .setDefaultValue(1.0f)
                 .create()
                 .build();
@@ -379,6 +379,8 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.IDENTIFIER);
         schemaAttributes.add(VertexAttribute.LABEL);
         schemaAttributes.add(VertexAttribute.LABEL_RADIUS);
+        schemaAttributes.add(VertexAttribute.LAYER_MASK);
+        schemaAttributes.add(VertexAttribute.LAYER_VISIBILITY);
         schemaAttributes.add(VertexAttribute.NODE_RADIUS);
         schemaAttributes.add(VertexAttribute.OVERLAY_COLOR);
         schemaAttributes.add(VertexAttribute.SELECTED);
@@ -389,20 +391,18 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.Y2);
         schemaAttributes.add(VertexAttribute.Z);
         schemaAttributes.add(VertexAttribute.Z2);
-        schemaAttributes.add(VertexAttribute.FILTERMASK);
-        schemaAttributes.add(VertexAttribute.FILTERVISIBILITY);
         schemaAttributes.add(TransactionAttribute.COLOR);
         schemaAttributes.add(TransactionAttribute.DIMMED);
         schemaAttributes.add(TransactionAttribute.DIRECTED);
         schemaAttributes.add(TransactionAttribute.IDENTIFIER);
         schemaAttributes.add(TransactionAttribute.LINE_STYLE);
         schemaAttributes.add(TransactionAttribute.LABEL);
+        schemaAttributes.add(TransactionAttribute.LAYER_MASK);
+        schemaAttributes.add(TransactionAttribute.LAYER_VISIBILITY);
         schemaAttributes.add(TransactionAttribute.OVERLAY_COLOR);
         schemaAttributes.add(TransactionAttribute.SELECTED);
         schemaAttributes.add(TransactionAttribute.VISIBILITY);
         schemaAttributes.add(TransactionAttribute.WIDTH);
-        schemaAttributes.add(TransactionAttribute.FILTERMASK);
-        schemaAttributes.add(TransactionAttribute.FILTERVISIBILITY);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }

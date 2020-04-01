@@ -522,7 +522,7 @@ public final class GraphVisualAccess implements VisualAccess {
                 }
                 // TODO Start
                 count = vertexLayerVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(vertexLayerVisibility);
-                if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.FILTERVISIBILITY, count))) {
+                if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.LAYER_VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_VISIBILITY).forItems(accessGraph.getVertexCount()).build());
                 }
                 // TODO endXXXX
@@ -555,7 +555,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTION_VISIBILITY).forItems(connectionElementTypes.length).build());
                 }
                 count = transactionLayerVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(transactionLayerVisibility);
-                if (!Objects.equals(count, modCounts.put(VisualConcept.TransactionAttribute.FILTERVISIBILITY, count))) {
+                if (!Objects.equals(count, modCounts.put(VisualConcept.TransactionAttribute.LAYER_VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTION_VISIBILITY).forItems(connectionElementTypes.length).build());
                 }
                 count = transactionDimmed == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(transactionDimmed);
@@ -605,7 +605,7 @@ public final class GraphVisualAccess implements VisualAccess {
         vertexForegroundIcon = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(rg);
         vertexSelected = VisualConcept.VertexAttribute.SELECTED.get(rg);
         vertexVisibility = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
-        vertexLayerVisibility = VisualConcept.VertexAttribute.FILTERVISIBILITY.get(rg);
+        vertexLayerVisibility = VisualConcept.VertexAttribute.LAYER_VISIBILITY.get(rg);
         vertexDimmed = VisualConcept.VertexAttribute.DIMMED.get(rg);
         vertexRadius = VisualConcept.VertexAttribute.NODE_RADIUS.get(rg);
         vertexBlaze = VisualConcept.VertexAttribute.BLAZE.get(rg);
@@ -613,7 +613,7 @@ public final class GraphVisualAccess implements VisualAccess {
         transactionSelected = VisualConcept.TransactionAttribute.SELECTED.get(rg);
         transactionDirected = VisualConcept.TransactionAttribute.DIRECTED.get(rg);
         transactionVisibility = VisualConcept.TransactionAttribute.VISIBILITY.get(rg);
-        transactionLayerVisibility = VisualConcept.TransactionAttribute.FILTERVISIBILITY.get(rg);
+        transactionLayerVisibility = VisualConcept.TransactionAttribute.LAYER_VISIBILITY.get(rg);
         transactionDimmed = VisualConcept.TransactionAttribute.DIMMED.get(rg);
         transactionLineStyle = VisualConcept.TransactionAttribute.LINE_STYLE.get(rg);
         transactionWidth = VisualConcept.TransactionAttribute.WIDTH.get(rg);

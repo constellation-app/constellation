@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.layers.utilities;
+package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
- *
+ * Write a given bitmask to the active graph.
+ * 
  * @author aldebaran30701
  */
 public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {
 
-    /**
-     * Write the given bitmask to the active graph.
-     */
     private final int bitmask;
 
     public UpdateGraphBitmaskPlugin(final int bitmask) {
@@ -38,8 +35,8 @@ public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        int bitmaskAttributeId = VisualConcept.GraphAttribute.SELECTEDFILTERMASK.ensure(graph);
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
+        final int bitmaskAttributeId = VisualConcept.GraphAttribute.SELECTEDFILTERMASK.ensure(graph);
         graph.setIntValue(bitmaskAttributeId, 0, bitmask);
     }
 
