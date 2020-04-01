@@ -78,7 +78,6 @@ public class CollFrame extends javax.swing.JFrame {
                     prevCollisions = totalCollided;
                     isEnd = totalCollided == 0;
 
-//                    cp.setBoxes(boxes, isEnd);
 //                    repaintPanel();
                 }
             }
