@@ -51,11 +51,11 @@ public class ShuntingYard {
         StringBuilder output = new StringBuilder();
         Deque<String> stack  = new LinkedList<>();
 
-        for (String token : infix.split("\\s")) {
+        for (String token : infix.split("\\[|\\]")) { // split on [ or ]
             // operator adding to stack
             if (OPERATORS.containsKey(token)) {
                 while ( ! stack.isEmpty() && isHigerPrec(token, stack.peek())){
-                    output.append(stack.pop()).append(' ');
+                    output.append(stack.pop()).append('`');
                 }
                 stack.push(token);
             } 
@@ -64,18 +64,18 @@ public class ShuntingYard {
             } 
             else if (token.equals(")")) { // right parenthesis
                 while ( ! stack.peek().equals("(")){
-                    output.append(stack.pop()).append(' ');
+                    output.append(stack.pop()).append('`');
                 }
                 stack.pop();
             } 
             else {
-                output.append(token).append(' ');
+                output.append(token).append('`');
             }
         }
 
         // appending to output string
         while ( ! stack.isEmpty()){
-            output.append(stack.pop()).append(' ');
+            output.append(stack.pop()).append('`');
         }
         return output.toString();
     }

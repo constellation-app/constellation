@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.layers;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.layers.utilities.UpdateGraphBitmaskPlugin;
+import au.gov.asd.tac.constellation.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.layers.views.LayersViewPane;
 import au.gov.asd.tac.constellation.layers.views.LayersViewTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -95,7 +96,7 @@ public class LayersViewController {
             TextArea tempTA = (TextArea) (queryBox.getChildren().get(2));
             layerQueries.add(tempTA.getText().equals("") ? null : tempTA.getText());
         }
-
-        StoreGraph.setLayerQueries(layerQueries);
+        
+        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

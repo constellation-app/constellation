@@ -48,6 +48,8 @@ enum Operator {
     NOTEQUALS,
     GREATERTHAN,
     LESSTHAN,
+    GREATERTHANOREQ,
+    LESSTHANOREQ,
     NOTFOUND
 }
 
@@ -136,7 +138,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     // second bit from right is boolean for if you have to display the layer 00X0
     // last bit on right is whether it is a dynamic layer 000X
     private final List<Byte> layerPrefs = new ArrayList<>();
-    public final static List<String> LAYER_QUERIES = new ArrayList<>();
+    public final List<String> LAYER_QUERIES = new ArrayList<>();
 
     /**
      * Creates a new StoreGraph with the specified capacities.
@@ -162,8 +164,32 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     public boolean isRecordingEdit() {
         return graphEdit != null;
     }
+    
+    @Override
+    public void setLayerQueries(final List<String> queries) {
+        int count = 0;
+        for(String query : queries){
+            //if old query was not null (dynamic), and old query is different from new (query updated)
+            if(count < LAYER_QUERIES.size() && LAYER_QUERIES.get(count) != null && !LAYER_QUERIES.get(count).equals(" ")&& !LAYER_QUERIES.get(count).equals(query)){
+                // iterate all elements, remove that mask
+                // Loop through all vertexes and remove bitmasks
+                final int vertexCount = getVertexCount();
+                for (int i = 0; i < vertexCount; i++) {
+                    int bitmask = getIntValue(vertexFilterBitmaskAttrId, i);
+                    bitmask = bitmask & ~(1 << count); // set bit to false
+                    setIntValue(vertexFilterBitmaskAttrId, i, bitmask);
+                }
 
-    public static void setLayerQueries(final List<String> queries) {
+                // Loop through all transactions and remove bitmasks
+                final int transactionCount = getTransactionCount();
+                for (int i = 0; i < transactionCount; i++) {
+                    int bitmask = getIntValue(transactionFilterBitmaskAttrId, i);
+                    bitmask = bitmask & ~(1 << count); // set bit to false
+                    setIntValue(transactionFilterBitmaskAttrId, i, bitmask);
+                }
+            }
+            count++;
+        }
         LAYER_QUERIES.clear();
         LAYER_QUERIES.addAll(queries);
     }
@@ -2011,7 +2037,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         Operator currentOperand = Operator.NOTFOUND;
 
-        String[] rules = postfixQuery.split(" "); // TODO: maybe we cannot split by space as it will cause issues if a space is parsed into the checking argument
+        String[] rules = postfixQuery.split("`"); // Split with backtick to reduce chance of char in query.
         //System.out.println("Rules: " + rules.length);
         String evaluatedResult = "";
         boolean finalRes = true;
@@ -2022,7 +2048,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             String[] ruleSegments = rule.split(":");
             int segCount = 0;
             AttributeDescription ad = null;
-            boolean isEquals = false;
             int attrID = 1;
             // iterate over each section and grab the values.
             for (String segment : ruleSegments) {
@@ -2045,7 +2070,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                         switch (segment) {
                             case "=": {// equality
                                 currentOperand = Operator.EQUALS;
-                                isEquals = true; // Possibly use an enum to handle multiple different conclusions?
                                 break;
                             }
                             case "!=": {// not equality
@@ -2058,6 +2082,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                             }
                             case "<": {// Less than
                                 currentOperand = Operator.LESSTHAN;
+                                break;
+                            }
+                            case ">=": {// greater than or EQ to
+                                currentOperand = Operator.GREATERTHANOREQ;
+                                break;
+                            }
+                            case "<=": {// Less than or EQ to
+                                currentOperand = Operator.LESSTHANOREQ;
                                 break;
                             }
                             default: {// Default do nothing - unsure of operator - Error?
@@ -2102,6 +2134,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                             case LESSTHAN: {
                                 break;
                             }
+                            case GREATERTHANOREQ: {
+                                break;
+                            }
+                            case LESSTHANOREQ: {
+                                break;
+                            }
                             case NOTFOUND: {
                                 break;
                             }
@@ -2143,6 +2181,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         //System.out.println("Result calculated: " + result);
 
         if (result.equals("true")) {
+            System.err.println();
             return true;
         } else if (result.equals("false")) {
             return false;
