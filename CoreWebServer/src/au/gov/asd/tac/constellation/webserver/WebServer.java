@@ -33,6 +33,8 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
@@ -44,6 +46,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.RequestLog;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -130,22 +133,6 @@ public class WebServer {
 
                 final InetAddress loopback = InetAddress.getLoopbackAddress();
                 port = prefs.getInt(ApplicationPreferenceKeys.WEBSERVER_PORT, ApplicationPreferenceKeys.WEBSERVER_PORT_DEFAULT);
-                final Server server = new Server(new InetSocketAddress(loopback, port));
-                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-                context.setContextPath("/");
-                server.setHandler(context);
-
-                for (ConstellationHttpServlet servlet : Lookup.getDefault().lookupAll(ConstellationHttpServlet.class)) {
-                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
-                            context.addServlet(new ServletHolder(servlet), urlPattern);
-                        }
-                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
-                            context.addServlet(new ServletHolder(servlet), urlPattern);
-                        }
-                    }
-                }
-                server.start();
 
                 // Put the session secret and port number in a JSON file in the .CONSTELLATION directory.
                 // Make sure the file is owner read/write.
@@ -176,6 +163,41 @@ public class WebServer {
                     downloadPythonClient();
                 }
 
+                // Build the server.
+                //
+                final Server server = new Server(new InetSocketAddress(loopback, port));
+                final ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+                context.setContextPath("/");
+                server.setHandler(context);
+
+                // Gather the servlets and add them to the server.
+                //
+                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet ->{
+                    if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
+//                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
+//                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
+//                            context.addServlet(new ServletHolder(servlet), urlPattern);
+//                        }
+                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
+                            Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
+                            context.addServlet(new ServletHolder(servlet), urlPattern);
+                        }
+                    }
+                });
+
+                // Make our own handler so we can log requests with the CONSTELLATION logs.
+                //
+                final RequestLog requestLog = (request, response) -> {
+                    final String log = String.format("Request at %s from %s %s, status %d", LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME), request.getRemoteAddr(), request.getRequestURI(), response.getStatus());
+                    LOGGER.info(log);
+                };
+                server.setRequestLog(requestLog);
+
+                LOGGER.info(String.format("Starting Jetty version %s on%s:%d...", Server.getVersion(), loopback, port));
+                server.start();
+
+                // Wait for the server to stop (if it ever does).
+                //
                 final Thread webserver = new Thread(() -> {
                     try {
                         server.join();
@@ -253,7 +275,7 @@ public class WebServer {
 
     /**
      * Get the SHA-256 digest of an InputStream.
-     * 
+     *
      * @param in An InputStream.
      *
      * @return A SHA256 digest.
