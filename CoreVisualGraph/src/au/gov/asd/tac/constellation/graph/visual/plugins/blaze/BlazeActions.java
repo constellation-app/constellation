@@ -19,9 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
-import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
@@ -96,7 +96,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
     private final JMenuBar menuBar;
     private final JMenu menu;
     private Graph graph;
-    private final SliderMenuItem sizeSlider, opacitySlider;
+    private final SliderMenuItem sizeSlider;
+    private final SliderMenuItem opacitySlider;
     private final ChangeListener sliderChangeListener;
 
     public BlazeActions() {
@@ -109,7 +110,7 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
         menu = new JMenu();
         menu.setIcon(ImageUtilities.loadImageIcon(BLAZE_ACTIONS_ICON, false));
         menu.setToolTipText("Blaze Controls");
-        menu.addChangeListener((e) -> {
+        menu.addChangeListener(e -> {
             if (graph != null) {
                 updateSliders(graph);
             }
@@ -264,6 +265,8 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
                 parameters = DefaultPluginParameters.getDefaultParameters(plugin);
                 parameters.getParameters().get(BlazeUtilities.VERTEX_IDS_PARAMETER_ID).setObjectValue(selectionResult.getKey());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
+                break;
+            default:
                 break;
         }
     }

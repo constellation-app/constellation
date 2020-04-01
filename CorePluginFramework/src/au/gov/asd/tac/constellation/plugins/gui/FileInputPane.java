@@ -56,8 +56,8 @@ public class FileInputPane extends HBox {
 
     public static final int DEFAULT_WIDTH = 300;
     public static final File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
-    final private Button fileAddButton;
-    final private TextInputControl field;
+    private final Button fileAddButton;
+    private final TextInputControl field;
     private String parameterId;
     private static final Logger LOGGER = Logger.getLogger(FileInputPane.class.getName());
 
@@ -123,6 +123,7 @@ public class FileInputPane extends HBox {
                     break;
                 default:
                     LOGGER.log(Level.FINE, "ignoring file selection type {0}.", paramaterValue.getKind());
+                    break;
             }
 
             if (!files.isEmpty()) {
@@ -164,7 +165,7 @@ public class FileInputPane extends HBox {
             } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
                 field.selectPreviousWord();
                 event.consume();
-            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {;
+            } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
                 field.nextWord();
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
@@ -227,6 +228,8 @@ public class FileInputPane extends HBox {
                         field.setVisible(parameter.isVisible());
                         this.setVisible(parameter.isVisible());
                         this.setManaged(parameter.isVisible());
+                        break;
+                    default:
                         break;
                 }
             });

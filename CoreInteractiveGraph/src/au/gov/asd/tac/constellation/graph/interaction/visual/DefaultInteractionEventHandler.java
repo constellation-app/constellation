@@ -26,15 +26,14 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateTransactionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.CreateVertexPlugin;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.select.BoxSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.select.PointSelectionPlugin;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.CreationMode;
 import au.gov.asd.tac.constellation.graph.interaction.visual.EventState.SceneAction;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
@@ -48,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
@@ -198,6 +198,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         handler = queue.take();
                         break;
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                         if (!handleEvents) {
                             return;
                         }
@@ -241,6 +242,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             } catch (InterruptedException ex) {
                                 waitTime = Math.max(0, time + waitTime - System.currentTimeMillis());
                                 time = System.currentTimeMillis();
+                                Thread.currentThread().interrupt();
                             }
                         }
                     }
@@ -381,7 +383,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (eventState.isMousePressed()) {
                 if (wg != null) {
                     final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     boolean cameraChange = false;
                     switch (eventState.getCurrentAction()) {
                         case ROTATING:
@@ -410,6 +413,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case SELECTING:
                             updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), event.getPoint()));
+                            break;
+                        default:
                             break;
                     }
                     updateCameraAndNewLine(wg, event.getPoint(), cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
@@ -487,7 +492,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     setHitTestingEnabled(true);
 
                     final Camera camera = VisualGraphUtilities.getCamera(wg);
-                    final Point from, to;
+                    final Point from;
+                    final Point to;
                     switch (eventState.getCurrentAction()) {
                         case SELECTING:
                             if (eventState.isMouseDragged()) {
@@ -517,6 +523,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                         eventState.setCurrentCreationMode(CreationMode.NONE);
                                         clearNewLineModel(camera);
                                     }
+                                    break;
+                                default:
+                                    break;
                             }
                             break;
                         case ROTATING:
@@ -546,6 +555,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             } else {
                                 eventState.addEventName(PAN_ACTION_NAME);
                             }
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -586,20 +597,20 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 // If the mouse is currently pressed and the mouse wheel was moved somewhere
                 // other than the mouse pressed point, then we need to recalculate our
                 // reference point for further action, and in some cases simulate a drag.
-                if (eventState.isMousePressed()) {
-                    if (!wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
-                        final Point from;
-                        switch (eventState.getCurrentAction()) {
-                            case PANNING:
-                                from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                                final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
-                                CameraUtilities.pan(camera, translation.getX(), translation.getY());
-                                break;
-                            case DRAG_NODES:
-                                from = eventState.getPoint(EventState.DRAG_POINT);
-                                performDrag(wg, camera, from, wheelPoint);
-                                break;
-                        }
+                if (eventState.isMousePressed() && !wheelPoint.equals(eventState.getPoint(EventState.REFERENCE_POINT))) {
+                    final Point from;
+                    switch (eventState.getCurrentAction()) {
+                        case PANNING:
+                            from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
+                            final Vector3f translation = visualInteraction.convertTranslationToPan(from, wheelPoint, zoomReferencePoint);
+                            CameraUtilities.pan(camera, translation.getX(), translation.getY());
+                            break;
+                        case DRAG_NODES:
+                            from = eventState.getPoint(EventState.DRAG_POINT);
+                            performDrag(wg, camera, from, wheelPoint);
+                            break;
+                        default:
+                            break;
                     }
                 }
 
@@ -645,9 +656,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         // We need to wait for the results of the hit test if we are creating a transaction
 //        orderHitTest(point, newLine);
         if (newLine) {
-            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, (eventState) -> {
-                scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState);
-            });
+            orderHitTest(point, HitTestMode.HANDLE_ASYNCHRONOUSLY, eventState -> scheduleNewLineChangeOperation(rg, point, VisualGraphUtilities.getCamera(rg), false, eventState));
         } else {
             orderHitTest(point, HitTestMode.REQUEST_ONLY);
         }
@@ -684,7 +693,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * made.
      *
      */
-    private static enum HitTestMode {
+    private enum HitTestMode {
 
         /**
          * Make the request but ignore the resulting EventState.
@@ -712,9 +721,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * results and the synchronicity.
      */
     private void orderHitTest(final Point point, final HitTestMode mode) {
-        orderHitTest(point, mode, (e) -> {
-            eventState = e;
-        });
+        orderHitTest(point, mode, e -> eventState = e);
     }
 
     /**
@@ -738,6 +745,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     resultConsumer.accept((EventState) hitTestQueue.take());
                     break;
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                 }
             }
         };
@@ -748,6 +756,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 break;
             case HANDLE_ASYNCHRONOUSLY:
                 new Thread(handleResult).start();
+                break;
+            default:
                 break;
         }
     }
@@ -860,6 +870,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 eventState.setAddTransactionDestinationVertex(eventState.getCurrentHitId());
                 eventState.setCurrentCreationMode(CreationMode.FINISHING_TRANSACTION);
                 break;
+            default:
+                break;
         }
     }
 
@@ -906,7 +918,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         parameters.getParameters().get(CreateTransactionPlugin.DIRECTED_PARAMETER_ID).setObjectValue(directed);
         try {
             PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(wg);
-        } catch (InterruptedException | PluginException ex) {
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        } catch (PluginException ex){
         }
         announceNextFlush = true;
     }
@@ -955,7 +969,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         final Vector3f delta = visualInteraction.convertTranslationToDrag(camera, position, from, to);
 
-        draggedNodeIds.forEach((vertexId) -> {
+        draggedNodeIds.forEach(vertexId -> {
             final Vector3f currentPos = VisualGraphUtilities.getMixedVertexCoordinates(wg, vertexId);
             currentPos.add(delta);
             VisualGraphUtilities.setVertexCoordinates(wg, currentPos, vertexId);
@@ -975,6 +989,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 break;
             case TRANSACTION:
                 txIds.add(elementId);
+                break;
+            default:
                 break;
         }
 
@@ -1042,7 +1058,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (menuPath == null || menuPath.isEmpty()) {
-                    items.forEach((item) -> {
+                    items.forEach(item -> {
                         popup.add(new AbstractAction(item) {
                             @Override
                             public void actionPerformed(final ActionEvent event) {

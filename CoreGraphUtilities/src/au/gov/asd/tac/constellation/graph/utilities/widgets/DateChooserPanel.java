@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import javax.swing.JPanel;
 
@@ -34,9 +33,7 @@ public final class DateChooserPanel extends JPanel implements ActionListener {
     private final Calendar calendar;
 
     private String fmtDate() {
-        final String s = String.format("%4d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
-
-        return s;
+        return String.format("%4d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
@@ -47,7 +44,7 @@ public final class DateChooserPanel extends JPanel implements ActionListener {
     public DateChooserPanel(final Date date) {
         initComponents();
 
-        calendar = GregorianCalendar.getInstance(UTC);
+        calendar = Calendar.getInstance(UTC);
 
         monthView.setTimeZone(UTC);
         if (date != null) {

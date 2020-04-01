@@ -276,7 +276,7 @@ public class GraphRecordStoreUtilities {
             }
         }
 
-        values.entrySet().stream().forEach((entry) -> {
+        values.entrySet().stream().forEach(entry -> {
             String key = entry.getKey();
             String type = "string";
             if (key.endsWith(">")) {
@@ -384,6 +384,8 @@ public class GraphRecordStoreUtilities {
                                 break;
                             case "transaction":
                                 transactionValues.put(keyAttribute, value);
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -537,7 +539,7 @@ public class GraphRecordStoreUtilities {
                     recordStore.set(SOURCE + attribute.getName() + "<" + type + ">", graph.getStringValue(attribute.getId(), vxId));
                 }
 
-                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + String.valueOf(vxId) : String.valueOf(vxId));
+                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + vxId : String.valueOf(vxId));
                 if (limit > 0 && recordStore.size() >= limit) {
                     offset[0] = v + 1;
                     limitReached = true;
@@ -753,9 +755,9 @@ public class GraphRecordStoreUtilities {
                 if (graph.getTransactionDirection(txId) == Graph.UNDIRECTED) {
                     recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
                 }
-                recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + String.valueOf(txId) : String.valueOf(txId));
-                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + String.valueOf(source) : String.valueOf(source));
-                recordStore.set(DESTINATION + ID, disassociateIds ? "id-" + String.valueOf(destination) : String.valueOf(destination));
+                recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + txId : String.valueOf(txId));
+                recordStore.set(SOURCE + ID, disassociateIds ? "id-" + source : String.valueOf(source));
+                recordStore.set(DESTINATION + ID, disassociateIds ? "id-" + destination : String.valueOf(destination));
             }
         }
 
@@ -875,27 +877,29 @@ public class GraphRecordStoreUtilities {
             final int destination = graph.getTransactionDestinationVertex(transaction);
             final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr.getId(), transaction));
 
-            String sourceId = null, destId = null, uniqueId;
+            String sourceId = null;
+            String destId = null;
+            String uniqueId;
             if (compositeVxId == source) {
                 destId = String.valueOf(destination);
-                if (compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {
-                    sourceId = compositeTransactionId.originalSourceNode;
-                    compositeTransactionId.originalSourceNode = null;
+                if (compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
+                    sourceId = compositeTransactionId.getOriginalSourceNode();
+                    compositeTransactionId.setOriginalSourceNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
-                    compositeTransactionId.sourceContracted = false;
-                    compositeTransactionId.originalSourceNode = compositeStoredId;
+                    compositeTransactionId.setSourceContracted(false);
+                    compositeTransactionId.setOriginalSourceNode(compositeStoredId);
                     uniqueId = compositeTransactionId.toString();
                 }
             } else {
                 sourceId = String.valueOf(source);
-                if (compositeTransactionId.destContracted && compositeTransactionId.originalDestinationNode != null) {
-                    destId = compositeTransactionId.originalDestinationNode;
-                    compositeTransactionId.originalDestinationNode = null;
+                if (compositeTransactionId.isDestContracted() && compositeTransactionId.getOriginalDestinationNode() != null) {
+                    destId = compositeTransactionId.getOriginalDestinationNode();
+                    compositeTransactionId.setOriginalDestinationNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
-                    compositeTransactionId.destContracted = false;
-                    compositeTransactionId.originalDestinationNode = compositeStoredId;
+                    compositeTransactionId.setDestContracted(false);
+                    compositeTransactionId.setOriginalDestinationNode(compositeStoredId);
                     uniqueId = compositeTransactionId.toString();
                 }
             }
@@ -963,29 +967,31 @@ public class GraphRecordStoreUtilities {
             }
             final CompositeTransactionId compositeTransactionId = CompositeTransactionId.fromString(graph.getStringValue(uniqueIdAttr.getId(), transaction));
 
-            String sourceId = null, destId = null, uniqueId;
+            String sourceId = null;
+            String destId = null;
+            String uniqueId;
             if (expandedVxId == source) {
                 destId = String.valueOf(destination);
-                if (!compositeTransactionId.sourceContracted && compositeTransactionId.originalSourceNode != null) {
-                    sourceId = compositeTransactionId.originalSourceNode;
-                    compositeTransactionId.originalSourceNode = null;
+                if (!compositeTransactionId.isSourceContracted() && compositeTransactionId.getOriginalSourceNode() != null) {
+                    sourceId = compositeTransactionId.getOriginalSourceNode();
+                    compositeTransactionId.setOriginalSourceNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
                     sourceId = toId;
-                    compositeTransactionId.sourceContracted = true;
-                    compositeTransactionId.originalSourceNode = expandedId;
+                    compositeTransactionId.setSourceContracted(true);
+                    compositeTransactionId.setOriginalSourceNode(expandedId);
                     uniqueId = compositeTransactionId.toString();
                 }
             } else {
                 sourceId = String.valueOf(source);
-                if (!compositeTransactionId.destContracted && compositeTransactionId.originalDestinationNode != null) {
-                    destId = compositeTransactionId.originalDestinationNode;
-                    compositeTransactionId.originalDestinationNode = null;
+                if (!compositeTransactionId.isDestContracted() && compositeTransactionId.getOriginalDestinationNode() != null) {
+                    destId = compositeTransactionId.getOriginalDestinationNode();
+                    compositeTransactionId.setOriginalDestinationNode(null);
                     uniqueId = compositeTransactionId.toString();
                 } else {
                     destId = toId;
-                    compositeTransactionId.destContracted = true;
-                    compositeTransactionId.originalDestinationNode = expandedId;
+                    compositeTransactionId.setDestContracted(true);
+                    compositeTransactionId.setOriginalDestinationNode(expandedId);
                     uniqueId = compositeTransactionId.toString();
                 }
             }

@@ -100,6 +100,7 @@ public class GraphNode extends AbstractNode {
         GraphNode graphNode = GRAPHS.get(id);
         return graphNode == null ? null : graphNode.getGraph();
     }
+    
     private final Graph graph;
     private final VisualManager visualManager;
     private GraphDataObject gdo;
@@ -132,8 +133,6 @@ public class GraphNode extends AbstractNode {
      */
     public GraphNode(final Graph graph, final GraphDataObject gdo, final TopComponent tc, final VisualManager visualManager) {
         this(new InstanceContent(), graph, gdo, tc, visualManager);
-
-        graph.setUndoManager(undoRedoManager);
     }
 
     /**
@@ -157,7 +156,7 @@ public class GraphNode extends AbstractNode {
 
         graph.setUndoManager(undoRedoManager);
 
-        GRAPHS.put(graph.getId(), this);
+        GRAPHS.put(graph.getId(), GraphNode.this);
 
         for (GraphManagerListener listener : LISTENERS) {
             listener.graphOpened(graph);

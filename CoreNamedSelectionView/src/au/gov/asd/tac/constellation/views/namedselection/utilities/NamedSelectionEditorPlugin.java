@@ -207,6 +207,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
                 break;
             default:
             // No default case.
+                break;
         }
     }
 
@@ -343,7 +344,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         int transDimAttr = VisualConcept.TransactionAttribute.DIMMED.get(graph);
 
         // If both vertex and transaction attributes don't exist for selected, don't bother searching current selection.
-        boolean intersectCurrentlySelected = (vertexSelectedAttr == Graph.NOT_FOUND && transSelectedAttr == Graph.NOT_FOUND) ? false : useCurrentlySelected;
+        boolean intersectCurrentlySelected = (vertexSelectedAttr != Graph.NOT_FOUND || transSelectedAttr != Graph.NOT_FOUND) && useCurrentlySelected;
 
         // Add the "selected" attribute if necessary:
         VisualConcept.VertexAttribute.SELECTED.ensure(graph);

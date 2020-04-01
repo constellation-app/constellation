@@ -34,7 +34,9 @@ import org.openide.util.lookup.ServiceProvider;
 @Messages("ArrangeInCirclesPlugin=Arrange in Circles")
 public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
-    private int xAttribute, yAttribute, zAttribute;
+    private int xAttribute;
+    private int yAttribute;
+    private int zAttribute;
     private int selectedAttribute;
 
     @Override
@@ -170,8 +172,8 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         } else {
             totalRadius = 0f;
         }
-
-        return radii[vertex] = totalRadius + 2;
+        radii[vertex] = totalRadius + 2;
+        return radii[vertex];
     }
 
     private void offset(final GraphWriteMethods graph, final int vertex, final int[][] children, final float x, final float y, final float z) {

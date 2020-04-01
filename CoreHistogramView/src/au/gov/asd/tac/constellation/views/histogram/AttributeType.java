@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -98,6 +97,8 @@ public enum AttributeType {
                 case TRANSACTION:
                     binCreators.put("Transaction Direction", DefaultBinCreators.TRANSACTION_DIRECTION_BIN_CREATOR);
                     break;
+                default:
+                    break;
             }
         }
 
@@ -123,12 +124,7 @@ public enum AttributeType {
                 attributes.add(attributeRecord);
             }
 
-            Collections.sort(attributes, new Comparator<Attribute>() {
-                @Override
-                public int compare(Attribute o1, Attribute o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            });
+            Collections.sort(attributes, (o1, o2) -> o1.getName().compareTo(o2.getName()));
 
             AttributeBinCreatorProvider.init();
             binCreators.put("", DefaultBinCreators.NULL_BIN_CREATOR);

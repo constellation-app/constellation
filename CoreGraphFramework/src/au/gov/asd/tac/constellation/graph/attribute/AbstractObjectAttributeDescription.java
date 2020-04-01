@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 /**
@@ -24,18 +25,18 @@ import java.util.Arrays;
  * @author cygnus_x-1
  */
 public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
-
+    
     protected final String name;
     protected final Class<T> nativeClass;
     protected T defaultValue;
     protected Object[] data = new Object[0];
-
+    
     public AbstractObjectAttributeDescription(final String name, final Class<T> nativeClass, final T defaultValue) {
         this.name = name;
         this.nativeClass = nativeClass;
         this.defaultValue = defaultValue;
     }
-
+    
     protected T convertFromObject(final Object object) {
         if (object == null) {
             return null;
@@ -48,36 +49,36 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
                     "Error converting Object '%s' to %s", object.getClass(), nativeClass));
         }
     }
-
+    
     protected T convertFromString(final String string) {
         throw new IllegalArgumentException(String.format("Error converting String to %s", nativeClass));
     }
-
+    
     @Override
     public String getName() {
         return name;
     }
-
+    
     @Override
     public Class<T> getNativeClass() {
         return nativeClass;
     }
-
+    
     @Override
     public T getDefault() {
         return defaultValue;
     }
-
+    
     @Override
     public void setDefault(final Object value) {
         defaultValue = convertFromObject(value);
     }
-
+    
     @Override
     public int getCapacity() {
         return data.length;
     }
-
+    
     @Override
     public void setCapacity(final int capacity) {
         final int len = data.length;
@@ -86,66 +87,68 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
             Arrays.fill(data, len, capacity, defaultValue);
         }
     }
-
+    
     @Override
     public String getString(final int id) {
         return data[id] != null ? String.valueOf((T) data[id]) : null;
     }
-
+    
     @Override
-    public void setString(final int id, final String value) throws IllegalArgumentException {
+    public void setString(final int id, final String value) {
         data[id] = convertFromString(value);
     }
-
+    
     @Override
     public T getObject(final int id) {
         return (T) data[id];
     }
-
+    
     @Override
-    public void setObject(final int id, final Object value) throws IllegalArgumentException {
+    public void setObject(final int id, final Object value) {
         data[id] = convertFromObject(value);
     }
-
+    
     @Override
     public boolean isClear(final int id) {
         return equals(data[id], defaultValue);
     }
-
+    
     @Override
     public void clear(final int id) {
         data[id] = defaultValue;
     }
-
+    
     @Override
     public AttributeDescription copy(final GraphReadMethods graph) {
         final AbstractObjectAttributeDescription<T> attribute;
         try {
-            attribute = this.getClass().newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
+            attribute = this.getClass().getDeclaredConstructor().newInstance();
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             throw new RuntimeException("Unable to create instance of " + this.getClass().getCanonicalName(), ex);
         }
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.graph = graph;
-
+        
         return attribute;
     }
-
+    
     @Override
     public int hashCode(final int id) {
         return data[id] == null ? 0 : data[id].hashCode();
     }
-
+    
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
     }
-
+    
     @Override
     public Object saveData() {
         return Arrays.copyOf(data, data.length);
     }
-
+    
     @Override
     public void restoreData(final Object savedData) {
         final Object[] arrayData = (Object[]) savedData;

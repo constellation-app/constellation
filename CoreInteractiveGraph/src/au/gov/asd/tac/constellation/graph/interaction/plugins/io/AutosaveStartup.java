@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
-import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
+import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import java.io.File;
 import java.io.FileInputStream;
@@ -73,7 +73,7 @@ public final class AutosaveStartup implements Runnable {
 
                     if (dtprop != null) {
                         if (unsaved) {
-                            final String msg = String.format("Graph %s (autosaved at %s).\nDo you want to recover it?", name != null ? name : "<unknown>", dtprop);
+                            final String msg = String.format("Graph %s (autosaved at %s).%nDo you want to recover it?", name != null ? name : "<unknown>", dtprop);
                             final NotifyDescriptor nd = new NotifyDescriptor.Confirmation(msg, "Autosaved graph", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE);
                             if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                                 // Load the autosaved graph away from the EDT.
@@ -90,11 +90,7 @@ public final class AutosaveStartup implements Runnable {
                                             GraphOpener.getDefault().openGraph(g, name, false);
 
                                             AutosaveUtilities.deleteAutosave(f);
-                                        } catch (GraphParseException ex) {
-                                            LOGGER.log(Level.WARNING, "Error loading graph", ex);
-                                            final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                            DialogDisplayer.getDefault().notify(nderr);
-                                        } catch (IOException ex) {
+                                        } catch (GraphParseException | IOException ex) {
                                             LOGGER.log(Level.WARNING, "Error loading graph", ex);
                                             final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                             DialogDisplayer.getDefault().notify(nderr);
@@ -114,7 +110,7 @@ public final class AutosaveStartup implements Runnable {
                         AutosaveUtilities.deleteAutosave(f);
                     }
                 } catch (IOException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 

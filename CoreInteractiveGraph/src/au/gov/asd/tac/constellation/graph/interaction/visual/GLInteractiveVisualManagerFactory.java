@@ -48,15 +48,15 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
         final Preferences prefs = NbPreferences.forModule(DeveloperPreferenceKeys.class);
         final InteractiveGLVisualProcessor processor = new InteractiveGLVisualProcessor(prefs.getBoolean(DeveloperPreferenceKeys.DEBUG_GL, DeveloperPreferenceKeys.DEBUG_GL_DEFAULT), prefs.getBoolean(DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES, DeveloperPreferenceKeys.PRINT_GL_CAPABILITIES_DEFAULT));
         final VisualManager manager = new VisualManager(access, processor);
-        final GraphChangeListener changeDetector = (event) -> manager.updateFromIndigenousChanges();
+        final GraphChangeListener changeDetector = event -> manager.updateFromIndigenousChanges();
         final DefaultInteractionEventHandler eventHandler = new DefaultInteractionEventHandler(graph, manager, processor, processor);
-        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
 
+        processor.addDropTargetToCanvas(new GraphRendererDropTarget(graph, manager, processor));
         graph.addGraphChangeListener(changeDetector);
         changeDetector.graphChanged(null);
         processor.startVisualising(manager);
         processor.setEventHandler(eventHandler);
+        
         return manager;
     }
-
 }

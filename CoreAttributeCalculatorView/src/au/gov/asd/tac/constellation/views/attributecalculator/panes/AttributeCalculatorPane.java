@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.panes;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
-import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
-import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -25,6 +22,9 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
+import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
+import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -285,10 +285,8 @@ public final class AttributeCalculatorPane extends GridPane {
             ListCell<InsertListItem> l = new InsertListCell();
             l.getStyleClass().add("variableListCell");
             l.setOnMouseClicked((MouseEvent event) -> {
-                if (event.getClickCount() == 2) {
-                    if (l.getItem() != null) {
-                        l.getItem().insertValue();
-                    }
+                if (event.getClickCount() == 2 && l.getItem() != null) {
+                    l.getItem().insertValue();
                 }
             });
             return l;
@@ -483,11 +481,11 @@ public final class AttributeCalculatorPane extends GridPane {
         objectNameText.setFill(Color.web("#0096C9"));
         templateObjectHelp.getChildren().add(objectNameText);
 
-        String objUsage = "Usage(s):\n";
+        StringBuilder objUsage = new StringBuilder("Usage(s):\n");
         for (String str : description.usage) {
-            objUsage += "\t" + str + "\n";
+            objUsage.append("\t").append(str).append("\n");
         }
-        final Text objectUsageText = new Text(objUsage + "\n");
+        final Text objectUsageText = new Text(objUsage.toString() + "\n");
         objectUsageText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 14));
         objectUsageText.setFill(Color.WHITE);
         templateObjectHelp.getChildren().add(objectUsageText);
@@ -500,11 +498,11 @@ public final class AttributeCalculatorPane extends GridPane {
         templateObjectHelp.getChildren().add(objectDescripText);
 
         if (description.arguments.length != 0) {
-            String objArguments = "Arguments:\n";
+            StringBuilder objArguments = new StringBuilder("Arguments:\n");
             for (String str : description.arguments) {
-                objArguments += "\t" + str + "\n";
+                objArguments.append("\t").append(str).append("\n");
             }
-            final Text objectArgumentsText = new Text(objArguments + "\n");
+            final Text objectArgumentsText = new Text(objArguments.toString() + "\n");
             objectArgumentsText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
             objectArgumentsText.setFill(Color.WHITE);
             objectArgumentsText.setFontSmoothingType(FontSmoothingType.LCD);
@@ -519,11 +517,11 @@ public final class AttributeCalculatorPane extends GridPane {
         templateObjectHelp.getChildren().add(objectReturnsText);
 
         if (description.notes.length != 0) {
-            String objNotes = "Notes:\n";
+            StringBuilder objNotes = new StringBuilder("Notes:\n");
             for (String str : description.notes) {
-                objNotes += "\t- " + str + "\n";
+                objNotes.append("\t- ").append(str).append("\n");
             }
-            final Text objectNotesText = new Text(objNotes + "\n");
+            final Text objectNotesText = new Text(objNotes.toString() + "\n");
             objectNotesText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
             objectNotesText.setFill(Color.WHITE);
             objectNotesText.setFontSmoothingType(FontSmoothingType.LCD);

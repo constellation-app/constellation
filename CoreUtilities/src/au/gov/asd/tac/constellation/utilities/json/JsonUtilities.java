@@ -92,6 +92,9 @@ public class JsonUtilities {
 
             @Override
             public String next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().textValue();
             }
         };
@@ -169,6 +172,9 @@ public class JsonUtilities {
 
             @Override
             public Integer next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().intValue();
             }
         };
@@ -216,6 +222,9 @@ public class JsonUtilities {
 
             @Override
             public Boolean next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
                 return nodeIter.next().booleanValue();
             }
         };
@@ -301,8 +310,7 @@ public class JsonUtilities {
 
         try {
             JsonNode node = mapper.readTree(rawString);
-            String prettyJson = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-            return prettyJson;
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
         } catch (IOException ex) {
             // If there is a formatting issue, just return the raw JSON as it was passed in
             return rawString;

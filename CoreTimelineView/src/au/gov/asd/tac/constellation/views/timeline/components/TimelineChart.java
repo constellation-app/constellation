@@ -87,7 +87,8 @@ public class TimelineChart extends XYChart<Number, Number> {
     // JavaFX Components:
     private final TimelinePanel parent;
     private final TimelineChart timeline;
-    private final NumberAxis xAxis, yAxis;
+    private final NumberAxis xAxis;
+    private final NumberAxis yAxis;
     private final Tooltip tooltip;
     private final Rectangle selection;
     // Attributes and Instance Variables:
@@ -406,7 +407,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      */
     public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
-        this.currentTimezone = SimpleTimeZone.getTimeZone(zoneId);
+        this.currentTimezone = TimeZone.getTimeZone(zoneId);
         this.lowestObservedDisplayPos = lowestObservedDisplayPos;
         this.highestObservedDisplayPos = highestObservedDisplayPos;
         yAxis.setLowerBound(this.lowestObservedDisplayPos);
@@ -593,9 +594,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      * @return A newly created tooltip.
      */
     private Tooltip createTooltip() {
-        final Tooltip tt = new Tooltip();
-
-        return tt;
+        return new Tooltip();
     }
 
     /**
@@ -728,7 +727,7 @@ public class TimelineChart extends XYChart<Number, Number> {
             return;
         }
 
-        final double observedDisplayPosDifference = highestObservedDisplayPos - lowestObservedDisplayPos;
+        final double observedDisplayPosDifference = (double) highestObservedDisplayPos - lowestObservedDisplayPos;
         final double amountY = observedDisplayPosDifference == 0 ? yAxis.getHeight() : yAxis.getHeight() / (highestObservedDisplayPos - lowestObservedDisplayPos);
 
         final double timeExtentDifference = upperTimeExtent - lowerTimeExtent;
@@ -830,15 +829,13 @@ public class TimelineChart extends XYChart<Number, Number> {
                             if (xData != null) {
                                 xData.add(data.getXValue());
                             }
-                            if (yData != null) {
-                                if (data.getExtraValue() instanceof Interaction) {
-                                    final Interaction intr = (Interaction) data.getExtraValue();
-                                    if (intr != null) {
-                                        yData.add(intr.getTopVertex().getDisplayPos());
-                                        yData.add(intr.getBottomVertex().getDisplayPos());
-                                    } else {
-                                        yData.add(data.getYValue());
-                                    }
+                            if (yData != null && data.getExtraValue() instanceof Interaction) {
+                                final Interaction intr = (Interaction) data.getExtraValue();
+                                if (intr != null) {
+                                    yData.add(intr.getTopVertex().getDisplayPos());
+                                    yData.add(intr.getBottomVertex().getDisplayPos());
+                                } else {
+                                    yData.add(data.getYValue());
                                 }
                             }
                         }

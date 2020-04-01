@@ -48,8 +48,6 @@ import java.util.concurrent.Future;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -173,12 +171,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Start with nothing visible:
         toggleUI(false);
 
-        jTabbedPane1.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e) {
-                tabbedPaneChanged();
-            }
-        });
+        jTabbedPane1.addChangeListener(e -> tabbedPaneChanged());
     }
 
     /**
@@ -247,6 +240,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             case VERTEX:
             default:
                 cmbGraphElementType.setSelectedItem(Bundle.Find_VERTEX());
+                break;
         }
 
         // Start with a blank slate:
@@ -722,11 +716,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         }
 
         // Save the AND/OR mode ('any'/'all'):
-        if (this.cmbMatch.getSelectedItem().equals(Bundle.Find_ANY())) {
-            newState.setAny(true);
-        } else {
-            newState.setAny(false);
-        }
+        newState.setAny(this.cmbMatch.getSelectedItem().equals(Bundle.Find_ANY()));
 
         // Save the hold selection mode:
         newState.setHeld(chkAddToSelection.isSelected());
@@ -786,6 +776,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             future.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -903,6 +894,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             future.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }

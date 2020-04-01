@@ -23,7 +23,10 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -38,6 +41,8 @@ import javafx.scene.layout.BorderPane;
  * @author sirius
  */
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
+    
+    private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
 
     private final String label;
     private final int columnIndex;
@@ -68,14 +73,12 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
             String defaultValue = attributeNode.getDefaultValue();
 
             Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault().getAttributes().get(attributeNode.getAttribute().getAttributeType());
-            if (attributeDescriptionClass == null) {
-                // Handle pseudo-attributes
-                if (attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {
-                    attributeDescriptionClass = BooleanAttributeDescription.class;
-                }
+            // Handle pseudo-attributes
+            if (attributeDescriptionClass == null && attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {               
+                attributeDescriptionClass = BooleanAttributeDescription.class;
             }
             try {
-                AttributeDescription attributeDescription = attributeDescriptionClass.newInstance();
+                AttributeDescription attributeDescription = attributeDescriptionClass.getDeclaredConstructor().newInstance();
                 for (TableRow row : data) {
                     CellValueProperty property = row.getProperty(columnIndex);
                     String value = property.get().getOriginalText();
@@ -99,8 +102,10 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
                         }
                     }
                 }
-            } catch (IllegalAccessException | InstantiationException ex) {
-                ex.printStackTrace();
+            } catch (final IllegalAccessException | IllegalArgumentException
+                    | InstantiationException | NoSuchMethodException
+                    | SecurityException | InvocationTargetException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
             for (TableRow row : data) {

@@ -22,9 +22,9 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.GraphObjectUtilities;
 import au.gov.asd.tac.constellation.graph.file.SaveNotification;
+import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
-import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.interaction.framework.GraphVisualManagerFactory;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToClipboardAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CutToClipboardAction;
@@ -55,6 +55,9 @@ import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -73,14 +76,11 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -118,6 +118,7 @@ import javax.swing.Icon;
 import javax.swing.InputMap;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.netbeans.api.actions.Savable;
@@ -306,7 +307,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         toggleDrawDirectedAction = new ToggleDrawDirectedAction(graphNode, directedModeButtonGroup);
         toggleGraphVisibilityAction = new ToggleGraphVisibilityAction(graphNode);
 
-        final JToolBar sidebar = new JToolBar(JToolBar.VERTICAL);
+        final JToolBar sidebar = new JToolBar(SwingConstants.VERTICAL);
         sidebar.setFloatable(false);
         sidebar.setRollover(true);
         sidebar.add(display3dAction.getToolbarPresenter());
@@ -539,11 +540,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
-    public void componentActivated() {
-        super.componentActivated();
-    }
-
-    @Override
     public void graphChanged(final GraphChangeEvent evt) {
         long modificationCount;
 
@@ -587,7 +583,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             // Read relevant visual attributes from the graph and update the sidebar.
             final DrawFlags drawFlags;
             final ConnectionMode connectionMode;
-            final boolean visibleAboveThreshold, isDisplay3D, isDrawingMode, isDrawingDirectedTransactions;
+            final boolean visibleAboveThreshold;
+            final boolean isDisplay3D;
+            final boolean isDrawingMode;
+            final boolean isDrawingDirectedTransactions;
             drawFlags = drawFlagsAttribute != Graph.NOT_FOUND ? rg.getObjectValue(drawFlagsAttribute, 0) : VisualGraphDefaults.DEFAULT_DRAW_FLAGS;
             visibleAboveThreshold = visibleAboveThresholdAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(visibleAboveThresholdAttribute, 0) : VisualGraphDefaults.DEFAULT_GRAPH_VISIBILITY;
             isDisplay3D = displayModeIs3DAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(displayModeIs3DAttribute, 0) : VisualGraphDefaults.DEFAULT_DISPLAY_MODE_3D;
@@ -788,7 +787,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static List<Savable> getNebulaSavables(final NebulaDataObject nebula) {
         final List<Savable> savableList = new ArrayList<>();
         final Collection<? extends Savable> savables = Savable.REGISTRY.lookupAll(Savable.class);
-        savables.stream().filter(s -> (s instanceof MySavable)).forEach((s) -> {
+        savables.stream().filter(s -> (s instanceof MySavable)).forEach(s -> {
             final NebulaDataObject otherNDO = ((MySavable) s).tc().getGraphNode().getDataObject().getNebulaDataObject();
             if (nebula.equalsPath(otherNDO)) {
                 savableList.add(s);

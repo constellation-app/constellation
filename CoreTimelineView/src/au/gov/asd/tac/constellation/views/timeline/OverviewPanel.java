@@ -62,12 +62,14 @@ public class OverviewPanel extends Pane {
     private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
     private final AreaChart histogram;
-    private NumberAxis xAxis, yAxis;
+    private NumberAxis xAxis;
+    private NumberAxis yAxis;
     private final Rectangle pov;
     // Panes:
     private final AnchorPane innerPane = new AnchorPane();
     private TimelineTopComponent coordinator;
-    private double lowestTimeExtent, highestTimeExtent;
+    private double lowestTimeExtent;
+    private double highestTimeExtent;
     private double range;
 
     /**
@@ -202,35 +204,32 @@ public class OverviewPanel extends Pane {
                 final Object datetimeAttributeValue = graph.getObjectValue(datetimeAttributeId, transactionID);
 
                 if (TimelineTopComponent.SUPPORTED_DATETIME_ATTRIBUTE_TYPES.contains(datetimeAttributeType)
-                        && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)) {
-                    if ((selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) || !selectedOnly) {
-                        long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
+                        && datetimeAttributeValue != null && !datetimeAttributeValue.equals(datetimeAttributeDefault)
+                        && ((selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) || !selectedOnly)) {
+                    long transactionValue = graph.getLongValue(datetimeAttributeId, transactionID);
 
-                        // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
-                        if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
-                            transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;
-                        }
+                    // Dates are represented as days since epoch, whereas datetimes are represented as milliseconds since epoch
+                    if (datetimeAttributeType.equals(DateAttributeDescription.ATTRIBUTE_NAME)) {
+                        transactionValue = transactionValue * TemporalConstants.MILLISECONDS_IN_DAY;
+                    }
 
-                        int interval = 0;
-                        if (intervalLength > 0) {
-                            interval = ((int) Math.round((transactionValue - lowestTimeExtent) / intervalLength));
-                        }
+                    int interval = 0;
+                    if (intervalLength > 0) {
+                        interval = ((int) Math.round((transactionValue - lowestTimeExtent) / intervalLength));
+                    }
 
-                        if (items[interval] > 0) {
-                            items[interval]++;
+                    if (items[interval] > 0) {
+                        items[interval]++;
+                    } else {
+                        items[interval] = 1;
+                    }
+
+                    // Work out if we have selected values for the current interval:
+                    if (selectedTransAttributeId != Graph.NOT_FOUND && graph.getBooleanValue(selectedTransAttributeId, transactionID)) {
+                        if (itemsSelected[interval] > 0) {
+                            itemsSelected[interval]++;
                         } else {
-                            items[interval] = 1;
-                        }
-
-                        // Work out if we have selected values for the current interval:
-                        if (selectedTransAttributeId != Graph.NOT_FOUND) {
-                            if (graph.getBooleanValue(selectedTransAttributeId, transactionID)) {
-                                if (itemsSelected[interval] > 0) {
-                                    itemsSelected[interval]++;
-                                } else {
-                                    itemsSelected[interval] = 1;
-                                }
-                            }
+                            itemsSelected[interval] = 1;
                         }
                     }
                 }

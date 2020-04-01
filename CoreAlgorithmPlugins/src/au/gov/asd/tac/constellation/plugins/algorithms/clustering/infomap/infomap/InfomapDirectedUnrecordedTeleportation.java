@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowDirectedNonDetailedBalanceWithTeleportation;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  *
@@ -63,7 +63,7 @@ public class InfomapDirectedUnrecordedTeleportation extends InfomapGreedy {
 
         @Override
         public NodeBase createNode(final NodeBase node) {
-            return new Node(node.name, (FlowDirectedNonDetailedBalanceWithTeleportation) ((Node) node).getData());
+            return new Node(node.getName(), (FlowDirectedNonDetailedBalanceWithTeleportation) ((Node) node).getData());
         }
 
         @Override

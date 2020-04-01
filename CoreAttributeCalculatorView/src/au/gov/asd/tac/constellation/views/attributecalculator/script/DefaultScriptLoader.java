@@ -23,12 +23,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
 /**
@@ -36,6 +37,8 @@ import org.openide.util.Exceptions;
  * @author twilight_sparkle
  */
 public class DefaultScriptLoader extends AbstractScriptLoader {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultScriptLoader.class.getName());
 
     private static final String DESCRIPTION_KEY = "description";
 
@@ -55,7 +58,7 @@ public class DefaultScriptLoader extends AbstractScriptLoader {
                     try {
                         line = reader.readLine();
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         line = null;
                     }
                     if (line == null) {
@@ -64,8 +67,6 @@ public class DefaultScriptLoader extends AbstractScriptLoader {
                     defaultNamesList.add(line);
                 }
             }
-        } catch (UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

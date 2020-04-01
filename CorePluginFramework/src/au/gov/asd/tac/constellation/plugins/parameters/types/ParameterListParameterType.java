@@ -226,6 +226,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                     case VALUE:
                         parameterHasChanged();
                         break;
+                    default:
+                        break;
                 }
             });
         }
@@ -372,10 +374,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             if (!Objects.equals(value.parameterPanes, other.parameterPanes)) {
                 return false;
             }
-            if (!Objects.equals(value.enclosingParameter, other.enclosingParameter)) {
-                return false;
-            }
-            return true;
+            return Objects.equals(value.enclosingParameter, other.enclosingParameter);
         }
 
         public List<PluginParameters> getListOfPluginParameters() {
@@ -466,6 +465,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                     panelCreated.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
                 }
             }
         }

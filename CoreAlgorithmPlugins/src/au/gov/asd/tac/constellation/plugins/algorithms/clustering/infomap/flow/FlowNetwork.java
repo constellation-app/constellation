@@ -62,7 +62,7 @@ public class FlowNetwork {
                 sumLinkOutWeight[ends.end2] += weight;
             }
             nodeFlow[ends.end1] += weight / sumUndirConnWeight;
-            if (!config.outdirdir) {
+            if (!config.isOutdirdir()) {
                 nodeFlow[ends.end2] += weight / sumUndirConnWeight;
             }
             flowConns[connIndex] = new Connection(ends.end1, ends.end2, weight);
@@ -70,13 +70,13 @@ public class FlowNetwork {
             connIndex++;
         }
 
-        if (config.rawdir) {
+        if (config.isRawdir()) {
             // Treat the link weights as flow (after global normalization) and
             // do one power iteration to set the node flow.
             Arrays.fill(nodeFlow, 0);
             for (final Connection conn : flowConns) {
-                conn.flow /= totalConnWeight;
-                nodeFlow[conn.target] += conn.flow;
+                conn.setFlow(conn.getFlow() / totalConnWeight);
+                nodeFlow[conn.getTarget()] += conn.getFlow();
             }
 
             // Normalize node flow.
@@ -91,19 +91,19 @@ public class FlowNetwork {
                 }
             }
 
-            System.out.printf("using directed links with raw flow... done!\n");
-            System.out.printf("Total link weight: %f\n", totalConnWeight);
+            System.out.printf("using directed links with raw flow... done!%n");
+            System.out.printf("Total link weight: %f%n", totalConnWeight);
 
             return;
         }
 
-        if (!config.directed) {
-            if (config.undirdir || config.outdirdir) {
+        if (!config.isDirected()) {
+            if (config.isUndirdir() || config.isOutdirdir()) {
                 //Take one last power iteration.
                 final double[] nodeFlowSteadyState = Arrays.copyOf(nodeFlow, numNodes);
                 Arrays.fill(nodeFlow, 0);
                 for (final Connection conn : flowConns) {
-                    nodeFlow[conn.target] += nodeFlowSteadyState[conn.source] * conn.flow / sumLinkOutWeight[conn.source];
+                    nodeFlow[conn.getTarget()] += nodeFlowSteadyState[conn.getSource()] * conn.getFlow() / sumLinkOutWeight[conn.getSource()];
                 }
 
                 //Normalize node flow.
@@ -121,30 +121,30 @@ public class FlowNetwork {
                 // Update link data to represent flow instead of weight.
                 if (sumNodeRank != 0) {
                     for (final Connection conn : flowConns) {
-                        conn.flow *= nodeFlowSteadyState[conn.source] / sumLinkOutWeight[conn.source] / sumNodeRank;
+                        conn.setFlow(conn.getFlow() * (nodeFlowSteadyState[conn.getSource()] / sumLinkOutWeight[conn.getSource()] / sumNodeRank));
                     }
                 }
             } else { // undirected
                 for (int i = 0; i < numConns; ++i) {
-                    flowConns[i].flow /= sumUndirConnWeight;
+                    flowConns[i].setFlow(flowConns[i].getFlow() / sumUndirConnWeight);
                 }
             }
 
-            if (config.outdirdir) {
+            if (config.isOutdirdir()) {
                 Logf.printf("counting only ingoing links... done!\n");
             } else {
-                Logf.printf("using undirected links%s\n", config.undirdir ? ", switching to directed after steady state... done!"
+                Logf.printf("using undirected links%s\n", config.isUndirdir() ? ", switching to directed after steady state... done!"
                         : "... done!");
             }
 
             return;
         }
 
-        System.out.printf("using %s teleportation to %s... ", config.recordedTeleportation ? "recorded" : "unrecorded",
-                config.teleportToNodes ? "nodes" : "links");
+        System.out.printf("using %s teleportation to %s... ", config.isRecordedTeleportation() ? "recorded" : "unrecorded",
+                config.isTeleportToNodes() ? "nodes" : "links");
 
         // Calculate the teleport rate distribution.
-        if (config.teleportToNodes) {
+        if (config.isTeleportToNodes()) {
             final double[] nodeWeights = network.getNodeTeleportRates();
             for (int i = 0; i < numNodes; ++i) {
                 nodeTeleportRates[i] = nodeWeights[i] / network.getSumNodeWeights();
@@ -152,14 +152,14 @@ public class FlowNetwork {
         } else {
             // Teleport proportionally to out-degree, or in-degree if recorded teleportation.
             for (final Connection conn : flowConns) {
-                final int toNode = config.recordedTeleportation ? conn.target : conn.source;
-                nodeTeleportRates[toNode] += conn.flow / totalConnWeight;
+                final int toNode = config.isRecordedTeleportation() ? conn.getTarget() : conn.getSource();
+                nodeTeleportRates[toNode] += conn.getFlow() / totalConnWeight;
             }
         }
 
         // Normalize link weights with respect to its source nodes total out-link weight.
         for (final Connection conn : flowConns) {
-            conn.flow /= sumLinkOutWeight[conn.source];
+            conn.setFlow(conn.getFlow() / sumLinkOutWeight[conn.getSource()]);
         }
 
         // Collect dangling nodes.
@@ -174,7 +174,7 @@ public class FlowNetwork {
         final double[] nodeFlowTmp = new double[numNodes];
         Arrays.fill(nodeFlowTmp, 0);
         int numIterations = 0;
-        double alpha = config.teleportationProbability;
+        double alpha = config.getTeleportationProbability();
         double beta = 1.0 - alpha;
         double sqdiff = 1;
         double danglingRank = 0;
@@ -192,7 +192,7 @@ public class FlowNetwork {
 
             // Flow from links.
             for (final Connection conn : flowConns) {
-                nodeFlowTmp[conn.target] += beta * conn.flow * nodeFlow[conn.source];
+                nodeFlowTmp[conn.getTarget()] += beta * conn.getFlow() * nodeFlow[conn.getSource()];
             }
 
             // Update node flow from the power iteration above and check if converged.
@@ -206,12 +206,10 @@ public class FlowNetwork {
             }
 
             // Normalize if needed.
-            if (sum != 0) {
-                if (Math.abs(sum - 1.0) > 1.0e-10) {
-                    System.out.printf("(Normalizing ranks after %d power iterations with error) ", numIterations, sum - 1.0);
-                    for (int i = 0; i < numNodes; ++i) {
-                        nodeFlow[i] /= sum;
-                    }
+            if (sum != 0 && Math.abs(sum - 1.0) > 1.0e-10) {
+                System.out.printf("(Normalizing ranks after %d power iterations with error %e) ", numIterations, sum - 1.0);
+                for (int i = 0; i < numNodes; ++i) {
+                    nodeFlow[i] /= sum;
                 }
             }
 
@@ -226,12 +224,12 @@ public class FlowNetwork {
 
         double sumNodeRank = 1.0;
 
-        if (!config.recordedTeleportation) {
+        if (!config.isRecordedTeleportation()) {
             //Take one last power iteration excluding the teleportation (and normalize node flow to sum 1.0).
             sumNodeRank = 1.0 - danglingRank;
             Arrays.fill(nodeFlow, 0);
             for (final Connection conn : flowConns) {
-                nodeFlow[conn.target] += conn.flow * nodeFlowTmp[conn.source] / sumNodeRank;
+                nodeFlow[conn.getTarget()] += conn.getFlow() * nodeFlowTmp[conn.getSource()] / sumNodeRank;
             }
 
             beta = 1.0;
@@ -239,10 +237,10 @@ public class FlowNetwork {
 
         // Update the links with their global flow from the PageRank values. (Note: beta is set to 1 if unrec).
         for (final Connection conn : flowConns) {
-            conn.flow *= beta * nodeFlowTmp[conn.source] / sumNodeRank;
+            conn.setFlow(conn.getFlow() * (beta * nodeFlowTmp[conn.getSource()] / sumNodeRank));
         }
 
-        System.out.printf("done in %d iterations!\n", numIterations);
+        System.out.printf("done in %d iterations!%n", numIterations);
     }
 
     public double[] getNodeFlow() {

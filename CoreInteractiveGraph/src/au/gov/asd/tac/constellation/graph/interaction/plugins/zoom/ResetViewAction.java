@@ -55,8 +55,8 @@ public final class ResetViewAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final boolean isCtrl = (e.getModifiers() & InputEvent.CTRL_MASK) != 0;
-        final boolean isShift = (e.getModifiers() & InputEvent.SHIFT_MASK) != 0;
+        final boolean isCtrl = (e.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0;
+        final boolean isShift = (e.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0;
         final String axis;
         final boolean negative;
         if (isShift && !isCtrl) {

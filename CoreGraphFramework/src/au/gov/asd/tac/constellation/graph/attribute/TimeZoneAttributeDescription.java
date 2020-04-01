@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
 public final class TimeZoneAttributeDescription extends AbstractAttributeDescription {
 
     private static final int DESCRIPTION_VERSION = 1;
-    private static final Logger LOGGER = Logger.getLogger(ZonedDateTimeAttributeDescription.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(TimeZoneAttributeDescription.class.getName());
     private static final ZoneId DEFAULT_VALUE = TimeZoneUtilities.UTC;
     private ZoneId[] data = new ZoneId[0];
     private ZoneId defaultValue = DEFAULT_VALUE;
@@ -81,7 +81,7 @@ public final class TimeZoneAttributeDescription extends AbstractAttributeDescrip
         } else if (value instanceof String) {
             return ZoneId.of((String) value);
         } else {
-            LOGGER.log(Level.WARNING, "Error converting Object '{0}' to time_zone", value.getClass());
+            LOGGER.log(Level.WARNING, "Error converting Object {0} to time_zone", value.getClass());
         }
         return null;
     }
@@ -106,7 +106,7 @@ public final class TimeZoneAttributeDescription extends AbstractAttributeDescrip
             final String regionId = value.length() > 6 ? value.substring(8, value.length() - 1) : null;
             return regionId == null ? ZoneOffset.of(offsetId) : ZoneId.of(regionId);
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse timezone string '{0}': '{1}'", new Object[]{value, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can''t parse timezone string ''{0}'': {1}", new Object[]{value, ex.getMessage()});
         }
 
         return null;

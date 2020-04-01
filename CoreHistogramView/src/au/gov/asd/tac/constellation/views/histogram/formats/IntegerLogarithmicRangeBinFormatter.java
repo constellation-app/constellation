@@ -66,7 +66,7 @@ public class IntegerLogarithmicRangeBinFormatter extends BinFormatter {
 
         private final IntBin bin;
         private final int base;
-        public int end;
+        private int end;
 
         public IntRangeBin(IntBin bin, int base) {
             this.bin = bin;
@@ -85,19 +85,18 @@ public class IntegerLogarithmicRangeBinFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            if (bin.key == 0) {
+            if (bin.getKey() == 0) {
                 key = 0;
                 return;
             }
-            int sign = (bin.key < 0 ? -1 : 1);
-            key = (int) (sign * Math.pow(base, Math.floor(Math.log10(Math.abs(bin.key)) / Math.log10(base))));
+            int sign = (bin.getKey() < 0 ? -1 : 1);
+            key = (int) (sign * Math.pow(base, Math.floor(Math.log10(Math.abs(bin.getKey())) / Math.log10(base))));
             end = (key * base) - sign;
         }
 
         @Override
         public Bin create() {
-            IntRangeBin f = new IntRangeBin(bin, base);
-            return f;
+            return new IntRangeBin(bin, base);
         }
     }
 }

@@ -22,7 +22,10 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map.Entry;
@@ -275,17 +278,16 @@ public class ConstellationLoggerHelper {
     private static void addFileStatistics(final Properties properties, final Collection<File> files) throws PluginException {
         if (files != null) {
             Integer counter = files.size();
-
             for (File file : files) {
                 properties.setProperty(String.format("%s %d", FILE_NAME, counter), file.getAbsolutePath());
                 properties.setProperty(String.format("%s %d", FILE_SIZE, counter), Long.toString(file.length()));
                 try {
-                    final String hash = createMD5Hash(file);
+                    final String hash = createHash(file);
                     if (hash != null) {
                         properties.setProperty(String.format("%s %d", FILE_HASH, counter), hash);
                     }
-                } catch (Exception ex) {
-                    throw new PluginException(PluginNotificationLevel.FATAL, "Error creating MD5 hash: " + ex.getMessage());
+                } catch (final IOException | NoSuchAlgorithmException ex) {
+                    throw new PluginException(PluginNotificationLevel.FATAL, "Error creating hash: " + ex.getMessage());
                 }
                 counter++;
             }
@@ -294,33 +296,31 @@ public class ConstellationLoggerHelper {
     }
 
     /**
-     * Create an MD5 hash for a file
+     * Create an SHA-256 hash for a file
      *
      * @param file The file being opened
-     * @return The MD5 hash or null if the file does not exist
+     * @return The SHA-256 hash or null if the file does not exist
      * @throws Exception if an error occurs creating the hash.
      */
-    private static String createMD5Hash(final File file) throws Exception {
-        final MessageDigest md5Digest = MessageDigest.getInstance("MD5");
-        md5Digest.reset();
-
-        byte[] buffer = new byte[1024];
-
+    private static String createHash(final File file) throws IOException, NoSuchAlgorithmException {
         if (!file.exists()) {
             return null;
         }
+        
+        final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
+        sha256Digest.reset();
 
+        final byte[] buffer = new byte[1024];
         try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
             int bytesRead = in.read(buffer);
             while (bytesRead >= 0) {
-                md5Digest.update(buffer, 0, bytesRead);
+                sha256Digest.update(buffer, 0, bytesRead);
                 bytesRead = in.read(buffer);
             }
         }
 
-        byte[] hash = md5Digest.digest();
-
         final StringBuilder result = new StringBuilder();
+        final byte[] hash = sha256Digest.digest();
         for (byte b : hash) {
             int i = b;
             if (i < 0) {

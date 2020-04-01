@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
@@ -22,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowDirectedWithTeleportation;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  *
@@ -36,7 +36,7 @@ public class InfomapDirected extends InfomapGreedy {
     public InfomapDirected(final Config config, GraphReadMethods rg) {
         super(config, new NodeFactoryDirected(), rg);
 
-        alpha = config.teleportationProbability;
+        alpha = config.getTeleportationProbability();
         beta = 1 - alpha;
     }
 
@@ -63,25 +63,26 @@ public class InfomapDirected extends InfomapGreedy {
     @Override
     protected void addTeleportationDeltaFlowOnOldModuleIfMove(final Node nodeToMove, final DeltaFlow oldModuleDeltaFlow) {
         final FlowDirectedWithTeleportation nodeToMoveData = (FlowDirectedWithTeleportation) nodeToMove.getData();
-        final FlowDirectedWithTeleportation oldModuleFlowData = (FlowDirectedWithTeleportation) moduleFlowData[oldModuleDeltaFlow.module];
-        oldModuleDeltaFlow.deltaExit += (alpha * nodeToMoveData.teleportSourceFlow + beta * nodeToMoveData.danglingFlow) * (oldModuleFlowData.teleportWeight - nodeToMoveData.teleportWeight);
-        oldModuleDeltaFlow.deltaEnter += (alpha * (oldModuleFlowData.teleportSourceFlow - nodeToMoveData.teleportSourceFlow)
-                + beta * (oldModuleFlowData.danglingFlow - nodeToMoveData.danglingFlow)) * nodeToMoveData.teleportWeight;
+        final FlowDirectedWithTeleportation oldModuleFlowData = (FlowDirectedWithTeleportation) moduleFlowData[oldModuleDeltaFlow.getModule()];
+        oldModuleDeltaFlow.setDeltaExit(oldModuleDeltaFlow.getDeltaExit() + ((alpha * nodeToMoveData.getTeleportSourceFlow() + beta * nodeToMoveData.getDanglingFlow()) * (oldModuleFlowData.getTeleportWeight() - nodeToMoveData.getTeleportWeight())));
+        oldModuleDeltaFlow.setDeltaEnter(oldModuleDeltaFlow.getDeltaEnter() 
+                + ((alpha * (oldModuleFlowData.getTeleportSourceFlow() - nodeToMoveData.getTeleportSourceFlow()) + beta * (oldModuleFlowData.getDanglingFlow() - nodeToMoveData.getDanglingFlow())) 
+                        * nodeToMoveData.getTeleportWeight()));
     }
 
     @Override
     protected void addTeleportationDeltaFlowOnNewModuleIfMove(final Node nodeToMove, final DeltaFlow newModuleDeltaFlow) {
         final FlowDirectedWithTeleportation nodeToMoveData = (FlowDirectedWithTeleportation) nodeToMove.getData();
-        final FlowDirectedWithTeleportation newModuleFlowData = (FlowDirectedWithTeleportation) moduleFlowData[newModuleDeltaFlow.module];
-        newModuleDeltaFlow.deltaExit += (alpha * nodeToMoveData.teleportSourceFlow + beta * nodeToMoveData.danglingFlow) * newModuleFlowData.teleportWeight;
-        newModuleDeltaFlow.deltaEnter += (alpha * newModuleFlowData.teleportSourceFlow + beta * newModuleFlowData.danglingFlow) * nodeToMoveData.teleportWeight;
+        final FlowDirectedWithTeleportation newModuleFlowData = (FlowDirectedWithTeleportation) moduleFlowData[newModuleDeltaFlow.getModule()];
+        newModuleDeltaFlow.setDeltaExit(newModuleDeltaFlow.getDeltaExit() + ((alpha * nodeToMoveData.getTeleportSourceFlow() + beta * nodeToMoveData.getDanglingFlow()) * newModuleFlowData.getTeleportWeight()));
+        newModuleDeltaFlow.setDeltaEnter(newModuleDeltaFlow.getDeltaEnter() + ((alpha * newModuleFlowData.getTeleportSourceFlow() + beta * newModuleFlowData.getDanglingFlow()) * nodeToMoveData.getTeleportWeight()));
     }
 
     @Override
     protected void addTeleportationDeltaFlowIfMove(final Node current, final DeltaFlow[] moduleDeltaExits, final int numModuleLinks) {
         for (int j = 0; j < numModuleLinks; ++j) {
-            final int moduleIndex = moduleDeltaExits[j].module;
-            if (moduleIndex == current.index) {
+            final int moduleIndex = moduleDeltaExits[j].getModule();
+            if (moduleIndex == current.getIndex()) {
                 addTeleportationDeltaFlowOnOldModuleIfMove(current, moduleDeltaExits[j]);
             } else {
                 addTeleportationDeltaFlowOnNewModuleIfMove(current, moduleDeltaExits[j]);
@@ -91,10 +92,10 @@ public class InfomapDirected extends InfomapGreedy {
 
     @Override
     protected double getDeltaCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        final double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        final double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        final double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        final double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         final double delta_exit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlow_log_enterFlow;
 
@@ -112,17 +113,15 @@ public class InfomapDirected extends InfomapGreedy {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        final double deltaL = delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
-
-        return deltaL;
+        return delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
     }
 
     @Override
     protected void updateCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        final double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        final double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        final double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        final double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         enterFlow
                 -= moduleFlowData[oldModule].getEnterFlow()
@@ -172,7 +171,7 @@ public class InfomapDirected extends InfomapGreedy {
 
         @Override
         public NodeBase createNode(final NodeBase node) {
-            return new Node(node.name, (FlowDirectedWithTeleportation) ((Node) node).getData());
+            return new Node(node.getName(), (FlowDirectedWithTeleportation) ((Node) node).getData());
         }
 
         @Override

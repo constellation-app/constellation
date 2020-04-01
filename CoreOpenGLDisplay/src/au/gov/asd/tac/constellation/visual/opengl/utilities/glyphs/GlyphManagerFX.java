@@ -582,7 +582,7 @@
 //                latch.await();
 //                waiting = false;
 //            } catch (InterruptedException ex) {
-//                // do nothing
+//                Thread.currentThread().interrupt();
 //            }
 //        }
 //    }
@@ -661,6 +661,8 @@
 //
 //                case PathIterator.SEG_CLOSE:
 //                    currentGraphicsContext.closePath();
+//                    break;
+//                default:
 //                    break;
 //            }
 //

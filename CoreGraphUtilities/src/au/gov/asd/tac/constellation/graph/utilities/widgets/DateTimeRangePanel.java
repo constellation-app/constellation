@@ -21,6 +21,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import org.openide.DialogDescriptor;
@@ -40,6 +42,8 @@ import org.openide.util.NbBundle.Messages;
     "DateTimeFormat=yyyy-MM-dd HH:mm:ss"
 })
 public class DateTimeRangePanel extends javax.swing.JPanel {
+    
+    private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
     private final DateTimeListenerInterface parentPanel;
     private JSpinner.DateEditor de1;
@@ -186,7 +190,7 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
 
         spnDateTime1.setModel(new SpinnerDateModel(firstDate.getTime(), minDate, maxDate, Calendar.DAY_OF_MONTH));
 
-        calendarButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/visual/widgets/calendar.png"))); // NOI18N
+        calendarButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/visual/widgets/resources/calendar.png"))); // NOI18N
         calendarButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         calendarButton1.setPreferredSize(new java.awt.Dimension(24, 24));
         calendarButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -195,11 +199,11 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
             }
         });
 
-        lblDateTime1.setText(org.openide.util.NbBundle.getMessage(DateTimeRangePanel.class, "DateCriteriaPanel.lblDate1.text_2")); // NOI18N
+        lblDateTime1.setText(org.openide.util.NbBundle.getMessage(DateTimeRangePanel.class, "DateTimeRangPanel.lblDate1.text")); // NOI18N
 
         spnDateTime2.setModel(new SpinnerDateModel(secondDate.getTime(), minDate, maxDate, Calendar.DAY_OF_MONTH));
 
-        calendarButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/visual/widgets/calendar.png"))); // NOI18N
+        calendarButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/visual/widgets/resources/calendar.png"))); // NOI18N
         calendarButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         calendarButton2.setPreferredSize(new java.awt.Dimension(24, 24));
         calendarButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -230,7 +234,7 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
                 .addComponent(calendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(presetDateRanges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(191, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -314,7 +318,7 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
         try {
             cal.setTime(sdf.parse(formatted));
         } catch (ParseException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, e.getLocalizedMessage(), e);
         }
 
         return cal;

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.BrokenBarrierException;
@@ -121,6 +120,7 @@ public class QueryServices {
                         barrier.await();
                     } catch (InterruptedException ex) {
                         Exceptions.printStackTrace(ex);
+                        Thread.currentThread().interrupt();
                     } catch (BrokenBarrierException ex) {
                         Exceptions.printStackTrace(ex);
                     }
@@ -190,6 +190,7 @@ public class QueryServices {
                     barrier.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
                 } catch (BrokenBarrierException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -238,10 +239,8 @@ public class QueryServices {
 
             if (type.elementExists(graph, id) && uid == result.getUID()) {
                 // Select relevant:
-                if (result.getType() == GraphElementType.VERTEX) {
-                    if (selectedVertexAttr != Graph.NOT_FOUND) {
-                        graph.setBooleanValue(selectedVertexAttr, result.getID(), true);
-                    }
+                if (result.getType() == GraphElementType.VERTEX && selectedVertexAttr != Graph.NOT_FOUND) {
+                    graph.setBooleanValue(selectedVertexAttr, result.getID(), true);
                 }
                 if (result.getType() == GraphElementType.LINK) {
                     if (selectedLinkAttr != Graph.NOT_FOUND) {
@@ -463,6 +462,7 @@ public class QueryServices {
                 try {
                     barrier.await();
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     return;
                 } catch (BrokenBarrierException ex) {
                     return;
@@ -543,6 +543,7 @@ public class QueryServices {
                                 break;
                             default:
                             // Ignore
+                                break;
                         }
 
                         // Update the bitset:
@@ -672,6 +673,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -698,7 +700,7 @@ public class QueryServices {
             if (retrieved == null) {
                 item = null;
             } else {
-                item = GregorianCalendar.getInstance(TimeZone.getTimeZone("UTC"));
+                item = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
                 item.setTimeInMillis(retrieved.getTime());
                 item.set(Calendar.MILLISECOND, 0);
             }
@@ -723,6 +725,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -765,6 +768,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -807,6 +811,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;
@@ -866,7 +871,7 @@ public class QueryServices {
             int i = 0;
 
             // Query the graph:
-            while (i < terms.length && queryResult == false) {
+            while (i < terms.length && !queryResult) {
                 switch (rule.getOperator()) {
                     case IS:
                         queryResult = FindComparisons.StringComparisons.evaluateIs(item,
@@ -899,6 +904,7 @@ public class QueryServices {
                     default:
                         // Unable to pass any form of test:
                         queryResult = false;
+                        break;
                 }
                 i++;
             }
@@ -947,6 +953,7 @@ public class QueryServices {
                 default:
                     // Unable to pass any form of test:
                     queryResult = false;
+                    break;
             }
 
             return queryResult;

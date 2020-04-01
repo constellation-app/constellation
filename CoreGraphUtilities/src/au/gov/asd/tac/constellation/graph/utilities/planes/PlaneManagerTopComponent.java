@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
-import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
-import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyListModel;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -25,9 +23,11 @@ import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyListModel;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -38,7 +38,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -49,8 +48,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
@@ -128,78 +125,55 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 //        activationListener = new NodeActivationListener();
 //        changeListener = new NodeChangeListener();
 //        setActivatedNodes(null);
-        planeList.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(final ListSelectionEvent e) {
-                if (!isAdjustingList) {
-                    final DragDropList.MyListModel listModel = ((DragDropList) planeList).model;
-                    final BitSet visibleLayers = new BitSet();
-                    final int[] selectedIndices = planeList.getSelectedIndices();
-                    for (int i = 0; i < selectedIndices.length; i++) {
-                        final int index = listModel.getMyElementAt(selectedIndices[i]).index;
-                        visibleLayers.set(index);
-                    }
-
-                    PluginExecution.withPlugin(new SimplePlugin("Update plane visibility") {
-                        @Override
-                        protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                            WritableGraph wg = graph.getWritableGraph("Update plane visibility", true);
-                            try {
-                                final int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
-                                if (planesAttr != Graph.NOT_FOUND) {
-                                    // We can't just change the object on the graph, the graph won't recognise it as a change.
-                                    final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                                    final PlaneState state = new PlaneState(oldState);
-                                    state.setVisiblePlanes(visibleLayers);
-                                    wg.setObjectValue(planesAttr, 0, state);
-                                }
-                            } finally {
-                                wg.commit();
-                            }
-                        }
-                    }).executeLater(graph);
-
-//                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
+        planeList.addListSelectionListener(e -> {
+            if (!isAdjustingList) {
+                final DragDropList.MyListModel listModel = ((DragDropList) planeList).getModel();
+                final BitSet visibleLayers = new BitSet();
+                final int[] selectedIndices = planeList.getSelectedIndices();
+                for (int i = 0; i < selectedIndices.length; i++) {
+                    final int index = listModel.getMyElementAt(selectedIndices[i]).index;
+                    visibleLayers.set(index);
                 }
+                
+                PluginExecution.withPlugin(new SimplePlugin("Update plane visibility") {
+                    @Override
+                    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+                        WritableGraph wg = graph.getWritableGraph("Update plane visibility", true);
+                        try {
+                            final int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+                            if (planesAttr != Graph.NOT_FOUND) {
+                                // We can't just change the object on the graph, the graph won't recognise it as a change.
+                                final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+                                final PlaneState state = new PlaneState(oldState);
+                                state.setVisiblePlanes(visibleLayers);
+                                wg.setObjectValue(planesAttr, 0, state);
+                            }
+                        } finally {
+                            wg.commit();
+                        }
+                    }
+                }).executeLater(graph);
+                
+//                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
             }
         });
 
         actionsMenu = new JPopupMenu();
 
         final JMenuItem importMI = new JMenuItem("Import plane...");
-        importMI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                importPlaneActionPerformed(e);
-            }
-        });
+        importMI.addActionListener(this::importPlaneActionPerformed);
         actionsMenu.add(importMI);
 
         final JMenuItem removeMI = new JMenuItem("Remove selected planes");
-        removeMI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                removeSelectedPlanesActionPerformed(e);
-            }
-        });
+        removeMI.addActionListener(this::removeSelectedPlanesActionPerformed);
         actionsMenu.add(removeMI);
 
         final JMenuItem moveToSelectedMI = new JMenuItem("Move to selected vertices...");
-        moveToSelectedMI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                moveToSelectedVerticesActionPerformed(e);
-            }
-        });
+        moveToSelectedMI.addActionListener(this::moveToSelectedVerticesActionPerformed);
         actionsMenu.add(moveToSelectedMI);
 
         final JMenuItem scaleMI = new JMenuItem("Scale selected planes...");
-        scaleMI.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(final ActionEvent e) {
-                scaleSelectedPlanesAction(e);
-            }
-        });
+        scaleMI.addActionListener(this::scaleSelectedPlanesAction);
         actionsMenu.add(scaleMI);
 
 //        // Are there any graphs with planes already open?

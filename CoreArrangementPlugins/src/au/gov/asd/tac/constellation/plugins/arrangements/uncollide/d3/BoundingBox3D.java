@@ -23,17 +23,17 @@ public class BoundingBox3D {
 
     public static Box3D getBox(final Orb3D[] orbs) {
         final Orb3D orb0 = orbs[0];
-        float minx = orb0.x;
-        float miny = orb0.y;
-        float minz = orb0.z;
+        float minx = orb0.getX();
+        float miny = orb0.getY();
+        float minz = orb0.getZ();
         float maxx = minx;
         float maxy = miny;
         float maxz = minz;
 
         for (final Orb3D orb : orbs) {
-            final float x = orb.x;
-            final float y = orb.y;
-            final float z = orb.z;
+            final float x = orb.getX();
+            final float y = orb.getY();
+            final float z = orb.getZ();
             if (x < minx) {
                 minx = x;
             }

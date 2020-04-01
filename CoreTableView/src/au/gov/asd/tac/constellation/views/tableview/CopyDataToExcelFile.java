@@ -108,10 +108,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                 return "Excel files";
             }
         }).showSaveDialog();
-        if (f != null) {
-            if (!f.getName().toLowerCase().endsWith(".xlsx")) {
-                f = new File(f.getAbsolutePath() + ".xlsx");
-            }
+        if (f != null && !f.getName().toLowerCase().endsWith(".xlsx")) {
+            f = new File(f.getAbsolutePath() + ".xlsx");
         }
 
         return f;
@@ -160,6 +158,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                                 break;
                             case VX_DST:
                                 colName = GraphRecordStoreUtilities.DESTINATION + colName;
+                                break;
+                            default:
                                 break;
                         }
                     }

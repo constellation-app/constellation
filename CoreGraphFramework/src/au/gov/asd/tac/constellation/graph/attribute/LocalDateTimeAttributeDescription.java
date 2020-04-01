@@ -170,7 +170,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractAttributeDe
             final int ms = Integer.parseInt(value.substring(20, 23), 10);
             return LocalDateTime.of(ye, mo, da, ho, mi, se, ms * TemporalConstants.NANOSECONDS_IN_MILLISECOND).toInstant(ZoneOffset.UTC).toEpochMilli();
         } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can't parse datetime string '{0}': '{1}'", new Object[]{value, ex.getMessage()});
+            LOGGER.log(Level.WARNING, "Can''t parse datetime string ''{0}'': {1}", new Object[]{value, ex.getMessage()});
         }
 
         return NULL_VALUE;

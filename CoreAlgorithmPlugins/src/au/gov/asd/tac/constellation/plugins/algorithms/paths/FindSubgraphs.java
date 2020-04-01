@@ -24,6 +24,8 @@ import java.util.Random;
  * @author canis_majoris
  */
 public class FindSubgraphs {
+    
+    private static final Random RAND = new Random();
 
     /**
      * This method uses parallel-BFS to traverse the graph and gather the
@@ -47,10 +49,9 @@ public class FindSubgraphs {
         // start from k-random seeds rather than the whole graph (k is set to 100 here)
         BitSet seeds = new BitSet(vxCount);
         if (vxCount > kThreshold) {
-            Random rand = new Random();
             for (int i = 0; i < k; i++) {
                 if (graph.getVertexNeighbourCount(graph.getVertex(i)) > 0) {
-                    seeds.set(rand.nextInt(vxCount), true);
+                    seeds.set(RAND.nextInt(vxCount), true);
                 }
             }
         }
@@ -64,10 +65,8 @@ public class FindSubgraphs {
             sendBuffer[vxId] = new BitSet(vxCount);
 
             // set up an initial message for this node if it is a seed
-            if (vxCount > kThreshold) {
-                if (!seeds.get(vxId)) {
-                    continue;
-                }
+            if (vxCount > kThreshold && !seeds.get(vxId)) {
+                continue;
             }
             // assuming the node has neighbours
             if (graph.getVertexNeighbourCount(position) > 0) {

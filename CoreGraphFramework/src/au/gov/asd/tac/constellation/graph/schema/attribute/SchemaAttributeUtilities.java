@@ -49,6 +49,8 @@ public class SchemaAttributeUtilities {
                         case TRANSACTION:
                             SCHEMA_TRANSACTION_ATTRIBUTES.add(schemaAttribute);
                             break;
+                        default:
+                            break;
                     }
                 });
             });
@@ -72,7 +74,7 @@ public class SchemaAttributeUtilities {
             case TRANSACTION:
                 return Collections.unmodifiableCollection(SCHEMA_TRANSACTION_ATTRIBUTES);
             default:
-                return Collections.EMPTY_SET;
+                return Collections.emptySet();
         }
     }
 

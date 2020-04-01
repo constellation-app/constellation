@@ -15,11 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection;
 
-import au.gov.asd.tac.constellation.views.namedselection.utilities.NamedSelectionEditorPlugin;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionAllAllocPanel;
-import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionStatePlugin;
-import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -29,6 +24,11 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionAllAllocPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
+import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
+import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionStatePlugin;
+import au.gov.asd.tac.constellation.views.namedselection.utilities.NamedSelectionEditorPlugin;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
@@ -654,7 +654,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -686,7 +689,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -715,7 +721,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
 
@@ -737,7 +746,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -747,7 +759,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException | ExecutionException ex) {
+        } catch (InterruptedException ex) {
+            Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
+        } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
@@ -774,7 +789,10 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
             final Future<?> f = PluginExecution.withPlugin(nssp).interactively(true).executeLater(graph);
             try {
                 f.get();
-            } catch (InterruptedException | ExecutionException ex) {
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
+            } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
         }
@@ -830,28 +848,25 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
     private void updateState(final boolean openTopComponent) {
         // Force execution onto the EDT using SwingUtilities.invokeLater and an anonymous class:
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                final NamedSelectionTopComponent tc
-                        = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
-
-                if (tc != null) {
-                    if (openTopComponent && !tc.isOpened()) {
-                        tc.open();
-                        tc.requestActive();
-                    }
-
-                    // If there is no graph, set logical defaults, then disable UI:
-                    if (graphNode == null) {
-                        tc.updateState(null);
-                        tc.updateDimOthers(false);
-                        tc.updateSelectResults(true);
-                    } else { // Update the browser based on information from the current state:
-                        tc.updateState(state.getNamedSelections());
-                        tc.updateDimOthers(state.isDimOthers());
-                        tc.updateSelectResults(state.isSelectResults());
-                    }
+        SwingUtilities.invokeLater(() -> {
+            final NamedSelectionTopComponent tc
+                    = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
+            
+            if (tc != null) {
+                if (openTopComponent && !tc.isOpened()) {
+                    tc.open();
+                    tc.requestActive();
+                }
+                
+                // If there is no graph, set logical defaults, then disable UI:
+                if (graphNode == null) {
+                    tc.updateState(null);
+                    tc.updateDimOthers(false);
+                    tc.updateSelectResults(true);
+                } else { // Update the browser based on information from the current state:
+                    tc.updateState(state.getNamedSelections());
+                    tc.updateDimOthers(state.isDimOthers());
+                    tc.updateSelectResults(state.isSelectResults());
                 }
             }
         });
@@ -928,6 +943,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     }
 
     public boolean isManagingActiveGraph() {
-        return !(graphNode == null);
+        return graphNode != null;
     }
 }

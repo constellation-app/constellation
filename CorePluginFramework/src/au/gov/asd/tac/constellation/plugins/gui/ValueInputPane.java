@@ -116,6 +116,8 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             this.setVisible(parameter.isVisible());
                             this.setManaged(parameter.isVisible());
                             break;
+                        default:
+                            break;
                     }
                 });
             });
@@ -209,7 +211,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                 } else if (event.isShortcutDown() && event.isShiftDown() && (event.getCode() == KeyCode.LEFT)) {
                     field.selectPreviousWord();
                     event.consume();
-                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {;
+                } else if (event.isShortcutDown() && (event.getCode() == KeyCode.RIGHT)) {
                     field.nextWord();
                     event.consume();
                 } else if (event.isShortcutDown() && (event.getCode() == KeyCode.LEFT)) {
@@ -272,6 +274,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
                             break;
                         default:
                             LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                            break;
                     }
                 });
             });

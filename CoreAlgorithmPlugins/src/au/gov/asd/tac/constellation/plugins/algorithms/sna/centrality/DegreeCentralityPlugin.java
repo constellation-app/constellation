@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
@@ -23,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -163,13 +163,13 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
         }
 
         // update the graph with degree values
-        for (int vertexId : degrees.keySet()) {
+        for (final Map.Entry<Integer, Float> entry : degrees.entrySet()) {
             if (normaliseByPossible) {
-                graph.setFloatValue(degreeAttribute, vertexId, degrees.get(vertexId) / (vertexCount - 1));
+                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / (vertexCount - 1));
             } else if (normaliseByAvailable && maxDegree > 0) {
-                graph.setFloatValue(degreeAttribute, vertexId, degrees.get(vertexId) / maxDegree);
+                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / maxDegree);
             } else {
-                graph.setFloatValue(degreeAttribute, vertexId, degrees.get(vertexId));
+                graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue());
             }
         }
     }

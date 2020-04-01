@@ -47,7 +47,8 @@ import org.openide.util.NbBundle;
 public class DateRangePanel extends javax.swing.JPanel {
 
     private final DateTimeListenerInterface parentPanel;
-    private JSpinner.DateEditor de1, de2;
+    private JSpinner.DateEditor de1;
+    private JSpinner.DateEditor de2;
     private Date firstDate = null;
     private Date secondDate = null;
     private Date minDate = null;
@@ -201,8 +202,8 @@ public class DateRangePanel extends javax.swing.JPanel {
 
         spnDate1.setModel(new SpinnerDateModel(firstDate, minDate, maxDate, Calendar.DAY_OF_MONTH));
 
-        calendarButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/utilities/widgets/calendar.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(calendarButton1, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.calendarButton1.text_1")); // NOI18N
+        calendarButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/utilities/widgets/resources/calendar.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(calendarButton1, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.calendarButton1.text")); // NOI18N
         calendarButton1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         calendarButton1.setPreferredSize(new java.awt.Dimension(24, 24));
         calendarButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -212,12 +213,12 @@ public class DateRangePanel extends javax.swing.JPanel {
         });
 
         lblDate1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        org.openide.awt.Mnemonics.setLocalizedText(lblDate1, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.lblDate1.text_1")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(lblDate1, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.lblDate1.text")); // NOI18N
 
         spnDate2.setModel(new SpinnerDateModel(secondDate, minDate, maxDate, Calendar.DAY_OF_MONTH));
 
-        calendarButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/visual/widgets/calendar.png"))); // NOI18N
-        org.openide.awt.Mnemonics.setLocalizedText(calendarButton2, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.calendarButton2.text_1")); // NOI18N
+        calendarButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/graph/utilities/widgets/resources/calendar.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(calendarButton2, org.openide.util.NbBundle.getMessage(DateRangePanel.class, "DateRangePanel.calendarButton2.text")); // NOI18N
         calendarButton2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         calendarButton2.setPreferredSize(new java.awt.Dimension(24, 24));
         calendarButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -249,7 +250,7 @@ public class DateRangePanel extends javax.swing.JPanel {
                 .addComponent(calendarButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(presetDateRanges, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(175, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

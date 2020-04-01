@@ -29,8 +29,10 @@ public class ElementStore implements Serializable {
 
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
-    private int capacity, count = 0;
-    private int[] position2id, id2position;
+    private int capacity;
+    private int count = 0;
+    private int[] position2id;
+    private int[] id2position;
     private long[] id2UID;
 
     public ElementStore(final int capacity) {

@@ -35,8 +35,8 @@ public class UnionBuilder extends GraphBuilder {
         // Remap vertex IDs in the identificaiton mapping for the union
         final Map<Integer, Integer> addedOldToNewIDs = a.addedOldToNewIDs;
         final Map<Integer, Integer> newIDVertexMapping = new HashMap<>();
-        for (Integer i : identificationMapping.keySet()) {
-            newIDVertexMapping.put(addedOldToNewIDs.get(i), identificationMapping.get(i));
+        for (final Map.Entry<Integer, Integer> entry : identificationMapping.entrySet()) {
+            newIDVertexMapping.put(addedOldToNewIDs.get(entry.getKey()), entry.getValue());
         }
 
         // Add new transactions for vertex identification and record mapping from old to new transactions
@@ -75,7 +75,8 @@ public class UnionBuilder extends GraphBuilder {
         final int[] addedTransactions = new int[a.transactions.length - newIDTransactionMapping.size()];
         final int[] unionedTransactions = new int[newIDTransactionMapping.size()];
         final int[] allNewTransactions = new int[a.transactions.length];
-        int currentAddedPos = 0, currentUnionedPos = 0;
+        int currentAddedPos = 0;
+        int currentUnionedPos = 0;
         for (int i = 0; i < a.transactions.length; i++) {
             if (newIDTransactionMapping.containsKey(a.transactions[i])) {
                 unionedTransactions[currentUnionedPos++] = newIDTransactionMapping.get(a.transactions[i]);

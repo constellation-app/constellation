@@ -28,21 +28,21 @@ import java.util.Set;
  */
 class PQNode {
 
-    public PQNode parent;
+    private PQNode parent;
     public final PQNodeList children = new PQNodeList();
     public final EnumMap<NodeLabel, Set<PQNode>> labeledChildren = new EnumMap<>(NodeLabel.class);
-    public DirectionIndicator directionIndicator = null;
+    private DirectionIndicator directionIndicator = null;
 
     public final NodeType type;
-    public NodeLabel label = NodeLabel.EMPTY;
+    private NodeLabel label = NodeLabel.EMPTY;
 
-    public int numLeafDescendants;
-    public int pertinentChildCount = 0;
-    public int pertinentLeafCount = 0;
+    private int numLeafDescendants;
+    private int pertinentChildCount = 0;
+    private int pertinentLeafCount = 0;
 
     // Only used for leaf nodes to keep track of the virtual edges they describe in the bush form
-    public int virtualNum;
-    public int realNum;
+    private int virtualNum;
+    private int realNum;
 
     public PQNode(final NodeType type) {
         this.type = type;
@@ -58,8 +58,64 @@ class PQNode {
         this.realNum = realNum;
     }
 
+    public PQNode getParent() {
+        return parent;
+    }
+
+    public void setParent(PQNode parent) {
+        this.parent = parent;
+    }
+
+    public DirectionIndicator getDirectionIndicator() {
+        return directionIndicator;
+    }
+
+    public void setDirectionIndicator(DirectionIndicator directionIndicator) {
+        this.directionIndicator = directionIndicator;
+    }
+
+    public NodeLabel getLabel() {
+        return label;
+    }
+
+    public void setLabel(NodeLabel label) {
+        this.label = label;
+    }
+
+    public int getPertinentChildCount() {
+        return pertinentChildCount;
+    }
+
+    public void setPertinentChildCount(int pertinentChildCount) {
+        this.pertinentChildCount = pertinentChildCount;
+    }
+
+    public int getPertinentLeafCount() {
+        return pertinentLeafCount;
+    }
+
+    public void setPertinentLeafCount(int pertinentLeafCount) {
+        this.pertinentLeafCount = pertinentLeafCount;
+    }  
+
+    public int getVirtualNum() {
+        return virtualNum;
+    }
+
+    public void setVirtualNum(int virtualNum) {
+        this.virtualNum = virtualNum;
+    }
+
+    public int getRealNum() {
+        return realNum;
+    }
+
+    public void setRealNum(int realNum) {
+        this.realNum = realNum;
+    }
+    
     public int numChildren() {
-        return children.size;
+        return children.getSize();
     }
 
     // Returns a copy of the set, used to iterate over when some of the items need to be modified or removed.
@@ -275,6 +331,9 @@ class PQNode {
                         carry += grandchild.numLeafDescendants;
                         reverseCount += grandchild.numLeafDescendants;
                     }
+                    break;
+                default:
+                    break;
             }
             if (count > maxCount) {
                 maxCount = count;
@@ -333,6 +392,9 @@ class PQNode {
                             count += grandchild.numLeafDescendants;
                         }
                     }
+                    break;
+                default:
+                    break;
             }
             if (count <= countAtAnchor) {
                 final int zoneScore = maxCountSinceAnchor - countAtAnchor;
@@ -405,7 +467,7 @@ class PQNode {
             grandChild2.numLeafDescendants = 1;
 
             // Test that a new node has no children
-            assert node.children.size == 0;
+            assert node.children.getSize() == 0;
             assert node.parent == null;
             assert node.numLeafDescendants == 0;
 
@@ -420,7 +482,7 @@ class PQNode {
             node.addChild(child);
 
             // Check parent metrics
-            assert node.children.size == 1;
+            assert node.children.getSize() == 1;
             assert node.parent == null;
             assert node.numLeafDescendants == 1;
 
@@ -436,7 +498,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert child.children.size == 0;
+            assert child.children.getSize() == 0;
             assert child.parent == node;
             assert child.numLeafDescendants == 1;
             assert !child.children.iterator().hasNext();
@@ -445,7 +507,7 @@ class PQNode {
             node.addChild(fullChild1);
 
             // Check parent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 2;
 
@@ -463,7 +525,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert fullChild1.children.size == 0;
+            assert fullChild1.children.getSize() == 0;
             assert fullChild1.parent == node;
             assert fullChild1.numLeafDescendants == 1;
             assert !fullChild1.children.iterator().hasNext();
@@ -472,7 +534,7 @@ class PQNode {
             node.addFirstChild(fullChild2);
 
             // Check parent metrics
-            assert node.children.size == 3;
+            assert node.children.getSize() == 3;
             assert node.parent == null;
             assert node.numLeafDescendants == 3;
 
@@ -492,7 +554,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert fullChild2.children.size == 0;
+            assert fullChild2.children.getSize() == 0;
             assert fullChild2.parent == node;
             assert fullChild2.numLeafDescendants == 1;
             assert !fullChild2.children.iterator().hasNext();
@@ -501,12 +563,12 @@ class PQNode {
             child.addFirstChild(grandChild);
 
             // Check grandparent metrics
-            assert node.children.size == 3;
+            assert node.children.getSize() == 3;
             assert node.parent == null;
             assert node.numLeafDescendants == 5;
 
             // Check parent metrics
-            assert child.children.size == 1;
+            assert child.children.getSize() == 1;
             assert child.parent == node;
             assert child.numLeafDescendants == 3;
 
@@ -522,7 +584,7 @@ class PQNode {
             assert child.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert grandChild.children.size == 0;
+            assert grandChild.children.getSize() == 0;
             assert grandChild.parent == child;
             assert grandChild.numLeafDescendants == 2;
             assert !grandChild.children.iterator().hasNext();
@@ -531,12 +593,12 @@ class PQNode {
             child.addChild(grandChild2);
 
             // Check grandparent metrics
-            assert node.children.size == 3;
+            assert node.children.getSize() == 3;
             assert node.parent == null;
             assert node.numLeafDescendants == 6;
 
             // Check parent metrics
-            assert child.children.size == 2;
+            assert child.children.getSize() == 2;
             assert child.parent == node;
             assert child.numLeafDescendants == 4;
 
@@ -554,7 +616,7 @@ class PQNode {
             assert child.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert grandChild2.children.size == 0;
+            assert grandChild2.children.getSize() == 0;
             assert grandChild2.parent == child;
             assert grandChild2.numLeafDescendants == 1;
             assert !grandChild2.children.iterator().hasNext();
@@ -593,7 +655,7 @@ class PQNode {
             node.removeChild(fullChild1);
 
             // Check parent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 5;
 
@@ -614,12 +676,12 @@ class PQNode {
             child.removeChild(grandChild2);
 
             // Check grandparent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 4;
 
             // Check parent metrics
-            assert child.children.size == 1;
+            assert child.children.getSize() == 1;
             assert child.parent == node;
             assert child.numLeafDescendants == 3;
 
@@ -638,7 +700,7 @@ class PQNode {
             node.removeChild(child);
 
             // Check parent metrics
-            assert node.children.size == 1;
+            assert node.children.getSize() == 1;
             assert node.parent == null;
             assert node.numLeafDescendants == 1;
 
@@ -657,7 +719,7 @@ class PQNode {
             node.removeChild(fullChild2);
 
             // Check parent metrics
-            assert node.children.size == 0;
+            assert node.children.getSize() == 0;
             assert node.parent == null;
             assert node.numLeafDescendants == 0;
 
@@ -710,7 +772,7 @@ class PQNode {
             node.replaceChild(child1, replacementChild1);
 
             // Check parent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 5;
 
@@ -728,7 +790,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert replacementChild1.children.size == 0;
+            assert replacementChild1.children.getSize() == 0;
             assert replacementChild1.parent == node;
             assert replacementChild1.numLeafDescendants == 2;
             assert !replacementChild1.children.iterator().hasNext();
@@ -737,12 +799,12 @@ class PQNode {
             child2.replaceChild(grandChild, replacementGrandChild);
 
             // Check grandparent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 3;
 
             // Check parent metrics
-            assert child2.children.size == 1;
+            assert child2.children.getSize() == 1;
             assert child2.parent == node;
             assert child2.numLeafDescendants == 1;
 
@@ -758,7 +820,7 @@ class PQNode {
             assert child2.labeledChildren.get(NodeLabel.PARTIAL).contains(replacementGrandChild);
 
             // Check child metrics
-            assert replacementGrandChild.children.size == 0;
+            assert replacementGrandChild.children.getSize() == 0;
             assert replacementGrandChild.parent == child2;
             assert replacementGrandChild.numLeafDescendants == 0;
             assert !replacementGrandChild.children.iterator().hasNext();
@@ -767,7 +829,7 @@ class PQNode {
             node.replaceChild(child2, replacementChild2);
 
             // Check parent metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
 //            System.out.println(node.numLeafDescendants);
             assert node.numLeafDescendants == 6;
@@ -786,7 +848,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check child metrics
-            assert replacementChild2.children.size == 1;
+            assert replacementChild2.children.getSize() == 1;
             assert replacementChild2.parent == node;
             assert replacementChild2.numLeafDescendants == 4;
 
@@ -818,7 +880,7 @@ class PQNode {
             node.reverseChildren();
 
             // Check node metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 4;
 
@@ -839,7 +901,7 @@ class PQNode {
             child1.reverseChildren();
 
             // Check node metrics
-            assert child1.children.size == 0;
+            assert child1.children.getSize() == 0;
             assert child1.parent == node;
             assert child1.numLeafDescendants == 1;
 
@@ -856,7 +918,7 @@ class PQNode {
             child2.reverseChildren();
 
             // Check node metrics
-            assert child2.children.size == 2;
+            assert child2.children.getSize() == 2;
             assert child2.parent == node;
             assert child2.numLeafDescendants == 3;
 
@@ -914,7 +976,7 @@ class PQNode {
             child3.concatenateSibling(child2);
 
             // Check parent node metrics
-            assert node.children.size == 2;
+            assert node.children.getSize() == 2;
             assert node.parent == null;
             assert node.numLeafDescendants == 3;
 
@@ -932,7 +994,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check concatenated child metrics
-            assert child3.children.size == 4;
+            assert child3.children.getSize() == 4;
             assert child3.parent == node;
             assert child3.numLeafDescendants == 3;
 
@@ -963,7 +1025,7 @@ class PQNode {
             child3.concatenateSibling(child1);
 
             // Check parent node metrics
-            assert node.children.size == 1;
+            assert node.children.getSize() == 1;
             assert node.parent == null;
             assert node.numLeafDescendants == 3;
 
@@ -979,7 +1041,7 @@ class PQNode {
             assert node.labeledChildren.get(NodeLabel.PARTIAL).isEmpty();
 
             // Check concatenated child metrics
-            assert child3.children.size == 4;
+            assert child3.children.getSize() == 4;
             assert child3.parent == node;
             assert child3.numLeafDescendants == 3;
 
@@ -1041,7 +1103,7 @@ class PQNode {
             node.flatten(child2);
 
             // Check node metrics
-            assert node.children.size == 4;
+            assert node.children.getSize() == 4;
             assert node.parent == null;
             assert node.numLeafDescendants == 4;
 
@@ -1066,7 +1128,7 @@ class PQNode {
             node.flatten(child3);
 
             // Check node metrics
-            assert node.children.size == 5;
+            assert node.children.getSize() == 5;
             assert node.parent == null;
             assert node.numLeafDescendants == 4;
 

@@ -138,7 +138,7 @@ public interface RecordStore extends Record {
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    default public void set(int record, String key, Object value) {
+    public default void set(int record, String key, Object value) {
         set(record, key, value == null ? null : value.toString());
     }
 

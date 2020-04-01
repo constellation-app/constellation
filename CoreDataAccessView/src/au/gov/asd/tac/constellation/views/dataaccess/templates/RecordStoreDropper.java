@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.processing.RecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -81,26 +81,24 @@ public class RecordStoreDropper implements GraphDropper {
                     try (final InputStream in = (InputStream) data) {
 
                         final byte[] buffer = new byte[RECORD_STORE_BYTES.length];
-                        if (in.read(buffer) == buffer.length) {
-                            if (Arrays.equals(buffer, RECORD_STORE_BYTES)) {
-                                final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
+                        if (in.read(buffer) == buffer.length && Arrays.equals(buffer, RECORD_STORE_BYTES)) {
+                            final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
-                                if (recordStore != null) {
-                                    return (graph, dropInfo) -> {
-                                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
-                                            @Override
-                                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                                ConstellationLoggerHelper.importPropertyBuilder(
-                                                        this,
-                                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                        null,
-                                                        ConstellationLoggerHelper.SUCCESS
-                                                );
-                                                return recordStore;
-                                            }
-                                        }).executeLater(graph);
-                                    };
-                                }
+                            if (recordStore != null) {
+                                return (graph, dropInfo) -> {
+                                    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
+                                        @Override
+                                        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                                            ConstellationLoggerHelper.importPropertyBuilder(
+                                                    this,
+                                                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                                                    null,
+                                                    ConstellationLoggerHelper.SUCCESS
+                                            );
+                                            return recordStore;
+                                        }
+                                    }).executeLater(graph);
+                                };
                             }
                         }
                     }

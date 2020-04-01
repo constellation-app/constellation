@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
-import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
+import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactory;
 import java.util.Map;
 import java.util.Set;
 
@@ -150,28 +150,28 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final Map<Integer, Set<Integer>> taxa = taxonomy.getTaxa();
             final int steps = taxa.size() + 1;
             int step = 0;
-            for (final int k : taxa.keySet()) {
-                if (taxonomy.getArrangeRectangularly(k)) {
+            for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
+                if (taxonomy.getArrangeRectangularly(entry.getKey())) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange grid...", true);
                     }
-                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
-                } else if (k == singletonsKey) {
+                    rectArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                } else if (entry.getKey() == singletonsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange singletons...", true);
                     }
-                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
-                } else if (k == doubletsKey) {
+                    singletonArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
+                } else if (entry.getKey() == doubletsKey) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange doublets...", true);
                     }
-                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
+                    doubletArranger.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
                 } else {
                     if (interaction != null) {
                         final String msg = String.format("Arrange inner (%s)...", inner.getClass().getSimpleName());
                         interaction.setProgress(step, steps, msg, true);
                     }
-                    inner.arrange(subgraphFactory.constructSubgraph(wg, taxa.get(k)));
+                    inner.arrange(subgraphFactory.constructSubgraph(wg, entry.getValue()));
                 }
                 step++;
             }
@@ -224,7 +224,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
 
     public static void dump(final Map<Integer, Set<Integer>> taxa) {
         for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-            System.out.printf("tax %d: size %d\n", entry.getKey(), entry.getValue().size());
+            System.out.printf("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
         }
     }
 }

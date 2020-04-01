@@ -36,16 +36,14 @@ public interface AttributeValueTranslator {
 
     static final Logger LOGGER = Logger.getLogger(AttributeValueTranslator.class.getName());
 
-    public static AttributeValueTranslator IDENTITY = (val) -> {
+    public static AttributeValueTranslator IDENTITY = val -> {
         return val;
     };
 
     public static AttributeValueTranslator getNativeTranslator(final String attrType) {
         try {
             final AttributeDescription description = AttributeRegistry.getDefault().getAttributes().get(attrType).newInstance();
-            return (val) -> {
-                return description.convertToNativeValue(val);
-            };
+            return description::convertToNativeValue;
         } catch (InstantiationException | IllegalAccessException ex) {
             LOGGER.warning("Could not create attribute description corresponding to the given type");
             return IDENTITY;

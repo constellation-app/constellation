@@ -74,7 +74,7 @@ public class IntegerRangeBinFormatter extends BinFormatter {
         private final IntBin bin;
         private final int zero;
         private final int bucketSize;
-        public int end;
+        private int end;
 
         public IntRangeBin(IntBin bin, int zero, int bucketSize) {
             this.bin = bin;
@@ -90,18 +90,17 @@ public class IntegerRangeBinFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            int error = (bin.key - zero) % bucketSize;
+            int error = (bin.getKey() - zero) % bucketSize;
             if (error < 0) {
                 error += bucketSize;
             }
-            key = bin.key - error;
+            key = bin.getKey() - error;
             end = key + bucketSize - 1;
         }
 
         @Override
         public Bin create() {
-            IntRangeBin f = new IntRangeBin(bin, zero, bucketSize);
-            return f;
+            return new IntRangeBin(bin, zero, bucketSize);
         }
     }
 }

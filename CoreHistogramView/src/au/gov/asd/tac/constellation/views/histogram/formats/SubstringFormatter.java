@@ -86,7 +86,8 @@ public class SubstringFormatter extends BinFormatter {
     private class SubstringFormatBin extends StringBin {
 
         private final StringBin bin;
-        private final int start, end;
+        private final int start;
+        private final int end;
 
         public SubstringFormatBin(StringBin bin, int start, int end) {
             this.bin = bin;
@@ -98,7 +99,7 @@ public class SubstringFormatter extends BinFormatter {
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
 
-            String k = bin.key;
+            String k = bin.getKey();
 
             if (k == null) {
                 key = null;

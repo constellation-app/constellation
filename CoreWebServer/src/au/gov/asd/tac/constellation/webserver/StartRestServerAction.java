@@ -26,7 +26,7 @@ import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartRestServerAction")
-@ActionRegistration(displayName = "#CTL_StartRestServerAction")
+@ActionRegistration(displayName = "#CTL_StartRestServerAction", iconBase="au/gov/asd/tac/constellation/webserver/resources/start.png")
 @ActionReference(path = "Menu/Tools", position = 1500, separatorBefore = 1499)
 @Messages("CTL_StartRestServerAction=Start REST Server")
 public final class StartRestServerAction implements ActionListener {

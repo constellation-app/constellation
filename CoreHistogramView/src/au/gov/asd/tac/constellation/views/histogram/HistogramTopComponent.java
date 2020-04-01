@@ -40,6 +40,7 @@ import java.awt.BorderLayout;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
@@ -114,7 +115,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         add(controls, BorderLayout.SOUTH);
 
         display = new HistogramDisplay(this);
-        final JScrollPane displayScroll = new JScrollPane(display, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        final JScrollPane displayScroll = new JScrollPane(display, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         displayScroll.getVerticalScrollBar().setUnitIncrement(HistogramDisplay.MAXIMUM_BAR_HEIGHT);
         add(displayScroll, BorderLayout.CENTER);
     }
@@ -209,12 +210,10 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             return;
                         }
 
-                        if (currentTimeZoneAttribute != Graph.NOT_FOUND) {
-                            if (currentTimeZoneModificationCount != rg.getValueModificationCounter(currentTimeZoneAttribute)) {
-                                currentTimeZoneModificationCount = rg.getValueModificationCounter(currentTimeZoneAttribute);
-                                reset(rg);
-                                return;
-                            }
+                        if (currentTimeZoneAttribute != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(currentTimeZoneAttribute)) {
+                            currentTimeZoneModificationCount = rg.getValueModificationCounter(currentTimeZoneAttribute);
+                            reset(rg);
+                            return;
                         }
 
                         if (binnedAttribute != Graph.NOT_FOUND) {
@@ -440,25 +439,21 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     public void setAttributeType(AttributeType attributeType) {
-        if (currentGraph != null) {
-            if (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType()) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setAttributeType(attributeType);
-                newHistogramState.setAttribute("");
-                newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph != null && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
+            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setAttributeType(attributeType);
+            newHistogramState.setAttribute("");
+            newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
     public void setAttribute(String attribute) {
-        if (currentGraph != null) {
-            if (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute()))) {
-                HistogramState newHistogramState = new HistogramState(currentHistogramState);
-                newHistogramState.setAttribute(attribute);
-                newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
-                PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
-            }
+        if (currentGraph != null && (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute())))) {
+            HistogramState newHistogramState = new HistogramState(currentHistogramState);
+            newHistogramState.setAttribute(attribute);
+            newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+            PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
         }
     }
 
@@ -586,12 +581,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                         currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            display.repaint();
-                        }
-                    });
+                    SwingUtilities.invokeLater(display::repaint);
                 }
             }).executeLater(currentGraph);
         }
@@ -630,12 +620,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                         currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
                     }
 
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            display.repaint();
-                        }
-                    });
+                    SwingUtilities.invokeLater(display::repaint);
                 }
             }).executeLater(currentGraph);
         }

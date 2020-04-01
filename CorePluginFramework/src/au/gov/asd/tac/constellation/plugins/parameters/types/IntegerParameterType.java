@@ -296,7 +296,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public boolean equals(final Object o) {
-            return o != null && o instanceof IntegerParameterValue && i == ((IntegerParameterValue) o).i;
+            return o instanceof IntegerParameterValue && i == ((IntegerParameterValue) o).i;
         }
 
         @Override

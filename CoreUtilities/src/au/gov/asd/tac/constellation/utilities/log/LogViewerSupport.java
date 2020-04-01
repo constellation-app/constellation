@@ -153,12 +153,9 @@ public class LogViewerSupport implements Runnable {
         io.select();
         filestream = new FileInputStream(fileName);
         ins = new BufferedReader(new InputStreamReader(filestream, StandardCharsets.UTF_8.name()));
-        RP.post(new Runnable() {
-            @Override
-            public void run() {
-                init();
-                task.schedule(0);
-            }
+        RP.post(() -> {
+            init();
+            task.schedule(0);
         });
     }
 

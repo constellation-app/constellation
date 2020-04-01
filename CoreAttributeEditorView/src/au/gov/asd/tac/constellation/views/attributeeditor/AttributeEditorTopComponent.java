@@ -134,6 +134,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         };
 
@@ -224,12 +225,6 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     @Override
     public void graphChanged(GraphChangeEvent event) {
         event = event.getLatest();
-        /*event.getEditor() is null whenever this event is invoked due to an action 
-        which is not relevent to this class e.g. zoom in/out, therefore return 
-        from this method without any further execution */
-        if (event.getEditor() == null) {
-            return;
-        }
         if (event.getId() > latestGraphChangeID) {
             latestGraphChangeID = event.getId();
             if (activeGraph != null && reader != null) {
@@ -271,6 +266,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
                         }
 
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                     }
 
                 });

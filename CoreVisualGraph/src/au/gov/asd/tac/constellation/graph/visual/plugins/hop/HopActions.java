@@ -65,7 +65,9 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
     private final JMenuBar menuBar;
     private final JMenu menu;
     private Graph graph;
-    private final JCheckBox outgoing, incoming, undirected;
+    private final JCheckBox outgoing;
+    private final JCheckBox incoming;
+    private final JCheckBox undirected;
 
     public HopActions() {
         panel = new JPanel();
@@ -160,6 +162,8 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
                 parameters.getParameters().get(HopOutPlugin.UNDIRECTED_PARAMETER_ID).setBooleanValue(undirected.isSelected());
                 PluginExecution.withPlugin(plugin).withParameters(parameters).executeLater(graph);
                 break;
+            default:
+                break;
         }
     }
 
@@ -180,11 +184,7 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
     public void newActiveGraph(final Graph graph) {
         if (this.graph != graph) {
             this.graph = graph;
-            if (graph == null) {
-                menu.setEnabled(false);
-            } else {
-                menu.setEnabled(true);
-            }
+            menu.setEnabled(graph != null);
         }
     }
 }

@@ -17,14 +17,14 @@ package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
@@ -132,6 +132,8 @@ public class ScriptingViewPane extends JPanel {
                             break;
                         case KeyEvent.VK_S:
                             saveScript();
+                            break;
+                        default:
                             break;
                     }
                 }
@@ -249,11 +251,7 @@ public class ScriptingViewPane extends JPanel {
     }
 
     public void update(final Graph graph) {
-        if (graph == null) {
-            executeButton.setEnabled(false);
-        } else {
-            executeButton.setEnabled(true);
-        }
+        executeButton.setEnabled(graph != null);
     }
 
     private void openScript() {
@@ -368,7 +366,10 @@ public class ScriptingViewPane extends JPanel {
                 try {
                     setName(SCRIPTING_VIEW_THREAD_NAME);
                     f.get();
-                } catch (final InterruptedException | ExecutionException ex) {
+                } catch (final InterruptedException ex) {
+                    Exceptions.printStackTrace(ex);
+                    Thread.currentThread().interrupt();
+                } catch (ExecutionException ex) {
                     Exceptions.printStackTrace(ex);
                 }
 

@@ -26,9 +26,9 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.PrimaryKeyUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
+import au.gov.asd.tac.constellation.graph.utilities.PrimaryKeyUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -44,8 +44,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -243,7 +243,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         }
 
         ReadableGraph rg;
-        final GraphRecordStore originalAll, compareAll;
+        final GraphRecordStore originalAll;
+        final GraphRecordStore compareAll;
 //        final Map<String, Integer> originalStatistics, compareStatistics;
 
         Set<String> vertexPrimaryKeys = new HashSet<>();
@@ -415,6 +416,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                             case "destination":
                             case "transaction":
                                 break;
+                            default:
+                                break;
                         }
                     }
                 }
@@ -485,6 +488,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
                                     transactionChanged = true;
                                     output.println(String.format("Changed transaction connecting %s to %s, attribute %s value was '%s' and now '%s'", originalSource, originalDestination, keyAttribute, originalTransactionValue, compareTransactionValue));
                                 }
+                                break;
+                            default:
                                 break;
                         }
                     }
@@ -595,8 +600,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      */
     protected Map<String, Integer> calculateStatisticalDifferences(final Map<String, Integer> originalStatistics, final Map<String, Integer> compareStatistics) {
         final Map<String, Integer> statisticalDifferences = new HashMap<>();
-        for (final String key : originalStatistics.keySet()) {
-            statisticalDifferences.put(key, compareStatistics.get(key) - originalStatistics.get(key));
+        for (final Map.Entry<String, Integer> entry : originalStatistics.entrySet()) {
+            statisticalDifferences.put(entry.getKey(), compareStatistics.get(entry.getKey()) - entry.getValue());
         }
         return statisticalDifferences;
     }
@@ -717,8 +722,8 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
      * @param recordPrimaryValues
      */
     private void addPrimaryKeyValuesToRecord(final GraphRecordStore changes, final String type, final Map<String, String> recordPrimaryValues) {
-        for (final String key : recordPrimaryValues.keySet()) {
-            changes.set(type + key, recordPrimaryValues.get(key));
+        for (final Map.Entry<String, String> entry : recordPrimaryValues.entrySet()) {
+            changes.set(type + entry.getKey(), entry.getValue());
         }
     }
 

@@ -56,6 +56,6 @@ public class MissingTypeRule extends QualityControlRule {
     @Override
     protected boolean executeRule(final GraphReadMethods graph, final int vertexId) {
         final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-        return typeAttr == Graph.NOT_FOUND ? true : graph.getObjectValue(typeAttr, vertexId) == null;
+        return typeAttr == Graph.NOT_FOUND || graph.getObjectValue(typeAttr, vertexId) == null;
     }
 }

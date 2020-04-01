@@ -46,7 +46,8 @@ public class ExtendedBuffer {
 
     private final BlockingQueue<Buffer> queue = new LinkedBlockingQueue<>();
 
-    private Buffer outputBuffer, inputBuffer;
+    private Buffer outputBuffer;
+    private Buffer inputBuffer;
 
     private AtomicLong available = new AtomicLong(0L);
 
@@ -121,13 +122,14 @@ public class ExtendedBuffer {
                     available.getAndDecrement();
                     return inputBuffer.data[inputBuffer.position++];
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     throw new IOException(ex);
                 }
             }
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
 
             int byteCount = 0;
 
@@ -143,6 +145,7 @@ public class ExtendedBuffer {
                         try {
                             inputBuffer = queue.take();
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             throw new IOException(ex);
                         }
                     }
@@ -175,7 +178,7 @@ public class ExtendedBuffer {
         }
 
         @Override
-        public void write(byte b[], int off, int len) throws IOException {
+        public void write(byte[] b, int off, int len) throws IOException {
 
             while (len > 0) {
                 int bytesToCopy = Math.min(bufferSize - outputBuffer.position, len);

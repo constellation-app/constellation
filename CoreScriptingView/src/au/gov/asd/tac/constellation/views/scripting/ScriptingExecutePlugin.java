@@ -197,6 +197,7 @@ public class ScriptingExecutePlugin extends SimplePlugin {
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
                 throw new IOException("Script interrupted by user");
             }
         }

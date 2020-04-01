@@ -25,7 +25,7 @@ public final class GraphPreferenceKeys {
     /**
      * Blaze settings
      */
-    public static int BLAZE_SIZE_DEFAULT = 30;
+    public static final int BLAZE_SIZE_DEFAULT = 30;
     public static final int BLAZE_OPACITY_DEFAULT = 100;
     public static final String BLAZE_SIZE = "blazeSize";
     public static final String BLAZE_OPACITY = "blazeOpacity";

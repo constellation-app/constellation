@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.graph.file.io;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
-import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -84,21 +82,21 @@ public final class IoUtilities {
 
         // Scan the string so if there aren't any changes to be made (which could be the common case),
         // there's no copying of substrings.
-        String t = "";
+        StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
         for (int i = 0; i < length; i++) {
             final char c = s.charAt(i);
             final char replacement = c == 9 ? 't' : (c == 10 ? 'n' : (c == 13 ? 'r' : (c == '\\' ? '\\' : 0)));
             if (replacement != 0) {
-                t += s.substring(begin, i) + '\\' + replacement;
+                t.append(s.substring(begin, i)).append('\\').append(replacement);
                 begin = i + 1;
             }
         }
 
         if (t.length() > 0) {
-            t += s.substring(begin);
-            return t;
+            t.append(s.substring(begin));
+            return t.toString();
         }
 
         return s;
@@ -119,7 +117,7 @@ public final class IoUtilities {
             return null;
         }
 
-        String t = "";
+        StringBuilder t = new StringBuilder();
         final int length = s.length();
         int begin = 0;
         for (int i = 0; i < length; i++) {
@@ -135,15 +133,15 @@ public final class IoUtilities {
                     throw new IllegalArgumentException(String.format("Unknown escaped character '%s' in «%s»", c2, s));
                 }
 
-                t += s.substring(begin, i) + replacement;
+                t.append(s.substring(begin, i)).append(replacement);
                 i++;
                 begin = i + 1;
             }
         }
 
         if (t.length() > 0) {
-            t += s.substring(begin);
-            return t;
+            t.append(s.substring(begin));
+            return t.toString();
         }
 
         return s;
@@ -195,10 +193,10 @@ public final class IoUtilities {
      *
      * @throws IllegalArgumentException if the color cannot be parsed.
      */
-    public static float[] parseColor(final String s) throws IllegalArgumentException {
+    public static float[] parseColor(final String s) {
         float[] vec = new float[4];
 
-        String f[] = split(s, 4, ',');
+        String[] f = split(s, 4, ',');
         if (f[3] == null) {
             f[3] = "1.0";
         }
@@ -268,9 +266,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException ex) {
-            throw new GraphParseException("Can't parse datetime string '" + s + "'", ex);
-        } catch (NumberFormatException ex) {
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse datetime string '" + s + "'", ex);
         }
     }
@@ -306,9 +302,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, 0);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException ex) {
-            throw new GraphParseException("Can't parse date string '" + s + "'", ex);
-        } catch (NumberFormatException ex) {
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse date string '" + s + "'", ex);
         }
     }

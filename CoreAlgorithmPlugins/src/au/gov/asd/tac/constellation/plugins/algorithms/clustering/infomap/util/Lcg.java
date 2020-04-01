@@ -47,9 +47,7 @@ public class Lcg {
     }
 
     public int nextInt(final int modulo) {
-        final int r = nextInt() % (modulo + 1);
-
-        return r;
+        return nextInt() % (modulo + 1);
     }
 
     public int randInt(final int modulo) {
@@ -58,9 +56,7 @@ public class Lcg {
 
     public double nextDouble() {
         s = (A * s + C) % M;
-        final double r = s / (double) M;
-
-        return r;
+        return s / (double) M;
     }
 
     public static void main(final String[] args) {
@@ -68,7 +64,7 @@ public class Lcg {
         rand.seed(1984);
 
         for (int i = 0; i < 100; i++) {
-            System.out.printf("%d %d %d\n", i, rand.nextInt(10), rand.s);
+            System.out.printf("%d %d %d%n", i, rand.nextInt(10), rand.s);
         }
     }
 }

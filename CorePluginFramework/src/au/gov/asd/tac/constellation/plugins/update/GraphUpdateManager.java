@@ -104,7 +104,7 @@ public class GraphUpdateManager implements GraphChangeListener, GraphManagerList
      * called before listening commences.
      */
     public GraphUpdateManager(GraphUpdateController graphUpdateComponentController, int requiredManagedCount) {
-        this(graphUpdateComponentController, requiredManagedCount, (o) -> {
+        this(graphUpdateComponentController, requiredManagedCount, o -> {
             return true;
         });
     }

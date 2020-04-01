@@ -119,11 +119,9 @@ public class DirectedShortestPathsPlugin extends SimpleEditPlugin {
                 final int sourceVertex = sourceVertexLabel == null ? SOURCE_VERTEX_NOT_SET : getSelectedNodes().get(sourceVertexLabel);
 
                 // if a source vertex is set then make sure it is at the start of the List
-                if (sourceVertex != SOURCE_VERTEX_NOT_SET) {
-                    if (verticesToPath.get(0) != sourceVertex) {
-                        verticesToPath.remove((Object) sourceVertex);
-                        verticesToPath.add(0, sourceVertex);
-                    }
+                if (sourceVertex != SOURCE_VERTEX_NOT_SET && verticesToPath.get(0) != sourceVertex) {
+                    verticesToPath.remove((Object) sourceVertex);
+                    verticesToPath.add(0, sourceVertex);
                 }
 
                 DijkstraServices ds = new DijkstraServices(graph, verticesToPath, true);

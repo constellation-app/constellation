@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 201804010
+__version__ = 20200326
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -183,18 +183,69 @@ class Constellation:
         else:
             raise ValueError('Transport must be one of http, file, sftp')
 
-    def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+        # The `requests` HTTP library response instance.
+        # Use this to get the error contents if using HTTP.
+        #
+        self.r = None
+
+    def http_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over HTTP.
 
-        HTTP calls are only made to localhost for simplicity and security."""
+        HTTP calls are only made to localhost for simplicity and security.
+
+        If the request fails, the request object is stored as self.r,
+        to allow it to be inspected to find out more details from the HTML
+        error page returned by the server (or for other debugging).
+        Typically this would be done with:
+
+        self.r.content.decode('latin1')
+
+        In a Jupyter notebook:
+
+        import constellation_client
+        from IPython.display import display, HTML
+        cc = constellation_client.Constellation()
+        # Make a request that causes a server-side error.
+        display(HTML(cc.r.content.decode('latin1')))
+
+        The r name is deleted before the next request to avoid confusion.
+        """
+
+        # If we saved the request last time, delete it to avoid confusion.
+        # Is self.r from this request or a previous one?
+        #
+        if hasattr(self, 'r'):
+            del self.r
 
         if verb in REQUESTS:
             f = REQUESTS[verb]
         else:
             raise ValueError(f'Unrecognised verb "{verb}"')
-        url = f'http://localhost:{self.port}{endpoint}/{path}'
-        r = f(url, params=params, json=json_, data=data, headers=self.headers)
-        r.raise_for_status()
+
+        h = dict(self.headers)
+        if headers:
+            h.update(headers)
+
+        # Note: use 127.0.0.1, not localhost, to avoid a two second delay.
+        # I suspect Windows is trying to connect to the IPv6 localhost first,
+        # waiting a couple of seconds to fail, then trying IPv4.
+        # Using the IPv4 127.0.0.1 goes directly to the right place.
+        #
+        url = f'http://127.0.0.1:{self.port}{endpoint}/{path}'
+        r = f(url, params=params, json=json_, data=data, headers=h)
+
+        # Raise for status because we don't trust the users to check for errors.
+        #
+        try:
+            r.raise_for_status()
+        except requests.HTTPError:
+            # Keep the response so the user can come back and use
+            # self.r.content.decode('latin1')
+            # to look at the HTML returned by Jetty to find out what happened (where
+            # 'latin1' is probably the encoding of the default HTML error page.)
+            #
+            self.r = r
+            raise
 
         return r
 
@@ -243,7 +294,7 @@ class Constellation:
 
         return r, c
 
-    def file_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+    def file_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over files in a directory.
 
         Do not specify both json_ and data.
@@ -272,7 +323,7 @@ class Constellation:
         #
         return FileResponse(str(response), str(content))
 
-    def sftp_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None):
+    def sftp_request(self, verb='get', endpoint=None, path=None, params=None, json_=None, data=None, headers=None):
         """Call CONSTELLATION's REST API over sftp.
 
         Do not specify both json_ and data.
@@ -335,26 +386,9 @@ class Constellation:
         :returns: The data as a string.
         """
 
-        #    # Check that there is a currently active graph.
-        #    #
-        #    r = requests.get('http://localhost:1517/v1/graph/schema')
-        #    if r.status_code != requests.codes.ok:
-        #        r.raise_for_status()
-        #    data = json.loads(r.text)
-        #
-        #    if not data['id']:
-        #        print('There is no active graph.')
-        #        return None
-        if 'attrs' in params and params['attrs']:
-            attrs = params['attrs']
-            if isinstance(attrs, list):
-                params['attrs'] = ','.join(attrs)
-
         # Fetch the graph data.
         #
-        r = self.rest_request(endpoint='/v1/recordstore', path='get', params=params)
-
-        return r.text
+        return self.call_service('get_recordstore', args=params).content
 
     def get_json(self, params):
         """Get a Python data structure from the graph as specified by
@@ -411,14 +445,21 @@ class Constellation:
         :returns: A DataFrame containing the requested data.
         """
 
-        data = self.get_data(kwargs)
+        args = {}
+        for arg in ['graphid', 'selected', 'vx', 'tx', 'attrs']:
+            if arg in kwargs:
+                value = kwargs[arg]
+                if arg=='attrs' and isinstance(value, list):
+                    value = ','.join(value)
+                args[arg] = value
+
+        data = self.get_data(args)
 
         # We can't create a DataFrame if there is no data.
         #
         if data:
             df = pd.read_json(data, orient='split', dtype=False, convert_dates=False)
-
-            self.types = self._fix_types(df)
+            df, self.types = self._fix_types(df)
             return df
         else:
             self.types = {}
@@ -440,11 +481,11 @@ class Constellation:
 
         # Remove the type suffix from the column names.
         #
-        df.rename(columns=rename_dict, inplace=True)
+        df = df.rename(columns=rename_dict)
 
-        return types
+        return df, types
 
-    def put_dataframe(self, df, **params):
+    def put_dataframe(self, df, **kwargs):
         """Add the contents of a Pandas DataFrame to the current or specified graph.
 
         :param df: The DataFrame to send to CONSTELLATION.
@@ -460,8 +501,13 @@ class Constellation:
         :param graph_id: The id of the graph to be updated.
         """
 
+        args = {}
+        for arg in ['graphid', 'complete_with_schema', 'arrange', 'reset_view']:
+            if arg in kwargs:
+                args[arg] = kwargs[arg]
+
         j = df.to_json(orient='split', date_format='iso')
-        self.rest_request(verb='post', endpoint='/v1/recordstore', path='add', data=j.encode('utf-8'), params=params)
+        self.call_service('add_recordstore', verb='post', args=args, data=j.encode('utf-8'), headers={'Content-Type': 'application/json'})
 
     def get_attributes(self, graph_id=None):
         """Get the graph, node, and transaction attributes of the current or specified graph.
@@ -474,9 +520,7 @@ class Constellation:
         if graph_id:
             params = {'graph_id':graph_id}
 
-        r = self.rest_request(endpoint='/v1/graph', path='getattrs', params=params)
-
-        return r.json()
+        return self.call_service('get_attributes', args=params).json()
 
     def get_graph_attributes(self, graph_id=None):
         """Get the graph attribute values."""
@@ -485,11 +529,10 @@ class Constellation:
         if graph_id:
             params = {'graph_id':graph_id}
 
-        r = self.rest_request(endpoint='/v1/graph', path='get', params=params)
+        r = self.call_service('get_graph_values', args=params)
 
-        df = pd.read_json(r.text, orient='split', dtype=False, convert_dates=False)
-
-        self._fix_types(df)
+        df = pd.read_json(r.content, orient='split', dtype=False, convert_dates=False)
+        df, self.types = self._fix_types(df)
 
         return df
 
@@ -505,43 +548,36 @@ class Constellation:
             params = {'graph_id':graph_id}
 
         j = df.to_json(orient='split', date_format='iso')
-        self.rest_request(verb='post', endpoint='/v1/graph', path='set', params=params, data=j.encode('utf-8'))
+        self.call_service('set_graph_values', verb='post',  args=params, data=j, headers={'Content-Type': 'application/json'})
 
     def set_current_graph(self, graph_id):
         """Make the specified graph the currently active graph."""
 
-        self.rest_request(verb='put', endpoint='/v1/graph', path='current', params={'graph_id':graph_id})
+        self.call_service('set_graph', verb='put', args={'graph_id':graph_id})
 
     def open_graph(self, filename):
-        """Open a graph from the file system"""
+        """Open the graph file specified by the filename."""
 
-        self.rest_request(verb='post', endpoint='/v1/graph', path='open', params={'filename':filename})
+        graph = self.call_service('open_graph', verb='post', args={'filename':filename}).json()
 
-    def new_graph(self, schema=None):
+        return graph['id']
+
+    def new_graph(self, schema_name=None):
         """Open a new graph using the given schema.
-
-        Opening a new graph is an asynchronous operation; this convenience
-        function opens a new graph and waits until it is ready to be used.
 
         The default schema is whatever CONSTELLATION's default schema is.
 
-        :param schema: The optional schema of the new graph.
-        :param get_id: Get the id of the new graph.
+        :param schema_name: The optional schema of the new graph.
 
         :returns: The id of the new graph.
         """
 
         params = {}
-        if schema:
-            params['schema'] = schema
+        if schema_name:
+            params['schema_name'] = schema_name
+        graph = self.call_service('new_graph', verb='post', args=params).json()
 
-        r = self.rest_request(verb='post', endpoint='/v1/graph', path='new', params=params)
-
-        r = self.rest_request(endpoint='/v1/graph', path='schema')
-        data = json.loads(r.text)
-        id = data.get('id', '')
-
-        return id
+        return graph['id']
 
     def get_graph_image(self):
         """Get the visualisation of the current active graph as an image encoded in PNG format.
@@ -549,16 +585,17 @@ class Constellation:
         :returns: The PNG-encoded bytes.
         """
 
-        r = self.rest_request(endpoint='/v1/graph', path='image')
+        return self.call_service('get_graph_image').content
 
-        return r.content
-
-    def run_plugin(self, name, args=None, *, graph_id=None):
+    def run_plugin(self, plugin_name, args=None, *, graph_id=None):
         """Run the specified plugin.
+
+        Use list_plugins() to discover plugins, and describe_plugin() to
+        see what parameters it has.
 
         Plugin names are case-insensitive.
 
-        :param name: The name of the plugin to run
+        :param plugin_name: The name of the plugin to run.
         :param args: The arguments to be passed to the plugin; a dictionary
             in the form {parameter_name:value, ...}.
         :param graph_id: The id of the graph to run the plugin on,
@@ -570,7 +607,39 @@ class Constellation:
         if not isinstance(args, dict):
             raise ValueError('args must be a dictionary')
 
-        self.rest_request(verb='post', endpoint='/v1/plugin', path='run', params={'name': name, 'graph_id':graph_id}, json_=args)
+        self.call_service('run_plugin', verb='post', args={'plugin_name':plugin_name, 'graph_id':graph_id}, json=args)
+
+    def run_plugins(self, plugins=None, *, graph_id=None, run_in='serial'):
+        """Run the specified plugins.
+
+        Plugins is a list of dictionaries, where each dictionary specifies a plugin and optionally its arguments,
+        using the keys 'plugin_name' and 'plugin_args', and the values as passed to run_plugin().
+
+        For example:
+            plugins = [
+                {'plugin_name': 'deselectall'},
+                {
+                    'plugin_name': 'arrangeingridgeneral',
+                    'plugin_args': {'ArrangeInGridGeneralPlugin.offset_rows': True}
+                },
+                {'plugin_name': 'resetview'}
+            ]
+
+        Plugins may be run sequentially (the default), or in parallel.
+
+        :param plugins: A list of plugins and their arguments.
+        :param graph_id: The id of the graph to run the plugins on,
+            or the active graph if not specified.
+        :param run_in: One of 'serial' or 'parallel'.
+
+        """
+
+        if plugins is None:
+            plugins = []
+        if not isinstance(plugins, list):
+            raise ValueError('plugins must be a list')
+
+        self.call_service('run_plugins', verb='post', args={'graph_id':graph_id, 'run_in':run_in}, json=plugins)
 
     def list_plugins(self, alias=True):
         """List the available plugins.
@@ -578,49 +647,71 @@ class Constellation:
         :param alias: If True, list the plugins by alias rather than
             fully qualified name."""
 
-        r = self.rest_request(endpoint='/v1/plugin', path='list', params={'alias': alias})
+        return self.call_service('list_plugins', args={'alias':alias}).json()
 
-        data = json.loads(r.text)
+    def describe_plugin(self, plugin_name):
+        """Describe the specified plugin.
 
-        return data
+        :param plugin_name: The name of the plugin to describe.
+
+        :returns: A dictionary describing the named CONSTELLATION plugin.
+        """
+
+        return self.call_service('get_plugin_description', args={'plugin_name':plugin_name}).json()
 
     def list_graphs(self):
         """List the open graphs."""
 
-        r = self.rest_request(endpoint='/v1/graph', path='schema_all')
+        return self.call_service('list_graphs').json()
 
-        data = json.loads(r.text)
-
-        return data
-
-    def describe_type(self, name):
+    def describe_type(self, type_name):
         """Describe the specified CONSTELLATION type.
 
-        :param name: The name of the type to describe.
+        :param type_name: The name of the type to describe.
 
         :returns: A dictionary describing the named CONSTELLATION type."""
 
-        r = self.rest_request(endpoint='/v1/type', path='describe', params={'type': name})
-
-        return r.json()
+        return self.call_service('get_type_description', args={'type_name':type_name}).json()
 
     def list_icons(self, editable=False):
         """List the icons known by CONSTELLATION.
 
-        :param editable: If True, include user icons."""
+        :param editable: If False, return built-in icons, else return user icons.
+        """
 
-        r = self.rest_request(endpoint='/v1/icon', path='list', params={'editable':editable})
+        return self.call_service('list_icons', args={'editable':editable}).json()
 
-        return r.json()
-
-    def get_icon(self, name):
+    def get_icon(self, icon_name):
         """Get the named icon in PNG format.
 
-        :param name: The name of the icon to get."""
+        :param icon_name: The name of the icon to get.
+        """
 
-        r = self.rest_request(endpoint='/v1/icon', path='get', params={'name':name})
+        return self.call_service('get_icon', args={'icon_name':icon_name}).content
 
-        return r.content
+    def call_service(self, name, *, verb='get', args=None, json=None, data=None, headers=None):
+        """Call a REST service and return a response.
+
+        The dictionary is built from the JSON in the response body.
+
+        The response is as returned by the Python requests library. The mime
+        type will vary depending on what the service returns.
+
+        :param name: The name of the service to be called.
+        :param verb: The HTTP method used to make the request ('get', 'post', 'put').
+        :param args: A dictionary containing the arguments to be passed to the
+            service as URL parameters.
+        :param json: A dictionary containing data to be sent to the service as
+            JSON in the body of the request.
+
+        :returns: The requests response.
+            For JSON responses, use get_service().json().
+            For binary repsonses, use get_service().content.
+        """
+
+        r = self.rest_request(verb=verb, endpoint=f'/v2/service', path=name, params=args, json_=json, data=data, headers=headers)
+
+        return r
 
 def _get_rest(rest=None):
     """Get data from the file created by the CONSTELLATION HTTP REST server.
@@ -689,11 +780,11 @@ def nx_from_dataframe(df, g=None, src_col=None, dst_col=None):
     SID = 'source.[id]'
     DID = 'destination.[id]'
 
-    for i in range(len(df)):
-        row = df.iloc[i]
+    for ix in df.index:
+        row = df.iloc[ix]
         sid = row[SID]
         did = row[DID]
-        if np.isnan(did):
+        if did is None:
             # This is a singleton.
             #
             if src_col:
@@ -720,9 +811,9 @@ def get_nx_pos(g):
     The returned dictionary is suitable to pass to networkx.draw(g, pos)."""
 
     pos = {}
-    for n in g.nodes():
-        x = g.node[n]['x']
-        y = g.node[n]['y']
+    for n in g.nodes:
+        x = g.nodes[n]['x']
+        y = g.nodes[n]['y']
         pos[n] = x, y
 
     return pos

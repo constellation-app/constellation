@@ -68,6 +68,7 @@ public final class PermanentMergeAction extends AbstractAction {
             try {
                 execute(Graph.NOT_FOUND);
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }).start();
     }

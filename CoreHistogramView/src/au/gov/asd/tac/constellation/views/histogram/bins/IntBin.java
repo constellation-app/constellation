@@ -25,8 +25,12 @@ import au.gov.asd.tac.constellation.views.histogram.Bin;
  */
 public class IntBin extends Bin {
 
-    public int key;
+    protected int key;
 
+    public int getKey() {
+        return key;
+    }
+    
     @Override
     public int compareTo(Bin o) {
         IntBin bin = (IntBin) o;

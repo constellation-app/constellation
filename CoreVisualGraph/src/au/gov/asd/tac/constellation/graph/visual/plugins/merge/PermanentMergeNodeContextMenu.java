@@ -56,6 +56,7 @@ public class PermanentMergeNodeContextMenu implements ContextMenuProvider {
             try {
                 action.execute(element);
             } catch (InterruptedException ex) {
+                Thread.currentThread().interrupt();
             }
         }).start();
     }

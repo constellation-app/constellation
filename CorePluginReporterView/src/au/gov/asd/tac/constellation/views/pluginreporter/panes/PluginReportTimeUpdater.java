@@ -62,13 +62,14 @@ public class PluginReportTimeUpdater {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ex) {
+                    Thread.currentThread().interrupt();
                     return;
                 }
 
                 Platform.runLater(UPDATE_PANES);
             }
         }
-    };
+    }
 
     /**
      * Add a plugin report to the set of plugin reports that will have their

@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss.KTrussResultHandler;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -70,8 +70,10 @@ public class SpectralArranger implements Arranger {
         double averageOverlap = 0;
         Iterator<Double> xValIter = xValues.iterator();
         Iterator<Double> yValIter = yValues.iterator();
-        double currentX, nextX = xValIter.next();
-        double currentY, nextY = yValIter.next();
+        double currentX;
+        double nextX = xValIter.next();
+        double currentY;
+        double nextY = yValIter.next();
         while (xValIter.hasNext()) {
             currentX = nextX;
             currentY = nextY;
@@ -95,8 +97,6 @@ public class SpectralArranger implements Arranger {
         }
 
     }
-
-    ;
 
     private static class GetTrussResultHandler implements KTrussResultHandler {
 
@@ -166,10 +166,10 @@ public class SpectralArranger implements Arranger {
         final int radiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
 
         // Position vertices in the most interconnected truss by their spectra.
-        for (int positionedVert : vertexToCoordinates.keySet()) {
-            wg.setDoubleValue(xAttr, positionedVert, vertexToCoordinates.get(positionedVert)[0]);
-            wg.setDoubleValue(yAttr, positionedVert, vertexToCoordinates.get(positionedVert)[1]);
-            wg.setDoubleValue(zAttr, positionedVert, 0);
+        for (final Map.Entry<Integer, double[]> entry : vertexToCoordinates.entrySet()) {
+            wg.setDoubleValue(xAttr, entry.getKey(), entry.getValue()[0]);
+            wg.setDoubleValue(yAttr, entry.getKey(), entry.getValue()[1]);
+            wg.setDoubleValue(zAttr, entry.getKey(), 0);
         }
 
         // Position all the other vertices at a level (z-position) corresponding to their distance from the most interconnected truss, and at the centre (x,y-position) of their neighbours on the level above them.

@@ -15,22 +15,25 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -40,10 +43,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,6 +69,8 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "transaction_types");
+    
+    private final Random r = new Random();
 
     @Override
     public String getDescription() {
@@ -148,8 +150,6 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
 
-        final Random r = new Random();
-
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
 
         final int n = params.get(N_PARAMETER_ID).getIntegerValue();
@@ -226,30 +226,27 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
                     int dxId = y;
                     if (randomWeights) {
                         switch (reciprocity) {
-                            case 0: {
-                                boolean random = r.nextBoolean();
-                                if (random) {
+                            case 0:
+                                boolean random0 = r.nextBoolean();
+                                if (random0) {
                                     sxId = y;
                                     dxId = x;
                                 }
                                 break;
-                            }
-                            case 1: {
-                                int random = r.nextInt(5);
-                                if (random == 0) {
+                            case 1:
+                                int random1 = r.nextInt(5);
+                                if (random1 == 0) {
                                     sxId = y;
                                     dxId = x;
                                 }
                                 break;
-                            }
-                            default: {
-                                int random = r.nextInt(5);
-                                if (random != 0) {
+                            default:
+                                int randomDefault = r.nextInt(5);
+                                if (randomDefault != 0) {
                                     sxId = y;
                                     dxId = x;
                                 }
                                 break;
-                            }
                         }
                     }
                     final int e = graph.addTransaction(sxId, dxId, true);

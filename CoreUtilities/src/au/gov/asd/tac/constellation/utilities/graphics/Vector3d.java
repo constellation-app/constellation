@@ -74,9 +74,7 @@ public final class Vector3d implements Serializable {
     }
 
     public static Vector3d add(final Vector3d u, final Vector3d v) {
-        final Vector3d t = new Vector3d(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
-
-        return t;
+        return new Vector3d(u.a[0] + v.a[0], u.a[1] + v.a[1], u.a[2] + v.a[2]);
     }
 
     /**
@@ -194,9 +192,7 @@ public final class Vector3d implements Serializable {
      * @return the difference between the 2 given vectors.
      */
     public static Vector3d subtract(final Vector3d u, final Vector3d v) {
-        final Vector3d t = new Vector3d(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
-
-        return t;
+        return new Vector3d(u.a[0] - v.a[0], u.a[1] - v.a[1], u.a[2] - v.a[2]);
     }
 
     /**

@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.scatterplot.axis;
 
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
-//import com.sun.javafx.charts.ChartLayoutAnimator;
 import java.time.Instant;
 import java.time.Month;
 import java.time.ZonedDateTime;
@@ -53,7 +52,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 
     // the min and max datetime of the data provided. 
     // if {@link #autoRanging} is true, these are used as lower and upper bounds.
-    private ZonedDateTime minZonedDateTime, maxZonedDateTime;
+    private ZonedDateTime minZonedDateTime;
+    private ZonedDateTime maxZonedDateTime;
 
     private ObjectProperty<ZonedDateTime> lowerBound = new ObjectPropertyBase<ZonedDateTime>() {
         @Override
@@ -316,7 +316,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             // loop as long we exceeded the upper bound.
             while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
                 dateTimeList.add(datetime);
-                datetime.plus(interval.amount, interval.interval);
+                datetime = datetime.plus(interval.amount, interval.interval);
             }
             // check the size of the list, if it is greater than the amount of ticks, take that list.
             if (dateTimeList.size() > averageTicks) {
@@ -324,7 +324,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                 // recheck if the previous interval is better suited.
                 while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
                     previousDateTimeList.add(datetime);
-                    datetime.plus(previousInterval.amount, previousInterval.interval);
+                    datetime = datetime.plus(previousInterval.amount, previousInterval.interval);
                 }
                 break;
             }
@@ -390,9 +390,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             switch (actualInterval.interval) {
                 case DAYS:
                 case WEEKS:
-                default:
-                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
-                    break;
                 case HOURS:
                 case MINUTES:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT);
@@ -402,6 +399,9 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                     break;
                 case MILLIS:
                     formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.FULL);
+                    break;
+                default:
+                    formatter = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
                     break;
             }
         }
@@ -476,7 +476,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                     case SECONDS:
                         datetime = datetime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
-
+                    default:
+                        break;
                 }
                 evenDateTimes.add(datetime);
             }

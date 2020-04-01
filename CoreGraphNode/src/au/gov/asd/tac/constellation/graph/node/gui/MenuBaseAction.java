@@ -135,7 +135,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
 
     @Override
     public boolean isEnabled() {
-        boolean flag = (null != this.getContext());
+        boolean flag = (this.getContext() != null);
         if (menuButton != null) {
             menuButton.setEnabled(flag);
         }

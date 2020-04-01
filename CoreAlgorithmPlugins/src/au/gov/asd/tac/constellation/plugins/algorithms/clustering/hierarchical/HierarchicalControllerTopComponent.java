@@ -15,27 +15,25 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
-import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
+import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.ArrayList;
@@ -124,13 +122,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         dp = new NestedHierarchicalDisplayPanel(this, nestedDiagramScrollPane);
         nestedDiagramScrollPane.setViewportView(dp);
         nestedDiagramScrollPane.setOpaque(true);
-        nestedDiagramScrollPane.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-
-            @Override
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                dp.repaint();
-            }
-        });
+        nestedDiagramScrollPane.getVerticalScrollBar().addAdjustmentListener(e -> dp.repaint());
         nestedDiagramScrollPane.addComponentListener(new ComponentListener() {
 
             @Override
@@ -419,10 +411,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 Set<Integer> verticesToPath = new HashSet<>();
                 for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                     Group group = state.groups[pos];
-                    while (group.mergeStep <= state.currentStep) {
-                        group = group.parent;
+                    while (group.getMergeStep() <= state.currentStep) {
+                        group = group.getParent();
                     }
-                    verticesToPath.add(group.vertex);
+                    verticesToPath.add(group.getVertex());
                 }
                 ArrayList<Integer> verticesToPathList = new ArrayList<>(verticesToPath);
                 DijkstraServices ds = new DijkstraServices(graph, verticesToPathList, false);
@@ -712,7 +704,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
                 // When excluding single vertices
-                if (state.excludeSingleVertices && group.singleStep > state.currentStep) {
+                if (state.excludeSingleVertices && group.getSingleStep() > state.currentStep) {
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
                     if (state.interactive) {
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, true);
@@ -724,18 +716,18 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 } else { 
                     // when keeping all vertices, do not dim, and show all.
                     // assign all nodes to a group/cluster
-                    while (group.mergeStep <= state.currentStep) {
-                        group = group.parent;
+                    while (group.getMergeStep() <= state.currentStep) {
+                        group = group.getParent();
                     }
                     graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
-                    graph.setObjectValue(vxOverlayColorAttr, vertex, group.color);
+                    graph.setObjectValue(vxOverlayColorAttr, vertex, group.getColor());
                         
-                    if (state.clusterSeenBefore[group.vertex] < state.redrawCount) {
-                        state.clusterSeenBefore[group.vertex] = state.redrawCount;
-                        state.clusterNumbers[group.vertex] = nextCluster++;
+                    if (state.clusterSeenBefore[group.getVertex()] < state.redrawCount) {
+                        state.clusterSeenBefore[group.getVertex()] = state.redrawCount;
+                        state.clusterNumbers[group.getVertex()] = nextCluster++;
                     }
-                    graph.setIntValue(vertexClusterAttribute, vertex, state.clusterNumbers[group.vertex]);
+                    graph.setIntValue(vertexClusterAttribute, vertex, state.clusterNumbers[group.getVertex()]);
                 }
             }
 

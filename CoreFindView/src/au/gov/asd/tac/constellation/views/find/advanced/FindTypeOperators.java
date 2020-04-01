@@ -28,7 +28,7 @@ public class FindTypeOperators {
     /**
      * Supported Find types.
      */
-    public static enum Type {
+    public enum Type {
 
         /**
          * BOOLEAN types.
@@ -135,7 +135,7 @@ public class FindTypeOperators {
         "Oper_ENDS_WITH=ends with",
         "Oper_REGEX=matches (regex)"
     })
-    public static enum Operator {
+    public enum Operator {
 
         /**
          * Temporal: '=='.
@@ -227,18 +227,18 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for BOOLEAN types.
          */
-        public static final EnumSet<Operator> BOOLEAN_SET = EnumSet.of(
+        private static final EnumSet<Operator> BOOLEAN_SET = EnumSet.of(
                 IS);
         /**
          * The collection of operators used for COLOR types.
          */
-        public static final EnumSet<Operator> COLOR_SET = EnumSet.of(
+        private static final EnumSet<Operator> COLOR_SET = EnumSet.of(
                 IS,
                 IS_NOT);
         /**
          * The collection of operators used for DATE types.
          */
-        public static final EnumSet<Operator> DATE_SET = EnumSet.of(
+        private static final EnumSet<Operator> DATE_SET = EnumSet.of(
                 OCCURRED_ON,
                 NOT_OCCURRED_ON,
                 OCCURRED_BEFORE,
@@ -247,7 +247,7 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for DATETIME types.
          */
-        public static final EnumSet<Operator> DATETIME_SET = EnumSet.of(
+        private static final EnumSet<Operator> DATETIME_SET = EnumSet.of(
                 OCCURRED_ON,
                 NOT_OCCURRED_ON,
                 OCCURRED_BEFORE,
@@ -256,7 +256,7 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for FLOAT types.
          */
-        public static final EnumSet<Operator> FLOAT_SET = EnumSet.of(
+        private static final EnumSet<Operator> FLOAT_SET = EnumSet.of(
                 IS,
                 IS_NOT,
                 LESS_THAN,
@@ -265,7 +265,7 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for INTEGER types.
          */
-        public static final EnumSet<Operator> INTEGER_SET = EnumSet.of(
+        private static final EnumSet<Operator> INTEGER_SET = EnumSet.of(
                 IS,
                 IS_NOT,
                 LESS_THAN,
@@ -274,13 +274,13 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for ICON types.
          */
-        public static final EnumSet<Operator> ICON_SET = EnumSet.of(
+        private static final EnumSet<Operator> ICON_SET = EnumSet.of(
                 IS,
                 IS_NOT);
         /**
          * The collection of operators used for STRING types.
          */
-        public static final EnumSet<Operator> STRING_SET = EnumSet.of(
+        private static final EnumSet<Operator> STRING_SET = EnumSet.of(
                 CONTAINS,
                 NOT_CONTAINS,
                 IS,
@@ -291,7 +291,7 @@ public class FindTypeOperators {
         /**
          * The collection of operators used for TIME types.
          */
-        public static final EnumSet<Operator> TIME_SET = EnumSet.of(
+        private static final EnumSet<Operator> TIME_SET = EnumSet.of(
                 OCCURRED_ON,
                 NOT_OCCURRED_ON,
                 OCCURRED_BEFORE,

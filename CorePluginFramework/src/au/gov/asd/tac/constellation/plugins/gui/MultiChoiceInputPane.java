@@ -73,7 +73,7 @@ public class MultiChoiceInputPane extends HBox {
         Platform.runLater(() -> {
             @SuppressWarnings("unchecked") // Below cast will always work because getChoicesData returns List<? extends ParameterValue>.
             final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(parameter);
-            checkedItems.stream().forEach((checked) -> {
+            checkedItems.stream().forEach(checked -> {
                 final BooleanProperty bp = field.getItemBooleanProperty(checked);
                 if (bp != null) {
                     bp.setValue(true);
@@ -117,6 +117,7 @@ public class MultiChoiceInputPane extends HBox {
                         break;
                     default:
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
+                        break;
                 }
             });
         });

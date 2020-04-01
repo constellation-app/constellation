@@ -90,9 +90,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
      * @return The {@link Date} representation of the localDate in UTC.
      */
     public static Date toDate(final LocalDate localDate) {
-        final Date date = new Date(localDate.atStartOfDay(ZoneId.of("UTC")).toEpochSecond() * 1000);
-
-        return date;
+        return new Date(localDate.atStartOfDay(ZoneId.of("UTC")).toEpochSecond() * 1000);
     }
 
     /**
@@ -208,7 +206,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
 
         @Override
         public boolean equals(final Object o) {
-            return o != null && o instanceof LocalDateParameterValue && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
+            return o instanceof LocalDateParameterValue && Objects.equals(ld, ((LocalDateParameterValue) o).ld);
         }
 
         @Override

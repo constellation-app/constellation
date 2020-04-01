@@ -74,7 +74,7 @@ public class FloatRangeBinFormatter extends BinFormatter {
         private final FloatBin bin;
         private final float zero;
         private final float bucketSize;
-        public float end;
+        private float end;
 
         public FloatRangeBin(FloatBin bin, float zero, float bucketSize) {
             this.bin = bin;
@@ -90,15 +90,14 @@ public class FloatRangeBinFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            int bucketNumber = (int) Math.floor((bin.key - zero) / bucketSize);
+            int bucketNumber = (int) Math.floor((bin.getKey() - zero) / bucketSize);
             key = bucketNumber * bucketSize + zero;
             end = key + bucketSize;
         }
 
         @Override
         public Bin create() {
-            FloatRangeBin f = new FloatRangeBin(bin, zero, bucketSize);
-            return f;
+            return new FloatRangeBin(bin, zero, bucketSize);
         }
     }
 }

@@ -178,7 +178,7 @@ public class DelimitedFileImporterStage extends Stage {
 //        Scene scene = new Scene(root, 700, 1050, Color.WHITESMOKE);
         final Scene scene = new Scene(root);
         scene.setFill(Color.WHITESMOKE);
-        scene.setOnKeyPressed((event) -> {
+        scene.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
             if (c == KeyCode.F1) {
                 new HelpCtx(HELP_CTX).display();

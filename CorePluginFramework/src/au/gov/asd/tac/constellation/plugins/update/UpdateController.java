@@ -169,7 +169,7 @@ public class UpdateController<U> {
                 try {
                     processCurrentComponent();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     release();
                     return;
                 }
@@ -182,7 +182,7 @@ public class UpdateController<U> {
                 try {
                     processCurrentComponent();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     release();
                     return;
                 }

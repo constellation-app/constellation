@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -24,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
@@ -35,7 +35,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AttributeEditorFactory;
@@ -52,11 +57,6 @@ import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.Mod
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyDefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.PrimaryKeyEditOperation;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.UpdateTimeZonePlugin;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -80,6 +80,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -159,7 +160,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
     private int currentFontSize;
 
-    private static enum HeadingType {
+    private enum HeadingType {
 
         GRAPH, NODE, TRANSACTION;
     }
@@ -169,7 +170,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
 //    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
-    final private TooltipPane tooltipPane = new TooltipPane();
+    private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
         MenuItem copyItem = new MenuItem("Copy");
@@ -317,7 +318,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         optionsButtons.setPadding(new Insets(2));
         final Text heading = new Text();
         heading.textProperty().bind(title);
-        heading.setStyle(String.format("-fx-font-family:\"Arial\"; -fx-font-weight:bold;"));
+        heading.setStyle("-fx-font-family:\"Arial\"; -fx-font-weight:bold;");
         heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);
@@ -345,6 +346,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             default:
                 key = "";
                 elementType = null;
+                break;
         }
         showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             prefs.putBoolean(key, newValue);
@@ -584,12 +586,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         // the one the Node has by default, and the one we added to the AttributeTitledPane.
         // We'll consume the context menu event so it doesn't bubble up to the TitledPane.
         // Ditto for the button.
-        attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, (eventHandler) -> {
-            eventHandler.consume();
-        });
-        editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, (eventHandler) -> {
-            eventHandler.consume();
-        });
+        attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
+        editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
         //Title
         ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
@@ -738,16 +736,14 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
         AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(dataType);
         StringBuilder buffer = new StringBuilder();
-        selectedItems.stream().map((item) -> {
+        selectedItems.stream().map(item -> {
             if (item == null) {
                 buffer.append("<No Value>");
             } else {
                 buffer.append(interaction.getDisplayText(item));
             }
             return item;
-        }).forEach((_item) -> {
-            buffer.append("\n");
-        });
+        }).forEach(_item -> buffer.append("\n"));
 
         ClipboardUtilities.copyToClipboard(buffer.toString());
     }
@@ -805,14 +801,11 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     public void resetPanel() {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                clearHeaderTitledPanes();
-                for (Node n : titledPaneHeadingsContainer.getChildren()) {
-                    TitledPane tp = (TitledPane) n;
-                    tp.setExpanded(false);
-                }
+        Platform.runLater(() -> {
+            clearHeaderTitledPanes();
+            for (Node n : titledPaneHeadingsContainer.getChildren()) {
+                TitledPane tp = (TitledPane) n;
+                tp.setExpanded(false);
             }
         });
     }
@@ -870,9 +863,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     private void updateTimeZoneAction(final AttributeData attr) {
-        final EditOperation editOperation = (zoneId) -> {
-            PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        };
+        final EditOperation editOperation = zoneId -> 
+                PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
         final AbstractEditor editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
@@ -913,9 +905,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
             final ValueValidator validator = interaction.fromEditValidator(editType);
             final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter defaultGetter = () -> {
-                return attributeData.getDefaultValue();
-            };
+            final DefaultGetter defaultGetter = attributeData::getDefaultValue;
             final AbstractEditor editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
@@ -1066,9 +1056,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
         //Title
-        final Text attributeTitleText = new Text(attributeTitle + ":");
+        return new Text(attributeTitle + ":");
 //        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
-        return attributeTitleText;
     }
 
 }

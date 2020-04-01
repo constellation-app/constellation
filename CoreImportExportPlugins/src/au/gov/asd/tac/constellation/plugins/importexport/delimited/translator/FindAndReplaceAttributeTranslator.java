@@ -76,7 +76,7 @@ public class FindAndReplaceAttributeTranslator extends AttributeTranslator {
         final String regex = parameters.getParameters().get(FIND_PARAMETER_ID).getStringValue();
         final String replace = parameters.getParameters().get(REPLACE_PARAMETER_ID).getStringValue();
 
-        return String.format("%s\n%s", regex, replace);
+        return String.format("%s%n%s", regex, replace);
     }
 
     @Override

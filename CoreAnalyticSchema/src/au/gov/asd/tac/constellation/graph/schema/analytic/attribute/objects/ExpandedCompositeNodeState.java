@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,9 +110,9 @@ public class ExpandedCompositeNodeState {
         idToCopiedId.put(vxId, copiedId[0]);
 
         // Add to the expansion store those transactions between this vertex and all vertices already added to the expansion store
-        idToCopiedId.entrySet().stream().forEach((entry) -> {
-            GraphRecordStoreUtilities.copyTransactionsBetweenVertices(wg, constituentNodeStore, vxId, entry.getKey(), copiedId[0], entry.getValue());
-        });
+        idToCopiedId.entrySet().stream().forEach(entry -> 
+                GraphRecordStoreUtilities.copyTransactionsBetweenVertices(wg, constituentNodeStore, vxId, entry.getKey(), copiedId[0], entry.getValue())
+        );
 
         // Add the copied id of the expanded vertex to the relevant lists in the contracted composite state.
         expandedIds.add(copiedId[0]);
@@ -143,7 +143,9 @@ public class ExpandedCompositeNodeState {
         // Iterate through each vertex on the graph, and if it has an expanded composite state with the same composite id
         // as this state, perform the single vertex contraction. Keep track of x, y and z as we go so that we can set
         // the coordinates of the contracted composite to be at the centre of the expanded constituents.
-        float x = 0, y = 0, z = 0;
+        float x = 0;
+        float y = 0;
+        float z = 0;
         final Map<Integer, String> idToCopiedId = new HashMap<>();
 
         final int vertexCount = wg.getVertexCount();
@@ -185,9 +187,7 @@ public class ExpandedCompositeNodeState {
             GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr));
         });
         // Remove each expanded vertex from the graph
-        idToCopiedId.keySet().forEach(vxId -> {
-            wg.removeVertex(vxId);
-        });
+        idToCopiedId.keySet().forEach(wg::removeVertex);
 
         // Add all the transactions between the expanded nodes to the expansion record store
         // Add the contraction record store to the graph, which creates the composite node and all its relevant transactions

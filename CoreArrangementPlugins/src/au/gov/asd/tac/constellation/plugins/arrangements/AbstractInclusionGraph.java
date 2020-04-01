@@ -66,7 +66,7 @@ public abstract class AbstractInclusionGraph {
     /**
      * Specify how transactions should be copied to the inclusion graph.
      */
-    public static enum Connections {
+    public enum Connections {
 
         /**
          * Don't copy any transactions.

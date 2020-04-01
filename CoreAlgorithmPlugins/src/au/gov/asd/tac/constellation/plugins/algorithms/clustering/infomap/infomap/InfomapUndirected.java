@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.Node;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
@@ -22,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Con
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowUndirected;
 import static au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.InfoMath.plogp;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 
 /**
  *
@@ -51,10 +51,10 @@ public class InfomapUndirected extends InfomapGreedy {
 
     @Override
     protected double getDeltaCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         // Double the effect as each link works in both directions.
         deltaEnterExitOldModule *= 2;
@@ -76,17 +76,15 @@ public class InfomapUndirected extends InfomapGreedy {
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow()
                         + current.getData().getExitFlow() + current.getData().getFlow() - deltaEnterExitNewModule);
 
-        final double deltaL = delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
-
-        return deltaL;
+        return delta_exit - 2.0 * delta_exit_log_exit + delta_flow_log_flow;
     }
 
     @Override
     protected void updateCodelength(final Node current, final DeltaFlow oldModuleDelta, final DeltaFlow newModuleDelta) {
-        final int oldModule = oldModuleDelta.module;
-        final int newModule = newModuleDelta.module;
-        double deltaEnterExitOldModule = oldModuleDelta.deltaEnter + oldModuleDelta.deltaExit;
-        double deltaEnterExitNewModule = newModuleDelta.deltaEnter + newModuleDelta.deltaExit;
+        final int oldModule = oldModuleDelta.getModule();
+        final int newModule = newModuleDelta.getModule();
+        double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
+        double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
         // Double the effect as each link works in both directions.
         deltaEnterExitOldModule *= 2;

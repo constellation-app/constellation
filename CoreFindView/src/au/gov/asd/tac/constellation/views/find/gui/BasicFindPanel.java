@@ -19,17 +19,16 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -61,12 +60,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         this.parentTopComponent = parent;
         dropDownPanel = new JPanel();
         scrollPane = new JScrollPane(dropDownPanel);
-        selectAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                toggleCheckAll(selectAll.isSelected());
-            }
-        });
+        selectAll.addActionListener(e -> toggleCheckAll(selectAll.isSelected()));
         setupComboBox();
         updateValidation();
     }
@@ -230,12 +224,9 @@ public class BasicFindPanel extends javax.swing.JPanel {
 
         for (Attribute a : attributes) {
             JCheckBox attrCheckbox = new JCheckBox(a.getName());
-            attrCheckbox.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    JCheckBox temp = (JCheckBox) e.getSource();
-                    checkBoxValueChanged(temp.getText(), temp.isSelected());
-                }
+            attrCheckbox.addActionListener(e -> {
+                JCheckBox temp = (JCheckBox) e.getSource();
+                checkBoxValueChanged(temp.getText(), temp.isSelected());
             });
             dropDownPanel.add(attrCheckbox);
         }
@@ -268,7 +259,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
     }
 
     private void resetComboBox() {
-        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
         Dimension sepDim = new Dimension(Integer.MAX_VALUE, 5);
         sep.setMaximumSize(sepDim);
         selectAll.setSelected(false);
@@ -300,12 +291,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         }
 
         this.attributes = stringAttributes;
-        Collections.sort(this.attributes, new Comparator<Attribute>() {
-            @Override
-            public int compare(final Attribute o1, final Attribute o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        Collections.sort(this.attributes, (o1, o2) -> o1.getName().compareToIgnoreCase(o2.getName()));
         updateComboBox();
     }
 
@@ -317,7 +303,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
         dropDownPanel.setLayout(layout);
         dropDownPanel.setMaximumSize(new Dimension(dropdownSize.width, Integer.MAX_VALUE));
 
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setMaximumSize(dropdownSize);
         scrollPane.setPreferredSize(dropdownSize);
         scrollPane.setViewportView(dropDownPanel);
@@ -386,7 +372,7 @@ public class BasicFindPanel extends javax.swing.JPanel {
 
         if (validationListener != null) {
 
-            boolean newValidity = selectedAttributes.size() > 0;
+            boolean newValidity = !selectedAttributes.isEmpty();
             currValidity = newValidity;
             validationListener.validityChanged(currValidity);
         }

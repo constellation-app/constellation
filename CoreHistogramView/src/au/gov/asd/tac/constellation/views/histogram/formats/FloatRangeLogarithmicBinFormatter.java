@@ -66,7 +66,7 @@ public class FloatRangeLogarithmicBinFormatter extends BinFormatter {
 
         private final FloatBin bin;
         private final float base;
-        public float end;
+        private float end;
 
         public FloatRangeBin(FloatBin bin, float base) {
             this.bin = bin;
@@ -85,20 +85,19 @@ public class FloatRangeLogarithmicBinFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            if (bin.key == 0) {
+            if (bin.getKey() == 0) {
                 key = 0;
                 return;
             }
-            int sign = (bin.key < 0 ? -1 : 1);
-            double keyD = (sign * Math.pow(base, Math.floor(Math.log10(Math.abs(bin.key)) / Math.log10(base))));
+            int sign = (bin.getKey() < 0 ? -1 : 1);
+            double keyD = (sign * Math.pow(base, Math.floor(Math.log10(Math.abs(bin.getKey())) / Math.log10(base))));
             key = (float) keyD;
             end = (float) (keyD * base);
         }
 
         @Override
         public Bin create() {
-            FloatRangeBin f = new FloatRangeBin(bin, base);
-            return f;
+            return new FloatRangeBin(bin, base);
         }
     }
 }

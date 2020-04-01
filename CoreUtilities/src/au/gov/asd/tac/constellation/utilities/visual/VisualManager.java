@@ -144,6 +144,7 @@ public final class VisualManager {
                                 break;
                             }
                         } catch (InterruptedException ex) {
+                            Thread.currentThread().interrupt();
                             if (!isProcessing) {
                                 break;
                             }

@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -166,10 +166,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         reportBoxScroll.vvalueProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
             double oldReportBoxHeight = reportBoxHeight;
             reportBoxHeight = reportBox.heightProperty().doubleValue();
-            if (oldReportBoxHeight < reportBoxHeight) {
-                if (oldReportBoxHeight < 0 || (oldValue.doubleValue() == reportBoxScroll.getVmax() && newValue.doubleValue() != reportBoxScroll.getVmax())) {
-                    reportBoxScroll.setVvalue(reportBoxScroll.getVmax());
-                }
+            if (oldReportBoxHeight < reportBoxHeight && (oldReportBoxHeight < 0 || (oldValue.doubleValue() == reportBoxScroll.getVmax() && newValue.doubleValue() != reportBoxScroll.getVmax()))) {
+                reportBoxScroll.setVvalue(reportBoxScroll.getVmax());
             }
         });
 

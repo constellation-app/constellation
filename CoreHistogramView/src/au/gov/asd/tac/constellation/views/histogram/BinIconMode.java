@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.histogram;
 
-import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
@@ -48,7 +48,7 @@ public enum BinIconMode {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).key;
+                Object key = ((ObjectBin) bin).getKeyAsObject();
 
                 if (key != null) {
                     String iconLabel = ((ConstellationIcon) key).getName();
@@ -76,7 +76,7 @@ public enum BinIconMode {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {
-                Object key = ((ObjectBin) bin).key;
+                Object key = ((ObjectBin) bin).getKeyAsObject();
                 ConstellationColor colorValue = (ConstellationColor) key;
                 if (colorValue != null) {
                     graphics.setColor(colorValue.getJavaColor());

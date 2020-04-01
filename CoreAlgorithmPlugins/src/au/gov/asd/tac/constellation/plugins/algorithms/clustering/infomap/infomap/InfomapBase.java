@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap;
 
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.PartitionQueue;
@@ -27,7 +28,6 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.T
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Lcg;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Logf;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -91,7 +91,7 @@ public abstract class InfomapBase {
 
 //        rand = new Random();
         rand = new Lcg();
-        rand.seed(config.seedToRandomNumberGenerator);
+        rand.seed(config.getSeedToRandomNumberGenerator());
     }
 
     /**
@@ -109,27 +109,27 @@ public abstract class InfomapBase {
         }
 
         indexCodelength = calcCodelengthFromFlowWithinOrExit(getRoot());
-        getRoot().codelength = indexCodelength;
+        getRoot().setCodelength(indexCodelength);
         Logf.printf("One-level codelength: %.6f\n", indexCodelength);
         oneLevelCodelength = indexCodelength;
 
-        final double[] codelengths = new double[config.numTrials];
+        final double[] codelengths = new double[config.getNumTrials()];
         final StringBuilder bestSolutionStatistics = new StringBuilder();
 
-        for (int iTrial = 0; iTrial < config.numTrials; iTrial++) {
-            Logf.printf("\nAttempt %d/%d\n", iTrial + 1, config.numTrials);
+        for (int iTrial = 0; iTrial < config.getNumTrials(); iTrial++) {
+            Logf.printf("\nAttempt %d/%d\n", iTrial + 1, config.getNumTrials());
             iterationCount = 0;
 
             // First clear existing modular structure.
-            while (treeData.getFirstLeaf().parent != getRoot()) {
+            while (treeData.getFirstLeaf().getParent() != getRoot()) {
                 getRoot().replaceChildrenWithGrandChildren();
             }
 
-            if (config.clusterDataFile != null) {
+            if (config.getClusterDataFile() != null) {
                 throw new UnsupportedOperationException("Not supported.");
             }
 
-            if (!config.noInfomap) {
+            if (!config.isNoInfomap()) {
                 runPartition();
             }
 
@@ -145,11 +145,11 @@ public abstract class InfomapBase {
 
         if (Logf.DEBUGF) {
             Logf.printf("\n\n");
-            if (config.numTrials > 1) {
+            if (config.getNumTrials() > 1) {
                 double averageCodelength = 0;
                 double minCodelength = codelengths[0];
                 double maxCodelength = 0;
-                Logf.printf("Codelengths for %d trials: [", config.numTrials);
+                Logf.printf("Codelengths for %d trials: [", config.getNumTrials());
                 for (final double mdl : codelengths) {
                     Logf.printf("%.9f, ", mdl);
                     averageCodelength += mdl;
@@ -157,7 +157,7 @@ public abstract class InfomapBase {
                     maxCodelength = Math.max(maxCodelength, mdl);
                 }
 
-                averageCodelength /= config.numTrials;
+                averageCodelength /= config.getNumTrials();
                 Logf.printf("\b\b]\n");
                 Logf.printf("[min, average, max] codelength: [%.9f, %.9f, %.9f]\n\n",
                         minCodelength, averageCodelength, maxCodelength);
@@ -177,11 +177,11 @@ public abstract class InfomapBase {
         indexCodelength = oneLevelCodelength;
         moduleCodelength = 0;
 
-        if (config.twoLevel) {
+        if (config.isTwoLevel()) {
             partition();
             hierarchicalCodelength = codelength;
             for (final NodeBase module : getRoot().getChildren()) {
-                module.codelength = calcCodelengthFromFlowWithinOrExit(module);
+                module.setCodelength(calcCodelengthFromFlowWithinOrExit(module));
             }
 
             return;
@@ -189,49 +189,49 @@ public abstract class InfomapBase {
 
         final PartitionQueue partitionQueue = new PartitionQueue();
 
-        if (config.fastHierarchicalSolution != 0) {
+        if (config.getFastHierarchicalSolution() != 0) {
             final int numLevelsCreated = findSuperModulesIterativelyFast(partitionQueue);
 
             // Print current hierarchical solution.
-            if (config.fastHierarchicalSolution < 3 && hierarchicalCodelength < bestIntermediateCodelength) {
+            if (config.getFastHierarchicalSolution() < 3 && hierarchicalCodelength < bestIntermediateCodelength) {
                 bestIntermediateCodelength = hierarchicalCodelength;
                 bestIntermediateStatistics = new StringBuilder();
                 printPerLevelCodelength(bestIntermediateStatistics);
-                if (config.networkFile != null) {
-                    printNetworkData(new File(config.networkFile).getName() + "_fast");
+                if (config.getNetworkFile() != null) {
+                    printNetworkData(new File(config.getNetworkFile()).getName() + "_fast");
                 }
             }
 
-            if (config.fastHierarchicalSolution == 1) {
+            if (config.getFastHierarchicalSolution() == 1) {
                 deleteSubLevels();
                 queueTopModules(partitionQueue);
             } else {
                 resetModuleFlowFromLeafNodes();
-                partitionQueue.level = numLevelsCreated;
+                partitionQueue.setLevel(numLevelsCreated);
             }
         } else {
             partitionAndQueueNextLevel(partitionQueue);
         }
 
-        if (config.fastHierarchicalSolution > 2 || partitionQueue.size() == 0) {
+        if (config.getFastHierarchicalSolution() > 2 || partitionQueue.size() == 0) {
             return;
         }
 
         // TODO: write out initial codelength (two-level/hierarchical) on which the compression rate depends.
-        if (config.verbosity == 0) {
+        if (config.getVerbosity() == 0) {
             Logf.printf("\nRecursive sub-structure compression: ");
         } else {
-            System.out.printf("Current codelength: %f + %f = %f\n",
+            System.out.printf("Current codelength: %f + %f = %f%n",
                     indexCodelength, hierarchicalCodelength - indexCodelength, hierarchicalCodelength);
-            System.out.printf("\nTrying to find deeper structure under current modules recursively... \n");
+            System.out.printf("%nTrying to find deeper structure under current modules recursively... %n");
         }
 
-        double sumConsolidatedCodelength = hierarchicalCodelength - partitionQueue.moduleCodelength;
+        double sumConsolidatedCodelength = hierarchicalCodelength - partitionQueue.getModuleCodelength();
 
         while (partitionQueue.size() > 0) {
-            if (config.verbosity > 0) {
+            if (config.getVerbosity() > 0) {
                 System.out.printf("Level %d: %f%% of the flow in %d modules. Partitioning... ",
-                        partitionQueue.level, partitionQueue.flow * 100, partitionQueue.size());
+                        partitionQueue.getLevel(), partitionQueue.getFlow() * 100, partitionQueue.size());
             }
 
             final PartitionQueue nextLevelQueue = new PartitionQueue();
@@ -239,15 +239,15 @@ public abstract class InfomapBase {
             // Partition all modules in the queue and fill up the next level queue.
             processPartitionQueue(partitionQueue, nextLevelQueue);
 
-            final double leftToImprove = partitionQueue.moduleCodelength;
-            sumConsolidatedCodelength += partitionQueue.indexCodelength + partitionQueue.leafCodelength;
+            final double leftToImprove = partitionQueue.getModuleCodelength();
+            sumConsolidatedCodelength += partitionQueue.getIndexCodelength() + partitionQueue.getLeafCodelength();
             final double limitCodelength = sumConsolidatedCodelength + leftToImprove;
 
-            if (config.verbosity == 0) {
+            if (config.getVerbosity() == 0) {
                 Logf.printf("%.4f%% ", ((hierarchicalCodelength - limitCodelength) / hierarchicalCodelength) * 100);
             } else {
                 System.out.printf("done! Codelength: %f + %f (+ %f left to improve) -> limit: %.10f bits.\n",
-                        partitionQueue.indexCodelength, partitionQueue.leafCodelength, leftToImprove, limitCodelength);
+                        partitionQueue.getIndexCodelength(), partitionQueue.getLeafCodelength(), leftToImprove, limitCodelength);
             }
 
             hierarchicalCodelength = limitCodelength;
@@ -255,10 +255,10 @@ public abstract class InfomapBase {
             partitionQueue.swap(nextLevelQueue);
         }
 
-        if (config.verbosity == 0) {
+        if (config.getVerbosity() == 0) {
             Logf.printf("to codelength %f\n", hierarchicalCodelength);
         } else {
-            System.out.printf("\n");
+            System.out.printf("%n");
         }
     }
 
@@ -268,10 +268,10 @@ public abstract class InfomapBase {
 
     private double partitionAndQueueNextLevel(final PartitionQueue partitionQueue, final boolean tryIndexing) {
         if (DEBUG) {
-            System.out.printf("%s.hierarchicalPartition(%s)...\n", getClass().getSimpleName(), tryIndexing);
+            System.out.printf("%s.hierarchicalPartition(%s)...%n", getClass().getSimpleName(), tryIndexing);
         }
 
-        codelength = getRoot().codelength;
+        codelength = getRoot().getCodelength();
         hierarchicalCodelength = codelength;
 
         if (getNumLeafNodes() == 1) {
@@ -285,7 +285,7 @@ public abstract class InfomapBase {
         hierarchicalCodelength = codelength;
 
         if (getNumTopModules() == 1) {
-            getRoot().firstChild.codelength = codelength;
+            getRoot().getFirstChild().setCodelength(codelength);
             return hierarchicalCodelength;
         } else if (tryIndexing) {
             tryIndexingIteratively();
@@ -298,8 +298,8 @@ public abstract class InfomapBase {
 
     private void queueTopModules(final PartitionQueue partitionQueue) {
         // Add modules to partition queue.
-        partitionQueue.numNonTrivialModules = getNumNonTrivialTopModules();
-        partitionQueue.flow = getNodeData(getRoot()).getFlow();
+        partitionQueue.setNumNonTrivialModules(getNumNonTrivialTopModules());
+        partitionQueue.setFlow(getNodeData(getRoot()).getFlow());
         partitionQueue.resize(getRoot().getChildDegree());
         double nonTrivialFlow = 0;
         int moduleIndex = 0;
@@ -312,34 +312,32 @@ public abstract class InfomapBase {
             moduleIndex++;
         }
 
-        partitionQueue.nonTrivialFlow = nonTrivialFlow;
-        partitionQueue.indexCodelength = indexCodelength;
-        partitionQueue.moduleCodelength = moduleCodelength;
+        partitionQueue.setNonTrivialFlow(nonTrivialFlow);
+        partitionQueue.setIndexCodelength(indexCodelength);
+        partitionQueue.setModuleCodelength(moduleCodelength);
     }
 
     private void tryIndexingIteratively() {
         if (DEBUG) {
-            System.out.printf("%s.tryIndexingIteratively\n", getClass().getSimpleName());
+            System.out.printf("%s.tryIndexingIteratively%n", getClass().getSimpleName());
         }
 
         int numIndexingCompleted = 0;
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
-            Logf.printf("%s", config.verbosity == 0 ? "Finding " : "\n");
+            Logf.printf("%s", config.getVerbosity() == 0 ? "Finding " : "\n");
         }
 
         double minHierarchicalCodelength = hierarchicalCodelength;
         // Add index codebooks as long as the code gets shorter (and collapse each iteration).
         boolean tryIndexing = true;
-        final boolean replaceExistingModules = config.fastHierarchicalSolution == 0;
+        final boolean replaceExistingModules = config.getFastHierarchicalSolution() == 0;
         while (tryIndexing) {
-            if (verbose) {
-                if (config.verbosity > 0) {
-                    System.out.printf("Trying to find super modules... ");
-                    if (config.verbosity >= 3) {
-                        System.out.printf("\n");
-                    }
+            if (verbose && config.getVerbosity() > 0) {
+                System.out.print("Trying to find super modules... ");
+                if (config.getVerbosity() >= 3) {
+                    System.out.printf("%n");
                 }
             }
 
@@ -352,14 +350,14 @@ public abstract class InfomapBase {
 
             // Break if trivial super structure.
             if (superInfomap.numNonTrivialTopModules == 1 || superInfomap.getNumTopModules() == getNumTopModules()) {
-                if (verbose && config.verbosity > 0) {
-                    System.out.printf("failed to find non-trivial super modules.\n");
+                if (verbose && config.getVerbosity() > 0) {
+                    System.out.printf("failed to find non-trivial super modules.%n");
                 }
 
                 break;
-            } else if (superInfomap.codelength > indexCodelength - config.minimumCodelengthImprovement) {
-                if (verbose && config.verbosity > 0) {
-                    System.out.printf("two-level index codebook not improved over one-level.\n");
+            } else if (superInfomap.codelength > indexCodelength - config.getMinimumCodelengthImprovement()) {
+                if (verbose && config.getVerbosity() > 0) {
+                    System.out.printf("two-level index codebook not improved over one-level.%n");
                 }
 
                 break;
@@ -368,10 +366,10 @@ public abstract class InfomapBase {
             minHierarchicalCodelength += superInfomap.codelength - indexCodelength;
 
             if (verbose) {
-                if (config.verbosity == 0) {
+                if (config.getVerbosity() == 0) {
                     System.out.printf("%d ", superInfomap.getNumTopModules());
                 } else {
-                    System.out.printf("succeeded. Found %d super modules with estimated hierarchical codelength %f.\n",
+                    System.out.printf("succeeded. Found %d super modules with estimated hierarchical codelength %f.%n",
                             superInfomap.getNumTopModules(), minHierarchicalCodelength);
                 }
             }
@@ -382,7 +380,7 @@ public abstract class InfomapBase {
 
             int i = 0;
             for (final NodeBase node : treeData.getLeaves()) {
-                node.index = i++;
+                node.setIndex(i++);
             }
 
             // Collect the super module indices on the leaf nodes.
@@ -390,9 +388,9 @@ public abstract class InfomapBase {
             final Iterator<NodeBase> superLeafIt = superTree.getLeaves().iterator();
             int leafIndex = 0;
             for (final NodeBase module : getRoot().getChildren()) {
-                final int superModuleIndex = superLeafIt.next().parent.index;
+                final int superModuleIndex = superLeafIt.next().getParent().getIndex();
                 for (final NodeBase node : module.getChildren()) {
-                    moveTo.set(node.index, superModuleIndex);
+                    moveTo.set(node.getIndex(), superModuleIndex);
                     leafIndex++;
                 }
             }
@@ -407,7 +405,7 @@ public abstract class InfomapBase {
             tryIndexing = numNonTrivialTopModules > 1 && getNumTopModules() != getNumLeafNodes();
         }
 
-        if (verbose && config.verbosity == 0) {
+        if (verbose && config.getVerbosity() == 0) {
             Logf.printf("super modules with estimated codelength %f.", minHierarchicalCodelength);
         }
 
@@ -422,11 +420,11 @@ public abstract class InfomapBase {
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
-            if (config.verbosity < 2) {
+            if (config.getVerbosity() < 2) {
                 Logf.printf("Index module compression: ");
             } else {
                 Logf.printf("Trying to find fast hierarchy... ");
-                if (config.verbosity > 1) {
+                if (config.getVerbosity() > 1) {
                     Logf.printf("\n");
                 }
             }
@@ -435,7 +433,7 @@ public abstract class InfomapBase {
         int networkLevel = 0;
         int numLevelsCreated = 0;
 
-        boolean isLeafLevel = treeData.getFirstLeaf().parent.equals(getRoot());
+        boolean isLeafLevel = treeData.getFirstLeaf().getParent().equals(getRoot());
         String nodesLabel = isLeafLevel ? "nodes" : "modules";
 
         // Add index codebooks as long as the code gets shorter
@@ -453,13 +451,13 @@ public abstract class InfomapBase {
             initConstantInfomapTerms();
             initModuleOptimization();
 
-            if (verbose && config.verbosity > 1) {
+            if (verbose && config.getVerbosity() > 1) {
                 Logf.printf("Level %d, moving %d %s... ", ++networkLevel, activeNetwork.size(), nodesLabel);
             }
 
             final int numOptimizationLoops = optimizeModules();
 
-            boolean acceptSolution = codelength < oldIndexLength - config.minimumCodelengthImprovement;
+            boolean acceptSolution = codelength < oldIndexLength - config.getMinimumCodelengthImprovement();
 
             // Force at least one modular level!
             final boolean acceptByForce = !acceptSolution && numLevelsCreated == 0;
@@ -470,7 +468,7 @@ public abstract class InfomapBase {
             workingHierarchicalCodelength += codelength - oldIndexLength;
 
             if (verbose) {
-                if (config.verbosity < 2) {
+                if (config.getVerbosity() < 2) {
                     if (acceptSolution) {
                         Logf.printf("%.2f%% ",
                                 ((hierarchicalCodelength - workingHierarchicalCodelength) / hierarchicalCodelength * 100));
@@ -496,10 +494,10 @@ public abstract class InfomapBase {
 
             // Store the individual codelengths on each module.
             for (final NodeBase module : getRoot().getChildren()) {
-                module.codelength = calcCodelengthFromFlowWithinOrExit(module);
+                module.setCodelength(calcCodelengthFromFlowWithinOrExit(module));
             }
 
-            if (isLeafLevel && config.fastHierarchicalSolution > 1) {
+            if (isLeafLevel && config.getFastHierarchicalSolution() > 1) {
                 queueTopModules(partitionQueue);
             }
 
@@ -510,7 +508,7 @@ public abstract class InfomapBase {
         } while (numNonTrivialTopModules != 1);
 
         if (verbose) {
-            if (config.verbosity == 0) {
+            if (config.getVerbosity() == 0) {
                 Logf.printf("to codelength %f in %d top modules. ", hierarchicalCodelength, getNumTopModules());
             } else {
                 Logf.printf("done! Added %d levels with %d top modules to codelength: %f ",
@@ -524,8 +522,8 @@ public abstract class InfomapBase {
     private int deleteSubLevels() {
         NodeBase node = treeData.getFirstLeaf();
         int numLevels = 0;
-        while (node.parent != null) {
-            node = node.parent;
+        while (node.getParent() != null) {
+            node = node.getParent();
             ++numLevels;
         }
 
@@ -533,7 +531,7 @@ public abstract class InfomapBase {
             return 0;
         }
 
-        if (subLevel == 0 && config.verbosity > 0) {
+        if (subLevel == 0 && config.getVerbosity() > 0) {
             Logf.printf("Clearing %d levels of sub-modules", numLevels - 1);
         }
 
@@ -552,14 +550,14 @@ public abstract class InfomapBase {
         resetModuleFlowFromLeafNodes();
         double sumModuleLength = 0;
         for (final NodeBase module : getRoot().getChildren()) {
-            module.codelength = calcCodelengthFromFlowWithinOrExit(module);
-            sumModuleLength += module.codelength;
+            module.setCodelength(calcCodelengthFromFlowWithinOrExit(module));
+            sumModuleLength += module.getCodelength();
         }
         moduleCodelength = sumModuleLength;
         hierarchicalCodelength = codelength = indexCodelength + moduleCodelength;
 
         if (subLevel == 0) {
-            if (config.verbosity == 0) {
+            if (config.getVerbosity() == 0) {
                 Logf.printf("Clearing sub-modules to codelength %d\n", codelength);
             } else {
                 Logf.printf("done! Two-level codelength %f + %f = %f in %d modules.\n",
@@ -589,17 +587,17 @@ public abstract class InfomapBase {
             final NodeBase module = queue.get(moduleIndex);
 
             // Delete former sub-structure if exists.
-            module.getSubStructure().subInfomap = null;
-            module.codelength = calcCodelengthFromFlowWithinOrExit(module);
+            module.getSubStructure().setSubInfomap(null);
+            module.setCodelength(calcCodelengthFromFlowWithinOrExit(module));
 
             // If only trivial substructure is to be found, no need to create infomap instance to find sub-module structures.
             if (module.getChildDegree() <= 2) {
-                leafCodelengths[moduleIndex] = module.codelength;
+                leafCodelengths[moduleIndex] = module.getCodelength();
                 continue;
             }
 
             final PartitionQueue subQueue = subQueues[moduleIndex];
-            subQueue.level = queue.level + 1;
+            subQueue.setLevel(queue.getLevel() + 1);
 
             final InfomapBase subInfomap = getNewInfomapInstance(config, rg);
             subInfomap.subLevel = subLevel + 1;
@@ -612,16 +610,16 @@ public abstract class InfomapBase {
             final boolean nonTrivialSubstructure = subInfomap.getNumTopModules() > 1
                     && subInfomap.getNumTopModules() < subInfomap.getNumLeafNodes();
             final boolean improvement = nonTrivialSubstructure
-                    && (subInfomap.hierarchicalCodelength < module.codelength - config.minimumCodelengthImprovement);
+                    && (subInfomap.hierarchicalCodelength < module.getCodelength() - config.getMinimumCodelengthImprovement());
 
             if (improvement) {
                 indexCodelengths[moduleIndex] = subInfomap.indexCodelength;
                 moduleCodelengths[moduleIndex] = subInfomap.moduleCodelength;
-                module.getSubStructure().subInfomap = subInfomap;
+                module.getSubStructure().setSubInfomap(subInfomap);
             } else {
-                leafCodelengths[moduleIndex] = module.codelength;
-                module.getSubStructure().exploredWithoutImprovement = true;
-                subQueue.skip = true;
+                leafCodelengths[moduleIndex] = module.getCodelength();
+                module.getSubStructure().setExploredWithoutImprovement(true);
+                subQueue.setSkip(true);
                 // Else use the codelength from the flat substructure
             }
         }
@@ -632,30 +630,31 @@ public abstract class InfomapBase {
 
         int nextLevelSize = 0;
         for (int moduleIndex = 0; moduleIndex < numModules; moduleIndex++) {
-            nextLevelSize += subQueues[moduleIndex].skip ? 0 : subQueues[moduleIndex].size();
+            nextLevelSize += subQueues[moduleIndex].isSkip() ? 0 : subQueues[moduleIndex].size();
             sumLeafCodelength += leafCodelengths[moduleIndex];
             sumIndexCodelength += indexCodelengths[moduleIndex];
             sumModuleCodelengths += moduleCodelengths[moduleIndex];
         }
 
-        queue.indexCodelength = sumIndexCodelength;
-        queue.leafCodelength = sumLeafCodelength;
-        queue.moduleCodelength = sumModuleCodelengths;
+        queue.setIndexCodelength(sumIndexCodelength);
+        queue.setLeafCodelength(sumLeafCodelength);
+        queue.setModuleCodelength(sumModuleCodelengths);
 
         // Collect the sub-queues and build the next-level queue.
-        nextLevelQueue.level = queue.level + 1;
+        nextLevelQueue.setLevel(queue.getLevel() + 1);
         nextLevelQueue.resize(nextLevelSize);
         int nextLevelIndex = 0;
         for (int moduleIndex = 0; moduleIndex < numModules; moduleIndex++) {
             final PartitionQueue subQueue = subQueues[moduleIndex];
-            if (!subQueue.skip) {
+            if (!subQueue.isSkip()) {
                 for (int subIndex = 0; subIndex < subQueue.size(); ++subIndex) {
                     nextLevelQueue.set(nextLevelIndex++, subQueue.get(subIndex));
                 }
 
-                nextLevelQueue.flow += subQueue.flow;
-                nextLevelQueue.nonTrivialFlow += subQueue.nonTrivialFlow;
-                nextLevelQueue.numNonTrivialModules += subQueue.numNonTrivialModules;
+                nextLevelQueue.setFlow(nextLevelQueue.getFlow() + subQueue.getFlow());
+                nextLevelQueue.setNonTrivialFlow(nextLevelQueue.getNonTrivialFlow() + subQueue.getNonTrivialFlow());
+                nextLevelQueue.setNumNonTrivialModules(
+                        nextLevelQueue.getNumNonTrivialModules() + subQueue.getNumNonTrivialModules());
             }
         }
 
@@ -672,13 +671,13 @@ public abstract class InfomapBase {
 
     private void partition(final int recursiveCount, final boolean fast, final boolean forceConsolidation) {
         if (DEBUG) {
-            System.out.printf("%s.partition(%d,%s,%s)\n", getClass().getSimpleName(), recursiveCount, fast, forceConsolidation);
+            System.out.printf("%s.partition(%d,%s,%s)%n", getClass().getSimpleName(), recursiveCount, fast, forceConsolidation);
         }
 
-        final boolean verbose = (subLevel == 0 && config.verbosity != 0) || (isSuperLevelOnTopLevel() && config.verbosity == 2);
+        final boolean verbose = (subLevel == 0 && config.getVerbosity() != 0) || (isSuperLevelOnTopLevel() && config.getVerbosity() == 2);
 //        verbose = subLevel==0;
-        if (treeData.getFirstLeaf().parent != getRoot()) {
-            System.out.printf("Already partitioned with codelength %d in %d modules.\n", codelength, getNumTopModules());
+        if (treeData.getFirstLeaf().getParent() != getRoot()) {
+            System.out.printf("Already partitioned with codelength %d in %d modules.%n", codelength, getNumTopModules());
 
             return;
         }
@@ -689,11 +688,11 @@ public abstract class InfomapBase {
         initModuleOptimization();
 
         if (verbose) {
-            if (config.verbosity == 0) {
-                System.out.printf("Two-level compression: ");
+            if (config.getVerbosity() == 0) {
+                System.out.print("Two-level compression: ");
             } else {
-                System.out.printf("\nTrying to find modular structure... \n");
-                System.out.printf("Initiated to codelength %f + %f = %f in %d modules.\n",
+                System.out.printf("%nTrying to find modular structure... %n");
+                System.out.printf("Initiated to codelength %f + %f = %f in %d modules.%n",
                         indexCodelength, moduleCodelength, codelength, getNumTopModules());
             }
         }
@@ -703,47 +702,47 @@ public abstract class InfomapBase {
         mergeAndConsolidateRepeatedly(forceConsolidation, fast);
 
         if (DEBUG) {
-            System.out.printf("[codelength, initialCodelength = %f,%f]\n", codelength, initialCodelength);
+            System.out.printf("[codelength, initialCodelength = %f,%f]%n", codelength, initialCodelength);
         }
 
         if (codelength > initialCodelength) {
-            System.out.printf("*");
+            System.out.print("*");
         }
 
         double oldCodelength = oneLevelCodelength;
         double compression = (oldCodelength - codelength) / oldCodelength;
-        if (verbose && config.verbosity == 0) {
+        if (verbose && config.getVerbosity() == 0) {
             System.out.printf("%.4f%% ", compression * 100);
         }
 
-        if (!fast && config.tuneIterationLimit != 1 && getNumTopModules() != getNumLeafNodes()) {
+        if (!fast && config.getTuneIterationLimit() != 1 && getNumTopModules() != getNumLeafNodes()) {
             int tuneIterationCount = 1;
-            int coarseTuneLevel = config.coarseTuneLevel - 1;
+            int coarseTuneLevel = config.getCoarseTuneLevel() - 1;
             boolean doFineTune = true;
             oldCodelength = codelength;
             while (getNumTopModules() > 1) {
                 if (doFineTune) {
                     fineTune();
-                    if (codelength > oldCodelength - initialCodelength * config.minimumRelativeTuneIterationImprovement
-                            || codelength > oldCodelength - config.minimumCodelengthImprovement) {
+                    if (codelength > oldCodelength - initialCodelength * config.getMinimumRelativeTuneIterationImprovement()
+                            || codelength > oldCodelength - config.getMinimumCodelengthImprovement()) {
                         break;
                     }
 
                     compression = (oldCodelength - codelength) / oldCodelength;
-                    if (verbose && config.verbosity == 0) {
+                    if (verbose && config.getVerbosity() == 0) {
                         System.out.printf("%.4f%% ", compression * 100);
                     }
 
                     oldCodelength = codelength;
                 } else {
-                    coarseTune(config.alternateCoarseTuneLevel ? (++coarseTuneLevel % config.coarseTuneLevel)
-                            : config.coarseTuneLevel - 1);
-                    if (codelength > oldCodelength - initialCodelength * config.minimumRelativeTuneIterationImprovement
-                            || codelength > oldCodelength - config.minimumCodelengthImprovement) {
+                    coarseTune(config.isAlternateCoarseTuneLevel() ? (++coarseTuneLevel % config.getCoarseTuneLevel())
+                            : config.getCoarseTuneLevel() - 1);
+                    if (codelength > oldCodelength - initialCodelength * config.getMinimumRelativeTuneIterationImprovement()
+                            || codelength > oldCodelength - config.getMinimumCodelengthImprovement()) {
                         break;
                     }
                     compression = (oldCodelength - codelength) / oldCodelength;
-                    if (verbose && config.verbosity == 0) {
+                    if (verbose && config.getVerbosity() == 0) {
                         System.out.printf("%.4f%% ", compression * 100);
                     }
 
@@ -751,7 +750,7 @@ public abstract class InfomapBase {
                 }
 
                 ++tuneIterationCount;
-                if (config.tuneIterationLimit == tuneIterationCount) {
+                if (config.getTuneIterationLimit() == tuneIterationCount) {
                     break;
                 }
 
@@ -760,11 +759,11 @@ public abstract class InfomapBase {
         }
 
         if (verbose) {
-            if (config.verbosity == 0) {
-                final String fmt = String.format("%s.%df", "%", config.verboseNumberPrecision);
-                System.out.printf("to %d modules with codelength " + fmt + "\n", getNumTopModules(), codelength);
+            if (config.getVerbosity() == 0) {
+                final String fmt = String.format("%s.%df", "%", config.getVerboseNumberPrecision());
+                System.out.printf("to %d modules with codelength " + fmt + "%n", getNumTopModules(), codelength);
             } else {
-                System.out.printf("Two-level codelength: %f + %f = %f\n", indexCodelength, moduleCodelength, codelength);
+                System.out.printf("Two-level codelength: %f + %f = %f%n", indexCodelength, moduleCodelength, codelength);
             }
         }
 
@@ -775,7 +774,7 @@ public abstract class InfomapBase {
             setActiveNetworkFromLeafs();
             int i = 0;
             for (final NodeBase leaf : treeData.getLeaves()) {
-                moveTo.set(i, leaf.index);
+                moveTo.set(i, leaf.getIndex());
                 assert moveTo.get(i) < activeNetwork.size();
                 i++;
             }
@@ -789,7 +788,8 @@ public abstract class InfomapBase {
             // Set module indices from a zero-based contiguous set.
             int packedModuleIndex = 0;
             for (final NodeBase module : getRoot().getChildren()) {
-                module.index = module.originalIndex = packedModuleIndex++;
+                module.setOriginalIndex(packedModuleIndex++);
+                module.setIndex(module.getOriginalIndex());
             }
         }
     }
@@ -804,12 +804,12 @@ public abstract class InfomapBase {
 
     private void mergeAndConsolidateRepeatedly(final boolean forceConsolidation, final boolean fast) {
         if (DEBUG) {
-            System.out.printf("%s.mergeAndConsolidateRepeatedly(%s,%s)\n", getClass().getSimpleName(), forceConsolidation, fast);
+            System.out.printf("%s.mergeAndConsolidateRepeatedly(%s,%s)%n", getClass().getSimpleName(), forceConsolidation, fast);
         }
 
         iterationCount++;
-        final boolean verbose = (subLevel == 0 && config.verbosity != 0)
-                || (isSuperLevelOnTopLevel() && config.verbosity >= 3);
+        final boolean verbose = (subLevel == 0 && config.getVerbosity() != 0)
+                || (isSuperLevelOnTopLevel() && config.getVerbosity() >= 3);
         // Merge and collapse repeatedly until no code improvement or only one big cluster left.
         if (verbose) {
             System.out.printf("Iteration %d, moving %d*", iterationCount, activeNetwork.size());
@@ -827,7 +827,7 @@ public abstract class InfomapBase {
         int numLevelsConsolidated = 1;
 
         // Reapply core algorithm on modular network, replacing modules with super modules.
-        while (getNumTopModules() > 1 && numLevelsConsolidated != config.levelAggregationLimit) {
+        while (getNumTopModules() > 1 && numLevelsConsolidated != config.getLevelAggregationLimit()) {
             double consolidatedCodelength = codelength;
             double consolidatedIndexLength = indexCodelength;
             double consolidatedModuleLength = moduleCodelength;
@@ -845,7 +845,7 @@ public abstract class InfomapBase {
             }
 
             // If no improvement, revert codelength terms to the actual structure.
-            if (!(codelength < consolidatedCodelength - config.minimumCodelengthImprovement)) {
+            if (codelength >= consolidatedCodelength - config.getMinimumCodelengthImprovement()) {
                 indexCodelength = consolidatedIndexLength;
                 moduleCodelength = consolidatedModuleLength;
                 codelength = consolidatedCodelength;
@@ -857,14 +857,15 @@ public abstract class InfomapBase {
         }
 
         if (verbose) {
-            System.out.printf("%s*loops to codelength %.6f in %d modules. (%d non-trivial modules)\n",
+            System.out.printf("%s*loops to codelength %.6f in %d modules. (%d non-trivial modules)%n",
                     isCoarseTune ? "modules" : "nodes", codelength, getNumTopModules(), numNonTrivialTopModules);
         }
 
         // Set module indices from a zero-based contiguous set.
         int packedModuleIndex = 0;
         for (final NodeBase module : getRoot().getChildren()) {
-            module.index = module.originalIndex = packedModuleIndex++;
+            module.setOriginalIndex(packedModuleIndex++);
+            module.setIndex(module.getOriginalIndex());
         }
     }
 
@@ -877,11 +878,11 @@ public abstract class InfomapBase {
         setActiveNetworkFromLeafs();
 
         // Init dynamic modules from existing modular structure.
-        assert activeNetwork.get(0).parent.parent.equals(getRoot());
+        assert activeNetwork.get(0).getParent().getParent().equals(getRoot());
 
         int i = 0;
         for (final NodeBase leaf : treeData.getLeaves()) {
-            moveTo.set(i, leaf.parent.index);
+            moveTo.set(i, leaf.getParent().getIndex());
             assert moveTo.get(i) < activeNetwork.size();
             i++;
         }
@@ -911,13 +912,13 @@ public abstract class InfomapBase {
         }
 
         isCoarseTune = true;
-        partitionEachModule(recursiveCount, config.fastCoarseTunePartition);
+        partitionEachModule(recursiveCount, config.isFastCoarseTunePartition());
 
         // Prepare leaf network to move into the sub-module structure given from partitioning each module.
         setActiveNetworkFromLeafs();
         int i = 0;
         for (final NodeBase leaf : treeData.getLeaves()) {
-            moveTo.set(i, leaf.index);
+            moveTo.set(i, leaf.getIndex());
             assert moveTo.get(i) < activeNetwork.size();
             i++;
         }
@@ -933,7 +934,7 @@ public abstract class InfomapBase {
         Resizer.resizeInteger(moveTo, activeNetwork.size(), 0);
         i = 0;
         for (final NodeBase subModule : getRoot().getChildren()) {
-            moveTo.set(i, subModule.index);
+            moveTo.set(i, subModule.getIndex());
             assert moveTo.get(i) < activeNetwork.size();
             i++;
         }
@@ -959,7 +960,7 @@ public abstract class InfomapBase {
             // If only one child in the module, no need to create infomap instance to find sub-module structures.
             if (module.getChildDegree() == 1) {
                 for (final NodeBase node : module.getChildren()) {
-                    node.index = moduleIndexOffset;
+                    node.setIndex(moduleIndexOffset);
                 }
 
                 moduleIndexOffset += 1;
@@ -967,7 +968,7 @@ public abstract class InfomapBase {
             }
 
             if (DEBUG) {
-                System.out.printf(">>>>>>>>>>>>>>>>>> RUN SUB_INFOMAP on node n%d with childDegree: %d >>>>>>>>>>>>\n", module.id, module.getChildDegree());
+                System.out.printf(">>>>>>>>>>>>>>>>>> RUN SUB_INFOMAP on node n%d with childDegree: %d >>>>>>>>>>>>\n", module.getId(), module.getChildDegree());
             }
 
             final InfomapBase subInfomap = getNewInfomapInstance(config, rg);
@@ -979,14 +980,14 @@ public abstract class InfomapBase {
             subInfomap.partition(recursiveCount, fast);
 
             if (DEBUG) {
-                System.out.printf("<<<<<<<<<<<<<<<<<<< BACK FROM SUB_INFOMAP!!!! <<<<<<<<<<<<<<<<<<<\n");
-                System.out.printf("Node n%d with %d leaf-nodes gave %d sub-clusters\n",
-                        module.id, subInfomap.treeData.getNumLeafNodes(), subInfomap.treeData.getRoot().getChildDegree());
+                System.out.printf("<<<<<<<<<<<<<<<<<<< BACK FROM SUB_INFOMAP!!!! <<<<<<<<<<<<<<<<<<<%n");
+                System.out.printf("Node n%d with %d leaf-nodes gave %d sub-clusters%n",
+                        module.getId(), subInfomap.treeData.getNumLeafNodes(), subInfomap.treeData.getRoot().getChildDegree());
             }
 
             final Iterator<NodeBase> originalLeafNodeIt = module.getChildren().iterator();
             for (final NodeBase node : subInfomap.treeData.getLeaves()) {
-                originalLeafNodeIt.next().index = node.parent.index + moduleIndexOffset;
+                originalLeafNodeIt.next().setIndex(node.getParent().getIndex() + moduleIndexOffset);
             }
 
             moduleIndexOffset += subInfomap.treeData.getRoot().getChildDegree();
@@ -995,7 +996,7 @@ public abstract class InfomapBase {
 
     private void initSubNetwork(final NodeBase parent, final boolean recalculateFlow) {
         if (DEBUG) {
-            System.out.printf("%s.initSubNetwork()\n", getClass().getSimpleName());
+            System.out.printf("%s.initSubNetwork()%n", getClass().getSimpleName());
         }
 
         cloneFlowData(parent, getRoot());
@@ -1005,7 +1006,7 @@ public abstract class InfomapBase {
 
     private void initSuperNetwork(final NodeBase parent) {
         if (DEBUG) {
-            System.out.printf("%s.initSuperNetwork()...\n", getClass().getSimpleName());
+            System.out.printf("%s.initSuperNetwork()...%n", getClass().getSimpleName());
         }
 
         generateNetworkFromChildren(parent);
@@ -1057,7 +1058,7 @@ public abstract class InfomapBase {
 
         final Connection[] connections = flowNetwork.getFlowConnections();
         for (final Connection c : connections) {
-            treeData.addEdge(c.source, c.target, c.weight, c.flow);
+            treeData.addEdge(c.getSource(), c.getTarget(), c.getWeight(), c.getFlow());
         }
 
         initEnterExitFlow();
@@ -1082,12 +1083,12 @@ public abstract class InfomapBase {
     }
 
     private void printNetworkData(String filename, final boolean sort) throws FileNotFoundException {
-        if (config.noFileOutput) {
+        if (config.isNoFileOutput()) {
             return;
         }
 
         if (filename.isEmpty()) {
-            final File f = new File(config.networkFile);
+            final File f = new File(config.getNetworkFile());
             final String name = f.getName();
             final int p = name.lastIndexOf('.');
             filename = p > 0 ? name.substring(0, p) : name;
@@ -1100,9 +1101,9 @@ public abstract class InfomapBase {
             sortTree();
         }
         // Print .tree.
-        if (config.printTree) {
-            final File outName = new File(config.outDirectory, filename + ".tree");
-            if (config.verbosity == 0) {
+        if (config.isPrintTree()) {
+            final File outName = new File(config.getOutDirectory(), filename + ".tree");
+            if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .tree file..");
             } else {
                 System.out.printf("Print hierarchical cluster data to %s... ", outName);
@@ -1115,17 +1116,17 @@ public abstract class InfomapBase {
                 printSubInfomapTree(out, treeData);
             }
 
-            if (config.verbosity == 0) {
+            if (config.getVerbosity() == 0) {
                 Logf.printf(") ");
             } else {
-                System.out.printf("done!\n");
+                System.out.printf("done!%n");
             }
         }
 
         // Print .clu.
-        if (config.printClu) {
-            final File outName = new File(config.outDirectory, filename + ".clu");
-            if (config.verbosity == 0) {
+        if (config.isPrintClu()) {
+            final File outName = new File(config.getOutDirectory(), filename + ".clu");
+            if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .clu file.. ) ");
             } else {
                 System.out.printf("Print cluster data to %s... ", outName);
@@ -1135,14 +1136,14 @@ public abstract class InfomapBase {
                 printClusterVector(out);
             }
 
-            if (config.verbosity > 0) {
-                System.out.printf("done!\n");
+            if (config.getVerbosity() > 0) {
+                System.out.printf("done!%n");
             }
         }
 
-        if (config.printNodeRanks) {
-            final File outName = new File(config.outDirectory, filename + ".rank");
-            if (config.verbosity > 0) {
+        if (config.isPrintNodeRanks()) {
+            final File outName = new File(config.getOutDirectory(), filename + ".rank");
+            if (config.getVerbosity() > 0) {
                 System.out.printf("Print node ranks to %s...", outName);
             }
 
@@ -1150,14 +1151,14 @@ public abstract class InfomapBase {
                 printNodeRanks(out);
             }
 
-            if (config.verbosity > 0) {
-                System.out.printf("done!\n");
+            if (config.getVerbosity() > 0) {
+                System.out.printf("done!%n");
             }
         }
 
-        if (config.printFlowNetwork) {
-            final File outName = new File(config.outDirectory, filename + ".flow");
-            if (config.verbosity == 0) {
+        if (config.isPrintFlowNetwork()) {
+            final File outName = new File(config.getOutDirectory(), filename + ".flow");
+            if (config.getVerbosity() == 0) {
                 Logf.printf("(Writing .flow file.. ", outName);
             } else {
                 System.out.printf("Print flow network to %s... ", outName);
@@ -1167,10 +1168,10 @@ public abstract class InfomapBase {
                 printFlowNetwork(out);
             }
 
-            if (config.verbosity == 0) {
+            if (config.getVerbosity() == 0) {
                 Logf.printf(") ");
             } else {
-                System.out.printf("done!\n");
+                System.out.printf("done!%n");
             }
         }
     }
@@ -1179,8 +1180,8 @@ public abstract class InfomapBase {
         out.printf("*Vertices %d\n", treeData.getNumLeafNodes());
         int i = 0;
         for (final NodeBase node : treeData.getLeaves()) {
-            final int index = node.parent.index;
-            out.printf("%d %d %d\n", i++, node.originalIndex, index + 1);
+            final int index = node.getParent().getIndex();
+            out.printf("%d %d %d\n", i++, node.getOriginalIndex(), index + 1);
         }
     }
 
@@ -1194,7 +1195,7 @@ public abstract class InfomapBase {
         final int[] clusters = new int[treeData.getNumLeafNodes()];
         int i = 0;
         for (final NodeBase node : treeData.getLeaves()) {
-            final int index = node.parent.index;
+            final int index = node.getParent().getIndex();
             clusters[i++] = index;
         }
 
@@ -1216,7 +1217,7 @@ public abstract class InfomapBase {
             if (module.getSubInfomap() == null) {
                 int nodeIndex = 0;
                 for (final NodeBase child : module.getChildren()) {
-                    out.printf("%s%d %s (%d)\n", subPrefix, nodeIndex, originalData.getLeafNode(child.originalIndex), child.originalIndex);
+                    out.printf("%s%d %s (%d)\n", subPrefix, nodeIndex, originalData.getLeafNode(child.getOriginalIndex()), child.getOriginalIndex());
 
                     nodeIndex++;
                 }
@@ -1270,7 +1271,7 @@ public abstract class InfomapBase {
         for (int i = 0; i < numLevels; ++i) {
             sumIndexLengths += indexLengths.get(i);
         }
-        buf.append(String.format(" (sum: %.9f)\n", sumIndexLengths));
+        buf.append(String.format(" (sum: %.9f)%n", sumIndexLengths));
 
         buf.append("Per level codelength for leaf nodes: [");
         for (int i = 0; i < numLevels - 1; ++i) {
@@ -1282,7 +1283,7 @@ public abstract class InfomapBase {
         for (int i = 0; i < numLevels; ++i) {
             sumLeafLengths += leafLengths.get(i);
         }
-        buf.append(String.format(" (sum: %.9f)\n", sumLeafLengths));
+        buf.append(String.format(" (sum: %.9f)%n", sumLeafLengths));
 
         final double[] codelengths = new double[leafLengths.size()];
         for (int i = 0; i < codelengths.length; i++) {
@@ -1301,7 +1302,7 @@ public abstract class InfomapBase {
         for (int i = 0; i < numLevels; ++i) {
             sumCodelengths += codelengths[i];
         }
-        buf.append(String.format(" (sum: %.9f)\n", sumCodelengths));
+        buf.append(String.format(" (sum: %.9f)%n", sumCodelengths));
     }
 
     private void aggregatePerLevelCodelength(final ArrayList<Double> indexLengths,
@@ -1322,14 +1323,14 @@ public abstract class InfomapBase {
         if (leafLengths.size() < level + 2) {
             Resizer.resizeDouble(leafLengths, level + 2, 0);
         }
-        indexLengths.set(level, indexLengths.get(level) + (parent.isRoot() ? indexCodelength : parent.codelength));
+        indexLengths.set(level, indexLengths.get(level) + (parent.isRoot() ? indexCodelength : parent.getCodelength()));
 
         for (final NodeBase module : parent.getChildren()) {
             if (module.getSubInfomap() != null) {
                 module.getSubInfomap().aggregatePerLevelCodelength(indexLengths, leafLengths, level + 1);
             } else if (!module.isLeaf()) {
-                if (module.firstChild.isLeaf()) {
-                    leafLengths.set(level + 1, leafLengths.get(level + 1) + module.codelength);
+                if (module.getFirstChild().isLeaf()) {
+                    leafLengths.set(level + 1, leafLengths.get(level + 1) + module.getCodelength());
 
                     final String f = leafLengths.get(level) == 0 ? "0" : String.format("%.6f", leafLengths.get(level));
                 } else {

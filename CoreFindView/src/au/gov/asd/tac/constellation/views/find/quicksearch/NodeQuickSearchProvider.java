@@ -64,6 +64,7 @@ public class NodeQuickSearchProvider implements SearchProvider {
                 future.get();
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }

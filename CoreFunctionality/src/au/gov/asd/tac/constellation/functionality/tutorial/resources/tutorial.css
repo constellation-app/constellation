@@ -109,7 +109,7 @@ that aren't */
  ******************************************************************************/
 
 .tooltip {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TooltipSkin";
+    -fx-skin: "javafx.scene.control.skin.TooltipSkin";
     -fx-background-color: /* #cd853f */
         linear-gradient(to bottom, derive(rgba(205,133,63,0.65),100%), derive(rgba(205,133,63,0.65),0%) 5%, derive(rgba(205,133,63,0.65),-25%) 95%, derive(rgba(205,133,63,0.64),50%) 100%);
     -fx-background-insets: 0,1,2;
@@ -150,7 +150,7 @@ that aren't */
  ******************************************************************************/
 
 .context-menu {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-skin: "javafx.scene.control.skin.ContextMenuSkin";
     -fx-background-color:
         derive(-fx-color,-40%),
         derive(-fx-color,25%),

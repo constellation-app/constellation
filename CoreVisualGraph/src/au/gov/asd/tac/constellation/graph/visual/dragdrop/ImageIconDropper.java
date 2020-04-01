@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.graph.visual.dragdrop;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -42,6 +42,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -55,12 +57,15 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class, position = 10000)
 public class ImageIconDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(ImageIconDropper.class.getName());
 
     private static final DataFlavor IMAGE_FLAVOR;
     private static final DataFlavor IMAGE_FILE_FLAVOR;
 
     static {
-        DataFlavor imageFlavor = null, imageFileFlavor = null;
+        DataFlavor imageFlavor = null;
+        DataFlavor imageFileFlavor = null;
         try {
             imageFlavor = new DataFlavor("image/x-java-image;class=java.awt.Image");
             imageFileFlavor = new DataFlavor("application/x-java-file-list;class=java.util.List");
@@ -127,7 +132,7 @@ public class ImageIconDropper implements GraphDropper {
                 };
             }
         } catch (UnsupportedFlavorException | IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return null;
@@ -153,7 +158,7 @@ public class ImageIconDropper implements GraphDropper {
             return iconName;
 
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }
     }

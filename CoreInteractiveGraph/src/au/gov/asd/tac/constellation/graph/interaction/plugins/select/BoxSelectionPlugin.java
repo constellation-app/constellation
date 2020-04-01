@@ -20,13 +20,13 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.operations.SetBooleanValuesOperation;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -43,7 +43,8 @@ import org.openide.util.NbBundle.Messages;
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {"SELECTION"})
 public final class BoxSelectionPlugin extends SimpleEditPlugin {
 
-    private final boolean isAdd, isToggle;
+    private final boolean isAdd;
+    private final boolean isToggle;
     private final Camera camera;
     private final float[] box; // left, right, top, bottom in camera coordinates
 
@@ -448,10 +449,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         }
 
         x = (maxY - y1) / m + x1;
-        if (x > minX && x < maxX) {
-            return true;
-        }
 
-        return false;
+        return x > minX && x < maxX;
     }
 }

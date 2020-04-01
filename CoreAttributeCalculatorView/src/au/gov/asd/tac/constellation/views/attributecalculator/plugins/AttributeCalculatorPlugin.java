@@ -15,9 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.plugins;
 
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.CalculatorContextManager;
-import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -28,7 +25,9 @@ import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.io.FileNotFoundException;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorUtilities;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.AbstractCalculatorValue;
+import au.gov.asd.tac.constellation.views.attributecalculator.utilities.CalculatorContextManager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -36,7 +35,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -116,14 +114,12 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             InputStream f = AttributeCalculatorPlugin.class.getResource("resources/obliterator.py").openStream();
             LOGGER.log(Level.INFO, "input stream={0}", f);
             r = new InputStreamReader(f, StandardCharsets.UTF_8.name());
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
         } catch (IOException ex) {
-            ex.printStackTrace();
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         ((Compilable) engine).compile(r).eval();
 
-        AbstractCalculatorValue.the_obliterator = ((PyObject) ((Compilable) engine).compile("Obliterator()").eval());
+        AbstractCalculatorValue.setTheObliterator(((PyObject) ((Compilable) engine).compile("Obliterator()").eval()));
 
     }
 
@@ -174,7 +170,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
                     if (functionWrapperScript != null) {
                         result = functionWrapperScript.eval();
                     }
-                    if (result == AbstractCalculatorValue.the_obliterator) {
+                    if (result == AbstractCalculatorValue.getTheObliterator()) {
                         result = null;
                     }
                     editedAttributeValues.put(elementId, result);
@@ -183,17 +179,17 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             }
 
             // Edit the actual attribute values for the desired attribute
-            for (int id : editedAttributeValues.keySet()) {
-                graph.setObjectValue(editAttributeId, id, editedAttributeValues.get(id));
+            for (final Map.Entry<Integer, Object> entry : editedAttributeValues.entrySet()) {
+                graph.setObjectValue(editAttributeId, entry.getKey(), entry.getValue());
                 if (!completeWithSchema) {
                     // do nothing
                 } else if (elementType == GraphElementType.VERTEX) {
                     if (graph.getSchema() != null) {
-                        graph.getSchema().completeVertex(graph, id);
+                        graph.getSchema().completeVertex(graph, entry.getKey());
                     }
                 } else {
                     if (graph.getSchema() != null) {
-                        graph.getSchema().completeTransaction(graph, id);
+                        graph.getSchema().completeTransaction(graph, entry.getKey());
                     }
                 }
             }
@@ -281,12 +277,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
 //        final String[] prefixes = elementType == GraphElementType.VERTEX ? vertexPrefixes : transactionPrefixes;
 
         // Form a sorted set of attribute names, with longer strings occuring first. This prevents attribute names which are substrings of other attribute names from matching when the attribute with a larger name should match first
-        SortedSet<String> attributeNames = new TreeSet<>(new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.length() == o2.length() ? o1.compareTo(o2) : Integer.compare(o2.length(), o1.length());
-            }
-        });
+        SortedSet<String> attributeNames = new TreeSet<>((o1, o2) -> o1.length() == o2.length() ? o1.compareTo(o2) : Integer.compare(o2.length(), o1.length()));
         // Describes whether attribute names represent attributes for vertices, transactions, or both (eg. selected)
         Map<String, GraphElementType> attributeNameElementTypes = new HashMap<>();
 //        for (int i = 0; i < attributeCount; i++) {
@@ -377,7 +368,10 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     public static boolean insidePythonString(String s, int position) {
 
         // Split up the components of the graph labels and decorators string by toSplitOn, checking for escaped toSplitOns in attribute names.
-        boolean insideSingle = false, insideDouble = false, insideThreeSingle = false, insideThreeDouble = false;
+        boolean insideSingle = false;
+        boolean insideDouble = false;
+        boolean insideThreeSingle = false;
+        boolean insideThreeDouble = false;
         int currentPos = 0;
         int currentNumSlashes = 0;
         while (currentPos <= position) {
@@ -412,7 +406,9 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     }
 
     private static int findNextPythonArgumentStart(String s, int startPosition) {
-        int braceCount = 0, parenCount = 0, bracketCount = 0;
+        int braceCount = 0;
+        int parenCount = 0;
+        int bracketCount = 0;
         int position = startPosition;
         while (position < s.length() && parenCount >= 0) {
             if (!insidePythonString(s, position)) {

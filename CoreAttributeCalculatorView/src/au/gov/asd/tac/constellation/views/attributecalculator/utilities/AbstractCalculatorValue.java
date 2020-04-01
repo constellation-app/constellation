@@ -28,12 +28,20 @@ public abstract class AbstractCalculatorValue {
     protected static final Object INVALID_IN_NODE_CONTEXT = new Object();
     protected static final Object INVALID_IN_TRANSACTION_CONTEXT = new Object();
 
-    public static PyObject the_obliterator;
+    private static PyObject the_obliterator;
 
     protected Object val;
 
     public abstract void updateValue(final GraphReadMethods graph, final GraphElementType elementType, final int elementId);
 
+    public static PyObject getTheObliterator() {
+        return the_obliterator;
+    }
+
+    public static void setTheObliterator(PyObject the_obliterator) {
+        AbstractCalculatorValue.the_obliterator = the_obliterator;
+    }
+    
     public static Object convertNullsToObliterator(Object arg) {
         if (AbstractCalculatorUtilities.nullCheck(arg)) {
             return the_obliterator;

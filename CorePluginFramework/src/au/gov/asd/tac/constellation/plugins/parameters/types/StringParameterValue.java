@@ -99,7 +99,7 @@ public class StringParameterValue extends ParameterValue {
 
     @Override
     public boolean equals(final Object o) {
-        return o != null && o instanceof StringParameterValue && Objects.equals(s, ((StringParameterValue) o).s);
+        return o instanceof StringParameterValue && Objects.equals(s, ((StringParameterValue) o).s);
     }
 
     @Override

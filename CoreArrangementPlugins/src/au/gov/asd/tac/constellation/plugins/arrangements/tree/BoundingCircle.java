@@ -24,9 +24,9 @@ import java.util.List;
  */
 public class BoundingCircle {
 
-    public double x;
-    public double y;
-    public double radius;
+    private double x;
+    private double y;
+    private double radius;
 
     public BoundingCircle() {
         this(0, 0, 0);
@@ -38,6 +38,30 @@ public class BoundingCircle {
         this.radius = radius;
     }
 
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getRadius() {
+        return radius;
+    }
+
+    public void setRadius(double radius) {
+        this.radius = radius;
+    }
+    
     public static BoundingCircle enclosingCircle(final List<BoundingCircle> circles) {
         final BBoxf box = new BBoxf();
         for (final BoundingCircle c : circles) {
@@ -54,9 +78,7 @@ public class BoundingCircle {
         final float maxy = max[BBoxf.Y];
         final float radius = Math.max((maxx - minx) / 2, (maxy - miny) / 2);
 
-        final BoundingCircle enclosing = new BoundingCircle(centre[BBoxf.X], centre[BBoxf.Y], radius);
-
-        return enclosing;
+        return new BoundingCircle(centre[BBoxf.X], centre[BBoxf.Y], radius);
     }
 
     @Override

@@ -200,10 +200,8 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
                 int originalTransaction = original.getTransaction(position);
 
                 if (!copyAll) {
-                    if (transactionSelected != Graph.NOT_FOUND) {
-                        if (!original.getBooleanValue(transactionSelected, originalTransaction)) {
-                            continue;
-                        }
+                    if (transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalTransaction)) {
+                        continue;
                     }
                     if (vertexSelected != Graph.NOT_FOUND) {
                         if (!original.getBooleanValue(vertexSelected, original.getTransactionSourceVertex(originalTransaction))) {

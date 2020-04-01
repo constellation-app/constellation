@@ -44,13 +44,21 @@ class PQNodeList implements Iterable<PQNode> {
 
     private ListItem first;
     private ListItem last;
-    public int size;
+    private int size;
 
     public PQNodeList() {
         first = last = null;
         size = 0;
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+    
     private void link(ListItem left, ListItem right) {
         if (left != null) {
             left.next = right;
@@ -214,7 +222,9 @@ class PQNodeList implements Iterable<PQNode> {
         public void testAdd() {
 
             PQNodeList list = new PQNodeList();
-            ListItem first, second, third;
+            ListItem first;
+            ListItem second;
+            ListItem third;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();
@@ -270,7 +280,9 @@ class PQNodeList implements Iterable<PQNode> {
         public void testRemove() {
 
             PQNodeList list = new PQNodeList();
-            ListItem first, second, third;
+            ListItem first;
+            ListItem second;
+            ListItem third;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();
@@ -345,7 +357,9 @@ class PQNodeList implements Iterable<PQNode> {
         public void testReplace() {
 
             PQNodeList list = new PQNodeList();
-            ListItem first, second, third;
+            ListItem first;
+            ListItem second;
+            ListItem third;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();
@@ -413,7 +427,9 @@ class PQNodeList implements Iterable<PQNode> {
         public void testReverse() {
 
             PQNodeList list = new PQNodeList();
-            ListItem first, second, third;
+            ListItem first;
+            ListItem second;
+            ListItem third;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();
@@ -477,7 +493,10 @@ class PQNodeList implements Iterable<PQNode> {
             PQNodeList list = new PQNodeList();
             PQNodeList list2 = new PQNodeList();
             PQNodeList empty = new PQNodeList();
-            ListItem first, second, third, fourth;
+            ListItem first;
+            ListItem second;
+            ListItem third;
+            ListItem fourth;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();
@@ -541,7 +560,12 @@ class PQNodeList implements Iterable<PQNode> {
         public void testFlatten() {
 
             PQNodeList list = new PQNodeList();
-            ListItem first, second, third, fourth, fifth, sixth;
+            ListItem first;
+            ListItem second;
+            ListItem third;
+            ListItem fourth;
+            ListItem fifth;
+            ListItem sixth;
             PQNode node1 = makeNode();
             PQNode node2 = makeNode();
             PQNode node3 = makeNode();

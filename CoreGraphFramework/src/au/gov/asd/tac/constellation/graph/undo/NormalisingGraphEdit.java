@@ -64,8 +64,8 @@ public class NormalisingGraphEdit implements GraphEdit {
         Vertex newVertex = new Vertex(vertex);
         Vertex currentVertex = vertices.put(vertex, newVertex);
         if (currentVertex != null) {
-            newVertex.previous = currentVertex;
-            newVertex.version = currentVertex.version + 1;
+            newVertex.setPrevious(currentVertex);
+            newVertex.setVersion(currentVertex.getVersion() + 1);
         }
     }
 
@@ -76,7 +76,7 @@ public class NormalisingGraphEdit implements GraphEdit {
             currentVertex = new Vertex(vertex);
             vertices.put(vertex, currentVertex);
         }
-        currentVertex.deleted = true;
+        currentVertex.setDeleted(true);
     }
 
     @Override
@@ -101,8 +101,8 @@ public class NormalisingGraphEdit implements GraphEdit {
 
         Transaction currentTransaction = transactions.put(transaction, newTransaction);
         if (currentTransaction != null) {
-            newTransaction.previous = currentTransaction;
-            newTransaction.version = currentTransaction.version + 1;
+            newTransaction.setPrevious(currentTransaction);
+            newTransaction.setVersion(currentTransaction.getVersion() + 1);
         }
     }
 
@@ -131,7 +131,7 @@ public class NormalisingGraphEdit implements GraphEdit {
             transactions.put(transaction, currentTransaction);
         }
 
-        currentTransaction.deleted = true;
+        currentTransaction.setDeleted(true);
     }
 
     @Override
@@ -240,12 +240,36 @@ public class NormalisingGraphEdit implements GraphEdit {
     private class Element<E> {
 
         public final int id;
-        public boolean deleted = false;
-        public int version;
-        public E previous = null;
+        private boolean deleted = false;
+        private int version;
+        private E previous = null;
 
         public Element(int id) {
             this.id = id;
+        }
+
+        public boolean isDeleted() {
+            return deleted;
+        }
+
+        public void setDeleted(boolean deleted) {
+            this.deleted = deleted;
+        }
+
+        public int getVersion() {
+            return version;
+        }
+
+        public void setVersion(int version) {
+            this.version = version;
+        }
+
+        public E getPrevious() {
+            return previous;
+        }
+
+        public void setPrevious(E previous) {
+            this.previous = previous;
         }
     }
 
@@ -260,8 +284,12 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     private class Transaction extends Element<Transaction> {
 
-        public Vertex newSource, oldSource, newDestination, oldDestination;
-        public boolean directed;
+        //TODO: Determine whether unused fields are needed
+        private Vertex newSource;
+        private Vertex oldSource;
+        private Vertex newDestination;
+        private Vertex oldDestination;
+        private boolean directed;
 
         public Transaction(int id) {
             super(id);

@@ -28,12 +28,12 @@ import java.util.Set;
  */
 class PQTree {
 
-    public PQNode root;
-    public PQNode pertinentRoot;
-    public int currentNumber;
-    public Set<PQNode>[] leaves;
-    public PQNode directionIndicatorLocation = null;
-    public int numPertinentLeaves;
+    private PQNode root;
+    private PQNode pertinentRoot;
+    private int currentNumber;
+    private Set<PQNode>[] leaves;
+    private PQNode directionIndicatorLocation = null;
+    private int numPertinentLeaves;
 
     public void addLeaves(final PQNode toNode, final List<Integer> childNums) {
         for (int i : childNums) {
@@ -52,6 +52,14 @@ class PQTree {
         }
     }
 
+    public PQNode getRoot() {
+        return root;
+    }
+
+    public void setRoot(PQNode root) {
+        this.root = root;
+    }
+    
     private Deque<PQNode> bubble() {
         final Deque<PQNode> nodesToProcess = new LinkedList<>();
         final Deque<PQNode> nodesToBubble = new LinkedList<>();
@@ -59,10 +67,10 @@ class PQTree {
 
         for (PQNode leaf : leaves[currentNumber - 1]) {
 //            if (leaf.virtualNum == currentNumber) {
-            leaf.pertinentLeafCount = 1;
-            if (leaf.parent != null) {
-                leaf.parent.pertinentChildCount += 1;
-                nodesToBubble.addLast(leaf.parent);
+            leaf.setPertinentLeafCount(1);
+            if (leaf.getParent() != null) {
+                leaf.getParent().setPertinentChildCount(leaf.getParent().getPertinentChildCount() + 1);
+                nodesToBubble.addLast(leaf.getParent());
             }
             nodesToProcess.addLast(leaf);
 //            }
@@ -77,9 +85,9 @@ class PQTree {
             }
             if (!bubbled.contains(toBubble)) {
                 bubbled.add(toBubble);
-                if (toBubble.parent != null) {
-                    toBubble.parent.pertinentChildCount += 1;
-                    nodesToBubble.addLast(toBubble.parent);
+                if (toBubble.getParent() != null) {
+                    toBubble.getParent().setPertinentChildCount(toBubble.getParent().getPertinentChildCount() + 1);
+                    nodesToBubble.addLast(toBubble.getParent());
                 } else {
                     offTheTop = true;
                 }
@@ -97,12 +105,13 @@ class PQTree {
         PQNode node = null;
         while (!nodesToProcess.isEmpty()) {
             node = nodesToProcess.removeFirst();
-            if (node.pertinentLeafCount < numPertinentLeaves) {
+            if (node.getPertinentLeafCount() < numPertinentLeaves) {
                 // node is not the root of the pertinent subtree
-                node.parent.pertinentLeafCount += node.pertinentLeafCount;
-                node.parent.pertinentChildCount -= 1;
-                if (node.parent.pertinentChildCount == 0) {
-                    nodesToProcess.addLast(node.parent);
+                node.getParent().setPertinentLeafCount(node.getParent().getPertinentLeafCount() 
+                        + node.getPertinentLeafCount());
+                node.getParent().setPertinentChildCount(node.getParent().getPertinentChildCount() - 1);
+                if (node.getParent().getPertinentChildCount() == 0) {
+                    nodesToProcess.addLast(node.getParent());
                 }
                 boolean matched
                         = templateL1(node)
@@ -123,22 +132,22 @@ class PQTree {
                         || templateQ3(node) /* ||
                          templateQ2(node)*/;
                 // As we are at the pertinent root we will not be processing anything above it and hence we need to reset the counts of its ancestors
-                PQNode ancestor = node.parent;
+                PQNode ancestor = node.getParent();
                 while (ancestor != null) {
-                    ancestor.pertinentChildCount = 0;
-                    ancestor.pertinentLeafCount = 0;
-                    ancestor = ancestor.parent;
+                    ancestor.setPertinentChildCount(0);
+                    ancestor.setPertinentLeafCount(0);
+                    ancestor = ancestor.getParent();
                 }
             }
             // reset the now processed node's count ready for the next pass.
-            node.pertinentLeafCount = 0;
+            node.setPertinentLeafCount(0);
         }
         pertinentRoot = node;
     }
 
     public void vertexAddition(List<Integer> virtualNodeNums) {
         PQNode nextPNode = new PQNode(NodeType.PNODE);
-        if (pertinentRoot.label.equals(NodeLabel.FULL)) {
+        if (pertinentRoot.getLabel().equals(NodeLabel.FULL)) {
             subtreeReplace(pertinentRoot, nextPNode);
         } else {
             addDirectionIndicator(pertinentRoot);
@@ -164,7 +173,7 @@ class PQTree {
         // If the last processed node matched P4 or P6, then it is no longer the pertinent root,
         // instead its single partial child is the pertinent root and full children of the last matched
         // node have been moved to this child.
-        if (!pertinentRoot.label.equals(NodeLabel.FULL) && pertinentRoot.labeledChildren.get(NodeLabel.FULL).isEmpty()) {
+        if (!pertinentRoot.getLabel().equals(NodeLabel.FULL) && pertinentRoot.labeledChildren.get(NodeLabel.FULL).isEmpty()) {
             pertinentRoot = pertinentRoot.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
         }
         List<Integer> pertinentFrontier = new LinkedList<>();
@@ -174,7 +183,7 @@ class PQTree {
 
     private void addDirectionIndicator(PQNode toNode) {
         DirectionIndicator indicator = new DirectionIndicator(currentNumber, false);
-        toNode.directionIndicator = indicator;
+        toNode.setDirectionIndicator(indicator);
         directionIndicatorLocation = toNode;
     }
 
@@ -184,10 +193,10 @@ class PQTree {
     public int readAndRemoveDirectionIndicator() {
         int listToReverse = -1;
         if (directionIndicatorLocation != null) {
-            DirectionIndicator indicator = directionIndicatorLocation.directionIndicator;
-            directionIndicatorLocation.directionIndicator = null;
-            if (indicator.reversed) {
-                listToReverse = indicator.number;
+            DirectionIndicator indicator = directionIndicatorLocation.getDirectionIndicator();
+            directionIndicatorLocation.setDirectionIndicator(null);
+            if (indicator.isReversed()) {
+                listToReverse = indicator.getNumber();
             }
         }
         directionIndicatorLocation = null;
@@ -203,15 +212,18 @@ class PQTree {
                 break;
             case QNODE:
                 for (PQNode child : node.children) {
-                    if (child.label.equals(NodeLabel.FULL)) {
+                    if (child.getLabel().equals(NodeLabel.FULL)) {
                         readPertinentFrontier(child, frontier);
                     }
                 }
                 break;
             case LEAF_NODE:
-                if (node.virtualNum == currentNumber) {
-                    frontier.add(node.realNum);
+                if (node.getVirtualNum() == currentNumber) {
+                    frontier.add(node.getRealNum());
                 }
+                break;
+            default:
+                break;
         }
     }
 
@@ -221,7 +233,7 @@ class PQTree {
             root = replacement;
             return;
         }
-        PQNode existingParent = existing.parent;
+        PQNode existingParent = existing.getParent();
         existingParent.replaceChild(existing, replacement);
     }
 
@@ -255,7 +267,7 @@ class PQTree {
             return false;
         }
         // If the candidate's virtual number matches the current number, relabel it as full
-        if (candidate.virtualNum == currentNumber) {
+        if (candidate.getVirtualNum() == currentNumber) {
             candidate.relabel(NodeLabel.FULL);
         }
         return true;
@@ -428,7 +440,7 @@ class PQTree {
 
         for (PQNode destroyed : permanentlyRemovedNodes) {
             removeLeaves(destroyed);
-            numPertinentLeaves -= destroyed.pertinentLeafCount;
+            numPertinentLeaves -= destroyed.getPertinentLeafCount();
         }
 
         candidate.relabel(NodeLabel.PARTIAL);
@@ -450,7 +462,7 @@ class PQTree {
 
         for (PQNode destroyed : permanentlyRemovedNodes) {
             removeLeaves(destroyed);
-            numPertinentLeaves -= destroyed.pertinentLeafCount;
+            numPertinentLeaves -= destroyed.getPertinentLeafCount();
         }
 
         candidate.relabel(NodeLabel.PARTIAL);
@@ -460,7 +472,7 @@ class PQTree {
 
     private void removeLeaves(PQNode node) {
         if (node.type.equals(NodeType.LEAF_NODE)) {
-            leaves[node.virtualNum - 1].remove(node);
+            leaves[node.getVirtualNum() - 1].remove(node);
         } else {
             for (PQNode child : node.children) {
                 removeLeaves(child);

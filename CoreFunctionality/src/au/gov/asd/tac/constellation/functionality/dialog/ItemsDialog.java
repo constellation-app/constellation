@@ -105,7 +105,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
                     List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
                     selectRows(selectedRows);
                 } catch (InterruptedException ex) {
-
+                    Thread.currentThread().interrupt();
                 }
             }
         });

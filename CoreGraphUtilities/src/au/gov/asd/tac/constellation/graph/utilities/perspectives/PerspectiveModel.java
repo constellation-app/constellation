@@ -34,9 +34,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
 
     public PerspectiveModel(final PerspectiveModel other) {
         perspectives = new ArrayList<>();
-        other.perspectives.stream().forEach((p) -> {
-            perspectives.add(p);
-        });
+        other.perspectives.stream().forEach(perspectives::add);
     }
 
     @Override
@@ -115,7 +113,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
      * doesn't.
      */
     private boolean exists(final String label) {
-        return perspectives.stream().anyMatch((p) -> (p.label.equals(label)));
+        return perspectives.stream().anyMatch(p -> p.label.equals(label));
     }
 
     /**

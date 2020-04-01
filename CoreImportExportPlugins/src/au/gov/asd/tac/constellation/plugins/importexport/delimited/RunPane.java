@@ -70,9 +70,11 @@ public class RunPane extends BorderPane {
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
-    private final AttributeList sourceVertexAttributeList, destinationVertexAttributeList, transactionAttributeList;
-    public Point2D draggingOffset;
-    public AttributeNode draggingAttributeNode;
+    private final AttributeList sourceVertexAttributeList;
+    private final AttributeList destinationVertexAttributeList;
+    private final AttributeList transactionAttributeList;
+    private Point2D draggingOffset;
+    private AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn = null;
     private Rectangle columnRectangle = new Rectangle();
 
@@ -235,6 +237,22 @@ public class RunPane extends BorderPane {
         });
     }
 
+    public Point2D getDraggingOffset() {
+        return draggingOffset;
+    }
+
+    public void setDraggingOffset(Point2D draggingOffset) {
+        this.draggingOffset = draggingOffset;
+    }
+
+    public AttributeNode getDraggingAttributeNode() {
+        return draggingAttributeNode;
+    }
+
+    public void setDraggingAttributeNode(AttributeNode draggingAttributeNode) {
+        this.draggingAttributeNode = draggingAttributeNode;
+    }
+    
     public void handleAttributeMoved(double sceneX, double sceneY) {
         if (draggingAttributeNode != null) {
             Point2D location = sceneToLocal(sceneX, sceneY);
@@ -337,8 +355,7 @@ public class RunPane extends BorderPane {
             column.setCellFactory(new Callback<TableColumn<TableRow, CellValue>, TableCell<TableRow, CellValue>>() {
                 @Override
                 public TableCell<TableRow, CellValue> call(TableColumn<TableRow, CellValue> p) {
-                    final ImportTableCell cell = new ImportTableCell();
-                    return cell;
+                    return new ImportTableCell();
                 }
             });
 
@@ -369,9 +386,10 @@ public class RunPane extends BorderPane {
             }
             columnIndex++;
         }
-
-        rowFilter.setColumns(currentColumnLabels = columnLabels);
-        sampleDataView.setItems(currentRows = newRows);
+        currentColumnLabels = columnLabels;
+        rowFilter.setColumns(currentColumnLabels);
+        currentRows = newRows;
+        sampleDataView.setItems(currentRows);
         setFilter(filter);
     }
 
@@ -481,13 +499,13 @@ public class RunPane extends BorderPane {
     private void updateColumns(final ImportDefinition impdef, final AttributeList attrList, final AttributeType atype, final Set<Integer> keys) {
         final ObservableList<TableColumn<TableRow, ?>> columns = sampleDataView.getColumns();
         final Map<String, ImportTableColumn> labelToColumn = new HashMap<>();
-        columns.stream().forEach((column) -> {
+        columns.stream().forEach(column -> {
             final ImportTableColumn itc = (ImportTableColumn) column;
             labelToColumn.put(itc.getLabel(), itc);
         });
 
         final List<ImportAttributeDefinition> elementList = impdef.getDefinitions(atype);
-        elementList.stream().forEach((iad) -> {
+        elementList.stream().forEach(iad -> {
             final String importLabel = iad.getColumnLabel();
             final ImportTableColumn column = labelToColumn.get(importLabel);
 

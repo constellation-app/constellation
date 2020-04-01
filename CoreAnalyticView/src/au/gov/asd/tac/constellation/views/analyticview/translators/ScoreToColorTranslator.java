@@ -27,11 +27,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,8 +54,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
 
     @Override
     public ColorVisualisation buildControl() {
-        final ColorVisualisation<ElementScore> colorVisualisation = new ColorVisualisation(this);
-        return colorVisualisation;
+        return new ColorVisualisation(this);
     }
 
     @Override

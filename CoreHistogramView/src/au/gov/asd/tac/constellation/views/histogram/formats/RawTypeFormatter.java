@@ -60,7 +60,7 @@ public class RawTypeFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key instanceof RawData ? ((RawData) bin.key).getRawType() : null;
+            key = bin.getKeyAsObject() instanceof RawData ? ((RawData) bin.getKeyAsObject()).getRawType() : null;
         }
 
         @Override

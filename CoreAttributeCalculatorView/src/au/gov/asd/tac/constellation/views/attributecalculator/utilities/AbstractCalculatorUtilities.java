@@ -80,7 +80,7 @@ public abstract class AbstractCalculatorUtilities {
     // must make a design decision for each argument as to whether null should be handled gracefully or whether the end
     // user of the attribute calculator should be explicitly checking for null and hence an exception should be thrown.
     protected static boolean nullCheck(Object argument) {
-        return argument == null || (argument instanceof PyObject && ((PyObject) argument).getType() == null) || argument.equals(AbstractCalculatorValue.the_obliterator);
+        return argument == null || (argument instanceof PyObject && ((PyObject) argument).getType() == null) || argument.equals(AbstractCalculatorValue.getTheObliterator());
     }
 
     public abstract void setContextManager(CalculatorContextManager manager);

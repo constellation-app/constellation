@@ -61,8 +61,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import org.openide.util.NbBundle;
 
 /**
@@ -179,13 +177,7 @@ public class PackagePanel extends JPanel {
 
         setPreferredSize(new Dimension(450, 300));
 
-        list.addListSelectionListener(new ListSelectionListener() {
-
-            @Override
-            public void valueChanged(final ListSelectionEvent ev) {
-                updateLabelEtcFromList(field, list, dirs, okButton);
-            }
-        });
+        list.addListSelectionListener(ev -> updateLabelEtcFromList(field, list, dirs, okButton));
         updateLabelEtcFromList(field, list, dirs, okButton);
     }
 

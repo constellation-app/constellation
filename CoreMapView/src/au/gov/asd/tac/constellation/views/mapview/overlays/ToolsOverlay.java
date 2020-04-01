@@ -287,8 +287,11 @@ public class ToolsOverlay extends MapOverlay {
                     });
 
                     renderer.updateMarkers(GraphManager.getDefault().getActiveGraph(), renderer.getMarkerState());
-                } catch (PluginException | InterruptedException ex) {
+                } catch (PluginException ex) {
                     LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
+                } catch (InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
+                    Thread.currentThread().interrupt();
                 }
                 mouseLeftAddToGraphRegion = false;
             }

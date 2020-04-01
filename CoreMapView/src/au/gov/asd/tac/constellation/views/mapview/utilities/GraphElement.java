@@ -63,10 +63,7 @@ public class GraphElement {
         if (this.id != other.id) {
             return false;
         }
-        if (this.type != other.type) {
-            return false;
-        }
-        return true;
+        return this.type == other.type;
     }
 
     @Override

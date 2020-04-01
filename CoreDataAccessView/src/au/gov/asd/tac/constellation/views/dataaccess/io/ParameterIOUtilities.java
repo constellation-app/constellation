@@ -92,7 +92,7 @@ public class ParameterIOUtilities {
                         for (Map<String, String> tabState : dataAccessState.getState()) {
                             final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
                             final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
+                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
                                 final PluginParameter<?> pp = param.getValue();
                                 final String paramvalue = tabState.get(param.getKey());
                                 if (paramvalue != null) {
@@ -143,6 +143,7 @@ public class ParameterIOUtilities {
                 wg.setObjectValue(dataAccessStateAttribute, 0, dataAccessState);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             } finally {
                 if (wg != null) {
                     wg.commit();
@@ -206,7 +207,7 @@ public class ParameterIOUtilities {
 
                     final PluginParameters parameters = pane.getParameters();
                     if (parameters != null) {
-                        parameters.getParameters().entrySet().stream().forEach((param) -> {
+                        parameters.getParameters().entrySet().stream().forEach(param -> {
                             if (!PasswordParameterType.ID.equals(param.getValue().getType().getId())) {
                                 final String id = param.getKey();
                                 final String value = param.getValue().getStringValue();
@@ -288,7 +289,7 @@ public class ParameterIOUtilities {
 
                         // Load the per-step global parameters.
                         final JsonNode global = step.get(GLOBAL_OBJECT);
-                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
+                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
                             final String id = param.getKey();
                             if (global.has(id)) {
                                 final JsonNode value = global.get(id);
@@ -302,7 +303,7 @@ public class ParameterIOUtilities {
                         // Load the per-step plugin parameters.
                         final JsonNode plugins = step.get(PLUGINS_OBJECT);
                         final Map<String, Map<String, String>> ppmap = toPerPluginParamMap(plugins);
-                        pluginPane.getDataAccessPanes().stream().forEach((pane) -> {
+                        pluginPane.getDataAccessPanes().stream().forEach(pane -> {
                             // Only load and enable from the JSON if the JSON contains data for this plugin
                             // and it's enabled; otherwise, disable the plugin.
                             // They're disabled by default anyway, but let's be obvious.)

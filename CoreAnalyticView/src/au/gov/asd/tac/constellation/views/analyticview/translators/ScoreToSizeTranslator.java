@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
-import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -53,8 +53,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public SizeVisualisation buildControl() {
-        final SizeVisualisation<ElementScore> sizeVisualisation = new SizeVisualisation(this);
-        return sizeVisualisation;
+        return new SizeVisualisation(this);
     }
 
     @Override

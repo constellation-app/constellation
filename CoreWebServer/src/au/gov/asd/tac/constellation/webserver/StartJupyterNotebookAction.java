@@ -38,7 +38,7 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
-@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction")
+@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase="au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
 @ActionReference(path = "Menu/Tools", position = 1700)
 @NbBundle.Messages("CTL_StartJupyterNotebookAction=Start Jupyter Notebook")
 public class StartJupyterNotebookAction implements ActionListener {

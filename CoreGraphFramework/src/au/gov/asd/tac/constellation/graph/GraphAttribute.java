@@ -31,7 +31,8 @@ public class GraphAttribute implements Attribute, Serializable {
     private int id;
     private GraphElementType elementType;
     private String attributeType;
-    private String name, description;
+    private String name;
+    private String description;
     private Object defaultValue;
     private Class<? extends AttributeDescription> dataType;
     private GraphAttributeMerger attributeMerger;
@@ -239,9 +240,6 @@ public class GraphAttribute implements Attribute, Serializable {
         if (!Objects.equals(this.dataType, other.dataType)) {
             return false;
         }
-        if (!Objects.equals(this.defaultValue, other.defaultValue)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.defaultValue, other.defaultValue);
     }
 }

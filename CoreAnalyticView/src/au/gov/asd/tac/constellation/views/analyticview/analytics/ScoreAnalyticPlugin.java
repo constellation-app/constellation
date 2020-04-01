@@ -25,11 +25,12 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -40,10 +41,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -100,6 +101,8 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
                 case TRANSACTION:
                     graphElementCount = graph.getTransactionCount();
                     identifierAttributeId = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
+                    break;
+                default:
                     break;
             }
 
@@ -195,7 +198,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             final List<? extends ParameterValue> chosenTransactionTypes = MultiChoiceParameterType.getChoicesData(transactionTypesParameter);
             if (chosenTransactionTypes.equals(allTransactionTypes)) {
                 // run analytic plugin on the entire graph and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(graph);
                 computeResultsFromGraph(graph, parameters);
@@ -209,14 +212,16 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 
                 // run analytic plugin and compute results
-                PluginExecution.withPlugin(getAnalyticPlugin().newInstance())
+                PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
                         .withParameters(parameters)
                         .executeNow(subgraph);
                 copySubgraphToGraph(graph, subgraph);
                 computeResultsFromGraph(graph, parameters);
             }
 
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (final IllegalAccessException | IllegalArgumentException
+                | InstantiationException | NoSuchMethodException
+                | SecurityException | InvocationTargetException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
