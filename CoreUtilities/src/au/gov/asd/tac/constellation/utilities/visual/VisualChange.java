@@ -53,7 +53,7 @@ public final class VisualChange implements Comparable<VisualChange> {
 
     private static int globalOrder = 0;
 
-    private int order;
+    private final int order;
     public final long id;
     public final VisualProperty property;
     private final int[] changeList;
