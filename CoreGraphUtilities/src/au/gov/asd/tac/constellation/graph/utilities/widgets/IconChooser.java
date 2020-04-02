@@ -351,7 +351,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     fos.flush();
                 }
             } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:\n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 nd.setTitle("Icon file error");
                 DialogDisplayer.getDefault().notify(nd);
             }

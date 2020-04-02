@@ -124,7 +124,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
-        LOGGER.log(Level.INFO, "JDBC import vx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import vx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
@@ -190,7 +190,7 @@ public class ImportFromJdbcPlugin extends SimpleEditPlugin {
         select.append(" FROM ");
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
-        LOGGER.log(Level.INFO, "JDBC import tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC import tx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement()) {
