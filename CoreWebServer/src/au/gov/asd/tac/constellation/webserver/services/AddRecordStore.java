@@ -59,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class AddRecordStore extends RestService {
     private static final String NAME = "add_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String COMPLETE_PARAMETER_ID = "complete_with_schema";
     private static final String ARRANGE_PARAMETER_ID = "arrange";
     private static final String RESET_PARAMETER_ID = "reset_view";
@@ -92,7 +92,7 @@ public class AddRecordStore extends RestService {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphidParam.setName("Graph id");
         graphidParam.setDescription("The id of the graph to add the recordstore to.");
         parameters.addParameter(graphidParam);
@@ -124,7 +124,7 @@ public class AddRecordStore extends RestService {
 
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
+        final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final boolean completeWithSchema = parameters.getBooleanValue(COMPLETE_PARAMETER_ID);
         final String arrange = parameters.getStringValue(ARRANGE_PARAMETER_ID);
         final boolean resetView = parameters.getBooleanValue(RESET_PARAMETER_ID);

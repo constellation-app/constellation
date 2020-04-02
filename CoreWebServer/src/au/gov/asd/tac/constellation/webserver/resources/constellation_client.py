@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200321
+__version__ = 20200326
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -225,7 +225,13 @@ class Constellation:
         h = dict(self.headers)
         if headers:
             h.update(headers)
-        url = f'http://localhost:{self.port}{endpoint}/{path}'
+
+        # Note: use 127.0.0.1, not localhost, to avoid a two second delay.
+        # I suspect Windows is trying to connect to the IPv6 localhost first,
+        # waiting a couple of seconds to fail, then trying IPv4.
+        # Using the IPv4 127.0.0.1 goes directly to the right place.
+        #
+        url = f'http://127.0.0.1:{self.port}{endpoint}/{path}'
         r = f(url, params=params, json=json_, data=data, headers=h)
 
         # Raise for status because we don't trust the users to check for errors.
@@ -602,6 +608,38 @@ class Constellation:
             raise ValueError('args must be a dictionary')
 
         self.call_service('run_plugin', verb='post', args={'plugin_name':plugin_name, 'graph_id':graph_id}, json=args)
+
+    def run_plugins(self, plugins=None, *, graph_id=None, run_in='serial'):
+        """Run the specified plugins.
+
+        Plugins is a list of dictionaries, where each dictionary specifies a plugin and optionally its arguments,
+        using the keys 'plugin_name' and 'plugin_args', and the values as passed to run_plugin().
+
+        For example:
+            plugins = [
+                {'plugin_name': 'deselectall'},
+                {
+                    'plugin_name': 'arrangeingridgeneral',
+                    'plugin_args': {'ArrangeInGridGeneralPlugin.offset_rows': True}
+                },
+                {'plugin_name': 'resetview'}
+            ]
+
+        Plugins may be run sequentially (the default), or in parallel.
+
+        :param plugins: A list of plugins and their arguments.
+        :param graph_id: The id of the graph to run the plugins on,
+            or the active graph if not specified.
+        :param run_in: One of 'serial' or 'parallel'.
+
+        """
+
+        if plugins is None:
+            plugins = []
+        if not isinstance(plugins, list):
+            raise ValueError('plugins must be a list')
+
+        self.call_service('run_plugins', verb='post', args={'graph_id':graph_id, 'run_in':run_in}, json=plugins)
 
     def list_plugins(self, alias=True):
         """List the available plugins.
