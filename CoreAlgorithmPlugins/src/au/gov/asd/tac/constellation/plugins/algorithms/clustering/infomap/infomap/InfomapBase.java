@@ -761,7 +761,8 @@ public abstract class InfomapBase {
         if (verbose) {
             if (config.getVerbosity() == 0) {
                 final String fmt = String.format("%s.%df", "%", config.getVerboseNumberPrecision());
-                System.out.printf("to %d modules with codelength %s%n", getNumTopModules(), fmt, codelength);
+                final String cl = String.format(fmt, codelength);
+                System.out.printf("to %d modules with codelength %s%n", getNumTopModules(), cl);
             } else {
                 System.out.printf("Two-level codelength: %f + %f = %f%n", indexCodelength, moduleCodelength, codelength);
             }
