@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.layers.utilities;
+package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.List;
 
 /**
- *
+ * Write a given set of queries to the active graph.
+ * 
  * @author aldebaran30701
  */
 public final class UpdateGraphQueriesPlugin extends SimpleEditPlugin {
 
-    /**
-     * Write the given queries to the active graph.
-     */
     private final List<String> queries;
 
     public UpdateGraphQueriesPlugin(final List<String> queries) {
@@ -38,7 +35,7 @@ public final class UpdateGraphQueriesPlugin extends SimpleEditPlugin {
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
         graph.setLayerQueries(queries);
     }
 

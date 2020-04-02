@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.layers;
+package au.gov.asd.tac.constellation.views.layers;
 
-import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.layers.utilities.UpdateGraphBitmaskPlugin;
-import au.gov.asd.tac.constellation.layers.utilities.UpdateGraphQueriesPlugin;
-import au.gov.asd.tac.constellation.layers.views.LayersViewPane;
-import au.gov.asd.tac.constellation.layers.views.LayersViewTopComponent;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +28,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- *
  * Controls interaction of UI to layers and filtering of nodes.
  *
  * @author aldebaran30701
@@ -56,18 +52,17 @@ public class LayersViewController {
             return;
         }
 
-        int tempMask = 0b0;
-        Iterator it = pane.getQueries().getChildren().iterator();
-        it.next();
+        final Iterator it = pane.getLayers().getChildren().iterator();
+        it.next(); // skip default layer
 
+        int tempMask = 0b0;
         while (it.hasNext()) {
-            HBox queryBox = (HBox) (it.next());
-            // This is the checkbox
-            CheckBox queryCB = (CheckBox) queryBox.getChildren().get(1);
-            Text queryID = (Text) queryBox.getChildren().get(0);
+            final HBox layerBox = (HBox) (it.next());
+            final CheckBox visibilityCheckBox = (CheckBox) layerBox.getChildren().get(1);
+            final Text layerIdText = (Text) layerBox.getChildren().get(0);
 
             // only add layer id to list when it is checked
-            tempMask |= queryCB.isSelected() ? (1 << Integer.parseInt(queryID.getText()) - 1) : 0;
+            tempMask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
         }
 
         // if the tempmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
@@ -87,14 +82,14 @@ public class LayersViewController {
             return;
         }
 
-        List<String> layerQueries = new ArrayList<>();
-        Iterator it = pane.getQueries().getChildren().iterator();
-        it.next();
+        final Iterator it = pane.getLayers().getChildren().iterator();
+        it.next(); // skip default layer
 
+        final List<String> layerQueries = new ArrayList<>();
         while (it.hasNext()) {
-            HBox queryBox = (HBox) (it.next());
-            TextArea tempTA = (TextArea) (queryBox.getChildren().get(2));
-            layerQueries.add(tempTA.getText().equals("") ? null : tempTA.getText());
+            final HBox layerBox = (HBox) (it.next());
+            final TextArea queryTextArea = (TextArea) (layerBox.getChildren().get(2));
+            layerQueries.add(queryTextArea.getText().isBlank() ? null : queryTextArea.getText());
         }
         
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());

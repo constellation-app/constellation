@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.*;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;

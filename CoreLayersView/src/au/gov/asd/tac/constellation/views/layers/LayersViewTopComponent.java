@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.layers.views;
+package au.gov.asd.tac.constellation.views.layers;
 
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.layers.LayersViewController;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -26,39 +24,31 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
 /**
- * Top component which displays something.
+ * The Layers View Top Component. This class provides the Layers View window and
+ * handles all interactions with the graph.
  *
  * @author aldebaran30701
- *
- * TODO: what does mode - output do?
- *
  */
 @TopComponent.Description(
         preferredID = "LayersViewTopComponent",
-        //iconBase = "au/gov/asd/tac/constellation/views/scripting/calculator/resources/attribute-calculator.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS
-)
+        iconBase = "au/gov/asd/tac/constellation/views/layers/resources/layers-view.png",
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS)
 @TopComponent.Registration(
         mode = "explorer",
-        openAtStartup = false
-)
+        openAtStartup = false)
 @ActionID(
         category = "Window",
-        id = "au.gov.asd.tac.constellation.layers.views.LayersViewTopComponent"
-)
+        id = "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 105)//,
-//@ActionReference(path = "Shortcuts", name = "CS-A")
-})
+    @ActionReference(path = "Menu/Views", position = 105),
+    @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_LayersViewAction",
-        preferredID = "LayersViewTopComponent"
-)
+    displayName = "#CTL_LayersViewAction",
+    preferredID = "LayersViewTopComponent")
 @Messages({
     "CTL_LayersViewAction=Layers View",
     "CTL_LayersViewTopComponent=Layers View",
-    "HINT_LayersViewTopComponent=Layers View"
-})
+    "HINT_LayersViewTopComponent=Layers View"})
 public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewPane> {
 
     private final LayersViewController layersViewController;
