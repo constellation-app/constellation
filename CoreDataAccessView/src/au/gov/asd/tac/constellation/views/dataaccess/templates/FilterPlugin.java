@@ -51,7 +51,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
         return parameters;
     }
 
-    protected static enum FilterType {
+    protected enum FilterType {
 
         REMOVE_FILTER("Remove"),
         DESELECT_FILTER("Deselect"),

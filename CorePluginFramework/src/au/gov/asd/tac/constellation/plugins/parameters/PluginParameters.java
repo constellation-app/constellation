@@ -85,7 +85,7 @@ public class PluginParameters implements PluginParameterListener {
         public final String name;
         private final List<PluginParametersNode> children;
         private final PluginParameter<?> parameter;
-        public ParameterLayout formatter;
+        private ParameterLayout formatter;
 
         /**
          * Create a new PluginParametersNode corresponding to the given
@@ -112,6 +112,10 @@ public class PluginParameters implements PluginParameterListener {
             this.formatter = formatter;
         }
 
+        public ParameterLayout getFormatter() {
+            return formatter;
+        }
+        
         /**
          * Resets the formatting of the this plugin parameters node.
          * <p>

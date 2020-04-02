@@ -229,7 +229,7 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
     private static class CheckListItem<T> {
 
         public final T item;
-        public boolean isSelected;
+        private boolean isSelected;
 
         public CheckListItem(final T item, final boolean isSelected) {
             this.item = item;

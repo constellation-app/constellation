@@ -208,29 +208,24 @@ public class FileListener implements Runnable {
      * @throws Exception because of AutoCloseable
      */
     private void parseAndExecute(final String verb, final String endpoint, final String path, final JsonNode args) throws Exception {
-        switch (endpoint) {
-            case "/v2/service":
-                final HttpMethod httpMethod = HttpMethod.getValue(verb);
-                // Get an instance of the service (if it exists).
-                //
-                final RestService rs = RestServiceRegistry.get(path, httpMethod);
+        if ("/v2/service".equals(endpoint)) {
+            final HttpMethod httpMethod = HttpMethod.getValue(verb);
+            // Get an instance of the service (if it exists).
+            //
+            final RestService rs = RestServiceRegistry.get(path, httpMethod);
 
-                // Convert the arguments to PluginParameters.
-                //
-                final PluginParameters parameters = rs.createParameters();
-                RestServiceUtilities.parametersFromJson((ObjectNode)args, parameters);
+            // Convert the arguments to PluginParameters.
+            //
+            final PluginParameters parameters = rs.createParameters();
+            RestServiceUtilities.parametersFromJson((ObjectNode)args, parameters);
 
-                try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
-                    rs.callService(parameters, ins.in, out);
-                } catch(final IOException | RuntimeException ex) {
-                    throw new RestServiceException(ex);
-                }
-
-                break;
-
-            default:
-                unrec("endpoint", endpoint);
-                break;
+            try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+                rs.callService(parameters, ins.in, out);
+            } catch(final IOException | RuntimeException ex) {
+                throw new RestServiceException(ex);
+            }
+        } else {
+            unrec("endpoint", endpoint);
         }
     }
 

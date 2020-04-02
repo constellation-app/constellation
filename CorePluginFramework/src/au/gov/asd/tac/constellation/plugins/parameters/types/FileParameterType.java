@@ -138,7 +138,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     /**
      * Describes the method of file selection for a parameter of this type.
      */
-    public static enum FileParameterKind {
+    public enum FileParameterKind {
 
         /**
          * Allows selection of multiple files.

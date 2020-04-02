@@ -64,7 +64,7 @@ public class DateTimeYearFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? NULL_YEAR : ((ZonedDateTime) bin.key).getYear();
+            key = bin.getKeyAsObject() == null ? NULL_YEAR : ((ZonedDateTime) bin.getKeyAsObject()).getYear();
         }
 
         @Override

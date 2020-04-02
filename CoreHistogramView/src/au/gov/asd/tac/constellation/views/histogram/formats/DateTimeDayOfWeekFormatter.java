@@ -66,7 +66,7 @@ public class DateTimeDayOfWeekFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? null : ((ZonedDateTime) bin.key).getDayOfWeek();
+            key = bin.getKeyAsObject() == null ? null : ((ZonedDateTime) bin.getKeyAsObject()).getDayOfWeek();
         }
 
         @Override

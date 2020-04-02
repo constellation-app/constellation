@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.node.templates;
 
 import au.gov.asd.tac.constellation.graph.node.create.NewSchemaGraphAction;
-import static au.gov.asd.tac.constellation.graph.node.create.NewSchemaGraphAction.TEMPLATE_DIRECTORY;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -144,7 +143,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            new File(TEMPLATE_DIRECTORY, templates.get(template) + "/" + template).delete();
+            new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
         });
 
         final String defaultTemplate = parameters.getStringValue(CURRENT_DEFAULT_PARAMETER_ID);

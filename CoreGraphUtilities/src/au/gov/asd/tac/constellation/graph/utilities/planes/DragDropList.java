@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.planes;
 
-import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyElement;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
+import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyElement;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -46,7 +46,7 @@ import javax.swing.event.ListDataListener;
  */
 final class DragDropList extends JList<MyElement> {
 
-    public MyListModel model;
+    private MyListModel model;
 
     DragDropList() {
         setDragEnabled(true);

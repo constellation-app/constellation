@@ -228,11 +228,11 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 URI uri = new URI(s);
                 File file = new File(uri);
                 list.add(file);
-            } catch (java.net.URISyntaxException e) {
+            } catch (java.net.URISyntaxException | IllegalArgumentException e) {
                 // malformed URI
-            } catch (IllegalArgumentException e) {
-                // the URI is not a valid 'file:' URI
             }
+            // the URI is not a valid 'file:' URI
+            
         }
         return list;
     }

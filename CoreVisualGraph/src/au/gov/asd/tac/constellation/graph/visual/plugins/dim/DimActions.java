@@ -30,6 +30,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -110,7 +111,7 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
         dimAllItem.addActionListener(DimActions.this);
         menu.add(dimAllItem);
 
-        menu.add(new JSeparator(JSeparator.HORIZONTAL));
+        menu.add(new JSeparator(SwingConstants.HORIZONTAL));
 
         final JMenuItem undimSelectedItem = new JMenuItem("Undim Selected");
         undimSelectedItem.setIcon(ImageUtilities.loadImageIcon(UNDIM_SELECTED_ICON, false));
@@ -130,7 +131,7 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
         undimAllItem.addActionListener(DimActions.this);
         menu.add(undimAllItem);
 
-        menu.add(new JSeparator(JSeparator.HORIZONTAL));
+        menu.add(new JSeparator(SwingConstants.HORIZONTAL));
 
         final JMenuItem selectDimmed = new JMenuItem("Select Dimmed");
         selectDimmed.setIcon(ImageUtilities.loadImageIcon(SELECT_DIMMED_ICON, false));

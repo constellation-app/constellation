@@ -32,17 +32,17 @@ public class NodeBase {
 
     private static int uid = 0;
 
-    public final int id;
-    public final String name;
-    public int index;           // Temporary index used in finding best module.
-    public int originalIndex;   // Index in the original network (for leaf nodes).
+    private final int id;
+    private final String name;
+    private int index;           // Temporary index used in finding best module.
+    private int originalIndex;   // Index in the original network (for leaf nodes).
 
-    public NodeBase parent;
-    public NodeBase previous;   // Sibling.
-    public NodeBase next;       // Sibling.
-    public NodeBase firstChild;
-    public NodeBase lastChild;
-    public double codelength;
+    private NodeBase parent;
+    private NodeBase previous;   // Sibling.
+    private NodeBase next;       // Sibling.
+    private NodeBase firstChild;
+    private NodeBase lastChild;
+    private double codelength;
 
     protected SubStructure subStructure;
     protected int childDegree;
@@ -74,6 +74,54 @@ public class NodeBase {
         return uid;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getIndex() {
+        return index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public int getOriginalIndex() {
+        return originalIndex;
+    }
+
+    public void setOriginalIndex(int originalIndex) {
+        this.originalIndex = originalIndex;
+    }
+
+    public NodeBase getParent() {
+        return parent;
+    }
+
+    public void setParent(NodeBase parent) {
+        this.parent = parent;
+    }
+
+    public NodeBase getFirstChild() {
+        return firstChild;
+    }
+
+    public void setFirstChild(NodeBase firstChild) {
+        this.firstChild = firstChild;
+    }
+
+    public double getCodelength() {
+        return codelength;
+    }
+
+    public void setCodelength(double codelength) {
+        this.codelength = codelength;
+    }
+    
     public void addChild(final NodeBase child) {
         if (firstChild == null) {
             child.previous = null;
@@ -186,7 +234,7 @@ public class NodeBase {
     }
 
     public InfomapBase getSubInfomap() {
-        return subStructure.subInfomap;
+        return subStructure.getSubInfomap();
     }
 
     public SubStructure getSubStructure() {

@@ -58,14 +58,14 @@ public class Network {
         sumNodeWeights = rg.getVertexCount();
 
         graphConnections = () -> {
-            if (config.connectionType == ConnectionType.LINKS) {
+            if (config.getConnectionType() == ConnectionType.LINKS) {
                 return new LinkIterator(rg);
-            } else if (config.connectionType == ConnectionType.EDGES) {
+            } else if (config.getConnectionType() == ConnectionType.EDGES) {
                 return new EdgeIterator(rg);
-            } else if (config.connectionType == ConnectionType.TRANSACTIONS) {
+            } else if (config.getConnectionType() == ConnectionType.TRANSACTIONS) {
                 return new TransactionIterator(rg);
             } else {
-                throw new IllegalStateException(String.format("Unexpected connection type %s", config.connectionType));
+                throw new IllegalStateException(String.format("Unexpected connection type %s", config.getConnectionType()));
             }
         };
     }
@@ -82,34 +82,34 @@ public class Network {
         // This gives us a nice 0..n-1 numbering which the algorithm pretty much relies on.
         // Don't forget to convert back when looking at the results.
         for (final Connection conn : graphConnections) {
-            if (conn.target == conn.source) {
+            if (conn.getTarget() == conn.getSource()) {
                 numSelfLinks++;
-                if (!config.includeSelfLinks) {
+                if (!config.isIncludeSelfLinks()) {
                     continue;
                 }
             }
 
             // If undirected links, aggregate weight rather than adding an opposite link.
-            if (config.isUndirected() && conn.target < conn.source) {
-                final int tmp = conn.source;
-                conn.source = conn.target;
-                conn.target = tmp;
+            if (config.isUndirected() && conn.getTarget() < conn.getSource()) {
+                final int tmp = conn.getSource();
+                conn.setSource(conn.getTarget());
+                conn.setTarget(tmp);
             }
 
-            totalWeight += conn.weight;
+            totalWeight += conn.getWeight();
             if (config.isUndirected()) {
-                totalWeight += conn.weight;
+                totalWeight += conn.getWeight();
             }
 
             // Aggregate link weights if they are defined more than once.
-            final NodePair nodePair = new NodePair(conn.source, conn.target);
+            final NodePair nodePair = new NodePair(conn.getSource(), conn.getTarget());
             final Double d = connectionMap.get(nodePair);
             if (d == null) {
-                connectionMap.put(nodePair, conn.weight);
+                connectionMap.put(nodePair, conn.getWeight());
             } else {
-                connectionMap.put(nodePair, d + conn.weight);
+                connectionMap.put(nodePair, d + conn.getWeight());
                 numDoubleLinks++;
-                if (conn.target == conn.source) {
+                if (conn.getTarget() == conn.getSource()) {
                     numSelfLinks--;
                 }
             }
@@ -119,7 +119,7 @@ public class Network {
         if (numDoubleLinks > 0) {
             Logf.printf("%d connections was aggregated to existing connections. ", numDoubleLinks);
         }
-        if (numSelfLinks > 0 && !config.includeSelfLinks) {
+        if (numSelfLinks > 0 && !config.isIncludeSelfLinks()) {
             Logf.printf("%d self-connections was ignored. ");
         }
 

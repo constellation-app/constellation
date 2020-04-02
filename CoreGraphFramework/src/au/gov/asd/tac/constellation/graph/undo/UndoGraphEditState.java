@@ -38,46 +38,46 @@ public class UndoGraphEditState {
     static final int REPEAT_SHIFT = 5;
     static final int OPERATION_MASK = 0x1F;
 
-    public short[] operationStack = new short[1];
-    public int operationCount = 0;
+    private short[] operationStack = new short[1];
+    private int operationCount = 0;
 
-    public byte[] byteStack = new byte[1];
-    public int byteCount = 0;
-    public int bytePointer;
+    private byte[] byteStack = new byte[1];
+    private int byteCount = 0;
+    private int bytePointer;
 
-    public short[] shortStack = new short[1];
-    public int shortCount = 0;
-    public int shortPointer;
+    private short[] shortStack = new short[1];
+    private int shortCount = 0;
+    private int shortPointer;
 
-    public int[] intStack = new int[1];
-    public int intCount = 0;
-    public int intPointer;
+    private int[] intStack = new int[1];
+    private int intCount = 0;
+    private int intPointer;
 
-    public long[] longStack = new long[1];
-    public int longCount = 0;
-    public int longPointer;
+    private long[] longStack = new long[1];
+    private int longCount = 0;
+    private int longPointer;
 
-    public Object[] objectStack = new Object[1];
-    public int objectCount = 0;
-    public Map<Object, Integer> objectMap = new HashMap<>();
+    private Object[] objectStack = new Object[1];
+    private int objectCount = 0;
+    private Map<Object, Integer> objectMap = new HashMap<>();
 
-    public int currentAttribute = 0;
-    public int currentId = 0;
-    public int currentInt;
-    public int currentObject = 0;
-    public int currentFloat = 0;
+    private int currentAttribute = 0;
+    private int currentId = 0;
+    private int currentInt;
+    private int currentObject = 0;
+    private int currentFloat = 0;
 
-    public long currentLong = 0;
-    public long currentDouble = 0;
+    private long currentLong = 0;
+    private long currentDouble = 0;
 
 
-    public int finalAttribute;
-    public int finalId;
-    public int finalInt;
-    public int finalObject;
-    public int finalFloat;
-    public long finalLong;
-    public long finalDouble;
+    private int finalAttribute;
+    private int finalId;
+    private int finalInt;
+    private int finalObject;
+    private int finalFloat;
+    private long finalLong;
+    private long finalDouble;
 
     private short currentOperation = 0xFF;
     private int extraOperationsCount = 0;
@@ -141,6 +141,134 @@ public class UndoGraphEditState {
         }
     }
 
+    public byte[] getByteStack() {
+        return byteStack;
+    }
+
+    public void setByteStack(byte[] byteStack) {
+        this.byteStack = byteStack;
+    }
+
+    public int getBytePointer() {
+        return bytePointer;
+    }
+
+    public void setBytePointer(int bytePointer) {
+        this.bytePointer = bytePointer;
+    }
+
+    public short[] getShortStack() {
+        return shortStack;
+    }
+
+    public void setShortStack(short[] shortStack) {
+        this.shortStack = shortStack;
+    }
+
+    public int getShortPointer() {
+        return shortPointer;
+    }
+
+    public void setShortPointer(int shortPointer) {
+        this.shortPointer = shortPointer;
+    }
+
+    public int[] getIntStack() {
+        return intStack;
+    }
+
+    public void setIntStack(int[] intStack) {
+        this.intStack = intStack;
+    }
+
+    public int getIntPointer() {
+        return intPointer;
+    }
+
+    public void setIntPointer(int intPointer) {
+        this.intPointer = intPointer;
+    }
+
+    public long[] getLongStack() {
+        return longStack;
+    }
+
+    public void setLongStack(long[] longStack) {
+        this.longStack = longStack;
+    }
+
+    public int getLongPointer() {
+        return longPointer;
+    }
+
+    public void setLongPointer(int longPointer) {
+        this.longPointer = longPointer;
+    }
+
+    public Object[] getObjectStack() {
+        return objectStack;
+    }
+
+    public void setObjectStack(Object[] objectStack) {
+        this.objectStack = objectStack;
+    }
+
+    public int getCurrentAttribute() {
+        return currentAttribute;
+    }
+
+    public void setCurrentAttribute(int currentAttribute) {
+        this.currentAttribute = currentAttribute;
+    }
+
+    public int getCurrentId() {
+        return currentId;
+    }
+
+    public void setCurrentId(int currentId) {
+        this.currentId = currentId;
+    }
+
+    public int getCurrentInt() {
+        return currentInt;
+    }
+
+    public void setCurrentInt(int currentInt) {
+        this.currentInt = currentInt;
+    }
+
+    public int getCurrentObject() {
+        return currentObject;
+    }
+
+    public void setCurrentObject(int currentObject) {
+        this.currentObject = currentObject;
+    }
+
+    public int getCurrentFloat() {
+        return currentFloat;
+    }
+
+    public void setCurrentFloat(int currentFloat) {
+        this.currentFloat = currentFloat;
+    }
+
+    public long getCurrentLong() {
+        return currentLong;
+    }
+
+    public void setCurrentLong(long currentLong) {
+        this.currentLong = currentLong;
+    }
+
+    public long getCurrentDouble() {
+        return currentDouble;
+    }
+
+    public void setCurrentDouble(long currentDouble) {
+        this.currentDouble = currentDouble;
+    }
+    
     public void addInstruction(short operation) {
         if (currentOperation == operation) {
             operationStack[operationCount - 1] = (short) (operation | (++extraOperationsCount << REPEAT_SHIFT));

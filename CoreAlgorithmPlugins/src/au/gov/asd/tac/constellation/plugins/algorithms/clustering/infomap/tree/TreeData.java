@@ -40,11 +40,11 @@ public class TreeData {
 
     public int addNewNode(final int position, final String name, final double flow, final double teleportWeight) {
         final NodeBase node = nodeFactory.createNode(name, flow, teleportWeight);
-        node.originalIndex = position; //leafNodes.size();
+        node.setOriginalIndex(position); //leafNodes.size();
         root.addChild(node);
         leafNodes.add(node);
 
-        return node.originalIndex;
+        return node.getOriginalIndex();
     }
 
     public void addClonedNode(final NodeBase node) {
@@ -73,9 +73,12 @@ public class TreeData {
     }
 
     public NodeBase getLeafNode(final int index) {
-        assert index < leafNodes.size();
+        if(index < leafNodes.size()){
+            return leafNodes.get(index);
+        } else {
+            throw new IllegalArgumentException();
+        }
 
-        return leafNodes.get(index);
     }
 
     public NodeBase getFirstLeaf() {

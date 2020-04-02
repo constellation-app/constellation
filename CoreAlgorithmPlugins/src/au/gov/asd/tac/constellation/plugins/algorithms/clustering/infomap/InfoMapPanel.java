@@ -37,27 +37,27 @@ public class InfoMapPanel extends javax.swing.JPanel {
 
         // Connection type.
         if (rbTransactions.isSelected()) {
-            config.connectionType = Config.ConnectionType.TRANSACTIONS;
+            config.setConnectionType(Config.ConnectionType.TRANSACTIONS);
         } else if (rbEdges.isSelected()) {
-            config.connectionType = Config.ConnectionType.EDGES;
+            config.setConnectionType(Config.ConnectionType.EDGES);
         } else if (rbLinks.isSelected()) {
-            config.connectionType = Config.ConnectionType.LINKS;
+            config.setConnectionType(Config.ConnectionType.LINKS);
         }
 
         // Dynamic type.
         if (rbDirected.isSelected()) {
-            config.directed = true;
+            config.setDirected(true);
         } else if (rbUndirdir.isSelected()) {
-            config.undirdir = true;
+            config.setUndirdir(true);
         } else if (rbOutdirdir.isSelected()) {
-            config.outdirdir = true;
+            config.setOutdirdir(true);
         } else if (rbRawdir.isSelected()) {
-            config.rawdir = true;
+            config.setRawdir(true);
         }
 
         config.setOptimizationLevel(cbOptLevel.getSelectedIndex());
-        config.fastHierarchicalSolution = cbHierarchical.getSelectedIndex();
-        config.numTrials = ((SpinnerNumberModel) sNumTrials.getModel()).getNumber().intValue();
+        config.setFastHierarchicalSolution(cbHierarchical.getSelectedIndex());
+        config.setNumTrials(((SpinnerNumberModel) sNumTrials.getModel()).getNumber().intValue());
 
         return config;
     }

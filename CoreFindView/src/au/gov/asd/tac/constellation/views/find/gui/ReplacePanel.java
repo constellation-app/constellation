@@ -27,6 +27,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 /**
  * replace panel within the find top component
@@ -260,7 +262,7 @@ public class ReplacePanel extends javax.swing.JPanel {
     }
 
     private void resetComboBox() {
-        JSeparator sep = new JSeparator(JSeparator.HORIZONTAL);
+        JSeparator sep = new JSeparator(SwingConstants.HORIZONTAL);
         Dimension sepDim = new Dimension(Integer.MAX_VALUE, 5);
         sep.setMaximumSize(sepDim);
         selectAll.setSelected(false);
@@ -303,7 +305,7 @@ public class ReplacePanel extends javax.swing.JPanel {
         dropDownPanel.setLayout(layout);
         dropDownPanel.setMaximumSize(new Dimension(dropdownSize.width, Integer.MAX_VALUE));
 
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         scrollPane.setMaximumSize(dropdownSize);
         scrollPane.setPreferredSize(dropdownSize);
         scrollPane.setViewportView(dropDownPanel);

@@ -60,7 +60,7 @@ public class GraphSpectrumEmbedder {
 
     }
 
-    private static enum MatrixType {
+    private enum MatrixType {
 
         ADJACENCY_MATRIX,
         LAPLACIAN_MATRIX,;

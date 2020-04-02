@@ -60,7 +60,7 @@ public final class HierarchicalState {
     public int getCurrentNumOfClusters() {
         int numClusters = 0;
         for (FastNewman.Group group : groups) {
-            if (group != null && group.mergeStep > currentStep) {
+            if (group != null && group.getMergeStep() > currentStep) {
                 numClusters++;
             }
         }
