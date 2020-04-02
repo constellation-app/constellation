@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.GraphIndexUtilities;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -108,7 +108,7 @@ public class TypeDropper implements GraphDropper {
                                     if (attrId != Graph.NOT_FOUND) {
                                         final int vxId;
 
-                                        if (dropInfo.isVertex) {
+                                        if (dropInfo.isIsVertex()) {
                                             vxId = dropInfo.id;
 
                                             // If the vertex is selected, modify all of the selected vertices.

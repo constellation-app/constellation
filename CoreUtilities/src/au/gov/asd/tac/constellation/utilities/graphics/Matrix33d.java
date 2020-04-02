@@ -22,7 +22,7 @@ package au.gov.asd.tac.constellation.utilities.graphics;
  */
 public final class Matrix33d {
 
-    public double[] a;
+    private double[] a;
     public static final int LENGTH = 9;
 
     private static final double[] IDENTITY33D
@@ -36,6 +36,14 @@ public final class Matrix33d {
         a = new double[LENGTH];
     }
 
+    public double[] getA() {
+        return a;
+    }
+
+    public void setA(double[] a) {
+        this.a = a;
+    }
+    
     public void identity() {
         System.arraycopy(IDENTITY33D, 0, a, 0, LENGTH);
     }

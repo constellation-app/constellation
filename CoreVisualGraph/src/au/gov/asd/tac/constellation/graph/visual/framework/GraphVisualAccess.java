@@ -63,7 +63,8 @@ import java.util.Objects;
  */
 public final class GraphVisualAccess implements VisualAccess {
 
-    public int[] visualAttributes = new int[VisualProperty.values().length];
+    //TODO: Determine whether this field is needed
+    private int[] visualAttributes = new int[VisualProperty.values().length];
 
     private int graphBackgroundColor = Graph.NOT_FOUND;
     private int graphHighlightColor = Graph.NOT_FOUND;
@@ -121,7 +122,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private ConstellationColor[] connectionLabelColors = new ConstellationColor[0];
 
     private final Graph graph;
-    public ReadableGraph accessGraph;
+    private ReadableGraph accessGraph;
     private ConnectionMode connectionMode;
 
     private long globalModCount = -1;
