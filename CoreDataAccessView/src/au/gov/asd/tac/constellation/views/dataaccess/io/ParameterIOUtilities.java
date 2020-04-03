@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
+import au.gov.asd.tac.constellation.functionality.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -30,26 +31,20 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataSourceTitledPane;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.QueryPhasePane;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.prefs.Preferences;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.StatusDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
@@ -92,7 +87,7 @@ public class ParameterIOUtilities {
                         for (Map<String, String> tabState : dataAccessState.getState()) {
                             final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
                             final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
+                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
                                 final PluginParameter<?> pp = param.getValue();
                                 final String paramvalue = tabState.get(param.getKey());
                                 if (paramvalue != null) {
@@ -100,7 +95,7 @@ public class ParameterIOUtilities {
                                 }
                             });
                             break;
-                            // TODO: support multiple tabs, but don't introduce memory leaks
+                            // TODO: support multiple tabs and not introduce memory leaks
                         }
                     }
                 }
@@ -143,7 +138,6 @@ public class ParameterIOUtilities {
                 wg.setObjectValue(dataAccessStateAttribute, 0, dataAccessState);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
-                Thread.currentThread().interrupt();
             } finally {
                 if (wg != null) {
                     wg.commit();
@@ -207,7 +201,7 @@ public class ParameterIOUtilities {
 
                     final PluginParameters parameters = pane.getParameters();
                     if (parameters != null) {
-                        parameters.getParameters().entrySet().stream().forEach(param -> {
+                        parameters.getParameters().entrySet().stream().forEach((param) -> {
                             if (!PasswordParameterType.ID.equals(param.getValue().getType().getId())) {
                                 final String id = param.getKey();
                                 final String value = param.getValue().getStringValue();
@@ -226,58 +220,14 @@ public class ParameterIOUtilities {
         }
 
         if (queryName != null) {
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-            mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(dataAccessDir, encode(queryName + ".json"));
-            boolean go = true;
-            if (f.exists()) {
-                final String msg = String.format("'%s' already exists. Do you want to overwrite it?", queryName);
-                final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-                alert.setHeaderText("Data access parameter file exists");
-                alert.setContentText(msg);
-                final Optional<ButtonType> option = alert.showAndWait();
-                go = option.isPresent() && option.get() == ButtonType.OK;
-            }
-
-            if (go) {
-                try {
-                    mapper.writeValue(f, rootNode);
-                    StatusDisplayer.getDefault().setStatusText(String.format("Query saved to %s.", f.getPath()));
-                } catch (IOException ex) {
-                    final String msg = String.format("Can't save data access view configuration: %s", ex.getMessage());
-                    final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
-                }
-            }
-        } else {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("There must be a valid query name.", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
+            
         }
     }
 
-    public static void loadParameters(final DataAccessPane dap) {
-        final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File dataAccessDir = new File(userDir, DATA_ACCESS_DIR);
-        final String[] names;
-        if (dataAccessDir.isDirectory()) {
-            names = dataAccessDir.list((File dir, String name) -> {
-                return name.toLowerCase().endsWith(".json");
-            });
-        } else {
-            names = new String[0];
-        }
-
-        // Chop off ".json".
-        for (int i = 0; i < names.length; i++) {
-            names[i] = decode(names[i].substring(0, names[i].length() - 5));
-        }
-
-        final String queryName = QueryListDialog.getQueryName(dap, names);
-        if (queryName != null) {
-            try {
-                final ObjectMapper mapper = new ObjectMapper();
-                final JsonNode root = mapper.readTree(new File(dataAccessDir, encode(queryName) + ".json"));
+    public static void loadParameters(final DataAccessPane dap) { 
+        final JsonNode root = JsonIO.loadJsonPreferences(DATA_ACCESS_DIR);
+        if(root != null){
                 if (root.isArray()) {
                     // Remove all the existing tabs and start some new ones.
                     dap.removeTabs();
@@ -289,7 +239,7 @@ public class ParameterIOUtilities {
 
                         // Load the per-step global parameters.
                         final JsonNode global = step.get(GLOBAL_OBJECT);
-                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
+                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
                             final String id = param.getKey();
                             if (global.has(id)) {
                                 final JsonNode value = global.get(id);
@@ -303,7 +253,7 @@ public class ParameterIOUtilities {
                         // Load the per-step plugin parameters.
                         final JsonNode plugins = step.get(PLUGINS_OBJECT);
                         final Map<String, Map<String, String>> ppmap = toPerPluginParamMap(plugins);
-                        pluginPane.getDataAccessPanes().stream().forEach(pane -> {
+                        pluginPane.getDataAccessPanes().stream().forEach((pane) -> {
                             // Only load and enable from the JSON if the JSON contains data for this plugin
                             // and it's enabled; otherwise, disable the plugin.
                             // They're disabled by default anyway, but let's be obvious.)
@@ -371,12 +321,7 @@ public class ParameterIOUtilities {
                             }
                         });
                     }
-
-                    StatusDisplayer.getDefault().setStatusText(String.format("Query '%s' loaded.", encode(queryName)));
                 }
-            } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
         }
     }
 
@@ -414,61 +359,5 @@ public class ParameterIOUtilities {
         }
 
         return pluginMap;
-    }
-
-    /**
-     * Encode a String so it can be used as a filename.
-     *
-     * @param s The String to be encoded.
-     *
-     * @return The encoded String.
-     */
-    public static String encode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (final char c : s.toCharArray()) {
-            if (isValidFileCharacter(c)) {
-                b.append(c);
-            } else {
-                b.append(String.format("_%04x", (int) c));
-            }
-        }
-
-        return b.toString();
-    }
-
-    /**
-     * Decode a String that has been encoded by {@link encode(String)}.
-     *
-     * @param s The String to be decoded.
-     *
-     * @return The decoded String.
-     */
-    static String decode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            if (c != '_') {
-                b.append(c);
-            } else {
-                final String hex = s.substring(i + 1, Math.min(i + 5, s.length()));
-                if (hex.length() == 4) {
-                    try {
-                        final int value = Integer.parseInt(hex, 16);
-                        b.append((char) value);
-                        i += 4;
-                    } catch (final NumberFormatException ex) {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        return b.toString();
-    }
-
-    static boolean isValidFileCharacter(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ' || c == '-' || c == '.';
     }
 }
