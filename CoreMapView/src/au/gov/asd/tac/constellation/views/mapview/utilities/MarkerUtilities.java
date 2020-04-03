@@ -96,7 +96,7 @@ public class MarkerUtilities {
             final int b = Integer.parseInt(rgbHtml.substring(4, 6), 16);
             return color(a, r, g, b);
         } else { 
-            throw new IllegalArgumentException("The string provided is not a valid HTML color");
+            throw new IllegalArgumentException("The string provided is not a valid HTML color (Expected #RRGGBB or #aaRRGGBB)");
         }
         
     }

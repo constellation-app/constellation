@@ -178,7 +178,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractAttributeDe
 
     @Override
     public String acceptsString(String value) {
-        return parseString(value) == NULL_VALUE && value != null ? "Not a valid datetime" : null;
+        return parseString(value) == NULL_VALUE && value != null ? "Not a valid datetime (Expected yyyy-mm-dd hh:MM:ss)" : null;
     }
 
     /**
