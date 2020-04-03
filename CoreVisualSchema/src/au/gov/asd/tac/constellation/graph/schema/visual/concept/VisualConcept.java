@@ -182,7 +182,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(50000)
                 .create()
                 .build();
-        public static final SchemaAttribute SELECTEDFILTERMASK = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "selected_filter_bitmask")
+        public static final SchemaAttribute SELECTEDBITMASK = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "selected_bitmask")
                 .setDescription("Bitmask identifying filter layers enabled for display")
                 .setDefaultValue(1)
                 .create()
@@ -370,7 +370,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.TRANSACTION_LABELS);
         schemaAttributes.add(GraphAttribute.VISIBLE_ABOVE_THRESHOLD);
         schemaAttributes.add(GraphAttribute.VISIBILITY_THRESHOLD);
-        schemaAttributes.add(GraphAttribute.SELECTEDFILTERMASK);
+        schemaAttributes.add(GraphAttribute.SELECTEDBITMASK);
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);

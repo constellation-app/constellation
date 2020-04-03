@@ -62,9 +62,9 @@ enum Operator {
 public class StoreGraph extends LockingTarget implements GraphWriteMethods, Serializable {
 
     private boolean avoidUpdate = false;
-    private static final String SELECTED_FILTERMASK_ATTRIBUTE_LABEL = "selected_filter_bitmask";
-    private static final String FILTERMASK_ATTRIBUTE_LABEL = "filter_bitmask";
-    private static final String FILTERVISIBILITY_ATTRIBUTE_LABEL = "filter_visibility";
+    private static final String SELECTED_FILTERMASK_ATTRIBUTE_LABEL = "selected_bitmask";
+    private static final String FILTERMASK_ATTRIBUTE_LABEL = "layer_mask";
+    private static final String FILTERVISIBILITY_ATTRIBUTE_LABEL = "layer_visibility";
     private static final int HIGH_BIT = 0x80000000;
     private static final int LOW_BITS = 0x7FFFFFFF;
     private static final int[] CATEGORY_TO_STATE = new int[]{6, 4, 5, 1, 3, 7, 2};
