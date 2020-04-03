@@ -36,7 +36,7 @@ public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        final int bitmaskAttributeId = VisualConcept.GraphAttribute.SELECTEDBITMASK.ensure(graph);
+        final int bitmaskAttributeId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
         graph.setIntValue(bitmaskAttributeId, 0, bitmask);
     }
 

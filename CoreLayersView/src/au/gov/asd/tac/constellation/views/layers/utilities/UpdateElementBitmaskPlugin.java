@@ -39,7 +39,7 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        final int graphCurrentBitMask = VisualConcept.GraphAttribute.SELECTEDBITMASK.get(graph);
+        final int graphCurrentBitMask = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
         setVertices(graph, graphCurrentBitMask);
         setTransactions(graph, graphCurrentBitMask);
     }
