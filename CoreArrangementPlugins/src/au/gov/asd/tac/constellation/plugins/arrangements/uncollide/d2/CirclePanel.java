@@ -20,8 +20,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.Random;
 import javax.swing.JPanel;
 
 /**
@@ -30,7 +31,12 @@ import javax.swing.JPanel;
  */
 public final class CirclePanel extends JPanel {
 
-    private static final Random RAND = new Random(99);
+    private static final SecureRandom RAND;
+    
+    static {
+        final byte[] seedBytes = ByteBuffer.allocate(4).putInt(99).array();
+        RAND = new SecureRandom(seedBytes);
+    }
 
     private static final Color TREE_RUN_COLOR = new Color(0f, 0f, 0f, 0.5f);
     private static final Color TREE_END_COLOR = new Color(1f, 0.7843f, 0.1569f, 0.5f);

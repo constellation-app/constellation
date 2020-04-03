@@ -23,11 +23,11 @@ import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -171,7 +171,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
 
         // Otherwise, create a random color for this nebula.
         if (c == null) {
-            final float h = new Random().nextFloat();
+            final float h = new SecureRandom().nextFloat();
             c = Color.getHSBColor(h, 0.5f, 0.95f);
             NEBULA_COLOR.put(getPrimaryFile().getPath(), c);
         }
