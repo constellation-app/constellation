@@ -84,7 +84,7 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
                 return Arrays.asList();
             }
         } else {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
     }
 }
