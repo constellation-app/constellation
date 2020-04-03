@@ -66,13 +66,16 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
 
@@ -284,7 +287,30 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-
+        ArrayList<CustomMenuItem> colCheckboxes = new ArrayList<>();
+        
+        Label label1 = new Label("Filter:");
+        TextField searchField = new TextField ();
+        HBox hb = new HBox();
+        hb.getChildren().addAll(label1, searchField);
+        final CustomMenuItem search = new CustomMenuItem(hb);
+        
+        search.setHideOnClick(false);
+        searchField.setOnKeyReleased((KeyEvent e) -> {
+            String searchTerm = searchField.getText();
+            if (searchTerm.trim().equals("")) {
+                colCheckboxes.forEach((item) -> {
+                    item.setVisible(true);
+                });
+            } else {
+                colCheckboxes.forEach((CustomMenuItem item) -> {
+                    String name = item.getId();
+                    item.setVisible(name.contains(searchTerm));
+                });
+            }
+            
+        });
+        
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
         allColumns.setOnAction(e -> {
@@ -339,7 +365,7 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem());
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), search);
 
         columnIndex.forEach(columnTuple -> {
             final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
@@ -352,7 +378,8 @@ public final class TableViewPane extends BorderPane {
 
             final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
             columnVisibility.setHideOnClick(false);
-
+            columnVisibility.setId(columnTuple.getThird().getText());
+            colCheckboxes.add(columnVisibility);
             cm.getItems().add(columnVisibility);
         });
 
