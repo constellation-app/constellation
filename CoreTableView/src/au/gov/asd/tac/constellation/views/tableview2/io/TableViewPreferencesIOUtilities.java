@@ -41,11 +41,17 @@ import org.openide.util.NbPreferences;
 public class TableViewPreferencesIOUtilities {
 
     private static final String TABLE_VIEW_PREF_DIR = "TableViewPreferences";
-    private static final String TABLE_TYPE_NODE = "TableType";
     private static final String COLUMN_ORDER_NODE = "ColumnOrder";
     private static final String COLUMN_SORT_NODE = "SortByColumn";
     private static final String VERTEX_FILE_PREFIX = "vertex-";
     private static final String TRANSACTION_FILE_PREFIX = "transaction-";
+
+    /**
+     * Private constructor to hide implicit public one.
+     */
+    private TableViewPreferencesIOUtilities() {
+        throw new IllegalStateException("Static class");
+    }
 
     /**
      * Save details of the currently displayed tables displayed columns and
@@ -81,7 +87,6 @@ public class TableViewPreferencesIOUtilities {
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode rootNode = mapper.createArrayNode();
         final ObjectNode global = rootNode.addObject();
-        final ObjectNode tableTypeNode = global.put(TABLE_TYPE_NODE, tableType.toString()); // This IS ued to add node to JSON
         final ArrayNode colOrderArrayNode = global.putArray(COLUMN_ORDER_NODE);
         final ObjectNode colSortNode = global.putObject(COLUMN_SORT_NODE);
 
@@ -123,7 +128,6 @@ public class TableViewPreferencesIOUtilities {
         
         if (root != null) {
             for (final JsonNode step : root) {
-                final JsonNode tableTypeNode = step.get(TABLE_TYPE_NODE); // This is used to construct JSON node
                 final JsonNode colOrderArrayNode = step.get(COLUMN_ORDER_NODE);
                 final JsonNode colSortNode = step.get(COLUMN_SORT_NODE);
 
@@ -139,8 +143,6 @@ public class TableViewPreferencesIOUtilities {
                 }
             }
         }
-        Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> returnTuple =
-                new Tuple(colOrder, new Tuple(sortColumn, sortType));
-        return returnTuple;
+        return new Tuple(colOrder, new Tuple(sortColumn, sortType));
     }
 }

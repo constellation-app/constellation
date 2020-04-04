@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.genericjsonio;
 
-import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
 import java.util.Optional;

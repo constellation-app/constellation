@@ -47,6 +47,7 @@ public class JsonIO {
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
     private static String currentDir = "";  // Stores directory used by load dialog for reuse in delete call
+    private static String currentPrefix = "";  // Stores prefix used by load dialog for reuse in delete call
 
     /**
      * Private constructor to hide implicit public one.
@@ -193,8 +194,9 @@ public class JsonIO {
         final String[] names;
         final ObjectMapper mapper = new ObjectMapper();
 
-        // Store the load directory so that it can be used by deleteJsonPreference
+        // Store the load directory/prefix so that they can be used by deleteJsonPreference
         currentDir = loadDir;
+        currentPrefix = filePrefix;
 
         // Check the supplied directory for any files, if filePrefix was supplied, only files
         // containing the prefix are returned. Return a list of filenames for the user to select from.
@@ -262,15 +264,23 @@ public class JsonIO {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File prefDir = new File(userDir, currentDir);
-        final String encodedFilename = encode(filenameToDelete) + FILE_EXT;
+       
+        if (filenameToDelete != null) {
+            final String encodedFilename = encode(currentPrefix.concat(filenameToDelete)) + FILE_EXT;
 
-        // Loop through files in preference directory looking for one matching selected item
-        // delete it when found
-        if (prefDir.isDirectory()) {
-            for (File file : prefDir.listFiles()) {
-                if (file.getName().equals(encodedFilename)) {
-                    file.delete();
-                    break;
+            // Loop through files in preference directory looking for one matching selected item
+            // delete it when found
+            if (prefDir.isDirectory()) {
+                for (File file : prefDir.listFiles()) {
+                    if (file.getName().equals(encodedFilename)) {
+                        boolean result = file.delete();
+                        if (!result) {
+                            final String msg = String.format("Failed to delete file %s from disk", file.getName());
+                            final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.ERROR_MESSAGE);
+                            DialogDisplayer.getDefault().notify(nd);
+                        }
+                        break;
+                    }
                 }
             }
         }
