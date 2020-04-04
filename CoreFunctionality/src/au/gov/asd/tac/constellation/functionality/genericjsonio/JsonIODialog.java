@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.functionality.genericjsonio;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.gui.DraggableCell;
-//import au.gov.asd.tac.constellation.visual.DraggableCell;
 import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -35,6 +34,13 @@ import javafx.scene.control.TextInputDialog;
  * @author formalhaut69
  */
 public class JsonIODialog {
+
+    /**
+     * Private constructor to hide implicit public one.
+     */
+    private JsonIODialog() {
+        throw new IllegalStateException("Static class");
+    }
 
     /***
      * Present a dialog allowing user to select an entry from a list of available

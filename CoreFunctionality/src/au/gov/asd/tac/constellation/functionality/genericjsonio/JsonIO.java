@@ -43,10 +43,18 @@ import org.openide.util.NbPreferences;
  */
 public class JsonIO {
 
+    private static final String FILE_EXT = ".json";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
-    private static String CURRENT_DIR = "";  // Stores directory used by load dialog for reuse in delete call
+    private static String currentDir = "";  // Stores directory used by load dialog for reuse in delete call
 
+    /**
+     * Private constructor to hide implicit public one.
+     */
+    private JsonIO() {
+        throw new IllegalStateException("Static class");
+    }
+ 
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
@@ -125,7 +133,7 @@ public class JsonIO {
 
             // Create the file and write its contents. IF the file already exists, confirm from the user that they
             // wish to continue (and overwrite the existing file).
-            final File f = new File(prefDir, encode(fileName + ".json"));
+            final File f = new File(prefDir, encode(fileName + FILE_EXT));
             boolean go = true;
             if (f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", fileName);
@@ -186,28 +194,31 @@ public class JsonIO {
         final ObjectMapper mapper = new ObjectMapper();
 
         // Store the load directory so that it can be used by deleteJsonPreference
-        CURRENT_DIR = loadDir;
+        currentDir = loadDir;
 
         // Check the supplied directory for any files, if filePrefix was supplied, only files
         // containing the prefix are returned. Return a list of filenames for the user to select from.
         if (prefDir.isDirectory()) {
             names = prefDir.list((File dir, String name) -> {
                 if (filePrefix.isEmpty()) {
-                    return name.toLowerCase().endsWith(".json");
+                    return name.toLowerCase().endsWith(FILE_EXT);
                 }
-                return (name.toLowerCase().startsWith(filePrefix) && name.toLowerCase().endsWith(".json"));
+                return (name.toLowerCase().startsWith(filePrefix) && name.toLowerCase().endsWith(FILE_EXT));
             });
         } else {
-            // Nothing to select from
+            // Nothing to select from - return an empty list
             names = new String[0];
         }
 
         // chop off ".json" from the filenames
         for (int i = 0; i < names.length; i++) {
-            names[i] = decode(names[i].substring(0, names[i].length() - 5));
-            // Hide any file prefix which the user didn't see when saving
-            if (!filePrefix.isEmpty()) {
-                names[i] = names[i].substring(filePrefix.length());
+            final String nextName = decode(names[i].substring(0, names[i].length() - 5));
+            if (nextName != null && !nextName.isEmpty()) {
+                names[i] = nextName;
+                // Hide any file prefix which the user didn't see when saving
+                if (!filePrefix.isEmpty()) {
+                    names[i] = names[i].substring(filePrefix.length());
+                }
             } 
         }
 
@@ -219,7 +230,7 @@ public class JsonIO {
                 if (!filePrefix.isEmpty()) {
                     fileName = filePrefix.concat(fileName);
                 }
-                return mapper.readTree(new File(prefDir, encode(fileName) + ".json"));
+                return mapper.readTree(new File(prefDir, encode(fileName) + FILE_EXT));
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -250,8 +261,8 @@ public class JsonIO {
     public static void deleteJsonPreference(final String filenameToDelete) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-        final File prefDir = new File(userDir, CURRENT_DIR);
-        final String encodedFilename = encode(filenameToDelete) + ".json";
+        final File prefDir = new File(userDir, currentDir);
+        final String encodedFilename = encode(filenameToDelete) + FILE_EXT;
 
         // Loop through files in preference directory looking for one matching selected item
         // delete it when found
@@ -295,21 +306,36 @@ public class JsonIO {
      */
     public static String decode(final String s) {
         final StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
+        
+        // Loop through characters in source string. The normal case just adds
+        // the next character to the destination string, but if a '_ is found,
+        // it is treated asa marker which beigns a 4 character hex code - used
+        // by the encode method to represent characters identified as non
+        // printable.
+        int i = 0;
+        while (i < s.length()) {
             final char c = s.charAt(i);
             if (c != '_') {
                 b.append(c);
+                i++;
             } else {
+                // An '_' was found, try to nibble off the next 4 characters
                 final String hex = s.substring(i + 1, Math.min(i + 5, s.length()));
                 if (hex.length() == 4) {
+                    // A full 4 characters could be nibbled off, which is expected
+                    // as all filenames generated by the encode method will add
+                    // this. So the 'bad' case would represent a filename added
+                    // to the config directory manually by a user.
                     try {
                         final int value = Integer.parseInt(hex, 16);
                         b.append((char) value);
-                        i += 4;
+                        i += 5; // Added 1 for the '_' and 4 for the digits
                     } catch (final NumberFormatException ex) {
+                        // Hex string couldnt be converted to int
                         return null;
                     }
                 } else {
+                    // Hex string couldn't be extracted
                     return null;
                 }
             }

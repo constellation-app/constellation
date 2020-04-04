@@ -87,7 +87,7 @@ public class ParameterIOUtilities {
                         for (Map<String, String> tabState : dataAccessState.getState()) {
                             final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
                             final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
+                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
                                 final PluginParameter<?> pp = param.getValue();
                                 final String paramvalue = tabState.get(param.getKey());
                                 if (paramvalue != null) {
@@ -201,7 +201,7 @@ public class ParameterIOUtilities {
 
                     final PluginParameters parameters = pane.getParameters();
                     if (parameters != null) {
-                        parameters.getParameters().entrySet().stream().forEach((param) -> {
+                        parameters.getParameters().entrySet().stream().forEach(param -> {
                             if (!PasswordParameterType.ID.equals(param.getValue().getType().getId())) {
                                 final String id = param.getKey();
                                 final String value = param.getValue().getStringValue();
@@ -225,46 +225,45 @@ public class ParameterIOUtilities {
         }
     }
 
-    public static void loadParameters(final DataAccessPane dap) { 
+    public static void loadParameters(final DataAccessPane dap) {
         final JsonNode root = JsonIO.loadJsonPreferences(DATA_ACCESS_DIR);
-        if(root != null){
-                if (root.isArray()) {
-                    // Remove all the existing tabs and start some new ones.
-                    dap.removeTabs();
-                    for (final JsonNode step : root) {
-                        final QueryPhasePane pluginPane = dap.newTab();
+        if ((root != null) && (root.isArray())) {
+            // Remove all the existing tabs and start some new ones.
+            dap.removeTabs();
+            for (final JsonNode step : root) {
+                final QueryPhasePane pluginPane = dap.newTab();
 
-                        // Remember the global parameters: if plugins have these, they don't need to be loaded.
-                        final Set<String> globalParams = new HashSet<>();
+                // Remember the global parameters: if plugins have these, they don't need to be loaded.
+                final Set<String> globalParams = new HashSet<>();
 
-                        // Load the per-step global parameters.
-                        final JsonNode global = step.get(GLOBAL_OBJECT);
-                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach((param) -> {
-                            final String id = param.getKey();
-                            if (global.has(id)) {
-                                final JsonNode value = global.get(id);
-                                final PluginParameter pp = param.getValue();
-                                pp.setStringValue(value.isNull() ? null : value.textValue());
+                // Load the per-step global parameters.
+                final JsonNode global = step.get(GLOBAL_OBJECT);
+                pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
+                    final String id = param.getKey();
+                    if (global.has(id)) {
+                        final JsonNode value = global.get(id);
+                        final PluginParameter pp = param.getValue();
+                        pp.setStringValue(value.isNull() ? null : value.textValue());
 
-                                globalParams.add(id);
-                            }
-                        });
+                        globalParams.add(id);
+                    }
+                });
 
-                        // Load the per-step plugin parameters.
-                        final JsonNode plugins = step.get(PLUGINS_OBJECT);
-                        final Map<String, Map<String, String>> ppmap = toPerPluginParamMap(plugins);
-                        pluginPane.getDataAccessPanes().stream().forEach((pane) -> {
-                            // Only load and enable from the JSON if the JSON contains data for this plugin
-                            // and it's enabled; otherwise, disable the plugin.
-                            // They're disabled by default anyway, but let's be obvious.)
-                            final String isEnabledId = String.format("%s.%s", pane.getPlugin().getClass().getSimpleName(), IS_ENABLED);
-                            if (plugins.has(isEnabledId)) {
-                                // Is this plugin enabled in the saved JSON?
-                                final boolean isEnabled = plugins.get(isEnabledId).booleanValue();
+                // Load the per-step plugin parameters.
+                final JsonNode plugins = step.get(PLUGINS_OBJECT);
+                final Map<String, Map<String, String>> ppmap = toPerPluginParamMap(plugins);
+                pluginPane.getDataAccessPanes().stream().forEach(pane -> {
+                    // Only load and enable from the JSON if the JSON contains data for this plugin
+                    // and it's enabled; otherwise, disable the plugin.
+                    // They're disabled by default anyway, but let's be obvious.)
+                    final String isEnabledId = String.format("%s.%s", pane.getPlugin().getClass().getSimpleName(), IS_ENABLED);
+                    if (plugins.has(isEnabledId)) {
+                        // Is this plugin enabled in the saved JSON?
+                        final boolean isEnabled = plugins.get(isEnabledId).booleanValue();
 //                                pane.validityChanged(isEnabled);
-                                if (isEnabled) {
-                                    pane.setParameterValues(ppmap.get(pane.getPlugin().getClass().getSimpleName()));
-                                    // TODO: review this section, remove it if its working, else fix it
+                        if (isEnabled) {
+                            pane.setParameterValues(ppmap.get(pane.getPlugin().getClass().getSimpleName()));
+                            // TODO: review this section, remove it if its working, else fix it
 ////                                    pane.setExpanded(true);
 //                                    final PluginParameters parameters = pane.getParameters();
 //                                    if(parameters != null)
@@ -313,15 +312,14 @@ public class ParameterIOUtilities {
 //                                    }
 
 //                                pane.validityChanged(isEnabled);
-                                }
+                        }
 //                                pane.validityChanged(isEnabled);
-                            } else {
-                                // This plugin isn't mentioned in the JSON, so disable it.
-                                pane.validityChanged(false);
-                            }
-                        });
+                    } else {
+                        // This plugin isn't mentioned in the JSON, so disable it.
+                        pane.validityChanged(false);
                     }
-                }
+                });
+            }
         }
     }
 

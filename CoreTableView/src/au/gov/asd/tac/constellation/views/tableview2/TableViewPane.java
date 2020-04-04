@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2;
 
-//import au.gov.asd.tac.constellation.functionality.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -138,7 +137,6 @@ public final class TableViewPane extends BorderPane {
     private Button elementTypeButton;
     private MenuButton copyButton;
     private MenuButton exportButton;
-    private MenuButton layoutPreferencesButton; 
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
@@ -284,17 +282,16 @@ public final class TableViewPane extends BorderPane {
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
-        this.layoutPreferencesButton = new MenuButton();
+        
+        MenuButton layoutPreferencesButton = new MenuButton();
         layoutPreferencesButton.setGraphic(SETTINGS_ICON);
         layoutPreferencesButton.setMaxWidth(WIDTH);
         layoutPreferencesButton.setPopupSide(Side.RIGHT);
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
             
-            if (!table.getColumns().isEmpty()) {
-                if(GraphManager.getDefault().getActiveGraph() != null){
-                    TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
-                }
+            if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
+                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
             }
             e.consume();
         });
