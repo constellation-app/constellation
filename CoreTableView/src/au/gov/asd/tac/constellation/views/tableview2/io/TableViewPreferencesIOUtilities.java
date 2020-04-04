@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview2.io;
 
-import au.gov.asd.tac.constellation.functionality.genericjsonio.JsonIO;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
