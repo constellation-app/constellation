@@ -709,6 +709,9 @@ public final class TableViewPane extends BorderPane {
                                         case GraphRecordStoreUtilities.DESTINATION:
                                             this.getStyleClass().add("element-destination");
                                             break;
+                                        default:
+                                            // Code can't make it to here
+                                            break;
                                     }
 
                                     // enable context menu on right-click
@@ -856,7 +859,10 @@ public final class TableViewPane extends BorderPane {
                         final int transactionCount = readableGraph.getTransactionCount();
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transactionId = readableGraph.getTransaction(transactionPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, transactionId) : false;
+                            boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                            }
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -891,7 +897,10 @@ public final class TableViewPane extends BorderPane {
                         final int vertexCount = readableGraph.getVertexCount();
                         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                             final int vertexId = readableGraph.getVertex(vertexPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, vertexId) : false;
+                            boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                            }
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -982,7 +991,10 @@ public final class TableViewPane extends BorderPane {
                             final int elementId = isVertex
                                     ? readableGraph.getVertex(elementPosition)
                                     : readableGraph.getTransaction(elementPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, elementId) : false;
+                            final boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                readableGraph.getBooleanValue(selectedAttributeId, elementId);
+                            }
                             if (isSelected) {
                                 selectedIds.add(elementId);
                             }

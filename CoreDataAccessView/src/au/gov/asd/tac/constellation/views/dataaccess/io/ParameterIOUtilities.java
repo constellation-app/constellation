@@ -138,6 +138,7 @@ public class ParameterIOUtilities {
                 wg.setObjectValue(dataAccessStateAttribute, 0, dataAccessState);
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
             } finally {
                 if (wg != null) {
                     wg.commit();
