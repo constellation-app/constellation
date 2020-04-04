@@ -899,7 +899,7 @@ public final class TableViewPane extends BorderPane {
                             final int vertexId = readableGraph.getVertex(vertexPosition);
                             boolean isSelected = false;
                             if (selectedAttributeId != Graph.NOT_FOUND) {
-                                readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
                             }
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
@@ -991,9 +991,9 @@ public final class TableViewPane extends BorderPane {
                             final int elementId = isVertex
                                     ? readableGraph.getVertex(elementPosition)
                                     : readableGraph.getTransaction(elementPosition);
-                            final boolean isSelected = false;
+                            boolean isSelected = false;
                             if (selectedAttributeId != Graph.NOT_FOUND) {
-                                readableGraph.getBooleanValue(selectedAttributeId, elementId);
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, elementId);
                             }
                             if (isSelected) {
                                 selectedIds.add(elementId);
