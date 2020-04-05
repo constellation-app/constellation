@@ -51,6 +51,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -81,6 +82,7 @@ public class RunPane extends BorderPane {
     final TextField filterField;
     private final RowFilter rowFilter = new RowFilter();
     private String filter = "";
+    private String attributeFilter = "";
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
@@ -164,7 +166,8 @@ public class RunPane extends BorderPane {
                 + "5. Click on the Import button to import the data to your destination graph.\n"
                 + "6. Save your configuration using Options -> Save.\n\n"
                 + "HINT: See all supported attributes using Options -> Show all schema attributes\n"
-                + "HINT: Hover over the attribute name for a tooltip.");
+                + "HINT: Hover over the attribute name for a tooltip.\n"
+                + "HINT: Start typing to filter attributes (press delete to remove).");
         startupHelpText.setStyle("-fx-font-size: 14pt;-fx-fill: grey;");
         sampleDataView.setPlaceholder(startupHelpText);
 
@@ -186,6 +189,19 @@ public class RunPane extends BorderPane {
 
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
+        attributePane.setOnKeyPressed(event -> {
+            final KeyCode c = event.getCode();
+            if (c == KeyCode.DELETE) {
+                attributeFilter = "";
+            } else if (c == KeyCode.BACK_SPACE) {
+                attributeFilter = "";
+            } else if (c.isLetterKey()) {
+                attributeFilter += c.getChar();
+            }
+            importController.setShowFilteredSchemaAttributes(attributeFilter);
+            importController.setDestination(null);
+        });
+
         attributePane.setPadding(new Insets(5));
         attributePane.setVgap(5);
         attributePane.setHgap(5);
@@ -199,6 +215,7 @@ public class RunPane extends BorderPane {
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         splitPane.getItems().add(attributeScrollPane);
+        splitPane.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
         columnRectangle.setStyle("-fx-fill: rgba(200, 200, 200, 0.3);");
         columnRectangle.setVisible(false);
@@ -252,7 +269,7 @@ public class RunPane extends BorderPane {
     public void setDraggingAttributeNode(AttributeNode draggingAttributeNode) {
         this.draggingAttributeNode = draggingAttributeNode;
     }
-    
+
     public void handleAttributeMoved(double sceneX, double sceneY) {
         if (draggingAttributeNode != null) {
             Point2D location = sceneToLocal(sceneX, sceneY);
