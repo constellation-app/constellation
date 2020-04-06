@@ -80,7 +80,7 @@ public class NifiClient extends RestClient {
                     LOGGER.log(Level.INFO, "Failure: response code {0} from node {1}, trying next node...", new Object[]{responseCode, node});
                 }
             } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, "Failure: could not post to node " + node, ex);
+                LOGGER.log(Level.SEVERE, ex, () -> "Failure: could not post to node " + node);
             }
         }
         LOGGER.log(Level.INFO, "Finished posting to nodes");

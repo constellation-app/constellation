@@ -60,7 +60,7 @@ public class UriIconData extends IconData {
                 stream = uri.toURL().openStream();
             }
         } catch (FileNotFoundException ex) {
-            LOGGER.log(Level.WARNING, "UriIconData: file not found at {0}", uri.toString());
+            LOGGER.log(Level.WARNING, "UriIconData: file not found at {0}", uri);
             stream = null;
         }
 
