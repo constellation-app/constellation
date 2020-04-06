@@ -37,9 +37,9 @@ public final class MemoryAction implements ActionListener {
         final long maxmem = Runtime.getRuntime().maxMemory();
 
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("Free memory: %,d\n", freemem));
-        b.append(String.format("Total memory: %,d\n", totalmem));
-        b.append(String.format("Maximum memory: %,d\n", maxmem));
+        b.append(String.format("Free memory: %,d%n", freemem));
+        b.append(String.format("Total memory: %,d%n", totalmem));
+        b.append(String.format("Maximum memory: %,d%n", maxmem));
 
 //        // test
 //        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {

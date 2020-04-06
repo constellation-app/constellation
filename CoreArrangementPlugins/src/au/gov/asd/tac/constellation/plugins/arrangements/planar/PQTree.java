@@ -113,24 +113,7 @@ class PQTree {
                 if (node.getParent().getPertinentChildCount() == 0) {
                     nodesToProcess.addLast(node.getParent());
                 }
-                boolean matched
-                        = templateL1(node)
-                        || templateP1(node)
-                        || templateP3(node)
-                        || templateP5(node)
-                        || templateQ1(node)
-                        || templateQ2(node);
             } else {
-                // node is the root of the pertinent subtree
-                boolean matched
-                        = templateL1(node)
-                        || templateP1(node)
-                        || templateP2(node)
-                        || templateP4(node)
-                        || templateP6(node)
-                        || templateQ1(node)
-                        || templateQ3(node) /* ||
-                         templateQ2(node)*/;
                 // As we are at the pertinent root we will not be processing anything above it and hence we need to reset the counts of its ancestors
                 PQNode ancestor = node.getParent();
                 while (ancestor != null) {

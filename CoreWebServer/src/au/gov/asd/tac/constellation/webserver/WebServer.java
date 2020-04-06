@@ -154,7 +154,7 @@ public class WebServer {
                 // Now write the file contents.
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}\n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
 
                 // Download the Python REST client if enabled.

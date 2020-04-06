@@ -81,10 +81,10 @@ public class ContractCompositePlugin extends SimpleEditPlugin implements Context
             if (compositeNodeState != null && compositeNodeState.comprisesAComposite()) {
                 return Arrays.asList("Contract Composite");
             } else {
-                return null;
+                return Arrays.asList();
             }
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 }

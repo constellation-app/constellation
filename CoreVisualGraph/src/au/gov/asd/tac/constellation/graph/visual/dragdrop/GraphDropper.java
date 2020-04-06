@@ -75,12 +75,12 @@ public interface GraphDropper {
         /**
          * True if the drop was on a vertex element.
          */
-        public boolean isVertex;
+        private final boolean isVertex;
 
         /**
          * True if the drop was on a transaction element.
          */
-        public boolean isTransaction;
+        private final boolean isTransaction;
 
         public DropInfo(final Vector3f location, final int id, final boolean isVertex, final boolean isTransaction) {
             this.location = location;
@@ -88,5 +88,14 @@ public interface GraphDropper {
             this.isVertex = isVertex;
             this.isTransaction = isTransaction;
         }
+
+        public boolean isIsVertex() {
+            return isVertex;
+        }
+
+        public boolean isIsTransaction() {
+            return isTransaction;
+        }
+        
     }
 }

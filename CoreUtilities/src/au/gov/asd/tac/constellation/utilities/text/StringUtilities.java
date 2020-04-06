@@ -128,11 +128,12 @@ public class StringUtilities {
      * @return A list of unescaped strings.
      */
     public static List<String> splitEscaped(final String string, final String delimiter) {
+        final List<String> splits = new ArrayList<>();
+        
         if (string == null) {
-            return null;
+            return splits;
         }
 
-        final List<String> splits = new ArrayList<>();
         if (string.isEmpty()) {
             splits.add("");
         } else {
@@ -277,10 +278,12 @@ public class StringUtilities {
     }
 
     public static List<String> unquoteAndSplitString(String string, final char delimiter, final char quote, final char escapeCharacter) {
-        if (string == null) {
-            return null;
-        }
         final List<String> strings = new ArrayList<>();
+        
+        if (string == null) {
+            return strings;
+        }
+        
         while (!string.isEmpty()) {
             int delimiterIndex = -1;
             do {

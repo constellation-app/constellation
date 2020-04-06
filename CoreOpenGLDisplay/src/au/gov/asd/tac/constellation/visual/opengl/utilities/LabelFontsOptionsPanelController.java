@@ -136,7 +136,7 @@ public final class LabelFontsOptionsPanelController extends OptionsPanelControll
 
     @Override
     public boolean isValid() {
-        final LabelFontsOptionsPanel labelFontsOptionsPanel = getPanel();
+        getPanel();
         // TODO: check whether form is consistent and complete
         return true;
     }

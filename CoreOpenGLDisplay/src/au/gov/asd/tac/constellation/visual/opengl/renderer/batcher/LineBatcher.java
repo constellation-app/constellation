@@ -18,13 +18,13 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -322,8 +322,8 @@ public class LineBatcher implements SceneBatcher {
             }
             gl.glUniformMatrix4fv(lineShaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(lineShaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(lineShaderVisibilityLow, camera.visibilityLow);
-            gl.glUniform1f(lineShaderVisibilityHigh, camera.visibilityHigh);
+            gl.glUniform1f(lineShaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(lineShaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(lineShaderMorphMix, camera.getMix());
             gl.glUniform1i(lineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineShaderAlpha, opacity);
@@ -340,8 +340,8 @@ public class LineBatcher implements SceneBatcher {
             }
             gl.glUniformMatrix4fv(lineLineShaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(lineLineShaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(lineLineShaderVisibilityLow, camera.visibilityLow);
-            gl.glUniform1f(lineLineShaderVisibilityHigh, camera.visibilityHigh);
+            gl.glUniform1f(lineLineShaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(lineLineShaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(lineLineShaderMorphMix, camera.getMix());
             gl.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineLineShaderAlpha, opacity);

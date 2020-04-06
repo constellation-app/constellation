@@ -91,7 +91,7 @@ public class WebViewer extends JFXPanel {
                         webEngine.load(newValue);
                     }
                 });
-                EventHandler<ActionEvent> goAction = new EventHandler<ActionEvent>() {
+                new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(final ActionEvent event) {
                         webEngine.load(url.startsWith("http://")

@@ -140,7 +140,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.vxTable);
         select.append(data.vxTable);
         select.append(" WHERE 1<>1");
-        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -222,7 +222,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         JdbcUtilities.checkSqlLabel(data.txTable);
         select.append(data.txTable);
         select.append(" WHERE 1<>1");
-        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", select.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", select);
 
         if (!labelMap.isEmpty()) {
             try (final Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)) {
@@ -309,7 +309,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export vx SQL: {0}", insert);
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {
@@ -404,7 +404,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
         insert.append(") VALUES(");
         insert.append(values.toString());
         insert.append(")");
-        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", insert.toString());
+        LOGGER.log(Level.INFO, "JDBC export tx SQL: {0}", insert);
 
         if (!attrsToInsert.isEmpty()) {
             try (final PreparedStatement stmt = conn.prepareStatement(insert.toString())) {

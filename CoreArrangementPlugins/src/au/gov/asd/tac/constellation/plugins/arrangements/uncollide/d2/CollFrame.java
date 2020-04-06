@@ -78,8 +78,6 @@ public class CollFrame extends javax.swing.JFrame {
                     prevCollisions = totalCollided;
                     isEnd = totalCollided == 0;
 
-                    final List<Box2D> boxes = qt.getSubs();
-//                    cp.setBoxes(boxes, isEnd);
 //                    repaintPanel();
                 }
             }

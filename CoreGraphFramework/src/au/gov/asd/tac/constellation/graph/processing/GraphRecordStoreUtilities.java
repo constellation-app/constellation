@@ -515,7 +515,6 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's vertices.
      */
     public static GraphRecordStore getVertices(final GraphReadMethods graph, boolean singletonsOnly, boolean selectedOnly, boolean disassociateIds, final int[] offset, final int limit) {
-        final int[] key = graph.getPrimaryKey(GraphElementType.VERTEX);
         final GraphRecordStore recordStore = new GraphRecordStore();
 
         final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
