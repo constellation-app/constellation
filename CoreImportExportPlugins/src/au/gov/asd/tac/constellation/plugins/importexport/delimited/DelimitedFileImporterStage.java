@@ -191,8 +191,8 @@ public class DelimitedFileImporterStage extends Stage {
         centerOnScreen();
     }
 
-    public void updateAttributes(String filterAttributes) {
-        importController.setShowFilteredSchemaAttributes(filterAttributes);
+    public void updateAttributes(String attributeFilter) {
+        importController.setAttributeFilter(attributeFilter);
         importController.setClearManuallyAdded(false);
         importController.setDestination(sourcePane.getDestination());
     }

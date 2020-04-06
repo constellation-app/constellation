@@ -83,6 +83,7 @@ public class RunPane extends BorderPane {
     private final RowFilter rowFilter = new RowFilter();
     private String filter = "";
     private String attributeFilter = "";
+    private final TextField inputtedFilterField = new TextField();
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
@@ -191,12 +192,13 @@ public class RunPane extends BorderPane {
 
         attributePane.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
-            if (c == KeyCode.DELETE) {
+            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
                 attributeFilter = "";
-            } else if (c == KeyCode.BACK_SPACE) {
-                attributeFilter = "";
+                inputtedFilterField.setVisible(false);
             } else if (c.isLetterKey()) {
                 attributeFilter += c.getChar();
+                inputtedFilterField.setText(attributeFilter);
+                inputtedFilterField.setVisible(true);
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -214,6 +216,13 @@ public class RunPane extends BorderPane {
         attributeScrollPane.setPrefHeight(350);
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        final SplitPane inputtedFilterPane = new SplitPane();
+        final Label inputtedFilterLabel = new Label("Atribute Filter (start typing):");
+        inputtedFilterField.setEditable(false);
+        inputtedFilterPane.getItems().add(inputtedFilterLabel);
+        inputtedFilterPane.getItems().add(inputtedFilterField);
+        splitPane.getItems().add(inputtedFilterPane);
         splitPane.getItems().add(attributeScrollPane);
         splitPane.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
