@@ -525,11 +525,9 @@ class IconListModel implements ListModel<IconListElement> {
     public IconListModel(final TreeMap<String, ConstellationIcon> icons) {
         names = new ArrayList<>(icons.size());
         iconValue = new ArrayList<>(icons.size());
-        int i = 0;
         for (String part : icons.navigableKeySet()) {
             names.add(part);
             iconValue.add(icons.get(part));
-            i++;
         }
 
         listeners = new ArrayList<>();

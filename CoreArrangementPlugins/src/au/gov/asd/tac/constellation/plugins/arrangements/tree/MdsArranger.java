@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import java.util.BitSet;
 import java.util.Random;
 import org.openide.util.NotImplementedException;
@@ -78,7 +78,6 @@ public class MdsArranger implements Arranger {
         int smallGraphSize = 20;
         int iterationsPerStageSmallGraph = 25;
         int numTrialsForSmallGraph = 4;
-        int interactionInterval = 1;
 
         final boolean setMinByRadii = params.tryToAvoidOverlap;
         final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0f);

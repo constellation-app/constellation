@@ -64,9 +64,7 @@ public class DayNightLayer extends MapLayer {
         final Location sunLocation = getSunPosition(currentTime);
         final ScreenPosition sunPosition = map.getScreenPosition(sunLocation);
         final Location leftShadowLocation = getShadowPosition(sunLocation, ShadowOrientation.LEFT);
-        final ScreenPosition leftShadowPosition = map.getScreenPosition(leftShadowLocation);
         final Location rightShadowLocation = getShadowPosition(sunLocation, ShadowOrientation.RIGHT);
-        final ScreenPosition rightShadowPosition = map.getScreenPosition(rightShadowLocation);
 
         // draw the sun
         dayNightImage.stroke(STROKE_COLOR);
