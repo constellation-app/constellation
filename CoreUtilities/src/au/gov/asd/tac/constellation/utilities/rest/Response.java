@@ -166,26 +166,23 @@ public abstract class Response {
 
     public String getLogMessage() {
         if (json != null && json.get("logMessage") != null) {
-            final String logMessage = json.get("logMessage").textValue();
-            return logMessage;
+            return json.get("logMessage").textValue();
         }
 
-        return String.format("Invalid response %d: %s\n%s\n", code, message, Arrays.toString(bytes));
+        return String.format("Invalid response %d: %s%n%s%n", code, message, Arrays.toString(bytes));
     }
 
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[%s\n", this.getClass().getSimpleName()));
+        b.append(String.format("[%s%n", this.getClass().getSimpleName()));
         b.append("----\n");
-        b.append(String.format("code    : %d\n", code));
-        b.append(String.format("message : %s\n", message));
+        b.append(String.format("code    : %d%n", code));
+        b.append(String.format("message : %s%n", message));
         b.append("----\n");
-        headers.entrySet().stream().forEach((header) -> {
-            b.append(String.format("header  : %s\n", header.getKey()));
-            header.getValue().stream().forEach((v) -> {
-                b.append(String.format("        : %s\n", v));
-            });
+        headers.entrySet().stream().forEach(header -> {
+            b.append(String.format("header  : %s%n", header.getKey()));
+            header.getValue().stream().forEach(v -> b.append(String.format("        : %s%n", v)));
         });
 
         b.append("----\n");
@@ -200,13 +197,11 @@ public abstract class Response {
             }
         }
 
-        if (!jsonShown) {
-            if (bytes != null) {
-                try {
-                    b.append(new String(bytes, StandardCharsets.UTF_8.name()));
-                } catch (UnsupportedEncodingException ex) {
-                    b.append(String.format("(bytes: length %d)", bytes.length));
-                }
+        if (!jsonShown && bytes != null) {
+            try {
+                b.append(new String(bytes, StandardCharsets.UTF_8.name()));
+            } catch (UnsupportedEncodingException ex) {
+                b.append(String.format("(bytes: length %d)", bytes.length));
             }
         }
 

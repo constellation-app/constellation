@@ -45,7 +45,7 @@ import org.openide.util.Utilities;
  */
 public class JDropDownMenu<E> extends JComponent implements ActionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(JMultiChoiceComboBoxMenu.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(JDropDownMenu.class.getName());
 
     private final JButton button;
     private final JPopupMenu menu;

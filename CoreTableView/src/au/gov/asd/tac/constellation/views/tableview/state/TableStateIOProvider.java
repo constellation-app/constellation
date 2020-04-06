@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.views.tableview.state;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.io.providers.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
+import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.views.tableview.GraphTableModel.Segment;
 import au.gov.asd.tac.constellation.views.tableview.state.TableState.ColumnState;
@@ -47,7 +47,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final int posx = jnode.get("posx").asInt(0);
             final int posy = jnode.get("posy").asInt(0);
-            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) ? jnode.get(SELECTED_ONLY).asBoolean(false) : false;
+            final boolean selectedOnly = jnode.hasNonNull(SELECTED_ONLY) && jnode.get(SELECTED_ONLY).asBoolean(false);
 
             final TableState state = new TableState(new Point(posx, posy), selectedOnly);
 
@@ -67,8 +67,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                     final ColumnState cs = new ColumnState(label, segment, width);
                     state.columns.add(cs);
                 } catch (IllegalArgumentException ex) {
-                    LOGGER.log(Level.SEVERE, "Segment value {0} illegal", segmentText);
-                    ex.printStackTrace();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 

@@ -22,16 +22,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
-import com.sun.javafx.tk.FontMetrics;
-import com.sun.javafx.tk.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,19 +66,23 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.text.Font;
+import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
 
 /**
  * Table View Pane.
+ * 
+ * TODO: some javafx classes no are longer supported, fix it.
  *
  * @author elnath
  * @author cygnus_x-1
@@ -161,7 +163,7 @@ public final class TableViewPane extends BorderPane {
         table.setPadding(new Insets(5));
         setCenter(table);
 
-        // TODO: experiment with caching!
+        // TODO: experiment with caching
         table.setCache(false);
 
         this.progress = new BorderPane();
@@ -285,7 +287,30 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-
+        ArrayList<CustomMenuItem> colCheckboxes = new ArrayList<>();
+        
+        Label label1 = new Label("Filter:");
+        TextField searchField = new TextField ();
+        HBox hb = new HBox();
+        hb.getChildren().addAll(label1, searchField);
+        final CustomMenuItem search = new CustomMenuItem(hb);
+        
+        search.setHideOnClick(false);
+        searchField.setOnKeyReleased((KeyEvent e) -> {
+            String searchTerm = searchField.getText();
+            if (searchTerm.trim().equals("")) {
+                colCheckboxes.forEach((item) -> {
+                    item.setVisible(true);
+                });
+            } else {
+                colCheckboxes.forEach((CustomMenuItem item) -> {
+                    String name = item.getId();
+                    item.setVisible(name.contains(searchTerm));
+                });
+            }
+            
+        });
+        
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
         allColumns.setOnAction(e -> {
@@ -340,7 +365,7 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem());
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), search);
 
         columnIndex.forEach(columnTuple -> {
             final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
@@ -353,7 +378,8 @@ public final class TableViewPane extends BorderPane {
 
             final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
             columnVisibility.setHideOnClick(false);
-
+            columnVisibility.setId(columnTuple.getThird().getText());
+            colCheckboxes.add(columnVisibility);
             cm.getItems().add(columnVisibility);
         });
 
@@ -583,16 +609,16 @@ public final class TableViewPane extends BorderPane {
                 });
 
                 // style and format columns in columnIndex
-                final Font defaultFont = Font.getDefault();
-                final FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(defaultFont);
+//                final Font defaultFont = Font.getDefault();
+//                final FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(defaultFont);
                 columnIndex.forEach(columnTuple -> {
                     final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
 
                     // set the columns widths based on the length of their text
-                    final String columnText = column.getText();
-                    final float prefWidth = columnText == null
-                            ? 0 : fontMetrics.computeStringWidth(columnText);
-                    column.setPrefWidth(prefWidth + PAD);
+//                    final String columnText = column.getText();
+//                    final float prefWidth = columnText == null
+//                            ? 0 : fontMetrics.computeStringWidth(columnText);
+//                    column.setPrefWidth(prefWidth + PAD);
 
                     // assign cells to columns
                     column.setCellValueFactory(cellData -> {
@@ -637,6 +663,8 @@ public final class TableViewPane extends BorderPane {
                                             break;
                                         case GraphRecordStoreUtilities.DESTINATION:
                                             this.getStyleClass().add("element-destination");
+                                            break;
+                                        default:
                                             break;
                                     }
 
@@ -747,7 +775,7 @@ public final class TableViewPane extends BorderPane {
                         final int transactionCount = readableGraph.getTransactionCount();
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transactionId = readableGraph.getTransaction(transactionPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, transactionId) : false;
+                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, transactionId);
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -768,6 +796,7 @@ public final class TableViewPane extends BorderPane {
                                             break;
                                         default:
                                             attributeValue = null;
+                                            break;
                                     }
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);
@@ -782,7 +811,7 @@ public final class TableViewPane extends BorderPane {
                         final int vertexCount = readableGraph.getVertexCount();
                         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                             final int vertexId = readableGraph.getVertex(vertexPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, vertexId) : false;
+                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, vertexId);
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -830,6 +859,7 @@ public final class TableViewPane extends BorderPane {
                     updateDataLatch.await();
                 } catch (InterruptedException ex) {
                     LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data", ex);
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -872,7 +902,7 @@ public final class TableViewPane extends BorderPane {
                             final int elementId = isVertex
                                     ? readableGraph.getVertex(elementPosition)
                                     : readableGraph.getTransaction(elementPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND ? readableGraph.getBooleanValue(selectedAttributeId, elementId) : false;
+                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, elementId);
                             if (isSelected) {
                                 selectedIds.add(elementId);
                             }
@@ -882,7 +912,7 @@ public final class TableViewPane extends BorderPane {
                     }
 
                     // update table selection
-                    final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
+                    final int[] selectedIndices = selectedIds.stream().map(elementIdToRowIndex::get)
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
 
                     Platform.runLater(() -> {

@@ -3,34 +3,12 @@
 <toc version="2.0">
     <tocitem text="Overview">
         <tocitem text="Introduction to CONSTELLATION" target="au.gov.asd.tac.constellation.functionality.introduction"/>
-        <tocitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual.about"/>
-    </tocitem>
-    <tocitem text="Graph" mergetype="javax.help.SortMerge">
-        <tocitem text="Visualisation" mergetype="javax.help.SortMerge">
-            <tocitem text="Perspective Bookmarks" target="au.gov.asd.tac.constellation.functionality.perspectives.Perspective"/>
-        </tocitem>
-        <tocitem text="Editing" mergetype="javax.help.SortMerge">
-            <tocitem text="Cut, Copy, Paste" target="au.gov.asd.tac.constellation.functionality.ccp"/>
-            <tocitem text="Add/Selection Modes" target="au.gov.asd.tac.constellation.functionality.addmode"/>
-            <tocitem text="Edit Attributes" target="au.gov.asd.tac.constellation.functionality.attributes.editAttributes.about"/>
-        </tocitem>
-        <tocitem text="Selection" mergetype="javax.help.SortMerge">
-            <tocitem text="Select Backbone" target="au.gov.asd.tac.constellation.functionality.attributes.selectBackbone"/>
-            <tocitem text="Select Blazes" target="au.gov.asd.tac.constellation.functionality.blaze.SelectBlazesPlugin"/>
-            <tocitem text="Select Singleton" target="au.gov.asd.tac.constellation.functionality.attributes.selectSingleton"/>
-            <tocitem text="Select One Neighbour" target="au.gov.asd.tac.constellation.functionality.attributes.selectOneNeighbour"/>
-            <tocitem text="Hop Out Full" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutFull" />
-            <tocitem text="Hop Out One" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutOne" />
-            <tocitem text="Hop Out Half" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutHalf" />
-            <tocitem text="Half Hop Induced Subgraph" target="au.gov.asd.tac.constellation.functionality.attributes.halfHopInducedSubgraph" />
-            <tocitem text="Named Selections" target="au.gov.asd.tac.constellation.functionality.selection.named" />
-        </tocitem>
+        <tocitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual"/>
     </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
-        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare.CompareGraphPlugin"/>
-        <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.functionality.attributes.mergeNodes"/>
+        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
     </tocitem>
     <tocitem text="Preferences" mergetype="javax.help.SortMerge">
-        <tocitem text="Display" target="au.gov.asd.tac.constellation.functionality.visual.preferences"/>
+        <tocitem text="Display" target="au.gov.asd.tac.constellation.functionality.display"/>
     </tocitem>
 </toc>

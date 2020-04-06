@@ -18,11 +18,11 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.text.TextPluginInteraction;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -57,75 +57,6 @@ public class SplitNodesPluginNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getType method, of class SplitNodesPlugin.
-//     */
-//    @Test
-//    public void testGetType() {
-//        System.out.println("getType");
-//        SplitNodesPlugin instance = new SplitNodesPlugin();
-//        String expResult = "";
-//        String result = instance.getType();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getPosition method, of class SplitNodesPlugin.
-//     */
-//    @Test
-//    public void testGetPosition() {
-//        System.out.println("getPosition");
-//        SplitNodesPlugin instance = new SplitNodesPlugin();
-//        int expResult = 0;
-//        int result = instance.getPosition();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of getDescription method, of class SplitNodesPlugin.
-//     */
-//    @Test
-//    public void testGetDescription() {
-//        System.out.println("getDescription");
-//        SplitNodesPlugin instance = new SplitNodesPlugin();
-//        String expResult = "";
-//        String result = instance.getDescription();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of createParameters method, of class SplitNodesPlugin.
-//     */
-//    @Test
-//    public void testCreateParameters() {
-//        System.out.println("createParameters");
-//        SplitNodesPlugin instance = new SplitNodesPlugin();
-//        PluginParameters expResult = null;
-//        PluginParameters result = instance.createParameters();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of updateParameters method, of class SplitNodesPlugin.
-//     */
-//    @Test
-//    public void testUpdateParameters() {
-//        System.out.println("updateParameters");
-//        Graph graph = null;
-//        PluginParameters parameters = null;
-//        SplitNodesPlugin instance = new SplitNodesPlugin();
-//        instance.updateParameters(graph, parameters);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
     /**
      * Test of query method, of class SplitNodesPlugin.
      *

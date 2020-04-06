@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.io.providers.AbstractGraphIOProvider;
+import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

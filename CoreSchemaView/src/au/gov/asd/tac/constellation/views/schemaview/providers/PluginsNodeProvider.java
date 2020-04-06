@@ -15,17 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview.providers;
 
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginRegistry;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -278,7 +277,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach((p) -> {
+                        paramList.stream().forEach(p -> {
                             sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
                                     .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
                                     .append(p.getId()).append(SeparatorConstants.COMMA)
@@ -301,8 +300,6 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 final File file = new File(dir, String.format("Plugin Details - %s.csv", dateFormatter.format(new Date())));
                 try (final FileOutputStream fileOutputStream = new FileOutputStream(file)) {
                     fileOutputStream.write(sb.toString().getBytes(StandardCharsets.UTF_8.name()));
-                } catch (FileNotFoundException ex) {
-                    LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 } catch (IOException ex) {
                     LOGGER.log(Level.SEVERE, "Error during export of plugin details to csv", ex);
                 }

@@ -18,19 +18,19 @@ package au.gov.asd.tac.constellation.graph.interaction.animation;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.display.VisualChange;
-import au.gov.asd.tac.constellation.visual.display.VisualChangeBuilder;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Mathf;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Fly around the graph using a succession of Catmull-Rom splines to generate a
@@ -147,10 +147,10 @@ public final class FlyingAnimation extends Animation {
 
     private int step;
 
-    private final Random random;
+    private final SecureRandom random;
 
     public FlyingAnimation() {
-        random = new Random();
+        random = new SecureRandom();
 
         xyzQueue = new ArrayDeque<>(VERTICES_PER_SPLINE);
 

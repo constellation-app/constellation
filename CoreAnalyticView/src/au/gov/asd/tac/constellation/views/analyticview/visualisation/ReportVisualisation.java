@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,14 +68,14 @@ public class ReportVisualisation extends InternalVisualisation {
 
     public void populateReport(final List<AnalyticPlugin> plugins, final int numberOfResults, final String aggregationMethod, final List<Exception> exceptions) {
         final StringBuilder pluginsString = new StringBuilder();
-        plugins.forEach((plugin) -> {
+        plugins.forEach(plugin -> {
             pluginsString.append(plugin.getName());
             if (plugins.indexOf(plugin) < plugins.size() - 1) {
                 pluginsString.append(", ");
             }
         });
         final StringBuilder exceptionsString = new StringBuilder();
-        exceptions.forEach((exception) -> {
+        exceptions.forEach(exception -> {
             exceptionsString.append(exception.getMessage());
             if (exceptions.indexOf(exception) < exceptions.size() - 1) {
                 exceptionsString.append(", ");

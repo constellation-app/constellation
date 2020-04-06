@@ -1,23 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE index PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp Index Version 2.0//EN" "http://java.sun.com/products/javahelp/index_2_0.dtd">
 <index version="2.0">
-    <indexitem text="About Core Functionality" target="au.gov.asd.tac.constellation.functionality.about"/>
-    <indexitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual.about"/>
-    <indexitem text="Add/Selection Modes" target="au.gov.asd.tac.constellation.functionality.addmode"/>
-    <indexitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare.CompareGraphPlugin"/>
-    <indexitem text="Cut, Copy, Paste" target="au.gov.asd.tac.constellation.functionality.ccp"/>
-    <indexitem text="Display preferences" target="au.gov.asd.tac.constellation.functionality.visual.preferences"/>
-    <indexitem text="Edit Attributes" target="au.gov.asd.tac.constellation.functionality.attributes.editAttributes.about"/>
-    <indexitem text="Hop Out Full" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutFull" />
-    <indexitem text="Hop Out Half" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutHalf" />
-    <indexitem text="Hop Out One" target="au.gov.asd.tac.constellation.functionality.attributes.hopOutOne" />
-    <indexitem text="Induced Subgraph" target="au.gov.asd.tac.constellation.functionality.attributes.halfHopInducedSubgraph" />
     <indexitem text="Introduction to CONSTELLATION" target="au.gov.asd.tac.constellation.functionality.introduction"/>
-    <indexitem text="Merge Nodes" target="au.gov.asd.tac.constellation.functionality.attributes.mergeNodes"/>
-    <indexitem text="Named Selections" target="au.gov.asd.tac.constellation.functionality.selection.named" />
-    <indexitem text="Perspective bookmarks" target="au.gov.asd.tac.constellation.functionality.perspectives.Perspective"/>
-    <indexitem text="Select Backbone" target="au.gov.asd.tac.constellation.functionality.attributes.selectBackbone"/>
-    <indexitem text="Select Blazes" target="au.gov.asd.tac.constellation.functionality.blaze.SelectBlazesPlugin"/>
-    <indexitem text="Select One Neighbour" target="au.gov.asd.tac.constellation.functionality.attributes.selectOneNeighbour"/>
-    <indexitem text="Select Singleton" target="au.gov.asd.tac.constellation.functionality.attributes.selectSingleton"/>
+    <indexitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual"/>
+    <indexitem text="Display preferences" target="au.gov.asd.tac.constellation.functionality.display"/>
+    <indexitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
 </index>

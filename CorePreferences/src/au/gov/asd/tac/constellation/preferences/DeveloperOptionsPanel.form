@@ -99,9 +99,6 @@
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="DeveloperOptionsPanel.gcOnOpenCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gcOnOpenCheckboxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="gcOnCloseCheckbox">
           <Properties>
@@ -109,9 +106,6 @@
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="DeveloperOptionsPanel.gcOnCloseCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="gcOnCloseCheckboxActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -164,9 +158,6 @@
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="DeveloperOptionsPanel.debugGlCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="debugGlCheckboxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="printGlCheckbox">
           <Properties>
@@ -174,9 +165,6 @@
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="DeveloperOptionsPanel.printGlCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="printGlCheckboxActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JCheckBox" name="displayFpsCheckbox">
           <Properties>
@@ -184,9 +172,6 @@
               <ResourceString bundle="au/gov/asd/tac/constellation/preferences/Bundle.properties" key="DeveloperOptionsPanel.displayFpsCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="displayFpsCheckboxActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

@@ -165,10 +165,8 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
                 }
             }
 
-            if (elementType == GraphElementType.VERTEX) {
-                if (includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
-                    labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
-                }
+            if (elementType == GraphElementType.VERTEX && includeVxId && !alreadyHave.contains(GraphTableModel.VX_ATTR.getId())) {
+                labels.add(new CheckListItem<>(GraphTableModel.VX_ATTR, false));
             }
 
             if (elementType == GraphElementType.TRANSACTION) {
@@ -231,7 +229,7 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
     private static class CheckListItem<T> {
 
         public final T item;
-        public boolean isSelected;
+        private boolean isSelected;
 
         public CheckListItem(final T item, final boolean isSelected) {
             this.item = item;

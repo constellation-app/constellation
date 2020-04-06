@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
+//import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
@@ -28,7 +28,6 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.opengl.GLProfile;
-import com.sun.javafx.application.PlatformImpl;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,6 +47,8 @@ import javafx.application.Platform;
  * drawables that share with this one are created, otherwise there is a grave
  * danger of name clashes, and that will just confuse everyone.
  *
+ * TODO: {@link GlyphManagerFX} is broken, fix it or remove it.
+ * 
  * @author algol
  */
 public final class SharedDrawable {
@@ -112,7 +113,8 @@ public final class SharedDrawable {
             if (useMultiFonts) {
                 glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo());
             } else {
-                glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
+//                glyphManager = new GlyphManagerFX(FONT_NAME, 64, 2048, 2048);
+                glyphManager = null;
             }
 
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
@@ -127,7 +129,7 @@ public final class SharedDrawable {
     public static void exportGlyphTextures(File baseFile) {
 
         // Ensure that JavaFX is running
-        PlatformImpl.startup(() -> {
+        Platform.startup(() -> {
         });
 
         Platform.runLater(() -> {

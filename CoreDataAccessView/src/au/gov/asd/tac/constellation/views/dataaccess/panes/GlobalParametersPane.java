@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersPane;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.Collections;
 import java.util.Set;

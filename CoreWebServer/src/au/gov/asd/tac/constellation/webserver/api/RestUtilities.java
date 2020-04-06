@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.webserver.api;
 
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription;
@@ -24,8 +25,8 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.visual.color.ColorAttributeDescription;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
@@ -38,7 +39,7 @@ public class RestUtilities {
     public static Graph getActiveGraph() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph == null) {
-            throw new EndpointException("No active graph!");
+            throw new RestServiceException("No active graph!");
         }
 
         return graph;
