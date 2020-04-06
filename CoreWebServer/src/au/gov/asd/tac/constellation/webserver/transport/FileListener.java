@@ -267,7 +267,10 @@ public class FileListener implements Runnable {
                     in.close();
                 } catch (IOException ex) {
                 }
-                fqp.delete();
+                final boolean fqpIsDeleted = fqp.delete();
+                if (!fqpIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
     }

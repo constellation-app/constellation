@@ -86,7 +86,10 @@ public class SaveTemplatePlugin extends SimplePlugin {
         final File templateDir = new File(userDir, TEMPLATE_DIR);
         final File oldTemplate = new File(templateDir, NewSchemaGraphAction.getTemplateNames().get(templateName) + "/" + templateName);
         if (oldTemplate.exists()) {
-            oldTemplate.delete();
+            final boolean oldTemplateIsDeleted = oldTemplate.delete();
+            if (!oldTemplateIsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         }
 
         if (!templateDir.exists()) {
