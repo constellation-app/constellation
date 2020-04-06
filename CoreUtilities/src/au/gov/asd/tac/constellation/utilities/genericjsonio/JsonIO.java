@@ -36,7 +36,6 @@ import javafx.scene.control.ButtonType;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
