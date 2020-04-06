@@ -29,12 +29,20 @@ public final class Vector4d {
     /**
      * The contents of this vector.
      */
-    public double[] a;
+    private double[] a;
 
     public Vector4d() {
         a = new double[LENGTH];
     }
 
+    public double[] getA() {
+        return a;
+    }
+
+    public void setA(double[] a) {
+        this.a = a;
+    }
+    
     public void set(final double x, final double y, final double z, final double w) {
         a[0] = x;
         a[1] = y;
