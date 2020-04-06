@@ -66,7 +66,6 @@ public class PasteTextPlugin extends SimplePlugin {
     @Override
     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final BitSet vxAdded = new BitSet();
-        final String text = parameters.getParameters().get(TEXT_PARAMETER_ID).getStringValue();
 
         parameters.getParameters().get(OUT_VX_PASTED_PARAMETER_ID).setObjectValue(vxAdded);
     }

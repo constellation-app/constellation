@@ -633,7 +633,7 @@ public final class GLTools {
                         data.destroy();
                     }
                 } catch (final RuntimeException ex) {
-                    System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
+                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
             }

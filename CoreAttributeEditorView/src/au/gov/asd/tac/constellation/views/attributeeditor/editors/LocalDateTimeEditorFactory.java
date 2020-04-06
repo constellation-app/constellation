@@ -97,7 +97,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             }
             try {
                 final String dateString = datePicker.getEditor().getText();
-                final LocalDate date = datePicker.getConverter().fromString(dateString);
+                datePicker.getConverter().fromString(dateString);
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }

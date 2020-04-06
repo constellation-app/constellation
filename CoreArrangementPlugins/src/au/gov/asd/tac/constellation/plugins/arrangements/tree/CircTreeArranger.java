@@ -309,7 +309,6 @@ public final class CircTreeArranger implements Arranger {
             float annulusCircum = 0;
             float maxChildRadiusThisAnnulus = 0;
             final ArrayDeque<VxInfo> needRadii = new ArrayDeque<>();
-            int tier = 0;
             float lastChildRadius = 0;
             for (VxInfo child : children) {
                 if (Thread.interrupted()) {
@@ -337,7 +336,6 @@ public final class CircTreeArranger implements Arranger {
                     annulusCircum = 0;
                     maxChildRadiusThisAnnulus = 0;
 
-                    tier++;
                 }
 
                 if (maxChildRadiusThisAnnulus < childRadius) {
@@ -379,12 +377,6 @@ public final class CircTreeArranger implements Arranger {
         if (parentAngle > TWO_PI) {
             parentAngle -= TWO_PI;
         }
-
-        // Get the radius of the starting vertex.
-        final float selfRadius = CIRC_RADIUS * (radiusAttr != Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1);
-
-        // Get requested area.
-        final float fullRadius = fullRadii[vxId];
 
         // Get radius from satellites.
         final float childrenRadius = childrenRadii[vxId];

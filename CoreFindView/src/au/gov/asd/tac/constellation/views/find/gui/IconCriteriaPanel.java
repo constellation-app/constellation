@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Set;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import org.openide.DialogDescriptor;
@@ -56,7 +55,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
 
         this.parentPanel = parent;
 
-        final Set<ConstellationIcon> icons = IconManager.getIcons();
 //        chooser = new IconChooser(iconMap, Bundle.No_Icon());
         chosenIcon = Bundle.No_Icon();
     }
@@ -73,7 +71,6 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
 
         this.parentPanel = parent;
 
-        final Set<ConstellationIcon> icons = IconManager.getIcons();
 //        chooser = new IconChooser(iconMap, icon);
         chosenIcon = icon;
 

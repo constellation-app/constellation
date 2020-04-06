@@ -352,10 +352,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
             final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
-            final int nLayersAttr = wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "number of layers", 0, null);
+
             final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FLOAT, "z", "z", 0, null);
             final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FLOAT, VISIBILITY, VISIBILITY, 1, null);
             final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FLOAT, VISIBILITY, VISIBILITY, 1, null);
+
             final int txColorAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, "color");
             final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, "boolean", "layer_guideline", "This transaction is a layer guideline", false, null);
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25f, 0.25f, 0.25f, 1f);

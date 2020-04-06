@@ -94,7 +94,7 @@ public final class GraphConstructionDemoAction extends AbstractAction {
 
                     final int[] childrenAtDepths = {4, 3, 2};
                     final TreeGraphBuilder t = TreeGraphBuilder.addTree(graph, childrenAtDepths, TreeGraphBuilder.TreeDirection.AWAY_FROM_ROOT);
-                    final ConnectionBuilder con = ConnectionBuilder.makeConnection(graph, t.nodesAtLevels[0], j.pendants);
+                    ConnectionBuilder.makeConnection(graph, t.nodesAtLevels[0], j.pendants);
 
                     // Layout the jellyfish
                     final float jellyCentreX = -5f;

@@ -329,7 +329,6 @@ public abstract class InfomapBase {
             System.out.printf("%s.tryIndexingIteratively%n", getClass().getSimpleName());
         }
 
-        int numIndexingCompleted = 0;
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
@@ -393,12 +392,10 @@ public abstract class InfomapBase {
             // Collect the super module indices on the leaf nodes.
             final TreeData superTree = superInfomap.treeData;
             final Iterator<NodeBase> superLeafIt = superTree.getLeaves().iterator();
-            int leafIndex = 0;
             for (final NodeBase module : getRoot().getChildren()) {
                 final int superModuleIndex = superLeafIt.next().getParent().getIndex();
                 for (final NodeBase node : module.getChildren()) {
                     moveTo.set(node.getIndex(), superModuleIndex);
-                    leafIndex++;
                 }
             }
 
@@ -408,7 +405,6 @@ public abstract class InfomapBase {
             // Replace the old modular structure with the super structure generated above.
             consolidateModules(replaceExistingModules);
 
-            numIndexingCompleted++;
             tryIndexing = numNonTrivialTopModules > 1 && getNumTopModules() != getNumLeafNodes();
         }
 
@@ -768,7 +764,8 @@ public abstract class InfomapBase {
         if (verbose) {
             if (config.getVerbosity() == 0) {
                 final String fmt = String.format("%s.%df", "%", config.getVerboseNumberPrecision());
-                System.out.printf("to %d modules with codelength " + fmt + "%n", getNumTopModules(), codelength);
+                final String cl = String.format(fmt, codelength);
+                System.out.printf("to %d modules with codelength %s%n", getNumTopModules(), cl);
             } else {
                 System.out.printf("Two-level codelength: %f + %f = %f%n", indexCodelength, moduleCodelength, codelength);
             }
@@ -1339,7 +1336,6 @@ public abstract class InfomapBase {
                 if (module.getFirstChild().isLeaf()) {
                     leafLengths.set(level + 1, leafLengths.get(level + 1) + module.getCodelength());
 
-                    final String f = leafLengths.get(level) == 0 ? "0" : String.format("%.6f", leafLengths.get(level));
                 } else {
                     aggregatePerLevelCodelength(module, indexLengths, leafLengths, level + 1);
                 }

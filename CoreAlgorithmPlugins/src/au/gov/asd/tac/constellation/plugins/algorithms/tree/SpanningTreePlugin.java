@@ -41,7 +41,6 @@ public class SpanningTreePlugin extends SimpleEditPlugin {
         } else {
             rootVxId = wg.getVertex(0);
         }
-
-        final GraphWriteMethods tree = st.createSpanningTree(true, true, rootVxId);
+         st.createSpanningTree(true, true, rootVxId);
     }
 }
