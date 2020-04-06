@@ -37,6 +37,8 @@ public class GridArranger implements Arranger {
     private boolean forceEvenNumCols;
     private boolean maintainMean;
     private int topLeftVxId;
+    
+    private static final String FLOAT = "float";
 
     /**
      * A grid arrangement with default parameters.
@@ -91,13 +93,13 @@ public class GridArranger implements Arranger {
 
         // Get/set the x,y,z attributes.
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "x", "x", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "y", "y", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "z", "z", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "z", "z", null, null);
         }
 
         final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());

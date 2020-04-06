@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.graph.schema.analytic.concept;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -36,10 +36,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = SchemaConcept.class)
 public class ContentConcept extends SchemaConcept {
+    
+    private static final String CONTENT_NAME = "Content";
 
     @Override
     public String getName() {
-        return "Content";
+        return CONTENT_NAME;
     }
 
     @Override
@@ -63,7 +65,7 @@ public class ContentConcept extends SchemaConcept {
         public static final SchemaAttribute COMPANY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Company")
                 .setDescription("The company authoring the content")
                 .build();
-        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content")
+        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, CONTENT_NAME)
                 .setDescription("Any textual content applying to the node")
                 .build();
         public static final SchemaAttribute CONTENT_TRANSLATED = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Translated")
@@ -94,7 +96,7 @@ public class ContentConcept extends SchemaConcept {
                 .setDescription("The last author of the content")
                 .build();
         public static final SchemaAttribute LINE_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.LineCount")
-                .setDescription("The character count excluding spaces")
+                .setDescription("The line count excluding spaces")
                 .build();
         public static final SchemaAttribute PERMISSION = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.Permission")
                 .setDescription("The permission level for the content")
@@ -130,7 +132,7 @@ public class ContentConcept extends SchemaConcept {
         public static final SchemaAttribute COMPANY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Company")
                 .setDescription("The company authoring the content")
                 .build();
-        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content")
+        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, CONTENT_NAME)
                 .setDescription("Any textual content applying to the transaction")
                 .build();
         public static final SchemaAttribute CONTENT_TRANSLATED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Translated")
@@ -167,7 +169,7 @@ public class ContentConcept extends SchemaConcept {
                 .setDescription("The last author of the content")
                 .build();
         public static final SchemaAttribute LINE_COUNT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.LineCount")
-                .setDescription("The character count excluding spaces")
+                .setDescription("The line count excluding spaces")
                 .build();
         public static final SchemaAttribute PERMISSION = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.Permission")
                 .setDescription("The permission level for the content")

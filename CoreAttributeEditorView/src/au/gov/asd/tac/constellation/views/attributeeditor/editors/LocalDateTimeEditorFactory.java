@@ -61,6 +61,8 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final int NUMBER_SPINNER_WIDTH = 55;
         private static final int MILLIS_SPINNER_WIDTH = 60;
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
+        
+        private static final String LABEL = "label";
 
         private DatePicker datePicker;
         private CheckBox noValueCheckBox;
@@ -153,23 +155,23 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             final Label dateLabel = new Label("Date:");
-            dateLabel.setId("label");
+            dateLabel.setId(LABEL);
             dateLabel.setLabelFor(datePicker);
 
             final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId("label");
+            hourSpinnerLabel.setId(LABEL);
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
             final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId("label");
+            minSpinnerLabel.setId(LABEL);
             minSpinnerLabel.setLabelFor(minSpinner);
 
             final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId("label");
+            secSpinnerLabel.setId(LABEL);
             secSpinnerLabel.setLabelFor(secSpinner);
 
             final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId("label");
+            milliSpinnerLabel.setId(LABEL);
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);

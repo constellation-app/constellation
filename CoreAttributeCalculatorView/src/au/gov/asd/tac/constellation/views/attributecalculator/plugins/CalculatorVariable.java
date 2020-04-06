@@ -29,31 +29,31 @@ import java.util.List;
  */
 public enum CalculatorVariable {
 
-    GRAPH_VERTEX_COUNT(null, "graph_node_count", "Graph Node Count", CalculatorTemplateDescription.GRAPH_NODE_COUNT, "Graph Properties") {
+    GRAPH_VERTEX_COUNT(null, "graph_node_count", "Graph Node Count", CalculatorTemplateDescription.GRAPH_NODE_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexCount();
         }
     },
-    GRAPH_LINK_COUNT(null, "graph_link_count", "Graph Link Count", CalculatorTemplateDescription.GRAPH_LINK_COUNT, "Graph Properties") {
+    GRAPH_LINK_COUNT(null, "graph_link_count", "Graph Link Count", CalculatorTemplateDescription.GRAPH_LINK_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getLinkCount();
         }
     },
-    GRAPH_EDGE_COUNT(null, "graph_edge_count", "Graph Edge Count", CalculatorTemplateDescription.GRAPH_EDGE_COUNT, "Graph Properties") {
+    GRAPH_EDGE_COUNT(null, "graph_edge_count", "Graph Edge Count", CalculatorTemplateDescription.GRAPH_EDGE_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getEdgeCount();
         }
     },
-    GRAPH_TRANSACTION_COUNT(null, "graph_transaction_count", "Graph Transaction Count", CalculatorTemplateDescription.GRAPH_TRANSACTION_COUNT, "Graph Properties") {
+    GRAPH_TRANSACTION_COUNT(null, "graph_transaction_count", "Graph Transaction Count", CalculatorTemplateDescription.GRAPH_TRANSACTION_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getTransactionCount();
         }
     },
-    GRAPH_SELECTED_VERTEX_COUNT(null, "graph_selected_node_count", "Graph Selected Node Count", CalculatorTemplateDescription.GRAPH_SELECTED_VERTEX_COUNT, "Graph Properties") {
+    GRAPH_SELECTED_VERTEX_COUNT(null, "graph_selected_node_count", "Graph Selected Node Count", CalculatorTemplateDescription.GRAPH_SELECTED_VERTEX_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         private int selectedVertexCount = 0;
 
         @Override
@@ -76,7 +76,7 @@ public enum CalculatorVariable {
             return selectedVertexCount;
         }
     },
-    GRAPH_SELECTED_TRANSACTION_COUNT(null, "graph_selected_transaction_count", "Graph Selected Transaction Count", CalculatorTemplateDescription.GRAPH_SELECTED_TRANSACTION_COUNT, "Graph Properties") {
+    GRAPH_SELECTED_TRANSACTION_COUNT(null, "graph_selected_transaction_count", "Graph Selected Transaction Count", CalculatorTemplateDescription.GRAPH_SELECTED_TRANSACTION_COUNT, CalculatorVariableConstants.GRAPH_PROPERTIES) {
         private int selectedTranactionCount = 0;
 
         @Override
@@ -99,7 +99,7 @@ public enum CalculatorVariable {
             return selectedTranactionCount;
         }
     },
-    VERTEX_HAS_LOOP(GraphElementType.VERTEX, "has_self_as_neighbour", "Has Self as Neighbour", CalculatorTemplateDescription.VERTEX_HAS_LOOP, "Node Properties") {
+    VERTEX_HAS_LOOP(GraphElementType.VERTEX, "has_self_as_neighbour", "Has Self as Neighbour", CalculatorTemplateDescription.VERTEX_HAS_LOOP, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             for (int i = 0; i < graph.getVertexNeighbourCount(element); i++) {
@@ -110,7 +110,7 @@ public enum CalculatorVariable {
             return false;
         }
     },
-    VERTEX_NEIGHBOUR_COUNT(GraphElementType.VERTEX, "node_neighbour_count", "Node Neighbour Count", CalculatorTemplateDescription.VERTEX_NEIGHBOUR_COUNT, "Node Properties") {
+    VERTEX_NEIGHBOUR_COUNT(GraphElementType.VERTEX, "node_neighbour_count", "Node Neighbour Count", CalculatorTemplateDescription.VERTEX_NEIGHBOUR_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             int loopAdjustment = 0;
@@ -123,43 +123,43 @@ public enum CalculatorVariable {
             return graph.getVertexLinkCount(element) + loopAdjustment;
         }
     },
-    VERTEX_LINK_COUNT(GraphElementType.VERTEX, "node_link_count", "Node Link Count", CalculatorTemplateDescription.VERTEX_LINK_COUNT, "Node Properties") {
+    VERTEX_LINK_COUNT(GraphElementType.VERTEX, "node_link_count", "Node Link Count", CalculatorTemplateDescription.VERTEX_LINK_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexLinkCount(element);
         }
     },
-    VERTEX_EDGE_COUNT(GraphElementType.VERTEX, "node_edge_count", "Node Edge Count", CalculatorTemplateDescription.VERTEX_EDGE_COUNT, "Node Properties") {
+    VERTEX_EDGE_COUNT(GraphElementType.VERTEX, "node_edge_count", "Node Edge Count", CalculatorTemplateDescription.VERTEX_EDGE_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexEdgeCount(element);
         }
     },
-    VERTEX_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_transaction_count", "Node Transaction Count", CalculatorTemplateDescription.VERTEX_TRANSACTION_COUNT, "Node Properties") {
+    VERTEX_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_transaction_count", "Node Transaction Count", CalculatorTemplateDescription.VERTEX_TRANSACTION_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexTransactionCount(element);
         }
     },
-    VERTEX_OUTGOING_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_out_transaction_count", "Node Outgoing Transaction Count", CalculatorTemplateDescription.VERTEX_OUTGOING_TRANSACTION_COUNT, "Node Properties") {
+    VERTEX_OUTGOING_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_out_transaction_count", "Node Outgoing Transaction Count", CalculatorTemplateDescription.VERTEX_OUTGOING_TRANSACTION_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexTransactionCount(element, Graph.OUTGOING);
         }
     },
-    VERTEX_INCOMING_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_in_transaction_count", "Node Incoming Transaction Count", CalculatorTemplateDescription.VERTEX_INCOMING_TRANSACTION_COUNT, "Node Properties") {
+    VERTEX_INCOMING_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_in_transaction_count", "Node Incoming Transaction Count", CalculatorTemplateDescription.VERTEX_INCOMING_TRANSACTION_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexTransactionCount(element, Graph.INCOMING);
         }
     },
-    VERTEX_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_undir_transaction_count", "Node Undirected Transaction Count", CalculatorTemplateDescription.VERTEX_UNDIRECTED_TRANSACTION_COUNT, "Node Properties") {
+    VERTEX_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.VERTEX, "node_undir_transaction_count", "Node Undirected Transaction Count", CalculatorTemplateDescription.VERTEX_UNDIRECTED_TRANSACTION_COUNT, CalculatorVariableConstants.NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             return graph.getVertexTransactionCount(element, Graph.UNDIRECTED);
         }
     },
-    SOURCE_HAS_LOOP(GraphElementType.TRANSACTION, "source_has_self_as_neighbour", "Source Has Self as Neighbour", CalculatorTemplateDescription.SOURCE_HAS_LOOP, "Source Node Properties") {
+    SOURCE_HAS_LOOP(GraphElementType.TRANSACTION, "source_has_self_as_neighbour", "Source Has Self as Neighbour", CalculatorTemplateDescription.SOURCE_HAS_LOOP, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             final int vertID;
@@ -178,7 +178,7 @@ public enum CalculatorVariable {
             return false;
         }
     },
-    SOURCE_NEIGHBOUR_COUNT(GraphElementType.TRANSACTION, "source_neighbour_count", "Source Neighbour Count", CalculatorTemplateDescription.SOURCE_NEIGHBOUR_COUNT, "Source Node Properties") {
+    SOURCE_NEIGHBOUR_COUNT(GraphElementType.TRANSACTION, "source_neighbour_count", "Source Neighbour Count", CalculatorTemplateDescription.SOURCE_NEIGHBOUR_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             int loopAdjustment = 0;
@@ -199,7 +199,7 @@ public enum CalculatorVariable {
             return graph.getVertexLinkCount(vertID) + loopAdjustment;
         }
     },
-    SOURCE_LINK_COUNT(GraphElementType.TRANSACTION, "source_link_count", "Source Link Count", CalculatorTemplateDescription.SOURCE_LINK_COUNT, "Source Node Properties") {
+    SOURCE_LINK_COUNT(GraphElementType.TRANSACTION, "source_link_count", "Source Link Count", CalculatorTemplateDescription.SOURCE_LINK_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -212,7 +212,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    SOURCE_EDGE_COUNT(GraphElementType.TRANSACTION, "source_edge_count", "Source Edge Count", CalculatorTemplateDescription.SOURCE_EDGE_COUNT, "Source Node Properties") {
+    SOURCE_EDGE_COUNT(GraphElementType.TRANSACTION, "source_edge_count", "Source Edge Count", CalculatorTemplateDescription.SOURCE_EDGE_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -225,7 +225,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    SOURCE_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_transaction_count", "Source Transaction Count", CalculatorTemplateDescription.SOURCE_TRANSACTION_COUNT, "Source Node Properties") {
+    SOURCE_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_transaction_count", "Source Transaction Count", CalculatorTemplateDescription.SOURCE_TRANSACTION_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -238,7 +238,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    SOURCE_OUTGOING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_out_transaction_count", "Source Outgoing Transaction Count", CalculatorTemplateDescription.SOURCE_OUTGOING_TRANSACTION_COUNT, "Source Node Properties") {
+    SOURCE_OUTGOING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_out_transaction_count", "Source Outgoing Transaction Count", CalculatorTemplateDescription.SOURCE_OUTGOING_TRANSACTION_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -251,7 +251,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    SOURCE_INCOMING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_in_transaction_count", "Source Incoming Transaction Count", CalculatorTemplateDescription.SOURCE_INCOMING_TRANSACTION_COUNT, "Source Node Properties") {
+    SOURCE_INCOMING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_in_transaction_count", "Source Incoming Transaction Count", CalculatorTemplateDescription.SOURCE_INCOMING_TRANSACTION_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -264,7 +264,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    SOURCE_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_undir_transaction_count", "Source Undirected Transaction Count", CalculatorTemplateDescription.SOURCE_UNDIRECTED_TRANSACTION_COUNT, "Source Node Properties") {
+    SOURCE_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "source_undir_transaction_count", "Source Undirected Transaction Count", CalculatorTemplateDescription.SOURCE_UNDIRECTED_TRANSACTION_COUNT, CalculatorVariableConstants.SOURCE_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -277,7 +277,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_HAS_LOOP(GraphElementType.TRANSACTION, "dest_has_self_as_neighbour", "Destination Has Self as Neighbour", CalculatorTemplateDescription.DESTINATION_HAS_LOOP, "Destination Node Properties") {
+    DESTINATION_HAS_LOOP(GraphElementType.TRANSACTION, "dest_has_self_as_neighbour", "Destination Has Self as Neighbour", CalculatorTemplateDescription.DESTINATION_HAS_LOOP, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             final int vertID;
@@ -296,7 +296,7 @@ public enum CalculatorVariable {
             return false;
         }
     },
-    DESTINATION_NEIGHBOUR_COUNT(GraphElementType.TRANSACTION, "dest_neighbour_count", "Destination Neighbour Count", CalculatorTemplateDescription.DESTINATION_NEIGHBOUR_COUNT, "Destination Node Properties") {
+    DESTINATION_NEIGHBOUR_COUNT(GraphElementType.TRANSACTION, "dest_neighbour_count", "Destination Neighbour Count", CalculatorTemplateDescription.DESTINATION_NEIGHBOUR_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
             int loopAdjustment = 0;
@@ -317,7 +317,7 @@ public enum CalculatorVariable {
             return graph.getVertexLinkCount(vertID) + loopAdjustment;
         }
     },
-    DESTINATION_LINK_COUNT(GraphElementType.TRANSACTION, "dest_link_count", "Destination Link Count", CalculatorTemplateDescription.DESTINATION_LINK_COUNT, "Destination Node Properties") {
+    DESTINATION_LINK_COUNT(GraphElementType.TRANSACTION, "dest_link_count", "Destination Link Count", CalculatorTemplateDescription.DESTINATION_LINK_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -330,7 +330,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_EDGE_COUNT(GraphElementType.TRANSACTION, "dest_edge_count", "Destination Edge Count", CalculatorTemplateDescription.DESTINATION_EDGE_COUNT, "Destination Node Properties") {
+    DESTINATION_EDGE_COUNT(GraphElementType.TRANSACTION, "dest_edge_count", "Destination Edge Count", CalculatorTemplateDescription.DESTINATION_EDGE_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -343,7 +343,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_transaction_count", "Destination Transaction Count", CalculatorTemplateDescription.DESTINATION_TRANSACTION_COUNT, "Destination Node Properties") {
+    DESTINATION_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_transaction_count", "Destination Transaction Count", CalculatorTemplateDescription.DESTINATION_TRANSACTION_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -356,7 +356,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_OUTGOING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_out_transaction_count", "Destination Outgoing Transaction Count", CalculatorTemplateDescription.DESTINATION_OUTGOING_TRANSACTION_COUNT, "Destination Node Properties") {
+    DESTINATION_OUTGOING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_out_transaction_count", "Destination Outgoing Transaction Count", CalculatorTemplateDescription.DESTINATION_OUTGOING_TRANSACTION_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -369,7 +369,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_INCOMING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_in_transaction_count", "Destination Incoming Transaction Count", CalculatorTemplateDescription.DESTINATION_INCOMING_TRANSACTION_COUNT, "Destination Node Properties") {
+    DESTINATION_INCOMING_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_in_transaction_count", "Destination Incoming Transaction Count", CalculatorTemplateDescription.DESTINATION_INCOMING_TRANSACTION_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -382,7 +382,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    DESTINATION_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_undir_transaction_count", "Destination Undirected Transaction Count", CalculatorTemplateDescription.DESTINATION_UNDIRECTED_TRANSACTION_COUNT, "Destination Node Properties") {
+    DESTINATION_UNDIRECTED_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "dest_undir_transaction_count", "Destination Undirected Transaction Count", CalculatorTemplateDescription.DESTINATION_UNDIRECTED_TRANSACTION_COUNT, CalculatorVariableConstants.DESTINATION_NODE_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -395,7 +395,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    LINK_EDGE_COUNT(GraphElementType.TRANSACTION, "link_edge_count", "Link Edge Count", CalculatorTemplateDescription.LINK_EDGE_COUNT, "Transaction/Edge/Link Properties") {
+    LINK_EDGE_COUNT(GraphElementType.TRANSACTION, "link_edge_count", "Link Edge Count", CalculatorTemplateDescription.LINK_EDGE_COUNT, CalculatorVariableConstants.TRANSACTION_EDGE_LINK_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -408,7 +408,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    LINK_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "link_transaction_count", "Link Transaction Count", CalculatorTemplateDescription.LINK_TRANSACTION_COUNT, "Transaction/Edge/Link Properties") {
+    LINK_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "link_transaction_count", "Link Transaction Count", CalculatorTemplateDescription.LINK_TRANSACTION_COUNT, CalculatorVariableConstants.TRANSACTION_EDGE_LINK_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -421,7 +421,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    EDGE_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "edge_transaction_count", "Edge Transaction Count", CalculatorTemplateDescription.EDGE_TRANSACTION_COUNT, "Transaction/Edge/Link Properties") {
+    EDGE_TRANSACTION_COUNT(GraphElementType.TRANSACTION, "edge_transaction_count", "Edge Transaction Count", CalculatorTemplateDescription.EDGE_TRANSACTION_COUNT, CalculatorVariableConstants.TRANSACTION_EDGE_LINK_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -438,7 +438,7 @@ public enum CalculatorVariable {
             }
         }
     },
-    TRANSACTION_DIRECTION(GraphElementType.TRANSACTION, "is_transaction_directed", "Is Transaction Directed?", CalculatorTemplateDescription.TRANSACTION_DIRECTION, "Transaction/Edge/Link Properties") {
+    TRANSACTION_DIRECTION(GraphElementType.TRANSACTION, "is_transaction_directed", "Is Transaction Directed?", CalculatorTemplateDescription.TRANSACTION_DIRECTION, CalculatorVariableConstants.TRANSACTION_EDGE_LINK_PROPERTIES) {
         @Override
         public Object getValue(GraphReadMethods graph, GraphElementType elementType, int element) {
 //                    checkElementType(elementType);
@@ -530,5 +530,13 @@ public enum CalculatorVariable {
 //        }
 //    }
     public void init(GraphReadMethods graph) {
+    }
+    
+    private class CalculatorVariableConstants {
+        private static final String GRAPH_PROPERTIES = "Graph Properties";
+        private static final String NODE_PROPERTIES = "Node Properties";
+        private static final String SOURCE_NODE_PROPERTIES = "Source Node Properties";
+        private static final String DESTINATION_NODE_PROPERTIES = "Destination Node Properties";
+        private static final String TRANSACTION_EDGE_LINK_PROPERTIES = "Transaction/Edge/Link Properties";
     }
 }

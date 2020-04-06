@@ -23,11 +23,11 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
-import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.views.conversationview.state.ConversationState;
+import au.gov.asd.tac.constellation.views.conversationview.state.ConversationViewConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -88,6 +88,7 @@ public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
     private static final double CLEARANCE = 200;
+    private static final String BACKGROUND_COLOR_CSS = "-fx-background-color: transparent;";
 
     private final Conversation conversation;
 
@@ -126,10 +127,10 @@ public final class ConversationBox extends StackPane {
         setPrefSize(500, 500);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
-        setStyle("-fx-background-color: transparent;");
+        setStyle(BACKGROUND_COLOR_CSS);
 
         final VBox content = new VBox();
-        content.setStyle("-fx-background-color: transparent;");
+        content.setStyle(BACKGROUND_COLOR_CSS);
 
         showToolTip.setSelected(true);
         showToolTip.setOnAction((ActionEvent t) -> {
@@ -219,7 +220,7 @@ public final class ConversationBox extends StackPane {
 
         // Create the bubbles pane
         bubbles = new ListView<>();
-        bubbles.setStyle("-fx-background-color: transparent;");
+        bubbles.setStyle(BACKGROUND_COLOR_CSS);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
@@ -337,7 +338,7 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty
             if (empty || message == null) {
-                setStyle("-fx-background-color: transparent;");
+                setStyle(BACKGROUND_COLOR_CSS);
                 setGraphic(null);
             } else {
                 // Look for the bubble in the cache

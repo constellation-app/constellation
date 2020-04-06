@@ -46,6 +46,8 @@ public class BubbleTreeArranger implements Arranger {
     private int nradiusId;
 
     private int[] vxDepth;
+    
+    private static final String FLOAT = "float";
 
     public BubbleTreeArranger(final Set<Integer> roots, final boolean isMinimal) {
         this.roots = roots;
@@ -88,9 +90,9 @@ public class BubbleTreeArranger implements Arranger {
 
         tree = st.createSpanningTree(isMinimal, false, rootVxId);
 
-        tree.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FLOAT, "x", "x", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FLOAT, "z", "z", 0, null);
 
         xId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         yId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -115,9 +117,9 @@ public class BubbleTreeArranger implements Arranger {
         final int wgxId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int wgyId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int wgzId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int wgx2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
-        final int wgy2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
-        final int wgz2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
+        final int wgx2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "x2", "x2", 0, null);
+        final int wgy2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "y2", "y2", 0, null);
+        final int wgz2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "z2", "z2", 0, null);
         final int vxCount = tree.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             // Make the layout 3D in x,y,z, 2D in x2,y2,z2.

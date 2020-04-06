@@ -33,32 +33,34 @@ public class ReportVisualisation extends InternalVisualisation {
     private final Label numberOfResultsValue;
     private final Label aggregationMethodValue;
     private final Label exceptionsValue;
+    
+    private static final String LABEL_CSS = "-fx-font-weight: bold";
 
     public ReportVisualisation() {
         final HBox pluginsReportBox = new HBox();
         final Label pluginsRunLabel = new Label("Plugins Run: ");
-        pluginsRunLabel.setStyle("-fx-font-weight: bold");
+        pluginsRunLabel.setStyle(LABEL_CSS);
         this.pluginsRunValue = new Label();
         pluginsRunValue.setWrapText(true);
         pluginsReportBox.getChildren().addAll(pluginsRunLabel, pluginsRunValue);
 
         final HBox numberOfResultsReportBox = new HBox();
         final Label numberOfResultsLabel = new Label("Number of Results: ");
-        numberOfResultsLabel.setStyle("-fx-font-weight: bold");
+        numberOfResultsLabel.setStyle(LABEL_CSS);
         this.numberOfResultsValue = new Label();
         numberOfResultsValue.setWrapText(true);
         numberOfResultsReportBox.getChildren().addAll(numberOfResultsLabel, numberOfResultsValue);
 
         final HBox aggregationMethodReportBox = new HBox();
         final Label aggregationMethodLabel = new Label("Aggregation Method: ");
-        aggregationMethodLabel.setStyle("-fx-font-weight: bold");
+        aggregationMethodLabel.setStyle(LABEL_CSS);
         this.aggregationMethodValue = new Label();
         aggregationMethodValue.setWrapText(true);
         aggregationMethodReportBox.getChildren().addAll(aggregationMethodLabel, aggregationMethodValue);
 
         final HBox exceptionsReportBox = new HBox();
         final Label exceptionsLabel = new Label("Exceptions: ");
-        exceptionsLabel.setStyle("-fx-font-weight: bold");
+        exceptionsLabel.setStyle(LABEL_CSS);
         this.exceptionsValue = new Label();
         exceptionsValue.setWrapText(true);
         exceptionsReportBox.getChildren().addAll(exceptionsLabel, exceptionsValue);

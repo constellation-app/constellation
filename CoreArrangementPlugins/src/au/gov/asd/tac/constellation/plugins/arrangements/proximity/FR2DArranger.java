@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Random;
@@ -35,6 +35,8 @@ class FR2DArranger implements Arranger {
 
     public static final int MAX_ITERATIONS = 10;
     private static final int BORDER = 1;
+    
+    private static final String FLOAT = "float";
 
     private double forceConstant;
     private double temperature;
@@ -148,13 +150,13 @@ class FR2DArranger implements Arranger {
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(graph);
         if (VisualConcept.VertexAttribute.X2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FLOAT, "x2", "x2", null, null);
         }
         if (VisualConcept.VertexAttribute.Y2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FLOAT, "y2", "y2", null, null);
         }
         if (VisualConcept.VertexAttribute.Z2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FLOAT, "z2", "z2", null, null);
         }
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(graph);
         final int y2Attr = VisualConcept.VertexAttribute.Y2.get(graph);

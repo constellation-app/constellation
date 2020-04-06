@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -54,7 +54,9 @@ public class AttributeTitledPane extends TitledPane {
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
     private final ContextMenu ctxMenu;
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
-
+    
+    private static final String HIDDEN = "hidden";
+            
     public AttributeTitledPane() {
         this(null, null);
     }
@@ -111,15 +113,15 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     private void hide() {
-        if (!this.getStyleClass().contains("hidden")) {
-            this.getStyleClass().add("hidden");
+        if (!this.getStyleClass().contains(HIDDEN)) {
+            this.getStyleClass().add(HIDDEN);
         }
         hideAttributeMenuItem.setSelected(true);
 
     }
 
     private void unhide() {
-        this.getStyleClass().remove("hidden");
+        this.getStyleClass().remove(HIDDEN);
         hideAttributeMenuItem.setSelected(false);
     }
 

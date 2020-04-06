@@ -32,6 +32,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult, ElementScore> {
 
     private static final String IDENTIFIER_COLUMN_NAME = "Identifier";
+    private static final String UNRECOGNISED_COLUMN_EXCEPTION_STRING = "Column not recognised: ";
 
     @Override
     public String getName() {
@@ -69,7 +70,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             return cellValue.getNamedScores().get(columnName);
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
         }
     }
 
@@ -82,7 +83,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             return cellItem.toString();
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
         }
     }
 
@@ -98,7 +99,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             intensity = Math.max(0f, Math.min(1f, (float) cellItem));
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
         }
 
         return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);

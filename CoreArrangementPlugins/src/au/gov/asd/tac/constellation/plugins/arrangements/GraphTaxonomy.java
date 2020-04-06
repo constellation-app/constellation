@@ -71,6 +71,8 @@ import java.util.Set;
  * @author algol
  */
 public final class GraphTaxonomy {
+    
+    private static final String FLOAT = "float";
 
     // Record the original x,y,z of the condensed graph.
     private static final String X_ORIG = "xorig";
@@ -262,9 +264,9 @@ public final class GraphTaxonomy {
         final int cxAttr = VisualConcept.VertexAttribute.X.ensure(condensedGraph);
         final int cyAttr = VisualConcept.VertexAttribute.Y.ensure(condensedGraph);
         final int czAttr = VisualConcept.VertexAttribute.Z.ensure(condensedGraph);
-        final int cxOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", X_ORIG, X_ORIG, null, null);
-        final int cyOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", Y_ORIG, Y_ORIG, null, null);
-        final int czOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", Z_ORIG, Z_ORIG, null, null);
+        final int cxOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FLOAT, X_ORIG, X_ORIG, null, null);
+        final int cyOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FLOAT, Y_ORIG, Y_ORIG, null, null);
+        final int czOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FLOAT, Z_ORIG, Z_ORIG, null, null);
         final int cnRadiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(condensedGraph);
         final int cRadiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(condensedGraph);
 

@@ -145,6 +145,13 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String DARK_THEME = "resources/Style-AttributeEditor-Dark.css";
+    private static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
+    private static final String NO_VALUE_TEXT = "<No Value>";
+    
+    private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOUR = "#8a1d1d";
+    private static final String CUSTOM_ATTRIBUTE_COLOUR = "#1f4f8a";
+    private static final String HIDDEN_ATTRIBUTE_COLOUR = "#999999";
 
     private JFXPanel container = new JFXPanel();
     private StackPane root;
@@ -283,16 +290,16 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private Menu createColoursMenu() {
         final Menu coloursMenu = new Menu("Attribute Editor Colours");
 
-        final Color schemaColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333")).getJavaFXColor();
+        final Color schemaColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Schema Attributes", AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, schemaColour));
 
-        final Color primaryKeyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d")).getJavaFXColor();
+        final Color primaryKeyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Primary Key Attributes", AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, primaryKeyColour));
 
-        final Color customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a")).getJavaFXColor();
+        final Color customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Custom Attributes (Not in the Schema)", AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, customColour));
 
-        final Color hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999")).getJavaFXColor();
+        final Color hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Hidden Attributes", AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, hiddenColour));
 
         final HBox restoreMenuNode = new HBox(5);
@@ -301,10 +308,10 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         restoreMenuText.setStyle("-fx-fill: white; -fx-font-smoothing-type:lcd;");
         restoreMenuNode.getChildren().add(restoreMenuText);
         restoreMenuItem.setOnAction(e -> {
-            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333");
-            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d");
-            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a");
-            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999");
+            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
         });
         coloursMenu.getItems().add(restoreMenuItem);
         return coloursMenu;
@@ -533,29 +540,29 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         if (attribute.isKey()) {
             final String colour;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999"));
-                final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d"));
+                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
+                final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR));
                 colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + keyColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + keyColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + keyColour.getBlue() * 0.5f, 1f)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d");
+                colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle("-fx-base:" + colour + ";");
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (!attribute.isSchema()) {
             final String colour;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999"));
-                final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#8a1d1d"));
+                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
+                final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR));
                 colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + customColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + customColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + customColour.getBlue() * 0.5f, 1f)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a");
+                colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle("-fx-base:" + colour + ";");
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (hidden) {
-            final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999");
-            attributePane.setStyle("-fx-base:" + hiddenColour + ";");
+            final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + hiddenColour + ";");
         } else {
-            final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333");
-            attributePane.setStyle("-fx-base:" + schemaColour + ";");
+            final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + schemaColour + ";");
         }
 
         if (!multiValue) {
@@ -738,7 +745,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
             if (item == null) {
-                buffer.append("<No Value>");
+                buffer.append(NO_VALUE_TEXT);
             } else {
                 buffer.append(interaction.getDisplayText(item));
             }
@@ -970,7 +977,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             displayText = "<Multiple Values>";
             displayNodes = Collections.emptyList();
         } else if (isNull) {
-            displayText = "<No Value>";
+            displayText = NO_VALUE_TEXT;
             displayNodes = Collections.emptyList();
         } else if (noneSelected) {
             displayText = "<Nothing Selected>";
@@ -1030,7 +1037,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             final String displayText;
             final List<Node> displayNodes;
             if (item == null) {
-                displayText = "<No Value>";
+                displayText = NO_VALUE_TEXT;
                 displayNodes = Collections.emptyList();
             } else {
                 displayText = interaction.getDisplayText(item);

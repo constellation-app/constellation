@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -28,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.Random;
@@ -48,6 +48,8 @@ import org.openide.util.NbBundle.Messages;
 })
 @Messages("CTL_ArrangeInSingleTreeAction=Single Tree")
 public final class ArrangeInSingleTreeAction extends SimpleAction {
+    
+    private static final String COLOR = "color";
 
     public ArrangeInSingleTreeAction(GraphNode context) {
         super(context);
@@ -88,7 +90,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
 
             if (VisualConcept.VertexAttribute.COLOR.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, "color", "color", "color", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, COLOR, COLOR, COLOR, null, null);
             }
             final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
 
