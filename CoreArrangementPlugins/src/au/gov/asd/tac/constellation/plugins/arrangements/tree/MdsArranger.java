@@ -21,10 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
-<<<<<<< HEAD
 import java.security.SecureRandom;
-=======
->>>>>>> master
 import java.util.BitSet;
 import org.openide.util.NotImplementedException;
 
