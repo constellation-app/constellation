@@ -266,9 +266,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, ms);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException ex) {
-            throw new GraphParseException("Can't parse datetime string '" + s + "'", ex);
-        } catch (NumberFormatException ex) {
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse datetime string '" + s + "'", ex);
         }
     }
@@ -304,9 +302,7 @@ public final class IoUtilities {
             cal.set(Calendar.MILLISECOND, 0);
 
             return cal;
-        } catch (StringIndexOutOfBoundsException ex) {
-            throw new GraphParseException("Can't parse date string '" + s + "'", ex);
-        } catch (NumberFormatException ex) {
+        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
             throw new GraphParseException("Can't parse date string '" + s + "'", ex);
         }
     }

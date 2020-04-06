@@ -82,13 +82,13 @@ or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0
 * Download [NetBeans 11.3](https://netbeans.apache.org/download/nb113/nb113.html)
 * Update `netbeans_jdkhome` in netbeans.conf to point to the Azul Zulu JDK you downloaded (e.g. `C:\Program Files\NetBeans-11.3\netbeans\etc`)
 * NetBeans 11 have dropped support for the Java Help system but is still required by Constellation. Until we find a solution to #15 there are 2 jar files that have to be manually copied into the NetBeans installation folder.
-  * Download [org-netbeans-modules-javahelp.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true) to C:\Program Files\NetBeans 11.3\platform\modules (using Windows as an example). Note that you will need to override this file when prompted.
-  * Download [jhall-2.0_05.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true) to C:\Program Files\NetBeans 11.3\netbeans\platform\modules\ext (using Windows as an example)
+  * Download [org-netbeans-modules-javahelp.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true) to `C:\Program Files\NetBeans 11.3\platform\modules` (using Windows as an example). Note that you will need to override this file when prompted.
+  * Download [jhall-2.0_05.jar](https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true) to `C:\Program Files\NetBeans 11.3\netbeans\platform\modules\ext` (using Windows as an example)
 * Clone this repository
 * Open the Constellation module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
 `Update dependencies and clean build`. This can take around 20 minutes to download the first time so go get a :coffee: and come back later.
-* Start Constellation by right clicking on Constellation > `Run`
+* Start Constellation by right clicking on `Constellation` > `Run`
 
 ## Package Constellation
 
@@ -96,13 +96,11 @@ To package Constellation in a zip bundle do the following:
 
 * In NetBeans, expand `Constellation` > `Important Files`
 * Right click on `Build Script` and run the `build-zip-with-windows-jre` or 
-`build-zip-with-linux-jre` target
+`build-zip-with-linux-jre`
 
 The packaged file should be available from the `dist` directory.
 
 ## Contributing to Constellation
-
-***Please note that all development effort is focused on upgrading Constellation to NetBeans 11 with support for Java 11. Please make sure that contributions are aligned with the branch master-nb11.***
 
 For more information please see the [contributing guide](CONTRIBUTING.md).
 

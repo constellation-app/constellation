@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.file;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import javafx.scene.image.Image;
 import javax.net.ssl.HttpsURLConnection;
 import org.netbeans.api.annotations.common.StaticResource;
@@ -49,7 +50,7 @@ public class DownloadImageUtilities {
         HttpsURLConnection connection = null;
         try {
             connection = HttpsConnection.withUrl(q).acceptPng().withReadTimeout(10 * 1000).get();
-            if (connection.getResponseCode() == HttpsURLConnection.HTTP_OK) {
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 img = new Image(HttpsUtilities.getInputStream(connection));
             }
         } catch (IOException ex) {

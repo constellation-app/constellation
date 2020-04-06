@@ -21,9 +21,9 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infom
  */
 public class DeltaFlow {
 
-    public int module;
-    public double deltaExit;
-    public double deltaEnter;
+    private int module;
+    private double deltaExit;
+    private double deltaEnter;
 
     public DeltaFlow() {
         module = 0;
@@ -41,5 +41,29 @@ public class DeltaFlow {
         module = other.module;
         deltaExit = other.deltaExit;
         deltaEnter = other.deltaEnter;
+    }
+
+    public int getModule() {
+        return module;
+    }
+
+    public void setModule(int module) {
+        this.module = module;
+    }
+
+    public double getDeltaExit() {
+        return deltaExit;
+    }
+
+    public void setDeltaExit(double deltaExit) {
+        this.deltaExit = deltaExit;
+    }
+
+    public double getDeltaEnter() {
+        return deltaEnter;
+    }
+
+    public void setDeltaEnter(double deltaEnter) {
+        this.deltaEnter = deltaEnter;
     }
 }

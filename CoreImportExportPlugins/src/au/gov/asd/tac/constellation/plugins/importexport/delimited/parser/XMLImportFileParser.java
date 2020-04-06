@@ -270,7 +270,7 @@ public class XMLImportFileParser extends ImportFileParser {
 
     private class Counter {
 
-        public int count = 1;
+        private int count = 1;
 
         @Override
         public String toString() {

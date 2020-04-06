@@ -54,7 +54,7 @@ class JdbcUtilities {
      * @throws MalformedURLException
      */
     static Connection getConnection(final File jarFile, final String driverName, final String url, final String username, final char[] password) 
-            throws MalformedURLException, ClassNotFoundException, IllegalAccessException, IllegalArgumentException, InstantiationException, NoSuchMethodException, SecurityException, InvocationTargetException, SQLException {
+            throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException {
         final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);
 

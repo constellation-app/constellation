@@ -61,7 +61,7 @@ public class TransactionTypeTopLevelFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key instanceof SchemaTransactionType ? ((SchemaTransactionType) bin.key).getTopLevelType().getName() : null;
+            key = bin.getKeyAsObject() instanceof SchemaTransactionType ? ((SchemaTransactionType) bin.getKeyAsObject()).getTopLevelType().getName() : null;
         }
 
         @Override

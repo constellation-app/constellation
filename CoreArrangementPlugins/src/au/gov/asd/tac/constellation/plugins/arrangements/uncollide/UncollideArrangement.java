@@ -15,6 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.BoundingBox2D;
@@ -23,11 +28,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.QuadTree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.BoundingBox3D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Octree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Orb3D;
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 
 public class UncollideArrangement implements Arranger {
 
@@ -94,8 +94,8 @@ public class UncollideArrangement implements Arranger {
                         wg.setFloatValue(z2Id, vxId, wg.getFloatValue(zId, vxId));
                     }
 
-                    wg.setFloatValue(xId, vxId, orb.x);
-                    wg.setFloatValue(yId, vxId, orb.y);
+                    wg.setFloatValue(xId, vxId, orb.getX());
+                    wg.setFloatValue(yId, vxId, orb.getY());
                 }
             } else {
                 final Orb3D[] orbs = new Orb3D[vxCount];
@@ -120,9 +120,9 @@ public class UncollideArrangement implements Arranger {
                         wg.setFloatValue(z2Id, vxId, wg.getFloatValue(zId, vxId));
                     }
 
-                    wg.setFloatValue(xId, vxId, orb.x);
-                    wg.setFloatValue(yId, vxId, orb.y);
-                    wg.setFloatValue(zId, vxId, orb.z);
+                    wg.setFloatValue(xId, vxId, orb.getX());
+                    wg.setFloatValue(yId, vxId, orb.getY());
+                    wg.setFloatValue(zId, vxId, orb.getZ());
                 }
             }
 

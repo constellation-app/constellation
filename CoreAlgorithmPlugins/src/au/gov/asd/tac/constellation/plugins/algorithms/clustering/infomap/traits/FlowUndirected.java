@@ -21,8 +21,8 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.trait
  */
 public class FlowUndirected implements FlowBase {
 
-    public double flow;
-    public double exitFlow;
+    private double flow;
+    private double exitFlow;
 
     public FlowUndirected() {
         this(1, 1);

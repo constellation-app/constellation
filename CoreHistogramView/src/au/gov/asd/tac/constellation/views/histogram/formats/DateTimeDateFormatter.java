@@ -62,7 +62,7 @@ public class DateTimeDateFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? null : ((ZonedDateTime) bin.key).toLocalDate();
+            key = bin.getKeyAsObject() == null ? null : ((ZonedDateTime) bin.getKeyAsObject()).toLocalDate();
         }
 
         @Override

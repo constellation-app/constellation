@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
@@ -58,8 +58,8 @@ public class InfoMapPlugin extends SimpleEditPlugin {
         LOGGER.log(Level.INFO, "Vertices {0}", treeData.getNumLeafNodes());
 
         for (final NodeBase node : treeData.getLeaves()) {
-            final int index = node.parent.index;
-            wg.setIntValue(clusterAttrId, wg.getVertex(node.originalIndex), index + 1);
+            final int index = node.getParent().getIndex();
+            wg.setIntValue(clusterAttrId, wg.getVertex(node.getOriginalIndex()), index + 1);
         }
     }
 

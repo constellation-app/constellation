@@ -43,7 +43,9 @@ public class UriIconData extends IconData {
 
     public UriIconData(final URI uri) {
         this.uri = uri;
-        assert uri.isAbsolute();
+        if(!uri.isAbsolute()){
+            throw new IllegalArgumentException();
+        }
     }
 
     @Override

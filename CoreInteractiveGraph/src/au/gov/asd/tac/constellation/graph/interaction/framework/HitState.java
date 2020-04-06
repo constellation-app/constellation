@@ -32,7 +32,7 @@ public class HitState {
      * Constants denoting the type of element that was hit. These are matched to
      * corresponding {@link GraphElementType} constants.
      */
-    public static enum HitType {
+    public enum HitType {
 
         VERTEX(GraphElementType.VERTEX),
         TRANSACTION(GraphElementType.TRANSACTION),

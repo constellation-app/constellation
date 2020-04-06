@@ -23,7 +23,10 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
+import java.util.HashSet;
+import java.util.Set;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,11 +38,11 @@ import org.testng.annotations.Test;
  *
  * @author canis_majorus
  */
-public class ExtractFromContentPluginNGTest {
+public class ExtractWordsFromTextPluginNGTest {
 
     private StoreGraph graph;
 
-    public ExtractFromContentPluginNGTest() {
+    public ExtractWordsFromTextPluginNGTest() {
     }
 
     @BeforeClass
@@ -318,7 +321,7 @@ public class ExtractFromContentPluginNGTest {
 
         PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
                 .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
-                .withParameter(ExtractWordsFromTextPlugin.CASE_INSENSITIVE_PARAMETER_ID, false)
+                .withParameter(ExtractWordsFromTextPlugin.LOWER_CASE_PARAMETER_ID, false)
                 .executeNow(graph);
 
         // Assert that only one node was added, word1
@@ -435,5 +438,113 @@ public class ExtractFromContentPluginNGTest {
         // Assert that there are now 3 nodes on the graph and one of them has the name word and type Word
         assertEquals(graph.getVertexCount(), 3);
         assertEquals(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(2)), "word2");
+    }
+
+    /**
+     * Test of class ExtractFromContentPlugin with regexOnly parameter.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testExtractWordFromContentRegexOnlyParameter() throws Exception {
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
+        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, srcId, "Node0");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, dstId, "Node1");
+
+        final int txId = graph.addTransaction(srcId, dstId, true);
+        graph.setObjectValue(transactionTypeAttributeId, txId, AnalyticConcept.TransactionType.COMMUNICATION);
+        graph.setStringValue(transactionContentAttributeId, txId, "Can you do this?\nHave you  done  that?");
+
+        PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "you\\s+(\\w+)")
+                .withParameter(ExtractWordsFromTextPlugin.REGEX_ONLY_PARAMETER_ID, true)
+                .executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 4);
+        final Set<String> newNodes = new HashSet<>();
+        newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(2)));
+        newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(3)));
+        assertTrue(newNodes.contains("do"));
+        assertTrue(newNodes.contains("done"));
+    }
+
+    /**
+     * Test of class ExtractFromContentPlugin with regexOnly + lower-case true parameters.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testExtractWordFromContentRegexOnlyLowerCaseTrueParameter() throws Exception {
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
+        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, srcId, "Node0");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, dstId, "Node1");
+
+        final int txId = graph.addTransaction(srcId, dstId, true);
+        graph.setObjectValue(transactionTypeAttributeId, txId, AnalyticConcept.TransactionType.COMMUNICATION);
+        graph.setStringValue(transactionContentAttributeId, txId, "Can you do this?\nWill you  DO  that?");
+
+        PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "you\\s+(\\w+)")
+                .withParameter(ExtractWordsFromTextPlugin.REGEX_ONLY_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.LOWER_CASE_PARAMETER_ID, true)
+                .executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 3);
+        final Set<String> newNodes = new HashSet<>();
+        newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(2)));
+        assertTrue(newNodes.contains("do"));
+    }
+
+    /**
+     * Test of class ExtractFromContentPlugin with regexOnly + lower-case false parameters.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testExtractWordFromContentRegexOnlyLowerCaseFalseParameter() throws Exception {
+        final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(graph);
+        final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
+
+        graph.getSchema().newGraph(graph);
+        final int srcId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, srcId, "Node0");
+
+        final int dstId = graph.addVertex();
+        graph.setStringValue(vertexIdentifierAttributeId, dstId, "Node1");
+
+        final int txId = graph.addTransaction(srcId, dstId, true);
+        graph.setObjectValue(transactionTypeAttributeId, txId, AnalyticConcept.TransactionType.COMMUNICATION);
+        graph.setStringValue(transactionContentAttributeId, txId, "Can you do this?\nWill you  DO  that?");
+
+        PluginExecution.withPlugin(DataAccessPluginRegistry.EXTRACT_WORDS_FROM_TEXT)
+                .withParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID, ContentConcept.TransactionAttribute.CONTENT.getName())
+                .withParameter(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID, "you\\s+(\\w+)")
+                .withParameter(ExtractWordsFromTextPlugin.REGEX_ONLY_PARAMETER_ID, true)
+                .withParameter(ExtractWordsFromTextPlugin.LOWER_CASE_PARAMETER_ID, false)
+                .executeNow(graph);
+
+        assertEquals(graph.getVertexCount(), 4);
+        final Set<String> newNodes = new HashSet<>();
+        newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(2)));
+        newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(3)));
+        assertTrue(newNodes.contains("do"));
+        assertTrue(newNodes.contains("DO"));
     }
 }

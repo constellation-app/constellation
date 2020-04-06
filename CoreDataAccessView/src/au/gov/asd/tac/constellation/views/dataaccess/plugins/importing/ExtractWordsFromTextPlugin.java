@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
@@ -58,7 +59,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
+import java.util.Set;
 import java.util.regex.Pattern;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -84,11 +85,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     public static final String REMOVE_SPECIAL_CHARS_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "ignore_special_chars");
     public static final String USE_REGEX_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "use_regex");
     public static final String WHOLE_WORDS_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "whole_words_only");
-    public static final String CASE_INSENSITIVE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "case_insensitive");
+    public static final String LOWER_CASE_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "lower_case");
     public static final String SCHEMA_TYPES_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "schema_types");
-    public static final String OUTGOING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "outgoing");
-    public static final String INCOMING_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "incoming");
+    public static final String IN_OUT_OUT_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "in_or_out");
     public static final String SELECTED_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "selected_only");
+    public static final String REGEX_ONLY_PARAMETER_ID = PluginParameter.buildId(ExtractWordsFromTextPlugin.class, "regex_only");
+
+    private static final String OUTGOING = "outgoing";
+    private static final String INCOMING = "incoming";
 
     @Override
     public String getType() {
@@ -148,9 +152,9 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         removeSpecialChars.setBooleanValue(true);
         params.addParameter(removeSpecialChars);
 
-        final PluginParameter<BooleanParameterValue> caseInsensitive = BooleanParameterType.build(CASE_INSENSITIVE_PARAMETER_ID);
-        caseInsensitive.setName("Case Insensitive");
-        caseInsensitive.setDescription("Treats all content as lower case");
+        final PluginParameter<BooleanParameterValue> caseInsensitive = BooleanParameterType.build(LOWER_CASE_PARAMETER_ID);
+        caseInsensitive.setName("Lower Case");
+        caseInsensitive.setDescription("Results are lower-cased");
         caseInsensitive.setBooleanValue(true);
         params.addParameter(caseInsensitive);
 
@@ -160,23 +164,24 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         types.setBooleanValue(true);
         params.addParameter(types);
 
-        final PluginParameter<BooleanParameterValue> outgoing = BooleanParameterType.build(OUTGOING_PARAMETER_ID);
-        outgoing.setName("Outgoing Transactions");
-        outgoing.setDescription("Links nodes to outgoing words");
-        outgoing.setBooleanValue(true);
-        params.addParameter(outgoing);
-
-        final PluginParameter<BooleanParameterValue> incoming = BooleanParameterType.build(INCOMING_PARAMETER_ID);
-        incoming.setName("Incoming Transactions");
-        incoming.setDescription("Links nodes to incoming words");
-        incoming.setBooleanValue(false);
-        params.addParameter(incoming);
+        final PluginParameter<SingleChoiceParameterValue> inOrOutParam = SingleChoiceParameterType.build(IN_OUT_OUT_PARAMETER_ID);
+        inOrOutParam.setName("Transactions");
+        inOrOutParam.setDescription("Link nodes to outgoing or incoming words: 'outgoing' or 'incoming'");
+        SingleChoiceParameterType.setOptions(inOrOutParam, List.of(OUTGOING, INCOMING));
+        inOrOutParam.setStringValue(OUTGOING);
+        params.addParameter(inOrOutParam);
 
         final PluginParameter<BooleanParameterValue> selected = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selected.setName("Selected Transactions Only");
         selected.setDescription("Only extract words from selected transactions only");
         selected.setBooleanValue(false);
         params.addParameter(selected);
+
+        final PluginParameter<BooleanParameterValue> regexOnlyParam = BooleanParameterType.build(REGEX_ONLY_PARAMETER_ID);
+        regexOnlyParam.setName("Regular Expression Only");
+        regexOnlyParam.setDescription("The regexes control everything");
+        regexOnlyParam.setBooleanValue(false);
+        params.addParameter(regexOnlyParam);
 
         params.addController(WORDS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
@@ -191,6 +196,26 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(true);
                     parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(false);
                     parameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).setEnabled(false);
+                }
+            }
+        });
+
+        // How well does this interact with the controller above?
+        //
+        params.addController(REGEX_ONLY_PARAMETER_ID, (master, parameters, change) -> {
+            if(change==ParameterChange.VALUE) {
+                final boolean regexOnly = master.getBooleanValue();
+                parameters.get(USE_REGEX_PARAMETER_ID).setEnabled(!regexOnly);
+                parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(!regexOnly);
+                parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(!regexOnly);
+                parameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).setEnabled(!regexOnly);
+                parameters.get(SCHEMA_TYPES_PARAMETER_ID).setEnabled(!regexOnly);
+
+                if(!regexOnly) {
+                    // If the checkbox is being unchecked, trigger a WORDS_PARAMETER_ID
+                    // change to set the GUI state.
+                    //
+                    parameters.get(WORDS_PARAMETER_ID).fireChangeEvent(ParameterChange.VALUE);
                 }
             }
         });
@@ -252,13 +277,19 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final boolean wholeWordOnly = extractEntityParameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).getBooleanValue();
         final int wordLength = parameters.getParameters().get(MIN_WORD_LENGTH_PARAMETER_ID).getIntegerValue();
         final boolean removeSpecialChars = extractEntityParameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).getBooleanValue();
-        final boolean ignoreCase = extractEntityParameters.get(CASE_INSENSITIVE_PARAMETER_ID).getBooleanValue();
+        final boolean toLowerCase = extractEntityParameters.get(LOWER_CASE_PARAMETER_ID).getBooleanValue();
         final boolean types = extractEntityParameters.get(SCHEMA_TYPES_PARAMETER_ID).getBooleanValue();
-        final boolean outgoing = extractEntityParameters.get(OUTGOING_PARAMETER_ID).getBooleanValue();
-        final boolean incoming = extractEntityParameters.get(INCOMING_PARAMETER_ID).getBooleanValue();
+        final String inOrOut = extractEntityParameters.get(IN_OUT_OUT_PARAMETER_ID).getStringValue();
         final boolean selectedOnly = extractEntityParameters.get(SELECTED_ONLY_PARAMETER_ID).getBooleanValue();
 
-        assert outgoing || incoming : "You must select either outgoing or incoming transactions, or both";
+        final boolean regexOnly = extractEntityParameters.get(REGEX_ONLY_PARAMETER_ID).getBooleanValue();
+
+        if(!OUTGOING.equals(inOrOut) && !INCOMING.equals(inOrOut)) {
+            var msg = String.format("Parameter %s must be '%s' or '%s'", REGEX_ONLY_PARAMETER_ID, OUTGOING, INCOMING);
+            throw new PluginException(PluginNotificationLevel.ERROR, msg);
+        }
+
+        final boolean outgoing = OUTGOING.equals(inOrOut);
 
         /*
          Retrieving attribute IDs
@@ -270,159 +301,232 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final int transactionContentAttributeId = wg.getAttribute(GraphElementType.TRANSACTION, contentAttribute);
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
-        /*
-         Verify that the content transaction attribute exists
-         */
+         // Verify that the content transaction attribute exists.
+         //
         if (transactionContentAttributeId == Graph.NOT_FOUND) {
             final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("The specified attribute %s does not exist.", contentAttribute), NotifyDescriptor.WARNING_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
             return;
         }
 
-        final List<String> foundWords = new ArrayList<>();
         final int transactionCount = wg.getTransactionCount();
 
-        /*
-         Iterating over all the transactions in the graph
-         */
-        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-            foundWords.clear();
+        if(regexOnly) {
+            // This choice ignores several other parameters, so is a bit simpler
+            // even if there code commonalities, but combining the if/else
+            // code would make things even more complex.
+            //
+            // The input words are treated as trusted regular expressions,
+            // so the caller has to know what they're doing.
+            // This is power-use mode.
+            //
 
-            final int transactionId = wg.getTransaction(transactionPosition);
-
-            final boolean selectedTx = wg.getBooleanValue(transactionSelectedAttributeId, transactionId);
-            if (selectedOnly && !selectedTx) {
-                continue;
-            }
-
-            String content = wg.getStringValue(transactionContentAttributeId, transactionId);
-
-            /*
-             Does the transaction have content?
-             */
-            if (content == null || content.isEmpty()) {
-                continue;
-            }
-
-            /*
-             Ignore other "referenced" transactions because that's not useful
-             */
-            if (wg.getObjectValue(transactionTypeAttributeId, transactionId) != null && wg.getObjectValue(transactionTypeAttributeId, transactionId).equals(AnalyticConcept.TransactionType.REFERENCED)) {
-                continue;
-            }
-
-            /*
-             Retrieving information needed to create new transactions
-             */
-            final int sourceVertexId = wg.getTransactionSourceVertex(transactionId);
-            final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
-            final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
-
-            final HashSet<String> typesExtracted = new HashSet<>();
-
-            /*
-             Extracting Schema Types
-             */
-            if (types) {
-                final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(content);
-
-                final Map<String, SchemaVertexType> identifiers = new HashMap<>();
-                extractedTypes.forEach(extractedType -> {
-                    identifiers.put(extractedType.getIdentifier(), extractedType.getType());
-                });
-
-                for (String identifier : identifiers.keySet()) {
-                    final int newVertexId = wg.addVertex();
-                    wg.setStringValue(vertexIdentifierAttributeId, newVertexId, identifier);
-                    wg.setObjectValue(vertexTypeAttributeId, newVertexId, identifiers.get(identifier));
-
-                    if (outgoing) {
-                        final int newTransactionId = wg.addTransaction(sourceVertexId, newVertexId, true);
-                        wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
-                        wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
-                        wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
-                        typesExtracted.add(identifier.toLowerCase());
-                    }
-                    if (incoming) {
-                        final int newTransactionId = wg.addTransaction(newVertexId, destinationVertexId, true);
-                        wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
-                        wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
-                        wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
-                        typesExtracted.add(identifier.toLowerCase());
+            // Each line of the input words is a regex.
+            // Use them as-is for the power users.
+            //
+            final List<Pattern> patterns = new ArrayList<>();
+            if(words!=null && !words.isEmpty()) {
+                for(String word : words.split("\n")) {
+                    word = word.strip();
+                    if(!word.isEmpty()) {
+                        final Pattern pattern = Pattern.compile(word);
+                        patterns.add(pattern);
                     }
                 }
             }
 
-            if (words == null || words.isEmpty()) {
-                /*
-                 Extracting all words of the specified length if no word list has been provided
-                 */
-                for (String word : content.split(" ")) {
-                    if (ignoreCase) {
-                        word = word.toLowerCase();
-                    }
-                    if (removeSpecialChars) {
-                        word = word.replaceAll("\\W", "");
-                    }
-                    if (word.length() < wordLength) {
+            if(!patterns.isEmpty()) {
+                // Use a set to hold the words.
+                // If a word is found multiple times, there's no point adding multiple nodes.
+                //
+                final Set<String> matched = new HashSet<>();
+
+                 // Iterate over all the transactions in the graph.
+                 //
+                for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                    final int transactionId = wg.getTransaction(transactionPosition);
+
+                    final boolean selectedTx = wg.getBooleanValue(transactionSelectedAttributeId, transactionId);
+                    if(selectedOnly && !selectedTx) {
                         continue;
                     }
-                    foundWords.add(word);
-                }
-            } else {
-                /*
-                 Checking each supplied word from Words to Extract
-                 */
-                for (String word : words.split("\n")) {
-                    if (word == null || word.isEmpty()) {
-                        continue;
-                    }
+
+                    final String content = wg.getStringValue(transactionContentAttributeId, transactionId);
+
                     /*
-                     Build regex and search for matches
+                     Does the transaction have content?
                      */
-                    if (!useRegex) {
-                        word = cleanRegex(word);
+                    if (content == null || content.isEmpty()) {
+                        continue;
                     }
-                    if (wholeWordOnly) {
-                        word = "\\b(" + word + ")\\b";
-                    } else {
-                        word = "\\b([A-Za-z0-9]*" + word + "[A-Za-z0-9]*)\\b";
-                    }
-                    final Pattern pattern;
-                    if (ignoreCase) {
-                        word = word.toLowerCase();
-                        content = content.toLowerCase();
-                        pattern = Pattern.compile(word);
-                    } else {
-                        pattern = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
-                    }
-                    final Matcher matcher = pattern.matcher(content);
-                    while (matcher.find()) {
 
-                        foundWords.add(matcher.group());
+                    /*
+                     Ignore other "referenced" transactions because that's not useful
+                     */
+                    if (wg.getObjectValue(transactionTypeAttributeId, transactionId) != null && wg.getObjectValue(transactionTypeAttributeId, transactionId).equals(AnalyticConcept.TransactionType.REFERENCED)) {
+                        continue;
+                    }
+
+                    patterns
+                        .stream()
+                        .map(pattern -> pattern.matcher(content))
+                        .forEach(matcher -> {
+                            while(matcher.find()) {
+                                if(matcher.groupCount()==0) {
+                                    // The regex doesn't have an explicit capture group, so capture the lot.
+                                    //
+                                    final String g = matcher.group();
+                                    matched.add(toLowerCase ? g.toLowerCase() : g);
+                                } else {
+                                    // The regex has one or more explicit capture groups: capture those.
+                                    //
+                                    for(int i=1; i<=matcher.groupCount(); i++) {
+                                        final String g = matcher.group(i);
+                                        matched.add(toLowerCase ? g.toLowerCase() : g);
+                                    }
+                                }
+                            }
+                        });
+
+                    // Add matched words to the graph.
+                    //
+                    if(!matched.isEmpty()) {
+                        /*
+                         Retrieving information needed to create new transactions
+                         */
+                        final int sourceVertexId = wg.getTransactionSourceVertex(transactionId);
+                        final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
+                        final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
+
+                        matched.forEach(word -> {
+                           final int newVertexId = wg.addVertex();
+                           wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
+                           wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
+
+                           final int newTransactionId = outgoing
+                                ? wg.addTransaction(sourceVertexId, newVertexId, true)
+                                : wg.addTransaction(newVertexId, destinationVertexId, true);
+                            wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
+                            wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
+                            wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
+                       });
                     }
                 }
             }
+        }
+        // End of regexOnly.
+        else
+        // The original logic.
+        {
+            final List<Pattern> patterns = patternsFromWords(words, useRegex, wholeWordOnly);
 
             /*
-             Add words to graph
+             Iterating over all the transactions in the graph
              */
-            for (String word : foundWords) {
-                if (types && typesExtracted.contains(word.toLowerCase())) {
+            final List<String> foundWords = new ArrayList<>();
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                foundWords.clear();
+
+                final int transactionId = wg.getTransaction(transactionPosition);
+
+                final boolean selectedTx = wg.getBooleanValue(transactionSelectedAttributeId, transactionId);
+                if (selectedOnly && !selectedTx) {
                     continue;
                 }
-                final int newVertexId = wg.addVertex();
-                wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
-                wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
 
-                if (outgoing) {
-                    final int newTransactionId = wg.addTransaction(sourceVertexId, newVertexId, true);
-                    wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
-                    wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
-                    wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
+                String content = wg.getStringValue(transactionContentAttributeId, transactionId);
+
+                /*
+                 Does the transaction have content?
+                 */
+                if (content == null || content.isEmpty()) {
+                    continue;
                 }
-                if (incoming) {
-                    final int newTransactionId = wg.addTransaction(newVertexId, destinationVertexId, true);
+
+                /*
+                 Ignore other "referenced" transactions because that's not useful
+                 */
+                if (wg.getObjectValue(transactionTypeAttributeId, transactionId) != null && wg.getObjectValue(transactionTypeAttributeId, transactionId).equals(AnalyticConcept.TransactionType.REFERENCED)) {
+                    continue;
+                }
+
+                /*
+                 Retrieving information needed to create new transactions
+                 */
+                final int sourceVertexId = wg.getTransactionSourceVertex(transactionId);
+                final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
+                final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
+
+                final HashSet<String> typesExtracted = new HashSet<>();
+
+                /*
+                 Extracting Schema Types
+                 */
+                if (types) {
+                    final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(content);
+
+                    final Map<String, SchemaVertexType> identifiers = new HashMap<>();
+                    extractedTypes.forEach(extractedType -> {
+                        identifiers.put(extractedType.getIdentifier(), extractedType.getType());
+                    });
+
+                    for (String identifier : identifiers.keySet()) {
+                        final int newVertexId = wg.addVertex();
+                        wg.setStringValue(vertexIdentifierAttributeId, newVertexId, identifier);
+                        wg.setObjectValue(vertexTypeAttributeId, newVertexId, identifiers.get(identifier));
+
+                        final int newTransactionId = outgoing
+                            ? wg.addTransaction(sourceVertexId, newVertexId, true)
+                            : wg.addTransaction(newVertexId, destinationVertexId, true);
+                        wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
+                        wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
+                        wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
+
+                        typesExtracted.add(identifier.toLowerCase());
+                     }
+                }
+
+                if (words == null || words.isEmpty()) {
+                    /*
+                     Extracting all words of the specified length if no word list has been provided
+                     */
+                    for (String word : content.split(" ")) {
+                        if (toLowerCase) {
+                            word = word.toLowerCase();
+                        }
+                        if (removeSpecialChars) {
+                            word = word.replaceAll("\\W", "");
+                        }
+                        if (word.length() < wordLength) {
+                            continue;
+                        }
+                        foundWords.add(word);
+                    }
+                } else {
+                    patterns.stream()
+                        .map(pattern -> pattern.matcher(content))
+                        .forEach(matcher -> {
+                            while(matcher.find()) {
+                                final String g = matcher.group();
+                                foundWords.add(toLowerCase ? g.toLowerCase() : g);
+                            }
+                        });
+                }
+
+                /*
+                 Add words to graph
+                 */
+                for (String word : foundWords) {
+                    if (types && typesExtracted.contains(word.toLowerCase())) {
+                        continue;
+                    }
+                    final int newVertexId = wg.addVertex();
+                    wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
+                    wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
+
+                    final int newTransactionId = outgoing
+                        ? wg.addTransaction(sourceVertexId, newVertexId, true)
+                        : wg.addTransaction(newVertexId, destinationVertexId, true);
                     wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
                     wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
                     wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
@@ -444,10 +548,46 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         interaction.setProgress(1, 0, "Completed successfully", true);
     }
 
+    /**
+     * The input words are transformed into pre-determined regular expressions.
+     *
+     * @param words
+     * @param useRegex
+     * @param wholeWordOnly
+     * @param ignoreCase
+     * @return
+     */
+    private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly) {
+        final List<Pattern> patterns = new ArrayList<>();
+        if(words!=null && !words.isEmpty()) {
+            for (String word : words.split("\n")) {
+                if (word == null || word.isEmpty()) {
+                    continue;
+                }
+                /*
+                 Build regex and search for matches
+                 */
+                if (!useRegex) {
+                    word = cleanRegex(word);
+                }
+                if (wholeWordOnly) {
+                    word = "\\b(" + word + ")\\b";
+                } else {
+                    word = "\\b([A-Za-z0-9]*" + word + "[A-Za-z0-9]*)\\b";
+                }
+
+                final Pattern pattern = Pattern.compile(word, Pattern.CASE_INSENSITIVE);
+                patterns.add(pattern);
+            }
+        }
+
+        return patterns;
+    }
+
     /*
      This cleans up words so that special regex characters are escaped
      */
-    private String cleanRegex(String regex) {
+    private static String cleanRegex(String regex) {
 
         return regex.replace("\\.", SeparatorConstants.PERIOD)
                 .replace("\\^", "^")

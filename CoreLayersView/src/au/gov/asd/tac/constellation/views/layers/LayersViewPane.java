@@ -20,16 +20,15 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  *
@@ -41,6 +40,7 @@ import javafx.scene.text.Text;
  */
 public class LayersViewPane extends BorderPane {
 
+    private static final String DEFAULT_LAYER_PLACEHOLDER = "default";
     private static final String FONT_FAMILY = Font.getDefault().getFamily();
     
     private final LayersViewController controller;
@@ -57,7 +57,7 @@ public class LayersViewPane extends BorderPane {
         // create layers
         this.layers = new VBox();
         layers.setAlignment(Pos.TOP_LEFT);
-        layers.setBackground(new Background(new BackgroundFill(Color.ORANGE, CornerRadii.EMPTY, Insets.EMPTY)));
+//        layers.setBackground(new Background(new BackgroundFill(Color.ORANGE, CornerRadii.EMPTY, Insets.EMPTY)));
 
         // create headings
         final Text layerIdHeadingText = new Text("Layer ID");
@@ -96,13 +96,19 @@ public class LayersViewPane extends BorderPane {
         // create options
         this.options = new HBox();
         options.setAlignment(Pos.TOP_LEFT);
-        options.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
+//        options.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
         
         // create add button
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
-            createLayer(false);
+            if (layers.getChildren().size() <= 32) {
+                createLayer(false);
+            } else {
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(
+                        "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(nd);
+            }
             event.consume();
         });
         
@@ -113,7 +119,7 @@ public class LayersViewPane extends BorderPane {
         this.layersViewPane = new VBox();
         layersViewPane.prefWidthProperty().bind(this.widthProperty());
         layersViewPane.getChildren().addAll(layers, options);
-        layersViewPane.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+//        layersViewPane.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         
         layers.prefWidthProperty().bind(layersViewPane.widthProperty());
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
@@ -146,7 +152,7 @@ public class LayersViewPane extends BorderPane {
             layerIdText.setDisable(true);
             visibilityCheckBox.setSelected(true);
             visibilityCheckBox.setDisable(true);
-            queryTextArea.setText("");
+            queryTextArea.setText(DEFAULT_LAYER_PLACEHOLDER);
             queryTextArea.setDisable(true);
             descriptionTextArea.setText("Display All Elements");
             descriptionTextArea.setDisable(true);

@@ -316,7 +316,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             // loop as long we exceeded the upper bound.
             while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
                 dateTimeList.add(datetime);
-                datetime.plus(interval.amount, interval.interval);
+                datetime = datetime.plus(interval.amount, interval.interval);
             }
             // check the size of the list, if it is greater than the amount of ticks, take that list.
             if (dateTimeList.size() > averageTicks) {
@@ -324,7 +324,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
                 // recheck if the previous interval is better suited.
                 while (datetime.toInstant().toEpochMilli() <= upperBound.toInstant().toEpochMilli()) {
                     previousDateTimeList.add(datetime);
-                    datetime.plus(previousInterval.amount, previousInterval.interval);
+                    datetime = datetime.plus(previousInterval.amount, previousInterval.interval);
                 }
                 break;
             }

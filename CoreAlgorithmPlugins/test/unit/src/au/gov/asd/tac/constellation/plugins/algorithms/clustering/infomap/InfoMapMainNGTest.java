@@ -15,16 +15,14 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapContext;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree.TreeData;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -68,8 +66,8 @@ public class InfoMapMainNGTest {
         final TreeData treeData = infomap.getTreeData();
         System.out.printf("*Vertices %d\n", treeData.getNumLeafNodes());
         for (final NodeBase node : treeData.getLeaves()) {
-            final int index = node.parent.index;
-            System.out.printf("position=%d vxId=%d cluster=%d\n", node.originalIndex, rg.getVertex(node.originalIndex), index + 1);
+            final int index = node.getParent().getIndex();
+            System.out.printf("position=%d vxId=%d cluster=%d\n", node.getOriginalIndex(), rg.getVertex(node.getOriginalIndex()), index + 1);
         }
     }
 
@@ -88,21 +86,21 @@ public class InfoMapMainNGTest {
             graph = new GraphJsonReader().readGraphZip(fnam, inStream, new TextIoProgress(true));
         }
         final Config conf = new Config();
-        conf.noFileOutput = false;
-        conf.verbosity = 1;
+        conf.setNoFileOutput(false);
+        conf.setVerbosity(1);
 
-        conf.networkFile = fnam;
-        conf.outDirectory = System.getProperty("java.io.tmpdir");
-        conf.printClu = true;
-        conf.printNodeRanks = true;
-        conf.printFlowNetwork = true;
-        conf.verbosity = 1;
-        conf.numTrials = 5;
+        conf.setNetworkFile(fnam);
+        conf.setOutDirectory(System.getProperty("java.io.tmpdir"));
+        conf.setPrintClu(true);
+        conf.setPrintNodeRanks(true);
+        conf.setPrintFlowNetwork(true);
+        conf.setVerbosity(1);
+        conf.setNumTrials(5);
 
-        System.out.printf("fastHierarchicalSolution %d\n", conf.fastHierarchicalSolution);
-        System.out.printf("Parsing %s network from file '%s'... ", conf.isUndirected() ? "undirected" : "directed", conf.networkFile);
+        System.out.printf("fastHierarchicalSolution %d\n", conf.getFastHierarchicalSolution());
+        System.out.printf("Parsing %s network from file '%s'... ", conf.isUndirected() ? "undirected" : "directed", conf.getNetworkFile());
 
-        conf.connectionType = Config.ConnectionType.TRANSACTIONS;
+        conf.setConnectionType(Config.ConnectionType.TRANSACTIONS);
 
         final ReadableGraph rg = graph.getReadableGraph();
         try {

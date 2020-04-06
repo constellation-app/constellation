@@ -63,7 +63,7 @@ public class DateTimeZuluDateTimeFormatter extends BinFormatter {
         @Override
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
-            key = bin.key == null ? null : LocalDateTime.ofInstant(((ZonedDateTime) bin.key).toInstant(), TimeZoneUtilities.UTC);
+            key = bin.getKeyAsObject() == null ? null : LocalDateTime.ofInstant(((ZonedDateTime) bin.getKeyAsObject()).toInstant(), TimeZoneUtilities.UTC);
         }
 
         @Override

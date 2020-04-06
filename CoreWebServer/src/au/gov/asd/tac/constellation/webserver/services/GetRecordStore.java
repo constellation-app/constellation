@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service=RestService.class)
 public class GetRecordStore extends RestService {
     private static final String NAME = "get_recordstore";
-    private static final String GRAPHID_PARAMETER_ID = "graph_id";
+    private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String SELECTED_PARAMETER_ID = "selected";
     private static final String VX_PARAMETER_ID = "vx";
     private static final String TX_PARAMETER_ID = "tx";
@@ -79,7 +79,7 @@ public class GetRecordStore extends RestService {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPHID_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
         graphIdParam.setDescription("The id of a graph to get data from.");
         parameters.addParameter(graphIdParam);
@@ -112,7 +112,7 @@ public class GetRecordStore extends RestService {
 
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
-        final String graphId = parameters.getStringValue(GRAPHID_PARAMETER_ID);
+        final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final boolean selected = parameters.getBooleanValue(SELECTED_PARAMETER_ID);
         final boolean vx = parameters.getBooleanValue(VX_PARAMETER_ID);
         final boolean tx = parameters.getBooleanValue(TX_PARAMETER_ID);

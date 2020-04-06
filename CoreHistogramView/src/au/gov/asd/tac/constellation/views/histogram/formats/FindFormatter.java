@@ -82,7 +82,7 @@ public class FindFormatter extends BinFormatter {
         public void setKey(GraphReadMethods graph, int attribute, int element) {
             bin.setKey(graph, attribute, element);
 
-            String k = bin.key;
+            String k = bin.getKey();
 
             if (k == null) {
                 key = null;

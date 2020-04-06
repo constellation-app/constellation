@@ -144,6 +144,11 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(ConstellationColor.CHERRY)
                 .create()
                 .build();
+        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
+                .setDescription("The layers currently enabled for display")
+                .setDefaultValue(1)
+                .create()
+                .build();
         public static final SchemaAttribute MAX_TRANSACTIONS = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "max_transactions")
                 .setDescription("The maximum number of transactions to draw")
                 .setDefaultValue(8)
@@ -180,11 +185,6 @@ public class VisualConcept extends SchemaConcept {
         public static final SchemaAttribute VISIBILITY_THRESHOLD = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "visibility_threshold")
                 .setDescription("The maximum number of nodes to display")
                 .setDefaultValue(50000)
-                .create()
-                .build();
-        public static final SchemaAttribute SELECTEDBITMASK = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "selected_bitmask")
-                .setDescription("Bitmask identifying filter layers enabled for display")
-                .setDefaultValue(1)
                 .create()
                 .build();
     }
@@ -362,6 +362,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.DRAW_FLAGS);
         schemaAttributes.add(GraphAttribute.DRAWING_MODE);
         schemaAttributes.add(GraphAttribute.HIGHLIGHT_COLOR);
+        schemaAttributes.add(GraphAttribute.LAYER_MASK_SELECTED);
         schemaAttributes.add(GraphAttribute.MAX_TRANSACTIONS);
         schemaAttributes.add(GraphAttribute.MIX_COLOR);
         schemaAttributes.add(GraphAttribute.NODE_COLOR_REFERENCE);
@@ -370,7 +371,6 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.TRANSACTION_LABELS);
         schemaAttributes.add(GraphAttribute.VISIBLE_ABOVE_THRESHOLD);
         schemaAttributes.add(GraphAttribute.VISIBILITY_THRESHOLD);
-        schemaAttributes.add(GraphAttribute.SELECTEDBITMASK);
         schemaAttributes.add(VertexAttribute.BACKGROUND_ICON);
         schemaAttributes.add(VertexAttribute.BLAZE);
         schemaAttributes.add(VertexAttribute.COLOR);

@@ -27,9 +27,9 @@ public class FloatValueUpdater2 implements ValueUpdater32 {
 
     @Override
     public int store(UndoGraphEditState state, int f) {
-        if (f != state.currentFloat) {
-            int floatDelta = f - state.currentFloat;
-            state.currentFloat = f;
+        if (f != state.getCurrentFloat()) {
+            int floatDelta = f - state.getCurrentFloat();
+            state.setCurrentFloat(f);
             if (floatDelta >= Byte.MIN_VALUE && floatDelta <= Byte.MAX_VALUE) {
                 state.addByte((byte) floatDelta);
                 return 1;
@@ -67,34 +67,40 @@ public class FloatValueUpdater2 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.byteStack[edit.bytePointer++];
+                edit.setCurrentFloat(edit.getCurrentFloat() + edit.getByteStack()[edit.getBytePointer()]);
+                edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.byteStack[--edit.bytePointer];
+                edit.setBytePointer(edit.getBytePointer() - 1);
+                edit.setCurrentFloat(edit.getCurrentFloat() - edit.getByteStack()[edit.getBytePointer()]);
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.shortStack[edit.shortPointer++];
+                edit.setCurrentFloat(edit.getCurrentFloat() + edit.getShortStack()[edit.getShortPointer()]);
+                edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.shortStack[--edit.shortPointer];
+                edit.setShortPointer(edit.getShortPointer() - 1);
+                edit.setCurrentFloat(edit.getCurrentFloat() - edit.getShortStack()[edit.getShortPointer()]);
             }
         },
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
-                edit.currentFloat += edit.intStack[edit.intPointer++];
+                edit.setCurrentFloat(edit.getCurrentFloat() + edit.getIntStack()[edit.getIntPointer()]);
+                edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
-                edit.currentFloat -= edit.intStack[--edit.intPointer];
+                edit.setIntPointer(edit.getIntPointer() - 1);
+                edit.setCurrentFloat(edit.getCurrentFloat() - edit.getIntStack()[edit.getIntPointer()]);
             }
         }
     };
