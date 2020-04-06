@@ -135,28 +135,26 @@ public final class DateTimeRangeInputPane extends Pane {
         timeZonesCombo.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
             if (!isAdjusting) {
                 final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId(oldValue));
-                if (zdt != null) {
-                    isAdjusting = true;
-                    try {
-                        final ZoneId zi = getZoneId();
-                        final ZonedDateTime zdt0 = zdt[0].withZoneSameInstant(zi);
-                        final ZonedDateTime zdt1 = zdt[1].withZoneSameInstant(zi);
-                        datePickers.get(0).setValue(zdt0.toLocalDate());
-                        datePickers.get(1).setValue(zdt1.toLocalDate());
-                        timeSpinners.get(0).getValueFactory().setValue(zdt0.getHour());
-                        timeSpinners.get(1).getValueFactory().setValue(zdt0.getMinute());
-                        timeSpinners.get(2).getValueFactory().setValue(zdt0.getSecond());
-                        timeSpinners.get(3).getValueFactory().setValue(zdt1.getHour());
-                        timeSpinners.get(4).getValueFactory().setValue(zdt1.getMinute());
-                        timeSpinners.get(5).getValueFactory().setValue(zdt1.getSecond());
-                    } finally {
-                        Platform.runLater(() -> {
-                            isAdjusting = false;
+                isAdjusting = true;
+                try {
+                    final ZoneId zi = getZoneId();
+                    final ZonedDateTime zdt0 = zdt[0].withZoneSameInstant(zi);
+                    final ZonedDateTime zdt1 = zdt[1].withZoneSameInstant(zi);
+                    datePickers.get(0).setValue(zdt0.toLocalDate());
+                    datePickers.get(1).setValue(zdt1.toLocalDate());
+                    timeSpinners.get(0).getValueFactory().setValue(zdt0.getHour());
+                    timeSpinners.get(1).getValueFactory().setValue(zdt0.getMinute());
+                    timeSpinners.get(2).getValueFactory().setValue(zdt0.getSecond());
+                    timeSpinners.get(3).getValueFactory().setValue(zdt1.getHour());
+                    timeSpinners.get(4).getValueFactory().setValue(zdt1.getMinute());
+                    timeSpinners.get(5).getValueFactory().setValue(zdt1.getSecond());
+                } finally {
+                    Platform.runLater(() -> {
+                        isAdjusting = false;
 
-                            // Call the absolute range area listener.
-                            changed.changed(observable, null, null);
-                        });
-                    }
+                        // Call the absolute range area listener.
+                        changed.changed(observable, null, null);
+                    });
                 }
             }
         });
@@ -427,7 +425,7 @@ public final class DateTimeRangeInputPane extends Pane {
             }
         }
 
-        return null;
+        return new ZonedDateTime[]{};
     }
 
     /**
