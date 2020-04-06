@@ -84,6 +84,6 @@ public class DefaultConstellationLogger implements ConstellationLogger {
 
     @Override
     public void pluginProperties(final Plugin plugin, final Properties properties) {
-        LOGGER.log(Level.FINE, "Plugin Properties: {0}: {1}", new Object[]{plugin.getName(), properties.toString()});
+        LOGGER.log(Level.FINE, "Plugin Properties: {0}: {1}", new Object[]{plugin.getName(), properties});
     }
 }

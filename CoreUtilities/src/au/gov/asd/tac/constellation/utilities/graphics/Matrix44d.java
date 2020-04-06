@@ -22,7 +22,7 @@ package au.gov.asd.tac.constellation.utilities.graphics;
  */
 public final class Matrix44d {
 
-    public double[] a;
+    private double[] a;
     public static final int LENGTH = 16;
 
     private static final double[] IDENTITY44D
@@ -37,6 +37,14 @@ public final class Matrix44d {
         a = new double[LENGTH];
     }
 
+    public double[] getA() {
+        return a;
+    }
+
+    public void setA(double[] a) {
+        this.a = a;
+    }
+    
     public void identity() {
         System.arraycopy(IDENTITY44D, 0, a, 0, LENGTH);
     }
@@ -45,17 +53,17 @@ public final class Matrix44d {
 //        memcpy(dst, src, sizeof(float)*3); // X column
 //        memcpy(dst+3, src+4, sizeof(float)*3); // Y column
 //        memcpy(dst+6, src+8, sizeof(float)*3); // Z column
-        System.arraycopy(a, 0, dst.a, 0, 3); // X column
-        System.arraycopy(a, 4, dst.a, 3, 3); // Y column
-        System.arraycopy(a, 8, dst.a, 6, 3); // Z column
+        System.arraycopy(a, 0, dst.getA(), 0, 3); // X column
+        System.arraycopy(a, 4, dst.getA(), 3, 3); // Y column
+        System.arraycopy(a, 8, dst.getA(), 6, 3); // Z column
     }
 
     public void setRotationMatrix(final Matrix33d src) {
 //        memcpy(dst, src, sizeof(float)*4);
 //        memcpy(dst+4, src+4, sizeof(float)*4);
 //        memcpy(dst+8, src+8, sizeof(float)*4);
-        System.arraycopy(src.a, 0, a, 0, 4);
-        System.arraycopy(src.a, 4, a, 4, 4);
-        System.arraycopy(src.a, 8, a, 8, 4);
+        System.arraycopy(src.getA(), 0, a, 0, 4);
+        System.arraycopy(src.getA(), 4, a, 4, 4);
+        System.arraycopy(src.getA(), 8, a, 8, 4);
     }
 }

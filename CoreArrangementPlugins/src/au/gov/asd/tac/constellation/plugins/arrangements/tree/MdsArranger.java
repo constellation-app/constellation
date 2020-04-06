@@ -78,7 +78,6 @@ public class MdsArranger implements Arranger {
         int smallGraphSize = 20;
         int iterationsPerStageSmallGraph = 25;
         int numTrialsForSmallGraph = 4;
-        int interactionInterval = 1;
 
         final boolean setMinByRadii = params.tryToAvoidOverlap;
         final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0f);

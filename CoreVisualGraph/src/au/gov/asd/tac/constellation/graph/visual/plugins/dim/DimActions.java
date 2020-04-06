@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -154,7 +153,6 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
     @Override
     public void actionPerformed(final ActionEvent e) {
         final String command = e.getActionCommand();
-        final Plugin plugin;
 
         switch (command) {
             case DIM_SELECTED_ACTION:

@@ -49,12 +49,13 @@ public final class SynchronizerAction implements ActionListener {
         Graph graph = context.getGraph();
 
         int count = 3;
-        PluginSynchronizer s = new PluginSynchronizer(count);
+        PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(count);
 
         for (int i = 0; i < count; i++) {
             PluginExecution.withPlugin(new SynchronizerPlugin())
                     .withParameter(SynchronizerPlugin.NAME_PARAMETER_ID, "I am number " + i)
                     .interactively(true)
+                    .synchronizingOn(pluginSynchronizer)
                     .executeLater(graph);
         }
     }
