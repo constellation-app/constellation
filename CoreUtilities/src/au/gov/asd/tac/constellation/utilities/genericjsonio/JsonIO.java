@@ -28,6 +28,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -40,10 +42,11 @@ import org.openide.util.NbPreferences;
 /**
  * Common functionality allowing JSON preferences to be saved/loaded.
  *
- * @author formalhaut69/serpens24
+ * @author formalhaut69
+ * @author serpens24
  */
 public class JsonIO {
-
+    private static final Logger LOGGER = Logger.getLogger(JsonIO.class.getName());
     private static final String FILE_EXT = ".json";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
@@ -54,7 +57,7 @@ public class JsonIO {
      * Private constructor to hide implicit public one.
      */
     private JsonIO() {
-        throw new IllegalStateException("Static class");
+        throw new IllegalStateException("Invalid call to private default constructor");
     }
  
     /**
@@ -235,7 +238,8 @@ public class JsonIO {
                 }
                 return mapper.readTree(new File(prefDir, FilenameEncoder.encode(fileName) + FILE_EXT));
             } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+                final String errorMsg = "An error occured reading file ".concat(FilenameEncoder.encode(fileName) + FILE_EXT);
+                LOGGER.log(Level.WARNING, errorMsg, ex);
             }
         }
         return null;

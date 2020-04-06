@@ -16,7 +16,7 @@ public class FilenameEncoder {
      * Private constructor to hide implicit public one.
      */
     private FilenameEncoder() {
-        throw new IllegalStateException("Static class");
+        throw new IllegalStateException("Invalid call to private default constructor");
     }
     
 

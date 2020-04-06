@@ -36,7 +36,8 @@ import org.openide.util.NbPreferences;
 /**
  * Save and Load TableView preferences.
  *
- * @author formalhaut69/serpens24
+ * @author formalhaut69
+ * @author serpens24
  */
 public class TableViewPreferencesIOUtilities {
 
@@ -50,7 +51,7 @@ public class TableViewPreferencesIOUtilities {
      * Private constructor to hide implicit public one.
      */
     private TableViewPreferencesIOUtilities() {
-        throw new IllegalStateException("Static class");
+        throw new IllegalStateException("Invalid call to private default constructor");
     }
 
     /**

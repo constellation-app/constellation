@@ -32,6 +32,7 @@ import javafx.scene.control.TextInputDialog;
  * preference from a list
  *
  * @author formalhaut69
+ * @author serpens24
  */
 public class JsonIODialog {
 
@@ -39,7 +40,7 @@ public class JsonIODialog {
      * Private constructor to hide implicit public one.
      */
     private JsonIODialog() {
-        throw new IllegalStateException("Static class");
+        throw new IllegalStateException("Invalid call to private default constructor");
     }
 
     /***
