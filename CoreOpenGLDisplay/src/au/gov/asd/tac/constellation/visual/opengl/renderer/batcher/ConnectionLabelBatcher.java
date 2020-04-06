@@ -316,8 +316,8 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
             gl.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
-            gl.glUniform1f(shaderVisibilityLow, camera.visibilityLow);
-            gl.glUniform1f(shaderVisibilityHigh, camera.visibilityHigh);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());

@@ -91,11 +91,11 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
                 addVector(jsonGenerator, LOOK_AT_PREVIOUS_UP, camera.lookAtPreviousUp);
                 addVector(jsonGenerator, LOOK_AT_PREVIOUS_ROTATION, camera.lookAtPreviousRotation);
 
-                addFrame(jsonGenerator, FRAME, camera.objectFrame);
+                addFrame(jsonGenerator, FRAME, camera.getObjectFrame());
                 addBoundingBox(jsonGenerator, BOUNDING_BOX, camera.boundingBox);
-                jsonGenerator.writeNumberField(VISIBILITY_LOW, camera.visibilityLow);
-                jsonGenerator.writeNumberField(VISIBILITY_HIGH, camera.visibilityHigh);
-                jsonGenerator.writeNumberField(MIX_RATIO, camera.mixRatio);
+                jsonGenerator.writeNumberField(VISIBILITY_LOW, camera.getVisibilityLow());
+                jsonGenerator.writeNumberField(VISIBILITY_HIGH, camera.getVisibilityHigh());
+                jsonGenerator.writeNumberField(MIX_RATIO, camera.getMixRatio());
 
                 jsonGenerator.writeEndObject();
             }
@@ -142,10 +142,10 @@ public final class CameraIOProvider extends AbstractGraphIOProvider {
                 getBoundingBox(camera.boundingBox, jnode, BOUNDING_BOX);
             }
 
-            camera.objectFrame = getFrame(jnode, FRAME);
-            camera.visibilityLow = (float) jnode.get(VISIBILITY_LOW).doubleValue();
-            camera.visibilityHigh = (float) jnode.get(VISIBILITY_HIGH).doubleValue();
-            camera.mixRatio = (int) jnode.get(MIX_RATIO).doubleValue();
+            camera.setObjectFrame(getFrame(jnode, FRAME));
+            camera.setVisibilityLow((float) jnode.get(VISIBILITY_LOW).doubleValue());
+            camera.setVisibilityHigh((float) jnode.get(VISIBILITY_HIGH).doubleValue());
+            camera.setMixRatio((int) jnode.get(MIX_RATIO).doubleValue());
 
             graph.setObjectValue(attributeId, elementId, camera);
         }

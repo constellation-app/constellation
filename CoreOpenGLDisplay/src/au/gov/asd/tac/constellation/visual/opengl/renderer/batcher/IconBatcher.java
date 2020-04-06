@@ -234,8 +234,8 @@ public class IconBatcher implements SceneBatcher {
             }
             gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(shaderVisibilityLow, camera.visibilityLow);
-            gl.glUniform1f(shaderVisibilityHigh, camera.visibilityHigh);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderPixelDensity, pixelDensity);
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);

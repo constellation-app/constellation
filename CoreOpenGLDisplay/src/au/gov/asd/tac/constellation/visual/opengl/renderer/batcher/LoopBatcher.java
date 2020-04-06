@@ -18,12 +18,12 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
-import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
@@ -198,8 +198,8 @@ public class LoopBatcher implements SceneBatcher {
             }
             gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(shaderVisibilityLow, camera.visibilityLow);
-            gl.glUniform1f(shaderVisibilityHigh, camera.visibilityHigh);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
