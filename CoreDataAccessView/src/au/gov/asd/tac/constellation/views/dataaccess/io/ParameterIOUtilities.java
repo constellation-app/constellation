@@ -71,6 +71,8 @@ public class ParameterIOUtilities {
     public static final String GLOBAL_OBJECT = "global";
     public static final String PLUGINS_OBJECT = "plugins";
     public static final String IS_ENABLED = "__is_enabled__";
+    
+    private static final String JSON_FILE_EXTENSION = ".json";
 
     /**
      * Load the data access graph state and update the data access view.
@@ -228,7 +230,7 @@ public class ParameterIOUtilities {
         if (queryName != null) {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(dataAccessDir, encode(queryName + ".json"));
+            final File f = new File(dataAccessDir, encode(queryName + JSON_FILE_EXTENSION));
             boolean go = true;
             if (f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", queryName);
@@ -262,7 +264,7 @@ public class ParameterIOUtilities {
         final String[] names;
         if (dataAccessDir.isDirectory()) {
             names = dataAccessDir.list((File dir, String name) -> {
-                return name.toLowerCase().endsWith(".json");
+                return name.toLowerCase().endsWith(JSON_FILE_EXTENSION);
             });
         } else {
             names = new String[0];
@@ -277,7 +279,7 @@ public class ParameterIOUtilities {
         if (queryName != null) {
             try {
                 final ObjectMapper mapper = new ObjectMapper();
-                final JsonNode root = mapper.readTree(new File(dataAccessDir, encode(queryName) + ".json"));
+                final JsonNode root = mapper.readTree(new File(dataAccessDir, encode(queryName) + JSON_FILE_EXTENSION));
                 if (root.isArray()) {
                     // Remove all the existing tabs and start some new ones.
                     dap.removeTabs();

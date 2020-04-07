@@ -82,6 +82,8 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "transaction_types");
     
     private final Random r = new Random();
+    
+    private static final String CONNECTED = "connected";
 
     @Override
     public String getDescription() {
@@ -117,7 +119,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Default");
         modes.add("Newman");
-        modes.add("Connected");
+        modes.add(CONNECTED);
 
         final PluginParameter<SingleChoiceParameterValue> buildMode = SingleChoiceParameterType.build(BUILD_MODE_PARAMETER_ID);
         buildMode.setName("Build mode");
@@ -153,7 +155,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         params.addController(BUILD_MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = master.getStringValue();
-                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals("Connected"));
+                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals(CONNECTED));
             }
         });
 
@@ -250,7 +252,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         int initialComponents = 0;
-        if (buildMode.equals("Connected")) {
+        if (buildMode.equals(CONNECTED)) {
             initialComponents = componentCount(graph);
         }
 
@@ -385,7 +387,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.removeTransaction(txId);
             }
 
-            if (buildMode.equals("Connected") && componentCount(graph) != initialComponents + 1) {
+            if (buildMode.equals(CONNECTED) && componentCount(graph) != initialComponents + 1) {
                 if (s == t) {
                     break;
                 } else {

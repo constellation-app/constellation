@@ -131,8 +131,16 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String LEVEL_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "level");
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
     
+    //Debug Levels
+    private static final String NONE = "None";
+    private static final String DEBUG = "Debug";
+    private static final String INFO = "Info";
+    private static final String WARNING = "Warning";
+    private static final String ERROR = "Error";
+    private static final String FATAL = "FATAL";
+    
     private final Random r = new Random();
-
+    
     @StaticResource
     private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/resources/alien.png";
 
@@ -302,14 +310,14 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<SingleChoiceParameterValue> interactionOptions = SingleChoiceParameterType.build(INTERACTION_PARAMETER_ID);
         interactionOptions.setName("Interaction level");
         interactionOptions.setDescription("Interaction level for some interaction with the user");
-        SingleChoiceParameterType.setOptions(interactionOptions, Arrays.asList("None", "Debug", "Info", "Warning", "Error", "Fatal"));
+        SingleChoiceParameterType.setOptions(interactionOptions, Arrays.asList(NONE, DEBUG, INFO, WARNING, ERROR, FATAL));
         params.addParameter(interactionOptions);
 
         final PluginParameter<SingleChoiceParameterValue> levelOptions = SingleChoiceParameterType.build(LEVEL_PARAMETER_ID);
         levelOptions.setName("PluginException level");
         levelOptions.setDescription("PluginException level to throw an exception at");
         levelOptions.setHelpID("not.actually.helpful");
-        SingleChoiceParameterType.setOptions(levelOptions, Arrays.asList("None", "Debug", "Info", "Warning", "Error", "Fatal"));
+        SingleChoiceParameterType.setOptions(levelOptions, Arrays.asList(NONE, DEBUG, INFO, WARNING, ERROR, FATAL));
         params.addParameter(levelOptions);
 
         final PluginParameter<IntegerParameterValue> sleepParam = IntegerParameterType.build(SLEEP_PARAMETER_ID);
@@ -437,19 +445,19 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginNotificationLevel pnInteractionLevel;
         if (interactionLevel != null) {
             switch (interactionLevel) {
-                case "Debug":
+                case DEBUG:
                     pnInteractionLevel = PluginNotificationLevel.DEBUG;
                     break;
-                case "Info":
+                case INFO:
                     pnInteractionLevel = PluginNotificationLevel.INFO;
                     break;
-                case "Warning":
+                case WARNING:
                     pnInteractionLevel = PluginNotificationLevel.WARNING;
                     break;
-                case "Error":
+                case ERROR:
                     pnInteractionLevel = PluginNotificationLevel.ERROR;
                     break;
-                case "Fatal":
+                case FATAL:
                     pnInteractionLevel = PluginNotificationLevel.FATAL;
                     break;
                 default:
@@ -466,19 +474,19 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginNotificationLevel pnExceptionLevel;
         if (exceptionLevel != null) {
             switch (exceptionLevel) {
-                case "Debug":
+                case DEBUG:
                     pnExceptionLevel = PluginNotificationLevel.DEBUG;
                     break;
-                case "Info":
+                case INFO:
                     pnExceptionLevel = PluginNotificationLevel.INFO;
                     break;
-                case "Warning":
+                case WARNING:
                     pnExceptionLevel = PluginNotificationLevel.WARNING;
                     break;
-                case "Error":
+                case ERROR:
                     pnExceptionLevel = PluginNotificationLevel.ERROR;
                     break;
-                case "Fatal":
+                case FATAL:
                     pnExceptionLevel = PluginNotificationLevel.FATAL;
                     break;
                 default:

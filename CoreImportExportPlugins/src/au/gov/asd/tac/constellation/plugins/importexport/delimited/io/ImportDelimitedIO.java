@@ -79,6 +79,7 @@ public class ImportDelimitedIO {
     private static final String TRANSLATOR_ARGS = "translator_args";
     private static final String DEFAULT_VALUE = "default_value";
     private static final String PARAMETERS = "parameters";
+    private static final String JSON_EXTENSION = ".json";
 
     public static void saveParameters(final DelimitedFileImporterStage stage, final ImportController importController) {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -193,7 +194,7 @@ public class ImportDelimitedIO {
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(delimIoDir, TemplateListDialog.encode(templName + ".json"));
+            final File f = new File(delimIoDir, TemplateListDialog.encode(templName + JSON_EXTENSION));
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
@@ -229,14 +230,14 @@ public class ImportDelimitedIO {
 
         final String templName = new TemplateListDialog(stage, true, null).getName(stage, delimIoDir);
         if (templName != null) {
-            final File template = new File(delimIoDir, TemplateListDialog.encode(templName) + ".json");
+            final File template = new File(delimIoDir, TemplateListDialog.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
             } else {
                 try {
                     final ObjectMapper mapper = new ObjectMapper();
-                    final JsonNode root = mapper.readTree(new File(delimIoDir, TemplateListDialog.encode(templName) + ".json"));
+                    final JsonNode root = mapper.readTree(new File(delimIoDir, TemplateListDialog.encode(templName) + JSON_EXTENSION));
 
                     final JsonNode source = root.get(SOURCE);
                     final String parser = source.get(PARSER).textValue();
