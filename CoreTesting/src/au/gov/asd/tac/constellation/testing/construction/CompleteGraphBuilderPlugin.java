@@ -44,11 +44,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -70,7 +70,7 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(CompleteGraphBuilderPlugin.class, "transaction_types");
     
-    private final Random r = new Random();
+    private final SecureRandom r = new SecureRandom();
 
     @Override
     public String getDescription() {

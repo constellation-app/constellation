@@ -23,8 +23,8 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanAttributeDescription extends AbstractAttributeDescription {
 
-    private static final Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
     private static final boolean DEFAULT_VALUE = false;
     private boolean[] data = new boolean[0];
     private boolean defaultValue = DEFAULT_VALUE;

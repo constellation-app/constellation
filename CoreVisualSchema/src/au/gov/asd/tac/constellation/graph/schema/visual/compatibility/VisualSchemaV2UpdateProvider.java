@@ -54,7 +54,6 @@ public class VisualSchemaV2UpdateProvider extends SchemaUpdateProvider {
 
     @Override
     protected void schemaUpdate(StoreGraph graph) {
-        final int foregroundIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(graph);
         final int backgroundIconAttribute = VisualConcept.VertexAttribute.BACKGROUND_ICON.ensure(graph);
 
         graph.updateAttributeDefaultValue(backgroundIconAttribute, "Background.Flat Square");

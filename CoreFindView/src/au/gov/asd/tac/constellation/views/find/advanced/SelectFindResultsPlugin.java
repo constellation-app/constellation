@@ -67,7 +67,7 @@ public class SelectFindResultsPlugin extends SimplePlugin {
         WritableGraph wg = graphs.getGraph().getWritableGraph(getName(), true);
         try {
             final QueryServices qs = new QueryServices(graph);
-            QueryServices.selectOnGraph(wg, results, isHeld);
+            qs.selectOnGraph(wg, results, isHeld);
         } finally {
             wg.commit();
         }

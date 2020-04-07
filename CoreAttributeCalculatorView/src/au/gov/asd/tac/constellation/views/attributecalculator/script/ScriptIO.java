@@ -224,7 +224,10 @@ public class ScriptIO {
             final Optional<ButtonType> action = alert.showAndWait();
             final boolean del = action.equals(ButtonType.YES);
             if (del) {
-                f.delete();
+                final boolean fIsDeleted = f.delete();
+                if (!fIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
     }

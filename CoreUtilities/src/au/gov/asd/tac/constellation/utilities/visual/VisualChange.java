@@ -51,9 +51,9 @@ package au.gov.asd.tac.constellation.utilities.visual;
  */
 public final class VisualChange implements Comparable<VisualChange> {
 
-    public static int globalOrder = 0;
+    private static int globalOrder = 0;
 
-    public int order;
+    private final int order;
     public final long id;
     public final VisualProperty property;
     private final int[] changeList;

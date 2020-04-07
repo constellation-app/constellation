@@ -44,13 +44,13 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.openide.util.Exceptions;
@@ -76,7 +76,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "transaction_types");
     
-    private final Random r = new Random();
+    private final SecureRandom r = new SecureRandom();
 
     @Override
     public String getDescription() {
@@ -328,11 +328,11 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @param repeats A list of possible destinations
      * @param nVxStart The number of destinations to return.
-     * @param r Random
+     * @param r SecureRandom
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, Random r) {
+    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

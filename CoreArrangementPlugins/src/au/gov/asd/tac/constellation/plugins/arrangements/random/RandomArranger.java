@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.random;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import java.util.Random;
+import java.security.SecureRandom;
 
 /**
  *
@@ -31,7 +31,7 @@ public class RandomArranger implements Arranger {
     private final int dimensions;
     private boolean maintainMean = false;
     
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public RandomArranger(final int dimensions) {
         this.dimensions = dimensions;

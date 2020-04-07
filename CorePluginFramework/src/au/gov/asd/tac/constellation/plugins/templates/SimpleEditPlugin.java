@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.plugins.templates.Bundle;
 import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -129,7 +128,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                         final String msg = Bundle.MSG_Edit_Failed(graph, getName());
                         interaction.notify(PluginNotificationLevel.ERROR, msg0 + ";\n" + msg + "\n" + ex.getMessage());
                         cancelled = true;
-                        LOGGER.log(Level.WARNING, msg0 + "; " + msg, ex);
+                        LOGGER.log(Level.WARNING, ex, () -> msg0 + "; " + msg);
                         throw new RuntimeException(ex);
                     }
 

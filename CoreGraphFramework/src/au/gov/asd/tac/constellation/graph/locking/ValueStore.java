@@ -67,41 +67,41 @@ public final class ValueStore implements ParameterWriteAccess, Serializable {
     }
 
     public final void save() {
-        converter.save();
+        converter.save(access);
     }
 
-    private static interface Saver extends Serializable {
-
-        public void save();
+    private interface Saver extends Serializable {
+        
+        public void save(final ParameterWriteAccess pwa);
     }
 
     private final Saver INT_CONVERTER = new Saver() {
         @Override
-        public void save() {
+        public void save(final ParameterWriteAccess access) {
             access.setInt(i);
         }
     };
     private final Saver LONG_CONVERTER = new Saver() {
         @Override
-        public void save() {
+        public void save(final ParameterWriteAccess access) {
             access.setLong(l);
         }
     };
     private final Saver FLOAT_CONVERTER = new Saver() {
         @Override
-        public void save() {
+        public void save(final ParameterWriteAccess access) {
             access.setFloat(f);
         }
     };
     private final Saver DOUBLE_CONVERTER = new Saver() {
         @Override
-        public void save() {
+        public void save(final ParameterWriteAccess access) {
             access.setDouble(d);
         }
     };
     private final Saver OBJECT_CONVERTER = new Saver() {
         @Override
-        public void save() {
+        public void save(final ParameterWriteAccess access) {
             access.setObject(o);
         }
     };

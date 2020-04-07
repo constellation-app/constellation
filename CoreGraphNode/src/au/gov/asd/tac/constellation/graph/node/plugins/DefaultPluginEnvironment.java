@@ -145,7 +145,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                 }
             } catch (Exception ex) {
                 auditPluginError(plugin, ex);
-                final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();\n", DefaultPluginEnvironment.class.getName());
+                final String msg = String.format("Unexpected non-plugin exception caught in %s.executePluginLater();%n", DefaultPluginEnvironment.class.getName());
                 LOGGER.log(Level.WARNING, msg, ex);
                 if (currentReport != null) {
                     currentReport.setError(ex);
