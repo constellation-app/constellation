@@ -271,22 +271,13 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.functionality</package>
-                <package>au.gov.asd.tac.constellation.functionality.autosave</package>
                 <package>au.gov.asd.tac.constellation.functionality.browser</package>
-                <package>au.gov.asd.tac.constellation.functionality.copypaste</package>
                 <package>au.gov.asd.tac.constellation.functionality.dialog</package>
                 <package>au.gov.asd.tac.constellation.functionality.email</package>
-                <package>au.gov.asd.tac.constellation.functionality.merge</package>
-                <package>au.gov.asd.tac.constellation.functionality.placeholder</package>
-                <package>au.gov.asd.tac.constellation.functionality.select</package>
-                <package>au.gov.asd.tac.constellation.functionality.select.named</package>
+                <package>au.gov.asd.tac.constellation.functionality.genericjsonio</package>
                 <package>au.gov.asd.tac.constellation.functionality.startup</package>
-                <package>au.gov.asd.tac.constellation.functionality.statusline</package>
                 <package>au.gov.asd.tac.constellation.functionality.tutorial</package>
-                <package>au.gov.asd.tac.constellation.functionality.views</package>
-                <package>au.gov.asd.tac.constellation.functionality.visual</package>
                 <package>au.gov.asd.tac.constellation.functionality.whatsnew</package>
-                <package>au.gov.asd.tac.constellation.functionality.zoom</package>
             </public-packages>
         </data>
     </configuration>
