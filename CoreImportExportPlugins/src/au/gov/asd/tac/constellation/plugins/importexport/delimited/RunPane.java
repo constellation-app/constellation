@@ -200,7 +200,7 @@ public class RunPane extends BorderPane implements KeyListener {
             } else if (c.isLetterKey()) {
                 attributeFilter += c.getChar();
             }
-            importController.setShowFilteredSchemaAttributes(attributeFilter);
+            importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
         });
 

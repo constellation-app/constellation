@@ -336,14 +336,14 @@ public class ImportController {
         Map<String, Attribute> displayedAttributes = new HashMap<>();
 
         if (filterAttributes != null &&  filterAttributes.length() > 0) {
-            for (String name : autoAddedAttributes.keySet()) {
-                if (name.toUpperCase().matches(".*" + filterAttributes.toUpperCase() + ".*")) {
-                    displayedAttributes.put(name, autoAddedAttributes.get(name));
+            for (final String attributeName : autoAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(filterAttributes.toLowerCase())) {
+                    displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
                 }
             }
-            for (String name : manuallyAddedAttributes.keySet()) {
-                if (name.toUpperCase().matches(filterAttributes.toUpperCase())) {
-                    displayedAttributes.put(name, manuallyAddedAttributes.get(name));
+            for (final String attributeName : manuallyAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(filterAttributes.toLowerCase())) {
+                    displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
                 }
             }
         } else {
@@ -508,8 +508,8 @@ public class ImportController {
         // TODO: the tick box could have changed but the menu item isn't updated, fix it
     }
 
-    public void setShowFilteredSchemaAttributes(final String filterAttributes) {
-        this.filterAttributes = filterAttributes;
+    public void setAttributeFilter(final String attributeFilter) {
+        this.filterAttributes = attributeFilter;
     }
 
     public String[] getCurrentColumns() {
