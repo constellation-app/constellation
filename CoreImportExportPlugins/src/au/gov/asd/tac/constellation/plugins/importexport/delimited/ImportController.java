@@ -75,8 +75,8 @@ public class ImportController {
     private ImportFileParser importFileParser;
     private boolean schemaInitialised;
     private boolean showAllSchemaAttributes;
-    private String filterAttributes = "";
     private PluginParameters currentParameters = null;
+    private String attributeFilter = "";
 
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
@@ -172,9 +172,9 @@ public class ImportController {
 
     public void setDestination(final ImportDestination<?> destination) {
         if (destination != null) {
-            this.currentDestination = destination;
+            currentDestination = destination;
         }
-        if (this.currentDestination == null) {
+        if (currentDestination == null) {
             return;
         }
 
@@ -189,7 +189,7 @@ public class ImportController {
         keys.clear();
 
         final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-        loadAllSchemaAttributes(this.currentDestination, showSchemaAttributes);
+        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
 
         updateDisplayedAttributes();
     }
@@ -333,16 +333,15 @@ public class ImportController {
     }
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
-        Map<String, Attribute> displayedAttributes = new HashMap<>();
-
-        if (filterAttributes != null &&  filterAttributes.length() > 0) {
+        final Map<String, Attribute> displayedAttributes = new HashMap<>();
+        if (attributeFilter != null &&  attributeFilter.length() > 0) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(filterAttributes.toLowerCase())) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
                 }
             }
             for (final String attributeName : manuallyAddedAttributes.keySet()) {
-                if (attributeName.toLowerCase().contains(filterAttributes.toLowerCase())) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
                     displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
                 }
             }
@@ -509,7 +508,7 @@ public class ImportController {
     }
 
     public void setAttributeFilter(final String attributeFilter) {
-        this.filterAttributes = attributeFilter;
+        this.attributeFilter = attributeFilter;
     }
 
     public String[] getCurrentColumns() {

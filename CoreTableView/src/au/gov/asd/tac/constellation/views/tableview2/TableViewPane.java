@@ -328,7 +328,7 @@ public final class TableViewPane extends BorderPane {
         columnFilterTextField.setOnKeyReleased(event -> {
             final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
             columnCheckboxes.forEach(item -> {
-                final String columnName = item.getId();
+                final String columnName = item.getId().toLowerCase();
                 item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
             });
         });

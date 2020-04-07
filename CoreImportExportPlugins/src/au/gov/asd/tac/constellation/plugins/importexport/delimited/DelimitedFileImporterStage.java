@@ -189,12 +189,6 @@ public class DelimitedFileImporterStage extends Stage {
         getIcons().add(new Image(DELIMITED_IMPORTER_ICON_PATH));
         DelimitedFileImporterStage.this.centerOnScreen();
     }
-//
-//    public void updateAttributes(final String filterAttributes) {
-//        importController.setShowFilteredSchemaAttributes(filterAttributes);
-//        importController.setClearManuallyAdded(false);
-//        importController.setDestination(sourcePane.getDestination());
-//    }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {
         sourcePane.update(importController);

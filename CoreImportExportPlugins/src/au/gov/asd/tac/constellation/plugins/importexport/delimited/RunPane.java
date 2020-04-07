@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -70,6 +71,8 @@ import javafx.util.Callback;
  * @author sirius
  */
 public class RunPane extends BorderPane implements KeyListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(RunPane.class.getName());
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -81,9 +84,12 @@ public class RunPane extends BorderPane implements KeyListener {
     private ImportTableColumn mouseOverColumn = null;
     private Rectangle columnRectangle = new Rectangle();
 
-    final TextField filterField;
+    private final TextField filterField;
     private final RowFilter rowFilter = new RowFilter();
     private String filter = "";
+    
+    private final SplitPane attributeFilterPane = new SplitPane();
+    private final TextField attributeFilterTextField = new TextField();
     private String attributeFilter = "";
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
@@ -134,14 +140,11 @@ public class RunPane extends BorderPane implements KeyListener {
         splitPane.setDividerPositions(0.5);
         setCenter(splitPane);
 
-//        addColumnConstraint(true, HPos.CENTER, Priority.ALWAYS, Double.MAX_VALUE, 300, USE_COMPUTED_SIZE, -1);
-//        addRowConstraint(true, VPos.TOP, Priority.ALWAYS, Double.MAX_VALUE, 300, USE_COMPUTED_SIZE, -1);
-//        addRowConstraint(true, VPos.TOP, Priority.NEVER, Double.MAX_VALUE, 300, USE_COMPUTED_SIZE, -1);
         filterField = new TextField();
         filterField.setMinHeight(USE_PREF_SIZE);
         filterField.setPromptText("Filter");
-        filterField.textProperty().addListener((ObservableValue<? extends String> ov, String oldFilter, String newFilter) -> {
-            if (setFilter(newFilter)) {
+        filterField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (setFilter(newValue)) {
                 filterField.setStyle("-fx-background-color: white;");
             } else {
                 filterField.setStyle("-fx-background-color: red;");
@@ -163,13 +166,12 @@ public class RunPane extends BorderPane implements KeyListener {
         Text startupHelpText = new Text();
         startupHelpText.setText("1. Click on the green plus icon to add files.\n"
                 + "2. Select your destination graph.\n"
-                + "3. Drag and drop attributes from the bottom pane onto your columns.\n"
+                + "3. Drag and drop attributes onto columns.\n"
                 + "4. Right click an attribute for more options.\n"
-                + "5. Click on the Import button to import the data to your destination graph.\n"
-                + "6. Save your configuration using Options -> Save.\n\n"
-                + "HINT: See all supported attributes using Options -> Show all schema attributes\n"
-                + "HINT: Hover over the attribute name for a tooltip.\n"
-                + "HINT: Start typing to filter attributes (press delete to remove).");
+                + "5. Click the 'Import' button to add data to your graph.\n"
+                + "6. Save your configuration using 'Options > Save'.\n\n"
+                + "HINT: See all supported attributes with 'Options > Show all schema attributes'.\n"
+                + "HINT: Start typing to filter attributes (press delete to clear).");
         startupHelpText.setStyle("-fx-font-size: 14pt;-fx-fill: grey;");
         sampleDataView.setPlaceholder(startupHelpText);
 
@@ -193,12 +195,13 @@ public class RunPane extends BorderPane implements KeyListener {
 
         attributePane.setOnKeyPressed(event -> {
             final KeyCode c = event.getCode();
-            if (c == KeyCode.DELETE) {
+            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
                 attributeFilter = "";
-            } else if (c == KeyCode.BACK_SPACE) {
-                attributeFilter = "";
+                attributeFilterPane.setVisible(false);
             } else if (c.isLetterKey()) {
                 attributeFilter += c.getChar();
+                attributeFilterTextField.setText(attributeFilter);
+                attributeFilterPane.setVisible(true);
             }
             importController.setAttributeFilter(attributeFilter);
             importController.setDestination(null);
@@ -216,13 +219,18 @@ public class RunPane extends BorderPane implements KeyListener {
         attributeScrollPane.setPrefHeight(350);
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        splitPane.getItems().add(attributeScrollPane);
+
+        final Label filterLabel = new Label("Attribute Filter:");
+        attributeFilterTextField.setEditable(false);
+        attributeFilterPane.getItems().addAll(filterLabel, attributeFilterTextField);
+        attributeFilterPane.setVisible(false);
+        splitPane.getItems().addAll(attributeFilterPane, attributeScrollPane);
         splitPane.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
         columnRectangle.setStyle("-fx-fill: rgba(200, 200, 200, 0.3);");
         columnRectangle.setVisible(false);
         columnRectangle.setManaged(false);
-        getChildren().add(columnRectangle);
+        RunPane.this.getChildren().add(columnRectangle);
 
         setOnMouseDragged((final MouseEvent t) -> {
             handleAttributeMoved(t.getSceneX(), t.getSceneY());
@@ -274,7 +282,7 @@ public class RunPane extends BorderPane implements KeyListener {
 
     public void handleAttributeMoved(double sceneX, double sceneY) {
         if (draggingAttributeNode != null) {
-            Point2D location = sceneToLocal(sceneX, sceneY);
+            final Point2D location = sceneToLocal(sceneX, sceneY);
 
             double x = location.getX() - draggingOffset.getX();
             if (x < 0) {
@@ -295,15 +303,13 @@ public class RunPane extends BorderPane implements KeyListener {
             draggingAttributeNode.setLayoutX(x);
             draggingAttributeNode.setLayoutY(y);
 
-            Point2D tableLocation = sampleDataView.sceneToLocal(sceneX, sceneY);
+            final Point2D tableLocation = sampleDataView.sceneToLocal(sceneX, sceneY);
 
             double offset = 0;
             Set<Node> nodes = sampleDataView.lookupAll(".scroll-bar");
-            for (Node node : nodes) {
+            for (final Node node : nodes) {
                 if (node instanceof ScrollBar) {
-//                    ScrollBarSkin skin = (ScrollBarSkin) node;
-//                    Skinnable skinnable = skin.getSkinnable();
-                    ScrollBar scrollBar = (ScrollBar) node;
+                    final ScrollBar scrollBar = (ScrollBar) node;
                     if (scrollBar.getOrientation() == Orientation.HORIZONTAL) {
                         offset = scrollBar.getValue();
                         break;
@@ -412,7 +418,7 @@ public class RunPane extends BorderPane implements KeyListener {
         setFilter(filter);
     }
 
-    public void deleteAttribute(Attribute attribute) {
+    public void deleteAttribute(final Attribute attribute) {
         if (attribute.getElementType() == GraphElementType.VERTEX) {
             sourceVertexAttributeList.deleteAttribute(attribute);
             destinationVertexAttributeList.deleteAttribute(attribute);
@@ -421,13 +427,13 @@ public class RunPane extends BorderPane implements KeyListener {
         }
     }
 
-    public void validate(ImportTableColumn column) {
+    public void validate(final ImportTableColumn column) {
         if (column != null) {
             column.validate(currentRows);
         }
     }
 
-    public boolean setFilter(String filter) {
+    public boolean setFilter(final String filter) {
         this.filter = filter;
         if (filter.isEmpty()) {
             for (TableRow tableRow : currentRows) {
@@ -496,7 +502,8 @@ public class RunPane extends BorderPane implements KeyListener {
         return allocatedAttributes;
     }
 
-    public void setDisplayedAttributes(Map<String, Attribute> vertexAttributes, Map<String, Attribute> transactionAttributes, Set<Integer> keys) {
+    public void setDisplayedAttributes(final Map<String, Attribute> vertexAttributes, 
+            final Map<String, Attribute> transactionAttributes, final Set<Integer> keys) {
         sourceVertexAttributeList.setDisplayedAttributes(vertexAttributes, keys);
         destinationVertexAttributeList.setDisplayedAttributes(vertexAttributes, keys);
         transactionAttributeList.setDisplayedAttributes(transactionAttributes, keys);
@@ -547,13 +554,13 @@ public class RunPane extends BorderPane implements KeyListener {
     }
 
     @Override
-    public void keyTyped(KeyEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void keyTyped(final KeyEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
-    public void keyReleased(KeyEvent arg0) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void keyReleased(final KeyEvent event) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     @Override
@@ -563,5 +570,4 @@ public class RunPane extends BorderPane implements KeyListener {
         final boolean isCtrl = event.isControlDown();
         final boolean isShift = event.isShiftDown();
     }
-
 }
