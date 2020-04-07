@@ -169,19 +169,19 @@ public abstract class Response {
             return json.get("logMessage").textValue();
         }
 
-        return String.format("Invalid response %d: %s\n%s\n", code, message, Arrays.toString(bytes));
+        return String.format("Invalid response %d: %s%n%s%n", code, message, Arrays.toString(bytes));
     }
 
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[%s\n", this.getClass().getSimpleName()));
+        b.append(String.format("[%s%n", this.getClass().getSimpleName()));
         b.append("----\n");
-        b.append(String.format("code    : %d\n", code));
-        b.append(String.format("message : %s\n", message));
+        b.append(String.format("code    : %d%n", code));
+        b.append(String.format("message : %s%n", message));
         b.append("----\n");
         headers.entrySet().stream().forEach(header -> {
-            b.append(String.format("header  : %s\n", header.getKey()));
+            b.append(String.format("header  : %s%n", header.getKey()));
             header.getValue().stream().forEach(v -> b.append(String.format("        : %s%n", v)));
         });
 

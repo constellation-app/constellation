@@ -1055,7 +1055,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         for (final ContextMenuProvider pmp : popups) {
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
-            if (items != null && !items.isEmpty()) {
+            if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (menuPath == null || menuPath.isEmpty()) {
                     items.forEach(item -> {

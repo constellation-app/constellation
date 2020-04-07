@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Chinese whispers clustering based on BiemannTextGraph06.
@@ -57,7 +57,7 @@ public final class ChineseWhispers {
     // Map a vxId to it's cluster number.
     private int[] vxClusters;
     
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public ChineseWhispers(final GraphWriteMethods wg) {
         this.wg = wg;
@@ -161,7 +161,7 @@ public final class ChineseWhispers {
      * @param random
      * @param a
      */
-    private static void shuffle(final Random random, int[] a) {
+    private static void shuffle(final SecureRandom random, int[] a) {
         for (int i = a.length - 1; i > 0; i--) {
             final int ix = random.nextInt(i + 1);
             final int tmp = a[ix];

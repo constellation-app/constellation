@@ -18,9 +18,13 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -36,21 +40,17 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.awt.Font;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.stream.Collectors;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
@@ -82,7 +82,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String DRAW_MANY_TX_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_tx");
     public static final String DRAW_MANY_DECORATORS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_deco");
 
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     @Override
     public String getDescription() {
@@ -334,7 +334,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setBooleanValue(vxIsGoodAttr, vxId, vx % 2 == 0);
             graph.setStringValue(vxCountry1Attr, vxId, countries.get(vx % countries.size()));
             graph.setStringValue(vxCountry2Attr, vxId, countries.get((vx + 1) % countries.size()));
-            graph.setFloatValue(vxNormalisedAttr, vxId, (float) Math.random());
+            graph.setFloatValue(vxNormalisedAttr, vxId, random.nextFloat());
 
             vxIds[vx] = vxId;
             vx++;
@@ -464,7 +464,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx0, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx0, countries.get(vx0 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx0, countries.get((vx0 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx0, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx0, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx0, new Blaze(random.nextInt(360), randomColor3(random)));
 
         final int vx1 = graph.addVertex();
@@ -480,7 +480,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx1, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx1, countries.get(vx1 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx1, countries.get((vx1 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx1, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx1, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx1, new Blaze(random.nextInt(360), randomColor3(random)));
 
         final int vx2 = graph.addVertex();
@@ -496,7 +496,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx2, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx2, countries.get(vx2 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx2, countries.get((vx2 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx2, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx2, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx2, new Blaze(random.nextInt(360), randomColor3(random)));
 
         final int vx3 = graph.addVertex();
@@ -512,7 +512,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx2, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx3, countries.get(vx3 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx3, countries.get((vx3 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx3, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx3, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx3, new Blaze(random.nextInt(360), randomColor3(random)));
 
         final int vx4 = graph.addVertex();
@@ -528,7 +528,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx2, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx4, countries.get(vx4 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx4, countries.get((vx4 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx4, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx4, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx4, new Blaze(random.nextInt(360), randomColor3(random)));
 
         final int vx5 = graph.addVertex();
@@ -544,7 +544,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setStringValue(vxBackgroundIconAttr, vx2, "Background.Round Circle");
         graph.setStringValue(vxCountry1Attr, vx5, countries.get(vx5 % countries.size()));
         graph.setStringValue(vxCountry2Attr, vx5, countries.get((vx5 + 1) % countries.size()));
-        graph.setFloatValue(vxNormalisedAttr, vx5, (float) Math.random());
+        graph.setFloatValue(vxNormalisedAttr, vx5, random.nextFloat());
         graph.setObjectValue(attrBlaze, vx5, new Blaze(random.nextInt(360), randomColor3(random)));
 
         // Draw multiple lines with offsets between two fixed nodes.
@@ -655,7 +655,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random RGB color.
      */
-    private static ConstellationColor randomColor3(Random r) {
+    private static ConstellationColor randomColor3(SecureRandom r) {
         return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
     }
 }

@@ -345,7 +345,6 @@ public class BubbleTreeArranger implements Arranger {
         // the virtual vertex, the enclosing circle's centre, and the grandfather of the vertex.
         final Vector3d bend = new Vector3d(relativePositions[vxId][4], 0, 0);
         final Vector3d zeta = new Vector3d(relativePositions[vxId][2], relativePositions[vxId][3], 0);
-        final Vector3d zetaOriginal = new Vector3d(zeta);
 
         final Vector3d vect = Vector3d.subtract(originalNodePosition, enclosingCircleCentre);
         vect.normalize();
