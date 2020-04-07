@@ -338,7 +338,7 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     @Override
     public String acceptsString(String value) {
-        return parseDate(value) == NULL_VALUE ? "Not a valid date" : null;
+        return parseDate(value) == NULL_VALUE ? "Not a valid date (Expected yyyy-mm-dd)" : null;
     }
 
 }

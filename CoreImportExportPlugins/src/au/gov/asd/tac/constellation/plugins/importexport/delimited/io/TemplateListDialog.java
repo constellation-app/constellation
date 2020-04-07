@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.io;
 
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import java.io.File;
 import java.util.Optional;
 import javafx.collections.FXCollections;
@@ -57,7 +58,7 @@ class TemplateListDialog {
 
         // Chop off ".json".
         for (int i = 0; i < names.length; i++) {
-            names[i] = decode(names[i].substring(0, names[i].length() - 5));
+            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
         }
 
         return names;
@@ -93,7 +94,7 @@ class TemplateListDialog {
         final Optional<ButtonType> option = dialog.showAndWait();
         if (option.isPresent() && option.get() == ButtonType.OK) {
             final String name = label.getText();
-            final File f = new File(delimIoDir, encode(name + ".json"));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(name + ".json"));
             boolean go = true;
             if (!isLoading && f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", name);
@@ -110,61 +111,5 @@ class TemplateListDialog {
         }
 
         return null;
-    }
-
-    /**
-     * Encode a String so it can be used as a filename.
-     *
-     * @param s The String to be encoded.
-     *
-     * @return The encoded String.
-     */
-    public static String encode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (final char c : s.toCharArray()) {
-            if (isValidFileCharacter(c)) {
-                b.append(c);
-            } else {
-                b.append(String.format("_%04x", (int) c));
-            }
-        }
-
-        return b.toString();
-    }
-
-    /**
-     * Decode a String that has been encoded by {@link encode(String)}.
-     *
-     * @param s The String to be decoded.
-     *
-     * @return The decoded String.
-     */
-    static String decode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            if (c != '_') {
-                b.append(c);
-            } else {
-                final String hex = s.substring(i + 1, Math.min(i + 5, s.length()));
-                if (hex.length() == 4) {
-                    try {
-                        final int value = Integer.parseInt(hex, 16);
-                        b.append((char) value);
-                        i += 4;
-                    } catch (final NumberFormatException ex) {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        return b.toString();
-    }
-
-    static boolean isValidFileCharacter(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ' || c == '-' || c == '.';
     }
 }

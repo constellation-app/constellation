@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -67,7 +69,7 @@ import javafx.util.Callback;
  *
  * @author sirius
  */
-public class RunPane extends BorderPane {
+public class RunPane extends BorderPane implements KeyListener {
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -552,4 +554,23 @@ public class RunPane extends BorderPane {
             }
         });
     }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyPressed(final KeyEvent event) {
+        final int keyCode = event.getKeyCode();
+        // Avoid the control key so we don't interfere with ^S for save, for example.
+        final boolean isCtrl = event.isControlDown();
+        final boolean isShift = event.isShiftDown();
+    }
+
 }

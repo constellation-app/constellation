@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.paths;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import java.security.SecureRandom;
 import java.util.BitSet;
-import java.util.Random;
 
 /**
  *
@@ -25,7 +25,7 @@ import java.util.Random;
  */
 public class FindSubgraphs {
     
-    private static final Random RAND = new Random();
+    private static final SecureRandom RAND = new SecureRandom();
 
     /**
      * This method uses parallel-BFS to traverse the graph and gather the

@@ -56,14 +56,14 @@ public class SGraph {
     public static final GraphElementType LINK = GraphElementType.LINK;
 
     private ScriptEngine engine;
-    private final Graph graph;
+    private final Graph graphObject;
 
     private final ArrayList<SReadableGraph> readableGraphs;
     private final ArrayList<SWritableGraph> writableGraphs;
 
     public SGraph(final ScriptEngine engine, final Graph graph) {
         this.engine = engine;
-        this.graph = graph;
+        this.graphObject = graph;
         this.readableGraphs = new ArrayList<>();
         this.writableGraphs = new ArrayList<>();
     }
@@ -96,7 +96,7 @@ public class SGraph {
      * @return the graph on which scripts are being executed.
      */
     public Graph getGraph() {
-        return graph;
+        return graphObject;
     }
 
     /**
@@ -146,7 +146,7 @@ public class SGraph {
      * @throws InterruptedException
      */
     public SReadableGraph readableGraph() throws InterruptedException {
-        final SReadableGraph readableGraph = new SReadableGraph(this, graph.getReadableGraph());
+        final SReadableGraph readableGraph = new SReadableGraph(this, graphObject.getReadableGraph());
         readableGraphs.add(readableGraph);
         return readableGraph;
     }
@@ -197,7 +197,7 @@ public class SGraph {
      * @throws InterruptedException
      */
     public SWritableGraph writableGraph(final String editName) throws InterruptedException {
-        final SWritableGraph writableGraph = new SWritableGraph(this, graph.getWritableGraph(editName, true));
+        final SWritableGraph writableGraph = new SWritableGraph(this, graphObject.getWritableGraph(editName, true));
         writableGraphs.add(writableGraph);
         return writableGraph;
     }
@@ -238,6 +238,6 @@ public class SGraph {
 
     @Override
     public String toString() {
-        return String.format("[%s: %d]", this.getClass().getSimpleName(), graph.hashCode());
+        return String.format("[%s: %d]", this.getClass().getSimpleName(), graphObject.hashCode());
     }
 }

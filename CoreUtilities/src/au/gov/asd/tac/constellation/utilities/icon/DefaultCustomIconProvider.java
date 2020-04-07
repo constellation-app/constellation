@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.NetbeansUtilities;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -143,7 +143,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
             } catch (final IOException ex) {
                 NotificationDisplayer.getDefault().notify("User Icon Loading",
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
-                        String.format("Could not load icons from %s:\n%s", iconDirectory, ex.getMessage()),
+                        String.format("Could not load icons from %s:%n%s", iconDirectory, ex.getMessage()),
                         null
                 );
                 Exceptions.printStackTrace(ex);

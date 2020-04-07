@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.camera;
 
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.io.Serializable;
 
 /**
@@ -62,13 +62,13 @@ public final class Camera implements Serializable {
     public static final String ATTRIBUTE_NAME = "camera";
 
     // The scene.
-    public Frame objectFrame;
+    private Frame objectFrame;
 
     // Visibility; low and high range 0..1.
-    public float visibilityLow;
-    public float visibilityHigh;
+    private float visibilityLow;
+    private float visibilityHigh;
 
-    public int mixRatio;
+    private int mixRatio;
 
     @Override
     public String toString() {
@@ -122,6 +122,38 @@ public final class Camera implements Serializable {
         boundingBox = camera.boundingBox;
     }
 
+    public Frame getObjectFrame() {
+        return objectFrame;
+    }
+
+    public void setObjectFrame(Frame objectFrame) {
+        this.objectFrame = objectFrame;
+    }
+
+    public float getVisibilityLow() {
+        return visibilityLow;
+    }
+
+    public void setVisibilityLow(float visibilityLow) {
+        this.visibilityLow = visibilityLow;
+    }
+
+    public float getVisibilityHigh() {
+        return visibilityHigh;
+    }
+
+    public void setVisibilityHigh(float visibilityHigh) {
+        this.visibilityHigh = visibilityHigh;
+    }
+
+    public int getMixRatio() {
+        return mixRatio;
+    }
+
+    public void setMixRatio(int mixRatio) {
+        this.mixRatio = mixRatio;
+    }
+    
     /**
      * Get the mix between primary and alternate coordinates that this camera is
      * viewing the world in.

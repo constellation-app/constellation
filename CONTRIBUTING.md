@@ -26,7 +26,7 @@ feel free to propose changes to this document in a pull request.
   * [Your First Code Contribution](#your-first-code-contribution)
   * [Pull Requests](#pull-requests)
 
-[Style Guides](Style_Guidelines.md)
+[Style Guides](STYLE_GUIDELINES.md)
   * [Git Commit Messages](#git-commit-messages)
 
 ## Code of Conduct
