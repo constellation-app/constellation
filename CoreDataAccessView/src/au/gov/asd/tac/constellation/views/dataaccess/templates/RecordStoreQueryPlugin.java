@@ -73,7 +73,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
     protected final String PLUGIN_NAME = getName();
 
-    protected RecordStore recordStoreQuery;
+    protected RecordStore queryRecordStore;
     private RecordStore result = null;
     private final List<RecordStoreValidator> validators;
 
@@ -111,13 +111,13 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         switch (getRecordStoreType()) {
             case GraphRecordStoreUtilities.SOURCE:
-                recordStoreQuery = GraphRecordStoreUtilities.getSelectedVertices(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getSelectedVertices(graph);
                 break;
             case GraphRecordStoreUtilities.TRANSACTION:
-                recordStoreQuery = GraphRecordStoreUtilities.getSelectedTransactions(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getSelectedTransactions(graph);
                 break;
             case GraphRecordStoreUtilities.ALL:
-                recordStoreQuery = GraphRecordStoreUtilities.getAllSelected(graph);
+                queryRecordStore = GraphRecordStoreUtilities.getAllSelected(graph);
                 break;
             default:
                 break;
@@ -132,11 +132,11 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
             for (final RecordStoreValidator validator : getValidators()) {
-                validator.validatePreQuery(this, recordStoreQuery, interaction, parameters);
+                validator.validatePreQuery(this, queryRecordStore, interaction, parameters);
             }
 
-            recordStoreQuery.reset();
-            final RecordStore rs = query(recordStoreQuery, interaction, parameters);
+            queryRecordStore.reset();
+            final RecordStore rs = query(queryRecordStore, interaction, parameters);
 
             for (final RecordStoreValidator validator : getValidators()) {
                 validator.validatePostQuery(this, rs, interaction, parameters);
