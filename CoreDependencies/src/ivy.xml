@@ -65,6 +65,10 @@
         <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2"/>
         <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.2"/>
 
+        <!-- Java Help -->
+        <!--<dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE113"/>-->
+        <!--<dependency org="javax.help" name="javahelp" rev="2.0.05"/>-->
+
         <!-- Other -->
         <dependency org="com.google.guava" name="guava" rev="28.2-jre" />
         <!-- <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.3"/> -->
@@ -79,7 +83,6 @@
         <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.4.27.v20200227"/>
         <dependency org="org.ejml" name="ejml-all" rev="0.38"/>
         <dependency org="org.json" name="json" rev="20190722"/>
-        <!--<dependency org="org.netbeans.api" name="org-netbeans-modules-javahelp" rev="RELEASE112" />-->
         <!--<dependency org="org.openjfx" name="javafx-graphics" rev="11.0.2" />-->
         <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
         <dependency org="org.python" name="jython-standalone" rev="2.7.2rc1"/>

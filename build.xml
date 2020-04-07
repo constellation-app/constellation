@@ -130,7 +130,7 @@
         </get>
     </target>
     
-    <target name="-download-javahelp" >
+<!--    <target name="-download-javahelp" >
         <echo message="installing netbeans help module..."/>
         <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" property="javahelp.present"/>
         <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true" if:blank="javahelp.present">
@@ -140,10 +140,10 @@
         <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true" if:blank="jhall.present">
             <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true"/>
         </get>
-    </target>
+    </target>-->
   	
     <target name="download-dependencies" 
-            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
+            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing"
             description="Download dependent libraries.">
         <mkdir dir="${ivy.lib.dir}"/>
         <ivy:resolve/>
