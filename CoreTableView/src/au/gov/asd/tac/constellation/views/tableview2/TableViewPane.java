@@ -120,7 +120,7 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
-    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.HEART.buildImage(16));
+    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
 
     private static final int WIDTH = 120;
 
