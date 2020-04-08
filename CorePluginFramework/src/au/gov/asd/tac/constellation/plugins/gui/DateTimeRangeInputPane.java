@@ -310,7 +310,7 @@ public final class DateTimeRangeInputPane extends Pane {
                 switch (change) {
                     case VALUE:
                         if (!isAdjusting) {
-                            // TODO: don't change the value if it isn't necessary.
+                            // don't change the value if it isn't necessary.
                             final DateTimeRange param = pluginParameter.getDateTimeRangeValue();
                             if (param.getPeriod() != null) {
                                 setPeriod(param.getPeriod(), param.getZoneId());
@@ -419,7 +419,7 @@ public final class DateTimeRangeInputPane extends Pane {
      * null if data entry is incomplete.
      */
     public ZonedDateTime[] getAbsoluteRange(final ZoneId zi) {
-        //TODO: this gets called with values and throws exceptions depending on spinner valuess
+        // This gets called with values and throws exceptions depending on spinner values which must be handled
         // Check for nulls in case the values haven't been set yet.
         if (zi != null) {
             final LocalDate ld0 = datePickers.get(0).getValue();
@@ -436,7 +436,6 @@ public final class DateTimeRangeInputPane extends Pane {
                 }
             }
         }
-
         return null;
     }
 
@@ -611,7 +610,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // Ensure spinner is set to editable, meaning user can directly edit text, then hook in
         // a text formatter which in turn will trigger flitering of input text.
         spinner.setEditable(true);
-        TextFormatter<Integer> timeFormatter = new TextFormatter<Integer>(
+        TextFormatter<Integer> timeFormatter = new TextFormatter<>(
         new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
 
