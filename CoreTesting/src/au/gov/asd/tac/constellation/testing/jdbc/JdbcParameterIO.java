@@ -36,6 +36,7 @@ import org.openide.util.Exceptions;
 class JdbcParameterIO {
 
     private static final String SAVE_DIR = "ImportExportJDBC";
+    private static final String JSON_EXTENSION = ".json";
 
     private static final String USERNAME = "username";
     private static final String CONNECTION_URL = "connection_url";
@@ -55,7 +56,7 @@ class JdbcParameterIO {
             saveDir.mkdir();
         }
 
-        final File saveFile = new File(saveDir, encode(name + ".json"));
+        final File saveFile = new File(saveDir, encode(name + JSON_EXTENSION));
         boolean go = true;
         if (saveFile.exists()) {
             final String msg = String.format("'%s' already exists. Do you want to overwrite it?", name);
@@ -109,7 +110,7 @@ class JdbcParameterIO {
         final String[] names;
         if (saveDir.isDirectory()) {
             names = saveDir.list((File dir, String name) -> {
-                return name.toLowerCase().endsWith(".json");
+                return name.toLowerCase().endsWith(JSON_EXTENSION);
             });
         } else {
             names = new String[0];
@@ -142,7 +143,7 @@ class JdbcParameterIO {
             if (queryName != null) {
                 try {
                     final ObjectMapper mapper = new ObjectMapper();
-                    final JsonNode root = mapper.readTree(new File(saveDir, encode(queryName) + ".json"));
+                    final JsonNode root = mapper.readTree(new File(saveDir, encode(queryName) + JSON_EXTENSION));
                     data.username = root.get(USERNAME).textValue();
                     data.url = root.get(CONNECTION_URL).textValue();
                     data.jar = root.get(JAR_FILE).textValue();

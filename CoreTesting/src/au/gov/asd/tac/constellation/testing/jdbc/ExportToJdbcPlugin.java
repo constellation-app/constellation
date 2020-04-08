@@ -64,6 +64,8 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
     private static final Logger LOGGER = Logger.getLogger(ExportToJdbcPlugin.class.getName());
     private static final int BATCH_COUNT = 2000;
     private static final int INTERACT_COUNT = 1000;
+    
+    private static final String INTEGER = "integer";
 
     private final JdbcData data;
 
@@ -186,7 +188,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
 
         // Create some dummy attribute types as markers for the transaction pseudo-attributes.
         final int pseudoId = -9;
-        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", "tx", "Pseudo tx", null, null);
+        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, INTEGER, "tx", "Pseudo tx", null, null);
 
         // Build an SQL SELECT to prime an updateable ResultSet.
         // We use a funky where clause because we don't want to fetch what's already there.
@@ -382,7 +384,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                         || attrLabel.equals(GraphFileConstants.DST)
                         || attrLabel.equals(GraphFileConstants.DIR)) {
 //                    labelMap.put(colLabel, pseudo);
-                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", attrLabel, "Pseudo tx", null, null);
+                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, INTEGER, attrLabel, "Pseudo tx", null, null);
 //                    attrsToInsert.add(pseudo);
                 } else {
                     final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrLabel);
@@ -480,7 +482,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                     rs.updateTimestamp(label, new Timestamp(timestamp));
                 }
                 break;
-            case "integer":
+            case INTEGER:
                 rs.updateInt(label, rg.getIntValue(attr.getId(), id));
                 break;
             case "float":
@@ -522,7 +524,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                     stmt.setNull(paramIx, Types.TIMESTAMP);
                 }
                 break;
-            case "integer":
+            case INTEGER:
                 stmt.setInt(paramIx, rg.getIntValue(attr.getId(), id));
                 break;
             case "float":

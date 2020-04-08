@@ -307,7 +307,7 @@ public class WebServer {
      */
     static boolean equalScripts(final File scriptFile) {
         try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT)) {
+            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
                 final byte[] dig1 = getDigest(in1);
                 final byte[] dig2 = getDigest(in2);
 

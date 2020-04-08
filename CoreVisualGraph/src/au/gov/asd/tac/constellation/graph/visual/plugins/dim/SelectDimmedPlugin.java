@@ -34,6 +34,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = Plugin.class)
 @Messages("SelectDimmedPlugin=Select Dimmed")
 public class SelectDimmedPlugin extends SimpleEditPlugin {
+    
+    private static final String SELECTED = "selected";
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -42,7 +44,7 @@ public class SelectDimmedPlugin extends SimpleEditPlugin {
         int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.get(graph);
 
         if (vxDimAttr != Graph.NOT_FOUND) {
-            final int vxSelectedAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "selected", false, null);
+            final int vxSelectedAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", SELECTED, SELECTED, false, null);
             final int vxCount = graph.getVertexCount();
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = graph.getVertex(position);
@@ -55,7 +57,7 @@ public class SelectDimmedPlugin extends SimpleEditPlugin {
         }
 
         if (txDimAttr != Graph.NOT_FOUND) {
-            final int txSelectedAttr = graph.addAttribute(GraphElementType.TRANSACTION, "boolean", "selected", "selected", false, null);
+            final int txSelectedAttr = graph.addAttribute(GraphElementType.TRANSACTION, "boolean", SELECTED, SELECTED, false, null);
 
             final int txCount = graph.getTransactionCount();
             for (int position = 0; position < txCount; position++) {
