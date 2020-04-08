@@ -129,19 +129,7 @@
             <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/Processing%204.0/core.jar?raw=true"/>
         </get>
     </target>
-    
-<!--    <target name="-download-javahelp" >
-        <echo message="installing netbeans help module..."/>
-        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" property="javahelp.present"/>
-        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true" if:blank="javahelp.present">
-            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true"/>
-        </get>
-        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" property="jhall.present"/>
-        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true" if:blank="jhall.present">
-            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true"/>
-        </get>
-    </target>-->
-  	
+
     <target name="download-dependencies" 
             depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing"
             description="Download dependent libraries.">
