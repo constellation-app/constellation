@@ -143,7 +143,10 @@ public class ManageTemplatesPlugin extends SimplePlugin {
 
         final Map<String, String> templates = NewSchemaGraphAction.getTemplateNames();
         deletedTemplates.forEach(template -> {
-            new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
+            final boolean newFileIsDeleted = new File(NewSchemaGraphAction.getTemplateDirectory(), templates.get(template) + "/" + template).delete();
+            if (!newFileIsDeleted) {
+                //TODO: Handle case where file not successfully deleted
+            }
         });
 
         final String defaultTemplate = parameters.getStringValue(CURRENT_DEFAULT_PARAMETER_ID);

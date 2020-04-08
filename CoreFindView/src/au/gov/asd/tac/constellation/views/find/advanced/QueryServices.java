@@ -129,7 +129,7 @@ public class QueryServices {
                 return findResults; // Successfully found content.
             }
 
-            return null;
+            return findResults;
         } finally {
             rg.release();
         }

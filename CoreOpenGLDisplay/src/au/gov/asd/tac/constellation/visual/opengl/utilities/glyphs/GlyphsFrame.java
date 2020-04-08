@@ -30,11 +30,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -55,7 +55,7 @@ public class GlyphsFrame extends JFrame {
 
     private final GlyphManagerBI glyphManager;
     private final JFrame imageFrame;
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     // For copying to the clipboard.
     //

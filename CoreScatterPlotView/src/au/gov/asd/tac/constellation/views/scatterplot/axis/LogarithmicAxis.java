@@ -106,8 +106,6 @@ public class LogarithmicAxis extends ValueAxis<Number> {
         final double lowerBound = ((double[]) range)[0];
         final double upperBound = ((double[]) range)[1];
         final double[] r = (double[]) range;
-        final double oldLowerBound = getLowerBound();
-        final double oldUpperBound = getUpperBound();
         final double lower = r[0];
         final double upper = r[1];
 

@@ -138,7 +138,6 @@ public class DelimitedFileImporterStage extends Stage {
             }
             userClickedTheCheckboxFirst[0] = false;
         });
-        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, showSchemaAttributesItem);
 
         final AnchorPane menuToolbar = new AnchorPane();
         final MenuBar menuBar = new MenuBar();
@@ -189,6 +188,12 @@ public class DelimitedFileImporterStage extends Stage {
         setTitle("Import from Delimited File");
         getIcons().add(new Image(DELIMITED_IMPORTER_ICON_PATH));
         centerOnScreen();
+    }
+
+    public void updateAttributes(String attributeFilter) {
+        importController.setAttributeFilter(attributeFilter);
+        importController.setClearManuallyAdded(false);
+        importController.setDestination(sourcePane.getDestination());
     }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {

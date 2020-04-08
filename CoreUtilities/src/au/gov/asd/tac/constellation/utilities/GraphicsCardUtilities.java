@@ -66,7 +66,10 @@ public class GraphicsCardUtilities {
                     final String tmp = System.getProperty("user.home") + "/dxdiag.txt";
                     final File file = new File(tmp);
                     if (file.exists()) {
-                        file.delete();
+                        final boolean fileIsDeleted = file.delete();
+                        if (!fileIsDeleted) {
+                            //TODO: Handle case where file not successfully deleted
+                        }
                     }
 
                     final long startTime = System.currentTimeMillis();

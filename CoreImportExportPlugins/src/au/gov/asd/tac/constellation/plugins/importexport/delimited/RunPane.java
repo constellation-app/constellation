@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.CellVal
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -51,6 +53,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -66,7 +69,7 @@ import javafx.util.Callback;
  *
  * @author sirius
  */
-public class RunPane extends BorderPane {
+public class RunPane extends BorderPane implements KeyListener {
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -81,6 +84,8 @@ public class RunPane extends BorderPane {
     final TextField filterField;
     private final RowFilter rowFilter = new RowFilter();
     private String filter = "";
+    private String attributeFilter = "";
+    private final TextField inputtedFilterField = new TextField();
 
     private ObservableList<TableRow> currentRows = FXCollections.observableArrayList();
     private String[] currentColumnLabels = new String[0];
@@ -164,7 +169,8 @@ public class RunPane extends BorderPane {
                 + "5. Click on the Import button to import the data to your destination graph.\n"
                 + "6. Save your configuration using Options -> Save.\n\n"
                 + "HINT: See all supported attributes using Options -> Show all schema attributes\n"
-                + "HINT: Hover over the attribute name for a tooltip.");
+                + "HINT: Hover over the attribute name for a tooltip.\n"
+                + "HINT: Start typing to filter attributes (press delete to remove).");
         startupHelpText.setStyle("-fx-font-size: 14pt;-fx-fill: grey;");
         sampleDataView.setPlaceholder(startupHelpText);
 
@@ -186,6 +192,20 @@ public class RunPane extends BorderPane {
 
         attributePane.addRow(0, sourceVertexScrollPane, destinationVertexScrollPane, transactionScrollPane);
 
+        attributePane.setOnKeyPressed(event -> {
+            final KeyCode c = event.getCode();
+            if (c == KeyCode.DELETE || c == KeyCode.BACK_SPACE) {
+                attributeFilter = "";
+                inputtedFilterField.setVisible(false);
+            } else if (c.isLetterKey()) {
+                attributeFilter += c.getChar();
+                inputtedFilterField.setText(attributeFilter);
+                inputtedFilterField.setVisible(true);
+            }
+            importController.setAttributeFilter(attributeFilter);
+            importController.setDestination(null);
+        });
+
         attributePane.setPadding(new Insets(5));
         attributePane.setVgap(5);
         attributePane.setHgap(5);
@@ -198,7 +218,15 @@ public class RunPane extends BorderPane {
         attributeScrollPane.setPrefHeight(350);
         attributeScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        final SplitPane inputtedFilterPane = new SplitPane();
+        final Label inputtedFilterLabel = new Label("Atribute Filter (start typing):");
+        inputtedFilterField.setEditable(false);
+        inputtedFilterPane.getItems().add(inputtedFilterLabel);
+        inputtedFilterPane.getItems().add(inputtedFilterField);
+        splitPane.getItems().add(inputtedFilterPane);
         splitPane.getItems().add(attributeScrollPane);
+        splitPane.onKeyPressedProperty().bind(attributePane.onKeyPressedProperty());
 
         columnRectangle.setStyle("-fx-fill: rgba(200, 200, 200, 0.3);");
         columnRectangle.setVisible(false);
@@ -252,7 +280,7 @@ public class RunPane extends BorderPane {
     public void setDraggingAttributeNode(AttributeNode draggingAttributeNode) {
         this.draggingAttributeNode = draggingAttributeNode;
     }
-    
+
     public void handleAttributeMoved(double sceneX, double sceneY) {
         if (draggingAttributeNode != null) {
             Point2D location = sceneToLocal(sceneX, sceneY);
@@ -526,4 +554,23 @@ public class RunPane extends BorderPane {
             }
         });
     }
+
+    @Override
+    public void keyTyped(KeyEvent arg0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyReleased(KeyEvent arg0) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void keyPressed(final KeyEvent event) {
+        final int keyCode = event.getKeyCode();
+        // Avoid the control key so we don't interfere with ^S for save, for example.
+        final boolean isCtrl = event.isControlDown();
+        final boolean isShift = event.isShiftDown();
+    }
+
 }

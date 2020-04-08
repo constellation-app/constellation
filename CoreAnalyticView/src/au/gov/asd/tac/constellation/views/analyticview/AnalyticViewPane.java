@@ -15,13 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -79,7 +78,6 @@ public class AnalyticViewPane extends BorderPane {
         // the pane holding the analytic option items
         this.analyticOptionControls = new HBox();
         final MenuBar analyticMenu = new MenuBar();
-        final Menu optionsMenu = new Menu("Options");
         final MenuItem saveMenuItem = new MenuItem("Save Question");
         saveMenuItem.setOnAction(event -> {
             // TODO: handle saving analytic questions, then add this to the menu

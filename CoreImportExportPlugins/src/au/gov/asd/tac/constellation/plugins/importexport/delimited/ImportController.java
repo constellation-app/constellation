@@ -75,6 +75,7 @@ public class ImportController {
     private ImportFileParser importFileParser;
     private boolean schemaInitialised;
     private boolean showAllSchemaAttributes;
+    private String filterAttributes = "";
     private PluginParameters currentParameters = null;
 
     // Attributes that exist in the graph or schema.
@@ -170,7 +171,12 @@ public class ImportController {
     }
 
     public void setDestination(final ImportDestination<?> destination) {
-        this.currentDestination = destination;
+        if (destination != null) {
+            currentDestination = destination;
+        }
+        if (currentDestination == null) {
+            return;
+        }
 
         // Clearing the manually added attributes removes them when loading a template.
         // The destination is set with clearmanuallyAdded true before loading the
@@ -183,7 +189,7 @@ public class ImportController {
         keys.clear();
 
         final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-        loadAllSchemaAttributes(destination, showSchemaAttributes);
+        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
 
         updateDisplayedAttributes();
     }
@@ -328,8 +334,22 @@ public class ImportController {
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
         Map<String, Attribute> displayedAttributes = new HashMap<>();
-        displayedAttributes.putAll(manuallyAddedAttributes);
-        displayedAttributes.putAll(autoAddedAttributes);
+
+        if (filterAttributes != null && !filterAttributes.isEmpty()) {
+            for (final String name : autoAddedAttributes.keySet()) {
+                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
+                    displayedAttributes.put(name, autoAddedAttributes.get(name));
+                }
+            }
+            for (final String name : manuallyAddedAttributes.keySet()) {
+                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
+                    displayedAttributes.put(name, manuallyAddedAttributes.get(name));
+                }
+            }
+        } else {
+            displayedAttributes.putAll(manuallyAddedAttributes);
+            displayedAttributes.putAll(autoAddedAttributes);
+        }
         return displayedAttributes;
     }
 
@@ -486,6 +506,10 @@ public class ImportController {
         this.showAllSchemaAttributes = showAllSchemaAttributes;
         importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
         // TODO: the tick box could have changed but the menu item isn't updated, fix it
+    }
+
+    public void setAttributeFilter(final String filterAttributes) {
+        this.filterAttributes = filterAttributes;
     }
 
     public String[] getCurrentColumns() {
