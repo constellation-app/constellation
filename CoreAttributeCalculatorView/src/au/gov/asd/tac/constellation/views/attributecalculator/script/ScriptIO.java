@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.attributecalculator.script;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import au.gov.asd.tac.constellation.views.attributecalculator.panes.AttributeCalculatorPane;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -137,7 +138,7 @@ public class ScriptIO {
         // Do the actual saving
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
         mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-        final File f = new File(savedScriptsDir, encode(scriptName + ".json"));
+        final File f = new File(savedScriptsDir, FilenameEncoder.encode(scriptName + ".json"));
         boolean go = true;
         if (f.exists()) {
             final String msg = String.format("A script with the name '%s' already exists. Do you want to overwrite it?", scriptName);
@@ -183,7 +184,7 @@ public class ScriptIO {
 
         final Set<String> userScriptNames = new HashSet<>();
         for (String name : names) {
-            final String visibleName = decode(name.substring(0, name.length() - 5));
+            final String visibleName = FilenameEncoder.decode(name.substring(0, name.length() - 5));
             userScriptNames.add(visibleName);
             JsonNode node;
             final String fileName;
@@ -217,7 +218,8 @@ public class ScriptIO {
             final NotifyDescriptor nd = new NotifyDescriptor.Message("Can't delete inbuilt script.", NotifyDescriptor.ERROR_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
         } else {
-            final String msg = String.format("Are you sure you want to delete '%s'?", decode(f.getName().substring(0, f.getName().length() - 5)));
+            final String msg = String.format("Are you sure you want to delete '%s'?",
+                    FilenameEncoder.decode(f.getName().substring(0, f.getName().length() - 5)));
             final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setHeaderText("Delete?");
             alert.setContentText(msg);
@@ -246,61 +248,5 @@ public class ScriptIO {
         } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);
         }
-    }
-
-    /**
-     * Encode a String so it can be used as a filename.
-     *
-     * @param s The String to be encoded.
-     *
-     * @return The encoded String.
-     */
-    public static String encode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (final char c : s.toCharArray()) {
-            if (isValidFileCharacter(c)) {
-                b.append(c);
-            } else {
-                b.append(String.format("_%04x", (int) c));
-            }
-        }
-
-        return b.toString();
-    }
-
-    /**
-     * Decode a String that has been encoded by {@link #encode(String)}.
-     *
-     * @param s The String to be decoded.
-     *
-     * @return The decoded String.
-     */
-    public static String decode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            if (c != '_') {
-                b.append(c);
-            } else {
-                final String hex = s.substring(i + 1, Math.min(i + 5, s.length()));
-                if (hex.length() == 4) {
-                    try {
-                        final int value = Integer.parseInt(hex, 16);
-                        b.append((char) value);
-                        i += 4;
-                    } catch (final NumberFormatException ex) {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        return b.toString();
-    }
-
-    static boolean isValidFileCharacter(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ' || c == '-' || c == '.';
     }
 }
