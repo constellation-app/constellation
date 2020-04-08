@@ -21,6 +21,9 @@ import static au.gov.asd.tac.constellation.plugins.parameters.ParameterChange.VA
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.time.DateTimeException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,6 +37,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.function.UnaryOperator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -49,12 +53,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.util.converter.IntegerStringConverter;
 import javafx.util.StringConverter;
 
 /**
@@ -73,7 +79,7 @@ import javafx.util.StringConverter;
  * @author algol
  */
 public final class DateTimeRangeInputPane extends Pane {
-
+    
     private static final String HIGHLIGHTED_CLASS = "titled-pane-datetime";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangeInputPane.class.getName());
@@ -116,16 +122,19 @@ public final class DateTimeRangeInputPane extends Pane {
         // This called (directly or indirectly) when anything in the absolute range area is clicked or changed.
         final ChangeListener<String> changed = (final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
             if (!isAdjusting) {
-                final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
-                if (zdt != null) {
-                    isAdjusting = true;
-                    try {
+                try {
+                    final ZonedDateTime[] zdt = getAbsoluteRange(getZoneId());
+                    if (zdt != null) {
+                        isAdjusting = true;
                         parameter.setObjectValue(new DateTimeRange(zdt[0], zdt[1]));
-                    } finally {
-                        Platform.runLater(() -> {
-                            isAdjusting = false;
-                        });
                     }
+                } catch (DateTimeException e) {
+                    // chew up and throw away date time exception, this results in datetime reverting back into
+                    // allowable range, ie if you enter 33 for hours, this will be thrown out and revert to 23.
+                } finally {
+                    Platform.runLater(() -> {
+                        isAdjusting = false;
+                    });
                 }
             }
         };
@@ -410,6 +419,7 @@ public final class DateTimeRangeInputPane extends Pane {
      * null if data entry is incomplete.
      */
     public ZonedDateTime[] getAbsoluteRange(final ZoneId zi) {
+        //TODO: this gets called with values and throws exceptions depending on spinner valuess
         // Check for nulls in case the values haven't been set yet.
         if (zi != null) {
             final LocalDate ld0 = datePickers.get(0).getValue();
@@ -582,6 +592,30 @@ public final class DateTimeRangeInputPane extends Pane {
         final Spinner<Integer> spinner = new Spinner<>(min, max, 1);
         spinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
 
+        // Create a filter to limit text entry to just numerical digits
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        UnaryOperator<TextFormatter.Change> filter = c -> {
+            if (c.isContentChange()) {
+                ParsePosition parsePosition = new ParsePosition(0);
+                // NumberFormat evaluates the beginning of the text
+                format.parse(c.getControlNewText(), parsePosition);
+                if (parsePosition.getIndex() == 0 ||
+                        parsePosition.getIndex() < c.getControlNewText().length()) {
+                    // reject parsing the complete text failed
+                    return null;
+                }
+            }
+            return c;
+        };
+
+        // Ensure spinner is set to editable, meaning user can directly edit text, then hook in
+        // a text formatter which in turn will trigger flitering of input text.
+        spinner.setEditable(true);
+        TextFormatter<Integer> timeFormatter = new TextFormatter<Integer>(
+        new IntegerStringConverter(), 0, filter);
+        spinner.getEditor().setTextFormatter(timeFormatter);
+
+        
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);
         spinnerLabel.setStyle(small);
