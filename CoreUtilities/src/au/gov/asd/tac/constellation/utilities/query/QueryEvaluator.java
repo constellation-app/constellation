@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.query;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -31,6 +34,8 @@ import java.util.Stack;
  * @author aldebaran30701
  */
 public class QueryEvaluator {
+    
+    private static final String SPLIT_REGEX = "(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\)|(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\(";
     
     private enum Operator {
         AND(1),
@@ -55,41 +60,53 @@ public class QueryEvaluator {
                 && OPERATORS.get(subOperator).precedence >= OPERATORS.get(operator).precedence);
     }
 
-    public static String convertToPostfix(final String infix) {
+    public static List<String> convertToPostfix(final String infix) {
         if (infix.isBlank()) {
-            return "";
+            return Collections.EMPTY_LIST;
         }
         
         // create a stack
         final Deque<String> stack = new LinkedList<>();
         
+        // create list to hold individual queries
+        final List<String> queries = new ArrayList<>();
+        
         // scan all characters one by one
-        final StringBuilder postfix = new StringBuilder();
-        for (final String token : infix.split("\\[|\\]")) { // split on [ or ]
+        for (final String token : infix.split(SPLIT_REGEX)) { // split on [ or ]
             // operator adding to stack
             if (OPERATORS.containsKey(token)) {
                 while (!stack.isEmpty() && isHigerPrecedence(token, stack.peek())) {
-                    postfix.append(stack.pop()).append('`');
+                    queries.add(stack.pop());
                 }
                 stack.push(token);
-            } else if (token.equals("(")) { // left parenthesis
-                stack.push(token);
-            } else if (token.equals(")")) { // right parenthesis
-                while (!stack.peek().equals("(")) {
-                    postfix.append(stack.pop()).append('`');
+            }
+            else{
+                // adds query here
+                // eg. Label:=:Vertex #0<Unknown>
+                boolean escaped = true;
+                String updatedToken = token;
+                
+                while (updatedToken.contains("\\") && escaped){
+                    StringBuilder sb = new StringBuilder(updatedToken);
+                    if(updatedToken.length() >= updatedToken.indexOf("\\")){
+                        sb.deleteCharAt(updatedToken.indexOf("\\"));
+                        updatedToken = sb.toString();
+                        if (updatedToken.contains("\\")){
+                            // when the updatedToken has another \. meaning it was a backslash escaped.
+                            escaped = false;
+                        }
+                    }
                 }
-                stack.pop();
-            } else {
-                postfix.append(token).append('`');
+                queries.add(token);
             }
         }
 
         // appending to output string
         while (!stack.isEmpty()) {
-            postfix.append(stack.pop()).append('`');
+            queries.add(stack.pop());
         }
         
-        return postfix.toString();
+        return queries;
     }
 
     public static Boolean evaluatePostfix(final String postfix) {
