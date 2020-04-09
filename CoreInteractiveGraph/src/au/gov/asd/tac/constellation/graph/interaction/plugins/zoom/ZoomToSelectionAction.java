@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_ZoomToSelectionAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/zoom_to_selection.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 200, separatorBefore = 199),
-    @ActionReference(path = "Toolbars/Visualisation", position = 100),
+    @ActionReference(path = "Toolbars/Display", position = 100),
     @ActionReference(path = "Shortcuts", name = "C-Up")
 })
 @Messages("CTL_ZoomToSelectionAction=Zoom to Selection")

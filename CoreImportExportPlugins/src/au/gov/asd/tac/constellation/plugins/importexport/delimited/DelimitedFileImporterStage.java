@@ -187,13 +187,7 @@ public class DelimitedFileImporterStage extends Stage {
         setScene(scene);
         setTitle("Import from Delimited File");
         getIcons().add(new Image(DELIMITED_IMPORTER_ICON_PATH));
-        centerOnScreen();
-    }
-
-    public void updateAttributes(String attributeFilter) {
-        importController.setAttributeFilter(attributeFilter);
-        importController.setClearManuallyAdded(false);
-        importController.setDestination(sourcePane.getDestination());
+        DelimitedFileImporterStage.this.centerOnScreen();
     }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {
