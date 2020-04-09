@@ -87,7 +87,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void init(GLAutoDrawable drawable) {
+    public void init(final GLAutoDrawable drawable) {
         final GL3 gl = drawable.getGL().getGL3();
         // Hit testing.
         // Create an FBO name and bind a new FBO.
