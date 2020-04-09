@@ -56,7 +56,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
     
-    private static final String NODE = "Node ";
+    private static final String NODE = "~Node ";
     
     private final SecureRandom r = new SecureRandom();
 

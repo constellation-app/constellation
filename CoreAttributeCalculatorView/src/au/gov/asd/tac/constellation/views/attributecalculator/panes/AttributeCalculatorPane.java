@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
 import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
 import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
@@ -109,7 +110,6 @@ public final class AttributeCalculatorPane extends GridPane {
 
     private InsertListCategory savedScriptsCat;
     
-    private static final String COMBOBOX_STYLE = "uneditableCombo";
     private static final String NEW_ATTRIBUTE_DESCRIPTION = "<new attribute>";
     private static final String TEXT_COLOR = "#0096C9";
     private static final String NODE_ATTRIBUTES = "Node Attributes";
@@ -163,7 +163,7 @@ public final class AttributeCalculatorPane extends GridPane {
         elementTypeLabel.setLabelFor(elementTypeComboBox);
         calculatorControls.getChildren().add(elementTypeLabel);
 
-        elementTypeComboBox.getStyleClass().add(COMBOBOX_STYLE);
+        elementTypeComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         elementTypeComboBox.setItems(FXCollections.observableArrayList(GraphElementType.VERTEX, GraphElementType.TRANSACTION));
         elementTypeComboBox.setCellFactory((ListView<GraphElementType> param) -> {
             return new ListCell<GraphElementType>() {
@@ -235,7 +235,7 @@ public final class AttributeCalculatorPane extends GridPane {
                 updateAttributeDescriptionHelp(a, NEW_ATTRIBUTE_DESCRIPTION, attributeTypeComboBox.getSelectionModel().getSelectedItem());
             }
         });
-        attributeTypeComboBox.getStyleClass().add(COMBOBOX_STYLE);
+        attributeTypeComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         attributeTypeComboBox.setMinWidth(220);
         AttributeCalculatorController.ATTRIBUTE_TYPES.sort((String o1, String o2) -> {
             return o1.compareTo(o2);
@@ -250,7 +250,7 @@ public final class AttributeCalculatorPane extends GridPane {
         calculatorControls.getChildren().add(insertLabel);
 
         insertComboBox.setMinWidth(220);
-        insertComboBox.getStyleClass().add(COMBOBOX_STYLE);
+        insertComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         insertComboBox.setOnAction((ActionEvent event) -> {
             InsertListCategory current = insertComboBox.getSelectionModel().getSelectedItem();
             if (current != null && current.equals(savedScriptsCat)) {

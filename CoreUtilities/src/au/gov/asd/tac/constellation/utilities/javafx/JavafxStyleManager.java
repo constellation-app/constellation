@@ -25,6 +25,9 @@ public class JavafxStyleManager {
     public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
     public static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
     public static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
+    
+    public static final String UNEDITABLE_COMBOBOX = "uneditableCombo";
+    public static final String HIDDEN = "hidden";
 
     public static String getMainStyleSheet() {
         return JavafxStyleManager.class.getResource("main.css").toExternalForm();

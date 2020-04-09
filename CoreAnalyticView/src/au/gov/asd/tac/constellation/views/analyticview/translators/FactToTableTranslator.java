@@ -32,7 +32,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class FactToTableTranslator extends AbstractTableTranslator<FactResult, ElementFact> {
 
     private static final String IDENTIFIER_COLUMN_NAME = "Identifier";
-    private static final String UNRECOGNISED_COLUMN_EXCEPTION_STRING = "Column not recognised: ";
 
     @Override
     public String getName() {
@@ -70,7 +69,7 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         } else if (cellValue.getFactName().equals(columnName)) {
             return cellValue.getFactValue();
         } else {
-            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -84,7 +83,7 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         } else if (cellValue.getFactName().equals(columnName)) {
             return cellItem.toString();
         } else {
-            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -98,7 +97,7 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         } else if (cellValue.getFactName().equals(columnName)) {
             intensity = (boolean) cellItem ? 1f : 0f;
         } else {
-            throw new UnrecognisedColumnException(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
 
         return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);

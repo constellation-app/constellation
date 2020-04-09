@@ -193,7 +193,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private final JToggleButton vxButton;
     private final JToggleButton txButton;
     
-    private static final String SELECTED_ATTRIBUTE = "selected";
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public TableViewTopComponent() {
         initComponents();
@@ -545,7 +545,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
             int saId;
             ReadableGraph rg = graph.getReadableGraph();
             try {
-                saId = rg.getAttribute(elementType, SELECTED_ATTRIBUTE);
+                saId = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             } finally {
                 rg.release();
             }
@@ -629,7 +629,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 attributeModificationCounter = amc;
             }
 
-            final int selectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE);
+            final int selectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             if (selectedAttr != Graph.NOT_FOUND) {
                 final long selmc = rg.getValueModificationCounter(selectedAttr);
 
@@ -1030,7 +1030,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     public static boolean isImportant(final String label) {
         if (!label.isEmpty()) {
             final char c = label.charAt(0);
-            return (c >= 'A' && c <= 'Z') || label.equals(SELECTED_ATTRIBUTE);
+            return (c >= 'A' && c <= 'Z') || label.equals(SELECTED_ATTRIBUTE_NAME);
         }
 
         return false;

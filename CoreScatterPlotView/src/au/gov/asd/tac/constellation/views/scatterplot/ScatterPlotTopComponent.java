@@ -74,7 +74,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     private AttributeValueMonitor yAttributeMonitor;
     private AttributeValueMonitor selectedAttributeMonitor;
     
-    private static final String SELECTED_ATTRIBUTE = "selected";
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public ScatterPlotTopComponent() {
         setName(Bundle.CTL_ScatterPlotTopComponent());
@@ -126,8 +126,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
                 if (state != null && state.getXAttribute() != null && state.getYAttribute() != null) {
                     xAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), state.getXAttribute().getName(), refreshHandler);
                     yAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), state.getYAttribute().getName(), refreshHandler);
-                    if (!SELECTED_ATTRIBUTE.equals(state.getXAttribute().getName()) && !SELECTED_ATTRIBUTE.equals(state.getYAttribute().getName())) {
-                        selectedAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), SELECTED_ATTRIBUTE, selectionHandler);
+                    if (!SELECTED_ATTRIBUTE_NAME.equals(state.getXAttribute().getName()) && !SELECTED_ATTRIBUTE_NAME.equals(state.getYAttribute().getName())) {
+                        selectedAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), SELECTED_ATTRIBUTE_NAME, selectionHandler);
                     }
                 }
 
