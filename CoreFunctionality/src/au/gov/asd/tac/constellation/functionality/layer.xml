@@ -199,10 +199,6 @@
         <folder name="Help">
             <attr name="position" intvalue="1000"/>
             <!--displayed items-->
-            <file name="org-netbeans-modules-usersguide-master.shadow">
-                <attr name="originalFile" stringvalue="Actions/Help/master-help.xml"/>
-                <attr name="position" intvalue="200"/>
-            </file>
             <file name="org-netbeans-core-actions-AboutAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Help/org-netbeans-core-actions-AboutAction.instance"/>
                 <attr name="position" intvalue="1500"/>
