@@ -589,7 +589,6 @@ public final class DateTimeRangeInputPane extends Pane {
         final Spinner<Integer> spinner = new Spinner<>(min, max, 1);
         spinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
 
-        // TODO: Very long numbers throws 
         // Create a filter to limit text entry to just numerical digits
         final NumberFormat format = NumberFormat.getIntegerInstance();
         final UnaryOperator<TextFormatter.Change> filter = c -> {
