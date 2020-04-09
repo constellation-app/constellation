@@ -65,7 +65,7 @@ public class ContentConcept extends SchemaConcept {
         public static final SchemaAttribute COMPANY = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Company")
                 .setDescription("The company authoring the content")
                 .build();
-        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, CONTENT_NAME)
+        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content")
                 .setDescription("Any textual content applying to the node")
                 .build();
         public static final SchemaAttribute CONTENT_TRANSLATED = new SchemaAttribute.Builder(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Translated")
@@ -132,7 +132,7 @@ public class ContentConcept extends SchemaConcept {
         public static final SchemaAttribute COMPANY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Company")
                 .setDescription("The company authoring the content")
                 .build();
-        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, CONTENT_NAME)
+        public static final SchemaAttribute CONTENT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content")
                 .setDescription("Any textual content applying to the transaction")
                 .build();
         public static final SchemaAttribute CONTENT_TRANSLATED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Content.Translated")

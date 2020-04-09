@@ -32,8 +32,7 @@ import java.util.BitSet;
  */
 public class PathScoringUtilities {
     
-    private static final String SCORETYPE_ERROR_STRING1 = "The requested ScoreType, ";
-    private static final String SCORETYPE_ERROR_STRING2 = ", is not supported.";
+    private static final String SCORETYPE_ERROR_FORMAT = "The requested ScoreType, %s, is not supported.";
     private static final String OUT_OF_BOUNDS_EXCEPTION_STRING = "The 'selected' attribute does not exist on the given graph.";
 
     public enum ScoreType {
@@ -285,7 +284,7 @@ public class PathScoringUtilities {
                     updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
                     break;
                 default:
-                    throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -305,7 +304,7 @@ public class PathScoringUtilities {
                 }
                 return Tuple.create(traversal, distanceArray);
             default:
-                throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
         }
     }
 
@@ -387,7 +386,7 @@ public class PathScoringUtilities {
                     updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
                     break;
                 default:
-                    throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -407,7 +406,7 @@ public class PathScoringUtilities {
                 }
                 return Tuple.create(traversal, distanceArray);
             default:
-                throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
         }
     }
 
@@ -485,7 +484,7 @@ public class PathScoringUtilities {
                     updateHarmonicFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
                     break;
                 default:
-                    throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -657,7 +656,7 @@ public class PathScoringUtilities {
                     updateHarmonicFarnessScoresDirected(graph, traversalF, traversalB, scores, sendBufferF, sendBufferB, exclusionsF, exclusionsB, turn, selectedOnly);
                     break;
                 default:
-                    throw new IllegalArgumentException(SCORETYPE_ERROR_STRING1 + scoreType + SCORETYPE_ERROR_STRING2);
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
 
             }
 
