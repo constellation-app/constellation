@@ -589,14 +589,15 @@ public final class DateTimeRangeInputPane extends Pane {
         final Spinner<Integer> spinner = new Spinner<>(min, max, 1);
         spinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
 
+        // TODO: Very long numbers throws 
         // Create a filter to limit text entry to just numerical digits
         final NumberFormat format = NumberFormat.getIntegerInstance();
         final UnaryOperator<TextFormatter.Change> filter = c -> {
             if (c.isContentChange()) {
-                ParsePosition parsePosition = new ParsePosition(0);
+                final ParsePosition parsePosition = new ParsePosition(0);
                 // NumberFormat evaluates the beginning of the text
                 format.parse(c.getControlNewText(), parsePosition);
-                if (parsePosition.getIndex() == 0 ||
+                if (parsePosition.getIndex() == 0 || c.getControlNewText().length() > 2 ||
                         parsePosition.getIndex() < c.getControlNewText().length()) {
                     // reject parsing the complete text failed
                     return null;
@@ -610,7 +611,6 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setEditable(true);
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
-
         
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);
