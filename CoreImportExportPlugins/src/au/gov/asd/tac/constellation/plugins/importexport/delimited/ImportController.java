@@ -172,9 +172,9 @@ public class ImportController {
 
     public void setDestination(final ImportDestination<?> destination) {
         if (destination != null) {
-            this.currentDestination = destination;
+            currentDestination = destination;
         }
-        if (this.currentDestination == null) {
+        if (currentDestination == null) {
             return;
         }
 
@@ -189,7 +189,7 @@ public class ImportController {
         keys.clear();
 
         final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-        loadAllSchemaAttributes(this.currentDestination, showSchemaAttributes);
+        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
 
         updateDisplayedAttributes();
     }
@@ -335,14 +335,14 @@ public class ImportController {
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
         Map<String, Attribute> displayedAttributes = new HashMap<>();
 
-        if (filterAttributes != null &&  filterAttributes.length() > 0) {
-            for (String name : autoAddedAttributes.keySet()) {
-                if (name.toUpperCase().matches(".*" + filterAttributes.toUpperCase() + ".*")) {
+        if (filterAttributes != null && !filterAttributes.isEmpty()) {
+            for (final String name : autoAddedAttributes.keySet()) {
+                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
                     displayedAttributes.put(name, autoAddedAttributes.get(name));
                 }
             }
-            for (String name : manuallyAddedAttributes.keySet()) {
-                if (name.toUpperCase().matches(filterAttributes.toUpperCase())) {
+            for (final String name : manuallyAddedAttributes.keySet()) {
+                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
                     displayedAttributes.put(name, manuallyAddedAttributes.get(name));
                 }
             }
@@ -508,7 +508,7 @@ public class ImportController {
         // TODO: the tick box could have changed but the menu item isn't updated, fix it
     }
 
-    public void setShowFilteredSchemaAttributes(final String filterAttributes) {
+    public void setAttributeFilter(final String filterAttributes) {
         this.filterAttributes = filterAttributes;
     }
 
