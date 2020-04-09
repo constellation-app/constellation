@@ -7,35 +7,36 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <property name="ivy.install.version" value="2.5.0" />
-    <property name="ivy.jar.dir" value="${user.home}/.ivy2" />
-    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache" />
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar" />
-    <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml" />
-    <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml" />
-    <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext" />
-    <property name="jre.filename.windows" value="zulu11.37.19-ca-fx-jre11.0.6-win_x64" />
-    <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip" />
-    <property name="jre.filename.linux" value="zulu11.37.19-ca-fx-jre11.0.6-linux_x64" />
-    <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz" />
-    <property name="dist.filename.linux" value="constellation-linux" />
-    <property name="dist.filename.windows" value="constellation-win" />
+    <property name="ivy.install.version" value="2.5.0"/>
+    <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
+    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache"/>
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar"/>
+    <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml"/>
+    <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml"/>
+    <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
+    <property name="jre.filename.windows" value="zulu11.37.19-ca-fx-jre11.0.6-win_x64"/>
+    <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip"/>
+    <property name="jre.filename.linux" value="zulu11.37.19-ca-fx-jre11.0.6-linux_x64"/>
+    <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz"/>
+    <property name="dist.filename.linux" value="constellation-linux"/>
+    <property name="dist.filename.windows" value="constellation-win"/>
 
     <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
-        <ant target="clean" />
-        <ant target="clean-dependencies" />
-        <ant target="download-dependencies" />
+        <ant target="clean"/>
+        <ant target="clean-dependencies"/>
+        <ant target="download-dependencies"/>
         <ant target="build">
-            <property name="update.dependencies" value="true" />
+            <property name="update.dependencies" value="true"/>
         </ant>
     </target>
 
-    <target name="update-dependencies-clean-build-no-debug" description="Download dependencies and build all modules in the suite and exclude debugging.">
-        <ant target="clean" />
-        <ant target="clean-dependencies" />
-        <ant target="download-dependencies" />
+    <target name="update-dependencies-clean-build-no-debug" 
+            description="Download dependencies and build all modules in the suite and exclude debugging.">
+        <ant target="clean"/>
+        <ant target="clean-dependencies"/>
+        <ant target="download-dependencies"/>
         <ant target="build">
-            <property name="update.dependencies" value="true" />
+            <property name="update.dependencies" value="true"/>
             <property name="build.compiler.debug" value="false"/>
         </ant>
     </target>
@@ -58,14 +59,14 @@
         <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
 
-    <target name="-download-unfolding-maps" >
+    <target name="-download-unfolding-maps">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing unfolding-maps..."/>
         <get src="https://github.com/constellation-app/third-party-dependencies/raw/master/unfolding-master-20171010.jar"
              dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
     
-    <target name="-download-gluegen" >
+    <target name="-download-gluegen">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing gluegen..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
@@ -78,7 +79,7 @@
         </get>
     </target>
     
-    <target name="-download-jocl" >
+    <target name="-download-jocl">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing jocl..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
@@ -91,7 +92,7 @@
         </get>
     </target>
     
-    <target name="-download-jogl" >
+    <target name="-download-jogl">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing jogl..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
@@ -104,7 +105,7 @@
         </get>
     </target>
     
-    <target name="-download-newt" >
+    <target name="-download-newt">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing newt..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
@@ -113,7 +114,7 @@
         </get>
     </target>
     
-    <target name="-download-mainwindow" >
+    <target name="-download-mainwindow">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing mainwindow..."/>
         <get dest="${ivy.lib.dir}" usetimestamp="true">
@@ -122,29 +123,35 @@
         </get>
     </target>
     
-    <target name="-download-processing" >
+    <target name="-download-processing">
         <mkdir dir="${ivy.lib.dir}"/>
         <echo message="installing processing..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/Processing%204.0/core.jar?raw=true"/>
-        </get>
+        <get src="https://github.com/constellation-app/third-party-dependencies/blob/master/Processing%204.0/core.jar?raw=true"
+             dest="${ivy.lib.dir}" usetimestamp="true"/>
     </target>
     
-    <target name="-download-javahelp" >
-        <echo message="installing netbeans help module..."/>
-        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" property="javahelp.present"/>
-        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/" usetimestamp="true" if:blank="javahelp.present">
-            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true"/>
-        </get>
-        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" property="jhall.present"/>
-        <get dest="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" usetimestamp="true" if:blank="jhall.present">
-            <url url="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true"/>
-        </get>
+    <target name="-download-javahelp">
+        <echo message="installing netbeans javahelp module..."/>
+        <get src="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar?raw=true" 
+             dest="${ivy.lib.dir}" usetimestamp="true"/>
+        <condition property="javahelp.isupdated" value="true">
+            <filesmatch file1="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" 
+                        file2="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar"/>
+        </condition>
+        <delete file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" unless:true="${javahelp.isupdated}"/>
+        <copy file="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar" todir="${nbplatform.default.netbeans.dest.dir}/platform/modules/" unless:true="${javahelp.isupdated}"/>
+        <delete file="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar"/>
+        
+        <get src="https://github.com/constellation-app/third-party-dependencies/blob/master/NetBeans%20Help/jhall-2.0_05.jar?raw=true" 
+             dest="${ivy.lib.dir}" usetimestamp="true"/>
+        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" property="jhall.isupdated"/>
+        <copy file="${ivy.lib.dir}/jhall-2.0_05.jar" todir="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" unless:true="${jhall.isupdated}"/>
+        <delete file="${ivy.lib.dir}/jhall-2.0_05.jar"/>
     </target>
-  	
+
     <target name="download-dependencies" 
-            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
-            description="Download dependent libraries.">
+                depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
+                description="Download dependent libraries.">
         <mkdir dir="${ivy.lib.dir}"/>
         <ivy:resolve/>
         <ivy:retrieve/>
@@ -197,12 +204,13 @@
     <target name="-download-windows-jre" >
         <echo message="downloading JRE..."/>
         <get src="${jre.url.windows}"
-             dest="${basedir}" usetimestamp="true"/>
+                 dest="${basedir}" usetimestamp="true"/>
         <unzip src="${basedir}/${jre.filename.windows}.zip" dest="${basedir}"/>
         <delete file="${basedir}/${jre.filename.windows}.zip"/>
     </target>
 
-    <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
+    <target name="build-zip-with-windows-jre" depends="build,build-launchers,-download-windows-jre" 
+                description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Windows.">
         <mkdir dir="${dist.dir}"/>
         <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
         <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
@@ -214,9 +222,9 @@
             <resources refid="zip.platform.clusters"/>
         </subant>
         <fixcrlf srcdir="${build.launcher.dir}/etc/"
-                 destdir="${build.launcher.dir}/etc/"
-                 preservelastmodified="true"
-                 eol="crlf" />
+                     destdir="${build.launcher.dir}/etc/"
+                     preservelastmodified="true"
+                     eol="crlf" />
         <zip destfile="${dist.dir}/${dist.filename.windows}.zip">
             <!-- Using pre-built executable files that come with the Constellation icon -->
             <!--<zipfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
@@ -224,7 +232,7 @@
             <zipfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc"/>
             <zipfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}"/>
             <zipfileset dir="${temp.dir.rest}" prefix="${app.name}"/>
-            <zipfileset dir="${basedir}/shortcuts/" prefix="${app.name}/"/>
+            <zipfileset dir="${basedir}/distribution/" prefix="${app.name}/"/>
             <zipfileset dir="${basedir}/${jre.filename.windows}/" prefix="${app.name}/jre"/>
             <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
             <zipfileset dir="${cluster}" prefix="${app.name}/${app.name}">
@@ -238,13 +246,14 @@
     <target name="-download-linux-jre" >
         <echo message="downloading JRE..."/>
         <get src="${jre.url.linux}"
-             dest="${basedir}" usetimestamp="true"/>
+                 dest="${basedir}" usetimestamp="true"/>
         <untar src="${basedir}/${jre.filename.linux}.tar.gz" dest="${basedir}" compression="gzip"/>
         <delete file="${basedir}/${jre.filename.linux}.tar.gz"/>
     </target>
 
     <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
-    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
+    <target name="build-zip-with-linux-jre" depends="build,build-launchers,-download-linux-jre" 
+                description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for Linux.">
         <mkdir dir="${dist.dir}"/>
         <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
         <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
@@ -256,9 +265,9 @@
             <resources refid="zip.platform.clusters"/>
         </subant>
         <fixcrlf srcdir="${build.launcher.dir}/etc/"
-                 destdir="${build.launcher.dir}/etc/"
-                 preservelastmodified="true"
-                 eol="lf" />
+                     destdir="${build.launcher.dir}/etc/"
+                     preservelastmodified="true"
+                     eol="lf" />
         <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
             <!-- Using pre-built executable files that come with the Constellation icon -->
             <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
@@ -283,7 +292,8 @@
         <delete dir="${basedir}/${jre.filename.linux}/"/>
     </target>
 
-    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" description="Generate a detailed dependency report">
+    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" 
+                description="Generate a detailed dependency report">
         <delete dir="${suite.build.dir}/ivy-reports"/>
         <mkdir dir="${suite.build.dir}/ivy-reports" />
 
@@ -291,11 +301,13 @@
         <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
     </target>
 
-    <target name="dependency-tree" depends="-load-ivy-tasks" description="Output the dependencies in a tree layout to the console.">
+    <target name="dependency-tree" depends="-load-ivy-tasks" 
+                description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>
 
-    <target name="check-latest-version" depends="-load-ivy-tasks" description="Check whether there is a new release of a dependency.">
+    <target name="check-latest-version" depends="-load-ivy-tasks" 
+                description="Check whether there is a new release of a dependency.">
         <ivy:resolve/>
         <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>

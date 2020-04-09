@@ -26,6 +26,7 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -173,10 +174,19 @@ public final class GLRenderer implements GLEventListener {
     @Override
     public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
         final GL3 gl = drawable.getGL().getGL3();
-        gl.glViewport(0, 0, width, height);
+        
+        // --- START TEMPORARY FIX ---
+        // JOGL 2.3.2 does not scale with os display scaling on Windows and Linux.
+        // This will be fixed in JOGL 2.4.0, but until then we can use this temporary hack.
+        final double dpiScalingFactor = ((Graphics2D) ((Component) drawable).getGraphics()).getTransform().getScaleX();
+        final int scaledWidth = (int) (width * dpiScalingFactor);
+        final int scaledHeight = (int) (height * dpiScalingFactor);
+        // --- END TEMPORARY FIX ---
+        
+        gl.glViewport(0, 0, scaledWidth, scaledHeight);
 
         // Create the projection matrix, and load it on the projection matrix stack.
-        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) width / (float) height, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) scaledWidth / (float) scaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
 
         projectionMatrix.set(viewFrustum.getProjectionMatrix());
 
@@ -185,13 +195,13 @@ public final class GLRenderer implements GLEventListener {
         ((Component) drawable).setMinimumSize(new Dimension(0, 0));
 
         renderables.forEach(renderable -> {
-            renderable.reshape(x, y, width, height);
+            renderable.reshape(x, y, scaledWidth, scaledHeight);
         });
 
         viewport[0] = x;
         viewport[1] = y;
-        viewport[2] = width;
-        viewport[3] = height;
+        viewport[2] = scaledWidth;
+        viewport[3] = scaledHeight;
     }
 
     /**
