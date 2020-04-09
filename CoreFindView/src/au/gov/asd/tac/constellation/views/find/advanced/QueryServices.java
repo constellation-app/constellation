@@ -463,9 +463,7 @@ public class QueryServices {
                     barrier.await();
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                    return;
                 } catch (BrokenBarrierException ex) {
-                    return;
                 }
             }
         }
