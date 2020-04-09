@@ -137,7 +137,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     private static final String INFO = "Info";
     private static final String WARNING = "Warning";
     private static final String ERROR = "Error";
-    private static final String FATAL = "FATAL";
+    private static final String FATAL = "Fatal";
 
     private final SecureRandom r = new SecureRandom();
 

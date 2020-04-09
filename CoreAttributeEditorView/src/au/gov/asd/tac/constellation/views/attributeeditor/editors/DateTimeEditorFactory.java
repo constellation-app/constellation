@@ -74,7 +74,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
         private static final int MILLISECONDS_IN_SECOND = 1000;
         
-        private static final String LABEL = "label";
+        private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
         private CheckBox noValueCheckBox;
@@ -168,7 +168,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             };
 
             final Label timeZoneComboBoxLabel = new Label("Time Zone:");
-            timeZoneComboBoxLabel.setId(LABEL);
+            timeZoneComboBoxLabel.setId(LABEL_ID);
             timeZoneComboBoxLabel.setLabelFor(timeZoneComboBoxLabel);
 
             timeZoneComboBox.setCellFactory(cellFactory);
@@ -220,23 +220,23 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             final Label dateLabel = new Label("Date:");
-            dateLabel.setId(LABEL);
+            dateLabel.setId(LABEL_ID);
             dateLabel.setLabelFor(datePicker);
 
             final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId(LABEL);
+            hourSpinnerLabel.setId(LABEL_ID);
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
             final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId(LABEL);
+            minSpinnerLabel.setId(LABEL_ID);
             minSpinnerLabel.setLabelFor(minSpinner);
 
             final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId(LABEL);
+            secSpinnerLabel.setId(LABEL_ID);
             secSpinnerLabel.setLabelFor(secSpinner);
 
             final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId(LABEL);
+            milliSpinnerLabel.setId(LABEL_ID);
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);

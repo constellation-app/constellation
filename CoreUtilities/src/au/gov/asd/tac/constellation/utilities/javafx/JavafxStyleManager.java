@@ -28,6 +28,8 @@ public class JavafxStyleManager {
     
     public static final String UNEDITABLE_COMBOBOX = "uneditableCombo";
     public static final String HIDDEN = "hidden";
+    public static final String LIGHT_NAME_TEXT = "lightNameText";
+    public static final String LIGHT_MESSAGE_TEXT = "lightMessageText";
 
     public static String getMainStyleSheet() {
         return JavafxStyleManager.class.getResource("main.css").toExternalForm();
