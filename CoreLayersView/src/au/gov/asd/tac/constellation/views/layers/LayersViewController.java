@@ -55,20 +55,20 @@ public class LayersViewController {
         final Iterator it = pane.getLayers().getChildren().iterator();
         it.next(); // skip default layer
 
-        int tempMask = 0b0;
+        int newBitmask = 0b0;
         while (it.hasNext()) {
             final HBox layerBox = (HBox) (it.next());
             final CheckBox visibilityCheckBox = (CheckBox) layerBox.getChildren().get(1);
             final Text layerIdText = (Text) layerBox.getChildren().get(0);
 
             // only add layer id to list when it is checked
-            tempMask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
+            newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
         }
 
-        // if the tempmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        tempMask = (tempMask > 1) ? tempMask & ~0b1 : tempMask;
+        // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
+        newBitmask = (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
 
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(tempMask)).executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     /**

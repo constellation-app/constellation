@@ -1733,9 +1733,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         transactionZAttributeId = Z_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionZAttributeId) : transactionZAttributeId;
         layerMaskSelectedAttributeId = LAYER_MASK_SELECTED_ATTRIBUTE_LABEL.equals(label) ? attributeId : layerMaskSelectedAttributeId;
         vertexLayerMaskAttribureId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerMaskAttribureId) : vertexLayerMaskAttribureId;
-        vertexLayerVisibilityAttributeId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerVisibilityAttributeId) : vertexLayerVisibilityAttributeId;
+        vertexLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerVisibilityAttributeId) : vertexLayerVisibilityAttributeId;
         transactionFilterBitmaskAttrId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionFilterBitmaskAttrId) : transactionFilterBitmaskAttrId;
-        transactionLayerVisibilityAttributeId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerVisibilityAttributeId) : transactionLayerVisibilityAttributeId;
+        transactionLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerVisibilityAttributeId) : transactionLayerVisibilityAttributeId;
 
         return attributeId;
     }
@@ -2005,7 +2005,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
         }
 
-        // TODO: ConcurrentModificationException occasionaly occurs, maybe synchronised wil help?
         synchronized (this) {
             for (int i = 0; i < LAYER_QUERIES.size(); i++) {
                 // calculate bitmask for dynamic layers that are displayed
@@ -2036,31 +2035,34 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * @return a boolean determining whether the element satisfied the
      * constraints.
      */
-    private boolean evaluateLayerQuery(final GraphElementType elementType, final int elementId, final String query) {
+    private boolean evaluateLayerQuery(final GraphElementType elementType, final int elementId, final List<String> queries) {
         // exit condition for show all
-        if (query.isBlank()) {
+        if (queries.isEmpty()) {
             return true;
         }
-
-        // Split with backtick to reduce chance of char in query.
-        final String[] rules = query.split("`");
-//        System.out.println("Rules: " + rules.length);
 
         // iterate over rules
         String evaluatedResult = "";
         Operator currentOperand = Operator.NOTFOUND;
         boolean finalResult = true;
         boolean ignoreResult = false;
-        for (final String rule : rules) {
-//            System.out.println("Rule: " + rule);
-            final String[] ruleSegments = rule.split(":");
+        for (final String rule : queries) {
+            String[] ruleSegments = rule.split(" == | != | < | > ");
+            if(rule.contains(" == ")){
+                currentOperand = Operator.EQUALS;
+            }else if(rule.contains(" != ")){
+                currentOperand = Operator.NOTEQUALS;
+            }else if(rule.contains(" > ")){
+                currentOperand = Operator.GREATERTHAN;
+            }else if(rule.contains(" < ")){
+                currentOperand = Operator.LESSTHAN;
+            }
 
             // iterate over each segment and grab the values
             AttributeDescription attributeDescription = null;
             int attributeId = 1;
             int segmentCount = 0;
             for (final String ruleSegment : ruleSegments) {
-//                System.out.println("Current: " + ruleSegment);
                 segmentCount++;
                 switch (segmentCount) {
                     case 1: {
@@ -2071,39 +2073,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                         break;
                     }
                     case 2: {
-                        switch (ruleSegment) {
-                            case "=": { // equality
-                                currentOperand = Operator.EQUALS;
-                                break;
-                            }
-                            case "!=": { // non-equality
-                                currentOperand = Operator.NOTEQUALS;
-                                break;
-                            }
-                            case ">": { // greater than
-                                currentOperand = Operator.GREATERTHAN;
-                                break;
-                            }
-                            case "<": { // less than
-                                currentOperand = Operator.LESSTHAN;
-                                break;
-                            }
-                            case ">=": { // greater than or equal
-                                currentOperand = Operator.GREATERTHANOREQ;
-                                break;
-                            }
-                            case "<=": { // less than or equal
-                                currentOperand = Operator.LESSTHANOREQ;
-                                break;
-                            }
-                            default: { // do nothing
-                                currentOperand = Operator.NOTFOUND;
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    case 3: {
                         switch (currentOperand) {
                             case EQUALS: {
                                 finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
@@ -2123,16 +2092,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                             case LESSTHAN: {
                                 finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
                                         && (attributeDescription.getString(elementId)).compareTo(ruleSegment) < 0);
-                                break;
-                            }
-                            case GREATERTHANOREQ: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && (attributeDescription.getString(elementId)).compareTo(ruleSegment) >= 0);
-                                break;
-                            }
-                            case LESSTHANOREQ: {
-                                finalResult = (attributeDescription != null && attributeDescription.getString(elementId) != null
-                                        && (attributeDescription.getString(elementId)).compareTo(ruleSegment) <= 0);
                                 break;
                             }
                             case NOTFOUND: {
