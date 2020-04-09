@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.translator.AttributeTranslator;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -194,7 +195,7 @@ public class ImportDelimitedIO {
 
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             mapper.configure(SerializationFeature.CLOSE_CLOSEABLE, true);
-            final File f = new File(delimIoDir, TemplateListDialog.encode(templName + JSON_EXTENSION));
+            final File f = new File(delimIoDir, FilenameEncoder.encode(templName + JSON_EXTENSION));
             try {
                 mapper.writeValue(f, rootNode);
                 StatusDisplayer.getDefault().setStatusText(String.format("Import definition saved to %s.", f.getPath()));
@@ -230,15 +231,14 @@ public class ImportDelimitedIO {
 
         final String templName = new TemplateListDialog(stage, true, null).getName(stage, delimIoDir);
         if (templName != null) {
-            final File template = new File(delimIoDir, TemplateListDialog.encode(templName) + JSON_EXTENSION);
+            final File template = new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION);
             if (!template.canRead()) {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Template %s does not exist", templName), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
             } else {
                 try {
                     final ObjectMapper mapper = new ObjectMapper();
-                    final JsonNode root = mapper.readTree(new File(delimIoDir, TemplateListDialog.encode(templName) + JSON_EXTENSION));
-
+                    final JsonNode root = mapper.readTree(new File(delimIoDir, FilenameEncoder.encode(templName) + JSON_EXTENSION));
                     final JsonNode source = root.get(SOURCE);
                     final String parser = source.get(PARSER).textValue();
                     final ImportFileParser ifp = ImportFileParser.getParser(parser);
@@ -343,72 +343,4 @@ public class ImportDelimitedIO {
                 || ((iadef.getColumnIndex() == ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN)
                 && (iadef.getParameters() != null || iadef.getDefaultValue() != null));
     }
-//    /**
-//     * Encode a String so it can be used as a filename.
-//     *
-//     * @param s The String to be encoded.
-//     *
-//     * @return The encoded String.
-//     */
-//    public static String encode(final String s)
-//    {
-//        final StringBuilder b = new StringBuilder();
-//        for(final char c : s.toCharArray())
-//        {
-//            if(isValidFileCharacter(c))
-//            {
-//                b.append(c);
-//            }
-//            else
-//            {
-//                b.append(String.format("_%04x", (int)c));
-//            }
-//        }
-//        return b.toString();
-//    }
-//    /**
-//     * Decode a String that has been encoded by {@link encode(String)}.
-//     *
-//     * @param s The String to be decoded.
-//     *
-//     * @return The decoded String.
-//     */
-//    static String decode(final String s)
-//    {
-//        final StringBuilder b = new StringBuilder();
-//        for(int i = 0; i<s.length(); i++)
-//        {
-//            final char c = s.charAt(i);
-//            if(c!='_')
-//            {
-//                b.append(c);
-//            }
-//            else
-//            {
-//                final String hex = s.substring(i+1, Math.min(i+5, s.length()));
-//                if(hex.length()==4)
-//                {
-//                    try
-//                    {
-//                        final int value = Integer.parseInt(hex, 16);
-//                        b.append((char)value);
-//                        i += 4;
-//                    }
-//                    catch(final NumberFormatException ex)
-//                    {
-//                        return null;
-//                    }
-//                }
-//                else
-//                {
-//                    return null;
-//                }
-//            }
-//        }
-//        return b.toString();
-//    }
-//    static boolean isValidFileCharacter(char c)
-//    {
-//        return (c>='0' && c<='9') || (c>='A' && c<='Z') || (c>='a' && c<='z') || c==' ' || c=='-' || c=='.';
-//    }
 }

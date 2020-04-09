@@ -1096,7 +1096,10 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
         try {
             if (lockTheEdt) {
-                latch.await(1, TimeUnit.SECONDS);
+                final boolean countedToZero = latch.await(1, TimeUnit.SECONDS);
+                if (!countedToZero) {
+                    //TODO: Handle case where latch did not count down to zero
+                }
             }
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();

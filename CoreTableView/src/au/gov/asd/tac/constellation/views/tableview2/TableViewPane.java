@@ -21,15 +21,17 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,6 +52,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
@@ -66,13 +69,16 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javax.swing.SwingUtilities;
 import org.controlsfx.control.table.TableFilter;
 
@@ -110,7 +116,7 @@ public final class TableViewPane extends BorderPane {
     private static final String EXPORT_CSV_SELECTION = "Export to CSV (Selection)";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_XLSX_SELECTION = "Export to Excel (Selection)";
-
+ 
     private static final ImageView COLUMNS_ICON = new ImageView(UserInterfaceIconProvider.COLUMNS.buildImage(16));
     private static final ImageView SELECTED_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()));
     private static final ImageView ALL_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16));
@@ -118,8 +124,8 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
+    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.HEART.buildImage(16));
 
-    private static final int PAD = 20;
     private static final int WIDTH = 120;
 
     private final TableViewTopComponent parent;
@@ -140,6 +146,11 @@ public final class TableViewPane extends BorderPane {
 
     private final ReadOnlyObjectProperty<ObservableList<String>> selectedProperty;
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
+
+    // Store details of sort order changes made upon column order change or table
+    // preference loading - these are used to reinstate the sorting after data update 
+    private String sortByColumnName = "";
+    private TableColumn.SortType sortByType = TableColumn.SortType.ASCENDING;
 
     private enum UpdateMethod {
         ADD,
@@ -181,7 +192,7 @@ public final class TableViewPane extends BorderPane {
         selectedProperty.addListener(tableSelectionListener);
     }
 
-    private ToolBar initToolbar() {
+    private ToolBar initToolbar() {        
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
         columnVisibilityButton.setMaxWidth(WIDTH);
@@ -190,7 +201,7 @@ public final class TableViewPane extends BorderPane {
         columnVisibilityButton.setOnAction(e -> {
             final ContextMenu contextMenu = initColumnVisibilityContextMenu();
             contextMenu.show(columnVisibilityButton, Side.RIGHT, 0, 0);
-            e.consume();
+            e.consume();   
         });
 
         this.selectedOnlyButton = new ToggleButton();
@@ -277,8 +288,30 @@ public final class TableViewPane extends BorderPane {
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
+        
+        MenuButton layoutPreferencesButton = new MenuButton();
+        layoutPreferencesButton.setGraphic(SETTINGS_ICON);
+        layoutPreferencesButton.setMaxWidth(WIDTH);
+        layoutPreferencesButton.setPopupSide(Side.RIGHT);
+        final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
+        savePrefsOption.setOnAction(e -> {
+            
+            if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
+                TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
+            }
+            e.consume();
+        });
+        final MenuItem loadPrefsOption = new MenuItem("Load Table Preferences...");
+        loadPrefsOption.setOnAction((ActionEvent e) -> {
+            if(GraphManager.getDefault().getActiveGraph() != null){
+                loadPreferences();
+            }
+            e.consume();
+        });
+        layoutPreferencesButton.getItems().addAll(savePrefsOption, loadPrefsOption);
+        
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
-                elementTypeButton, new Separator(), copyButton, exportButton);
+                elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
         toolbar.setOrientation(Orientation.VERTICAL);
         toolbar.setPadding(new Insets(5));
 
@@ -287,7 +320,30 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-
+        ArrayList<CustomMenuItem> colCheckboxes = new ArrayList<>();
+        
+        Label label1 = new Label("Filter:");
+        TextField searchField = new TextField ();
+        HBox hb = new HBox();
+        hb.getChildren().addAll(label1, searchField);
+        final CustomMenuItem search = new CustomMenuItem(hb);
+        
+        search.setHideOnClick(false);
+        searchField.setOnKeyReleased((KeyEvent e) -> {
+            String searchTerm = searchField.getText();
+            if (searchTerm.trim().equals("")) {
+                colCheckboxes.forEach((item) -> {
+                    item.setVisible(true);
+                });
+            } else {
+                colCheckboxes.forEach((CustomMenuItem item) -> {
+                    String name = item.getId();
+                    item.setVisible(name.contains(searchTerm));
+                });
+            }
+            
+        });
+        
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
         allColumns.setOnAction(e -> {
@@ -342,7 +398,7 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem());
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), search);
 
         columnIndex.forEach(columnTuple -> {
             final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
@@ -355,7 +411,8 @@ public final class TableViewPane extends BorderPane {
 
             final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
             columnVisibility.setHideOnClick(false);
-
+            columnVisibility.setId(columnTuple.getThird().getText());
+            colCheckboxes.add(columnVisibility);
             cm.getItems().add(columnVisibility);
         });
 
@@ -438,6 +495,53 @@ public final class TableViewPane extends BorderPane {
 
         return cm;
     }
+    
+    /**
+     * Save current sort order details, i.e. sort column name and order for future
+     * reference. This required as the bespoke data loading in tables is causing
+     * sort ordering to be removed - ie when users update column order. By storing
+     * this sort information the values can be used to refresh the sort order
+     * within updateSortOrder().
+     * 
+     * @param columnName The name of the column sorting is being done on
+     * @param sortType Direction of sorting
+     */
+    private void saveSortDetails(String columnName, TableColumn.SortType sortType) {
+            sortByColumnName = columnName;
+            sortByType = sortType;
+    }
+    
+    /**
+     * Extract any current table sort information and save this information. See
+     * other saveSortDetails for reason this is done.
+     */
+    private void saveSortDetails() {
+        if (table.getSortOrder() != null && table.getSortOrder().size() > 0) {
+            // A column was selected to sort by, save its name and direction
+            saveSortDetails(table.getSortOrder().get(0).getText(), table.getSortOrder().get(0).getSortType());
+        } else {
+            // no column is selected, clear any previously stored information.
+            saveSortDetails("", TableColumn.SortType.ASCENDING);
+        }
+    }
+    
+    /**
+     * If sort details have been stored, reapply this sorting to the tableview.
+     * 
+     */
+    private void updateSortOrder() {
+        // Try to find column with name matching saved sort order/type details
+        if (!sortByColumnName.isBlank())
+        {
+            for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                if (column.getText().equals(sortByColumnName)) {
+                    column.setSortType(sortByType);
+                    table.getSortOrder().setAll(column);
+                    return;
+                }
+            }
+        }
+    }
 
     /**
      * Update the whole table using the graph.
@@ -454,6 +558,9 @@ public final class TableViewPane extends BorderPane {
                     updateColumns(graph, state);
                     updateData(graph, state);
                     updateSelection(graph, state);
+                    Platform.runLater(() -> {
+                        updateSortOrder();
+                    });
                 } else {
                     Platform.runLater(() -> {
                         table.getColumns().clear();
@@ -585,16 +692,8 @@ public final class TableViewPane extends BorderPane {
                 });
 
                 // style and format columns in columnIndex
-//                final Font defaultFont = Font.getDefault();
-//                final FontMetrics fontMetrics = Toolkit.getToolkit().getFontLoader().getFontMetrics(defaultFont);
                 columnIndex.forEach(columnTuple -> {
                     final TableColumn<ObservableList<String>, String> column = columnTuple.getThird();
-
-                    // set the columns widths based on the length of their text
-//                    final String columnText = column.getText();
-//                    final float prefWidth = columnText == null
-//                            ? 0 : fontMetrics.computeStringWidth(columnText);
-//                    column.setPrefWidth(prefWidth + PAD);
 
                     // assign cells to columns
                     column.setCellValueFactory(cellData -> {
@@ -641,6 +740,7 @@ public final class TableViewPane extends BorderPane {
                                             this.getStyleClass().add("element-destination");
                                             break;
                                         default:
+                                            // Code can't make it to here
                                             break;
                                     }
 
@@ -672,24 +772,13 @@ public final class TableViewPane extends BorderPane {
                     // add columns to table
                     table.getColumns().clear();
                     table.getColumns().addAll(columnIndex.stream().map(t -> t.getThird()).collect(Collectors.toList()));
-
+                    
                     // sort data if the column ordering changes
                     table.getColumns().addListener((final Change<? extends TableColumn<ObservableList<String>, ?>> change) -> {
                         if (lastChange == null || !lastChange.equals(change)) {
                             while (change.next()) {
                                 if (change.wasReplaced() && change.getRemovedSize() == change.getAddedSize()) {
-                                    final List<Integer> newIndices = change.getRemoved().stream()
-                                            .map(i -> change.getAddedSubList().indexOf(i))
-                                            .collect(Collectors.toList());
-                                    table.getItems().forEach(item -> {
-                                        final List<String> copy = new ArrayList<>(item);
-                                        for (int i = 0; i < copy.size(); i++) {
-                                            final String element = copy.get(i);
-                                            final int elementIndex = newIndices.get(i);
-                                            item.set(elementIndex, element);
-                                        }
-                                    });
-
+                                    saveSortDetails();
                                     final List<TableColumn<ObservableList<String>, String>> columnIndexColumns
                                             = columnIndex.stream()
                                                     .map(ci -> ci.getThird())
@@ -703,11 +792,60 @@ public final class TableViewPane extends BorderPane {
                                 }
                             }
                             lastChange = change;
-                        }
+                            }
                     });
 
                     selectedProperty.addListener(tableSelectionListener);
                 });
+            }
+        }
+    }
+    
+    /**
+     * Allow user to select saved preferences file and update table view format
+     * (displayed column/column order and sort order) to match values found in
+     * saved preferences file.
+     */
+    private void loadPreferences() {
+        synchronized (LOCK) {
+            if (parent.getCurrentState() != null) {
+
+                final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
+                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs = 
+                        TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
+
+                // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
+                if (tablePrefs.getFirst().isEmpty()) {
+                    return;
+                }
+                        
+                for (String columnName : tablePrefs.getFirst()) {
+                    // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
+                    for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
+                        if (column.getText().equals(columnName)) {
+                            TableColumn<ObservableList<String>, ?> copy = column;
+                            copy.setVisible(true);
+                            newColumnOrder.add(copy);
+                        }
+                    }
+                }
+
+                // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
+                // to update table.
+                final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
+                    = newColumnOrder.stream()
+                        .map(c ->
+                            {
+                                for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                                    if (c.getText().equals(col.getThird().getText())) {
+                                        return col;
+                                    }
+                                }
+                                // THe following can only happen 
+                                return columnIndex.get(newColumnOrder.indexOf(c));
+                            }).collect(Collectors.toList());
+                saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
+                updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
             }
         }
     }
@@ -751,7 +889,10 @@ public final class TableViewPane extends BorderPane {
                         final int transactionCount = readableGraph.getTransactionCount();
                         for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                             final int transactionId = readableGraph.getTransaction(transactionPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                            boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, transactionId);
+                            }
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -772,7 +913,6 @@ public final class TableViewPane extends BorderPane {
                                             break;
                                         default:
                                             attributeValue = null;
-                                            break;
                                     }
                                     final String displayableValue = interaction.getDisplayText(attributeValue);
                                     rowData.add(displayableValue);
@@ -787,7 +927,10 @@ public final class TableViewPane extends BorderPane {
                         final int vertexCount = readableGraph.getVertexCount();
                         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                             final int vertexId = readableGraph.getVertex(vertexPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                            boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
+                            }
                             if (!state.isSelectedOnly() || isSelected) {
                                 final ObservableList<String> rowData = FXCollections.observableArrayList();
                                 columnIndex.forEach(columnTuple -> {
@@ -878,7 +1021,10 @@ public final class TableViewPane extends BorderPane {
                             final int elementId = isVertex
                                     ? readableGraph.getVertex(elementPosition)
                                     : readableGraph.getTransaction(elementPosition);
-                            final boolean isSelected = selectedAttributeId != Graph.NOT_FOUND && readableGraph.getBooleanValue(selectedAttributeId, elementId);
+                            boolean isSelected = false;
+                            if (selectedAttributeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, elementId);
+                            }
                             if (isSelected) {
                                 selectedIds.add(elementId);
                             }
@@ -888,7 +1034,7 @@ public final class TableViewPane extends BorderPane {
                     }
 
                     // update table selection
-                    final int[] selectedIndices = selectedIds.stream().map(elementIdToRowIndex::get)
+                    final int[] selectedIndices = selectedIds.stream().map(id -> elementIdToRowIndex.get(id))
                             .map(row -> table.getItems().indexOf(row)).mapToInt(i -> i).toArray();
 
                     Platform.runLater(() -> {

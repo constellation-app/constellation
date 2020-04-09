@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphIndex;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
-import java.util.Random;
+import java.security.SecureRandom;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -34,7 +34,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
     public static final String ATTRIBUTE_NAME = "boolean_or_null";
     public static final Class<Boolean> NATIVE_CLASS = Boolean.class;
     public static final Boolean DEFAULT_VALUE = null;
-    private static final Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
     private final int trueHash = RANDOM.nextInt();
     private final int nullHash = RANDOM.nextInt();
     private final int falseHash = RANDOM.nextInt();

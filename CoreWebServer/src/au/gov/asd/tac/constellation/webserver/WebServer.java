@@ -139,7 +139,10 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    restFile.delete();
+                    final boolean restFileIsDeleted = restFile.delete();
+                    if(!restFileIsDeleted) {
+                        //TODO: Handle case where file not successfully deleted
+                    }
                 }
 
                 // On Posix, we can use stricter file permissions.
@@ -206,7 +209,10 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        restFile.delete();
+                        final boolean restFileIsDeleted = restFile.delete();
+                        if(!restFileIsDeleted) {
+                            //TODO: Handle case where file not successfully deleted
+                        }
                     }
                 });
                 webserver.setName(WEB_SERVER_THREAD_NAME);

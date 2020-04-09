@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.Set;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -73,7 +73,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
         private final GraphWriteMethods graph;
         
-        private final Random r = new Random();
+        private final SecureRandom r = new SecureRandom();
 
         Worker(GraphWriteMethods graph) {
             this.graph = graph;

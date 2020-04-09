@@ -99,7 +99,7 @@ public class ExportToShapefilePlugin extends AbstractGeoExportPlugin {
             try {
                 GeometryType.valueOf(s);
             } catch (IllegalArgumentException ex) {
-                return String.format("%s is not a valid shape type.", s);
+                return String.format("%s is not a valid shape type (Expected Box, Line, Multi_Polygon, Point, Polygon).", s);
             }
             return null;
         }

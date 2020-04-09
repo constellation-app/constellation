@@ -491,7 +491,7 @@ public final class AttributeCalculatorPane extends GridPane {
         templateObjectHelp.getChildren().add(objectNameText);
 
         StringBuilder objUsage = new StringBuilder("Usage(s):\n");
-        for (String str : description.usage) {
+        for (String str : description.getUsage()) {
             objUsage.append("\t").append(str).append("\n");
         }
         final Text objectUsageText = new Text(objUsage.toString() + "\n");
@@ -506,9 +506,9 @@ public final class AttributeCalculatorPane extends GridPane {
         objectDescripText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectDescripText);
 
-        if (description.arguments.length != 0) {
+        if (description.getArguments().length != 0) {
             StringBuilder objArguments = new StringBuilder("Arguments:\n");
-            for (String str : description.arguments) {
+            for (String str : description.getArguments()) {
                 objArguments.append("\t").append(str).append("\n");
             }
             final Text objectArgumentsText = new Text(objArguments.toString() + "\n");
@@ -525,9 +525,9 @@ public final class AttributeCalculatorPane extends GridPane {
         objectReturnsText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectReturnsText);
 
-        if (description.notes.length != 0) {
+        if (description.getNotes().length != 0) {
             StringBuilder objNotes = new StringBuilder("Notes:\n");
-            for (String str : description.notes) {
+            for (String str : description.getNotes()) {
                 objNotes.append("\t- ").append(str).append("\n");
             }
             final Text objectNotesText = new Text(objNotes.toString() + "\n");

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.testing.jdbc;
 
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -56,7 +57,7 @@ class JdbcParameterIO {
             saveDir.mkdir();
         }
 
-        final File saveFile = new File(saveDir, encode(name + JSON_EXTENSION));
+        final File saveFile = new File(saveDir, FilenameEncoder.encode(name + JSON_EXTENSION));
         boolean go = true;
         if (saveFile.exists()) {
             final String msg = String.format("'%s' already exists. Do you want to overwrite it?", name);
@@ -118,7 +119,7 @@ class JdbcParameterIO {
 
         // Chop off ".json".
         for (int i = 0; i < names.length; i++) {
-            names[i] = decode(names[i].substring(0, names[i].length() - 5));
+            names[i] = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
         }
 
         final String[] paramName = new String[1];
@@ -143,7 +144,7 @@ class JdbcParameterIO {
             if (queryName != null) {
                 try {
                     final ObjectMapper mapper = new ObjectMapper();
-                    final JsonNode root = mapper.readTree(new File(saveDir, encode(queryName) + JSON_EXTENSION));
+                    final JsonNode root = mapper.readTree(new File(saveDir, FilenameEncoder.encode(queryName) + JSON_EXTENSION));
                     data.username = root.get(USERNAME).textValue();
                     data.url = root.get(CONNECTION_URL).textValue();
                     data.jar = root.get(JAR_FILE).textValue();
@@ -189,61 +190,5 @@ class JdbcParameterIO {
                 }
             }
         }
-    }
-
-    /**
-     * Encode a String so it can be used as a filename.
-     *
-     * @param s The String to be encoded.
-     *
-     * @return The encoded String.
-     */
-    static String encode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (final char c : s.toCharArray()) {
-            if (isValidFileCharacter(c)) {
-                b.append(c);
-            } else {
-                b.append(String.format("_%04x", (int) c));
-            }
-        }
-
-        return b.toString();
-    }
-
-    /**
-     * Decode a String that has been encoded by {@link encode(String)}.
-     *
-     * @param s The String to be decoded.
-     *
-     * @return The decoded String.
-     */
-    static String decode(final String s) {
-        final StringBuilder b = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
-            if (c != '_') {
-                b.append(c);
-            } else {
-                final String hex = s.substring(i + 1, Math.min(i + 5, s.length()));
-                if (hex.length() == 4) {
-                    try {
-                        final int value = Integer.parseInt(hex, 16);
-                        b.append((char) value);
-                        i += 4;
-                    } catch (final NumberFormatException ex) {
-                        return null;
-                    }
-                } else {
-                    return null;
-                }
-            }
-        }
-
-        return b.toString();
-    }
-
-    static boolean isValidFileCharacter(char c) {
-        return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == ' ' || c == '-' || c == '.';
     }
 }

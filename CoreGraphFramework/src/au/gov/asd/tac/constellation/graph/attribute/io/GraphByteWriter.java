@@ -56,7 +56,10 @@ public final class GraphByteWriter {
     public void reset() {
         for (final File f : fileMap.values()) {
             if (f.exists()) {
-                f.delete();
+                final boolean fIsDeleted = f.delete();
+                if (!fIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
 

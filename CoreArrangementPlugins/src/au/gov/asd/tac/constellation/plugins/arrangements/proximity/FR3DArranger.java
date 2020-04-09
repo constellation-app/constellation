@@ -23,8 +23,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.Point3D;
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Implements a 3D version of the Fruchterman-Reingold force-directed algorithm
@@ -83,7 +83,7 @@ public class FR3DArranger implements Arranger {
     private GraphWriteMethods wg;
     boolean maintainMean = false;
     
-    private final Random r = new Random();
+    private final SecureRandom r = new SecureRandom();
 
     /**
      * Creates a new arranger using the specified {@link PluginInteraction}.

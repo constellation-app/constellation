@@ -4,6 +4,8 @@ When the constellation project grows and has more contributors, it's no longer p
 
 Here is an attempt to describe how the source code should be formatted. It's a collection of good practises, but will get better over time as it gets more organised.
 
+***Note that this style guide is for reference purposes. If you apply NetBean's default formatting layout then you comply with all coding style guidelines.***
+
 ## Indentation
 
 Always spaces, two of them. Never tabs.

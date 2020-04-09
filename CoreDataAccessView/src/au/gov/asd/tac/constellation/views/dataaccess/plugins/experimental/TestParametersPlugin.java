@@ -65,6 +65,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -77,7 +78,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.CheckBox;
@@ -138,9 +138,9 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     private static final String WARNING = "Warning";
     private static final String ERROR = "Error";
     private static final String FATAL = "FATAL";
-    
-    private final Random r = new Random();
-    
+
+    private final SecureRandom r = new SecureRandom();
+
     @StaticResource
     private static final String ALIEN_ICON = "au/gov/asd/tac/constellation/views/dataaccess/plugins/experimental/resources/alien.png";
 

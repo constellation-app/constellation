@@ -1687,11 +1687,11 @@ public enum CalculatorTemplateDescription {
     ),;
 
     public final String templateName;
-    public final String[] usage;
-    public final String[] arguments;
+    private final String[] usage;
+    private final String[] arguments;
     public final String returns;
     public final String description;
-    public final String[] notes;
+    private final String[] notes;
 
     private CalculatorTemplateDescription(String name, String[] usage, String[] arguments, String returns, String description, String[] notes) {
         this.templateName = name;
@@ -1702,6 +1702,18 @@ public enum CalculatorTemplateDescription {
         this.notes = notes;
     }
 
+    public String[] getUsage() {
+        return usage;
+    }
+
+    public String[] getArguments() {
+        return arguments;
+    }
+
+    public String[] getNotes() {
+        return notes;
+    }
+    
     public static CalculatorTemplateDescription getInstanceFromName(String name) {
         for (CalculatorTemplateDescription c : CalculatorTemplateDescription.values()) {
             if (c.templateName.equals(name)) {
