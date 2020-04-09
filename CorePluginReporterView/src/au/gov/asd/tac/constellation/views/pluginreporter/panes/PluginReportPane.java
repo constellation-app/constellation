@@ -342,8 +342,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     public void updateChildren() {
         Platform.runLater(() -> {
             synchronized (PluginReportPane.this) {
-                while (nextChild < pluginReport.getChildReports().size()) {
-                    PluginReport childReport = pluginReport.getChildReports().get(nextChild++);
+                while (nextChild < pluginReport.getUChildReports().size()) {
+                    PluginReport childReport = pluginReport.getUChildReports().get(nextChild++);
 
                     BorderPane borderPane = new BorderPane();
 
