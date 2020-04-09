@@ -36,12 +36,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = SchemaConcept.class)
 public class ContentConcept extends SchemaConcept {
-    
-    private static final String CONTENT_NAME = "Content";
 
     @Override
     public String getName() {
-        return CONTENT_NAME;
+        return "Content";
     }
 
     @Override
