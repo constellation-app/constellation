@@ -96,7 +96,7 @@ public class ReportVisualisation extends InternalVisualisation {
 
         final HBox extensionReportBox = new HBox();
         final Label extensionLabel = new Label(String.format("%s: ", extensionTitle));
-        extensionLabel.setStyle("-fx-font-weight: bold");
+        extensionLabel.setStyle(LABEL_CSS);
         final Label extensionValue = new Label(extensionContent);
         extensionValue.setWrapText(true);
         extensionReportBox.getChildren().addAll(extensionLabel, extensionValue);
