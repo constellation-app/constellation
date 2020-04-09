@@ -590,8 +590,8 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
 
         // Create a filter to limit text entry to just numerical digits
-        NumberFormat format = NumberFormat.getIntegerInstance();
-        UnaryOperator<TextFormatter.Change> filter = c -> {
+        final NumberFormat format = NumberFormat.getIntegerInstance();
+        final UnaryOperator<TextFormatter.Change> filter = c -> {
             if (c.isContentChange()) {
                 ParsePosition parsePosition = new ParsePosition(0);
                 // NumberFormat evaluates the beginning of the text
@@ -608,8 +608,7 @@ public final class DateTimeRangeInputPane extends Pane {
         // Ensure spinner is set to editable, meaning user can directly edit text, then hook in
         // a text formatter which in turn will trigger flitering of input text.
         spinner.setEditable(true);
-        TextFormatter<Integer> timeFormatter = new TextFormatter<>(
-        new IntegerStringConverter(), 0, filter);
+        final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
 
         
