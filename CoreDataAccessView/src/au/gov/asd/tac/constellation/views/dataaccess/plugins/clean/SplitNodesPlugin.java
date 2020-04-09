@@ -62,8 +62,6 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
 
     private static final String SOURCE_ID = GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID;
     private static final String SOURCE_IDENTIFIER = GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER;
-    
-    private static final String CORRELATION_TYPE = "Correlation";
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
@@ -125,8 +123,8 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
             transactionType.suppressEvent(true, new ArrayList());
             SingleChoiceParameterType.setOptions(transactionType, types);
 
-            if (types.contains(CORRELATION_TYPE)) {
-                SingleChoiceParameterType.setChoice(transactionType, CORRELATION_TYPE);
+            if (types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
+                SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
             }
             transactionType.suppressEvent(false, new ArrayList());
         }
@@ -185,7 +183,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID).getStringValue();
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
-        final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : CORRELATION_TYPE;
+        final String linkType = transactionTypeChoice != null ? transactionTypeChoice.toString() : AnalyticConcept.TransactionType.CORRELATION.getName();
         final boolean allOccurrences = splitParameters.get(ALL_OCCURRENCES_PARAMETER_ID).getBooleanValue();
 
         query.reset();

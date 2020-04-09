@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.uncollide;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -36,8 +37,6 @@ public class UncollideArrangement implements Arranger {
     private float minPadding;
     private PluginInteraction interaction;
     private boolean maintainMean = false;
-    
-    private static final String FLOAT = "float";
 
     public UncollideArrangement(final int dimensions) {
         this(dimensions, false);
@@ -65,9 +64,9 @@ public class UncollideArrangement implements Arranger {
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "x2", "x2", 0, null);
-        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "y2", "y2", 0, null);
-        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, FLOAT, "z2", "z2", 0, null);
+        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
 
         final int vxCount = wg.getVertexCount();
 

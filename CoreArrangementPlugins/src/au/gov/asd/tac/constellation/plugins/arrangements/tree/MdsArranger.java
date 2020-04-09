@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
@@ -54,8 +55,6 @@ public class MdsArranger implements Arranger {
     private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5f;
     private static final float EXTENTS_SIZE_INFLATION = 1.2f;
     private final MDSChoiceParameters params;
-    
-    private static final String FLOAT = "float";
 
     public MdsArranger(final MDSChoiceParameters params) {
         this.params = params;
@@ -190,13 +189,13 @@ public class MdsArranger implements Arranger {
         final float[] gammas = new float[wg.getVertexCapacity()];
 
         if (wg.getAttribute(GraphElementType.VERTEX, "x") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "x", "x", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, "y") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, "z") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, FLOAT, "z", "z", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
         }
         final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());

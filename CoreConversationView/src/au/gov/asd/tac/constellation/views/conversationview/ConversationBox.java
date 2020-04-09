@@ -88,7 +88,6 @@ public final class ConversationBox extends StackPane {
 
     public static final double PADDING = 5;
     private static final double CLEARANCE = 200;
-    private static final String BACKGROUND_COLOR_CSS = "-fx-background-color: transparent;";
 
     private final Conversation conversation;
 
@@ -127,10 +126,10 @@ public final class ConversationBox extends StackPane {
         setPrefSize(500, 500);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
-        setStyle(BACKGROUND_COLOR_CSS);
+        setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         final VBox content = new VBox();
-        content.setStyle(BACKGROUND_COLOR_CSS);
+        content.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         showToolTip.setSelected(true);
         showToolTip.setOnAction((ActionEvent t) -> {
@@ -220,7 +219,7 @@ public final class ConversationBox extends StackPane {
 
         // Create the bubbles pane
         bubbles = new ListView<>();
-        bubbles.setStyle(BACKGROUND_COLOR_CSS);
+        bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
@@ -338,7 +337,7 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty
             if (empty || message == null) {
-                setStyle(BACKGROUND_COLOR_CSS);
+                setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
                 // Look for the bubble in the cache

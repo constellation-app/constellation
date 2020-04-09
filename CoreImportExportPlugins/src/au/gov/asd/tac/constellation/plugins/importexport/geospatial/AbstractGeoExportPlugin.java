@@ -72,10 +72,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
     public static final String ELEMENT_TYPE_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "element_type");
     public static final String ATTRIBUTES_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "attributes");
     public static final String SELECTED_ONLY_PARAMETER_ID = PluginParameter.buildId(AbstractGeoExportPlugin.class, "selected_only");
-    
-    private static final String SOURCE = "source.";
-    private static final String DESTINATION = "destination.";
-    private static final String TRANSACTION = "transaction.";
 
     /**
      * A {@link ExtensionFilter} specifying the file extension of the exported
@@ -327,7 +323,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put(TRANSACTION + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -336,12 +332,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put(SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put(DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(transactionIdentifier, attributeMap);
@@ -373,7 +369,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put(TRANSACTION + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -382,12 +378,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put(SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put(DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(sourceVertexIdentifier, attributeMap);
@@ -419,7 +415,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put(TRANSACTION + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -428,12 +424,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put(SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put(DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(destinationVertexIdentifier, attributeMap);

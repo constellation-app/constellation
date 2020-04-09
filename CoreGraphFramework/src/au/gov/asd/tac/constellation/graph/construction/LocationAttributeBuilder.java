@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.construction;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 
 /**
  * Builder class to add the location attributes x, y, z and node radius to a
@@ -31,8 +32,6 @@ public class LocationAttributeBuilder extends GraphBuilder {
     private static final float Y_DEFAULT = 0.0f;
     private static final float Z_DEFAULT = 0.0f;
     private static final float NRADIUS_DEFAULT = 0.0f;
-    
-    private static final String FLOAT = "float";
 
     public static LocationAttributeBuilder addLocationAttributes(final GraphWriteMethods graph) {
         return addLocationAttributes(graph, X_DEFAULT, Y_DEFAULT, Z_DEFAULT, NRADIUS_DEFAULT);
@@ -43,10 +42,10 @@ public class LocationAttributeBuilder extends GraphBuilder {
     }
 
     public static LocationAttributeBuilder addLocationAttributes(final GraphWriteMethods graph, final float xDefault, final float yDefault, final float zDefault, final float nRadiusDefault) {
-        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FLOAT, "x", "x", xDefault, null);
-        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", yDefault, null);
-        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", zDefault, null);
-        final int nRadiusAttr = graph.addAttribute(GraphElementType.VERTEX, FLOAT, "nradius", "nradius", nRadiusDefault, null);
+        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", xDefault, null);
+        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", yDefault, null);
+        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", zDefault, null);
+        final int nRadiusAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "nradius", "nradius", nRadiusDefault, null);
         return new LocationAttributeBuilder(graph, xAttr, yAttr, zAttr, nRadiusAttr, xDefault, yDefault, zDefault, nRadiusDefault);
     }
 

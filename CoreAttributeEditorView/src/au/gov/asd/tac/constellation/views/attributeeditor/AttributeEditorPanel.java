@@ -145,7 +145,6 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String DARK_THEME = "resources/Style-AttributeEditor-Dark.css";
-    private static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
     private static final String NO_VALUE_TEXT = "<No Value>";
     
     private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
@@ -546,7 +545,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             } else {
                 colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (!attribute.isSchema()) {
             final String colour;
             if (hidden) {
@@ -556,13 +555,13 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             } else {
                 colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (hidden) {
             final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + hiddenColour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColour + ";");
         } else {
             final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + schemaColour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColour + ";");
         }
 
         if (!multiValue) {

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.timeline.components;
 
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.views.timeline.GraphManager;
 import au.gov.asd.tac.constellation.views.timeline.TimelinePanel;
 import java.text.SimpleDateFormat;
@@ -111,14 +112,6 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final StringProperty upperTimeExtentProperty = new SimpleStringProperty();
     private boolean isSelecting = false;
     private boolean firstaxisUpdate = false;
-    
-    private static final String MILLISEC_FORMAT = "SSS";
-    private static final String SEC_MILLISEC_FORMAT = "s.SSS";
-    private static final String HOUR_MIN_SEC_FORMAT = "HH:mm:ss";
-    private static final String HOUR_MIN_FORMAT = "HH:mm";
-    private static final String DAY_MONTH_FORMAT = "d MMM";
-    private static final String MONTH_YEAR_FORMAT = "MMM yyyy";
-    private static final String YEAR_FORMAT = "yyyy";
     
     // <editor-fold defaultstate="collapsed" desc="Timeline Event Handlers">
     private final EventHandler<Event> timelineMouseHandler = new EventHandler<Event>() {
@@ -492,103 +485,103 @@ public class TimelineChart extends XYChart<Number, Number> {
         // Set the appropriate date format, tick units and minorTick amounts
         //  for any given range:
         if (range < MILLI * 5) { // 1 milli blocks
-            tickDate = new SimpleDateFormat(MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MILLISEC_FORMAT);
             tickUnit = MILLI;
             minorTicks = 1;
         } else if (range < MILLI * 10) { // 5 milli blocks
-            tickDate = new SimpleDateFormat(MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MILLISEC_FORMAT);
             tickUnit = MILLI * 5.0;
             minorTicks = 5;
         } else if (range < MILLI * 50) { // 10 milli blocks
-            tickDate = new SimpleDateFormat(MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MILLISEC_FORMAT);
             tickUnit = MILLI * 10.0;
             minorTicks = 5;
         } else if (range < MILLI * 100) { // 50 milli blocks
-            tickDate = new SimpleDateFormat(SEC_MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.SEC_MILLISEC_FORMAT);
             tickUnit = MILLI * 50.0;
             minorTicks = 5;
         } else if (range < MILLI * 500) { // 100 milli blocks
-            tickDate = new SimpleDateFormat(SEC_MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.SEC_MILLISEC_FORMAT);
             tickUnit = MILLI * 100.0;
             minorTicks = 5;
         } else if (range < SECOND) { // 500 Milli blocks
-            tickDate = new SimpleDateFormat(SEC_MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.SEC_MILLISEC_FORMAT);
             tickUnit = SECOND / 2.0;
             minorTicks = 5;
         } else if (range < SECOND * 5) { // 1 Second blocks
-            tickDate = new SimpleDateFormat(SEC_MILLISEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.SEC_MILLISEC_FORMAT);
             tickUnit = SECOND;
             minorTicks = 5;
         } else if (range < SECOND * 30) { // 5 Second blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_SEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_SEC_FORMAT);
             tickUnit = SECOND * 5.0;
             minorTicks = 5;
         } else if (range < MINUTE) { // 30 second blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_SEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_SEC_FORMAT);
             tickUnit = SECOND * 30.0;
             minorTicks = 3;
         } else if (range < MINUTE * 5) { // 1 minute blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_SEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_SEC_FORMAT);
             tickUnit = MINUTE;
             minorTicks = 6;
         } else if (range < MINUTE * 10) { // 5 minute blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_SEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_SEC_FORMAT);
             tickUnit = MINUTE * 5.0;
             minorTicks = 5;
         } else if (range < MINUTE * 30) { // 10 minute blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_SEC_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_SEC_FORMAT);
             tickUnit = MINUTE * 10.0;
             minorTicks = 5;
         } else if (range < HOUR) { // 30 minute blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_FORMAT);
             tickUnit = MINUTE * 30.0;
             minorTicks = 4;
         } else if (range < HOUR * 2) { // 1 hour blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_FORMAT);
             tickUnit = HOUR;
             minorTicks = 6;
         } else if (range < HOUR * 12) { // 2 hour blocks
-            tickDate = new SimpleDateFormat(HOUR_MIN_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.HOUR_MIN_FORMAT);
             tickUnit = HOUR * 2.0;
             minorTicks = 2;
         } else if (range < DAY) { // half day blocks
-            tickDate = new SimpleDateFormat("d MMM HH:mm");
+            tickDate = new SimpleDateFormat(TemporalConstants.DAY_MONTH_HOUR_MIN_FORMAT);
             tickUnit = HOUR * 12.0;
             minorTicks = 6;
         } else if (range < WEEK) { // 1 day blocks
-            tickDate = new SimpleDateFormat(DAY_MONTH_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.DAY_MONTH_FORMAT);
             tickUnit = DAY;
             minorTicks = 4;
         } else if (range < MONTH) { // 1 week blocks
-            tickDate = new SimpleDateFormat(DAY_MONTH_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.DAY_MONTH_FORMAT);
             tickUnit = WEEK;
             minorTicks = 7;
         } else if (range < MONTH * 6) { // 1 month blocks
-            tickDate = new SimpleDateFormat(DAY_MONTH_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.DAY_MONTH_FORMAT);
             tickUnit = MONTH;
             minorTicks = 4;
         } else if (range < YEAR) { // 6 month blocks
-            tickDate = new SimpleDateFormat(MONTH_YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MONTH_YEAR_FORMAT);
             tickUnit = MONTH * 6.0;
             minorTicks = 6;
         } else if (range < YEAR * 2) { // 1 year blocks
-            tickDate = new SimpleDateFormat(MONTH_YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MONTH_YEAR_FORMAT);
             tickUnit = YEAR;
             minorTicks = 4;
         } else if (range < YEAR * 5) { // 2 year blocks
-            tickDate = new SimpleDateFormat(MONTH_YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.MONTH_YEAR_FORMAT);
             tickUnit = YEAR * 2;
             minorTicks = 4;
         } else if (range < DECADE) { // 5 year blocks
-            tickDate = new SimpleDateFormat(YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.YEAR_FORMAT);
             tickUnit = YEAR * 5;
             minorTicks = 5;
         } else if (range < CENTURY) { // 10 year blocks
-            tickDate = new SimpleDateFormat(YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.YEAR_FORMAT);
             tickUnit = DECADE;
             minorTicks = 5;
         } else { // 100 year blocks
-            tickDate = new SimpleDateFormat(YEAR_FORMAT);
+            tickDate = new SimpleDateFormat(TemporalConstants.YEAR_FORMAT);
             tickUnit = CENTURY;
             minorTicks = 5;
         }

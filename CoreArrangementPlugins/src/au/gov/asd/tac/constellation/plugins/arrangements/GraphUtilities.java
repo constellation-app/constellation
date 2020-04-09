@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
 import java.util.Arrays;
@@ -39,7 +40,6 @@ import java.util.Set;
 public final class GraphUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2; //20;
-    private static final String FLOAT = "float";
 
     /**
      * Find the minimum sum of weighted edges that must be traversed to reach
@@ -212,13 +212,13 @@ public final class GraphUtilities {
         if (n != 0) {
             // Get/set the x,y,z attributes.
             if (VisualConcept.VertexAttribute.X.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, FLOAT, "x", "x", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
             }
             if (VisualConcept.VertexAttribute.Y.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, FLOAT, "y", "y", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
             }
             if (VisualConcept.VertexAttribute.Z.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, FLOAT, "z", "z", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
             }
 
             final int xAttr = VisualConcept.VertexAttribute.X.get(graph);

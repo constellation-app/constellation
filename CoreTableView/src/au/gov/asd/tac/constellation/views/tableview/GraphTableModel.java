@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import java.util.ArrayList;
@@ -50,8 +51,6 @@ public class GraphTableModel implements TableModel {
 
         TX, VX_SRC, VX_DST;
     }
-    
-    private static final String INTEGER = "integer";
 
     // Dummy attribute instances so we can add a virtual id column.
     // One for vertices, one for transactions, one for source/destination vertices in the combined table.
@@ -59,10 +58,10 @@ public class GraphTableModel implements TableModel {
     public static final int TX_ID_IX = -8;
     public static final int TX_SRC_ID_IX = -7;
     public static final int TX_DST_ID_IX = -6;
-    public static final Attribute VX_ATTR = new GraphAttribute(VX_ID_IX, GraphElementType.VERTEX, INTEGER, "vx id_", "Vertex id", null, null);
-    public static final Attribute TX_ATTR = new GraphAttribute(TX_ID_IX, GraphElementType.TRANSACTION, INTEGER, "tx id_", "Transaction id", null, null);
-    public static final Attribute TX_SRC_ATTR = new GraphAttribute(TX_SRC_ID_IX, GraphElementType.TRANSACTION, INTEGER, "tx src_", "Transaction source", null, null);
-    public static final Attribute TX_DST_ATTR = new GraphAttribute(TX_DST_ID_IX, GraphElementType.TRANSACTION, INTEGER, "tx dst_", "Transaction destination", null, null);
+    public static final Attribute VX_ATTR = new GraphAttribute(VX_ID_IX, GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "vx id_", "Vertex id", null, null);
+    public static final Attribute TX_ATTR = new GraphAttribute(TX_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx id_", "Transaction id", null, null);
+    public static final Attribute TX_SRC_ATTR = new GraphAttribute(TX_SRC_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx src_", "Transaction source", null, null);
+    public static final Attribute TX_DST_ATTR = new GraphAttribute(TX_DST_ID_IX, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx dst_", "Transaction destination", null, null);
 
     private final Graph graph;
     private final GraphElementType elementType;
