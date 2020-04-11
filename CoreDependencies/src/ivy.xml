@@ -37,21 +37,21 @@
         </dependency> -->
 
         <!-- Geotools -->
-        <!--<dependency org="org.geotools" name="gt-coverage" rev="22.3"/>-->
-        <dependency org="org.geotools" name="gt-cql" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-jdbc" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-main" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-metadata" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-opengis" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-referencing" rev="22.3"/>
-        <!--<dependency org="org.geotools" name="gt-render" rev="22.3"/>-->
-        <dependency org="org.geotools" name="gt-xml" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-geopkg" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-shapefile" rev="22.3"/>
-        <dependency org="org.geotools" name="gt-geojson" rev="22.3"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="22.3"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="22.3"/>
+        <!--<dependency org="org.geotools" name="gt-coverage" rev="22.2"/>-->
+        <dependency org="org.geotools" name="gt-cql" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-jdbc" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-main" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-metadata" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-opengis" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-referencing" rev="22.2"/>
+        <!--<dependency org="org.geotools" name="gt-render" rev="22.2"/>-->
+        <dependency org="org.geotools" name="gt-xml" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-geopkg" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-shapefile" rev="22.2"/>
+        <dependency org="org.geotools" name="gt-geojson" rev="22.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="22.2"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="22.2"/>
 
         <!-- Apache -->
         <dependency org="org.apache.commons" name="commons-csv" rev="1.8"/>

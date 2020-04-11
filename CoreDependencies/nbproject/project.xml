@@ -2160,8 +2160,8 @@
                 <binary-origin>release/modules/ext/controlsfx-11.0.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-geopkg-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-geopkg-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-geopkg-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-geopkg-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jaxb-api-2.4.0-b180830.0359.jar</runtime-relative-path>
@@ -2212,8 +2212,8 @@
                 <binary-origin>release/modules/ext/swingx-1.6.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-opengis-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-opengis-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-opengis-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-opengis-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
@@ -2224,8 +2224,8 @@
                 <binary-origin>release/modules/ext/jt-utils-1.5.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-kml-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-kml-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-kml-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-kml-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.13.jar</runtime-relative-path>
@@ -2236,8 +2236,8 @@
                 <binary-origin>release/modules/ext/javaee-api-7.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-gml2-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-gml2-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-gml2-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-gml2-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-bandselect-1.1.12.jar</runtime-relative-path>
@@ -2300,8 +2300,8 @@
                 <binary-origin>release/modules/ext/commons-lang3-3.10.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-gml3-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-gml3-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-gml3-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-gml3-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/uom-lib-common-1.0.2.jar</runtime-relative-path>
@@ -2320,12 +2320,12 @@
                 <binary-origin>release/modules/ext/jt-orderdither-1.1.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-epsg-hsql-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-epsg-hsql-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-epsg-hsql-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-epsg-hsql-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-ows-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-ows-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-ows-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-ows-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-io-9.4.27.v20200227.jar</runtime-relative-path>
@@ -2376,8 +2376,8 @@
                 <binary-origin>release/modules/ext/json-20190722.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-core-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-core-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-core-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-core-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
@@ -2412,8 +2412,8 @@
                 <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-coverage-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-coverage-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-coverage-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-coverage-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jts-core-1.16.1.jar</runtime-relative-path>
@@ -2436,8 +2436,8 @@
                 <binary-origin>release/modules/ext/json-simple-1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-geojson-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-geojson-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-geojson-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-geojson-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jdom2-2.0.6.jar</runtime-relative-path>
@@ -2520,8 +2520,8 @@
                 <binary-origin>release/modules/ext/commons-jxpath-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-main-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-main-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-main-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-main-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javafx-base-11.0.2.jar</runtime-relative-path>
@@ -2540,16 +2540,16 @@
                 <binary-origin>release/modules/ext/ejml-dsparse-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-jdbc-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-jdbc-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-jdbc-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-jdbc-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-shapefile-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-shapefile-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-shapefile-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-shapefile-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-fes-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-fes-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-fes-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-fes-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javax.activation-api-1.2.0.jar</runtime-relative-path>
@@ -2620,12 +2620,12 @@
                 <binary-origin>release/modules/ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xsd-filter-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xsd-filter-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xsd-filter-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xsd-filter-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-xml-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-xml-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-xml-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-xml-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-colorconvert-1.1.12.jar</runtime-relative-path>
@@ -2764,8 +2764,8 @@
                 <binary-origin>release/modules/ext/commons-csv-1.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-referencing-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-referencing-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-referencing-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-referencing-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-annotations-2.10.3.jar</runtime-relative-path>
@@ -2820,8 +2820,8 @@
                 <binary-origin>release/modules/ext/jogl-all-natives-macosx-universal.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-metadata-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-metadata-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-metadata-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-metadata-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-imagefunction-1.1.12.jar</runtime-relative-path>
@@ -2836,8 +2836,8 @@
                 <binary-origin>release/modules/ext/systems-common-java8-0.7.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/gt-cql-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/gt-cql-22.3.jar</binary-origin>
+                <runtime-relative-path>ext/gt-cql-22.2.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/gt-cql-22.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jocl-natives-windows-amd64.jar</runtime-relative-path>
