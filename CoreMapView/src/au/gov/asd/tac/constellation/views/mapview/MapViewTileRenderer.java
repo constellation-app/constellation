@@ -151,7 +151,7 @@ public class MapViewTileRenderer extends PApplet {
         if (map == null) {
             return;
         }
-
+        
         map.zoomAndPanTo(getDefaultZoom(), location == null ? getDefaultLocation() : location);
     }
 
@@ -347,7 +347,9 @@ public class MapViewTileRenderer extends PApplet {
         map.setTweening(true);
 
         dispatcher = MapUtils.createDefaultEventDispatcher(this, map);
-
+        // The map library, Unfolded, defaults to a hard-coded left click pan  
+        dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+                
         layers = Lookup.getDefault().lookupAll(MapLayer.class);
         layers.forEach(layer -> layer.initialise(this, map));
 
@@ -377,18 +379,7 @@ public class MapViewTileRenderer extends PApplet {
             layers.forEach(layer -> layer.setGraph(parent.getCurrentGraph()));
             layers.forEach(layer -> layer.draw());
 
-            final boolean ignoreMapInteractions = overlays.stream().anyMatch(overlay
-                    -> overlay.isEnabled()
-                    && mouseX > overlay.getX() && mouseY > overlay.getY()
-                    && mouseX < overlay.getX() + overlay.getWidth()
-                    && mouseY < overlay.getY() + overlay.getHeight());
-            if (ignoreMapInteractions) {
-                dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
-                dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
-            } else {
-                dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
-                dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
-            }
+            
             overlays.forEach(overlay -> overlay.setDebug(currentProvider.isDebug()));
             overlays.forEach(overlay -> overlay.draw());
 
@@ -433,7 +424,7 @@ public class MapViewTileRenderer extends PApplet {
                     .stream().map(marker -> (ConstellationAbstractMarker) marker).collect(Collectors.toList());
         }
 
-        if (event.getButton() == PConstants.RIGHT) {
+        if (event.getButton() == PConstants.LEFT) {
             // select markers
             if (hitMarkers.isEmpty()) {
                 handleMouseSelection(event, new HashSet<>());
@@ -441,7 +432,7 @@ public class MapViewTileRenderer extends PApplet {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
             }
         }
-
+        
         overlays.forEach(overlay -> overlay.mouseClicked(event));
     }
 
@@ -449,7 +440,7 @@ public class MapViewTileRenderer extends PApplet {
     public void mousePressed(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        if (event.getButton() == PConstants.CENTER || event.getButton() == PConstants.RIGHT) {
+        if (event.getButton() == PConstants.CENTER || event.getButton() == PConstants.LEFT) {
             // zoom to box
             boxOriginX = event.getX();
             boxOriginY = event.getY();
@@ -468,6 +459,27 @@ public class MapViewTileRenderer extends PApplet {
             boxDeltaX = event.getX();
             boxDeltaY = event.getY();
         } else if (event.getButton() == PConstants.RIGHT) {
+            // select markers
+            boxSelectionEnabled = false;
+            
+            //Checks to see if click was on the map
+            final boolean ignoreMapInteractions = overlays.stream().anyMatch(overlay
+                    -> overlay.isEnabled()
+                    && mouseX > overlay.getX() && mouseY > overlay.getY()
+                    && mouseX < overlay.getX() + overlay.getWidth()
+                    && mouseY < overlay.getY() + overlay.getHeight());
+            if (!ignoreMapInteractions) {
+                // Triggers a pan event for a right click & drag if within map
+                dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
+                Location oldLocation = map.getLocation(pmouseX, pmouseY);
+                Location newLocation = map.getLocation(mouseX, mouseY);
+                PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
+                panMapEvent.setFromLocation(oldLocation);
+                panMapEvent.setToLocation(newLocation);
+                dispatcher.fireMapEvent(panMapEvent);
+                dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+            }
+        } else if (event.getButton() == PConstants.LEFT) {
             // select markers
             boxSelectionEnabled = true;
             boxDeltaX = event.getX();
@@ -518,7 +530,7 @@ public class MapViewTileRenderer extends PApplet {
                 boxDeltaY = -1;
                 boxZoomEnabled = false;
             }
-        } else if (event.getButton() == PConstants.RIGHT && boxSelectionEnabled) {
+        } else if (event.getButton() == PConstants.LEFT && boxSelectionEnabled) {
             // select markers
             // update the box
             boxDeltaX = event.getX();
