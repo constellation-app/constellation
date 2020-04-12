@@ -182,9 +182,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     private final String name;
-    private final float red;
-    private final float green;
-    private final float blue;
+    private final float redColorValue;
+    private final float greenColorValue;
+    private final float blueColorValue;
     private final float alpha;
 
     /**
@@ -203,9 +203,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
                 && alpha >= 0f && alpha <= 1f;
 
         this.name = name;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
+        this.redColorValue = red;
+        this.greenColorValue = green;
+        this.blueColorValue = blue;
         this.alpha = alpha;
     }
 
@@ -240,15 +240,15 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     public float getRed() {
-        return red;
+        return redColorValue;
     }
 
     public float getGreen() {
-        return green;
+        return greenColorValue;
     }
 
     public float getBlue() {
-        return blue;
+        return blueColorValue;
     }
 
     public float getAlpha() {
@@ -256,7 +256,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     }
 
     public String getRGBString() {
-        return String.format("%f,%f,%f,%f", red, green, blue, alpha);
+        return String.format("%f,%f,%f,%f", redColorValue, greenColorValue, blueColorValue, alpha);
     }
 
     /**
@@ -265,7 +265,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A Java color corresponding to this ColorValue.
      */
     public Color getJavaColor() {
-        return new Color(red, green, blue, alpha);
+        return new Color(redColorValue, greenColorValue, blueColorValue, alpha);
     }
 
     /**
@@ -274,7 +274,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * @return A JavaFX color corresponding to this ColorValue.
      */
     public javafx.scene.paint.Color getJavaFXColor() {
-        return new javafx.scene.paint.Color(red, green, blue, alpha);
+        return new javafx.scene.paint.Color(redColorValue, greenColorValue, blueColorValue, alpha);
     }
 
     /**
@@ -285,9 +285,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
      * ColorValue.
      */
     public String getHtmlColor() {
-        final int r = (int) (red * 255);
-        final int g = (int) (green * 255);
-        final int b = (int) (blue * 255);
+        final int r = (int) (redColorValue * 255);
+        final int g = (int) (greenColorValue * 255);
+        final int b = (int) (blueColorValue * 255);
 
         return String.format("#%02x%02x%02x", r, g, b);
     }
@@ -368,7 +368,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public boolean equals(final Object other) {
         if (other instanceof ConstellationColor) {
             final ConstellationColor c = (ConstellationColor) other;
-            return red == c.red && green == c.green && blue == c.blue && alpha == c.alpha;
+            return redColorValue == c.redColorValue && greenColorValue == c.greenColorValue && blueColorValue == c.blueColorValue && alpha == c.alpha;
         }
 
         if (other instanceof String) {
@@ -381,9 +381,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 41 * hash + Float.floatToIntBits(this.red);
-        hash = 41 * hash + Float.floatToIntBits(this.green);
-        hash = 41 * hash + Float.floatToIntBits(this.blue);
+        hash = 41 * hash + Float.floatToIntBits(this.redColorValue);
+        hash = 41 * hash + Float.floatToIntBits(this.greenColorValue);
+        hash = 41 * hash + Float.floatToIntBits(this.blueColorValue);
         hash = 41 * hash + Float.floatToIntBits(this.alpha);
         return hash;
     }
@@ -402,9 +402,9 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (o.name != null) {
             return -1;
         } else {
-             return red != o.red ? (int) (red - o.red)
-                            : green != o.green ? (int) (green - o.green)
-                                    : blue != o.blue ? (int) (blue - o.blue)
+             return redColorValue != o.redColorValue ? (int) (redColorValue - o.redColorValue)
+                            : greenColorValue != o.greenColorValue ? (int) (greenColorValue - o.greenColorValue)
+                                    : blueColorValue != o.blueColorValue ? (int) (blueColorValue - o.blueColorValue)
                                             : (int) (alpha - o.alpha);
         }
     }
@@ -477,15 +477,15 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             throw new IllegalArgumentException("There must be at least two colors in the palette.");
         }
 
-        final float dr = (endColor.red - startColor.red) / (colorCount - 1);
-        final float dg = (endColor.green - startColor.green) / (colorCount - 1);
-        final float db = (endColor.blue - startColor.blue) / (colorCount - 1);
+        final float dr = (endColor.redColorValue - startColor.redColorValue) / (colorCount - 1);
+        final float dg = (endColor.greenColorValue - startColor.greenColorValue) / (colorCount - 1);
+        final float db = (endColor.blueColorValue - startColor.blueColorValue) / (colorCount - 1);
 
         final ConstellationColor[] palette = new ConstellationColor[colorCount];
         palette[0] = startColor;
         for (int i = 1; i < colorCount - 1; i++) {
-            palette[i] = new ConstellationColor(null, startColor.red + i * dr,
-                    startColor.green + i * dg, startColor.blue + i * db, 1f);
+            palette[i] = new ConstellationColor(null, startColor.redColorValue + i * dr,
+                    startColor.greenColorValue + i * dg, startColor.blueColorValue + i * db, 1f);
         }
         palette[colorCount - 1] = endColor;
 

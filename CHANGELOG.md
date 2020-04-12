@@ -1,6 +1,6 @@
 # Constellation Changes
 
-## 2020-04-03 Changes in April
+## 2020-04-03 Changes in April 2020
 * Added search feature to Table View Column Selection.
 * Fixed the mouse controls of the Map View to be consistent with the graph view.
 

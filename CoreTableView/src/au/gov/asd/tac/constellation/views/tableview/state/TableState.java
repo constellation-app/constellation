@@ -168,12 +168,12 @@ public final class TableState {
     @Override
     public String toString() {
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("[%s\n", TableState.class.getSimpleName()));
-        b.append(String.format("  Columns: %d\n", columns.size()));
+        b.append(String.format("[%s%n", TableState.class.getSimpleName()));
+        b.append(String.format("  Columns: %d%n", columns.size()));
         for (final String so : sortOrder) {
-            b.append(String.format("  Sort: %s\n", so));
+            b.append(String.format("  Sort: %s%n", so));
         }
-        b.append(String.format("Selected only: %s\n", selectedOnly));
+        b.append(String.format("Selected only: %s%n", selectedOnly));
         b.append("]");
 
         return b.toString();

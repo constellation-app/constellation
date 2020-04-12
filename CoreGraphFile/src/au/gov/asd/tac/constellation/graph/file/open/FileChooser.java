@@ -83,7 +83,6 @@ class FileChooser extends JFileChooser {
         setMultiSelectionEnabled(true);
 
         /* initialize file filters */
-        FileFilter currentFilter = getFileFilter();
         addChoosableFileFilters();
 
         /**

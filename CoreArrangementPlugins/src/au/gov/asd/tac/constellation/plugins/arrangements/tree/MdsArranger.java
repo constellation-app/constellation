@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import java.security.SecureRandom;
 import java.util.BitSet;
-import java.util.Random;
 import org.openide.util.NotImplementedException;
 
 /**
@@ -49,7 +49,7 @@ import org.openide.util.NotImplementedException;
 public class MdsArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
 
-    private static final Random RANDOM = new Random();
+    private static final SecureRandom RANDOM = new SecureRandom();
     private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5f;
     private static final float EXTENTS_SIZE_INFLATION = 1.2f;
@@ -78,7 +78,6 @@ public class MdsArranger implements Arranger {
         int smallGraphSize = 20;
         int iterationsPerStageSmallGraph = 25;
         int numTrialsForSmallGraph = 4;
-        int interactionInterval = 1;
 
         final boolean setMinByRadii = params.tryToAvoidOverlap;
         final float radiusInflation = RADIUS_INFLATION_AT_100_PERCENT * (params.overlapAvoidance / 100.0f);

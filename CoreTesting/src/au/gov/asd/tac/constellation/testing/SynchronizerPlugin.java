@@ -23,8 +23,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import java.security.SecureRandom;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Synchronizer Plugin
@@ -42,7 +42,7 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
     private final int writeTime;
     private final String name;
     
-    private Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public SynchronizerPlugin() {
         readTime = random.nextInt(5) + 5;

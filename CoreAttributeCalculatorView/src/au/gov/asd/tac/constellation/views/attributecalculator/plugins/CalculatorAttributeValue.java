@@ -95,7 +95,6 @@ public class CalculatorAttributeValue extends AbstractCalculatorValue {
         // If the element type is a vertex or this is a source/dest attribute, set the attributeElementType to vertex. Otherwise attributeElementType is transaction.
         final GraphElementType attributeElementType = elementType == GraphElementType.VERTEX || !attributeOf.equals(AttributeOf.THIS_ELEMENT) ? GraphElementType.VERTEX : GraphElementType.TRANSACTION;
         final int attrId = graph.getAttribute(attributeElementType, attributeName);
-        final boolean isTemporal = isTemporalAttribute(graph, attrId);
         switch (attributeOf) {
             case SOURCE_NODE:
                 if (elementType.equals(GraphElementType.TRANSACTION)) {
