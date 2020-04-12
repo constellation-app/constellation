@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+==2020-03-24 Map Controls
+<p> We have updated the Map View mouse controls to be consistent with the graph view. </p>
+
 == 2020-03-24 REST API
 <p>The module that implements the REST API (providing access from Jupyter notebooks, for example) has been
 rewritten. It is now much easier to add functionality. The Python client constellation_client.py has been
