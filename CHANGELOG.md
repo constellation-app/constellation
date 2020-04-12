@@ -1,5 +1,9 @@
 # Constellation Changes
 
+## 2020-04-03 Changes in April
+* Added search feature to Table View Column Selection.
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
 * Added new module Core Plugin Reporter to separate it from the plugin framework.
