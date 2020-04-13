@@ -65,7 +65,7 @@ public class GraphRecordStoreUtilities {
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
     
-    private static final String SELECTED_ATTRIBUTE = "selected";
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
     private static final String FALSE = "false";
     private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";
 
@@ -528,7 +528,7 @@ public class GraphRecordStoreUtilities {
             attributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE);
+        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE_NAME);
         final int vertexCount = graph.getVertexCount();
         boolean limitReached = false;
         for (int v = offset[0]; v < vertexCount; v++) {
@@ -630,7 +630,7 @@ public class GraphRecordStoreUtilities {
             final int attributeId = graph.getAttribute(GraphElementType.VERTEX, a);
             attributes[a] = new GraphAttribute(graph, attributeId);
         }
-        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE);
+        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE_NAME);
         final int vertexCount = graph.getVertexCount();
         final StringBuilder sb = new StringBuilder();
         for (int position = 0; position < vertexCount; position++) {
@@ -735,7 +735,7 @@ public class GraphRecordStoreUtilities {
             vertexAttributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE);
+        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE_NAME);
         final int transactionCount = graph.getTransactionCount();
         for (int t = 0; t < transactionCount; t++) {
             final int txId = graph.getTransaction(t);
@@ -815,7 +815,7 @@ public class GraphRecordStoreUtilities {
             transactionAttributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE);
+        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE_NAME);
         final int transactionCount = graph.getTransactionCount();
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getTransaction(t);
