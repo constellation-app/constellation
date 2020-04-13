@@ -1,7 +1,9 @@
 # Constellation Changes
 
 ## 2020-04-03 Changes in April
-* Added search feature to Table View Column Selection 
+* Added search feature to Table View Column Selection
+* Changed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting 
+* Changed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting 
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
