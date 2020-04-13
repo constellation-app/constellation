@@ -202,6 +202,9 @@ public class UserInterfaceIconProvider implements ConstellationIconProvider {
     public static final ConstellationIcon SELECT_MODE = new ConstellationIcon.Builder("Select Mode", new FileIconData("modules/ext/icons/ui/select_mode.png", CODE_NAME_BASE))
             .addCategory(USER_INTERFACE_CATEGORY)
             .build();
+    public static final ConstellationIcon SETTINGS = new ConstellationIcon.Builder("Settings", new FileIconData("modules/ext/icons/ui/settings.png", CODE_NAME_BASE))
+            .addCategory(USER_INTERFACE_CATEGORY)
+            .build();
     public static final ConstellationIcon SHARE = new ConstellationIcon.Builder("Share", new FileIconData("modules/ext/icons/ui/share.png", CODE_NAME_BASE))
             .addCategory(USER_INTERFACE_CATEGORY)
             .build();
@@ -296,6 +299,7 @@ public class UserInterfaceIconProvider implements ConstellationIconProvider {
         userInterfaceIcons.add(REPORT);
         userInterfaceIcons.add(SEARCH);
         userInterfaceIcons.add(SELECT_MODE);
+        userInterfaceIcons.add(SETTINGS);
         userInterfaceIcons.add(SHARE);
         userInterfaceIcons.add(SORT);
         userInterfaceIcons.add(TAG);

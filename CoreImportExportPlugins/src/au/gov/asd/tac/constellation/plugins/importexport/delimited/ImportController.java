@@ -75,8 +75,8 @@ public class ImportController {
     private ImportFileParser importFileParser;
     private boolean schemaInitialised;
     private boolean showAllSchemaAttributes;
-    private String filterAttributes = "";
     private PluginParameters currentParameters = null;
+    private String attributeFilter = "";
 
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
@@ -333,17 +333,16 @@ public class ImportController {
     }
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
-        Map<String, Attribute> displayedAttributes = new HashMap<>();
-
-        if (filterAttributes != null && !filterAttributes.isEmpty()) {
-            for (final String name : autoAddedAttributes.keySet()) {
-                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
-                    displayedAttributes.put(name, autoAddedAttributes.get(name));
+        final Map<String, Attribute> displayedAttributes = new HashMap<>();
+        if (attributeFilter != null &&  attributeFilter.length() > 0) {
+            for (final String attributeName : autoAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                    displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
                 }
             }
-            for (final String name : manuallyAddedAttributes.keySet()) {
-                if (name.toUpperCase().contains(filterAttributes.toUpperCase())) {
-                    displayedAttributes.put(name, manuallyAddedAttributes.get(name));
+            for (final String attributeName : manuallyAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                    displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
                 }
             }
         } else {
@@ -508,8 +507,8 @@ public class ImportController {
         // TODO: the tick box could have changed but the menu item isn't updated, fix it
     }
 
-    public void setAttributeFilter(final String filterAttributes) {
-        this.filterAttributes = filterAttributes;
+    public void setAttributeFilter(final String attributeFilter) {
+        this.attributeFilter = attributeFilter;
     }
 
     public String[] getCurrentColumns() {

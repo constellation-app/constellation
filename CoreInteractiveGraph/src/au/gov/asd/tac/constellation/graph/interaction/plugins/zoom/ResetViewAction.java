@@ -41,7 +41,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_ResetViewAction", iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/zoom/resources/zoom_reset.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 300),
-    @ActionReference(path = "Toolbars/Visualisation", position = 0),
+    @ActionReference(path = "Toolbars/Display", position = 0),
     @ActionReference(path = "Shortcuts", name = "C-Down")
 })
 @Messages("CTL_ResetViewAction=Reset View")
