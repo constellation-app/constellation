@@ -31,6 +31,8 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
     private int currentSourceVertex = -1;
     private int currentDestinationVertex = -1;
     private int currentTransaction = -1;
+    
+    private static final String NOT_SUPPORTED = "Not supported yet.";
 
     public StoreGraphRecordStore(Schema schema) {
         super(schema);
@@ -118,76 +120,76 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
 
     @Override
     public int index() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public boolean next() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public void reset() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public void close() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public boolean hasValue(String key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public boolean hasValue(int record, String key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public String get(String key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public String get(int record, String key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public List<String> getAll(String key) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public void set(int record, String key, String value) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public List<String> values() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public List<String> values(int record) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public List<String> keys() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public int size() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public String toStringVerbose() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 }

@@ -80,18 +80,18 @@ public enum AttributeType {
             switch (elementType) {
                 case VERTEX:
                     binCreators.put("Neighbour Count", DefaultBinCreators.NEIGHBOUR_COUNT_BIN_CREATOR);
-                    binCreators.put("Transaction Count", DefaultBinCreators.TRANSACTION_COUNT_BIN_CREATOR);
+                    binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Outgoing Transaction Count", DefaultBinCreators.OUTGOING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Incoming Transaction Count", DefaultBinCreators.INCOMING_TRANSACTION_COUNT_BIN_CREATOR);
                     binCreators.put("Undirected Transaction Count", DefaultBinCreators.UNDIRECTED_TRANSACTION_COUNT_BIN_CREATOR);
                     break;
 
                 case LINK:
-                    binCreators.put("Transaction Count", DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
+                    binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.LINK_TRANSACTION_COUNT_BIN_CREATOR);
                     break;
 
                 case EDGE:
-                    binCreators.put("Transaction Count", DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
+                    binCreators.put(AttributeTypeConstants.TRANSACTION_COUNT, DefaultBinCreators.EDGE_TRANSACTION_COUNT_BIN_CREATOR);
                     break;
 
                 case TRANSACTION:
@@ -180,7 +180,7 @@ public enum AttributeType {
      * Link elements are binned by the sum of the attribute values of all
      * transactions they represent.
      */
-    LINK_SUM_TRANSACTION_ATTRIBUTE("Sum Transaction Attribute", GraphElementType.LINK) {
+    LINK_SUM_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.SUM_TRANSACTION_ATTRIBUTE, GraphElementType.LINK) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -213,7 +213,7 @@ public enum AttributeType {
      * Link elements are binned by the average of the attribute values of all
      * transactions they represent.
      */
-    LINK_AVERAGE_TRANSACTION_ATTRIBUTE("Average Transaction Attribute", GraphElementType.LINK) {
+    LINK_AVERAGE_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.AVERAGE_TRANSACTION_ATTRIBUTE, GraphElementType.LINK) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -246,7 +246,7 @@ public enum AttributeType {
      * Link elements are binned by the maximum of the attribute values of all
      * transactions they represent.
      */
-    LINK_MAX_TRANSACTION_ATTRIBUTE("Maximum Transaction Attribute", GraphElementType.LINK) {
+    LINK_MAX_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MAXIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.LINK) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -279,7 +279,7 @@ public enum AttributeType {
      * Link elements are binned by the minimum of the attribute values of all
      * transactions they represent.
      */
-    LINK_MIN_TRANSACTION_ATTRIBUTE("Minimum Transaction Attribute", GraphElementType.LINK) {
+    LINK_MIN_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MINIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.LINK) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -312,7 +312,7 @@ public enum AttributeType {
      * Link elements are binned by the number of unique attribute values of all
      * transactions they represent.
      */
-    LINK_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE("Unique Values Transaction Attribute", GraphElementType.LINK) {
+    LINK_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.UNIQUE_VALUES_TRANSACTION_ATTRIBUTE, GraphElementType.LINK) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -345,7 +345,7 @@ public enum AttributeType {
      * Edge elements are binned by the sum of the attribute values of all
      * transactions they represent.
      */
-    EDGE_SUM_TRANSACTION_ATTRIBUTE("Sum Transaction Attribute", GraphElementType.EDGE) {
+    EDGE_SUM_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.SUM_TRANSACTION_ATTRIBUTE, GraphElementType.EDGE) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -378,7 +378,7 @@ public enum AttributeType {
      * Edge elements are binned by the average of the attribute values of all
      * transactions they represent.
      */
-    EDGE_AVERAGE_TRANSACTION_ATTRIBUTE("Average Transaction Attribute", GraphElementType.EDGE) {
+    EDGE_AVERAGE_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.AVERAGE_TRANSACTION_ATTRIBUTE, GraphElementType.EDGE) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -411,7 +411,7 @@ public enum AttributeType {
      * Edge elements are binned by the maximum of the attribute values of all
      * transactions they represent.
      */
-    EDGE_MAX_TRANSACTION_ATTRIBUTE("Maximum Transaction Attribute", GraphElementType.EDGE) {
+    EDGE_MAX_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MAXIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.EDGE) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -444,7 +444,7 @@ public enum AttributeType {
      * Edge elements are binned by the minimum of the attribute values of all
      * transactions they represent.
      */
-    EDGE_MIN_TRANSACTION_ATTRIBUTE("Minimum Transaction Attribute", GraphElementType.EDGE) {
+    EDGE_MIN_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MINIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.EDGE) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -477,7 +477,7 @@ public enum AttributeType {
      * Edge elements are binned by the number of unique attribute values of all
      * transactions they represent.
      */
-    EDGE_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE("Unique Values Transaction Attribute", GraphElementType.EDGE) {
+    EDGE_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.UNIQUE_VALUES_TRANSACTION_ATTRIBUTE, GraphElementType.EDGE) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -510,7 +510,7 @@ public enum AttributeType {
      * Vertex elements are binned by the sum of the attribute values of all
      * adjacent transactions.
      */
-    VERTEX_SUM_TRANSACTION_ATTRIBUTE("Sum Transaction Attribute", GraphElementType.VERTEX) {
+    VERTEX_SUM_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.SUM_TRANSACTION_ATTRIBUTE, GraphElementType.VERTEX) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -543,7 +543,7 @@ public enum AttributeType {
      * Vertex elements are binned by the average of the attribute values of all
      * adjacent transactions.
      */
-    VERTEX_AVERAGE_TRANSACTION_ATTRIBUTE("Average Transaction Attribute", GraphElementType.VERTEX) {
+    VERTEX_AVERAGE_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.AVERAGE_TRANSACTION_ATTRIBUTE, GraphElementType.VERTEX) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -576,7 +576,7 @@ public enum AttributeType {
      * Vertex elements are binned by the maximum of the attribute values of all
      * adjacent transactions.
      */
-    VERTEX_MAX_TRANSACTION_ATTRIBUTE("Maximum Transaction Attribute", GraphElementType.VERTEX) {
+    VERTEX_MAX_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MAXIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.VERTEX) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -609,7 +609,7 @@ public enum AttributeType {
      * Vertex elements are binned by the minimum of the attribute values of all
      * adjacent transactions.
      */
-    VERTEX_MIN_TRANSACTION_ATTRIBUTE("Minimum Transaction Attribute", GraphElementType.VERTEX) {
+    VERTEX_MIN_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.MINIMUM_TRANSACTION_ATTRIBUTE, GraphElementType.VERTEX) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -642,7 +642,7 @@ public enum AttributeType {
      * Vertex elements are binned by the number of unique attribute values of
      * all adjacent transactions.
      */
-    VERTEX_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE("Unique Values Transaction Attribute", GraphElementType.VERTEX) {
+    VERTEX_UNIQUE_VALUES_TRANSACTION_ATTRIBUTE(AttributeTypeConstants.UNIQUE_VALUES_TRANSACTION_ATTRIBUTE, GraphElementType.VERTEX) {
         @Override
         public void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators) {
             List<Attribute> attributes = new ArrayList<>();
@@ -877,4 +877,14 @@ public enum AttributeType {
     public abstract void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators);
 
     public abstract GraphElementType getBinCreatorsGraphElementType();
+    
+    private class AttributeTypeConstants {
+        private static final String TRANSACTION_COUNT = "Transaction Count";
+        
+        private static final String AVERAGE_TRANSACTION_ATTRIBUTE = "Average Transaction Attribute";
+        private static final String MAXIMUM_TRANSACTION_ATTRIBUTE = "Maximum Transaction Attribute";
+        private static final String MINIMUM_TRANSACTION_ATTRIBUTE = "Minimum Transaction Attribute";
+        private static final String SUM_TRANSACTION_ATTRIBUTE = "Sum Transaction Attribute";
+        private static final String UNIQUE_VALUES_TRANSACTION_ATTRIBUTE = "Unique Values Transaction Attribute";
+    }
 }

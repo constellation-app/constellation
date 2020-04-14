@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
-import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -23,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
@@ -222,7 +222,6 @@ public class ParameterIOUtilities {
 
         if (queryName != null) {
             JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
-            
         }
     }
 

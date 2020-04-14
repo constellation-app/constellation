@@ -221,6 +221,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final UpdateController<GraphReadMethods> updateController = new UpdateController<>();
     private final GraphUpdateController graphUpdateController = new GraphUpdateController(updateController);
     private final GraphUpdateManager graphUpdateManager = new GraphUpdateManager(graphUpdateController, 2);
+    
+    private static final String SAVE = "Save";
+    private static final String DISCARD = "Discard";
+    private static final String CANCEL = "Cancel";
 
     /**
      * Initialise the TopComponent state.
@@ -632,14 +636,14 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         if (savable.isModified()) {
             final String message = String.format("Graph %s is modified. Save?", getDisplayName());
             final Object[] options = new Object[]{
-                "Save", "Discard", "Cancel"
+                SAVE, DISCARD, CANCEL
             };
             final NotifyDescriptor d = new NotifyDescriptor(message, "Close", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
             final Object o = DialogDisplayer.getDefault().notify(d);
 
-            if (o.equals("Cancel")) {
+            if (o.equals(CANCEL)) {
                 return false;
-            } else if (o.equals("Discard")) {
+            } else if (o.equals(DISCARD)) {
                 savable.setModified(false);
             } else {
                 try {
@@ -659,7 +663,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         final ArrayList<Action> actionList = new ArrayList<>();
 
         // An action that closes the topcomponent without saving the (possibly modified) graph.
-        final Action discard = new AbstractAction("Discard") {
+        final Action discard = new AbstractAction(DISCARD) {
             @Override
             public void actionPerformed(final ActionEvent e) {
                 savable.setModified(false);

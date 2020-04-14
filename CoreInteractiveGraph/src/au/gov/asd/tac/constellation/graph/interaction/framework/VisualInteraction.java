@@ -52,11 +52,11 @@ public interface VisualInteraction {
      * Calculate the direction vector in which to zoom, in camera coordinates,
      * based on a point at which a zoom was requested, in window coordinates.
      *
-     * @param zoomPoint The point in window coordinates at which a zoom was
+     * @param point The point in window coordinates at which a zoom was
      * requested.
      * @return A Vector holding the direction to zoom in camera coordinates.
      */
-    public Vector3f convertZoomPointToDirection(final Point zoomPoint);
+    public Vector3f convertZoomPointToDirection(final Point point);
 
     /**
      * Calculates the camera coordinates of the node in the graph which is
@@ -68,11 +68,11 @@ public interface VisualInteraction {
      *
      * @param graph The graph to search
      * @param camera The current Camera
-     * @param p The point in window coordinates
+     * @param point The point in window coordinates
      * @return A vector giving the camera coordiantes of the 'closest' node, or
      * null if the graph is empty.
      */
-    public Vector3f closestNodeCameraCoordinates(final GraphReadMethods graph, final Camera camera, final Point p);
+    public Vector3f closestNodeCameraCoordinates(final GraphReadMethods graph, final Camera camera, final Point point);
 
     /**
      * Unprojects the supplied point from window coordinates to graph

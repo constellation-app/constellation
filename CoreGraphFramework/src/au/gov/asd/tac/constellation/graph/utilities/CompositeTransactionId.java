@@ -20,6 +20,8 @@ package au.gov.asd.tac.constellation.graph.utilities;
  * @author twilight_sparkle
  */
 public class CompositeTransactionId {
+    
+    private static final String COMPOSITE = "composite:";
 
     private String originalSourceNode;
     private String originalDestinationNode;
@@ -68,7 +70,7 @@ public class CompositeTransactionId {
     }
     
     public static CompositeTransactionId fromString(final String id) {
-        if (id == null || !id.startsWith("composite:")) {
+        if (id == null || !id.startsWith(COMPOSITE)) {
             return new CompositeTransactionId(null, null, id, false, false);
         } else {
             final boolean sourceContracted = Boolean.valueOf(id.substring(id.indexOf(':') + 1, id.indexOf(':', id.indexOf(':') + 1)));
@@ -85,11 +87,11 @@ public class CompositeTransactionId {
         if (originalSourceNode == null && originalDestinationNode == null) {
             return suffix;
         } else if (originalSourceNode == null) {
-            return "composite:" + sourceContracted + ":" + destContracted + "[->" + originalDestinationNode + "]_" + suffix;
+            return COMPOSITE + sourceContracted + ":" + destContracted + "[->" + originalDestinationNode + "]_" + suffix;
         } else if (originalDestinationNode == null) {
-            return "composite:" + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->]_" + suffix;
+            return COMPOSITE + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->]_" + suffix;
         } else {
-            return "composite:" + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->" + originalDestinationNode + "]_" + suffix;
+            return COMPOSITE + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->" + originalDestinationNode + "]_" + suffix;
         }
     }
 }

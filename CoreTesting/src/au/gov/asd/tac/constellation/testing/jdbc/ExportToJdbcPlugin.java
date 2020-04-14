@@ -15,6 +15,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -186,7 +187,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
 
         // Create some dummy attribute types as markers for the transaction pseudo-attributes.
         final int pseudoId = -9;
-        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", "tx", "Pseudo tx", null, null);
+        final Attribute pseudo = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "tx", "Pseudo tx", null, null);
 
         // Build an SQL SELECT to prime an updateable ResultSet.
         // We use a funky where clause because we don't want to fetch what's already there.
@@ -382,7 +383,7 @@ public class ExportToJdbcPlugin extends SimpleReadPlugin {
                         || attrLabel.equals(GraphFileConstants.DST)
                         || attrLabel.equals(GraphFileConstants.DIR)) {
 //                    labelMap.put(colLabel, pseudo);
-                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, "integer", attrLabel, "Pseudo tx", null, null);
+                    attr = new GraphAttribute(pseudoId, GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, attrLabel, "Pseudo tx", null, null);
 //                    attrsToInsert.add(pseudo);
                 } else {
                     final int attrId = rg.getAttribute(GraphElementType.TRANSACTION, attrLabel);

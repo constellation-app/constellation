@@ -61,6 +61,8 @@ public class NumberInputPane<T> extends Pane {
     private static final int CHAR_SIZE = 8;
     private static final int BASE_WIDTH = 35;
     private static final Logger LOGGER = Logger.getLogger(NumberInputPane.class.getName());
+    
+    private static final String INVALID_ID = "invalid";
 
     public NumberInputPane(final PluginParameter<?> parameter) {
         final NumberParameterValue pv = (NumberParameterValue) parameter.getParameterValue();
@@ -121,7 +123,7 @@ public class NumberInputPane<T> extends Pane {
             if (error != null) {
                 tooltip.setText(error);
                 field.setTooltip(tooltip);
-                field.setId("invalid");
+                field.setId(INVALID_ID);
             } else {
                 tooltip.setText("");
                 field.setTooltip(null);
@@ -150,11 +152,11 @@ public class NumberInputPane<T> extends Pane {
                                         break;
                                 }
                             } catch (NumberFormatException ex) {
-                                field.setId("invalid");
+                                field.setId(INVALID_ID);
                                 parameter.setError("Invalid value");
                             }
                         } else if (currentTextValue != null && currentTextValue.isEmpty()) {
-                            field.setId("invalid");
+                            field.setId(INVALID_ID);
                             parameter.setError("Invalid value");
                         }
                         break;
