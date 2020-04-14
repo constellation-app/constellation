@@ -36,9 +36,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -68,6 +68,8 @@ public class AddRecordStore extends RestService {
     private static final String API_SOURCE = "REST API";
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;
 
+    private static final String COLUMNS = "columns";
+    
     @Override
     public String getName() {
         return NAME;
@@ -139,7 +141,7 @@ public class AddRecordStore extends RestService {
         //
         // which is what is output by pandas.to_json(..., orient="split').
         // (We ignore the index array.)
-        if(!json.hasNonNull("columns") || !json.get("columns").isArray()) {
+        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
             throw new RestServiceException("Could not find columns object containing column names");
         }
 
@@ -147,7 +149,7 @@ public class AddRecordStore extends RestService {
             throw new RestServiceException("Could not find data object containing data rows");
         }
 
-        final ArrayNode columns = (ArrayNode) json.get("columns");
+        final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final String[] headers = new String[columns.size()];
         for(int i = 0; i < headers.length; i++) {
             headers[i] = columns.get(i).asText();

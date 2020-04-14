@@ -220,7 +220,6 @@ public class ParameterIOUtilities {
 
         if (queryName != null) {
             JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
-            
         }
     }
 

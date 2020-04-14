@@ -110,6 +110,8 @@ public class Shape {
     }
 
     private static final int GEOMETRY_PRECISION = 8;
+    
+    private static final String POLGYGON_SHAPE = "Polygon";
 
     public enum GeometryType {
 
@@ -117,11 +119,11 @@ public class Shape {
         MULTI_POINT("MultiPoint", MultiPoint.class),
         LINE("LineString", LineString.class),
         MULTI_LINE("MultiLineString", MultiLineString.class),
-        POLYGON("Polygon", Polygon.class),
+        POLYGON(POLGYGON_SHAPE, Polygon.class),
         MULTI_POLYGON("MultiPolygon", MultiPolygon.class),
-        BOX("Polygon", Polygon.class),
-        CIRCLE("Polygon", Polygon.class),
-        ELLIPSE("Polygon", Polygon.class);
+        BOX(POLGYGON_SHAPE, Polygon.class),
+        CIRCLE(POLGYGON_SHAPE, Polygon.class),
+        ELLIPSE(POLGYGON_SHAPE, Polygon.class);
 
         private final String geometryType;
         private final Class<? extends Geometry> geometryClass;

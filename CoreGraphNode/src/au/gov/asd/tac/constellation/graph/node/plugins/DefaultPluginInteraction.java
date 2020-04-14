@@ -51,6 +51,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     private ProgressHandle progress;
     private String currentMessage;
     private Timer timer = null;
+    
+    private static final String STRING_STRING_FORMAT = "%s: %s";
 
     public DefaultPluginInteraction(final PluginManager pluginManager, PluginReport pluginReport) {
         this.pluginManager = pluginManager;
@@ -166,7 +168,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(ndf);
                 });
-                LOGGER.severe(String.format("%s: %s", title, message));
+                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
                 break;
 
             case ERROR:
@@ -181,7 +183,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                     );
                     DialogDisplayer.getDefault().notify(nde);
                 });
-                LOGGER.severe(String.format("%s: %s", title, message));
+                LOGGER.severe(String.format(STRING_STRING_FORMAT, title, message));
                 break;
 
             case WARNING:
@@ -190,17 +192,17 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                         message,
                         null
                 );
-                LOGGER.warning(String.format("%s: %s", title, message));
+                LOGGER.warning(String.format(STRING_STRING_FORMAT, title, message));
                 break;
 
             case INFO:
-                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(String.format("%s: %s", title, message), 10);
+                final Message statusMessage = StatusDisplayer.getDefault().setStatusText(String.format(STRING_STRING_FORMAT, title, message), 10);
                 statusMessage.clear(5000);
-                LOGGER.info(String.format("%s: %s", title, message));
+                LOGGER.info(String.format(STRING_STRING_FORMAT, title, message));
                 break;
 
             case DEBUG:
-                LOGGER.fine(String.format("%s: %s", title, message));
+                LOGGER.fine(String.format(STRING_STRING_FORMAT, title, message));
                 break;
             default:
                 break;
