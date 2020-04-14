@@ -15,17 +15,5 @@ title()
     local clr=$(tput sgr0)
     local dots="------------------------------------------------------------------------------"
 
-    echo -e "\n \
-            ${fg_black} \
-            ${bg_white} \
-            \n \
-            ${dots} \
-            \n \
-            ${1} \
-            \n \
-            ${dots} \
-            ${clr} \
-            \n"
+    echo -e "\n${fg_black}${bg_white}\n${dots}\n${1}\n${dots}${clr}\n"
 }
-
-export -f title

@@ -1,6 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
+source .travis/functions.sh
+
 title "Run Core Build"
 
 ant \
