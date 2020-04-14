@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+source .travis/functions.sh
+
 title "Run Sonar Scanning"
 
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
