@@ -60,7 +60,7 @@ public class GraphIndexUtilities {
                         for (int pos = 0; pos < elementCount; pos++) {
                             int element = elementType.getElement(graph, pos);
                             nativeType.get(graph, attribute, element, elementValue);
-                            if (nativeType.equal(elementValue, searchValue)) {
+                            if (nativeType.equalValue(elementValue, searchValue)) {
                                 count++;
                             }
                         }
@@ -73,7 +73,7 @@ public class GraphIndexUtilities {
                     while (position < elementCount) {
                         int element = elementType.getElement(graph, position++);
                         nativeType.get(graph, attribute, element, elementValue);
-                        if (nativeType.equal(elementValue, searchValue)) {
+                        if (nativeType.equalValue(elementValue, searchValue)) {
                             return element;
                         }
                     }

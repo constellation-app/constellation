@@ -203,7 +203,7 @@ public final class VisualGraphOpener extends GraphOpener {
 
                 final String name = exName;
                 final ActionListener al = e -> {
-                    final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:\n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                    final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:%n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                     DialogDisplayer.getDefault().notify(d);
                 };
 

@@ -57,6 +57,8 @@ public class ConstellationIcon {
      * The default size (ie. height and width) of a ConstellationIcon.
      */
     protected static final int DEFAULT_ICON_SIZE = 256;
+    
+    private static final String BUILDING_ICON_FORMAT =  "Building icon: {0}";
 
     /**
      * A cache to store icons
@@ -236,7 +238,7 @@ public class ConstellationIcon {
             icon = (BufferedImage) BUFFERED_IMAGE_CACHE.get(key);
         } else {
             // build the icon
-            LOGGER.log(Level.FINE, "Building icon: {0}", name);
+            LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
             final byte[] data = retrieveIconData(iconData, size, color);
             try {
                 icon = ImageIO.read(new ByteArrayInputStream(data));
@@ -303,7 +305,7 @@ public class ConstellationIcon {
             icon = (ImageIcon) ICON_CACHE.get(key);
         } else {
             // build the icon
-            LOGGER.log(Level.FINE, "Building icon: {0}", name);
+            LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
             final byte[] data = retrieveIconData(iconData, size, color);
             icon = new ImageIcon(data);
 
@@ -365,7 +367,7 @@ public class ConstellationIcon {
             image = (Image) IMAGE_CACHE.get(key);
         } else {
             // build the image
-            LOGGER.log(Level.FINE, "Building icon: {0}", name);
+            LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
             final byte[] data = retrieveIconData(iconData, size, color);
             image = new Image(new ByteArrayInputStream(data));
 

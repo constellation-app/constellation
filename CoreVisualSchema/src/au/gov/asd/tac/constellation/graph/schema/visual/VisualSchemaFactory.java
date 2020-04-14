@@ -28,12 +28,12 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -146,7 +146,7 @@ public class VisualSchemaFactory extends SchemaFactory {
 
     protected class VisualSchema extends Schema {
 
-        private final Random RANDOM = new Random();
+        private final SecureRandom RANDOM = new SecureRandom();
 
         public VisualSchema(final SchemaFactory factory) {
             super(factory);

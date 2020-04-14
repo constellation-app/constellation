@@ -29,8 +29,6 @@ import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,6 +63,8 @@ public final class GraphJsonWriter implements Cancellable {
     private volatile boolean isCancelled;
     private final GraphByteWriter byteWriter;
     private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
+    
+    private static final String DEFAULT_FIELD = "default";
 
     /**
      * Construct a new GraphJsonWriter.
@@ -330,11 +330,11 @@ public final class GraphJsonWriter implements Cancellable {
             // actual attribute values inside the attribute descriptions.
             if (attr.getDefaultValue() != null) {
                 if (isNumeric(attr)) {
-                    jg.writeNumberField("default", ((Number) attr.getDefaultValue()).doubleValue());
+                    jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
                 } else if (attr.getAttributeType().equals("boolean")) {
-                    jg.writeBooleanField("default", (Boolean) attr.getDefaultValue());
+                    jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
                 } else {
-                    jg.writeStringField("default", attr.getDefaultValue().toString());
+                    jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
                 }
             }
 
@@ -397,8 +397,6 @@ public final class GraphJsonWriter implements Cancellable {
 
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
-                final ObjectMapper om = new ObjectMapper();
-                final ObjectNode root = om.createObjectNode();
                 for (Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {

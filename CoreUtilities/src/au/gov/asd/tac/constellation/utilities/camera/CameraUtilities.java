@@ -15,11 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.camera;
 
-import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
+import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 
 /**
  *
@@ -86,20 +84,20 @@ public class CameraUtilities {
 
         // The first time the scene is reset (when objectFrame is still null), there is no need for animation:
         // the scene has not previously been drawn.
-        if (camera.objectFrame == null) {
-            camera.objectFrame = new Frame();
-            camera.objectFrame.setForwardVector(0, 0, 1);
+        if (camera.getObjectFrame() == null) {
+            camera.setObjectFrame(new Frame());
+            camera.getObjectFrame().setForwardVector(0, 0, 1);
         }
     }
 
     public static void changeMixRatio(final Camera camera, final boolean increaseMix, final boolean toLimit) {
         if (toLimit) {
-            camera.mixRatio = increaseMix ? Camera.MIX_RATIO_MAX : Camera.MIX_RATIO_MIN;
+            camera.setMixRatio(increaseMix ? Camera.MIX_RATIO_MAX : Camera.MIX_RATIO_MIN);
         } else {
-            if (increaseMix && camera.mixRatio < Camera.MIX_RATIO_MAX) {
-                camera.mixRatio++;
-            } else if (!increaseMix && camera.mixRatio > Camera.MIX_RATIO_MIN) {
-                camera.mixRatio--;
+            if (increaseMix && camera.getMixRatio() < Camera.MIX_RATIO_MAX) {
+                camera.setMixRatio(camera.getMixRatio() + 1);
+            } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
+                camera.setMixRatio(camera.getMixRatio() - 1);
             }
         }
     }

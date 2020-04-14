@@ -192,6 +192,8 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private final JToggleButton selectedOnlyButton;
     private final JToggleButton vxButton;
     private final JToggleButton txButton;
+    
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public TableViewTopComponent() {
         initComponents();
@@ -543,7 +545,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
             int saId;
             ReadableGraph rg = graph.getReadableGraph();
             try {
-                saId = rg.getAttribute(elementType, "selected");
+                saId = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             } finally {
                 rg.release();
             }
@@ -627,7 +629,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
                 attributeModificationCounter = amc;
             }
 
-            final int selectedAttr = rg.getAttribute(elementType, "selected");
+            final int selectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
             if (selectedAttr != Graph.NOT_FOUND) {
                 final long selmc = rg.getValueModificationCounter(selectedAttr);
 
@@ -1028,7 +1030,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     public static boolean isImportant(final String label) {
         if (!label.isEmpty()) {
             final char c = label.charAt(0);
-            return (c >= 'A' && c <= 'Z') || label.equals("selected");
+            return (c >= 'A' && c <= 'Z') || label.equals(SELECTED_ATTRIBUTE_NAME);
         }
 
         return false;
@@ -1094,7 +1096,10 @@ public final class TableViewTopComponent extends TopComponent implements Propert
 
         try {
             if (lockTheEdt) {
-                latch.await(1, TimeUnit.SECONDS);
+                final boolean countedToZero = latch.await(1, TimeUnit.SECONDS);
+                if (!countedToZero) {
+                    //TODO: Handle case where latch did not count down to zero
+                }
             }
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();

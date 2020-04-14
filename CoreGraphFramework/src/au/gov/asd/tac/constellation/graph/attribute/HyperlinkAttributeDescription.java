@@ -31,6 +31,8 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
     public static final String ATTRIBUTE_NAME = "hyperlink";
     public static final Class<URI> NATIVE_CLASS = URI.class;
     public static final URI DEFAULT_VALUE = null;
+    
+    private static final String ERROR_CONVERTING_MESSAGE = "Error converting object to hyperlink: ";
 
     public HyperlinkAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
@@ -47,12 +49,12 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
             try {
                 return ((URL) object).toURI();
             } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException("Error converting object to hyperlink: " + object);
+                throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + object);
             }
         } else if (object instanceof String) {
             return convertFromString((String) object);
         } else {
-            throw new IllegalArgumentException("Error converting object to hyperlink: " + object);
+            throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + object);
         }
     }
 
@@ -64,7 +66,7 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
             try {
                 return new URI(string);
             } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException("Error converting object to hyperlink: " + string);
+                throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + string);
             }
         }
     }

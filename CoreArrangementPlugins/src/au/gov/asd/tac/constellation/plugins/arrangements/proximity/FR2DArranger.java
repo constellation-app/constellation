@@ -15,16 +15,17 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import java.awt.geom.Point2D;
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * main module to arrange a graph using the FR2D algorithm
@@ -55,7 +56,7 @@ class FR2DArranger implements Arranger {
 
     private final PluginInteraction interaction;
     
-    private final Random r = new Random();
+    private final SecureRandom r = new SecureRandom();
 
     /**
      *
@@ -148,13 +149,13 @@ class FR2DArranger implements Arranger {
         final int yAttr = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(graph);
         if (VisualConcept.VertexAttribute.X2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", null, null);
         }
         if (VisualConcept.VertexAttribute.Y2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", null, null);
         }
         if (VisualConcept.VertexAttribute.Z2.get(graph) == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", null, null);
+            graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", null, null);
         }
         final int x2Attr = VisualConcept.VertexAttribute.X2.get(graph);
         final int y2Attr = VisualConcept.VertexAttribute.Y2.get(graph);

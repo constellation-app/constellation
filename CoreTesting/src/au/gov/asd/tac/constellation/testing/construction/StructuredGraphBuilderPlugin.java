@@ -32,11 +32,11 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -56,7 +56,9 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
     
-    private final Random r = new Random();
+    private static final String NODE = "~Node ";
+    
+    private final SecureRandom r = new SecureRandom();
 
     @Override
     public String getDescription() {
@@ -130,8 +132,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         for (int n = 0; n < backboneVertexCount; n++) {
 
             final int nodeId = graph.addVertex();
-            graph.setStringValue(vxNameAttr, nodeId, "Node " + n);
-            graph.setStringValue(vxIdentifierAttr, nodeId, "Node " + n);
+            graph.setStringValue(vxNameAttr, nodeId, NODE + n);
+            graph.setStringValue(vxIdentifierAttr, nodeId, NODE + n);
             graph.setStringValue(vxBackgroundIconAttr, nodeId, "Background.Round Circle");
             graph.setStringValue(vxForegroundIconAttr, nodeId, getRandomIconName(iconNames, r));
             graph.setObjectValue(vxColorAttr, nodeId, randomColorWithAlpha(r));
@@ -204,13 +206,13 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
             float minDistance = minDistances[s];
             float pendants = minDistance * minDistance * r.nextFloat() / backboneVertexCount;
 
-            double interestDensity = Math.random() * 0.9;
+            double interestDensity = r.nextDouble() * 0.9;
             interestDensity *= interestDensity * interestDensity * interestDensity * interestDensity;
 
             for (int p = 0; p < pendants; p++) {
                 int pendant = graph.addVertex();
-                graph.setStringValue(vxNameAttr, pendant, "Node " + pendant);
-                graph.setStringValue(vxIdentifierAttr, pendant, "Node " + pendant);
+                graph.setStringValue(vxNameAttr, pendant, NODE + pendant);
+                graph.setStringValue(vxIdentifierAttr, pendant, NODE + pendant);
                 graph.setStringValue(vxBackgroundIconAttr, pendant, "Background.Round Circle_64");
                 graph.setStringValue(vxForegroundIconAttr, pendant, getRandomIconName(iconNames, r));
                 graph.setObjectValue(vxColorAttr, pendant, randomColorWithAlpha(r));
@@ -226,7 +228,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.setFloatValue(vxYAttr, pendant, cy + y / length * pendantRadius);
                 graph.setFloatValue(vxZAttr, pendant, cz + z / length * pendantRadius);
 
-                graph.setBooleanValue(vxInterestingAttr, pendant, Math.random() < interestDensity);
+                graph.setBooleanValue(vxInterestingAttr, pendant, r.nextDouble() < interestDensity);
 
                 createRandomTransaction(graph, source, pendant, txDateTimeAttr, txColorAttr, r, dt);
             }
@@ -241,7 +243,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
     }
 
-    static void createRandomTransaction(final GraphWriteMethods graph, final int source, final int destination, final int attrTxDatetime, final int colorAttr, Random r, long dt) {
+    static void createRandomTransaction(final GraphWriteMethods graph, final int source, final int destination, final int attrTxDatetime, final int colorAttr, SecureRandom r, long dt) {
         int transaction = 0;
         switch (r.nextInt(3)) {
             case 0:
@@ -261,7 +263,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         graph.setObjectValue(colorAttr, transaction, randomColorWithAlpha(r));
     }
 
-    private static String getRandomIconName(final ArrayList<String> iconNames, Random r) {
+    private static String getRandomIconName(final ArrayList<String> iconNames, SecureRandom r) {
         int i;
         do {
             i = r.nextInt(iconNames.size());
@@ -270,7 +272,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         return iconNames.get(i);
     }
 
-    private static ConstellationColor randomColorWithAlpha(Random r) {
+    private static ConstellationColor randomColorWithAlpha(SecureRandom r) {
         return ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1.0f);
     }
 }

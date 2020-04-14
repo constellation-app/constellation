@@ -105,7 +105,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
                 try {
                     general.delete();
                 } catch (IOException ex) {
-                    LOGGER.log(Level.WARNING, "Error deleting option %s", unwanted);
+                    LOGGER.log(Level.WARNING, "Error deleting option {0}", unwanted);
                 }
             }
         }

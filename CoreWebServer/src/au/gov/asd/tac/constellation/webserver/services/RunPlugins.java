@@ -26,8 +26,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -241,7 +241,7 @@ public class RunPlugins extends RestService {
 //            - ex.printStackTrace(new PrintWriter(exString));
             final String exString = ex.getMessage();
 
-            return String.format("Plugin:\n%s\nException:\n%s\n", pluginName, exString);
+            return String.format("Plugin:%n%s%nException:%n%s%n", pluginName, exString);
         }
     }
 }
