@@ -43,6 +43,9 @@ public class SReadableGraph {
 
     protected final SGraph graph;
     protected final ReadableGraph readableGraph;
+    
+    private static final String FUNC = "__func";
+    private static final String FUNC_P1 = "__func(__p1)";
 
     SReadableGraph(final SGraph graph, final ReadableGraph readableGraph) {
         this.graph = graph;
@@ -216,14 +219,14 @@ public class SReadableGraph {
     public void withVertices(final Object callback) throws ScriptException {
         try {
             final ScriptContext context = graph.getEngine().getContext();
-            context.setAttribute("__func", callback, ScriptContext.ENGINE_SCOPE);
+            context.setAttribute(FUNC, callback, ScriptContext.ENGINE_SCOPE);
 
             final int vertexCount = readableGraph.getVertexCount();
             for (int position = 0; position < vertexCount; position++) {
                 final int vertexId = readableGraph.getVertex(position);
 
                 context.setAttribute("__p1", new SVertex(readableGraph, vertexId), ScriptContext.ENGINE_SCOPE);
-                graph.getEngine().eval("__func(__p1)");
+                graph.getEngine().eval(FUNC_P1);
             }
         } finally {
             readableGraph.release();
@@ -244,7 +247,7 @@ public class SReadableGraph {
      */
     public SCollection filterVertices(final Object callback) throws ScriptException {
         final ScriptContext context = graph.getEngine().getContext();
-        context.setAttribute("__func", callback, ScriptContext.ENGINE_SCOPE);
+        context.setAttribute(FUNC, callback, ScriptContext.ENGINE_SCOPE);
 
         final BitSet vertices = new BitSet();
         final int vertexCount = readableGraph.getVertexCount();
@@ -252,7 +255,7 @@ public class SReadableGraph {
             final int vertexId = readableGraph.getVertex(position);
 
             context.setAttribute("__p1", new SVertex(readableGraph, vertexId), ScriptContext.ENGINE_SCOPE);
-            final Object b = graph.getEngine().eval("__func(__p1)");
+            final Object b = graph.getEngine().eval(FUNC_P1);
             if ((Boolean) b) {
                 vertices.set(vertexId);
             }
@@ -311,14 +314,14 @@ public class SReadableGraph {
     public void withTransactions(final Object callback) throws ScriptException {
         try {
             final ScriptContext context = graph.getEngine().getContext();
-            context.setAttribute("__func", callback, ScriptContext.ENGINE_SCOPE);
+            context.setAttribute(FUNC, callback, ScriptContext.ENGINE_SCOPE);
 
             final int transactionCount = readableGraph.getTransactionCount();
             for (int position = 0; position < transactionCount; position++) {
                 final int transaction = readableGraph.getTransaction(position);
 
                 context.setAttribute("__p1", new STransaction(readableGraph, transaction), ScriptContext.ENGINE_SCOPE);
-                graph.getEngine().eval("__func(__p1)");
+                graph.getEngine().eval(FUNC_P1);
             }
         } finally {
             readableGraph.release();
@@ -339,7 +342,7 @@ public class SReadableGraph {
      */
     public SCollection filterTransactions(final Object callback) throws ScriptException {
         final ScriptContext context = graph.getEngine().getContext();
-        context.setAttribute("__func", callback, ScriptContext.ENGINE_SCOPE);
+        context.setAttribute(FUNC, callback, ScriptContext.ENGINE_SCOPE);
 
         final BitSet transactions = new BitSet();
         final int transactionCount = readableGraph.getTransactionCount();
@@ -347,7 +350,7 @@ public class SReadableGraph {
             final int transaction = readableGraph.getTransaction(position);
 
             context.setAttribute("__p1", new STransaction(readableGraph, transaction), ScriptContext.ENGINE_SCOPE);
-            final Object b = graph.getEngine().eval("__func(__p1)");
+            final Object b = graph.getEngine().eval(FUNC_P1);
             if ((Boolean) b) {
                 transactions.set(transaction);
             }

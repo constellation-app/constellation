@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 
 /**
  *
@@ -29,9 +29,11 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 public abstract class AbstractTableTranslator<R extends AnalyticResult, C> extends InternalVisualisationTranslator<R, TableVisualisation> {
 
     protected static class UnrecognisedColumnException extends RuntimeException {
+        
+        private static final String UNRECOGNISED_COLUMN_EXCEPTION_STRING = "Column not recognised: ";
 
-        public UnrecognisedColumnException(final String message) {
-            super(message);
+        public UnrecognisedColumnException(final String columnName) {
+            super(UNRECOGNISED_COLUMN_EXCEPTION_STRING + columnName);
         }
     }
 

@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ import java.util.Set;
  * @author algol
  */
 public final class GraphTaxonomy {
-
+    
     // Record the original x,y,z of the condensed graph.
     private static final String X_ORIG = "xorig";
     private static final String Y_ORIG = "yorig";
@@ -262,9 +263,9 @@ public final class GraphTaxonomy {
         final int cxAttr = VisualConcept.VertexAttribute.X.ensure(condensedGraph);
         final int cyAttr = VisualConcept.VertexAttribute.Y.ensure(condensedGraph);
         final int czAttr = VisualConcept.VertexAttribute.Z.ensure(condensedGraph);
-        final int cxOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", X_ORIG, X_ORIG, null, null);
-        final int cyOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", Y_ORIG, Y_ORIG, null, null);
-        final int czOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, "float", Z_ORIG, Z_ORIG, null, null);
+        final int cxOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, X_ORIG, X_ORIG, null, null);
+        final int cyOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, Y_ORIG, Y_ORIG, null, null);
+        final int czOrigId = condensedGraph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, Z_ORIG, Z_ORIG, null, null);
         final int cnRadiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(condensedGraph);
         final int cRadiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(condensedGraph);
 

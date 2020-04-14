@@ -30,6 +30,8 @@ import java.util.logging.Logger;
 public class TextPluginInteraction implements PluginInteraction {
 
     private static final Logger LOGGER = Logger.getLogger(TextPluginInteraction.class.getName());
+    
+    private static final String NOT_SUPPORTED = "Not supported yet.";
 
     private String currentMessage;
 
@@ -40,7 +42,7 @@ public class TextPluginInteraction implements PluginInteraction {
 
     @Override
     public void setBusy(String graphId, boolean busy) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -62,12 +64,12 @@ public class TextPluginInteraction implements PluginInteraction {
 
     @Override
     public boolean confirm(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public boolean prompt(String promptName, PluginParameters parameters) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

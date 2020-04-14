@@ -37,6 +37,9 @@ public class MultiPart {
     private static final String DASH_DASH = "--";
     private static final String EOL = "\r\n";
     private static final String C_D = "Content-Disposition: form-data";
+    
+    private static final String NOT_AFTER_END_CALL = "Not allowed after calling end().";
+    private static final String THREE_STRING_FORMAT = "%s%s%s";
 
     private final ByteArrayOutputStream buf;
     private final String boundary;
@@ -56,14 +59,14 @@ public class MultiPart {
      */
     public void addText(final String key, final String value) {
         if (isEnded) {
-            throw new MultiPartException("Not allowed after calling end().");
+            throw new MultiPartException(NOT_AFTER_END_CALL);
         }
 
         try {
             final String k = htmlEncode(key);
             final String v = htmlEncode(value);
             final StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%s%s%s", DASH_DASH, boundary, EOL));
+            sb.append(String.format(THREE_STRING_FORMAT, DASH_DASH, boundary, EOL));
             sb.append(String.format("%s; name=\"%s\"%s%s%s%s", C_D, k, EOL, EOL, v, EOL));
             final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8.name());
             buf.write(bytes);
@@ -82,13 +85,13 @@ public class MultiPart {
      */
     public void addBytes(final String name, final byte[] content, final String mime) {
         if (isEnded) {
-            throw new MultiPartException("Not allowed after calling end().");
+            throw new MultiPartException(NOT_AFTER_END_CALL);
         }
 
         try {
             final String n = htmlEncode(name);
             final StringBuilder sb = new StringBuilder();
-            sb.append(String.format("%s%s%s", DASH_DASH, boundary, EOL));
+            sb.append(String.format(THREE_STRING_FORMAT, DASH_DASH, boundary, EOL));
             sb.append(String.format("%s; name=\"file\"; filename=\"%s\"%s", C_D, n, EOL));
             sb.append(String.format("Content-Type: %s%s%s", mime, EOL, EOL));
             final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8.name());
@@ -105,11 +108,11 @@ public class MultiPart {
      */
     public void end() {
         if (isEnded) {
-            throw new MultiPartException("Not allowed after calling end().");
+            throw new MultiPartException(NOT_AFTER_END_CALL);
         }
 
         try {
-            buf.write(String.format("%s%s%s", DASH_DASH, boundary, DASH_DASH).getBytes(StandardCharsets.UTF_8.name()));
+            buf.write(String.format(THREE_STRING_FORMAT, DASH_DASH, boundary, DASH_DASH).getBytes(StandardCharsets.UTF_8.name()));
             buf.close();
             isEnded = true;
         } catch (final IOException ex) {

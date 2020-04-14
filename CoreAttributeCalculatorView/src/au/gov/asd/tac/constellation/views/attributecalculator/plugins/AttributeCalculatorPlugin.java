@@ -75,6 +75,8 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     private String script;
     private final boolean selectedOnly;
     private final boolean completeWithSchema;
+    
+    private static final String NON_WORD_OR_SCRIPT_START_PATTERN = "(\\A|\\W)(";
 
     private static final Logger LOGGER = Logger.getLogger(AttributeCalculatorPlugin.class.getName());
 
@@ -223,7 +225,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
                 final String adjustedMethodCall = utilityScriptName + SeparatorConstants.PERIOD + methodName;
                 // Match any non-word character or the start of the script, followed by the method name, followed
                 // by any amount of space or tabs, and finally a left parenthesis (which is not part of the match since we need this parenthesis to match the non-word character of a succeeding nested method call).
-                final String pattern = "(\\A|\\W)(" + methodName + "[ ]*)(?=\\()";
+                final String pattern = NON_WORD_OR_SCRIPT_START_PATTERN + methodName + "[ ]*)(?=\\()";
                 // Construct a matcher for the given pattern and script
                 Matcher m = Pattern.compile(pattern).matcher(script);
                 // Replace all matches, noting that we need to leave the first matched character (start of script or any non-word character) and hence can't use the default replaceAll method.
@@ -307,7 +309,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
                 final String adjustedAttributeUsage = adjustedAttributeName + attributeUsageSuffix;
                 // Match any non-word character or the start of the script, followed by the prefix and the attribute name,
                 // followed by any non-word character or the end of the script
-                final String pattern = "(\\A|\\W)(" + prefix + regexifiedAttributeName + ")(\\W|\\z)";
+                final String pattern = NON_WORD_OR_SCRIPT_START_PATTERN + prefix + regexifiedAttributeName + ")(\\W|\\z)";
                 // Construct a matcher for the given pattern and script
                 Matcher m = Pattern.compile(pattern).matcher(script);
                 // Replace all matches, noting that we need to leave the first matched character (start of script or any non-word character) and hence can't use the default replaceAll method.
@@ -339,7 +341,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
             final String adjustedVariableUsage = variableName + ".val()";
             // Match any non-word character or the start of the script, followed by the variable name, followed
             // by any non-word character or the end of the script.
-            final String pattern = "(\\A|\\W)(" + variableName + ")(\\W|\\z)";
+            final String pattern = NON_WORD_OR_SCRIPT_START_PATTERN + variableName + ")(\\W|\\z)";
             // Construct a matcher for the given pattern and script
             Matcher m = Pattern.compile(pattern).matcher(script);
             // Replace all matches, noting that we need to leave the first matched character (start of script or any non-word character) and hence can't use the default replaceAll method.
