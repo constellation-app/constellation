@@ -62,18 +62,6 @@
         <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2"/>
         <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.2"/>
 
-        <!-- Open JavaFX -->
-        <!--<dependency org="org.openjfx" name="javafx" rev="11.0.2">-->
-            <!--<artifact name="javafx" type="pom" ext="pom"/>-->
-        <!--</dependency>-->
-        <!--<dependency org="org.openjfx" name="javafx-base" rev="11.0.2"/>-->
-        <!--<dependency org="org.openjfx" name="javafx-controls" rev="11.0.2"/>-->
-        <!--<dependency org="org.openjfx" name="javafx-fxml" rev="11.0.2"/>-->
-        <!--<dependency org="org.openjfx" name="javafx-graphics" rev="11.0.2" />-->
-        <!--<dependency org="org.openjfx" name="javafx-media" rev="11.0.2"/>-->
-        <!--<dependency org="org.openjfx" name="javafx-swing" rev="11.0.2"/>-->
-        <!--<dependency org="org.openjfx" name="javafx-web" rev="11.0.2"/>-->
-        
         <!-- Other -->
         <dependency org="com.google.guava" name="guava" rev="28.2-jre" />
         <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.10.3"/> 

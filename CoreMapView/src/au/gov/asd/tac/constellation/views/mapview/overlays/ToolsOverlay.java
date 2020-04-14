@@ -138,7 +138,7 @@ public class ToolsOverlay extends MapOverlay {
     }
 
     private Location getDrawToolStart() {
-        if (drawOriginX == -1 && drawOriginX == -1) {
+        if (drawOriginX == -1 && drawOriginY == -1) {
             return null;
         }
         return map.getLocation(drawOriginX, drawOriginY);

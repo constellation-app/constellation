@@ -22,11 +22,12 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.ExpandedCompositeNodeState;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
-import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.ExpandedCompositeNodeState;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -35,7 +36,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
                 String copyId = "";
                 for (int primarykeyAttr : graph.getPrimaryKey(GraphElementType.VERTEX)) {
                     final String val = graph.getStringValue(primarykeyAttr, selectedVerts.iterator().next());
-                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + val == null ? "" : val + ">";
+                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + (val == null ? "" : val) + ">";
                 }
                 final String compositeId = copyId;
 
