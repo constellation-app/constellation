@@ -40,6 +40,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
  * @author sirius
  */
 public abstract class SimplePlugin extends AbstractPlugin {
+    
+    private static final String WAITING_INTERACTION = "Waiting...";
+    private static final String FINISHED_INTERACTION = "Finished";
 
     public SimplePlugin() {
     }
@@ -60,11 +63,11 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
 
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
             try {
                 execute(graphs, interaction, parameters);
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
 
         } finally {
@@ -82,11 +85,11 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
 
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
             try {
                 read(graph, interaction, parameters);
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
 
         } finally {
@@ -102,11 +105,11 @@ public abstract class SimplePlugin extends AbstractPlugin {
         try {
 
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
             try {
                 edit(graph, interaction, parameters);
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setProgress(2, 1, FINISHED_INTERACTION, true);
             }
 
         } finally {

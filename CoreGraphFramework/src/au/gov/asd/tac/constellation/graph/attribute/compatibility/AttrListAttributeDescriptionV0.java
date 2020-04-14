@@ -44,7 +44,7 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
 
     @Override
     public String getName() {
-        return "attr_list";
+        return ATTR_NAME;
     }
 
     @Override

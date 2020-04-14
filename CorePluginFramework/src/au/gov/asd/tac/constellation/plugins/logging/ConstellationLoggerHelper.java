@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -59,6 +58,8 @@ public class ConstellationLoggerHelper {
     public static final String VALUE_AFTER = "VALUE_AFTER";
     public static final String COUNT = "COUNT";
     public static final String STATUS = "STATUS";
+    
+    private static final String STRING_NUMBER_FORMAT = "%s %d";
 
     /**
      * Enrich the view log with property values when opening a file
@@ -279,12 +280,12 @@ public class ConstellationLoggerHelper {
         if (files != null) {
             Integer counter = files.size();
             for (File file : files) {
-                properties.setProperty(String.format("%s %d", FILE_NAME, counter), file.getAbsolutePath());
-                properties.setProperty(String.format("%s %d", FILE_SIZE, counter), Long.toString(file.length()));
+                properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_NAME, counter), file.getAbsolutePath());
+                properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_SIZE, counter), Long.toString(file.length()));
                 try {
                     final String hash = createHash(file);
                     if (hash != null) {
-                        properties.setProperty(String.format("%s %d", FILE_HASH, counter), hash);
+                        properties.setProperty(String.format(STRING_NUMBER_FORMAT, FILE_HASH, counter), hash);
                     }
                 } catch (final IOException | NoSuchAlgorithmException ex) {
                     throw new PluginException(PluginNotificationLevel.FATAL, "Error creating hash: " + ex.getMessage());

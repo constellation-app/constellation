@@ -38,6 +38,13 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
+    
+    private static final String MOD_COUNT = "mod_count";
+    private static final String STRUC_MOD_COUNT = "struc_mod_count";
+    private static final String INTERACTIVE = "interactive";
+    private static final String COLORED = "colored";
+    private static final String OPTIMUM_STEP = "optimum_step";
+    private static final String PARENT = "parent";
 
     @Override
     public String getName() {
@@ -48,25 +55,25 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) {
         if (!jnode.isNull()) {
             final HierarchicalState coi = new HierarchicalState();
-            if (jnode.has("mod_count")) {
-                coi.modificationCounter = jnode.get("mod_count").asLong();
+            if (jnode.has(MOD_COUNT)) {
+                coi.modificationCounter = jnode.get(MOD_COUNT).asLong();
             }
-            if (jnode.has("struc_mod_count")) {
-                coi.strucModificationCount = jnode.get("struc_mod_count").asLong();
-            }
-
-            if (jnode.has("interactive")) {
-                coi.interactive = jnode.get("interactive").asBoolean();
+            if (jnode.has(STRUC_MOD_COUNT)) {
+                coi.strucModificationCount = jnode.get(STRUC_MOD_COUNT).asLong();
             }
 
-            if (jnode.has("colored")) {
-                coi.colored = jnode.get("colored").asBoolean();
+            if (jnode.has(INTERACTIVE)) {
+                coi.interactive = jnode.get(INTERACTIVE).asBoolean();
+            }
+
+            if (jnode.has(COLORED)) {
+                coi.colored = jnode.get(COLORED).asBoolean();
             }
 
             coi.steps = jnode.get("steps").intValue();
             coi.currentStep = jnode.get("current_step").asInt();
-            if (jnode.has("optimum_step")) {
-                coi.optimumStep = jnode.get("optimum_step").asInt();
+            if (jnode.has(OPTIMUM_STEP)) {
+                coi.optimumStep = jnode.get(OPTIMUM_STEP).asInt();
             }
             coi.excludeSingleVertices = jnode.get("exclude_single_vertices").asBoolean();
             coi.excludedElementsDimmed = jnode.get("exclude_elements_dimmed").asBoolean();
@@ -114,8 +121,8 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                     final int groupIx = graph.getVertexPosition(group.getVertex());
                     coi.groups[groupIx] = group;
 
-                    if (jn.has("parent")) {
-                        final int parentVxId = vertexMap.get(jn.get("parent").asInt());
+                    if (jn.has(PARENT)) {
+                        final int parentVxId = vertexMap.get(jn.get(PARENT).asInt());
                         parentLinks[groupIx] = graph.getVertexPosition(parentVxId);
                     }
                 }
@@ -141,16 +148,16 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
             } else {
 
                 jsonGenerator.writeObjectFieldStart(attr.getName());
-                jsonGenerator.writeNumberField("mod_count", state.modificationCounter);
-                jsonGenerator.writeNumberField("struc_mod_count", state.strucModificationCount);
+                jsonGenerator.writeNumberField(MOD_COUNT, state.modificationCounter);
+                jsonGenerator.writeNumberField(STRUC_MOD_COUNT, state.strucModificationCount);
                 jsonGenerator.writeNumberField("steps", state.steps);
                 jsonGenerator.writeNumberField("current_step", state.currentStep);
-                jsonGenerator.writeNumberField("optimum_step", state.optimumStep);
+                jsonGenerator.writeNumberField(OPTIMUM_STEP, state.optimumStep);
                 jsonGenerator.writeBooleanField("exclude_single_vertices", state.excludeSingleVertices);
                 jsonGenerator.writeBooleanField("exclude_elements_dimmed", state.excludedElementsDimmed);
                 jsonGenerator.writeNumberField("redraw_count", state.redrawCount);
-                jsonGenerator.writeBooleanField("interactive", state.interactive);
-                jsonGenerator.writeBooleanField("colored", state.colored);
+                jsonGenerator.writeBooleanField(INTERACTIVE, state.interactive);
+                jsonGenerator.writeBooleanField(COLORED, state.colored);
 
                 jsonGenerator.writeArrayFieldStart("cluster_numbers");
                 for (final int value : state.clusterNumbers) {
@@ -178,7 +185,7 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                         if (group.getParent() != null) {
                             // Get the vertex of the parent of this Group.
                             final int parentVxId = group.getParent().getVertex();
-                            jsonGenerator.writeNumberField("parent", parentVxId);
+                            jsonGenerator.writeNumberField(PARENT, parentVxId);
                         }
                         jsonGenerator.writeEndObject();
                     } else {

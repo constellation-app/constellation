@@ -95,6 +95,9 @@ public final class TableViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
+    private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
+    private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
+    
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
     private static final String KEY_COLUMNS = "Show Key Columns";
@@ -594,11 +597,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // clear current columnIndex, but cache the column objects for reuse
@@ -853,11 +856,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // set progress indicator
@@ -987,11 +990,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // get graph selection

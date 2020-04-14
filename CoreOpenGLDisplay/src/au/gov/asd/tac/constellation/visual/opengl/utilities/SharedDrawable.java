@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
-//import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
@@ -72,6 +71,9 @@ public final class SharedDrawable {
 
     private static GlyphManagerOpenGLController glyphTextureController;
     private static GlyphManager glyphManager;
+    
+    private static final String COULD_NOT_CONTEXT_CURRENT = "Could not make texture context current.";
+    private static final String FRAG_COLOR = "fragColor";
 
     /**
      * The font used by the renderer has changed from Arial Unicode MS to Malgun
@@ -210,7 +212,7 @@ public final class SharedDrawable {
             final int result = gl.getContext().makeCurrent();
             if (result == GLContext.CONTEXT_NOT_CURRENT) {
                 glCurrent.getContext().makeCurrent();
-                throw new RenderException("Could not make texture context current.");
+                throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
             }
             glyphTextureController.update(gl);
         } finally {
@@ -248,7 +250,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.vs");
@@ -257,7 +259,7 @@ public final class SharedDrawable {
                 simpleIconShader = GLTools.loadShaderSourceWithAttributes(gl, "SimpleIcon", vp, gp, fp,
                         colorTarget, colorShaderName,
                         iconTarget, iconShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -285,7 +287,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.vs");
@@ -294,7 +296,7 @@ public final class SharedDrawable {
                 vertexIconShader = GLTools.loadShaderSourceWithAttributes(gl, "VertexIcon", vp, gp, fp,
                         colorTarget, colorShaderName,
                         iconTarget, iconShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -322,7 +324,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
@@ -331,7 +333,7 @@ public final class SharedDrawable {
                 lineShader = GLTools.loadShaderSourceWithAttributes(gl, "Line", vp, gp, fp,
                         colotTarget, colorShaderName,
                         connectionInfoTarget, connectionInfoShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -360,7 +362,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
@@ -369,7 +371,7 @@ public final class SharedDrawable {
                 lineLineShader = GLTools.loadShaderSourceWithAttributes(gl, "LineLine", vp, gp, fp,
                         colotTarget, colorShaderName,
                         connectionInfoTarget, connectionInfoShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -397,7 +399,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.vs");
@@ -406,7 +408,7 @@ public final class SharedDrawable {
                 loopShader = GLTools.loadShaderSourceWithAttributes(gl, "Loop", vp, gp, fp,
                         colorTarget, colorShaderName,
                         loopInfoTarget, loopInfoShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -434,7 +436,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/NodeLabel.vs");
@@ -443,7 +445,7 @@ public final class SharedDrawable {
                 nodeLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
                         labelFloatsTarget, labelFloatsShaderName,
                         labelIntsTarget, labelIntsShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -473,7 +475,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/ConnectionLabel.vs");
@@ -482,7 +484,7 @@ public final class SharedDrawable {
                 connectionLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
                         labelFloatsTarget, labelFloatsShaderName,
                         labelIntsTarget, labelIntsShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
@@ -511,7 +513,7 @@ public final class SharedDrawable {
                 final int result = gl.getContext().makeCurrent();
                 if (result == GLContext.CONTEXT_NOT_CURRENT) {
                     glCurrent.getContext().makeCurrent();
-                    throw new RenderException("Could not make texture context current.");
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
                 }
 
                 final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.vs");
@@ -520,7 +522,7 @@ public final class SharedDrawable {
                 blazeShader = GLTools.loadShaderSourceWithAttributes(gl, "Blaze", vp, gp, fp,
                         colorTarget, colorShaderName,
                         blazeInfoTarget, blazeInfoShaderName,
-                        ShaderManager.FRAG_BASE, "fragColor");
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
             } finally {
                 gl.getContext().release();
                 glCurrent.getContext().makeCurrent();

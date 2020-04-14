@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot;
 
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -26,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import java.util.Set;
@@ -73,6 +73,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     private AttributeValueMonitor xAttributeMonitor;
     private AttributeValueMonitor yAttributeMonitor;
     private AttributeValueMonitor selectedAttributeMonitor;
+    
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public ScatterPlotTopComponent() {
         setName(Bundle.CTL_ScatterPlotTopComponent());
@@ -124,8 +126,8 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
                 if (state != null && state.getXAttribute() != null && state.getYAttribute() != null) {
                     xAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), state.getXAttribute().getName(), refreshHandler);
                     yAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), state.getYAttribute().getName(), refreshHandler);
-                    if (!"selected".equals(state.getXAttribute().getName()) && !"selected".equals(state.getYAttribute().getName())) {
-                        selectedAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), "selected", selectionHandler);
+                    if (!SELECTED_ATTRIBUTE_NAME.equals(state.getXAttribute().getName()) && !SELECTED_ATTRIBUTE_NAME.equals(state.getYAttribute().getName())) {
+                        selectedAttributeMonitor = addAttributeValueChangeHandler(state.getElementType(), SELECTED_ATTRIBUTE_NAME, selectionHandler);
                     }
                 }
 
