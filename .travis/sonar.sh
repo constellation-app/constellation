@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+echo "Run Sonar Scanning"
 if [ "${TRAVIS_PULL_REQUEST}" != "false" ]; then
   if [ "${TRAVIS_PULL_REQUEST_SLUG}" != "constellation-app/constellation" ]; then
     echo "skipping running sonar-scanner"
