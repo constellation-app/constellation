@@ -144,7 +144,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
      * SchemaElementType.
      */
     public final SchemaElementType<T> getTopLevelType() {
-        while (getSuperType() != this) {
+        if (getSuperType() != this) {
             return getSuperType().getTopLevelType();
         }
         return this;

@@ -84,19 +84,17 @@ public class ParameterIOUtilities {
                 if (dataAccessStateAttribute != Graph.NOT_FOUND) {
                     final DataAccessState dataAccessState = rg.getObjectValue(dataAccessStateAttribute, 0);
                     if (dataAccessState != null && dataAccessState.getState().size() > 0) {
-                        for (Map<String, String> tabState : dataAccessState.getState()) {
-                            final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
-                            final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
-                                final PluginParameter<?> pp = param.getValue();
-                                final String paramvalue = tabState.get(param.getKey());
-                                if (paramvalue != null) {
-                                    pp.setStringValue(paramvalue); // appologies for the nestedness
-                                }
-                            });
-                            break;
-                            // TODO: support multiple tabs and not introduce memory leaks
-                        }
+                        // TODO: support multiple tabs (not just first one in state) and not introduce memory leaks
+                        final Map<String, String> tabState = dataAccessState.getState().get(0);
+                        final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
+                        final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
+                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
+                            final PluginParameter<?> pp = param.getValue();
+                            final String paramvalue = tabState.get(param.getKey());
+                            if (paramvalue != null) {
+                                pp.setStringValue(paramvalue);
+                            }
+                        });
                     }
                 }
             } finally {
