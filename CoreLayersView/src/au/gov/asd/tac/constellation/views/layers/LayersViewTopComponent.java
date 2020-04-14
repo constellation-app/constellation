@@ -40,7 +40,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 105),
+    @ActionReference(path = "Menu/Experimental/Views", position = 600),
     @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
     displayName = "#CTL_LayersViewAction",
@@ -75,12 +75,11 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     }
 
     @Override
-    protected void handleNewGraph(Graph graph) {
-        /* - Old code - implement new handler if needed
-        if (attributeCalculatorPane != null && graph != null) {
-            attributeCalculatorPane.updateAttributes(graph);
-        }
-         */
+    protected void handleNewGraph(final Graph graph) {
+        // Old code - implement new handler if needed
+//        if (attributeCalculatorPane != null && graph != null) {
+//            attributeCalculatorPane.updateAttributes(graph);
+//        }
     }
 
     /**

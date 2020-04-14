@@ -19,19 +19,18 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
 /**
- *
+ * Layers View Pane.
+ * 
  * TODO: Note the code initially in this file is for proof of concept and trial
  * only. Full scale implementation will require refactoring and neatening of UI
  * elements.
@@ -41,7 +40,6 @@ import org.openide.NotifyDescriptor;
 public class LayersViewPane extends BorderPane {
 
     private static final String DEFAULT_LAYER_PLACEHOLDER = "default";
-    private static final String FONT_FAMILY = Font.getDefault().getFamily();
     
     private final LayersViewController controller;
     private final VBox layersViewPane;
@@ -55,38 +53,22 @@ public class LayersViewPane extends BorderPane {
         this.controller = controller;
         
         // create layers
-        this.layers = new VBox();
+        final Label layerIdHeadingText = new Label("Layer ID");
+        HBox.setHgrow(layerIdHeadingText, Priority.ALWAYS);
+        final Label visibilityHeadingText = new Label("Visibility");
+        HBox.setHgrow(visibilityHeadingText, Priority.ALWAYS);
+        final Label queryHeadingText = new Label("Query");
+        HBox.setHgrow(queryHeadingText, Priority.ALWAYS);
+        final Label descriptionHeadingText = new Label("Description");
+        HBox.setHgrow(descriptionHeadingText, Priority.ALWAYS);
+        final HBox headingBox = new HBox(5, layerIdHeadingText, 
+                visibilityHeadingText, queryHeadingText, descriptionHeadingText);
+        VBox.setMargin(headingBox, new Insets(5));
+        VBox.setVgrow(headingBox, Priority.ALWAYS);
+        
+        this.layers = new VBox(5, headingBox);
         layers.setAlignment(Pos.TOP_LEFT);
 //        layers.setBackground(new Background(new BackgroundFill(Color.ORANGE, CornerRadii.EMPTY, Insets.EMPTY)));
-
-        // create headings
-        final Text layerIdHeadingText = new Text("Layer ID");
-        layerIdHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
-        layerIdHeadingText.setFill(Color.web("#FFFFFF"));
-        HBox.setMargin(layerIdHeadingText, new Insets(0, 10, 0, 0));
-        
-        final Text visibilityHeadingText = new Text("Visibility");
-        visibilityHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
-        visibilityHeadingText.setFill(Color.web("#FFFFFF"));
-        HBox.setMargin(visibilityHeadingText, new Insets(0, 8, 0, 5));
-        
-        final Text queryHeadingText = new Text("Query");
-        queryHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
-        queryHeadingText.setFill(Color.web("#FFFFFF"));
-        HBox.setMargin(queryHeadingText, new Insets(0, 10, 0, 10));
-        
-        final Text descriptionHeadingText = new Text("Description");
-        descriptionHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
-        descriptionHeadingText.setFill(Color.web("#FFFFFF"));
-        HBox.setMargin(descriptionHeadingText, new Insets(0, 0, 0, 10));
-
-        // add headings to heading box
-        final HBox headingBox = new HBox();
-        headingBox.getChildren().addAll(layerIdHeadingText, visibilityHeadingText, 
-                queryHeadingText, descriptionHeadingText);
-        
-        // add heading box to layers
-        layers.getChildren().add(headingBox);
 
         // add default layers
         this.currentIndex = 0;
@@ -94,11 +76,6 @@ public class LayersViewPane extends BorderPane {
         createLayer(false);
         
         // create options
-        this.options = new HBox();
-        options.setAlignment(Pos.TOP_LEFT);
-//        options.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
-        
-        // create add button
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
@@ -111,16 +88,19 @@ public class LayersViewPane extends BorderPane {
             }
             event.consume();
         });
+        HBox.setHgrow(addButton, Priority.ALWAYS);
         
-        // add button to options
-        options.getChildren().add(addButton);
+        this.options = new HBox(5, addButton);
+        options.setAlignment(Pos.TOP_LEFT);
+//        options.setBackground(new Background(new BackgroundFill(Color.GREEN, CornerRadii.EMPTY, Insets.EMPTY)));
         
         // add layers and options to pane
-        this.layersViewPane = new VBox();
-        layersViewPane.prefWidthProperty().bind(this.widthProperty());
-        layersViewPane.getChildren().addAll(layers, options);
+        this.layersViewPane = new VBox(5, layers, options);
 //        layersViewPane.setBackground(new Background(new BackgroundFill(Color.BLUE, CornerRadii.EMPTY, Insets.EMPTY)));
         
+        // create layout bindings
+        headingBox.prefWidthProperty().bind(layers.widthProperty());
+        layersViewPane.prefWidthProperty().bind(this.widthProperty());
         layers.prefWidthProperty().bind(layersViewPane.widthProperty());
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
         
@@ -128,25 +108,24 @@ public class LayersViewPane extends BorderPane {
     }
 
     private void createLayer(final boolean defaultLayer) {
-        final Text layerIdText = new Text(String.format("%02d", ++currentIndex));
-        layerIdText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
-        layerIdText.setFill(Color.web("#FFFFFF"));
-        HBox.setMargin(layerIdText, new Insets(0, 5, 0, 5));
+        final Label layerIdText = new Label(String.format("%02d", ++currentIndex));
+        layerIdText.setMinWidth(15);
+        HBox.setHgrow(layerIdText, Priority.ALWAYS);
 
         final CheckBox visibilityCheckBox = new CheckBox();
-        HBox.setMargin(visibilityCheckBox, new Insets(0, 5, 0, 5));
         visibilityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             controller.submit();
             controller.execute();
         });
+        HBox.setHgrow(visibilityCheckBox, Priority.ALWAYS);
         
         final TextArea queryTextArea = new TextArea();
         queryTextArea.setPrefRowCount(1);
-        HBox.setMargin(queryTextArea, new Insets(0, 5, 0, 5));
+        HBox.setHgrow(queryTextArea, Priority.ALWAYS);
         
         final TextArea descriptionTextArea = new TextArea();
         descriptionTextArea.setPrefRowCount(1);
-        HBox.setMargin(descriptionTextArea, new Insets(0, 5, 0, 5));
+        HBox.setHgrow(descriptionTextArea, Priority.ALWAYS);
 
         if (defaultLayer) {
             layerIdText.setDisable(true);
@@ -154,14 +133,18 @@ public class LayersViewPane extends BorderPane {
             visibilityCheckBox.setDisable(true);
             queryTextArea.setText(DEFAULT_LAYER_PLACEHOLDER);
             queryTextArea.setDisable(true);
-            descriptionTextArea.setText("Display All Elements");
+            descriptionTextArea.setText("Show All");
             descriptionTextArea.setDisable(true);
         }
 
-        final HBox layerBox = new HBox();
-        HBox.setMargin(layerBox, new Insets(5, 0, 5, 0));
-        layerBox.getChildren().addAll(layerIdText, visibilityCheckBox, queryTextArea, descriptionTextArea);
+        final HBox layerBox = new HBox(5, layerIdText, 
+                visibilityCheckBox, queryTextArea, descriptionTextArea);
+        VBox.setMargin(layerBox, new Insets(5));
+        VBox.setVgrow(layerBox, Priority.ALWAYS);
         layers.getChildren().add(layerBox);
+        
+        layerBox.prefWidthProperty().bind(layers.widthProperty());
+        
     }
 
     public VBox getLayers() {

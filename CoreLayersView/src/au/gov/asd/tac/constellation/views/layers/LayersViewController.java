@@ -28,7 +28,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 /**
- * Controls interaction of UI to layers and filtering of nodes.
+ * Controls interaction of UI to layers and filtering of nodes and transactions.
  *
  * @author aldebaran30701
  */
