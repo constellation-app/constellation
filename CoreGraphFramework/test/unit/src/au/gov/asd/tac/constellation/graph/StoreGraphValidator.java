@@ -340,6 +340,11 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    @Override
+    public void setLayerQueries(List<String> queries) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 //    @Override
 //    public void firePropertyChange(int firerId, int attrId) {
 //        throw new UnsupportedOperationException("Not supported yet.");

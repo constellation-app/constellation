@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-04-15 New Layers View
+<p>You can now add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.
+Access to the Layers view is achieved through Experimental -> Views -> Layers View.
+The view allows for toggling of layers via a checkbox which links to subsets of graph elements.
+This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
+
 == 2020-03-24 REST API
 <p>The module that implements the REST API (providing access from Jupyter notebooks, for example) has been
 rewritten. It is now much easier to add functionality. The Python client constellation_client.py has been
