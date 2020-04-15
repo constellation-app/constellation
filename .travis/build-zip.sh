@@ -1,8 +1,8 @@
 #!/bin/bash
-
 set -euo pipefail
 
-# core-dist-zip
+title "Build Portable Zip"
+
 ant \
   -Dnbplatform.active.dir="${NETBEANS_HOME}" \
   -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \

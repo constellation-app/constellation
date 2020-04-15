@@ -144,6 +144,11 @@ public class VisualConcept extends SchemaConcept {
                 .setDefaultValue(ConstellationColor.CHERRY)
                 .create()
                 .build();
+        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
+                .setDescription("The layers currently enabled for display")
+                .setDefaultValue(1)
+                .create()
+                .build();
         public static final SchemaAttribute MAX_TRANSACTIONS = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "max_transactions")
                 .setDescription("The maximum number of transactions to draw")
                 .setDefaultValue(8)
@@ -219,6 +224,16 @@ public class VisualConcept extends SchemaConcept {
         public static final SchemaAttribute LABEL_RADIUS = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "lradius")
                 .setDescription("The radius of the label")
                 .setDefaultValue(1.0f)
+                .build();
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+                .setDescription("Bitmask identifying the layers this vertex belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
+                .setDescription("The visibility of the vertex given the layers it belongs to")
+                .setDefaultValue(1.0f)
+                .create()
                 .build();
         public static final SchemaAttribute NODE_RADIUS = new SchemaAttribute.Builder(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "nradius")
                 .setDescription("The radius of the vertex")
@@ -300,6 +315,16 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The label of the transaction")
                 .create()
                 .build();
+                public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+                .setDescription("Bitmask identifying the layers this transaction belongs to")
+                .setDefaultValue(1)
+                .create()
+                .build();
+        public static final SchemaAttribute LAYER_VISIBILITY = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, "layer_visibility")
+                .setDescription("The visibility of the transaction given the layers it belongs to")
+                .setDefaultValue(1.0f)
+                .create()
+                .build();
         public static final SchemaAttribute OVERLAY_COLOR = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ColorAttributeDescription.ATTRIBUTE_NAME, "overlay_color")
                 .setDescription("The overlay colore of the transaction")
                 .build();
@@ -337,6 +362,7 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(GraphAttribute.DRAW_FLAGS);
         schemaAttributes.add(GraphAttribute.DRAWING_MODE);
         schemaAttributes.add(GraphAttribute.HIGHLIGHT_COLOR);
+        schemaAttributes.add(GraphAttribute.LAYER_MASK_SELECTED);
         schemaAttributes.add(GraphAttribute.MAX_TRANSACTIONS);
         schemaAttributes.add(GraphAttribute.MIX_COLOR);
         schemaAttributes.add(GraphAttribute.NODE_COLOR_REFERENCE);
@@ -353,6 +379,8 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(VertexAttribute.IDENTIFIER);
         schemaAttributes.add(VertexAttribute.LABEL);
         schemaAttributes.add(VertexAttribute.LABEL_RADIUS);
+        schemaAttributes.add(VertexAttribute.LAYER_MASK);
+        schemaAttributes.add(VertexAttribute.LAYER_VISIBILITY);
         schemaAttributes.add(VertexAttribute.NODE_RADIUS);
         schemaAttributes.add(VertexAttribute.OVERLAY_COLOR);
         schemaAttributes.add(VertexAttribute.SELECTED);
@@ -369,6 +397,8 @@ public class VisualConcept extends SchemaConcept {
         schemaAttributes.add(TransactionAttribute.IDENTIFIER);
         schemaAttributes.add(TransactionAttribute.LINE_STYLE);
         schemaAttributes.add(TransactionAttribute.LABEL);
+        schemaAttributes.add(TransactionAttribute.LAYER_MASK);
+        schemaAttributes.add(TransactionAttribute.LAYER_VISIBILITY);
         schemaAttributes.add(TransactionAttribute.OVERLAY_COLOR);
         schemaAttributes.add(TransactionAttribute.SELECTED);
         schemaAttributes.add(TransactionAttribute.VISIBILITY);

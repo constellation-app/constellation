@@ -75,7 +75,6 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -96,6 +95,9 @@ public final class TableViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
+    private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
+    private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
+    
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
     private static final String KEY_COLUMNS = "Show Key Columns";
@@ -121,7 +123,7 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView TRANSACTION_ICON = new ImageView(UserInterfaceIconProvider.TRANSACTIONS.buildImage(16));
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
-    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.HEART.buildImage(16));
+    private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
 
     private static final int WIDTH = 120;
 
@@ -317,28 +319,21 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-        ArrayList<CustomMenuItem> colCheckboxes = new ArrayList<>();
+        final ArrayList<CustomMenuItem> columnCheckboxes = new ArrayList<>();
         
-        Label label1 = new Label("Filter:");
-        TextField searchField = new TextField ();
-        HBox hb = new HBox();
-        hb.getChildren().addAll(label1, searchField);
-        final CustomMenuItem search = new CustomMenuItem(hb);
+        final Label columnFilterLabel = new Label("Filter:");
+        final TextField columnFilterTextField = new TextField ();
+        final HBox filterBox = new HBox();
+        filterBox.getChildren().addAll(columnFilterLabel, columnFilterTextField);
         
-        search.setHideOnClick(false);
-        searchField.setOnKeyReleased((KeyEvent e) -> {
-            String searchTerm = searchField.getText();
-            if (searchTerm.trim().equals("")) {
-                colCheckboxes.forEach((item) -> {
-                    item.setVisible(true);
-                });
-            } else {
-                colCheckboxes.forEach((CustomMenuItem item) -> {
-                    String name = item.getId();
-                    item.setVisible(name.contains(searchTerm));
-                });
-            }
-            
+        final CustomMenuItem columnFilter = new CustomMenuItem(filterBox);
+        columnFilter.setHideOnClick(false);
+        columnFilterTextField.setOnKeyReleased(event -> {
+            final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
+            columnCheckboxes.forEach(item -> {
+                final String columnName = item.getId().toLowerCase();
+                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
+            });
         });
         
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
@@ -395,7 +390,7 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), search);
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), columnFilter);
 
         columnIndex.forEach(columnTuple -> {
             final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
@@ -409,7 +404,7 @@ public final class TableViewPane extends BorderPane {
             final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
             columnVisibility.setHideOnClick(false);
             columnVisibility.setId(columnTuple.getThird().getText());
-            colCheckboxes.add(columnVisibility);
+            columnCheckboxes.add(columnVisibility);
             cm.getItems().add(columnVisibility);
         });
 
@@ -602,11 +597,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // clear current columnIndex, but cache the column objects for reuse
@@ -861,11 +856,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // set progress indicator
@@ -995,11 +990,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // get graph selection

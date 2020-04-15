@@ -107,7 +107,7 @@ public class GLVisualProcessor extends VisualProcessor {
     }
 
     @Override
-    public VisualOperation exportToImage(File imageFile) {
+    public VisualOperation exportToImage(final File imageFile) {
         return new GLExportToImageOperation(imageFile);
     }
 

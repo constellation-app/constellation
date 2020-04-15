@@ -53,7 +53,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.b == a.b;
         }
 
@@ -96,7 +96,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.s == a.s;
         }
 
@@ -139,7 +139,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.i == a.i;
         }
 
@@ -182,7 +182,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.l == a.l;
         }
 
@@ -225,7 +225,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.f == a.f;
         }
 
@@ -268,7 +268,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.d == a.d;
         }
 
@@ -311,7 +311,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.z == a.z;
         }
 
@@ -354,7 +354,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return b.c == a.c;
         }
 
@@ -397,7 +397,7 @@ public enum NativeAttributeType {
         }
 
         @Override
-        public boolean equal(NativeValue a, NativeValue b) {
+        public boolean equalValue(NativeValue a, NativeValue b) {
             return a.o == b.o;
         }
 
@@ -484,10 +484,10 @@ public enum NativeAttributeType {
      *
      * @param a the first NativeValue object.
      * @param b the second NativeValue object.
-     * @return true if the 2 NativeValue objects are equal for this
-     * NativeValueType.
+     * @return true if the 2 NativeValue objects are equalValue for this
+ NativeValueType.
      */
-    public abstract boolean equal(NativeValue a, NativeValue b);
+    public abstract boolean equalValue(NativeValue a, NativeValue b);
 
     /**
      * Creates a new NativeValue object for the specified value, converting as
@@ -512,8 +512,8 @@ public enum NativeAttributeType {
      * @param element the element that was modified.
      * @param oldValue the previous value.
      * @return true if the edit needed to be updated. In cases where the current
-     * value is equal to the old value the edit can remain unchanged and false
-     * is returned.
+ value is equalValue to the old value the edit can remain unchanged and false
+ is returned.
      */
     public abstract boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue);
 

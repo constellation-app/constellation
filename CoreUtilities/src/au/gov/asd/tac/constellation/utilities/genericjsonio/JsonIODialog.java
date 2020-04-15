@@ -111,6 +111,6 @@ public class JsonIODialog {
         if (result.isPresent()) {
             returnedName = td.getEditor().getText();
         }
-        return new Tuple(result.isPresent(), returnedName);
+        return new Tuple<>(result.isPresent(), returnedName);
     }
 }

@@ -43,7 +43,7 @@ import org.openide.util.actions.Presenter;
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.dim.DimActions")
 @ActionRegistration(displayName = "", lazy = false)
-@ActionReference(path = "Toolbars/Visualisation", position = 300)
+@ActionReference(path = "Toolbars/Display", position = 300)
 @Messages("CTL_DimAction=Dim")
 public final class DimActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 

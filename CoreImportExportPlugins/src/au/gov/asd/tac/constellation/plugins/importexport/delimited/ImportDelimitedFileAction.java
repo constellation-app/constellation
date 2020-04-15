@@ -38,7 +38,7 @@ import org.openide.util.NbBundle.Messages;
         displayName = "#CTL_ImportDelimitedFileAction", iconBase = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/import-delimited.png")
 @ActionReferences({
     @ActionReference(path = "Menu/File/Import", position = 0),
-    @ActionReference(path = "Toolbars/ImportExport", position = 0)
+    @ActionReference(path = "Toolbars/File", position = 0)
 })
 @Messages("CTL_ImportDelimitedFileAction=From Delimited File...")
 public final class ImportDelimitedFileAction implements ActionListener {

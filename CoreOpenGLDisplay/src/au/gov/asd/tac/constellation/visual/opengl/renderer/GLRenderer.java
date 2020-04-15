@@ -26,6 +26,7 @@ import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLEventListener;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -173,6 +174,7 @@ public final class GLRenderer implements GLEventListener {
     @Override
     public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
         final GL3 gl = drawable.getGL().getGL3();
+
         gl.glViewport(0, 0, width, height);
 
         // Create the projection matrix, and load it on the projection matrix stack.

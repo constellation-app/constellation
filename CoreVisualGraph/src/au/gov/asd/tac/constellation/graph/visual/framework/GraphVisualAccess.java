@@ -95,6 +95,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private int vertexForegroundIcon = Graph.NOT_FOUND;
     private int vertexSelected = Graph.NOT_FOUND;
     private int vertexVisibility = Graph.NOT_FOUND;
+    private int vertexLayerVisibility = Graph.NOT_FOUND;
     private int vertexDimmed = Graph.NOT_FOUND;
     private int vertexRadius = Graph.NOT_FOUND;
     private int vertexBlaze = Graph.NOT_FOUND;
@@ -102,6 +103,7 @@ public final class GraphVisualAccess implements VisualAccess {
     private int transactionSelected = Graph.NOT_FOUND;
     private int transactionDirected = Graph.NOT_FOUND;
     private int transactionVisibility = Graph.NOT_FOUND;
+    private int transactionLayerVisibility = Graph.NOT_FOUND;
     private int transactionDimmed = Graph.NOT_FOUND;
     private int transactionLineStyle = Graph.NOT_FOUND;
     private int transactionWidth = Graph.NOT_FOUND;
@@ -519,6 +521,12 @@ public final class GraphVisualAccess implements VisualAccess {
                 if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_VISIBILITY).forItems(accessGraph.getVertexCount()).build());
                 }
+                // TODO Start
+                count = vertexLayerVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(vertexLayerVisibility);
+                if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.LAYER_VISIBILITY, count))) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_VISIBILITY).forItems(accessGraph.getVertexCount()).build());
+                }
+                // TODO endXXXX
                 count = vertexDimmed == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(vertexDimmed);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.DIMMED, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_DIM).forItems(accessGraph.getVertexCount()).build());
@@ -545,6 +553,10 @@ public final class GraphVisualAccess implements VisualAccess {
                 }
                 count = transactionVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(transactionVisibility);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.TransactionAttribute.VISIBILITY, count))) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.CONNECTION_VISIBILITY).forItems(connectionElementTypes.length).build());
+                }
+                count = transactionLayerVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(transactionLayerVisibility);
+                if (!Objects.equals(count, modCounts.put(VisualConcept.TransactionAttribute.LAYER_VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.CONNECTION_VISIBILITY).forItems(connectionElementTypes.length).build());
                 }
                 count = transactionDimmed == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(transactionDimmed);
@@ -594,6 +606,7 @@ public final class GraphVisualAccess implements VisualAccess {
         vertexForegroundIcon = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(rg);
         vertexSelected = VisualConcept.VertexAttribute.SELECTED.get(rg);
         vertexVisibility = VisualConcept.VertexAttribute.VISIBILITY.get(rg);
+        vertexLayerVisibility = VisualConcept.VertexAttribute.LAYER_VISIBILITY.get(rg);
         vertexDimmed = VisualConcept.VertexAttribute.DIMMED.get(rg);
         vertexRadius = VisualConcept.VertexAttribute.NODE_RADIUS.get(rg);
         vertexBlaze = VisualConcept.VertexAttribute.BLAZE.get(rg);
@@ -601,6 +614,7 @@ public final class GraphVisualAccess implements VisualAccess {
         transactionSelected = VisualConcept.TransactionAttribute.SELECTED.get(rg);
         transactionDirected = VisualConcept.TransactionAttribute.DIRECTED.get(rg);
         transactionVisibility = VisualConcept.TransactionAttribute.VISIBILITY.get(rg);
+        transactionLayerVisibility = VisualConcept.TransactionAttribute.LAYER_VISIBILITY.get(rg);
         transactionDimmed = VisualConcept.TransactionAttribute.DIMMED.get(rg);
         transactionLineStyle = VisualConcept.TransactionAttribute.LINE_STYLE.get(rg);
         transactionWidth = VisualConcept.TransactionAttribute.WIDTH.get(rg);
@@ -692,7 +706,7 @@ public final class GraphVisualAccess implements VisualAccess {
     @SuppressWarnings("fallthrough")
     private void rebuildConnections() {
         final int linkCount = accessGraph.getLinkCount();
-        final int maxTranaxtions = graphMaxTransactions != Graph.NOT_FOUND ? accessGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
+        final int maxTransactions = graphMaxTransactions != Graph.NOT_FOUND ? accessGraph.getIntValue(graphMaxTransactions, 0) : VisualGraphDefaults.DEFAULT_MAX_TRANSACTION_TO_DRAW;
         final int connectionUpperBound = connectionMode == ConnectionMode.LINK ? linkCount : connectionMode == ConnectionMode.EDGE ? accessGraph.getEdgeCount() : accessGraph.getTransactionCount();
         connectionElementTypes = new GraphElementType[connectionUpperBound];
         connectionElementIds = new int[connectionUpperBound];
@@ -703,7 +717,7 @@ public final class GraphVisualAccess implements VisualAccess {
             linkStartingPositions[i] = currentPos;
             switch (connectionMode) {
                 case TRANSACTION:
-                    if (accessGraph.getLinkTransactionCount(linkId) <= maxTranaxtions) {
+                    if (accessGraph.getLinkTransactionCount(linkId) <= maxTransactions) {
                         for (int j = 0; j < accessGraph.getLinkTransactionCount(linkId); j++) {
                             connectionElementTypes[currentPos] = GraphElementType.TRANSACTION;
                             connectionElementIds[currentPos] = accessGraph.getLinkTransaction(linkId, j);
@@ -981,7 +995,8 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public float getVertexVisibility(int vertex) {
-        return vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY;
+        float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
+        return layerVisibility * (vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
 
     @Override
@@ -1110,23 +1125,26 @@ public final class GraphVisualAccess implements VisualAccess {
                     final int linkId = connectionElementIds[connection];
                     for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
                         final int transactionId = accessGraph.getLinkTransaction(linkId, i);
-                        linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionVisibility, transactionId));
+                        linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId)); // handle case of no layer vis - ie no layer
                     }
                     return linkVisibility;
                 case EDGE:
-                    float edgeVisbility = -1;
+                    float edgeVisibility = -1;
                     final int edgeId = connectionElementIds[connection];
                     for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
                         final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
-                        edgeVisbility = Math.max(edgeVisbility, accessGraph.getFloatValue(transactionVisibility, transactionId));
+                        edgeVisibility = Math.max(edgeVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId));
                     }
-                    return edgeVisbility;
+                    return edgeVisibility;
                 case TRANSACTION:
                 default:
-                    return accessGraph.getFloatValue(transactionVisibility, connectionElementIds[connection]);
+                    float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
+                    return transLayerVisibility * accessGraph.getFloatValue(transactionVisibility, connectionElementIds[connection]);
             }
         }
-        return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
+        float defaultLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, accessGraph.getTransaction(connection)) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
+
+        return defaultLayerVisibility * VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
     }
 
     @Override

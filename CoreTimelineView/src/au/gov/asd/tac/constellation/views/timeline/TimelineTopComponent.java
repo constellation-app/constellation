@@ -81,7 +81,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1400),
+    @ActionReference(path = "Menu/Views", position = 1500),
     @ActionReference(path = "Shortcuts", name = "CS-T"),
     @ActionReference(path = "Toolbars/Views", position = 100)
 })

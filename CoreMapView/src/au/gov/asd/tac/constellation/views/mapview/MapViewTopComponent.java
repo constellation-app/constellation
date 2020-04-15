@@ -98,7 +98,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 600),
+    @ActionReference(path = "Menu/Views", position = 700),
     @ActionReference(path = "Shortcuts", name = "CS-M")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_MapViewAction",

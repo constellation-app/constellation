@@ -73,6 +73,8 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     public static final String NODE = "Node";
     public static final String TRANSACTION = "Transaction";
+    
+    private static final String MISSING_PROPERTY_FORMAT = "%s property is missing";
 
     @Override
     public String getType() {
@@ -210,22 +212,22 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
         final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);
         if (vertexLabelAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.LABEL.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.LABEL.getName()));
         }
 
         final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (vertexSelectedAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", VisualConcept.VertexAttribute.SELECTED.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, VisualConcept.VertexAttribute.SELECTED.getName()));
         }
 
         final int vertexTypeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         if (vertexTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.VertexAttribute.TYPE.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.VertexAttribute.TYPE.getName()));
         }
 
         final int transactionTypeAttribute = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
         if (transactionTypeAttribute == Graph.NOT_FOUND) {
-            throw new PluginException(PluginNotificationLevel.ERROR, String.format("%s property is missing", AnalyticConcept.TransactionAttribute.TYPE.getName()));
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(MISSING_PROPERTY_FORMAT, AnalyticConcept.TransactionAttribute.TYPE.getName()));
         }
 
         // make a set of the highlighted nodes

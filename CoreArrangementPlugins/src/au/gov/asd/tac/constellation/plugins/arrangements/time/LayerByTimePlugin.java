@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
@@ -135,6 +136,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
     private static final String ORIGINAL_ID_LABEL = "layer_original_id";
     private static final String LAYER_NAME = "layer";
     private static final String NLAYERS = "layers";
+    private static final String VISIBILITY = "visibility";
 
     private static final Map<String, Integer> LAYER_INTERVALS = new HashMap<>();
     private static final Map<String, Integer> BIN_CALENDAR_UNITS = new HashMap<>();
@@ -350,9 +352,11 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create and store graph attributes.
             final LayerName defaultName = new LayerName(Graph.NOT_FOUND, "Default");
             final int timeLayerAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, LayerNameAttributeDescription.ATTRIBUTE_NAME, LAYER_NAME, "time layer", defaultName, null);
-            final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
-            final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, "float", "visibility", "visibility", 1, null);
-            final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, "float", "visibility", "visibility", 1, null);
+
+            final int zAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
+            final int vxVisibilityAttr = wgcopy.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
+            final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
+
             final int txColorAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, "color");
             final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, "boolean", "layer_guideline", "This transaction is a layer guideline", false, null);
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25f, 0.25f, 0.25f, 1f);
@@ -706,13 +710,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      * Procedure for reordering the graph using nodes as layers on the z-axis.
      */
     private void nodesAsLayers(final GraphWriteMethods graph, final int txId, final int layer, final float normLayer) {
-        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0, null);
-        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
-        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
-        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
-        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
-        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "visibility", "visibility", 1, null);
+        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
+        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
+        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
         final int sNodeId = graph.getTransactionSourceVertex(txId);
         graph.setFloatValue(x2Attr, sNodeId, graph.getFloatValue(xAttr, sNodeId));
         graph.setFloatValue(y2Attr, sNodeId, graph.getFloatValue(yAttr, sNodeId));
@@ -778,13 +782,13 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
      *
      */
     private void transactionsAsLayers(final GraphWriteMethods graph, final int txId, final int z, final float step) {
-        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0, null);
-        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
-        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
-        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
-        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
-        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "visibility", "visibility", 1, null);
+        final int xAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+        final int yAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
+        final int zAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
+        final int x2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        final int y2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        final int z2Attr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+        final int vxVisibilityAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
         final int nodeAttr = graph.getAttribute(GraphElementType.VERTEX, ORIGINAL_ID_LABEL);
 
         final int srcVxId = graph.getTransactionSourceVertex(txId);
