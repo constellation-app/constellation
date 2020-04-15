@@ -23,12 +23,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.text.Text;
 
 /**
- * Controls interaction of UI to layers and filtering of nodes.
+ * Controls interaction of UI to layers and filtering of nodes and transactions.
  *
  * @author aldebaran30701
  */
@@ -59,7 +59,7 @@ public class LayersViewController {
         while (it.hasNext()) {
             final HBox layerBox = (HBox) (it.next());
             final CheckBox visibilityCheckBox = (CheckBox) layerBox.getChildren().get(1);
-            final Text layerIdText = (Text) layerBox.getChildren().get(0);
+            final Label layerIdText = (Label) layerBox.getChildren().get(0);
 
             // only add layer id to list when it is checked
             newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
