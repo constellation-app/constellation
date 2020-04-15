@@ -147,7 +147,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     // second bit from right is boolean for if you have to display the layer 00X0
     // last bit on right is whether it is a dynamic layer 000X
     private final List<Byte> layerPrefs = new ArrayList<>();
-    public final List<String> LAYER_QUERIES = new ArrayList<>();
+    private final List<String> layerQueries = new ArrayList<>();
 
     /**
      * Creates a new StoreGraph with the specified capacities.
@@ -179,9 +179,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         int count = 0;
         for (final String query : queries) {
             // if old query was not null (dynamic), and old query is different from new (query updated)
-            if (count < LAYER_QUERIES.size() && LAYER_QUERIES.get(count) != null
-                    && !LAYER_QUERIES.get(count).equals(DEFAULT_LAYER_PLACEHOLDER)
-                    && !LAYER_QUERIES.get(count).equals(query)) {
+            if (count < layerQueries.size() && layerQueries.get(count) != null
+                    && !layerQueries.get(count).equals(DEFAULT_LAYER_PLACEHOLDER)
+                    && !layerQueries.get(count).equals(query)) {
                 // iterate all elements, remove that mask
                 // Loop through all vertexes and remove bitmasks
                 final int vertexCount = getVertexCount();
@@ -201,8 +201,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
             count++;
         }
-        LAYER_QUERIES.clear();
-        LAYER_QUERIES.addAll(queries);
+        layerQueries.clear();
+        layerQueries.addAll(queries);
     }
 
     /**
@@ -470,7 +470,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         this.layerPrefs.addAll(original.layerPrefs);
         
         // TODO: static queries arent going to be any good, a copy will result in editing the same query - fix this!
-        StoreGraph.this.setLayerQueries(original.LAYER_QUERIES);
+        StoreGraph.this.setLayerQueries(original.layerQueries);
 
         MemoryManager.newObject(StoreGraph.class);
     }
@@ -1974,10 +1974,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * </ul>
      */
     private void recalculateLayerVisibilities() {
-        for (int i = 0; i < LAYER_QUERIES.size(); i++) {
+        for (int i = 0; i < layerQueries.size(); i++) {
             // if current mask has bit set, recheck
             if ((currentVisibleMask & (1 << (i))) > 0) {
-                if (LAYER_QUERIES.get(i) == null || LAYER_QUERIES.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
+                if (layerQueries.get(i) == null || layerQueries.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
                     layerPrefs.remove(i);
                     layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
                 } else {
@@ -2006,10 +2006,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
 
         synchronized (this) {
-            for (int i = 0; i < LAYER_QUERIES.size(); i++) {
+            for (int i = 0; i < layerQueries.size(); i++) {
                 // calculate bitmask for dynamic layers that are displayed
-                if (i < layerPrefs.size() && (layerPrefs.get(i) & 0b11) == 3 && LAYER_QUERIES.get(i) != null) {
-                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.convertToPostfix(LAYER_QUERIES.get(i)))
+                if (i < layerPrefs.size() && (layerPrefs.get(i) & 0b11) == 3 && layerQueries.get(i) != null) {
+                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.convertToPostfix(layerQueries.get(i)))
                             ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
                 }
             }

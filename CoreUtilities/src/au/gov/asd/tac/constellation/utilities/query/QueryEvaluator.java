@@ -47,13 +47,8 @@ public class QueryEvaluator {
             this.precedence = precedence;
         }
     }
-
-    private static final Map<String, Operator> OPERATORS = new HashMap<String, Operator>() {
-        {
-            put("&&", Operator.AND);
-            put("||", Operator.OR);
-        }
-    };
+    
+    private static final Map<String, Operator> OPERATORS = Map.ofEntries(Map.entry("&&", Operator.AND),Map.entry("||", Operator.OR));
 
     private static boolean isHigerPrecedence(final String operator, final String subOperator) {
         return (OPERATORS.containsKey(subOperator) 

@@ -6,6 +6,7 @@
 * Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
 * Updated the java source detected by SonarQube to check for Java 11.
 * Removed the container image to build the NetBeans 8 version of Constellation.
+* Added Layers view to the Experimental views tab.
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
