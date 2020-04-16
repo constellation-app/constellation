@@ -20,7 +20,7 @@
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz"/>
     <property name="jre.filename.macosx" value="zulu11.37.19-ca-fx-jre11.0.6-macosx_x64"/>
     <property name="jre.url.macosx" value="https://cdn.azul.com/zulu/bin/${jre.filename.macosx}.tar.gz"/>
-    <property name="dist.version" value="v2.0.0-rc.1"/>
+    <property name="dist.version" value="v2.0.0-beta"/>
     <property name="dist.filename.linux" value="constellation-linux-${dist.version}"/>
     <property name="dist.filename.windows" value="constellation-win-${dist.version}"/>
     <property name="dist.filename.macosx" value="constellation-macosx-${dist.version}"/>
