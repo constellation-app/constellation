@@ -46,14 +46,14 @@ public class Startup implements Runnable {
 
         // Change the main window title to reflect the most recent module version as the application version.
         WindowManager.getDefault().invokeWhenUIReady(() -> {
-            String mostRecentVersion = MostRecentModules.getMostRecentVersion();
+            /*String mostRecentVersion = MostRecentModules.getMostRecentVersion();
             if (mostRecentVersion == null) {
                 // once issue #86 is fixed this should go back to UNDER_DEVELOPMENT"
                 mostRecentVersion = "1.20200225.104006";
-            }
+            }*/
 
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            final String title = String.format("%s - %s", name, mostRecentVersion);
+            final String title = String.format("%s - %s", name, "2.0.0-beta");
             frame.setTitle(title);
         });
 
