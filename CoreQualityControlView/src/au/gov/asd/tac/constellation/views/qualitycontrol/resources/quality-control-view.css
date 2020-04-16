@@ -88,9 +88,9 @@
 
 /* When the table-row-cell is selected and focused */
 .table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
-    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
@@ -170,9 +170,9 @@
 }
 
 .table-view:focused .table-row-cell:filled .table-cell:focused:selected {
+    -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
-    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
