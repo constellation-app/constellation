@@ -7,6 +7,9 @@
 * Updated the java source detected by SonarQube to check for Java 11.
 * Removed the container image to build the NetBeans 8 version of Constellation.
 * Added Layers view to the Experimental views tab.
+* Renamed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting.
+* Renamed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting.
+* Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

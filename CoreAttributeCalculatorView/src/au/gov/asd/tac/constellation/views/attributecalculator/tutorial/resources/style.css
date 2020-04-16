@@ -1,10 +1,10 @@
 h1 {
     color:dodgerblue;
-    font-family:arial;
+    font-family:arial, sans-serif;
 }
 .text {
     font-size:1.166667em; /* 14pt */
-    font-family:arial;
+    font-family:arial, sans-serif;
 }
 
 a.page:visited {
@@ -22,7 +22,7 @@ body {
 
 .note {
     font-size:1.000001em; /* 12pt */
-    font-family:arial;
+    font-family:arial, sans-serif;
     padding-left: 4em;
 }
 

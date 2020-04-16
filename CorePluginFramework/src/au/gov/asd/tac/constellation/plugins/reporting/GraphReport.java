@@ -100,7 +100,7 @@ public class GraphReport {
      * tags recognized by this GraphReport.
      *
      * @param pluginReport the specified PluginReport.
-     * @see GraphReport#getTags()
+     * @see GraphReport#getUTags()
      */
     public void includeTags(PluginReport pluginReport) {
         tags.addAll(Arrays.asList(pluginReport.getTags()));
@@ -124,7 +124,7 @@ public class GraphReport {
      * @return the union of all tags seen on any {@link PluginReport} sent to
      * this GraphReport.
      */
-    public Set<String> getTags() {
+    public Set<String> getUTags() {
         return uTags;
     }
 }
