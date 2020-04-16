@@ -133,7 +133,7 @@ public class DijkstraServices {
                     distanceBarrier.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
-                    throw ex;
+                    Thread.currentThread().interrupt();
                 } catch (BrokenBarrierException ex) {
                     Exceptions.printStackTrace(ex);
                 }
@@ -167,7 +167,7 @@ public class DijkstraServices {
                     pathBarrier.await();
                 } catch (InterruptedException ex) {
                     Exceptions.printStackTrace(ex);
-                    throw ex;
+                    Thread.currentThread().interrupt();
                 } catch (BrokenBarrierException ex) {
                     Exceptions.printStackTrace(ex);
                 }

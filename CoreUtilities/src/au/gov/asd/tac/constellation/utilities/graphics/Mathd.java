@@ -344,7 +344,7 @@ public final class Mathd {
         for (int i = 0; i < 4; i++) {
             det += (i & 0x1) == 1 ? (-m.getA()[i] * detIJ(m, 0, i)) : (m.getA()[i] * detIJ(m, 0, i));
         }
-        det = 1.0 / det;
+        det = (det != 0 ? (1.0 / det) : Double.POSITIVE_INFINITY);
 
         // calculate inverse
         for (int i = 0; i < 4; i++) {
