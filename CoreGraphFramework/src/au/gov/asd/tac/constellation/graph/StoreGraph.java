@@ -139,7 +139,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private int transactionZAttributeId = -1;
 
     // TODO: TEMP VARIABLE to test updates - This will have to be migrated to a graph attribute
-    public static int currentVisibleMask = 1;
+    private static int currentVisibleMask = 1;
     private boolean avoidLayerUpdate = false;
 
     // 0000
