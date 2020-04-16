@@ -25,6 +25,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -39,7 +40,7 @@ import org.openide.NotifyDescriptor;
  */
 public class LayersViewPane extends BorderPane {
 
-    private static final String DEFAULT_LAYER_PLACEHOLDER = "default";
+    private static final String DEFAULT_LAYER_PLACEHOLDER = "Default";
     
     private final LayersViewController controller;
     private final VBox layersViewPane;
@@ -53,7 +54,7 @@ public class LayersViewPane extends BorderPane {
         this.controller = controller;
         
         // create layers
-        final Label layerIdHeadingText = new Label("Layer ID");
+        final Label layerIdHeadingText = new Label("Layer\nID");
         HBox.setHgrow(layerIdHeadingText, Priority.ALWAYS);
         final Label visibilityHeadingText = new Label("Visibility");
         HBox.setHgrow(visibilityHeadingText, Priority.ALWAYS);
@@ -65,6 +66,18 @@ public class LayersViewPane extends BorderPane {
                 visibilityHeadingText, queryHeadingText, descriptionHeadingText);
         VBox.setMargin(headingBox, new Insets(5));
         VBox.setVgrow(headingBox, Priority.ALWAYS);
+        
+        // set heading alignments
+        layerIdHeadingText.setTextAlignment(TextAlignment.CENTER);
+        layerIdHeadingText.setMinWidth(40);
+        layerIdHeadingText.setMinHeight(25); 
+        layerIdHeadingText.setPrefWidth(30);
+        visibilityHeadingText.setPrefWidth(50);
+        visibilityHeadingText.setMinWidth(50);
+        queryHeadingText.setPrefWidth(10000);
+        queryHeadingText.setMinWidth(80);
+        descriptionHeadingText.setPrefWidth(10000);
+        descriptionHeadingText.setMinWidth(80);
         
         this.layers = new VBox(5, headingBox);
         layers.setAlignment(Pos.TOP_LEFT);
@@ -109,7 +122,9 @@ public class LayersViewPane extends BorderPane {
 
     private void createLayer(final boolean defaultLayer) {
         final Label layerIdText = new Label(String.format("%02d", ++currentIndex));
-        layerIdText.setMinWidth(15);
+        layerIdText.setMinWidth(30);
+        layerIdText.setTextAlignment(TextAlignment.CENTER);
+        layerIdText.setPadding(new Insets(0,0,0,10));
         HBox.setHgrow(layerIdText, Priority.ALWAYS);
 
         final CheckBox visibilityCheckBox = new CheckBox();
@@ -118,6 +133,8 @@ public class LayersViewPane extends BorderPane {
             controller.execute();
         });
         HBox.setHgrow(visibilityCheckBox, Priority.ALWAYS);
+        visibilityCheckBox.setMinWidth(60);
+        visibilityCheckBox.setPadding(new Insets(0,25,0,25));
         
         final TextArea queryTextArea = new TextArea();
         queryTextArea.setPrefRowCount(1);
@@ -141,10 +158,11 @@ public class LayersViewPane extends BorderPane {
                 visibilityCheckBox, queryTextArea, descriptionTextArea);
         VBox.setMargin(layerBox, new Insets(5));
         VBox.setVgrow(layerBox, Priority.ALWAYS);
+        layerBox.setAlignment(Pos.CENTER);
         layers.getChildren().add(layerBox);
         
+        layerIdText.setPrefWidth(40);
         layerBox.prefWidthProperty().bind(layers.widthProperty());
-        
     }
 
     public VBox getLayers() {
