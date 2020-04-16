@@ -7,7 +7,8 @@
 * Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
 * Updated the java source detected by SonarQube to check for Java 11.
 * Removed the container image to build the NetBeans 8 version of Constellation.
-* Renamed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting. 
+* Added Layers view to the Experimental views tab.
+* Renamed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting.
 * Renamed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting.
 * Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
