@@ -351,7 +351,7 @@
         <!-- delete the harness folder which is only required for testing -->
         <delete dir="${temp.dir.rest}/harness"/>
         
-        <tar destfile="${dist.dir}/${dist.filename.linux}.tar">
+        <tar destfile="${dist.dir}/${dist.filename.macosx}.tar">
             <!-- Using pre-built executable files that come with the Constellation icon -->
             <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
             <tarfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}" uid="${nobody}" gid="${nobody}">
@@ -372,8 +372,8 @@
                 <exclude name="config/Modules/*.xml_hidden"/>
             </tarfileset>
         </tar>
-        <gzip src="${dist.dir}/${jre.filename.macosx}.tar" destfile="${dist.dir}/${jre.filename.macosx}.tar.gz"/>
-        <delete file="${dist.dir}/${jre.filename.macosx}.tar"/>
+        <gzip src="${dist.dir}/${dist.filename.macosx}.tar" destfile="${dist.dir}/${dist.filename.macosx}.tar.gz"/>
+        <delete file="${dist.dir}/${dist.filename.macosx}.tar"/>
         <delete dir="${basedir}/${jre.filename.macosx}/"/>
     </target>
     
