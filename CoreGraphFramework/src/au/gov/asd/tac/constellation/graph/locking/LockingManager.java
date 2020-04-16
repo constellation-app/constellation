@@ -51,9 +51,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     private LockingEdit initialEdit = null;
     private UndoManager undoManager;
 
-    public LockingManager() {
-    }
-
     public void setTargets(final T targetA, final T targetB) {
         a = readContext = new Context(targetA);
         b = writeContext = new Context(targetB);
@@ -145,12 +142,15 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     }
 
     protected void update(final Object description, Object editor) {
+        // Overridden in class DualGraph
     }
 
     protected void undoOccurred() {
+        // Overridden in class DualGraph
     }
 
     protected void redoOccurred() {
+        // Overridden in class DualGraph
     }
 
     public void commit(final Object description, final String commitName) throws DuplicateKeyException {

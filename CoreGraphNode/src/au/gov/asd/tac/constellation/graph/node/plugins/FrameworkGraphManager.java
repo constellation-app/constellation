@@ -113,5 +113,6 @@ public final class FrameworkGraphManager extends GraphManager implements LookupL
 
     @Override
     public void newActiveGraph(final Graph graph) {
+        // Abstract method must be overridden 
     }
 }

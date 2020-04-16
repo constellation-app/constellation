@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.planar;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.planar.PQNodeList;
+import au.gov.asd.tac.constellation.plugins.arrangements.planar.PQNodeList.PQNodeListTest;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -29,10 +29,7 @@ import org.testng.annotations.Test;
  */
 public class PQNodeListNGTest {
 
-    PQNodeList.PQNodeListTest tester = new PQNodeList.PQNodeListTest();
-
-    public PQNodeListNGTest() {
-    }
+    PQNodeListTest tester = new PQNodeListTest();
 
     @BeforeClass
     public static void setUpClass() throws Exception {

@@ -171,6 +171,7 @@ public class PackagePanel extends JPanel {
 
             @Override
             public void focusLost(final java.awt.event.FocusEvent e) {
+                // Required for implementation of the FocusListener
             }
         });
         add(field, BorderLayout.SOUTH);

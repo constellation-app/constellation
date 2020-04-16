@@ -277,31 +277,38 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     @Override
     public void componentMoved(ComponentEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void componentShown(ComponentEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        throw new UnsupportedOperationException();
     }
     private boolean leftClickDown = false;
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

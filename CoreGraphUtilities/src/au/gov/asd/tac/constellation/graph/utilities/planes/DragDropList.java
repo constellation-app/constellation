@@ -210,22 +210,27 @@ final class DragDropList extends JList<MyElement> {
 
         @Override
         public void dragEnter(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragOver(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dropActionChanged(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragExit(final DragSourceEvent dse) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragDropEnd(final DragSourceDropEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override

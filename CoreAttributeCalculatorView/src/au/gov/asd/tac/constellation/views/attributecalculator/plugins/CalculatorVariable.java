@@ -530,5 +530,6 @@ public enum CalculatorVariable {
 //        }
 //    }
     public void init(GraphReadMethods graph) {
+        //Used but unpopulated method
     }
 }

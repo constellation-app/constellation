@@ -35,6 +35,7 @@ public class GraphResult extends AnalyticResult<GraphScore> {
 
     @Override
     public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
+        //This method has not been populated
     }
 
     public static class GraphScore extends AnalyticData implements Comparable<GraphScore> {

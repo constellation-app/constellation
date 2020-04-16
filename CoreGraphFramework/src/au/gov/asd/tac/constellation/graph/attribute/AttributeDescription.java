@@ -668,14 +668,17 @@ public interface AttributeDescription {
 
         @Override
         public void addElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
         public void removeElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
         public void updateElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
@@ -690,6 +693,7 @@ public interface AttributeDescription {
 
         @Override
         public void expandCapacity(int newCapacity) {
+            // Override required for implementation of GraphIndex
         }
     };
 }
