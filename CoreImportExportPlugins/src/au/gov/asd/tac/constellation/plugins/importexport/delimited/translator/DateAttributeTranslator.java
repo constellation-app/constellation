@@ -50,7 +50,6 @@ public class DateAttributeTranslator extends AttributeTranslator {
         DATE_FORMATS.put("MM/dd/yyyy", "MM/dd/yyyy");
         DATE_FORMATS.put("dd/MM/yyyy", "dd/MM/yyyy");
         DATE_FORMATS.put("yyyyMMdd", "yyyyMMdd");
-        DATE_FORMATS.put("yyyyMMdd", "yyyyMMdd");
         DATE_FORMATS.put("CUSTOM", null);
     }
 
