@@ -14,7 +14,7 @@ class Obliterator(object):
         return Obliterator.the_obliterator
 
     def __init__(self):
-        pass
+        pass # nothing else needed here
 
     def __getattr__(self, name):
         return lambda : self
@@ -43,13 +43,13 @@ class Obliterator(object):
         return self
 
     def __setattr__(self, name, val):
-        pass
+        pass # nothing else needed here
 
     def __getitem__(self, key):
         return self
 
     def __setitem__(self, key, val):
-        pass
+        pass # nothing else needed here
 
     def __contains__(self, item):
         return False
