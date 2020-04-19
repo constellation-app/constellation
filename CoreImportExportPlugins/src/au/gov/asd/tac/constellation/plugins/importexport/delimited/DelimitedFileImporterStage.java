@@ -138,6 +138,7 @@ public class DelimitedFileImporterStage extends Stage {
             }
             userClickedTheCheckboxFirst[0] = false;
         });
+        optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, showSchemaAttributesItem);
 
         final AnchorPane menuToolbar = new AnchorPane();
         final MenuBar menuBar = new MenuBar();

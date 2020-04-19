@@ -220,7 +220,7 @@ public class RunPane extends BorderPane implements KeyListener {
         attributeScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         final SplitPane inputtedFilterPane = new SplitPane();
-        final Label inputtedFilterLabel = new Label("Atribute Filter (start typing):");
+        final Label inputtedFilterLabel = new Label("Attribute Filter (start typing):");
         inputtedFilterField.setEditable(false);
         inputtedFilterPane.getItems().add(inputtedFilterLabel);
         inputtedFilterPane.getItems().add(inputtedFilterField);
