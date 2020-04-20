@@ -45,9 +45,21 @@ public interface GLRenderable extends Comparable<GLRenderable> {
         public void run(final GL3 gl);
     }
 
-    public static int ANNOTATIONS_PRIORITY = 20;
-    public static int DEFAULT_PRIORITY = 10;
-    public static int HIGH_PRIORITY = 0;
+    public enum RenderablePriority {
+        ANNOTATIONS_PRIORITY(20),
+        DEFAULT_PRIORITY(10),
+        HIGH_PRIORITY(0);
+        
+        private final int value;
+        
+        private RenderablePriority(int value) {
+            this.value = value;
+        }
+        
+        public int getValue() {
+            return value;
+        }
+    }
 
     @Override
     public default int compareTo(final GLRenderable o) {
@@ -65,7 +77,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      * @return
      */
     public default int getPriority() {
-        return DEFAULT_PRIORITY;
+        return RenderablePriority.DEFAULT_PRIORITY.getValue();
     }
 
     /**
