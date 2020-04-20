@@ -299,22 +299,18 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
-            if (n < 10000) {
-                // Do a trees layout.
-                try {
+            try {
+                if (n < 10000) {
+                    // Do a trees layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            } else {
-                // Do a grid layout.
-                try {
+                } else {
+                    // Do a grid layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);

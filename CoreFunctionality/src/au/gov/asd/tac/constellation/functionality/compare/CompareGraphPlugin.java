@@ -341,18 +341,15 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
         while (result.next()) {
             // make a cache of the primary key values
             vertexSourceRecordPrimaryValues.clear();
-            for (final String key : vertexPrimaryKeys) {
-                final String value = result.get(GraphRecordStoreUtilities.SOURCE + key);
-                if (value != null) {
-                    vertexSourceRecordPrimaryValues.put(key, value);
-                }
-            }
-
             vertexDestinationRecordPrimaryValues.clear();
             for (final String key : vertexPrimaryKeys) {
-                final String value = result.get(GraphRecordStoreUtilities.DESTINATION + key);
-                if (value != null) {
-                    vertexDestinationRecordPrimaryValues.put(key, value);
+                final String sourceValue = result.get(GraphRecordStoreUtilities.SOURCE + key);
+                if (sourceValue != null) {
+                    vertexSourceRecordPrimaryValues.put(key, sourceValue);
+                }
+                final String destinationValue = result.get(GraphRecordStoreUtilities.DESTINATION + key);
+                if (destinationValue != null) {
+                    vertexDestinationRecordPrimaryValues.put(key, destinationValue);
                 }
             }
 
