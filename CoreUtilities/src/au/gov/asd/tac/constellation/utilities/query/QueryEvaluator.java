@@ -163,6 +163,8 @@ public class QueryEvaluator {
                         }
                         break;
                     }
+                    default:
+                        break;
                 }
             }
         }
