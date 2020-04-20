@@ -1,7 +1,7 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
-== 2020-04-20 Option to remove a saved preference
+== 2020-04-20 Data Access View
 <p>You can now remove a previously saved preference in Data Access View under Options -> Load.</p>
 
 == 2020-04-15 New Layers View
