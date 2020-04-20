@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.scatter3d;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
@@ -114,9 +115,9 @@ public class Scatter3dArranger implements Arranger {
                 vertices.clear(vxId);
             }
 
-            float xVal = 0;
-            float yVal = 0;
-            float zVal = 0;
+            float xVal;
+            float yVal;
+            float zVal;
 
             for (int i = 0; i < vxPos; i++) {
                 if (Thread.interrupted()) {
@@ -151,6 +152,16 @@ public class Scatter3dArranger implements Arranger {
             }
 
             // Scale to 0-100
+            if (maxX == minX) {
+                maxX += 1;
+            }
+            if (maxY == minY) {
+                maxY += 1;
+            }
+            if (maxZ == minZ) {
+                maxZ += 1;
+            }
+
             for (int i = 0; i < vxPos; i++) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
@@ -206,7 +217,7 @@ public class Scatter3dArranger implements Arranger {
         }
 
         if (attributeValue instanceof Integer) {
-            float ret = (int) attributeValue;
+            float ret = (Integer) attributeValue;
             return ret;
         }
 
@@ -226,6 +237,11 @@ public class Scatter3dArranger implements Arranger {
             float hour = c.getHour();
             float minute = c.getMinute();
             return getFinalValue((year - 2010) + month / 12 + monthDay / (366) + hour / (366 * 24) + minute / (366 * 24 * 60), logarithmic);
+        }
+
+        if (attributeValue instanceof RawData) {
+            String s = ((RawData) attributeValue).toString();
+            return getFloatValueFromObject(s, logarithmic);
         }
 
         return 0.0f;
