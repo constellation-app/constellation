@@ -235,7 +235,7 @@ public final class GraphJsonReader {
         // META is optional.
         current = jp.nextToken();
         if (current != JsonToken.START_OBJECT) {
-            throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+            throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
         }
 
         // Read the file format version number.
