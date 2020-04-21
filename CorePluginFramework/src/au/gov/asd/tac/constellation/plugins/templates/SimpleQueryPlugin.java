@@ -173,7 +173,6 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     } catch (Exception e) {
                         cancelled = true;
                         final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.INFO, msg + "\n" + e.getMessage());
                         LOGGER.log(Level.WARNING, msg);
                         throw e;
                     }
