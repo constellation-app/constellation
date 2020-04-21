@@ -303,16 +303,18 @@ class Constellation:
         td = Path(self.file_dest)
         self._write_files(td, verb=verb, endpoint=endpoint, path=path, params=params, json_=json_, data=data)
 
+        json_response = 'response.json'
+
         # Poll for the response.
         #
-        response = td / 'response.json'
+        response = td / json_response
         content = td / 'content.out'
         sleep = 0
         while sleep<30:
             # NFS is a truly terrible filesystem.
             # The obvious "response.is_file()" doesn't work here.
             #
-            if 'response.json' in os.listdir(td):
+            if json_response in os.listdir(td):
                 break
             sleep += 1
             time.sleep(1)
@@ -770,12 +772,16 @@ def nx_from_dataframe(df, g=None, src_col=None, dst_col=None):
     in the DataFrame.
     """
 
+    source = 'source.'
+    destination = 'destination.'
+    transaction = 'transaction.'
+
     if g is None:
         g = nx.DiGraph()
 
-    snames = [i for i in df.columns if i.startswith('source.')]
-    dnames = [i for i in df.columns if i.startswith('destination.')]
-    tnames = [i for i in df.columns if i.startswith('transaction.')]
+    snames = [i for i in df.columns if i.startswith(source)]
+    dnames = [i for i in df.columns if i.startswith(destination)]
+    tnames = [i for i in df.columns if i.startswith(transaction)]
 
     SID = 'source.[id]'
     DID = 'destination.[id]'
@@ -789,19 +795,19 @@ def nx_from_dataframe(df, g=None, src_col=None, dst_col=None):
             #
             if src_col:
                 sid = row[src_col]
-            g.add_node(sid, **_row_dict(row, snames, 'source.'))
+            g.add_node(sid, **_row_dict(row, snames, source))
         else:
             if src_col:
                 sid = row[src_col]
             if sid not in g:
-                g.add_node(sid, **_row_dict(row, snames, 'source.'))
+                g.add_node(sid, **_row_dict(row, snames, source))
 
             if dst_col:
                 did = row[dst_col]
             if did not in g:
-                g.add_node(did, **_row_dict(row, dnames, 'destination.'))
+                g.add_node(did, **_row_dict(row, dnames, destination))
 
-            g.add_edge(sid, did, **_row_dict(row, tnames, 'transaction.'))
+            g.add_edge(sid, did, **_row_dict(row, tnames, transaction))
 
     return g
 

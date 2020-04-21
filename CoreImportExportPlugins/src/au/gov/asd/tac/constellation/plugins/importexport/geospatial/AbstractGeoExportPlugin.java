@@ -24,12 +24,13 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.ELEMENT_TYPE_PARAMETER_ID;
-import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.OUTPUT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.ELEMENT_TYPE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.OUTPUT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -45,7 +46,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape.GeometryType;
@@ -240,18 +240,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the vertex represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if (!selectedOnly || vertexSelected) {
-                        if (vertexShape != null && !vertexShape.isEmpty() && Shape.isValidGeoJson(vertexShape)) {
-                            shapes.put(vertexIdentifier, vertexShape);
+                    if ((!selectedOnly || vertexSelected) && vertexShape != null && !vertexShape.isEmpty() 
+                            && Shape.isValidGeoJson(vertexShape)) {
+                        shapes.put(vertexIdentifier, vertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || vertexSelected) && vertexLatitude != null && vertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
+                            shapes.put(vertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (vertexLatitude != null && vertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
-                                shapes.put(vertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -299,18 +298,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the transaction represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (transactionShape != null && !transactionShape.isEmpty() && Shape.isValidGeoJson(transactionShape)) {
-                            shapes.put(transactionIdentifier, transactionShape);
+                    if ((!selectedOnly || transactionSelected) && transactionShape != null && !transactionShape.isEmpty() 
+                            && Shape.isValidGeoJson(transactionShape)) {
+                        shapes.put(transactionIdentifier, transactionShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && transactionLatitude != null && transactionLongitude != null) {
+                        try {
+                            final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
+                            shapes.put(transactionIdentifier, transactionPoint);
                             shapeFound = true;
-                        } else if (transactionLatitude != null && transactionLongitude != null) {
-                            try {
-                                final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
-                                shapes.put(transactionIdentifier, transactionPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -323,7 +321,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put("transaction." + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -332,12 +330,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put("source." + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put("destination." + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(transactionIdentifier, attributeMap);
@@ -345,18 +343,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the source vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (sourceVertexShape != null && !sourceVertexShape.isEmpty() && Shape.isValidGeoJson(sourceVertexShape)) {
-                            shapes.put(sourceVertexIdentifier, sourceVertexShape);
+                    if ((!selectedOnly || transactionSelected) && sourceVertexShape != null && !sourceVertexShape.isEmpty() && 
+                            Shape.isValidGeoJson(sourceVertexShape)) {
+                        shapes.put(sourceVertexIdentifier, sourceVertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && sourceVertexLatitude != null && sourceVertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
+                            shapes.put(sourceVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (sourceVertexLatitude != null && sourceVertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
-                                shapes.put(sourceVertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -369,7 +366,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put("transaction." + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -378,12 +375,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put("source." + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put("destination." + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(sourceVertexIdentifier, attributeMap);
@@ -391,18 +388,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the destination vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (destinationVertexShape != null && !destinationVertexShape.isEmpty() && Shape.isValidGeoJson(destinationVertexShape)) {
-                            shapes.put(destinationVertexIdentifier, destinationVertexShape);
+                    if ((!selectedOnly || transactionSelected) && destinationVertexShape != null && !destinationVertexShape.isEmpty() 
+                            && Shape.isValidGeoJson(destinationVertexShape)) {
+                        shapes.put(destinationVertexIdentifier, destinationVertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && destinationVertexLatitude != null && destinationVertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
+                            shapes.put(destinationVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (destinationVertexLatitude != null && destinationVertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
-                                shapes.put(destinationVertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -415,7 +411,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String transactionAttributeName = graph.getAttributeName(transactionAttributeId);
                             if (Character.isUpperCase(transactionAttributeName.charAt(0))) {
                                 final Object transactionAttributeValue = graph.getObjectValue(transactionAttributeId, transactionId);
-                                attributeMap.put("transaction." + transactionAttributeName, transactionAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.TRANSACTION + transactionAttributeName, transactionAttributeValue);
                             }
                         }
                         final int vertexAttributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -424,12 +420,12 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                             final String sourceVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(sourceVertexAttributeName.charAt(0))) {
                                 final Object sourceVertexAttributeValue = graph.getObjectValue(vertexAttributeId, sourceVertexId);
-                                attributeMap.put("source." + sourceVertexAttributeName, sourceVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.SOURCE + sourceVertexAttributeName, sourceVertexAttributeValue);
                             }
                             final String destinationVertexAttributeName = graph.getAttributeName(vertexAttributeId);
                             if (Character.isUpperCase(destinationVertexAttributeName.charAt(0))) {
                                 final Object destinationVertexAttributeValue = graph.getObjectValue(vertexAttributeId, destinationVertexId);
-                                attributeMap.put("destination." + destinationVertexAttributeName, destinationVertexAttributeValue);
+                                attributeMap.put(GraphRecordStoreUtilities.DESTINATION + destinationVertexAttributeName, destinationVertexAttributeValue);
                             }
                         }
                         attributes.put(destinationVertexIdentifier, attributeMap);

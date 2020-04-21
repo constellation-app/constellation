@@ -50,6 +50,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.FINEST;
 import java.util.logging.Logger;
@@ -343,7 +344,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         class ScheduledOpenTask implements Runnable {
 
-            private volatile int remainingTries = MAX_TRIES;
+            private AtomicInteger remainingTries = new AtomicInteger(MAX_TRIES);
 
             @Override
             public void run() {
@@ -356,7 +357,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
                     Exceptions.printStackTrace(ex);
                 }
                 if (!SetCursorTask.this.success) {
-                    if (--remainingTries != 0) {
+                    if (remainingTries.decrementAndGet() != 0) {
                         RequestProcessor.getDefault()
                                 .post(this, OPEN_EDITOR_WAIT_PERIOD_MS);
                     } else {

@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.plugins.templates.Bundle;
 import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -71,6 +70,10 @@ import org.openide.util.NbBundle.Messages;
 public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleQueryPlugin.class.getName());
+    
+    private static final String READING_INTERACTION = "Reading...";
+    private static final String QUERYING_INTERACTION = "Querying...";
+    private static final String EDITING_INTERACTION = "Editing...";
 
     public SimpleQueryPlugin() {
     }
@@ -124,9 +127,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
                 ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-                    interaction.setProgress(0, 0, "Reading...", true);
+                    interaction.setProgress(0, 0, READING_INTERACTION, true);
                     read(readableGraph, interaction, parameters);
-                    if (!"Reading...".equals(interaction.getCurrentMessage())) {
+                    if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
                         inControlOfProgress = false;
                     }
                 } finally {
@@ -142,10 +145,10 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 graphs.waitAtGate(1);
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Querying...", true);
+                    interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
                 }
                 query(interaction, parameters);
-                if (inControlOfProgress && !"Querying...".equals(interaction.getCurrentMessage())) {
+                if (inControlOfProgress && !QUERYING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
 
@@ -155,12 +158,12 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
                 try {
                     if (inControlOfProgress) {
-                        interaction.setProgress(0, 0, "Editing...", true);
+                        interaction.setProgress(0, 0, EDITING_INTERACTION, true);
                     }
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
-                        if (inControlOfProgress && !"Editing...".equals(interaction.getCurrentMessage())) {
+                        if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
                     } catch (InterruptedException e) {
@@ -209,25 +212,25 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
             // Make the progress bar appear nondeterminent
             try {
-                interaction.setProgress(0, 0, "Reading...", true);
+                interaction.setProgress(0, 0, READING_INTERACTION, true);
                 read(graph, interaction, parameters);
-                if (!"Reading".equals(interaction.getCurrentMessage())) {
+                if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Querying...", true);
+                    interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
                 }
                 query(interaction, parameters);
-                if (inControlOfProgress && !"Querying...".equals(interaction.getCurrentMessage())) {
+                if (inControlOfProgress && !QUERYING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Editing...", true);
+                    interaction.setProgress(0, 0, EDITING_INTERACTION, true);
                 }
                 edit(graph, interaction, parameters);
-                if (inControlOfProgress && !"Editing...".equals(interaction.getCurrentMessage())) {
+                if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
             } finally {

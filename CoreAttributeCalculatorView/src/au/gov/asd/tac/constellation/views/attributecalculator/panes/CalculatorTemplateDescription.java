@@ -38,9 +38,9 @@ public enum CalculatorTemplateDescription {
                 "has_neighbour(condition)"
             },
             new String[]{
-                "condition - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if 'condition' is True for any of the neighbours of a node. Returns False otherwise.",
             new String[]{
                 "For the purpose of this functions, a node is not considered a neighbour of itself even if it has a loop."
@@ -52,9 +52,9 @@ public enum CalculatorTemplateDescription {
                 "count_neighbours(condition)"
             },
             new String[]{
-                "condition - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the number of neighbours of a node for which 'condition' is True.",
             new String[]{
                 "For the purpose of this function, a node is not considered a neighbour of itself even if it has a loop."
@@ -67,10 +67,10 @@ public enum CalculatorTemplateDescription {
                 "for_neighbours(condition, calculation)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
                 "calculation - Any expression."
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns a list of the results of 'calculation' for those neighbours of a node which satisfy 'condition'.",
             new String[]{
                 "If 'condition' is not present, the return list contains the results of 'calculation' for all neighbours.",
@@ -84,10 +84,10 @@ public enum CalculatorTemplateDescription {
                 "has_node_at_distance(condition, distance)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "distance - A positive integer."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.DISTANCE_INTEGER
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if 'condition' is True for any node whose minimum distance from the current node is 'distance'. Returns False otherwise.",
             new String[]{}
     ),
@@ -98,9 +98,9 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "condition - A boolean expression",
-                "distance - A positive integer."
+                CalculatorTemplateDescriptionConstants.DISTANCE_INTEGER
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the number of nodes whose minimum distance from the current node is 'distance', for which 'condition' is True.",
             new String[]{}
     ),
@@ -111,11 +111,11 @@ public enum CalculatorTemplateDescription {
                 "for_nodes_at_distance(condition, calculation, distance)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
                 "calculation - Any expression.",
-                "distance - A positive integer."
+                CalculatorTemplateDescriptionConstants.DISTANCE_INTEGER
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns a list of the results of 'calculation' for those nodes whose minimum distance from the current node is 'distance', which satisfy 'condition'.",
             new String[]{
                 "If 'condition' is not present, the return list for a node contains the results of 'calculation' for all nodes at the specified distance.",
@@ -128,7 +128,7 @@ public enum CalculatorTemplateDescription {
                 "get_node_distances(condition)"
             },
             new String[]{
-                "condition - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN
             },
             "A list of non-negative integers, or the list [-1].",
             "Returns a list of the minimum distances from the current node to those nodes for which 'condition' is True.",
@@ -144,10 +144,10 @@ public enum CalculatorTemplateDescription {
                 "has_transaction(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns True if 'condition' is True for any of the transactions and, if present, 'node condition' is also True for the other endpoint of the corresponding transaction. Returns False otherwise.",
             new String[]{}
     ),
@@ -158,10 +158,10 @@ public enum CalculatorTemplateDescription {
                 "has_outgoing_transaction(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each outgoing transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns True if 'condition' is True for any of the transactions and, if present, 'node condition' is also True for the other endpoint of the corresponding transaction. Returns False otherwise.",
             new String[]{}
     ),
@@ -172,10 +172,10 @@ public enum CalculatorTemplateDescription {
                 "has_incoming_transaction(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each incoming transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns True if 'condition' is True for any of the transactions and, if present, 'node condition' is also True for the other endpoint of the corresponding transaction. Returns False otherwise.",
             new String[]{}
     ),
@@ -186,10 +186,10 @@ public enum CalculatorTemplateDescription {
                 "has_undirected_transaction(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each undirected transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns True if 'condition' is True for any of the transactions and, if present, 'node condition' is also True for the other endpoint of the corresponding transaction. Returns False otherwise.",
             new String[]{}
     ),
@@ -198,11 +198,11 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "has_parallel_transaction(condition)",},
             new String[]{
-                "condition - A boolean expression.",},
-            "A boolean (True/False).",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each transaction parallel (same source and destination nodes, possibly switched) to a transaction. Returns True if 'condition' is True for any of the parallel transactions. Returns False otherwise.",
             new String[]{
-                "A transaction is considered to be parallel to itself."
+                CalculatorTemplateDescriptionConstants.TRANSACTION_SELF_PARALLEL
             }
     ),
     COUNT_TRANSACTIONS(
@@ -212,10 +212,10 @@ public enum CalculatorTemplateDescription {
                 "count_transactions(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns the number of transactions for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{}
     ),
@@ -226,10 +226,10 @@ public enum CalculatorTemplateDescription {
                 "count_outgoing_transactions(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each outgoing transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns the number of transactions for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{}
     ),
@@ -240,10 +240,10 @@ public enum CalculatorTemplateDescription {
                 "count_incoming_transactions(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each incoming transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns the number of transactions for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{}
     ),
@@ -254,10 +254,10 @@ public enum CalculatorTemplateDescription {
                 "count_undirected_transactions(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each undirected transaction incident with a node, and if present, evaluates 'node condition' for the transaction's other endpoint.  Returns the number of transactions for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{}
     ),
@@ -266,11 +266,11 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "count_parallel_transactions(condition)",},
             new String[]{
-                "condition - A boolean expression.",},
-            "A non-negative integer.",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each transaction parallel (same source and destination nodes, possibly switched) to a transaction. Returns the number of parallel transactions for which 'condition' is True.",
             new String[]{
-                "A transaction is considered to be parallel to itself."
+                CalculatorTemplateDescriptionConstants.TRANSACTION_SELF_PARALLEL
             }
     ),
     FOR_TRANSACTIONS(
@@ -281,11 +281,11 @@ public enum CalculatorTemplateDescription {
                 "for_transactions(condition, node_condition, computation)"
             },
             new String[]{
-                "computation - Any expression.",
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY,
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each transaction incident with a node, and also if present, evaluates 'node condition' for the transaction's other endpoint. Returns a list of the results of evaluating 'calculation' for transactions where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident transactions."
@@ -299,11 +299,11 @@ public enum CalculatorTemplateDescription {
                 "for_outgoing_transactions(condition, node_condition, computation)"
             },
             new String[]{
-                "computation - Any expression.",
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY,
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each outgoing transaction incident with a node, and also if present, evaluates 'node condition' for the transaction's other endpoint. Returns a list of the results of evaluating 'calculation' for transactions where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident outgoing transactions."
@@ -317,11 +317,11 @@ public enum CalculatorTemplateDescription {
                 "for_incoming_transactions(condition, node_condition, computation)"
             },
             new String[]{
-                "computation - Any expression.",
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY,
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each incoming transaction incident with a node, and also if present, evaluates 'node condition' for the transaction's other endpoint. Returns a list of the results of evaluating 'calculation' for transactions where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident incoming transactions."
@@ -335,11 +335,11 @@ public enum CalculatorTemplateDescription {
                 "for_undirected_transactions(condition, node_condition, computation)"
             },
             new String[]{
-                "computation - Any expression.",
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY,
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each undirected transaction incident with a node, and also if present, evaluates 'node condition' for the transaction's other endpoint. Returns a list of the results of evaluating 'calculation' for transactions where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident undirected transactions."
@@ -351,13 +351,13 @@ public enum CalculatorTemplateDescription {
                 "for_parallel_transactions(computation)",
                 "for_parallel_transactions(condition, computation)",},
             new String[]{
-                "computation - Any expression.",
-                "condition (optional) - A boolean expression.",},
-            "A list.",
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY,
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,},
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Evaluates 'condition' for each transaction parallel (same source and destination nodes, possibly switched) to a transaction. Returns a list of the results of evaluating 'calculation' for parallel transactions where, if present, 'condition' is True.",
             new String[]{
                 "If condition is not present the return list for a transaction contains the results of evaluation of 'computation' for all parallel transactions.",
-                "A transaction is considered to be parallel to itself."
+                CalculatorTemplateDescriptionConstants.TRANSACTION_SELF_PARALLEL
             }
     ),
     HAS_EDGE(
@@ -367,13 +367,13 @@ public enum CalculatorTemplateDescription {
                 "has_edge(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each edge incident with a node, and if present, evaluates 'node_condition' for the edge's other endpoint. Returns True if 'condition' is True for any edges and, if present, 'node condition' is also True for the other endpoint of the corresponding edge. Returns False otherwise.",
             new String[]{
-                "Evaluating any transaction attributes and properties for an edge results in a list of attribute/property values for all the edge's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.EDGE_EVALUATING_EFFECT
             }
     ),
     HAS_LINK(
@@ -383,13 +383,13 @@ public enum CalculatorTemplateDescription {
                 "has_link(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each link incident with a node, and if present, evaluates 'node_condition' for the link's other endpoint. Returns True if 'condition' is True for any links and, if present, 'node condition' is also True for the other endpoint of the corresponding link. Returns False otherwise.",
             new String[]{
-                "Evaluating any transaction attributes and properties for a link results in a list of attribute/property values for all the link's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.LINK_EVALUATING_EFFECT
             }
     ),
     COUNT_EDGES(
@@ -399,13 +399,13 @@ public enum CalculatorTemplateDescription {
                 "count_edges(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each edge incident with a node, and if present, evaluates 'node_condition' for the edge's other endpoint. Returns the number of edges for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{
-                "Evaluating any transaction attributes and properties for an edge results in a list of attribute/property values for all the edge's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.EDGE_EVALUATING_EFFECT
             }
     ),
     COUNT_LINKS(
@@ -415,13 +415,13 @@ public enum CalculatorTemplateDescription {
                 "count_links(condition, node_condition)"
             },
             new String[]{
-                "condition - A boolean expression.",
-                "node_condition (optional) - A boolean expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each link incident with a node, and if present, evaluates 'node_condition' for the link's other endpoint. Returns the number of links for which 'condition' is True and, if present, for which 'node_condition' is true for the other endpoint.",
             new String[]{
-                "Evaluating any transaction attributes and properties for a link results in a list of attribute/property values for all the link's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.LINK_EVALUATING_EFFECT
             }
     ),
     FOR_EDGES(
@@ -432,15 +432,15 @@ public enum CalculatorTemplateDescription {
                 "for_edges(condition, node_condition, computation)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression.",
-                "computation - Any expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each edge incident with a node, and also if present, evaluates 'node condition' for the edge's other endpoint. Returns a list of the results of evaluating 'calculation' for edges where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident edges.",
-                "Evaluating any transaction attributes and properties for an edge results in a list of attribute/property values for all the edge's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.EDGE_EVALUATING_EFFECT
             }
     ),
     FOR_LINKS(
@@ -451,15 +451,15 @@ public enum CalculatorTemplateDescription {
                 "for_links(condition, node_condition, computation)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
-                "node_condition (optional) - A boolean expression.",
-                "computation - Any expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.NODE_CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each link incident with a node, and also if present, evaluates 'node condition' for the link's other endpoint. Returns a list of the results of evaluating 'calculation' for links where, if present, 'condition' is True and, if present, for which 'node_condition' is True for the other endpoint.",
             new String[]{
                 "If neither condition is present the return list for a node contains the results of evaluation of 'calculation' for all incident links.",
-                "Evaluating any transaction attributes and properties for a link results in a list of attribute/property values for all the link's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'."
+                CalculatorTemplateDescriptionConstants.LINK_EVALUATING_EFFECT
             }
     ),
     GRAPH_HAS_NODE(
@@ -468,8 +468,8 @@ public enum CalculatorTemplateDescription {
                 "graph_has_node(condition)"
             },
             new String[]{
-                "condition - A boolean expression.",},
-            "A boolean (True/False).",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each node in the graph. Returns True if 'condition' is True for any of the nodes. Returns False otherwise.",
             new String[]{}
     ),
@@ -478,8 +478,8 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "graph_count_nodes(condition)",},
             new String[]{
-                "condition - A boolean expression.",},
-            "A non-negative integer.",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each node in the graph. Returns the number of nodes for which 'condition' is True",
             new String[]{}
     ),
@@ -490,10 +490,10 @@ public enum CalculatorTemplateDescription {
                 "graph_for_nodes(condition, computation)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
-                "computation - Any expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each node in the graph. Returns a list of the results of evaluating 'calculation' for nodes where, if present, 'condition' is True.",
             new String[]{
                 "If condition is not present, the return list contains the results of evaluation of 'calculation' for all nodes in the graph.",}
@@ -504,8 +504,8 @@ public enum CalculatorTemplateDescription {
                 "graph_has_transaction(condition)"
             },
             new String[]{
-                "condition - A boolean expression.",},
-            "A boolean (True/False).",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Evaluates 'condition' for each transaction in the graph. Returns True if 'condition' is True for any of the transactions. Returns False otherwise.",
             new String[]{}
     ),
@@ -514,8 +514,8 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "graph_count_transactions(condition)",},
             new String[]{
-                "condition - A boolean expression.",},
-            "A non-negative integer.",
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN,},
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Evaluates 'condition' for each transaction in the graph. Returns the number of transactions for which 'condition' is True",
             new String[]{}
     ),
@@ -526,10 +526,10 @@ public enum CalculatorTemplateDescription {
                 "graph_for_transactions(condition, computation)"
             },
             new String[]{
-                "condition (optional) - A boolean expression.",
-                "computation - Any expression."
+                CalculatorTemplateDescriptionConstants.CONDITION_BOOLEAN_OPTIONAL,
+                CalculatorTemplateDescriptionConstants.COMPUTATION_ANY
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "If present, evaluates 'condition' for each transaction in the graph. Returns a list of the results of evaluating 'calculation' for transactions where, if present, 'condition' is True.",
             new String[]{
                 "If condition is not present, the return list contains the results of evaluation of 'calculation' for all transactions in the graph.",}
@@ -540,7 +540,7 @@ public enum CalculatorTemplateDescription {
                 "graph_node_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the total number of the nodes in the graph.",
             new String[]{}
     ),
@@ -550,7 +550,7 @@ public enum CalculatorTemplateDescription {
                 "graph_link_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the total number of the links in the graph.",
             new String[]{}
     ),
@@ -560,7 +560,7 @@ public enum CalculatorTemplateDescription {
                 "graph_edge_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the total number of the edges in the graph.",
             new String[]{}
     ),
@@ -570,7 +570,7 @@ public enum CalculatorTemplateDescription {
                 "graph_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the total number of the transaction in the graph.",
             new String[]{}
     ),
@@ -580,7 +580,7 @@ public enum CalculatorTemplateDescription {
                 "graph_selected_node_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the number of currently selected nodes in the graph.",
             new String[]{}
     ),
@@ -590,7 +590,7 @@ public enum CalculatorTemplateDescription {
                 "graph_selected_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A constant whose value is the number of currently selected transactions in the graph.",
             new String[]{}
     ),
@@ -600,7 +600,7 @@ public enum CalculatorTemplateDescription {
                 "has_self_as_neighbour"
             },
             new String[]{},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "A variable that is True for nodes with loops, and False for all other nodes.",
             new String[]{}
     ),
@@ -610,7 +610,7 @@ public enum CalculatorTemplateDescription {
                 "node_neighbour_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of neighbours of a node (not including the node itself).",
             new String[]{}
     ),
@@ -620,7 +620,7 @@ public enum CalculatorTemplateDescription {
                 "node_link_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of links incident with a node.",
             new String[]{
                 "This differs subtly from Node Neighbour Count, as a loop counts as two links."
@@ -632,7 +632,7 @@ public enum CalculatorTemplateDescription {
                 "node_edge_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of edges incident with a node.",
             new String[]{}
     ),
@@ -642,7 +642,7 @@ public enum CalculatorTemplateDescription {
                 "node_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions incident with a node.",
             new String[]{}
     ),
@@ -652,7 +652,7 @@ public enum CalculatorTemplateDescription {
                 "node_outgoing_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are outgoing from a node.",
             new String[]{}
     ),
@@ -662,7 +662,7 @@ public enum CalculatorTemplateDescription {
                 "node_incoming_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are incoming to a node.",
             new String[]{}
     ),
@@ -672,7 +672,7 @@ public enum CalculatorTemplateDescription {
                 "node_undirected_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of undirected transactions incident with a node.",
             new String[]{}
     ),
@@ -682,7 +682,7 @@ public enum CalculatorTemplateDescription {
                 "source_has_self_as_neighbour"
             },
             new String[]{},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "A variable that is True for transactions whose source nodes have loops, and False for all other transactions.",
             new String[]{}
     ),
@@ -692,7 +692,7 @@ public enum CalculatorTemplateDescription {
                 "source_neighbour_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of neighbours of the source node (not including the node itself) of a transaction.",
             new String[]{}
     ),
@@ -702,7 +702,7 @@ public enum CalculatorTemplateDescription {
                 "source_link_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of links incident with the source node of a transaction.",
             new String[]{
                 "This differs subtly from Source Neighbour Count, as a loop counts as two links."
@@ -714,7 +714,7 @@ public enum CalculatorTemplateDescription {
                 "source_edge_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of edges incident with the source node of a transaction.",
             new String[]{}
     ),
@@ -724,7 +724,7 @@ public enum CalculatorTemplateDescription {
                 "source_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions incident with the source node of a transaction.",
             new String[]{}
     ),
@@ -734,7 +734,7 @@ public enum CalculatorTemplateDescription {
                 "source_outgoing_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are outgoing from the source node of a transaction.",
             new String[]{}
     ),
@@ -744,7 +744,7 @@ public enum CalculatorTemplateDescription {
                 "source_incoming_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are incoming to the source node of a transaction.",
             new String[]{}
     ),
@@ -754,7 +754,7 @@ public enum CalculatorTemplateDescription {
                 "source_undirected_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of undirected transactions incident with the source node of a transaction.",
             new String[]{}
     ),
@@ -764,7 +764,7 @@ public enum CalculatorTemplateDescription {
                 "destination_has_self_as_neighbour"
             },
             new String[]{},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "A variable that is True for transactions whose destination nodes have loops, and False for all other transactions.",
             new String[]{}
     ),
@@ -774,7 +774,7 @@ public enum CalculatorTemplateDescription {
                 "destination_neighbour_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of neighbours of the destination node (not including the node itself) of a transaction.",
             new String[]{}
     ),
@@ -784,7 +784,7 @@ public enum CalculatorTemplateDescription {
                 "destination_link_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of links incident with the destination node of a transaction.",
             new String[]{
                 "This differs subtly from Destination Neighbour Count, as a loop counts as two links."
@@ -796,7 +796,7 @@ public enum CalculatorTemplateDescription {
                 "destination_edge_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of edges incident with the destination node of a transaction.",
             new String[]{}
     ),
@@ -806,7 +806,7 @@ public enum CalculatorTemplateDescription {
                 "destination_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions incident with the destination node of a transaction.",
             new String[]{}
     ),
@@ -816,7 +816,7 @@ public enum CalculatorTemplateDescription {
                 "destination_outgoing_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are outgoing from the destination node of a transaction.",
             new String[]{}
     ),
@@ -826,7 +826,7 @@ public enum CalculatorTemplateDescription {
                 "destination_incoming_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions which are incoming to the destination node of a transaction.",
             new String[]{}
     ),
@@ -836,7 +836,7 @@ public enum CalculatorTemplateDescription {
                 "destination_undirected_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of undirected transactions incident with the destination node of a transaction.",
             new String[]{}
     ),
@@ -846,7 +846,7 @@ public enum CalculatorTemplateDescription {
                 "link_edge_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of edges comprised by a link.",
             new String[]{}
     ),
@@ -856,7 +856,7 @@ public enum CalculatorTemplateDescription {
                 "link_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions comprised by a link.",
             new String[]{}
     ),
@@ -866,7 +866,7 @@ public enum CalculatorTemplateDescription {
                 "edge_transaction_count"
             },
             new String[]{},
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "A variable that represents the number of transactions comprised by an edge.",
             new String[]{}
     ),
@@ -876,7 +876,7 @@ public enum CalculatorTemplateDescription {
                 "is_transaction_directed"
             },
             new String[]{},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "A variable that is True for directed transactions, and False for undirected transactions.",
             new String[]{}
     ),
@@ -888,7 +888,7 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "x - A boolean (True/False) expression.",
                 "y - A boolean (True/False) expression.",},
-            "A value.",
+            CalculatorTemplateDescriptionConstants.A_RETURN_TYPE,
             "If x is False, returns y. Otherwise returns x.",
             new String[]{
                 "Since non-boolean types, such as integers, can be interpreted as booleans, 'or' may not always yield a boolean value."
@@ -902,7 +902,7 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "x - A boolean (True/False) expression.",
                 "y - A boolean (True/False) expression.",},
-            "A value.",
+            CalculatorTemplateDescriptionConstants.A_RETURN_TYPE,
             "If x is True, returns y. Otherwise returns x.",
             new String[]{
                 "Since non-boolean types, such as integers, can be interpreted as booleans, 'and' may not always yield a boolean value."
@@ -915,7 +915,7 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "x - A boolean expression.",},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "If x is True, returns False. Otherwise returns True.",
             new String[]{}
     ),
@@ -928,7 +928,7 @@ public enum CalculatorTemplateDescription {
                 "x - Any value.",
                 "y - Any value."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is equal to y. Returns False otherwise.",
             new String[]{}
     ),
@@ -941,7 +941,7 @@ public enum CalculatorTemplateDescription {
                 "x - Any value.",
                 "y - Any value."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns False if x is equal to y. Returns True otherwise.",
             new String[]{}
     ),
@@ -951,10 +951,10 @@ public enum CalculatorTemplateDescription {
                 "x < y"
             },
             new String[]{
-                "x - Any orderable value, e.g., a number.",
-                "y - Any orderable value, e.g., a number."
+                CalculatorTemplateDescriptionConstants.X_ANY_ORDERABLE,
+                CalculatorTemplateDescriptionConstants.Y_ANY_ORDERABLE
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is less than y. Returns False otherwise.",
             new String[]{}
     ),
@@ -964,10 +964,10 @@ public enum CalculatorTemplateDescription {
                 "x > y"
             },
             new String[]{
-                "x - Any orderable value, e.g., a number.",
-                "y - Any orderable value, e.g., a number."
+                CalculatorTemplateDescriptionConstants.X_ANY_ORDERABLE,
+                CalculatorTemplateDescriptionConstants.Y_ANY_ORDERABLE
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is greater than y. Returns False otherwise.",
             new String[]{}
     ),
@@ -977,10 +977,10 @@ public enum CalculatorTemplateDescription {
                 "x <= y"
             },
             new String[]{
-                "x - Any orderable value, e.g., a number.",
-                "y - Any orderable value, e.g., a number."
+                CalculatorTemplateDescriptionConstants.X_ANY_ORDERABLE,
+                CalculatorTemplateDescriptionConstants.Y_ANY_ORDERABLE
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is less than or equal to y. Returns False otherwise.",
             new String[]{}
     ),
@@ -990,10 +990,10 @@ public enum CalculatorTemplateDescription {
                 "x >= y"
             },
             new String[]{
-                "x - Any orderable value, e.g., a number.",
-                "y - Any orderable value, e.g., a number."
+                CalculatorTemplateDescriptionConstants.X_ANY_ORDERABLE,
+                CalculatorTemplateDescriptionConstants.Y_ANY_ORDERABLE
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is greater than or equal to y. Returns False otherwise.",
             new String[]{}
     ),
@@ -1006,7 +1006,7 @@ public enum CalculatorTemplateDescription {
                 "x - Any value",
                 "y - Any sequence, or a string."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if x is contained in y. Returns False otherwise.",
             new String[]{
                 "Containment works as expected for sequence types such as lists and sets. If y is a string, then x must also be a string and x is considered to be contained in y if it is a substring of y."
@@ -1018,10 +1018,10 @@ public enum CalculatorTemplateDescription {
                 "x + y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the sum of x and y.",
             new String[]{}
     ),
@@ -1031,10 +1031,10 @@ public enum CalculatorTemplateDescription {
                 "x - y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the difference of x and y.",
             new String[]{}
     ),
@@ -1044,10 +1044,10 @@ public enum CalculatorTemplateDescription {
                 "x * y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the product of x and y.",
             new String[]{}
     ),
@@ -1057,10 +1057,10 @@ public enum CalculatorTemplateDescription {
                 "x / y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the quotient of x and y.",
             new String[]{}
     ),
@@ -1070,10 +1070,10 @@ public enum CalculatorTemplateDescription {
                 "x ** y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns x to the power of y.",
             new String[]{}
     ),
@@ -1083,10 +1083,10 @@ public enum CalculatorTemplateDescription {
                 "x % y"
             },
             new String[]{
-                "x - Any numerical value",
-                "y - Any numerical value"
+                CalculatorTemplateDescriptionConstants.X_ANY_NUMERICAL,
+                CalculatorTemplateDescriptionConstants.Y_ANY_NUMERICAL
             },
-            "A number.",
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns x modulo y, that is the remainder of x divided by y.",
             new String[]{}
     ),
@@ -1096,8 +1096,8 @@ public enum CalculatorTemplateDescription {
                 "sum(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the result of summing all values in 'list_of_numbers'.",
             new String[]{}
     ),
@@ -1107,8 +1107,8 @@ public enum CalculatorTemplateDescription {
                 "max(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the maximum value from all the values in 'list_of_numbers'.",
             new String[]{}
     ),
@@ -1118,8 +1118,8 @@ public enum CalculatorTemplateDescription {
                 "min(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the minimum value from all the values in 'list_of_numbers'.",
             new String[]{}
     ),
@@ -1129,8 +1129,8 @@ public enum CalculatorTemplateDescription {
                 "median(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the median of 'list_of_numbers', that is the middle value when the values are ordered.",
             new String[]{}
     ),
@@ -1140,8 +1140,8 @@ public enum CalculatorTemplateDescription {
                 "mode(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the mode of 'list_of_numbers', that is the most commonly occuring value.",
             new String[]{}
     ),
@@ -1151,8 +1151,8 @@ public enum CalculatorTemplateDescription {
                 "mean(list_of_numbers)"
             },
             new String[]{
-                "list_of_numbers - A list of numerical values.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.LIST_OF_NUMBERS_LIST,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the mean of 'list_of_numbers', that is the average of all the values.",
             new String[]{}
     ),
@@ -1162,8 +1162,8 @@ public enum CalculatorTemplateDescription {
                 "log(number)"
             },
             new String[]{
-                "number - A numerical value.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.NUMBER_NUMERICAL,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the natural logarithm of 'number'.",
             new String[]{}
     ),
@@ -1173,8 +1173,8 @@ public enum CalculatorTemplateDescription {
                 "sqrt(number)"
             },
             new String[]{
-                "number - A numerical value.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.NUMBER_NUMERICAL,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the square root of 'number'.",
             new String[]{}
     ),
@@ -1184,8 +1184,8 @@ public enum CalculatorTemplateDescription {
                 "abs(number)"
             },
             new String[]{
-                "number - A numerical value.",},
-            "A number.",
+                CalculatorTemplateDescriptionConstants.NUMBER_NUMERICAL,},
+            CalculatorTemplateDescriptionConstants.NUMBER_RETURN_TYPE,
             "Returns the absolute value of 'number'.",
             new String[]{}
     ),
@@ -1195,8 +1195,8 @@ public enum CalculatorTemplateDescription {
                 "string.lower()"
             },
             new String[]{
-                "string - A string.",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns 'string' in lower case.",
             new String[]{}
     ),
@@ -1206,8 +1206,8 @@ public enum CalculatorTemplateDescription {
                 "string.upper()"
             },
             new String[]{
-                "string - A string.",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns 'string' in lower case.",
             new String[]{}
     ),
@@ -1217,10 +1217,10 @@ public enum CalculatorTemplateDescription {
                 "string.startswith(prefix)"
             },
             new String[]{
-                "string - A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,
                 "prefix - A string."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if 'string' begins with 'prefix'. Returns False otherwise.",
             new String[]{}
     ),
@@ -1230,10 +1230,10 @@ public enum CalculatorTemplateDescription {
                 "string.endswith(suffix)"
             },
             new String[]{
-                "string - A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,
                 "suffix - A string."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if 'string' ends with 'suffix'. Returns False otherwise.",
             new String[]{}
     ),
@@ -1243,7 +1243,7 @@ public enum CalculatorTemplateDescription {
                 "string.split(substring)"
             },
             new String[]{
-                "string - A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,
                 "substring - A string."
             },
             "A list of strings.",
@@ -1258,10 +1258,10 @@ public enum CalculatorTemplateDescription {
                 "string[index_start:index_end]"
             },
             new String[]{
-                "string - A string.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,
                 "index_start - An integer.",
                 "index_end - An integer.",},
-            "A string.",
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns the substring of 'string' beginning from the character at 'index_start' and ending before the character at 'index_end'.",
             new String[]{
                 "If either 'index_start' or 'index_end' is negative, then it is taken as a position from the last, rather than the first, character of 'string'."
@@ -1273,8 +1273,8 @@ public enum CalculatorTemplateDescription {
                 "len(string)"
             },
             new String[]{
-                "string - A string.",},
-            "A non-negative integer.",
+                CalculatorTemplateDescriptionConstants.STRING_STRING,},
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the number of characters in 'string'.",
             new String[]{
                 "If 'string' is empty, the return value will be 0."
@@ -1286,10 +1286,10 @@ public enum CalculatorTemplateDescription {
                 "some_list[index]"
             },
             new String[]{
-                "some_list - a list.",
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST,
                 "index - a number."
             },
-            "A value.",
+            CalculatorTemplateDescriptionConstants.A_RETURN_TYPE,
             "Returns the element of 'some_list' at position 'index'.",
             new String[]{}
     ),
@@ -1299,11 +1299,11 @@ public enum CalculatorTemplateDescription {
                 "some_list[start_index:end_index]"
             },
             new String[]{
-                "some_list - a list.",
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST,
                 "index_start - a number.",
                 "index_end - a number."
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns the subslist of 'some_list' beginning from the element at 'index_start' and ending before the element at 'index_end'.",
             new String[]{
                 "If either 'index_start' or 'index_end' is negative, then it is taken as a position from the last, rather than the first, character of 'string'."
@@ -1315,10 +1315,10 @@ public enum CalculatorTemplateDescription {
                 "some_list.count(element)"
             },
             new String[]{
-                "some_list - a list.",
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST,
                 "element - a value."
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the number of occurrences of 'element' in 'some_list'.",
             new String[]{
                 "If 'element' does not occur in 'some_list', the returned value is 0."
@@ -1330,10 +1330,10 @@ public enum CalculatorTemplateDescription {
                 "some_list.index(element)"
             },
             new String[]{
-                "some_list - a list.",
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST,
                 "element - a value."
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the index of the first occurrence of 'element' in 'some_list'.",
             new String[]{
                 "This function will cause an error if 'element' does not occur in 'some_list'."
@@ -1345,9 +1345,9 @@ public enum CalculatorTemplateDescription {
                 "len(some_list)"
             },
             new String[]{
-                "some_list - a list."
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST
             },
-            "A non-negative integer.",
+            CalculatorTemplateDescriptionConstants.NON_NEGATIVE_INTEGER_RETURN_TYPE,
             "Returns the number of elements contained in 'some_list'.",
             new String[]{
                 "If 'some_list' is empty, the returned value will be 0."
@@ -1361,7 +1361,7 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "some_list - a list of boolean (True/False) values."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if all the elements of 'some_list' are True. Returns False otherwise.",
             new String[]{}
     ),
@@ -1373,7 +1373,7 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "some_list - a list of boolean (True/False) values."
             },
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns True if any of the elements of 'some_list' are True. Returns False otherwise.",
             new String[]{}
     ),
@@ -1385,7 +1385,7 @@ public enum CalculatorTemplateDescription {
             new String[]{
                 "some_list - a list of orderable values."
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns a list containing the same elements as 'some_list', but sorted in ascending order.",
             new String[]{}
     ),
@@ -1395,9 +1395,9 @@ public enum CalculatorTemplateDescription {
                 "defined_values(some_list)"
             },
             new String[]{
-                "some_list - a list."
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns a list containing all the values in 'some_list' which are not null.",
             new String[]{}
     ),
@@ -1408,9 +1408,9 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "function - a function.",
-                "some_list - a list."
+                CalculatorTemplateDescriptionConstants.SOME_LIST_LIST
             },
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns a list of results of evaulating 'function' for each element in 'some_list'.",
             new String[]{}
     ),
@@ -1421,7 +1421,7 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "value - a value that can be converted to a boolean.",},
-            "A boolean (True/False).",
+            CalculatorTemplateDescriptionConstants.BOOLEAN_RETURN_TYPE,
             "Returns the result of converting 'value' to its boolean representation.",
             new String[]{
                 "This function will cause an error if 'value' does not have a boolean representation."
@@ -1434,7 +1434,7 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "value - a value that can be converted to an integer.",},
-            "An integer.",
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the result of converting 'value' to its integer representation.",
             new String[]{
                 "This function will cause an error if 'value' does not have an integer representation."
@@ -1460,7 +1460,7 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "value - a value that can be converted to a string.",},
-            "A string.",
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns the result of converting 'value' to its string representation.",
             new String[]{
                 "This function will cause an error if 'value' does not have a string representation."
@@ -1473,7 +1473,7 @@ public enum CalculatorTemplateDescription {
             },
             new String[]{
                 "collection - a collection that can be converted to a list.",},
-            "A list.",
+            CalculatorTemplateDescriptionConstants.LIST_RETURN_TYPE,
             "Returns the result of converting 'value' to its list representation.",
             new String[]{
                 "This function will cause an error if 'value' does not have a list representation."
@@ -1499,8 +1499,8 @@ public enum CalculatorTemplateDescription {
                 "year(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the year in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1510,8 +1510,8 @@ public enum CalculatorTemplateDescription {
                 "month(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the month in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1521,8 +1521,8 @@ public enum CalculatorTemplateDescription {
                 "day(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the day in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1532,8 +1532,8 @@ public enum CalculatorTemplateDescription {
                 "hour(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the hour in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1543,8 +1543,8 @@ public enum CalculatorTemplateDescription {
                 "minute(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the minute in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1554,8 +1554,8 @@ public enum CalculatorTemplateDescription {
                 "second(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the second in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1565,8 +1565,8 @@ public enum CalculatorTemplateDescription {
                 "weekday(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "An integer.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the weekday in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1576,8 +1576,8 @@ public enum CalculatorTemplateDescription {
                 "month_name(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns the name of the month in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1587,8 +1587,8 @@ public enum CalculatorTemplateDescription {
                 "weekday_name(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns the name of the weekday in which 'datetime' occurred.",
             new String[]{}
     ),
@@ -1598,7 +1598,7 @@ public enum CalculatorTemplateDescription {
                 "time_from_date(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
             "A time.",
             "Returns the time component (hours, minutes and seconds) of 'datetime'.",
             new String[]{}
@@ -1609,8 +1609,8 @@ public enum CalculatorTemplateDescription {
                 "time_string_from_date(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns the time component as a string (in the format hh:mm:ss) from 'datetime'.",
             new String[]{}
     ),
@@ -1620,8 +1620,8 @@ public enum CalculatorTemplateDescription {
                 "date_as_string(datetime)"
             },
             new String[]{
-                "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute",},
-            "A string.",
+                CalculatorTemplateDescriptionConstants.DATETIME_TEMPORAL,},
+            CalculatorTemplateDescriptionConstants.STRING_RETURN_TYPE,
             "Returns (in the format dd/MM/yy hh:mm:ss) a string representation of 'datetime'.",
             new String[]{
                 "To retrieve, for example, just the date without the time, you can just take a substring like so: date_as_string(datetime)[0:10]"
@@ -1643,9 +1643,9 @@ public enum CalculatorTemplateDescription {
                 "days(time_difference)"
             },
             new String[]{
-                "time_difference - a duration, that is the difference between two CONSTELLATION temporal values."
+                CalculatorTemplateDescriptionConstants.TIME_DIFFERENCE_DURATION
             },
-            "An integer.",
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the total number of days (rounded down) contained within 'time_difference'.",
             new String[]{}
     ),
@@ -1655,9 +1655,9 @@ public enum CalculatorTemplateDescription {
                 "hours(time_difference)"
             },
             new String[]{
-                "time_difference - a duration, that is the difference between two CONSTELLATION temporal values."
+                CalculatorTemplateDescriptionConstants.TIME_DIFFERENCE_DURATION
             },
-            "An integer.",
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the total number of hours (rounded down) contained within 'time_difference'.",
             new String[]{}
     ),
@@ -1667,9 +1667,9 @@ public enum CalculatorTemplateDescription {
                 "minutes(time_difference)"
             },
             new String[]{
-                "time_difference - a duration, that is the difference between two CONSTELLATION temporal values."
+                CalculatorTemplateDescriptionConstants.TIME_DIFFERENCE_DURATION
             },
-            "An integer.",
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the total number of minutes (rounded down) contained within 'time_difference'.",
             new String[]{}
     ),
@@ -1679,9 +1679,9 @@ public enum CalculatorTemplateDescription {
                 "seconds(time_difference)"
             },
             new String[]{
-                "time_difference - a duration, that is the difference between two CONSTELLATION temporal values."
+                CalculatorTemplateDescriptionConstants.TIME_DIFFERENCE_DURATION
             },
-            "An integer.",
+            CalculatorTemplateDescriptionConstants.INTEGER_RETURN_TYPE,
             "Returns the total number of seconds (rounded down) contained within 'time_difference'.",
             new String[]{}
     ),;
@@ -1722,5 +1722,37 @@ public enum CalculatorTemplateDescription {
         }
         return null;
     }
-
+    
+    private class CalculatorTemplateDescriptionConstants {
+        //parameters
+        private static final String COMPUTATION_ANY = "computation - Any expression.";
+        private static final String CONDITION_BOOLEAN = "condition - A boolean expression.";
+        private static final String CONDITION_BOOLEAN_OPTIONAL = "condition (optional) - A boolean expression.";
+        private static final String DATETIME_TEMPORAL = "datetime - a temporal value from CONSTELLATION; that is either a time, date or datetime attribute";
+        private static final String DISTANCE_INTEGER = "distance - A positive integer.";
+        private static final String LIST_OF_NUMBERS_LIST = "list_of_numbers - A list of numerical values.";
+        private static final String NODE_CONDITION_BOOLEAN_OPTIONAL = "node_condition (optional) - A boolean expression.";
+        private static final String NUMBER_NUMERICAL = "number - A numerical value.";
+        private static final String SOME_LIST_LIST = "some_list - a list.";
+        private static final String STRING_STRING = "string - A string.";
+        private static final String TIME_DIFFERENCE_DURATION = "time_difference - a duration, that is the difference between two CONSTELLATION temporal values.";
+        private static final String X_ANY_NUMERICAL = "x - Any numerical value";
+        private static final String X_ANY_ORDERABLE = "x - Any orderable value, e.g., a number.";
+        private static final String Y_ANY_NUMERICAL = "y - Any numerical value";
+        private static final String Y_ANY_ORDERABLE = "y - Any orderable value, e.g., a number.";
+        
+        //return type
+        private static final String A_RETURN_TYPE = "A value.";
+        private static final String BOOLEAN_RETURN_TYPE = "A boolean (True/False).";
+        private static final String INTEGER_RETURN_TYPE = "An integer.";
+        private static final String LIST_RETURN_TYPE = "A list.";
+        private static final String NON_NEGATIVE_INTEGER_RETURN_TYPE = "A non-negative integer.";
+        private static final String NUMBER_RETURN_TYPE = "A number.";
+        private static final String STRING_RETURN_TYPE = "A string.";
+        
+        //rules
+        private static final String EDGE_EVALUATING_EFFECT = "Evaluating any transaction attributes and properties for an edge results in a list of attribute/property values for all the edge's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'.";
+        private static final String LINK_EVALUATING_EFFECT = "Evaluating any transaction attributes and properties for a link results in a list of attribute/property values for all the link's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'.";
+        private static final String TRANSACTION_SELF_PARALLEL = "A transaction is considered to be parallel to itself.";
+    }
 }

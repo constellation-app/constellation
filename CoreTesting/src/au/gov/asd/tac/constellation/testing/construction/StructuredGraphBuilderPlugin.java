@@ -56,6 +56,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
     
+    private static final String NODE = "~Node ";
+    
     private final SecureRandom r = new SecureRandom();
 
     @Override
@@ -130,8 +132,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         for (int n = 0; n < backboneVertexCount; n++) {
 
             final int nodeId = graph.addVertex();
-            graph.setStringValue(vxNameAttr, nodeId, "Node " + n);
-            graph.setStringValue(vxIdentifierAttr, nodeId, "Node " + n);
+            graph.setStringValue(vxNameAttr, nodeId, NODE + n);
+            graph.setStringValue(vxIdentifierAttr, nodeId, NODE + n);
             graph.setStringValue(vxBackgroundIconAttr, nodeId, "Background.Round Circle");
             graph.setStringValue(vxForegroundIconAttr, nodeId, getRandomIconName(iconNames, r));
             graph.setObjectValue(vxColorAttr, nodeId, randomColorWithAlpha(r));
@@ -209,8 +211,8 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
 
             for (int p = 0; p < pendants; p++) {
                 int pendant = graph.addVertex();
-                graph.setStringValue(vxNameAttr, pendant, "Node " + pendant);
-                graph.setStringValue(vxIdentifierAttr, pendant, "Node " + pendant);
+                graph.setStringValue(vxNameAttr, pendant, NODE + pendant);
+                graph.setStringValue(vxIdentifierAttr, pendant, NODE + pendant);
                 graph.setStringValue(vxBackgroundIconAttr, pendant, "Background.Round Circle_64");
                 graph.setStringValue(vxForegroundIconAttr, pendant, getRandomIconName(iconNames, r));
                 graph.setObjectValue(vxColorAttr, pendant, randomColorWithAlpha(r));

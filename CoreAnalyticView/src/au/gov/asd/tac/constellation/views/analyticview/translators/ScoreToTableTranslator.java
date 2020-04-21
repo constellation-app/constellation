@@ -69,7 +69,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             return cellValue.getNamedScores().get(columnName);
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -82,7 +82,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             return cellItem.toString();
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -98,7 +98,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         } else if (cellValue.getNames().contains(columnName)) {
             intensity = Math.max(0f, Math.min(1f, (float) cellItem));
         } else {
-            throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+            throw new UnrecognisedColumnException(columnName);
         }
 
         return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);

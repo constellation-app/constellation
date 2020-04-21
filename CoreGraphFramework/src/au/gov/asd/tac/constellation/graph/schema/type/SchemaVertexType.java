@@ -320,14 +320,11 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
                     name,
                     description,
                     color != null ? color : superType != null
-                                    ? superType.color : UNKNOWN != null
-                                            ? UNKNOWN.color : color,
+                                    ? superType.color : UNKNOWN.color,
                     foregroundIcon != null ? foregroundIcon : superType != null
-                                    ? superType.foregroundIcon : UNKNOWN != null
-                                            ? UNKNOWN.getForegroundIcon() : foregroundIcon,
+                                    ? superType.foregroundIcon : UNKNOWN.getForegroundIcon(),
                     backgroundIcon != null ? backgroundIcon : superType != null
-                                    ? superType.backgroundIcon : UNKNOWN != null
-                                            ? UNKNOWN.getBackgroundIcon() : backgroundIcon,
+                                    ? superType.backgroundIcon : UNKNOWN.getBackgroundIcon(),
                     detectionRegex,
                     validationRegex,
                     superType,

@@ -37,6 +37,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
+    
+    private static final String X_ATTRIBUTE = "xAttribute";
+    private static final String Y_ATTRIBUTE = "yAttribute";
 
     @Override
     public String getName() {
@@ -48,10 +51,10 @@ public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final ScatterPlotState state = new ScatterPlotState();
             GraphElementType elementType = GraphElementType.valueOf(jnode.get("elementType").asText());
-            final Attribute xAttribute = jnode.get("xAttribute").asText().equalsIgnoreCase("null") ? null
-                    : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get("xAttribute").asText()));
-            final Attribute yAttribute = jnode.get("yAttribute").asText().equalsIgnoreCase("null") ? null
-                    : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get("yAttribute").asText()));
+            final Attribute xAttribute = jnode.get(X_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+                    : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(X_ATTRIBUTE).asText()));
+            final Attribute yAttribute = jnode.get(Y_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+                    : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(Y_ATTRIBUTE).asText()));
             state.setElementType(elementType);
             state.setXAttribute(xAttribute);
             state.setYAttribute(yAttribute);
@@ -70,8 +73,8 @@ public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
             } else {
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeStringField("elementType", state.getElementType().name());
-                jsonGenerator.writeStringField("xAttribute", state.getXAttribute() == null ? null : state.getXAttribute().getName());
-                jsonGenerator.writeStringField("yAttribute", state.getYAttribute() == null ? null : state.getYAttribute().getName());
+                jsonGenerator.writeStringField(X_ATTRIBUTE, state.getXAttribute() == null ? null : state.getXAttribute().getName());
+                jsonGenerator.writeStringField(Y_ATTRIBUTE, state.getYAttribute() == null ? null : state.getYAttribute().getName());
                 jsonGenerator.writeBooleanField("selectedOnly", state.isSelectedOnly());
                 jsonGenerator.writeEndObject();
             }

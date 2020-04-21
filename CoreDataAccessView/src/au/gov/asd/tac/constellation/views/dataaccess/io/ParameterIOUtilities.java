@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.io;
 
-import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -23,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.genericjsonio.JsonIO;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessConcept;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessState;
@@ -84,19 +84,17 @@ public class ParameterIOUtilities {
                 if (dataAccessStateAttribute != Graph.NOT_FOUND) {
                     final DataAccessState dataAccessState = rg.getObjectValue(dataAccessStateAttribute, 0);
                     if (dataAccessState != null && dataAccessState.getState().size() > 0) {
-                        for (Map<String, String> tabState : dataAccessState.getState()) {
-                            final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
-                            final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
-                            pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
-                                final PluginParameter<?> pp = param.getValue();
-                                final String paramvalue = tabState.get(param.getKey());
-                                if (paramvalue != null) {
-                                    pp.setStringValue(paramvalue); // appologies for the nestedness
-                                }
-                            });
-                            break;
-                            // TODO: support multiple tabs and not introduce memory leaks
-                        }
+                        // TODO: support multiple tabs (not just first one in state) and not introduce memory leaks
+                        final Map<String, String> tabState = dataAccessState.getState().get(0);
+                        final Tab step = dap.getCurrentTab().getTabPane().getTabs().get(0);
+                        final QueryPhasePane pluginPane = (QueryPhasePane) ((ScrollPane) step.getContent()).getContent();
+                        pluginPane.getGlobalParametersPane().getParams().getParameters().entrySet().stream().forEach(param -> {
+                            final PluginParameter<?> pp = param.getValue();
+                            final String paramvalue = tabState.get(param.getKey());
+                            if (paramvalue != null) {
+                                pp.setStringValue(paramvalue);
+                            }
+                        });
                     }
                 }
             } finally {
@@ -222,7 +220,6 @@ public class ParameterIOUtilities {
 
         if (queryName != null) {
             JsonIO.saveJsonPreferences(DATA_ACCESS_DIR, mapper, rootNode);
-            
         }
     }
 

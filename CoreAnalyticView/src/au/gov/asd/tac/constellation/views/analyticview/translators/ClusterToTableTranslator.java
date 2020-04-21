@@ -80,7 +80,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellValue.getClusterNumber();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -94,7 +94,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellItem.toString();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 
