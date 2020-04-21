@@ -387,13 +387,9 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.removeTransaction(txId);
             }
 
-            if (buildMode.equals(CONNECTED) && componentCount(graph) != initialComponents + 1) {
-                if (s == t) {
-                    break;
-                } else {
-                    for (int vxId : vxIds) {
-                        graph.removeVertex(vxId);
-                    }
+            if (buildMode.equals(CONNECTED) && componentCount(graph) != initialComponents + 1 && s != t) {
+                for (int vxId : vxIds) {
+                    graph.removeVertex(vxId);
                 }
             } else {
                 break;
@@ -401,22 +397,18 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
-            if (n < 10000) {
-                // Do a trees layout.
-                try {
+            try {
+                if (n < 10000) {
+                    // Do a trees layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            } else {
-                // Do a grid layout.
-                try {
+                } else {
+                    // Do a grid layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);

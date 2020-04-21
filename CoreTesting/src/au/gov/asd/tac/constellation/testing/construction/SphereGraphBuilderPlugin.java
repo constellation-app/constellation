@@ -292,12 +292,10 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
             // A label with a random CJK glyph.
             final String chars;
-            if (addChars) {
-                if (vx == 0) {
-                    chars = "مرحبا عالم"; // "Hello world" in arabic, demonstrates unicode rendering
-                } else {
-                    chars = " " + (char) (PLAY_CHARS + random.nextInt(PLAY_CHARS_LEN)) + " " + (char) (0x4e00 + random.nextInt(256));
-                }
+            if (addChars && vx == 0) {
+                chars = "مرحبا عالم"; // "Hello world" in arabic, demonstrates unicode rendering
+            } else if (addChars) {
+                chars = " " + (char) (PLAY_CHARS + random.nextInt(PLAY_CHARS_LEN)) + " " + (char) (0x4e00 + random.nextInt(256));
             } else {
                 chars = "";
             }
@@ -349,11 +347,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         // Dimmed nodes.
-        if (nVx > 1) {
+        if (nVx == 2) {
             graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 1], true);
-            if (nVx > 2) {
-                graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 2], true);
-            }
+        } else if (nVx > 2) {
+            graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 1], true);
+            graph.setBooleanValue(vxDimmedAttr, vxIds[nVx - 2], true);
         }
 
         if (nVx > 0) {
