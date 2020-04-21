@@ -77,7 +77,7 @@ public class MinScoreAggregator implements AnalyticAggregator<ScoreResult> {
             }
 
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, scores.stream().reduce(Math::min).get());
+            aggregateScores.put(SCORE_NAME, scores.stream().reduce(Math::min).orElse((float) 0.0));
 
             aggregateResult.add(new ElementScore(type, id, identifier, isNull, aggregateScores));
         }
