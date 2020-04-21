@@ -278,10 +278,12 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
@@ -313,10 +315,12 @@ public final class BlazeActions extends AbstractAction implements Presenter.Tool
 
         @Override
         public void processKeyEvent(KeyEvent event, MenuElement[] path, MenuSelectionManager manager) {
+            // Required for MenuElement, intentionally left blank
         }
 
         @Override
         public void menuSelectionChanged(boolean isIncluded) {
+            // Required for MenuElement, intentionally left blank
         }
 
         @Override

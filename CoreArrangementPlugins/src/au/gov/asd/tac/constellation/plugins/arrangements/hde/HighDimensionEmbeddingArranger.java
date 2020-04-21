@@ -304,6 +304,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
-        //This method is used but unpopulated
+        // Required for Arranger, intentionally left blank
     }
 }

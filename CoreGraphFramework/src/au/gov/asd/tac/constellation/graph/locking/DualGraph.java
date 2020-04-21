@@ -95,16 +95,6 @@ public class DualGraph implements Graph, Serializable {
                     }
                 });
             }
-
-            @Override
-            protected void undoOccurred() {
-                // Unpopulated method used in class LockingManager
-            }
-
-            @Override
-            protected void redoOccurred() {
-                // Unpopulated method used in class LockingManager
-            }
         };
     }
 

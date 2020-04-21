@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.namedselection;
 
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -194,6 +194,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
 
     @Override
     public void componentClosed() {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -673,9 +674,11 @@ public final class NamedSelectionTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
 
     void writeProperties(final java.util.Properties p) {
+        // Method Implementation required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
+        // Method Implementation required for @ConvertAsProperties, intentionally left blank
     }
 
     /**

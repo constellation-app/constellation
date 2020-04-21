@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
-//import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerFX;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
 import com.jogamp.opengl.DebugGL3;
 import com.jogamp.opengl.GL3;
@@ -217,17 +216,6 @@ public final class SharedDrawable {
             gl.getContext().release();
             glCurrent.getContext().makeCurrent();
         }
-    }
-
-    /**
-     * Delete textures.
-     * <p>
-     * Given that this texture is shared amongst all contexts, we probably don't
-     * want to do this.
-     */
-    public static void deleteTextures() {
-        gl.glDeleteTextures(1, new int[]{iconTextureName}, 0);
-        glyphTextureController.dispose(gl);
     }
 
     /**

@@ -132,17 +132,17 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
             @Override
             public void componentMoved(ComponentEvent e) {
-                throw new UnsupportedOperationException();
+                // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
-                throw new UnsupportedOperationException();
+                // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
-                throw new UnsupportedOperationException();
+                // Override required for ComponentListener, intentionally left blank
             }
         });
     }

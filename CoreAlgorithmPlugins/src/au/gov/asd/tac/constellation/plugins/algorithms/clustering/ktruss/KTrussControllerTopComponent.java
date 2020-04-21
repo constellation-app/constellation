@@ -677,17 +677,17 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
                 @Override
                 public void componentMoved(ComponentEvent e) {
-                    throw new UnsupportedOperationException();
+                    // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
                 public void componentShown(ComponentEvent e) {
-                    throw new UnsupportedOperationException();
+                    // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
                 public void componentHidden(ComponentEvent e) {
-                    throw new UnsupportedOperationException();
+                    // Override required for ComponentListener, intentionally left blank
                 }
             });
             revalidateParents(dp);
@@ -990,10 +990,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     void writeProperties(final java.util.Properties p) {
-        //Unused Method
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
-        //Unused Method
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 }

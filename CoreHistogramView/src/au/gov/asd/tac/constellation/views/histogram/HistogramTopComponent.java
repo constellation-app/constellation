@@ -147,9 +147,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     void writeProperties(java.util.Properties p) {
+        // Method required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(java.util.Properties p) {
+        // Method required for @ConvertAsProperties, intentionally left blank
     }
 
     @Override
@@ -628,10 +630,12 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     @Override
     public void graphOpened(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     private class HistogramStateUpdaterPlugin extends SimpleEditPlugin {

@@ -174,10 +174,12 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override

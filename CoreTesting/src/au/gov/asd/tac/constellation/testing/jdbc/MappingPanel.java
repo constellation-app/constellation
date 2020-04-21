@@ -323,10 +323,12 @@ public class MappingPanel extends javax.swing.JPanel {
 
         @Override
         public void addTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
 
         @Override
         public void removeTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
     }
 

@@ -103,12 +103,12 @@ public class SpectralArranger implements Arranger {
 
         @Override
         public void initialise(BitSet currentLinksCopy) {
-            //Used but unfinished method
+            // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override
         public void recordTransactionCluster(int txID, int clusterNum) {
-            //Used but unfinished method
+            // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override

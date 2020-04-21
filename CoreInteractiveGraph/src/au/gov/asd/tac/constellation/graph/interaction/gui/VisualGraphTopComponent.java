@@ -96,7 +96,6 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
@@ -232,10 +231,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             @Override
             public void dragEnter(DropTargetDragEvent dtde) {
                 dtde.acceptDrag(DnDConstants.ACTION_COPY);
-            }
-
-            @Override
-            public void dragExit(DropTargetEvent dtde) {
             }
 
             @Override

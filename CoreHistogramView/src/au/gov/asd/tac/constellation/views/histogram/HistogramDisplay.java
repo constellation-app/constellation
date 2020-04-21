@@ -531,26 +531,32 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -565,6 +571,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentMoved(ComponentEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -574,5 +581,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        // Override required, intentionally left blank
     }
 }

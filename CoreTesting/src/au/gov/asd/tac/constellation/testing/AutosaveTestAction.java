@@ -34,9 +34,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_AutosaveTestAction=Test Autosave")
 public final class AutosaveTestAction extends AbstractAction {
 
-    public AutosaveTestAction() {
-    }
-
     @Override
     public void actionPerformed(final ActionEvent e) {
         // Call the same autosave method that the scheduled task uses.

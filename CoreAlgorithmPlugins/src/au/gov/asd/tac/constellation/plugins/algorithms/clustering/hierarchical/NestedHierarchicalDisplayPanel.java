@@ -277,38 +277,38 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
     @Override
     public void componentMoved(ComponentEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for ComponentListener, intentionally left blank
     }
 
     @Override
     public void componentShown(ComponentEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for ComponentListener, intentionally left blank
     }
 
     @Override
     public void componentHidden(ComponentEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for ComponentListener, intentionally left blank
     }
     private boolean leftClickDown = false;
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        throw new UnsupportedOperationException();
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override

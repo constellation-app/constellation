@@ -78,6 +78,7 @@ public final class DeveloperOptionsPanelController extends OptionsPanelControlle
 
     @Override
     public void cancel() {
+        // Required for OptionsPanelController, intentionally left blank
     }
 
     @Override
