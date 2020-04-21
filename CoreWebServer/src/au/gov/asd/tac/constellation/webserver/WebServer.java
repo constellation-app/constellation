@@ -139,7 +139,10 @@ public class WebServer {
                 final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
-                    restFile.delete();
+                    final boolean restFileIsDeleted = restFile.delete();
+                    if(!restFileIsDeleted) {
+                        //TODO: Handle case where file not successfully deleted
+                    }
                 }
 
                 // On Posix, we can use stricter file permissions.
@@ -154,7 +157,7 @@ public class WebServer {
                 // Now write the file contents.
                 try (final PrintWriter pw = new PrintWriter(restFile)) {
                     // Couldn't be bothered starting up a JSON writer for two simple values.
-                    pw.printf("{\"%s\":\"%s\", \"port\":%d}\n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
+                    pw.printf("{\"%s\":\"%s\", \"port\":%d}%n", ConstellationHttpServlet.SECRET_HEADER, ConstellationHttpServlet.SECRET, port);
                 }
 
                 // Download the Python REST client if enabled.
@@ -206,7 +209,10 @@ public class WebServer {
                         throw new RuntimeException(ex);
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
-                        restFile.delete();
+                        final boolean restFileIsDeleted = restFile.delete();
+                        if(!restFileIsDeleted) {
+                            //TODO: Handle case where file not successfully deleted
+                        }
                     }
                 });
                 webserver.setName(WEB_SERVER_THREAD_NAME);
@@ -307,7 +313,7 @@ public class WebServer {
      */
     static boolean equalScripts(final File scriptFile) {
         try (final FileInputStream in1 = new FileInputStream(scriptFile)) {
-            try (final InputStream in2 = WebServer.class.getResourceAsStream("resources/" + CONSTELLATION_CLIENT)) {
+            try (final InputStream in2 = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT)) {
                 final byte[] dig1 = getDigest(in1);
                 final byte[] dig2 = getDigest(in2);
 

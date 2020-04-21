@@ -250,7 +250,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         availableTags.clear();
         tagComboBox.getCheckModel().clearChecks();
         if (graphReport != null) {
-            final List<String> tags = new ArrayList<>(graphReport.getTags());
+            final List<String> tags = new ArrayList<>(graphReport.getUTags());
             int[] selectedIndices = new int[tags.size()];
             int selectedIndexCount = 0;
             int tagIndex = 0;

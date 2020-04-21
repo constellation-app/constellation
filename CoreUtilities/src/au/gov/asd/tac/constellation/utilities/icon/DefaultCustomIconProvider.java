@@ -17,8 +17,8 @@ package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.NetbeansUtilities;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -65,19 +65,22 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
 
         // If the icon is the same as a built-in or existing user icon, ignore it.
         if (!IconManager.iconExists(icon.getExtendedName()) && DefaultCustomIconProvider.getIconDirectory() != null) {
-            final String iconDirectory = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
-            final File iconFile = new File(iconDirectory, icon.getExtendedName() + ConstellationIcon.DEFAULT_ICON_SEPARATOR + ConstellationIcon.DEFAULT_ICON_FORMAT);
-            if (!iconFile.exists()) {
-                try {
-                    final BufferedImage image = icon.buildBufferedImage();
-                    if (image != null) {
-                        ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, iconFile);
-                        CUSTOM_ICONS.put(icon, iconFile);
-                        icon.setEditable(true);
-                        added = true;
+            final File iconDirectoryFile = DefaultCustomIconProvider.getIconDirectory();
+            if (iconDirectoryFile != null) {
+                final String iconDirectory = iconDirectoryFile.getAbsolutePath();
+                final File iconFile = new File(iconDirectory, icon.getExtendedName() + ConstellationIcon.DEFAULT_ICON_SEPARATOR + ConstellationIcon.DEFAULT_ICON_FORMAT);
+                if (!iconFile.exists()) {
+                    try {
+                        final BufferedImage image = icon.buildBufferedImage();
+                        if (image != null) {
+                            ImageIO.write(image, ConstellationIcon.DEFAULT_ICON_FORMAT, iconFile);
+                            CUSTOM_ICONS.put(icon, iconFile);
+                            icon.setEditable(true);
+                            added = true;
+                        }
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
                     }
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
             }
         }
@@ -143,7 +146,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
             } catch (final IOException ex) {
                 NotificationDisplayer.getDefault().notify("User Icon Loading",
                         UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
-                        String.format("Could not load icons from %s:\n%s", iconDirectory, ex.getMessage()),
+                        String.format("Could not load icons from %s:%n%s", iconDirectory, ex.getMessage()),
                         null
                 );
                 Exceptions.printStackTrace(ex);

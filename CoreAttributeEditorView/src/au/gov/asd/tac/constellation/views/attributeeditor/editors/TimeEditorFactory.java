@@ -55,6 +55,8 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private static final int MILLIS_SPINNER_WIDTH = 60;
 
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
+        
+        private static final String LABEL = "label";
 
         private CheckBox noValueCheckBox;
         private Spinner<Integer> hourSpinner;
@@ -126,19 +128,19 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             final Label hourSpinnerLabel = new Label("hr:");
-            hourSpinnerLabel.setId("label");
+            hourSpinnerLabel.setId(LABEL);
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
             final Label minSpinnerLabel = new Label("min:");
-            minSpinnerLabel.setId("label");
+            minSpinnerLabel.setId(LABEL);
             minSpinnerLabel.setLabelFor(minSpinner);
 
             final Label secSpinnerLabel = new Label("sec:");
-            secSpinnerLabel.setId("label");
+            secSpinnerLabel.setId(LABEL);
             secSpinnerLabel.setLabelFor(secSpinner);
 
             final Label milliSpinnerLabel = new Label("ms:");
-            milliSpinnerLabel.setId("label");
+            milliSpinnerLabel.setId(LABEL);
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);

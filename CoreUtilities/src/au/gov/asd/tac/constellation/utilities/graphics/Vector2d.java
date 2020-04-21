@@ -29,7 +29,7 @@ public final class Vector2d {
     /**
      * The contents of this vector.
      */
-    public double[] a;
+    private double[] a;
 
     public Vector2d() {
         a = new double[LENGTH];

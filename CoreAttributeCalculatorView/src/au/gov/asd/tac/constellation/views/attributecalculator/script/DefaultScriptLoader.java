@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator.script;
 
+import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
@@ -73,7 +74,7 @@ public class DefaultScriptLoader extends AbstractScriptLoader {
         defaultNames = defaultNamesList.toArray(defaultNames);
 
         for (String name : defaultNames) {
-            final String visibleName = ScriptIO.decode(name.substring(0, name.length() - 5));
+            final String visibleName = FilenameEncoder.decode(name.substring(0, name.length() - 5));
             JsonNode node;
             final String fileName;
             try {

@@ -35,13 +35,13 @@ public class ObjectValueUpdater5 implements ValueUpdater32 {
             return lastBits;
         } else if (delta >= 0 && delta <= 255) {
             state.addByte((byte) (delta + Byte.MIN_VALUE));
-            return (1 << 3) | lastBits;
+            return 8 | lastBits; //1<<3 = 8
         } else if (delta >= 0 && delta <= 65535) {
             state.addShort((short) (delta + Short.MIN_VALUE));
-            return (2 << 3) | lastBits;
+            return 16 | lastBits; //2<<3 = 16
         } else {
             state.addInt(delta);
-            return (3 << 3) | lastBits;
+            return 24 | lastBits; //3<<3 = 24
         }
     }
 

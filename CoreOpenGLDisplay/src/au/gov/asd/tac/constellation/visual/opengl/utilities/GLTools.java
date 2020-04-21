@@ -301,7 +301,7 @@ public final class GLTools {
             Vector2f[] vTexture = Vector2f.createArray(4);
 
             for (int j = 0; j < iSlices; j++) {
-                float theta = (j == iSlices) ? 0.0f : j * dtheta;
+                float theta = j * dtheta;
                 float stheta = (float) (-Math.sin(theta));
                 float ctheta = (float) (Math.cos(theta));
 
@@ -633,7 +633,7 @@ public final class GLTools {
                         data.destroy();
                     }
                 } catch (final RuntimeException ex) {
-                    System.out.printf("##\n## GLTools.loadTextures() icon %d throwable: %s\n##\n", i, ex);
+                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
                     LOGGER.log(Level.SEVERE, null, ex);
                 }
             }

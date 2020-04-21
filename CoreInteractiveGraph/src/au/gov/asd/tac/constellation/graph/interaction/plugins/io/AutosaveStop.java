@@ -49,7 +49,6 @@ public final class AutosaveStop implements Runnable {
 //        System.out.printf("@AStop\n");
         final Map<String, Graph> graphs = GraphNode.getAllGraphs();
         for (final Map.Entry<String, Graph> entry : graphs.entrySet()) {
-            final String name = entry.getKey();
             final Graph graph = entry.getValue();
 
 //            System.out.printf("@AStop %s %s %s\n", name, graph.getId(), graph);

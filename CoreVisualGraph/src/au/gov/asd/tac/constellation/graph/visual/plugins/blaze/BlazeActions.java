@@ -63,7 +63,7 @@ import org.openide.util.actions.Presenter;
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.blaze.BlazeActions")
 @ActionRegistration(displayName = "", lazy = false)
-@ActionReference(path = "Toolbars/Visualisation", position = 400)
+@ActionReference(path = "Toolbars/Display", position = 400)
 @Messages("CTL_BlazeAction=Blaze")
 public final class BlazeActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 

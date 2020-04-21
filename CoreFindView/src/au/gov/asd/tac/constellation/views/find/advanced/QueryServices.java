@@ -129,7 +129,7 @@ public class QueryServices {
                 return findResults; // Successfully found content.
             }
 
-            return null;
+            return findResults;
         } finally {
             rg.release();
         }
@@ -463,9 +463,7 @@ public class QueryServices {
                     barrier.await();
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                    return;
                 } catch (BrokenBarrierException ex) {
-                    return;
                 }
             }
         }
@@ -696,14 +694,9 @@ public class QueryServices {
             // Retrieve content from the graph:
             final Date retrieved = new Date(rg.getLongValue(rule.getAttribute().getId(), index));
 
-            Calendar item;
-            if (retrieved == null) {
-                item = null;
-            } else {
-                item = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                item.setTimeInMillis(retrieved.getTime());
-                item.set(Calendar.MILLISECOND, 0);
-            }
+            Calendar item = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            item.setTimeInMillis(retrieved.getTime());
+            item.set(Calendar.MILLISECOND, 0);
 
             switch (rule.getOperator()) {
                 case OCCURRED_ON:

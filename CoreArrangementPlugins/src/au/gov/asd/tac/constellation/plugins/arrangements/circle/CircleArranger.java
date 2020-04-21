@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.circle;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
-import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 
 /**
  *
@@ -82,7 +82,8 @@ public class CircleArranger implements Arranger {
 
             // What fraction of the circumference is this?
             // And therefore, what is the angle subtended?
-            final float arcfrac = (2f * nradius) / circleCircumference;
+            // (if the circumference is 0 then we divide by 1 to avoid dividing by 0 (nradius will be 0 anyway))
+            final float arcfrac = (2f * nradius) / (circleCircumference != 0 ? circleCircumference : 1);
             final float arclen = 2f * (float) Math.PI * arcfrac;
             final float subtends = arclen;
 

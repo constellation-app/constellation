@@ -41,7 +41,7 @@ import org.openide.util.NbPreferences;
         surviveFocusChange = true, lazy = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 500),
-    @ActionReference(path = "Toolbars/Visualisation", position = 800)
+    @ActionReference(path = "Toolbars/Display", position = 800)
 })
 @Messages({
     "CTL_FreezeGraphViewListenerAction=Freeze Graph View",

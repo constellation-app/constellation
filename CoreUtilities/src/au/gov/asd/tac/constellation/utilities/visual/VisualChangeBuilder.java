@@ -27,7 +27,7 @@ public final class VisualChangeBuilder {
     private static long currentId = 0;
 
     private final VisualProperty property;
-    public Long id = null;
+    private Long id = null;
     private int[] changeList = null;
     private int numChangedItems = -1;
 

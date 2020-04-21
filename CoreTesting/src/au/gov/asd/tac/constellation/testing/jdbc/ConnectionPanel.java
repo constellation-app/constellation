@@ -61,6 +61,7 @@ public class ConnectionPanel extends JPanel {
 //    private static final String DRIVER_KEY = "driver";
 
     private static final String EXT = ".jar";
+    private static final String SIXTEEN_S_FORMAT = "    %-16s %s,%n";
 
     private final Graph graph;
 
@@ -435,12 +436,12 @@ public class ConnectionPanel extends JPanel {
         final StringBuilder buf = new StringBuilder();
         buf.append(String.format("CREATE TABLE %s%n(%n", tableName));
         if (etype == GraphElementType.VERTEX) {
-            buf.append(String.format("    %-16s %s,%n", "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
         } else {
-            buf.append(String.format("    %-16s %s,%n", "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
-            buf.append(String.format("    %-16s %s,%n", "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "tx_id_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_src_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "vx_dst_", sqlType(IntegerAttributeDescription.ATTRIBUTE_NAME)));
+            buf.append(String.format(SIXTEEN_S_FORMAT, "tx_dir_", sqlType(BooleanAttributeDescription.ATTRIBUTE_NAME)));
         }
 
         final ArrayList<String> lines = new ArrayList<>();
@@ -448,7 +449,7 @@ public class ConnectionPanel extends JPanel {
         for (int position = 0; position < attrCount; position++) {
             final int attrId = rg.getAttribute(etype, position);
             final Attribute attr = new GraphAttribute(rg, attrId);
-            final String line = String.format("    %-16s %s,%n", JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
+            final String line = String.format(SIXTEEN_S_FORMAT, JdbcUtilities.canonicalLabel(attr.getName(), false), sqlType(attr.getAttributeType()));
             lines.add(line);
         }
 
