@@ -66,7 +66,7 @@ public class HelpServlet extends ConstellationHttpServlet {
         response.setContentType(mimeType);
 
         try {
-            SphinxHelpDisplayer.copyFile(requestPath, response.getOutputStream());
+            SphinxHelpDisplayer.copy(requestPath, response.getOutputStream());
         } catch(final IOException ex) {
             throw new ServletException(ex);
         }
