@@ -110,7 +110,7 @@ public class ExtendedBuffer {
         public int read() throws IOException {
             if (inputBuffer.position < inputBuffer.length) {
                 available.getAndDecrement();
-                return inputBuffer.data[inputBuffer.position++];
+                return inputBuffer.data[inputBuffer.position++] & 0xFF;
             } else if (inputBuffer.length < bufferSize) {
                 return -1;
             } else {
@@ -120,7 +120,7 @@ public class ExtendedBuffer {
                         return -1;
                     }
                     available.getAndDecrement();
-                    return inputBuffer.data[inputBuffer.position++];
+                    return inputBuffer.data[inputBuffer.position++] & 0xFF;
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
                     throw new IOException(ex);

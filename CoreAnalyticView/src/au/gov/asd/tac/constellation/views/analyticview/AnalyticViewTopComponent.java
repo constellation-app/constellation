@@ -170,7 +170,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         suppressed = true;
         manualUpdate();
         suppressed = false;
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (analyticViewPane != null) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
     
     @Override

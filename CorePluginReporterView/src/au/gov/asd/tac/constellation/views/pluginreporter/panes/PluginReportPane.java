@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -24,8 +22,11 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -247,14 +248,14 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             // If the plugin is still running
             if (stopTime == -1) {
                 sequencePane.getStyleClass().add("running");
-                pluginNameLabel.getStyleClass().add("lightNameText");
-                messageLabel.getStyleClass().add("lightMessageText");
+                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
+                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
 
                 // If the plugin has finished
             } else {
                 sequencePane.getStyleClass().add("finished");
-                pluginNameLabel.getStyleClass().add("lightNameText");
-                messageLabel.getStyleClass().add("lightMessageText");
+                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
+                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
             }
 
             if (pluginReport.getMessage() == null) {
@@ -269,8 +270,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             // If the plugin has been cancelled
             if (error instanceof InterruptedException) {
                 sequencePane.getStyleClass().add("interrupted");
-                pluginNameLabel.getStyleClass().add("lightNameText");
-                messageLabel.getStyleClass().add("lightMessageText");
+                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
+                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
                 messageLabel.setText("Cancelled");
 
                 // If the plugin failed in an expected way
@@ -290,8 +291,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 // If the plugin failed in an unexpected way
             } else {
                 sequencePane.getStyleClass().add("errored");
-                pluginNameLabel.getStyleClass().add("lightNameText");
-                messageLabel.getStyleClass().add("lightMessageText");
+                pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
+                messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
 
                 Writer errorWriter = new CharArrayWriter();
                 try (PrintWriter out = new PrintWriter(errorWriter)) {
@@ -342,8 +343,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     public void updateChildren() {
         Platform.runLater(() -> {
             synchronized (PluginReportPane.this) {
-                while (nextChild < pluginReport.getChildReports().size()) {
-                    PluginReport childReport = pluginReport.getChildReports().get(nextChild++);
+                while (nextChild < pluginReport.getUChildReports().size()) {
+                    PluginReport childReport = pluginReport.getUChildReports().get(nextChild++);
 
                     BorderPane borderPane = new BorderPane();
 

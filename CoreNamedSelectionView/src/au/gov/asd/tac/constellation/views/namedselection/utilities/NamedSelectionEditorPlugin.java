@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.namedselection.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -79,7 +80,6 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
     // Graph attributes:
     public static final String NAMED_SELECTION_ATTR = "named_selection";
     public static final String NAMED_SELECTION_ATTR_DESC = "Named Selections";
-    public static final String LONG_ATTR_TYPE = "long";
     public static final long NAMED_SELECTION_DEFAULT_VALUE = 0L;
     private static final long ALL_SET = 0xffffffffffffffffL;
     private static final int NULL_INTEGER = -1;
@@ -241,7 +241,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Perform union operation on vertices:
         final int vertexCount = graph.getVertexCount();
         if (vertexAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, LONG_ATTR_TYPE,
+            graph.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < vertexCount; i++) {
@@ -280,7 +280,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Perform union on transactions:
         final int transCount = graph.getTransactionCount();
         if (transAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.TRANSACTION, LONG_ATTR_TYPE,
+            graph.addAttribute(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < transCount; i++) {
@@ -357,7 +357,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Perform intersection on vertices:
         final int vertexCount = graph.getVertexCount();
         if (vertexAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, LONG_ATTR_TYPE, NAMED_SELECTION_ATTR,
+            graph.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, NAMED_SELECTION_ATTR,
                     NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < vertexCount; i++) {
@@ -396,7 +396,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Perform intersection on transactions:
         final int transCount = graph.getTransactionCount();
         if (transAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.TRANSACTION, LONG_ATTR_TYPE, NAMED_SELECTION_ATTR,
+            graph.addAttribute(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, NAMED_SELECTION_ATTR,
                     NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < transCount; i++) {
@@ -461,7 +461,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Recall vertices for the given named selection's id:
         final int vertexCount = graph.getVertexCount();
         if (vertexAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.VERTEX, LONG_ATTR_TYPE, NAMED_SELECTION_ATTR,
+            graph.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, NAMED_SELECTION_ATTR,
                     NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < vertexCount; i++) {
@@ -494,7 +494,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
         // Recall transactions for the given named selection's id:
         final int transCount = graph.getTransactionCount();
         if (transAttr == Graph.NOT_FOUND) {
-            graph.addAttribute(GraphElementType.TRANSACTION, LONG_ATTR_TYPE, NAMED_SELECTION_ATTR,
+            graph.addAttribute(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME, NAMED_SELECTION_ATTR,
                     NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
 
             for (int i = 0; i < transCount; i++) {
@@ -543,12 +543,12 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
 
         // Add the "selected" attribute if necessary:
         if (vertexAttr == Graph.NOT_FOUND) {
-            vertexAttr = graph.addAttribute(GraphElementType.VERTEX, LONG_ATTR_TYPE,
+            vertexAttr = graph.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
         }
 
         if (transAttr == Graph.NOT_FOUND) {
-            transAttr = graph.addAttribute(GraphElementType.TRANSACTION, LONG_ATTR_TYPE,
+            transAttr = graph.addAttribute(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
         }
 
@@ -617,12 +617,12 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
 
         // Add the "selected" attribute if necessary:
         if (vertexAttr == Graph.NOT_FOUND) {
-            vertexAttr = graph.addAttribute(GraphElementType.VERTEX, LONG_ATTR_TYPE,
+            vertexAttr = graph.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
         }
 
         if (transAttr == Graph.NOT_FOUND) {
-            transAttr = graph.addAttribute(GraphElementType.TRANSACTION, LONG_ATTR_TYPE,
+            transAttr = graph.addAttribute(GraphElementType.TRANSACTION, LongAttributeDescription.ATTRIBUTE_NAME,
                     NAMED_SELECTION_ATTR, NAMED_SELECTION_ATTR_DESC, NAMED_SELECTION_DEFAULT_VALUE, null);
         }
 

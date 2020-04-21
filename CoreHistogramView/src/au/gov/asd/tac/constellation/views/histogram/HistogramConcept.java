@@ -60,25 +60,25 @@ public class HistogramConcept extends SchemaConcept {
 
     public static class VertexAttribute {
 
-        public static final SchemaAttribute HISTOGRAM_VERTEX_BIN = new SchemaAttribute.Builder(GraphElementType.VERTEX, ObjectAttributeDescription.ATTRIBUTE_NAME, "histogram_bin")
+        public static final SchemaAttribute HISTOGRAM_VERTEX_BIN = new SchemaAttribute.Builder(GraphElementType.VERTEX, ObjectAttributeDescription.ATTRIBUTE_NAME, HISTOGRAM_BIN_LABEL)
                 .build();
     }
 
     public static class TransactionAttribute {
 
-        public static final SchemaAttribute HISTOGRAM_TRANSACTION_BIN = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ObjectAttributeDescription.ATTRIBUTE_NAME, "histogram_bin")
+        public static final SchemaAttribute HISTOGRAM_TRANSACTION_BIN = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ObjectAttributeDescription.ATTRIBUTE_NAME, HISTOGRAM_BIN_LABEL)
                 .build();
     }
 
     public static class EdgeAttribute {
 
-        public static final SchemaAttribute HISTOGRAM_EDGE_BIN = new SchemaAttribute.Builder(GraphElementType.EDGE, ObjectAttributeDescription.ATTRIBUTE_NAME, "histogram_bin")
+        public static final SchemaAttribute HISTOGRAM_EDGE_BIN = new SchemaAttribute.Builder(GraphElementType.EDGE, ObjectAttributeDescription.ATTRIBUTE_NAME, HISTOGRAM_BIN_LABEL)
                 .build();
     }
 
     public static class LinkAttribute {
 
-        public static final SchemaAttribute HISTOGRAM_LINK_BIN = new SchemaAttribute.Builder(GraphElementType.LINK, ObjectAttributeDescription.ATTRIBUTE_NAME, "histogram_bin")
+        public static final SchemaAttribute HISTOGRAM_LINK_BIN = new SchemaAttribute.Builder(GraphElementType.LINK, ObjectAttributeDescription.ATTRIBUTE_NAME, HISTOGRAM_BIN_LABEL)
                 .build();
     }
 

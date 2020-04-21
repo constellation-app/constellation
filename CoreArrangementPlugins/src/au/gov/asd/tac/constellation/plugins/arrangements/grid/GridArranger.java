@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
@@ -91,13 +92,13 @@ public class GridArranger implements Arranger {
 
         // Get/set the x,y,z attributes.
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "y", "y", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "z", "z", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
         }
 
         final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());

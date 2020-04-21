@@ -114,6 +114,7 @@ public class MostRecentModules {
         final ArrayList<ModuleInfo> moduleList = new ArrayList<>();
         for (ModuleInfo mi : modules) {
             if (!mi.getCodeNameBase().startsWith("org.netbeans")
+                    && !mi.getCodeNameBase().startsWith("org.apache")
                     && !mi.getCodeNameBase().startsWith("org.openide")
                     && !mi.getCodeNameBase().startsWith("org.jdesktop")
                     && !mi.getCodeNameBase().startsWith("net.java.html")) {

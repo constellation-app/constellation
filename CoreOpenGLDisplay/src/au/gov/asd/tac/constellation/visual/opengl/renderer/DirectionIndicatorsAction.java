@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import java.awt.event.ActionEvent;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
@@ -36,21 +37,21 @@ public final class DirectionIndicatorsAction extends AbstractAction implements P
 
     // Not a particularly nice way of making a global state available,
     // but it has to be fast because it's used at every call to display().
-    private static volatile boolean showIndicators = false;
+    private static final AtomicBoolean showIndicators = new AtomicBoolean(false);
 
     public DirectionIndicatorsAction() {
         menuItem = new JCheckBoxMenuItem(this);
-        menuItem.setSelected(showIndicators);
+        menuItem.setSelected(showIndicators.get());
     }
 
     public static boolean isShowIndicators() {
-        return showIndicators;
+        return showIndicators.get();
     }
     
     @Override
     public void actionPerformed(final ActionEvent e) {
-        showIndicators = !showIndicators;
-        menuItem.setSelected(showIndicators);
+        showIndicators.set(!showIndicators.get());
+        menuItem.setSelected(showIndicators.get());
     }
 
     @Override

@@ -53,6 +53,8 @@ import org.openide.util.NbBundle.Messages;
 public abstract class SimpleEditPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
+    
+    private static final String WAITING_INTERACTION = "Waiting...";
 
     public SimpleEditPlugin() {
     }
@@ -98,7 +100,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
         try {
 
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
             try {
                 boolean cancelled = false;
 
@@ -165,10 +167,10 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
         try {
 
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, "Waiting...", true);
+            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
             try {
                 edit(graph, interaction, parameters);
-                if (!"Waiting...".equals(interaction.getCurrentMessage())) {
+                if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                     inControlOfProgress = false;
                 }
             } finally {

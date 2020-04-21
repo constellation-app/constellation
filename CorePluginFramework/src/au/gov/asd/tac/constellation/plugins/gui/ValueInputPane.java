@@ -284,11 +284,10 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
             fieldAndRecentValues.getChildren().add(field);
             if (!isPassword) {
                 fieldAndRecentValues.getChildren().add(recentValuesCombo);
-            }
-            getChildren().add(fieldAndRecentValues);
-
-            if (!isPassword) {
+                getChildren().add(fieldAndRecentValues);
                 RecentParameterValues.addListener(this);
+            } else {
+                getChildren().add(fieldAndRecentValues);
             }
         }
     }

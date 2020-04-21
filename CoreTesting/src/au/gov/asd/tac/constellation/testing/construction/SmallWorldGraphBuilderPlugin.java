@@ -81,6 +81,8 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "transaction_types");
     
+    private static final String CONNECTED = "connected";
+
     private final SecureRandom r = new SecureRandom();
 
     @Override
@@ -117,7 +119,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         ArrayList<String> modes = new ArrayList<>();
         modes.add("Default");
         modes.add("Newman");
-        modes.add("Connected");
+        modes.add(CONNECTED);
 
         final PluginParameter<SingleChoiceParameterValue> buildMode = SingleChoiceParameterType.build(BUILD_MODE_PARAMETER_ID);
         buildMode.setName("Build mode");
@@ -153,7 +155,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         params.addController(BUILD_MODE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String mode = master.getStringValue();
-                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals("Connected"));
+                parameters.get(T_PARAMETER_ID).setEnabled(mode.equals(CONNECTED));
             }
         });
 
@@ -250,7 +252,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         int initialComponents = 0;
-        if (buildMode.equals("Connected")) {
+        if (buildMode.equals(CONNECTED)) {
             initialComponents = componentCount(graph);
         }
 
@@ -385,13 +387,9 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.removeTransaction(txId);
             }
 
-            if (buildMode.equals("Connected") && componentCount(graph) != initialComponents + 1) {
-                if (s == t) {
-                    break;
-                } else {
-                    for (int vxId : vxIds) {
-                        graph.removeVertex(vxId);
-                    }
+            if (buildMode.equals(CONNECTED) && componentCount(graph) != initialComponents + 1 && s != t) {
+                for (int vxId : vxIds) {
+                    graph.removeVertex(vxId);
                 }
             } else {
                 break;
@@ -399,22 +397,18 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
-            if (n < 10000) {
-                // Do a trees layout.
-                try {
+            try {
+                if (n < 10000) {
+                    // Do a trees layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            } else {
-                // Do a grid layout.
-                try {
+                } else {
+                    // Do a grid layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);

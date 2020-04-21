@@ -67,7 +67,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.namedselection.NamedSelectionTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 700),
+    @ActionReference(path = "Menu/Views", position = 800),
     @ActionReference(path = "Shortcuts", name = "CS-N")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_NamedSelectionAction",

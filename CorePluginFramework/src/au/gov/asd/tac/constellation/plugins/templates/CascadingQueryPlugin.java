@@ -113,9 +113,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
 
             // Make the progress bar appear nondeterminent
             try {
-                if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Executing child plugins", true);
-                }
+                interaction.setProgress(0, 0, "Executing child plugins", true);
 
                 Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
 
@@ -132,9 +130,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
                 pluginSynchronizer.waitForGate(1);
 
                 // Wait for all plugins to finish reading and querying
-                if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Waiting For Other Plugins...", true);
-                }
+                interaction.setProgress(0, 0, "Waiting For Other Plugins...", true);
 
                 // Wait at gate 1 for any SimpleQueryPlugins to finish reading
                 graphs.waitAtGate(1);
@@ -142,7 +138,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
             } catch (DuplicateKeyException ex) {
                 interaction.notify(PluginNotificationLevel.ERROR, ex.getMessage());
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setProgress(2, 1, "Finished", true);
             }
 
         } finally {

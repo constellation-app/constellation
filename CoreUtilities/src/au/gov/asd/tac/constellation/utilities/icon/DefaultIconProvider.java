@@ -27,38 +27,42 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationIconProvider.class)
 public class DefaultIconProvider implements ConstellationIconProvider {
+    
+    private static final String CODE_NAME_BASE = "au.gov.asd.tac.constellation.utilities";
+    
+    private static final String BACKGROUND_CATEGORY = "Background";
 
     public static final ConstellationIcon HIGHLIGHTED = new ConstellationIcon.Builder("Highlighted", new ImageIconData(getHighlightImage(256, 0.1f, 4)))
             .build();
-    public static final ConstellationIcon NOISE = new ConstellationIcon.Builder("Noise", new FileIconData("modules/ext/icons/noise.png", "au.gov.asd.tac.constellation.utilities"))
+    public static final ConstellationIcon NOISE = new ConstellationIcon.Builder("Noise", new FileIconData("modules/ext/icons/noise.png", CODE_NAME_BASE))
             .build();
-    public static final ConstellationIcon TRANSPARENT = new ConstellationIcon.Builder("Transparent", new FileIconData("modules/ext/icons/transparent.png", "au.gov.asd.tac.constellation.utilities"))
+    public static final ConstellationIcon TRANSPARENT = new ConstellationIcon.Builder("Transparent", new FileIconData("modules/ext/icons/transparent.png", CODE_NAME_BASE))
             .build();
-    public static final ConstellationIcon UNKNOWN = new ConstellationIcon.Builder("Unknown", new FileIconData("modules/ext/icons/003f.png", "au.gov.asd.tac.constellation.utilities"))
+    public static final ConstellationIcon UNKNOWN = new ConstellationIcon.Builder("Unknown", new FileIconData("modules/ext/icons/003f.png", CODE_NAME_BASE))
             .build();
     public static final ConstellationIcon EMPTY = new ConstellationIcon.Builder("", TRANSPARENT.getIconData())
             .build();
-    public static final ConstellationIcon LOOP_DIRECTED = new ConstellationIcon.Builder("Directed Loop", new FileIconData("modules/ext/icons/loop_directed.png", "au.gov.asd.tac.constellation.utilities"))
+    public static final ConstellationIcon LOOP_DIRECTED = new ConstellationIcon.Builder("Directed Loop", new FileIconData("modules/ext/icons/loop_directed.png", CODE_NAME_BASE))
             .build();
-    public static final ConstellationIcon LOOP_UNDIRECTED = new ConstellationIcon.Builder("Undirected Loop", new FileIconData("modules/ext/icons/loop_undirected.png", "au.gov.asd.tac.constellation.utilities"))
+    public static final ConstellationIcon LOOP_UNDIRECTED = new ConstellationIcon.Builder("Undirected Loop", new FileIconData("modules/ext/icons/loop_undirected.png", CODE_NAME_BASE))
             .build();
-    public static final ConstellationIcon FLAT_CIRCLE = new ConstellationIcon.Builder("Flat Circle", new FileIconData("modules/ext/icons/flat_circle.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon FLAT_CIRCLE = new ConstellationIcon.Builder("Flat Circle", new FileIconData("modules/ext/icons/flat_circle.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
-    public static final ConstellationIcon FLAT_SQUARE = new ConstellationIcon.Builder("Flat Square", new FileIconData("modules/ext/icons/flat_square.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon FLAT_SQUARE = new ConstellationIcon.Builder("Flat Square", new FileIconData("modules/ext/icons/flat_square.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
-    public static final ConstellationIcon FLAT_TRIANGLE = new ConstellationIcon.Builder("Flat Triangle", new FileIconData("modules/ext/icons/flat_triangle.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon FLAT_TRIANGLE = new ConstellationIcon.Builder("Flat Triangle", new FileIconData("modules/ext/icons/flat_triangle.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
-    public static final ConstellationIcon ROUND_CIRCLE = new ConstellationIcon.Builder("Round Circle", new FileIconData("modules/ext/icons/round_circle.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon ROUND_CIRCLE = new ConstellationIcon.Builder("Round Circle", new FileIconData("modules/ext/icons/round_circle.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
-    public static final ConstellationIcon ROUND_SQUARE = new ConstellationIcon.Builder("Round Square", new FileIconData("modules/ext/icons/round_square.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon ROUND_SQUARE = new ConstellationIcon.Builder("Round Square", new FileIconData("modules/ext/icons/round_square.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
-    public static final ConstellationIcon EDGE_SQUARE = new ConstellationIcon.Builder("Edge Square", new FileIconData("modules/ext/icons/edge_square.png", "au.gov.asd.tac.constellation.utilities"))
-            .addCategory("Background")
+    public static final ConstellationIcon EDGE_SQUARE = new ConstellationIcon.Builder("Edge Square", new FileIconData("modules/ext/icons/edge_square.png", CODE_NAME_BASE))
+            .addCategory(BACKGROUND_CATEGORY)
             .build();
 
     @Override
