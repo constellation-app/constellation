@@ -71,16 +71,13 @@ public class SP2Traverse {
             pathed[vxId] = new BitSet(vxCount);
             ecc[vxId] = -1;
 
-            if (graph.getBooleanValue(selectedNodeAttrId, position)) {
+            if (graph.getBooleanValue(selectedNodeAttrId, position) && graph.getVertexNeighbourCount(position) == 1) {
                 // dealing with special case for nodes with one neighbour
-                if (graph.getVertexNeighbourCount(position) == 1) {
-                    seeds.set(graph.getVertexNeighbour(position, 0), true);
-                    check.set(graph.getVertexPosition(graph.getVertexNeighbour(position, 0)), true);
-                } // ignore nodes with no neighbour
-                else if (graph.getVertexNeighbourCount(position) > 1) {
-                    seeds.set(vxId, true);
-                }
-            }
+                seeds.set(graph.getVertexNeighbour(position, 0), true);
+                check.set(graph.getVertexPosition(graph.getVertexNeighbour(position, 0)), true);
+            } else if (graph.getBooleanValue(selectedNodeAttrId, position) && graph.getVertexNeighbourCount(position) > 1) {
+                seeds.set(vxId, true);
+            } // ignore nodes with no neighbour
         }
         // now to determine how many pairs of nodes we need to get the shortest path between
         int pairsize = 0;

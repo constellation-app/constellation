@@ -240,18 +240,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the vertex represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if (!selectedOnly || vertexSelected) {
-                        if (vertexShape != null && !vertexShape.isEmpty() && Shape.isValidGeoJson(vertexShape)) {
-                            shapes.put(vertexIdentifier, vertexShape);
+                    if ((!selectedOnly || vertexSelected) && vertexShape != null && !vertexShape.isEmpty() 
+                            && Shape.isValidGeoJson(vertexShape)) {
+                        shapes.put(vertexIdentifier, vertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || vertexSelected) && vertexLatitude != null && vertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
+                            shapes.put(vertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (vertexLatitude != null && vertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(vertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) vertexLongitude, (double) vertexLatitude)));
-                                shapes.put(vertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -299,18 +298,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the transaction represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (transactionShape != null && !transactionShape.isEmpty() && Shape.isValidGeoJson(transactionShape)) {
-                            shapes.put(transactionIdentifier, transactionShape);
+                    if ((!selectedOnly || transactionSelected) && transactionShape != null && !transactionShape.isEmpty() 
+                            && Shape.isValidGeoJson(transactionShape)) {
+                        shapes.put(transactionIdentifier, transactionShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && transactionLatitude != null && transactionLongitude != null) {
+                        try {
+                            final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
+                            shapes.put(transactionIdentifier, transactionPoint);
                             shapeFound = true;
-                        } else if (transactionLatitude != null && transactionLongitude != null) {
-                            try {
-                                final String transactionPoint = Shape.generateShape(transactionIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) transactionLongitude, (double) transactionLatitude)));
-                                shapes.put(transactionIdentifier, transactionPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -345,18 +343,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the source vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (sourceVertexShape != null && !sourceVertexShape.isEmpty() && Shape.isValidGeoJson(sourceVertexShape)) {
-                            shapes.put(sourceVertexIdentifier, sourceVertexShape);
+                    if ((!selectedOnly || transactionSelected) && sourceVertexShape != null && !sourceVertexShape.isEmpty() && 
+                            Shape.isValidGeoJson(sourceVertexShape)) {
+                        shapes.put(sourceVertexIdentifier, sourceVertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && sourceVertexLatitude != null && sourceVertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
+                            shapes.put(sourceVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (sourceVertexLatitude != null && sourceVertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(sourceVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) sourceVertexLongitude, (double) sourceVertexLatitude)));
-                                shapes.put(sourceVertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
@@ -391,18 +388,17 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the destination vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if (!selectedOnly || transactionSelected) {
-                        if (destinationVertexShape != null && !destinationVertexShape.isEmpty() && Shape.isValidGeoJson(destinationVertexShape)) {
-                            shapes.put(destinationVertexIdentifier, destinationVertexShape);
+                    if ((!selectedOnly || transactionSelected) && destinationVertexShape != null && !destinationVertexShape.isEmpty() 
+                            && Shape.isValidGeoJson(destinationVertexShape)) {
+                        shapes.put(destinationVertexIdentifier, destinationVertexShape);
+                        shapeFound = true;
+                    } else if ((!selectedOnly || transactionSelected) && destinationVertexLatitude != null && destinationVertexLongitude != null) {
+                        try {
+                            final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
+                            shapes.put(destinationVertexIdentifier, vertexPoint);
                             shapeFound = true;
-                        } else if (destinationVertexLatitude != null && destinationVertexLongitude != null) {
-                            try {
-                                final String vertexPoint = Shape.generateShape(destinationVertexIdentifier, GeometryType.POINT, Arrays.asList(Tuple.create((double) destinationVertexLongitude, (double) destinationVertexLatitude)));
-                                shapes.put(destinationVertexIdentifier, vertexPoint);
-                                shapeFound = true;
-                            } catch (IOException ex) {
-                                throw new PluginException(PluginNotificationLevel.ERROR, ex);
-                            }
+                        } catch (IOException ex) {
+                            throw new PluginException(PluginNotificationLevel.ERROR, ex);
                         }
                     }
 
