@@ -127,7 +127,7 @@ public class AttributeUtilities {
             return attributeIds;
         }
         
-        for (GraphElementType elementType : ACCEPTED_ELEMENT_TYPES) {
+        for (final GraphElementType elementType : ACCEPTED_ELEMENT_TYPES) {
             int attributeCount = graph.getAttributeCount(elementType);
             for (int i = 0; i < attributeCount; i++) {
 

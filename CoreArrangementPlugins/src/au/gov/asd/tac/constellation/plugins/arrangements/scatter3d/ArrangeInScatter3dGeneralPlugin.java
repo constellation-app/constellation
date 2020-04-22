@@ -42,12 +42,12 @@ import org.openide.util.lookup.ServiceProvider;
 })
 public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
-    public static final String SCATTER3D_X_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_x_attribute");
-    public static final String SCATTER3D_Y_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_y_attribute");
-    public static final String SCATTER3D_Z_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_z_attribute");
-    public static final String SCATTER3D_X_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_x");
-    public static final String SCATTER3D_Y_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_y");
-    public static final String SCATTER3D_Z_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_z");
+    public static final String SCATTER_3D_X_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_x_attribute");
+    public static final String SCATTER_3D_Y_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_y_attribute");
+    public static final String SCATTER_3D_Z_ATTRIBUTE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_z_attribute");
+    public static final String SCATTER_3D_X_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_x");
+    public static final String SCATTER_3D_Y_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_y");
+    public static final String SCATTER_3D_Z_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_z");
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -57,12 +57,12 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
         final Map<String, PluginParameter<?>> pp = parameters.getParameters();
         final Scatter3dChoiceParameters scatter3dParams = Scatter3dChoiceParameters.getDefaultParameters();
-        scatter3dParams.setXDimension(pp.get(SCATTER3D_X_ATTRIBUTE).getStringValue());
-        scatter3dParams.setYDimension(pp.get(SCATTER3D_Y_ATTRIBUTE).getStringValue());
-        scatter3dParams.setZDimension(pp.get(SCATTER3D_Z_ATTRIBUTE).getStringValue());
-        scatter3dParams.setLogarithmicX(pp.get(SCATTER3D_X_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicY(pp.get(SCATTER3D_Y_LOGARITHMIC).getBooleanValue());
-        scatter3dParams.setLogarithmicZ(pp.get(SCATTER3D_Z_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setXDimension(pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue());
+        scatter3dParams.setYDimension(pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue());
+        scatter3dParams.setZDimension(pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue());
+        scatter3dParams.setLogarithmicX(pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setLogarithmicY(pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setLogarithmicZ(pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue());
 
         final Scatter3dArranger arranger = new Scatter3dArranger(scatter3dParams);
         arranger.arrange(graph);
@@ -72,37 +72,37 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<StringParameterValue> x_attribute = StringParameterType.build(SCATTER3D_X_ATTRIBUTE);
+        final PluginParameter<StringParameterValue> x_attribute = StringParameterType.build(SCATTER_3D_X_ATTRIBUTE);
         x_attribute.setName("X Attribute");
         x_attribute.setDescription("The attribute to use for the x dimension");
         x_attribute.setStringValue("");
         parameters.addParameter(x_attribute);
 
-        final PluginParameter<StringParameterValue> y_attribute = StringParameterType.build(SCATTER3D_Y_ATTRIBUTE);
+        final PluginParameter<StringParameterValue> y_attribute = StringParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
         y_attribute.setName("Y Attribute");
         y_attribute.setDescription("The attribute to use for the y dimension");
         y_attribute.setStringValue("");
         parameters.addParameter(y_attribute);
 
-        final PluginParameter<StringParameterValue> z_attribute = StringParameterType.build(SCATTER3D_Z_ATTRIBUTE);
+        final PluginParameter<StringParameterValue> z_attribute = StringParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
         z_attribute.setName("Z Attribute");
         z_attribute.setDescription("The attribute to use for the z dimension");
         z_attribute.setStringValue("");
         parameters.addParameter(z_attribute);
 
-        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER3D_X_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
         xLogarithmic.setName("Use Logarithmic Scaling for X");
         xLogarithmic.setDescription("Scale the X axis in Logarithmic Scale");
         xLogarithmic.setBooleanValue(false);
         parameters.addParameter(xLogarithmic);
 
-        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER3D_Y_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER_3D_Y_LOGARITHMIC);
         yLogarithmic.setName("Use Logarithmic Scaling for Y");
         yLogarithmic.setDescription("Scale the Y axis in Logarithmic Scale");
         yLogarithmic.setBooleanValue(false);
         parameters.addParameter(yLogarithmic);
 
-        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER3D_Z_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER_3D_Z_LOGARITHMIC);
         zLogarithmic.setName("Use Logarithmic Scaling for Z");
         zLogarithmic.setDescription("Scale the Z axis in Logarithmic Scale");
         zLogarithmic.setBooleanValue(false);

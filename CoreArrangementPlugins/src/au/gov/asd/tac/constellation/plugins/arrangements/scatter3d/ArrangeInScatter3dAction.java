@@ -24,12 +24,12 @@ import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_X_ATTRIBUTE;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_X_LOGARITHMIC;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_Y_ATTRIBUTE;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_Y_LOGARITHMIC;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_Z_ATTRIBUTE;
-import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER3D_Z_LOGARITHMIC;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_X_ATTRIBUTE;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_X_LOGARITHMIC;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Y_ATTRIBUTE;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Y_LOGARITHMIC;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Z_ATTRIBUTE;
+import static au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Z_LOGARITHMIC;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -76,8 +76,8 @@ import org.openide.util.actions.Presenter;
 
 public final class ArrangeInScatter3dAction extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
-    private static final String SCATTER3D_ACTIONS_ICON = "au/gov/asd/tac/constellation/plugins/arrangements/scatter3d/resources/scatter3d.png";
-    private static final String DIMENSION_SELECTED = "Select Attributes";
+    private static final String SCATTER_3D_ACTIONS_ICON = "au/gov/asd/tac/constellation/plugins/arrangements/scatter3d/resources/scatter3d.png";
+    private static final String ATTRIBUTES_SELECTED = "Select Attributes";
 
     private JPanel panel = null;
     private JMenuBar menuBar = null;
@@ -93,12 +93,12 @@ public final class ArrangeInScatter3dAction extends AbstractAction implements Pr
         menuBar.setOpaque(true);
 
         menu = new JMenu();
-        menu.setIcon(ImageUtilities.loadImageIcon(SCATTER3D_ACTIONS_ICON, false));
+        menu.setIcon(ImageUtilities.loadImageIcon(SCATTER_3D_ACTIONS_ICON, false));
         menu.setToolTipText("Scatter3D Controls");
         menu.setEnabled(false);
 
         chooseDimensions = new ButtonMenuItem("Choose 3 Dimensions");
-        chooseDimensions.setActionCommand(DIMENSION_SELECTED);
+        chooseDimensions.setActionCommand(ATTRIBUTES_SELECTED);
         chooseDimensions.setText("Choose 3 Dimensions");
         chooseDimensions.addActionListener(ArrangeInScatter3dAction.this);
         menu.add(chooseDimensions);
@@ -115,30 +115,30 @@ public final class ArrangeInScatter3dAction extends AbstractAction implements Pr
         final Plugin plugin;
 
         switch (command) {
-            case DIMENSION_SELECTED:
+            case ATTRIBUTES_SELECTED:
                 PluginParameters parameters = setupParameters();
                 final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_ArrangeInScatter3dAction(), parameters);
                 dialog.showAndWait();
 
                 if (PluginParametersSwingDialog.OK.equals(dialog.getResult())) {
-                    String xDimension = parameters.getParameters().get(SCATTER3D_X_ATTRIBUTE).getStringValue();
-                    String yDimension = parameters.getParameters().get(SCATTER3D_Y_ATTRIBUTE).getStringValue();
-                    String zDimension = parameters.getParameters().get(SCATTER3D_Z_ATTRIBUTE).getStringValue();
-                    Boolean xLogarithmic = parameters.getParameters().get(SCATTER3D_X_LOGARITHMIC).getBooleanValue();
-                    Boolean yLogarithmic = parameters.getParameters().get(SCATTER3D_Y_LOGARITHMIC).getBooleanValue();
-                    Boolean zLogarithmic = parameters.getParameters().get(SCATTER3D_Z_LOGARITHMIC).getBooleanValue();
+                    String xDimension = parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
+                    String yDimension = parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
+                    String zDimension = parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
+                    Boolean xLogarithmic = parameters.getParameters().get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue();
+                    Boolean yLogarithmic = parameters.getParameters().get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue();
+                    Boolean zLogarithmic = parameters.getParameters().get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue();
 
                     if (xDimension != null
                             && yDimension != null
                             && zDimension != null
                             && graph != null) {
-                        PluginExecutor.startWith(ArrangementPluginRegistry.SCATTER3D)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_X_ATTRIBUTE, xDimension)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_Y_ATTRIBUTE, yDimension)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_Z_ATTRIBUTE, zDimension)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_X_LOGARITHMIC, xLogarithmic)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_Y_LOGARITHMIC, yLogarithmic)
-                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER3D_Z_LOGARITHMIC, zLogarithmic)
+                        PluginExecutor.startWith(ArrangementPluginRegistry.SCATTER_3D)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_X_ATTRIBUTE, xDimension)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Y_ATTRIBUTE, yDimension)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Z_ATTRIBUTE, zDimension)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_X_LOGARITHMIC, xLogarithmic)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Y_LOGARITHMIC, yLogarithmic)
+                                .set(ArrangeInScatter3dGeneralPlugin.SCATTER_3D_Z_LOGARITHMIC, zLogarithmic)
                                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                                 .executeWriteLater(this.graph, Bundle.CTL_ArrangeInScatter3dAction());
                     }
@@ -190,35 +190,35 @@ public final class ArrangeInScatter3dAction extends AbstractAction implements Pr
 
         final List<String> keys = new ArrayList<>(nonDefault.keySet());
 
-        final PluginParameter<SingleChoiceParameterValue> xdimension = SingleChoiceParameterType.build(SCATTER3D_X_ATTRIBUTE);
+        final PluginParameter<SingleChoiceParameterValue> xdimension = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
         xdimension.setName("xdimension For Graph");
         xdimension.setDescription("The attribute used for the X dimension");
         SingleChoiceParameterType.setOptions(xdimension, keys);
         parameters.addParameter(xdimension);
 
-        final PluginParameter<SingleChoiceParameterValue> ydimension = SingleChoiceParameterType.build(SCATTER3D_Y_ATTRIBUTE);
+        final PluginParameter<SingleChoiceParameterValue> ydimension = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
         ydimension.setName("ydimension For Graph");
         ydimension.setDescription("The attribute used for the Y dimension");
         SingleChoiceParameterType.setOptions(ydimension, keys);
         parameters.addParameter(ydimension);
 
-        final PluginParameter<SingleChoiceParameterValue> zdimension = SingleChoiceParameterType.build(SCATTER3D_Z_ATTRIBUTE);
+        final PluginParameter<SingleChoiceParameterValue> zdimension = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
         zdimension.setName("zdimension For Graph");
         zdimension.setDescription("The attribute used for the Z dimension");
         SingleChoiceParameterType.setOptions(zdimension, keys);
         parameters.addParameter(zdimension);
 
-        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER3D_X_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
         xLogarithmic.setName("Use Logarithmic Scaling");
         xLogarithmic.setDescription("Use Logarithmic Scaling for X dimension");
         parameters.addParameter(xLogarithmic);
 
-        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER3D_Y_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> yLogarithmic = BooleanParameterType.build(SCATTER_3D_Y_LOGARITHMIC);
         yLogarithmic.setName("Use Logarithmic Scaling");
         yLogarithmic.setDescription("Use Logarithmic Scaling for Y dimension");
         parameters.addParameter(yLogarithmic);
 
-        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER3D_Z_LOGARITHMIC);
+        final PluginParameter<BooleanParameterValue> zLogarithmic = BooleanParameterType.build(SCATTER_3D_Z_LOGARITHMIC);
         zLogarithmic.setName("Use Logarithmic Scaling");
         zLogarithmic.setDescription("Use Logarithmic Scaling for Z dimension");
         parameters.addParameter(zLogarithmic);
