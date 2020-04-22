@@ -40,11 +40,11 @@ public final class ExportGlyphTexturesAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
 
-        JFileChooser fileChooser = new JFileChooser();
+        final JFileChooser fileChooser = new JFileChooser();
         fileChooser.setMultiSelectionEnabled(false);
         fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
+            final File file = fileChooser.getSelectedFile();
             SharedDrawable.exportGlyphTextures(file);
         }
     }
