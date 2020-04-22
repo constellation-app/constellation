@@ -71,7 +71,7 @@ public class ArrangementPluginRegistry {
     public static final String MDS = ArrangeInMDSPlugin.class.getName();
     public static final String PENDANTS = PendantsArranger.class.getName();
     public static final String RANDOM = RandomArrangementPlugin.class.getName();
-    public static final String SCATTER3D = ArrangeInScatter3dGeneralPlugin.class.getName();
+    public static final String SCATTER_3D = ArrangeInScatter3dGeneralPlugin.class.getName();
     public static final String SPECTRAL = SpectralArrangementPlugin.class.getName();
     public static final String SPHERE = ArrangeInSpherePlugin.class.getName();
     public static final String TIME = LayerByTimePlugin.class.getName();
