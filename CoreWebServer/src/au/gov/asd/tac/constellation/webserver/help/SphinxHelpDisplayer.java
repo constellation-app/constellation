@@ -15,14 +15,17 @@
  */
 package au.gov.asd.tac.constellation.webserver.help;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.webserver.WebServer;
 import java.awt.Desktop;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -30,6 +33,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -37,10 +41,12 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.lookup.ServiceProvider;
@@ -99,23 +105,27 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
      * @throws IOException
      */
     private static void copyFromZipResource(final String filepath, final OutputStream out) throws IOException {
-        final ZipInputStream zin = new ZipInputStream(SphinxHelpDisplayer.class.getResourceAsStream(HELP_ZIP));
-        ZipEntry entry;
-        while((entry = zin.getNextEntry())!=null) {
-            final String name = entry.getName();
-//            LOGGER.info(String.format("zip entry '%s' (%s)", name, filepath));
-            if(name.equals(filepath)) {
-                final byte[] buf = zin.readNBytes(BUFSIZ);
-                zin.closeEntry();
-                zin.close();
+        final InputStream in = SphinxHelpDisplayer.class.getResourceAsStream(HELP_ZIP);
+        if(in!=null) {
+            final ZipInputStream zin = new ZipInputStream(in);
+            ZipEntry entry;
+            while((entry = zin.getNextEntry())!=null) {
+                final String name = entry.getName();
+                if(name.equals(filepath)) {
+                    final byte[] buf = zin.readNBytes(BUFSIZ);
+                    zin.closeEntry();
+                    zin.close();
 
-                out.write(buf);
+                    out.write(buf);
 
-                return;
+                    return;
+                }
             }
-        }
 
-        LOGGER.warning(String.format("Could not find entry '%s' in resource %s", HELP_MAP, HELP_ZIP));
+            LOGGER.warning(String.format("Could not find entry '%s' in resource %s", HELP_MAP, HELP_ZIP));
+        } else {
+            throw new IOException(String.format("Help resource %s not found", HELP_ZIP));
+        }
     }
 
     /**
@@ -130,10 +140,15 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
      */
     private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
         final Path p = Paths.get(zipFile);
-        final FileSystem fs = FileSystems.newFileSystem(p, null);
+        try {
+            final FileSystem fs = FileSystems.newFileSystem(p, null);
 
-        final Path path = fs.getPath(filepath);
-        Files.copy(path, out);
+            final Path path = fs.getPath(filepath);
+            Files.copy(path, out);
+        } catch(final FileSystemNotFoundException ex) {
+            final String msg = String.format("Zip file %s not found", zipFile);
+            throw new IOException(ex);
+        }
     }
 
     /**
@@ -230,7 +245,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                     }
                 });
             } catch(final IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.INFO, "Fetching help map:", ex);
 
                 // If we couldn't read the file the first time,
                 // it won't magically work the next time, so stop trying.
@@ -261,40 +276,49 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         // in their .rst file), go to the root page.
         //
         final Map<String, String> helpMap = getHelpMap();
-        final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index";
+        if(!helpMap.isEmpty()) {
+            final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index";
 
-        // Send the user's browser to the correct page, depending on the help source.
-        //
-        String url;
-        if(helpSource==null || !helpSource.startsWith("http")) {
-            // The help source is an internal zipped resource or an actual zip file,
-            // therefore we need to invoke the internal web server's help servlet,
-            // so insert /help into the path. The servlet will call copy() to get
-            // the file from the resource/file.
+            // Send the user's browser to the correct page, depending on the help source.
             //
-            final int port = WebServer.start();
-            url = String.format("http://localhost:%d/help/html/%s.html", port, part);
+            String url;
+            if(helpSource==null || !helpSource.startsWith("http")) {
+                // The help source is an internal zipped resource or an actual zip file,
+                // therefore we need to invoke the internal web server's help servlet,
+                // so insert /help into the path. The servlet will call copy() to get
+                // the file from the resource/file.
+                //
+                final int port = WebServer.start();
+                url = String.format("http://localhost:%d/help/html/%s", port, part);
+            } else {
+                // The help source is an external web server, so we just
+                // assemble the URL and disavow all knowledge.
+                //
+                url = String.format("%s/html/%s", helpSource, part);
+            }
+
+            LOGGER.info(String.format("help url %s", url));
+            try {
+                // Technically we should do the desktop checking first, but if it
+                // isn't, we need to show the user an error anyway.
+                //
+    //            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                Desktop.getDesktop().browse(new URI(url));
+
+                return true;
+    //            }
+            } catch(final URISyntaxException | IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         } else {
-            // The help source is an external web server, so we just
-            // assemble the URL and disavow all knowledge.
-            //
-            url = String.format("%s/html/%s.html", helpSource, part);
+            final String msg = "Help not available; see logs for reason.";
+            NotificationDisplayer.getDefault().notify("Help displayer",
+                    UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
+                    msg,
+                    null
+            );
         }
 
-        LOGGER.info(String.format("help url %s", url));
-        try {
-            // Technically we should do the desktop checking first, but if it
-            // isn't, we need to show the user an error anyway.
-            //
-//            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Desktop.getDesktop().browse(new URI(url));
-
-            return true;
-//            }
-        } catch(final URISyntaxException | IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-            return false;
+        return false;
     }
 }
