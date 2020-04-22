@@ -154,8 +154,7 @@ public class MdsArranger implements Arranger {
             final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex );
             if (arrangeIt && useLocs) {
                 vxsToArrange[numVxsToArrange++] = vxId;
-            }
-            if (arrangeIt && !useLocs) {
+            } else if (arrangeIt && !useLocs) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
             }
             if (influence && (useLocs || !arrangeIt)) {

@@ -97,7 +97,7 @@ public class GaussianBlur {
         FASTEST;
     }
 
-    public static void gaussianBlurBox(final float[] sourceChannel, final float[] targetChannel,
+    public static void gaussianBlurBox(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
         
         if(sourceChannel.length == width * height){
@@ -110,10 +110,14 @@ public class GaussianBlur {
                             boxBlur(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             break;
                         case FAST:
-                            boxBlurF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            targetChannel = ArrayUtils.addAll(tempChannel);
+                            boxBlurFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            boxBlurFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             break;
                         case FASTEST:
-                            boxBlurFF(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            targetChannel = ArrayUtils.addAll(tempChannel);
+                            boxBlurFFH(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
+                            boxBlurFFT(tempChannel, targetChannel, width, height, ((boxes[i] - 1) / 2));
                             break;
                     }
                     tempChannel = targetChannel;
@@ -163,13 +167,6 @@ public class GaussianBlur {
         }
     }
 
-    private static void boxBlurF(final float[] sourceChannel, float[] targetChannel,
-            final int width, final int height, final int radius) {
-        targetChannel = ArrayUtils.addAll(sourceChannel);
-        boxBlurFH(sourceChannel, targetChannel, width, height, radius);
-        boxBlurFT(sourceChannel, targetChannel, width, height, radius);
-    }
-
     private static void boxBlurFH(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
         for (int i = 0; i < height; i++) {
@@ -196,13 +193,6 @@ public class GaussianBlur {
                 targetChannel[i * width + j] = (float) (val / (radius + radius + 1));
             }
         }
-    }
-
-    private static void boxBlurFF(final float[] sourceChannel, float[] targetChannel,
-            final int width, final int height, final int radius) {
-        targetChannel = ArrayUtils.addAll(sourceChannel);
-        boxBlurFFH(sourceChannel, targetChannel, width, height, radius);
-        boxBlurFFT(sourceChannel, targetChannel, width, height, radius);
     }
 
     private static void boxBlurFFH(final float[] sourceChannel, final float[] targetChannel,

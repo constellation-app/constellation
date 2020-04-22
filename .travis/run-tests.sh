@@ -29,13 +29,3 @@ while IFS= read -r -d '' file; do
   xml_output="${file%.exec}.xml"
   java -jar "${JACOCO_HOME}/lib/jacococli.jar" report "${file}" --classfiles "${classfile}" --xml "${xml_output}"
 done < <(find . -iname "*jacoco.exec" -print0)
-
-title "Run Core Training Build"
-
-ant \
-  -Dnbplatform.active.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.netbeans.dest.dir="${NETBEANS_HOME}" \
-  -Dnbplatform.default.harness.dir="${NETBEANS_HOME}"/harness \
-  -Dupdate.dependencies=true \
-  -Dbuild.compiler.debug=true build # clean build
-# disable clean build to preserve files for Sonar

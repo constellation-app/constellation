@@ -30,6 +30,7 @@ import javax.script.CompiledScript;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,7 +42,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = BinFormatter.class)
 public class ScriptFormatter extends BinFormatter {
 
-    private static final String LANGUAGE = "Python";
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptFormatter.class, "script");
 
     private static final Map<String, String> LANGUAGES = new HashMap<>();
@@ -78,7 +78,7 @@ public class ScriptFormatter extends BinFormatter {
 
         try {
             manager = new ScriptEngineManager();
-            engine = manager.getEngineByName(LANGUAGES.get(LANGUAGE));
+            engine = manager.getEngineByName(LANGUAGES.get("Python"));
             bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
             compiledScript = ((Compilable) engine).compile(script);
         } catch (Exception e) {
@@ -110,7 +110,7 @@ public class ScriptFormatter extends BinFormatter {
                 bindings.put("label", bin.getLabel());
                 try {
                     key = compiledScript.eval();
-                } catch (Exception e) {
+                } catch (ScriptException e) {
                     key = ObjectBin.ERROR_OBJECT;
                 }
             }

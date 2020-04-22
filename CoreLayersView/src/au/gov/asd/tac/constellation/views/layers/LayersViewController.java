@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlu
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -52,17 +52,20 @@ public class LayersViewController {
             return;
         }
 
-        final Iterator it = pane.getLayers().getChildren().iterator();
-        it.next(); // skip default layer
-
         int newBitmask = 0b0;
-        while (it.hasNext()) {
-            final HBox layerBox = (HBox) (it.next());
-            final CheckBox visibilityCheckBox = (CheckBox) layerBox.getChildren().get(1);
-            final Label layerIdText = (Label) layerBox.getChildren().get(0);
+        Label layerIdText = null;
+        CheckBox visibilityCheckBox = null;
+        for (Node node : pane.getLayers().getChildren()) {
 
-            // only add layer id to list when it is checked
-            newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
+            if (GridPane.getRowIndex(node) > 0) { // skip layer 1
+                layerIdText = GridPane.getColumnIndex(node) == 0 ? (Label) node : layerIdText;
+                visibilityCheckBox = GridPane.getColumnIndex(node) == 1 ? (CheckBox) node : visibilityCheckBox;
+
+                if (GridPane.getColumnIndex(node) == 2) {
+                    // only add layer id to list when it is checked
+                    newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
+                }
+            }
         }
 
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
@@ -72,7 +75,7 @@ public class LayersViewController {
     }
 
     /**
-     * Grab all queries entered into textfields and store them in the qraph's
+     * Grab all queries entered into text areas and store them in the qraph's
      * queries.
      */
     public void submit() {
@@ -82,16 +85,14 @@ public class LayersViewController {
             return;
         }
 
-        final Iterator it = pane.getLayers().getChildren().iterator();
-        it.next(); // skip default layer
-
         final List<String> layerQueries = new ArrayList<>();
-        while (it.hasNext()) {
-            final HBox layerBox = (HBox) (it.next());
-            final TextArea queryTextArea = (TextArea) (layerBox.getChildren().get(2));
-            layerQueries.add(queryTextArea.getText().isBlank() ? null : queryTextArea.getText());
+        for (Node node : pane.getLayers().getChildren()) {
+            if (GridPane.getRowIndex(node) > 0 && GridPane.getColumnIndex(node) == 2) {
+                final TextArea queryTextArea = (TextArea) node;
+                layerQueries.add(queryTextArea.getText().isBlank() ? null : queryTextArea.getText());
+            }
         }
-        
+
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

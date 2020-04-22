@@ -235,7 +235,7 @@ public final class GraphJsonReader {
         // META is optional.
         current = jp.nextToken();
         if (current != JsonToken.START_OBJECT) {
-            throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+            throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
         }
 
         // Read the file format version number.
@@ -456,7 +456,7 @@ public final class GraphJsonReader {
             Exceptions.printStackTrace(ex);
         }
 
-        graph = new DualGraph(schemaFactory == null ? null : schemaFactory.createSchema(), storeGraph);
+        graph = new DualGraph(schemaFactory.createSchema(), storeGraph);
 
         if (progress != null) {
             progress.finish();
@@ -529,8 +529,7 @@ public final class GraphJsonReader {
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
             final Object attrDefault
-                    = dv == null ? null
-                            : dv.isNull() ? null
+                    = (dv == null || dv.isNull()) ? null
                             : dv.isNumber() ? dv.numberValue()
                             : dv.isBoolean() ? dv.booleanValue()
                             : dv.textValue();
@@ -688,28 +687,22 @@ public final class GraphJsonReader {
                 final String label = entry.getKey();
                 final JsonNode jnode = entry.getValue();
                 final AttrInfo ai = attributes.get(label);
-                if (ai != null) {
-                    if (providers.containsKey(ai.attrType)) {
-                        AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
-                        ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
-                    } else {
-                        throw new Exception("No IO provider found for attribute type: " + ai.attrType);
-                    }
+                if (ai != null && providers.containsKey(ai.attrType)) {
+                    AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
+                    ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
+                } else if (ai != null) {
+                    throw new Exception("No IO provider found for attribute type: " + ai.attrType);
                 }
             }
 
             if (++counter % REPORT_INTERVAL == 0) {
                 final String msg = String.format("Vertices: %d; Transactions %d", graph.getVertexCount(), graph.getTransactionCount());
                 final long charOffset = jp.getCurrentLocation().getByteOffset();
-                if (entrySize != -1 && charOffset != -1) {
+                if (entrySize != -1 && charOffset != -1 && ph != null) {
                     final int workunit = (int) (100 * (charOffset / (double) entrySize));
-                    if (ph != null) {
-                        ph.progress(msg, workunit);
-                    }
-                } else {
-                    if (ph != null) {
-                        ph.progress(msg);
-                    }
+                    ph.progress(msg, workunit);
+                } else if (ph != null) {
+                    ph.progress(msg);
                 }
             }
         }

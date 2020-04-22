@@ -15,13 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.sna.metrics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.PathScoringUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -116,12 +116,11 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 if (!ignoreSingletons) {
                     numComponents += 1;
                 }
+            } else if (!maxEccentricityConnectedComponents.containsKey(subgraph)) {
+                maxEccentricityConnectedComponents.put(subgraph, eccentricity);
+                maxEccentricity = Math.max(eccentricity, maxEccentricity);
             } else {
-                if (!maxEccentricityConnectedComponents.containsKey(subgraph)) {
-                    maxEccentricityConnectedComponents.put(subgraph, eccentricity);
-                } else {
-                    maxEccentricityConnectedComponents.put(subgraph, Math.max(eccentricity, maxEccentricityConnectedComponents.get(subgraph)));
-                }
+                maxEccentricityConnectedComponents.put(subgraph, Math.max(eccentricity, maxEccentricityConnectedComponents.get(subgraph)));
                 maxEccentricity = Math.max(eccentricity, maxEccentricity);
             }
         }
@@ -139,23 +138,19 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
             graph.setFloatValue(cSizeAttribute, vertexId, subgraph.cardinality());
             // singleton or singleton with a loop
             if (subgraph.cardinality() <= 1) {
-                if (normalise) {
-                    if (ignoreSingletons) {
-                        graph.setFloatValue(ccAttribute, vertexId, numComponents);
-                    } else {
-                        graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
-                    }
+                if (normalise && ignoreSingletons) {
+                    graph.setFloatValue(ccAttribute, vertexId, numComponents);
+                } else if (normalise && !ignoreSingletons) {
+                    graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
             } // subgraph just two connected nodes
             else if (subgraph.cardinality() == 2) {
-                if (normalise) {
-                    if (ignoreSingletons) {
-                        graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
-                    } else {
-                        graph.setFloatValue(ccAttribute, vertexId, numComponents);
-                    }
+                if (normalise && ignoreSingletons) {
+                    graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
+                } else if (normalise && !ignoreSingletons) {
+                    graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
@@ -181,18 +176,14 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 }
                 // all of its neighbours are pendants
                 if (temp.isEmpty()) {
-                    if (normalise) {
-                        if (ignoreSingletons) {
-                            graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
-                        } else {
-                            graph.setFloatValue(ccAttribute, vertexId, numComponents + graph.getVertexNeighbourCount(vertexId) - 1);
-                        }
+                    if (normalise && ignoreSingletons) {
+                        graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
+                    } else if (normalise && !ignoreSingletons) {
+                        graph.setFloatValue(ccAttribute, vertexId, numComponents + graph.getVertexNeighbourCount(vertexId) - 1);
+                    } else if (ignoreSingletons) {
+                        graph.setFloatValue(ccAttribute, vertexId, 0);
                     } else {
-                        if (ignoreSingletons) {
-                            graph.setFloatValue(ccAttribute, vertexId, 0);
-                        } else {
-                            graph.setFloatValue(ccAttribute, vertexId, graph.getVertexNeighbourCount(vertexId));
-                        }
+                        graph.setFloatValue(ccAttribute, vertexId, graph.getVertexNeighbourCount(vertexId));
                     }
                 } else {
                     final BitSet[] newSubgraphs = PathScoringUtilities.calculateSubgraphPaths(graph, temp, includeConnectionsIn, includeConnectionsOut, treatUndirectedBidirectional);
@@ -202,26 +193,18 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                             subgraphSet.add(newSubgraphs[vxPosition]);
                         }
                     }
-                    if (ignoreSingletons) {
-                        if (subgraphSet.size() <= 1) {
-                            if (normalise) {
-                                graph.setFloatValue(ccAttribute, vertexId, numComponents);
-                            } else {
-                                graph.setFloatValue(ccAttribute, vertexId, 0);
-                            }
-                        } else {
-                            if (normalise) {
-                                graph.setFloatValue(ccAttribute, vertexId, (subgraphSet.size() + numComponents) - 1);
-                            } else {
-                                graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() - 1);
-                            }
-                        }
+                    if (ignoreSingletons && subgraphSet.size() <= 1 && normalise) {
+                        graph.setFloatValue(ccAttribute, vertexId, numComponents);
+                    } else if (ignoreSingletons && subgraphSet.size() <= 1 && !normalise) {
+                        graph.setFloatValue(ccAttribute, vertexId, 0);
+                    } else if (ignoreSingletons && normalise) {
+                        graph.setFloatValue(ccAttribute, vertexId, (subgraphSet.size() + numComponents) - 1);
+                    } else if (ignoreSingletons) {
+                        graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() - 1);
+                    } else if (normalise) {
+                        graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() + numPendantNeighbours + numComponents);
                     } else {
-                        if (normalise) {
-                            graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() + numPendantNeighbours + numComponents);
-                        } else {
-                            graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() + numPendantNeighbours);
-                        }
+                        graph.setFloatValue(ccAttribute, vertexId, subgraphSet.size() + numPendantNeighbours);
                     }
                 }
             }

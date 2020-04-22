@@ -214,12 +214,12 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             
             // check for activated plugins and their validity.
             for (Tab tab : dataAccessTabPane.getTabs()) {
-                if (tabHasEnabledPlugins(tab)) {
+                if (tabHasEnabledPlugins(tab) && !validateTabEnabledPlugins(tab)) {
                     pluginSelected = true;
-                    if (!validateTabEnabledPlugins(tab)) {
-                        selectedPluginsValid = false;
-                    }
-                } 
+                    selectedPluginsValid = false;
+                } else if (tabHasEnabledPlugins(tab)) {
+                    pluginSelected = true;
+                }
             }
             // when no graph present, create new graph
             if(graphId == null && pluginSelected && selectedPluginsValid){
@@ -241,18 +241,16 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
                 final File outputDir = DataAccessPreferenceKeys.getDataAccessResultsDirEx();
-                if (outputDir != null) {
-                    if (outputDir.isDirectory()) {
-                        final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
-                        StatusDisplayer.getDefault().setStatusText(msg);
-                    } else {
-                        final String msg = String.format("Results directory %s does not exist", outputDir.getAbsolutePath());
-                        NotificationDisplayer.getDefault().notify("Save raw results",
-                                UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                                msg,
-                                null
-                        );
-                    }
+                if (outputDir != null && outputDir.isDirectory()) {
+                    final String msg = String.format("Data access results will be written to %s", outputDir.getAbsolutePath());
+                    StatusDisplayer.getDefault().setStatusText(msg);
+                } else if (outputDir != null) {
+                    final String msg = String.format("Results directory %s does not exist", outputDir.getAbsolutePath());
+                    NotificationDisplayer.getDefault().notify("Save raw results",
+                            UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
+                            msg,
+                            null
+                    );
                 }
 
                 PluginExecution.withPlugin(new SimplePlugin("Data Access View: Save State") {
@@ -292,13 +290,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                             }
                         } catch (InterruptedException e) {
                         }
-                        Platform.runLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                graphState.get(storedGraphId).queriesRunning = false;
-                                if (storedGraphId.equals(graphId)) {
-                                    update();
-                                }
+                        Platform.runLater(() -> {
+                            graphState.get(storedGraphId).queriesRunning = false;
+                            if (storedGraphId.equals(graphId)) {
+                                update();
                             }
                         });
                     }
@@ -306,8 +301,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                     private String getExceptionDescription(Throwable e) {
                         if (e.getCause() != null) {
                             return getExceptionDescription(e.getCause());
-                        }
-                        if (e.getMessage() != null) {
+                        } else if (e.getMessage() != null) {
                             return e.getMessage();
                         }
                         return e.getClass().getName();
@@ -316,15 +310,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 waiting.setName(DAV_PLUGIN_QUEUE_THREAD_NAME);
                 waiting.start();
                 LOGGER.info("Plugins run.");
-            } else { // Button is a stop button
-                if(currentGraphState != null){
-                    for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
-                        running.cancel(true);
-                    }
-                setExecuteButtonToGo();
+            } else if (currentGraphState != null) { // Button is a stop button
+                for (Future<?> running : currentGraphState.runningPlugins.keySet()) {
+                    running.cancel(true);
                 }
+                setExecuteButtonToGo();
             }
-            if(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
+            if (DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled()) {
                 deselectAllPlugins();
             }
         });

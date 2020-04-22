@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.utilities.query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +104,9 @@ public class QueryEvaluator {
     }
 
     public static Boolean evaluatePostfix(final String postfix) {
+        
+        final String t = String.valueOf(true);
+        final String f = String.valueOf(false);
 
         // create a stack
         final Stack<String> stack = new Stack<>();
@@ -112,7 +114,7 @@ public class QueryEvaluator {
         // scan all characters one by one
         final String[] expressionComponents = postfix.split(" ");
         for (final String expressionComponent : expressionComponents) {
-            if (expressionComponent.equals("true") || expressionComponent.equals("false")) {
+            if (expressionComponent.equals(t) || expressionComponent.equals(f)) {
                 // if the scanned character is T or F, push it to the stack.
                 stack.push(expressionComponent);
             } else {
@@ -127,18 +129,18 @@ public class QueryEvaluator {
                     // and case
                     case "&&": {
                         //System.out.println(val1 + "&&" + val2);
-                        if (value1.equals("true") && value2.equals("false")) {
+                        if (value1.equals(t) && value2.equals(f)) {
                             // T && F
-                            stack.push("false");
-                        } else if (value1.equals("false") && value2.equals("true")) {
+                            stack.push(f);
+                        } else if (value1.equals(f) && value2.equals(t)) {
                             // F && T
-                            stack.push("false");
-                        } else if (value1.equals("false") && value2.equals("false")) {
+                            stack.push(f);
+                        } else if (value1.equals(f) && value2.equals(f)) {
                             // F && F
-                            stack.push("false");
+                            stack.push(f);
                         } else {
                             // T && T
-                            stack.push("true");
+                            stack.push(t);
                         }
                         break;
                     }
@@ -146,18 +148,18 @@ public class QueryEvaluator {
                     // or case
                     case "||": {
                         //System.out.println(val1 + "||" + val2);
-                        if (value1.equals("true") && value2.equals("false")) {
+                        if (value1.equals(t) && value2.equals(f)) {
                             // T || F
-                            stack.push("true");
-                        } else if (value1.equals("false") && value2.equals("true")) {
+                            stack.push(t);
+                        } else if (value1.equals(f) && value2.equals(t)) {
                             // F || T
-                            stack.push("true");
-                        } else if (value1.equals("false") && value2.equals("false")) {
+                            stack.push(t);
+                        } else if (value1.equals(f) && value2.equals(f)) {
                             // F || F
-                            stack.push("false");
+                            stack.push(f);
                         } else {
                             // T || T
-                            stack.push("true");
+                            stack.push(t);
                         }
                         break;
                     }

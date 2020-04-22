@@ -40,13 +40,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeTranslator.class)
 public class ScriptAttributeTranslator extends AttributeTranslator {
 
-    private static final String LANGUAGE = "Python";
+    private static final String PYTHON_LANGUAGE = "Python";
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptAttributeTranslator.class, "script");
 
     private static final Map<String, String> LANGUAGES = new HashMap<>();
 
     static {
-        LANGUAGES.put("Python", "jython");
+        LANGUAGES.put(PYTHON_LANGUAGE, "jython");
     }
 
     private String savedLanguage = null;
@@ -80,13 +80,13 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
         String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
 
         // If the language and script do not match the compiled script then recompile
-        if (!LANGUAGE.equals(savedLanguage) || !script.equals(savedScript)) {
+        if (!PYTHON_LANGUAGE.equals(savedLanguage) || !script.equals(savedScript)) {
             try {
                 ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine = manager.getEngineByName(LANGUAGES.get(LANGUAGE));
+                ScriptEngine engine = manager.getEngineByName(LANGUAGES.get(PYTHON_LANGUAGE));
                 bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
                 compiledScript = ((Compilable) engine).compile(script);
-                savedLanguage = LANGUAGE;
+                savedLanguage = PYTHON_LANGUAGE;
                 savedScript = script;
             } catch (ScriptException e) {
                 bindings = null;
@@ -113,7 +113,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
     @Override
     public String getParameterValues(final PluginParameters parameters) {
         String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
-        return LANGUAGE + "\t" + script;
+        return PYTHON_LANGUAGE + "\t" + script;
     }
 
     @Override

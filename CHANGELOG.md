@@ -12,6 +12,8 @@
 * Renamed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting.
 * Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
+* Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
+* Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from. 
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

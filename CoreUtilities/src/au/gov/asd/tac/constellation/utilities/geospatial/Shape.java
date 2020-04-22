@@ -455,10 +455,11 @@ public class Shape {
                             }
 
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
-                            if (validType) {
-                                if (!attributesOfValidType.containsKey(entry.getKey())) {
-                                    attributesOfValidType.put(entry.getKey(), new ArrayList<>());
-                                }
+                            if (validType && !attributesOfValidType.containsKey(entry.getKey())) {
+                                attributesOfValidType.put(entry.getKey(), new ArrayList<>());
+                                attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
+                                schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
+                            } else if (validType) {
                                 attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
                                 schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
                             } else {
@@ -492,13 +493,12 @@ public class Shape {
                     if (attributes != null && attributes.containsKey(entry.getKey())) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
-                            if (schemaAttributes.containsKey(compatibleAttributeName)) {
-                                if (attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
-                                    feature.setAttribute(compatibleAttributeName, attributeValue);
-                                } else {
-                                    feature.setAttribute(compatibleAttributeName, attributeValue == null
-                                            ? null : attributeValue.toString());
-                                }
+                            if (schemaAttributes.containsKey(compatibleAttributeName) 
+                                    && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
+                                feature.setAttribute(compatibleAttributeName, attributeValue);
+                            } else if (schemaAttributes.containsKey(compatibleAttributeName)) {
+                                feature.setAttribute(compatibleAttributeName, attributeValue == null 
+                                        ? null : attributeValue.toString());
                             }
                         });
                     }
@@ -565,10 +565,11 @@ public class Shape {
                             }
 
                             final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
-                            if (validType) {
-                                if (!attributesOfValidType.containsKey(entry.getKey())) {
-                                    attributesOfValidType.put(entry.getKey(), new ArrayList<>());
-                                }
+                            if (validType && !attributesOfValidType.containsKey(entry.getKey())) {
+                                attributesOfValidType.put(entry.getKey(), new ArrayList<>());
+                                attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
+                                schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
+                            } else if (validType) {
                                 attributesOfValidType.get(entry.getKey()).add(compatibleAttributeName);
                                 schemaAttributes.put(compatibleAttributeName, attributeValue.getClass());
                             } else {
@@ -642,12 +643,11 @@ public class Shape {
                             if (attributes != null && attributes.containsKey(entry.getKey())) {
                                 attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                                     final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
-                                    if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
-                                        if (attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
-                                            writableFeature.setAttribute(compatibleAttributeName, attributeValue);
-                                        } else {
-                                            writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
-                                        }
+                                    if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null 
+                                            && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
+                                        writableFeature.setAttribute(compatibleAttributeName, attributeValue);
+                                    } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
+                                        writableFeature.setAttribute(compatibleAttributeName, attributeValue.toString());
                                     }
                                 });
                             }
