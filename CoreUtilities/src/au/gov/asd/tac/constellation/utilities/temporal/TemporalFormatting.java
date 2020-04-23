@@ -295,13 +295,10 @@ public class TemporalFormatting {
         switch (currentLength) {
             case 0:
                 dateTimeStringBuilder.append("1970");
-                break;
             case YEAR_FORMAT_LENGTH:
                 dateTimeStringBuilder.append("-01");
-                break;
             case YEAR_MONTH_FORMAT_LENGTH:
                 dateTimeStringBuilder.append("-01");
-                break;
             default:
                 break;
         }
@@ -313,16 +310,12 @@ public class TemporalFormatting {
         switch (currentLength) {
             case 0:
                 dateTimeStringBuilder.append(" 00");
-                break;
             case HOUR_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(":00");
-                break;
             case HOUR_MINUTE_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(":00");
-                break;
             case HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
-                break;
             default:
                 break;
         }
@@ -334,16 +327,12 @@ public class TemporalFormatting {
         switch (currentLength) {
             case DATE_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(" 00");
-                break;
             case DATE_HOUR_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(":00");
-                break;
             case DATE_HOUR_MINUTE_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(":00");
-                break;
             case DATE_HMS_FORMAT_LENGTH:
                 dateTimeStringBuilder.append(".000");
-                break;
             default:
                 break;
         }

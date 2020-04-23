@@ -145,13 +145,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         // Overridden in class DualGraph
     }
 
-    protected void undoOccurred() {
-        // Overridden in class DualGraph
-    }
-
-    protected void redoOccurred() {
-        // Overridden in class DualGraph
-    }
 
     public void commit(final Object description, final String commitName) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
@@ -274,7 +267,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             }).start();
 
             update(null, null);
-            undoOccurred();
         }
 
         @Override
@@ -321,7 +313,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             }).start();
 
             update(null, null);
-            redoOccurred();
         }
 
         @Override
