@@ -34,7 +34,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.proximity.ArrangeByProx
 import au.gov.asd.tac.constellation.plugins.arrangements.random.RandomArrangementPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.resize.ContractGraphPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphPlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dGeneralPlugin;
+import au.gov.asd.tac.constellation.plugins.arrangements.scatter.ArrangeInScatter3dGeneralPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.spectral.SpectralArrangementPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInBubbleTreePlugin;

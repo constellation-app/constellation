@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -111,34 +110,27 @@ public class AttributeUtilities {
         return types != null ? new TreeSet<>(types) : new TreeSet<>();
     }
 
-    private static final List<GraphElementType> ACCEPTED_ELEMENT_TYPES = Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX);
-
     /**
-     * Return a set of attribute ids that have nondefault data
+     * Return a set of vertex attributes
      *
      * @param graph The graph
      * @param vxId The vertex id to test in the graph
      * @return Map of attribute names
      */
-    public static Map<String, Integer> getNonDefaultAttributes(final GraphReadMethods graph, final int vxId) {
+    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph, final int vxId) {
         final Map<String, Integer> attributeIds = new TreeMap<>();
 
         if (graph == null) {
             return attributeIds;
         }
-        
-        for (final GraphElementType elementType : ACCEPTED_ELEMENT_TYPES) {
-            int attributeCount = graph.getAttributeCount(elementType);
-            for (int i = 0; i < attributeCount; i++) {
 
-                Attribute attr = new GraphAttribute(graph, graph.getAttribute(elementType, i));
+        int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
+        for (int i = 0; i < attributeCount; i++) {
 
-                if (attr != null) {
-                    if (!graph.isDefaultValue(attr.getId(), vxId)) {
-                        attributeIds.put(attr.getName(), attr.getId());
-                    }
-                }
+            final Attribute attr = new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, i));
 
+            if (attr != null) {
+                attributeIds.put(attr.getName(), attr.getId());
             }
         }
 
