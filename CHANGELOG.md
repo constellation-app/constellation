@@ -14,6 +14,8 @@
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
 * Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
 * Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from. 
+* Added `RenderablePriority` enum to `GLRenderable` to house the constants that sat in that class
+* Added `VisualPriority` enum to `VisualOperation` to house the constants that sat in that class
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

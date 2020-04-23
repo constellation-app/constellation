@@ -45,10 +45,22 @@ import java.util.List;
  */
 public interface VisualOperation extends Comparable<VisualOperation> {
 
-    public static final int REFRESH_PRIORITY = 0;
-    public static final int SIGNIFY_IDLE_PRIORITY = 10;
-    public static final int ELEVATED_VISUAL_PRIORITY = 20;
-    public static final int DEFAULT_VISUAL_PRIORITY = 30;
+    public enum VisualPriority {
+        REFRESH_PRIORITY(0),
+        SIGNIFY_IDLE_PRIORITY(10),
+        ELEVATED_VISUAL_PRIORITY(20),
+        DEFAULT_VISUAL_PRIORITY(30);
+        
+        private final int value;
+        
+        private VisualPriority(final int value) {
+            this.value = value;
+        }
+        
+        public int getValue() {
+            return value;
+        }
+    }
 
     /**
      * Allows this VisualOperation to perform any context specific work, such as
@@ -73,7 +85,7 @@ public interface VisualOperation extends Comparable<VisualOperation> {
      * @return The priority of this operation.
      */
     default int getPriority() {
-        return DEFAULT_VISUAL_PRIORITY;
+        return VisualPriority.DEFAULT_VISUAL_PRIORITY.getValue();
     }
 
     /**
