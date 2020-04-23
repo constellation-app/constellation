@@ -2098,9 +2098,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                                 finalResult = false;
                                 break;
                             }
+                            default:
+                                break;
                         }
                         break;
                     }
+                    default:
+                        break;
                 }
 
                 // build the string to evaluate
