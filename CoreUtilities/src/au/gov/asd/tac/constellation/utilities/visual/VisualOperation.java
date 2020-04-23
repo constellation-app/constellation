@@ -53,7 +53,7 @@ public interface VisualOperation extends Comparable<VisualOperation> {
         
         private final int value;
         
-        private VisualPriority(int value) {
+        private VisualPriority(final int value) {
             this.value = value;
         }
         

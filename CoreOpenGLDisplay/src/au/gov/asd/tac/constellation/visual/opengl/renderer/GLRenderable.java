@@ -52,7 +52,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
         
         private final int value;
         
-        private RenderablePriority(int value) {
+        private RenderablePriority(final int value) {
             this.value = value;
         }
         
