@@ -109,15 +109,13 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
 
         // If the mix value is either 0 or 1 then no mixing is required
-        if (requiresMix) {
-            if (mix == 0.0f) {
-                requiresMix = false;
-            } else if (mix == 1.0f) {
-                xAttr = x2Attr;
-                yAttr = y2Attr;
-                zAttr = z2Attr;
-                requiresMix = false;
-            }
+        if (requiresMix && mix == 0.0f) {
+            requiresMix = false;
+        } else if (requiresMix && mix == 1.0f) {
+            xAttr = x2Attr;
+            yAttr = y2Attr;
+            zAttr = z2Attr;
+            requiresMix = false;
         }
 
         final BitSet vxIncluded = new BitSet();

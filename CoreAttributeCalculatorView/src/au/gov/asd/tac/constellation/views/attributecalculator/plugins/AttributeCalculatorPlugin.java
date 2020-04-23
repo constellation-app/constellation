@@ -209,14 +209,10 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
 
         // Get the list of utilities for the attribute calculator, set their context manager to be this attribute calculator's context, and bind the objects appropriately
         Collection<AbstractCalculatorUtilities> utilities = AbstractCalculatorUtilities.getAllUtilities();
-        for (AbstractCalculatorUtilities utility : utilities) {
-            utility.setContextManager(calculatorContext);
-            bindings.put(utility.getScriptingName(), utility);
-        }
 
         // Process utility method calls
         for (AbstractCalculatorUtilities utility : utilities) {
-
+            utility.setContextManager(calculatorContext);
             bindings.put(utility.getScriptingName(), utility);
             final String utilityScriptName = utility.getScriptingName();
 

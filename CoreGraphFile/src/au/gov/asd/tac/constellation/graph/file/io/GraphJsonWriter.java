@@ -328,14 +328,12 @@ public final class GraphJsonWriter implements Cancellable {
             // This should be done in a safe, extensible and verifiable manner, and more importantly, in a manner consistent with the way the attribute values themselves are written out (using IO providers). The long term solution to this
             // is probably not to just change the code here (or add in some default writing/reading stuff in IO providers), but to actually integrate the getting and setting of defaults into the getting and setting of
             // actual attribute values inside the attribute descriptions.
-            if (attr.getDefaultValue() != null) {
-                if (isNumeric(attr)) {
-                    jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
-                } else if (attr.getAttributeType().equals("boolean")) {
-                    jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
-                } else {
-                    jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
-                }
+            if (attr.getDefaultValue() != null && isNumeric(attr)) {
+                jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
+            } else if (attr.getDefaultValue() != null && attr.getAttributeType().equals("boolean")) {
+                jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
+            } else if (attr.getDefaultValue() != null) {
+                jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -412,14 +410,10 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeEndObject();
 
                 counter++;
-                if (counter % REPORT_INTERVAL == 0) {
-                    if (isCancelled) {
-                        return;
-                    }
-
-                    if (progress != null) {
-                        progress.progress(counter);
-                    }
+                if (counter % REPORT_INTERVAL == 0 && isCancelled) {
+                    return;
+                } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
+                    progress.progress(counter);
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -445,14 +439,10 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeEndObject();
 
                 counter++;
-                if (counter % REPORT_INTERVAL == 0) {
-                    if (isCancelled) {
-                        return;
-                    }
-
-                    if (progress != null) {
-                        progress.progress(counter);
-                    }
+                if (counter % REPORT_INTERVAL == 0 && isCancelled) {
+                    return;
+                } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
+                    progress.progress(counter);
                 }
             }
         }
