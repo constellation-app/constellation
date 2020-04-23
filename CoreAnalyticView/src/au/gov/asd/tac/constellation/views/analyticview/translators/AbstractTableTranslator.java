@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisual
  * @param <R> the AnalyticResult type being represented by this table
  * @param <C> the data type given to each cell in the table
  */
-public abstract class AbstractTableTranslator<R extends AnalyticResult, C> extends InternalVisualisationTranslator<R, TableVisualisation> {
+public abstract class AbstractTableTranslator<R extends AnalyticResult<?>, C> extends InternalVisualisationTranslator<R, TableVisualisation<?>> {
 
     protected static class UnrecognisedColumnException extends RuntimeException {
         

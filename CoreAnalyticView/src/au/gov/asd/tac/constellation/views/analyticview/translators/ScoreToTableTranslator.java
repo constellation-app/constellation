@@ -39,13 +39,13 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ElementScore> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ElementScore> buildVisualisation() {
+        final TableVisualisation<ElementScore> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> scoreNames = result.getUniqueScoreNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / (scoreNames.size() + 2)) * 2);
         scoreNames.forEach(scoreName -> {

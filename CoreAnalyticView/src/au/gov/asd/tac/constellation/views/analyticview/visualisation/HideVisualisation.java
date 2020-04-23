@@ -33,12 +33,12 @@ import javafx.scene.layout.HBox;
  */
 public class HideVisualisation<C> extends GraphVisualisation {
 
-    private final AbstractHideTranslator translator;
+    private final AbstractHideTranslator<? extends AnalyticResult<?>, C> translator;
     private final HBox hidePanel;
     private final Slider hideSlider;
     private final ToggleButton hideButton;
 
-    public HideVisualisation(final AbstractHideTranslator<? extends AnalyticResult, C> translator) {
+    public HideVisualisation(final AbstractHideTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
         this.hideSlider = new Slider(0.0, 1.0, 0.0);

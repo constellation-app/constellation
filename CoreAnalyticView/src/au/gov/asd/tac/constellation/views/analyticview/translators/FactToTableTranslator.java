@@ -39,13 +39,13 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ElementFact> buildVisualisation() {
+        final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> factNames = result.getUniqueFactNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
         factNames.forEach(factName -> {

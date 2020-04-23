@@ -48,13 +48,13 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
-    public ColorVisualisation buildControl() {
-        return new ColorVisualisation(this);
+    public ColorVisualisation<ElementScore> buildControl() {
+        return new ColorVisualisation<>(this);
     }
 
     @Override
@@ -96,7 +96,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 return;
             }
 
-            final ScoreResult scoreResults = (ScoreResult) result;
+            final ScoreResult scoreResults = result;
 
             if (reset) {
                 for (final ElementScore scoreResult : scoreResults.get()) {

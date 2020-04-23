@@ -55,7 +55,7 @@ public class MostCentralQuestion implements AnalyticQuestionDescription<ScoreRes
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
