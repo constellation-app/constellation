@@ -15,8 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.layers;
 
+import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
@@ -36,8 +40,6 @@ import org.openide.NotifyDescriptor;
  * @author aldebaran30701
  */
 public class LayersViewPane extends BorderPane {
-
-    private static final String DEFAULT_LAYER_PLACEHOLDER = "Default";
 
     private final LayersViewController controller;
     private final GridPane layersGridPane;
@@ -88,6 +90,7 @@ public class LayersViewPane extends BorderPane {
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= 32) { // 32 layers plus headings
                 createLayer(false);
+                controller.updateState();
             } else {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
                         "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
@@ -111,7 +114,7 @@ public class LayersViewPane extends BorderPane {
         this.setCenter(layersViewPane);
     }
 
-    private void createLayer(final boolean defaultLayer) {
+    private int createLayer(final boolean defaultLayer) {
         final Label layerIdText = new Label(String.format("%02d", ++currentIndex));
         layerIdText.setMinWidth(30);
         layerIdText.setPrefWidth(40);
@@ -124,32 +127,69 @@ public class LayersViewPane extends BorderPane {
         visibilityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             controller.submit();
             controller.execute();
+            controller.updateState();
         });
 
         final TextArea queryTextArea = new TextArea();
         queryTextArea.setPrefRowCount(1);
+        queryTextArea.textProperty().addListener((observable, oldVal, newVal) -> {
+            controller.updateState();
+        });
 
         final TextArea descriptionTextArea = new TextArea();
         descriptionTextArea.setPrefRowCount(1);
+        descriptionTextArea.textProperty().addListener((observable, oldVal, newVal) -> {
+            controller.updateState();
+        });
 
         if (defaultLayer) {
             layerIdText.setDisable(true);
             visibilityCheckBox.setSelected(true);
             visibilityCheckBox.setDisable(true);
-            queryTextArea.setText(DEFAULT_LAYER_PLACEHOLDER);
+            queryTextArea.setText(LayerDescription.DEFAULT_QUERY_STRING);
             queryTextArea.setDisable(true);
-            descriptionTextArea.setText("Show All");
+            descriptionTextArea.setText(LayerDescription.DEFAULT_QUERY_DESCRIPTION);
             descriptionTextArea.setDisable(true);
         }
         layersGridPane.addRow(currentIndex, layerIdText,
                 visibilityCheckBox, queryTextArea, descriptionTextArea);
+        return currentIndex;
     }
 
-    public GridPane getLayers() {
+    public synchronized GridPane getLayers() {
         return layersGridPane;
     }
 
     public HBox getOptions() {
         return options;
+    }
+
+    public void setLayers(final LayersViewState newState) {
+        currentIndex = 0;
+        Platform.runLater(() -> {
+            synchronized (this) {
+                layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
+                for (final LayerDescription layer : newState.getAllLayers()) {
+                    detailLayer(createLayer(false), layer);
+                }
+            }
+        });
+    }
+
+    private void detailLayer(final int rowIndex, final LayerDescription layerInfo) {
+        for (final Node cell : layersGridPane.getChildren()) {
+            if (GridPane.getRowIndex(cell) == rowIndex && cell instanceof CheckBox) {
+                ((CheckBox) cell).setSelected(layerInfo.getCurrentLayerVisibility());
+                ((CheckBox) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
+            } else if (GridPane.getRowIndex(cell) == rowIndex && cell instanceof TextArea) {
+                if (GridPane.getColumnIndex(cell) == 2) {
+                    ((TextArea) cell).setText(layerInfo.getLayerQuery());
+                    ((TextArea) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
+                } else if (GridPane.getColumnIndex(cell) == 3) {
+                    ((TextArea) cell).setText(layerInfo.getLayerDescription());
+                    ((TextArea) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
+                }
+            }
+        }
     }
 }

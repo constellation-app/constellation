@@ -76,12 +76,13 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        // Old code - implement new handler if needed
-//        if (attributeCalculatorPane != null && graph != null) {
-//            attributeCalculatorPane.updateAttributes(graph);
-//        }
+        layersViewController.loadOrCreateState();
     }
-
+    
+    @Override
+    protected void handleGraphOpened(final Graph graph) {
+        layersViewController.loadOrCreateState();
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
