@@ -120,7 +120,7 @@ public class QueryEvaluator {
             } else {
                 // if the scanned character is an operator, pop two elements from stack apply the operator
                 if (stack.size() < 2) {
-                    return null;
+                    return false;
                 }
 
                 final String value1 = stack.pop();
@@ -168,7 +168,7 @@ public class QueryEvaluator {
         }
 
         if (stack.isEmpty()) {
-            return null;
+            return false;
         }
 
         return Boolean.valueOf(stack.pop());

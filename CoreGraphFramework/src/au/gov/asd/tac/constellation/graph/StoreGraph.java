@@ -2136,7 +2136,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         final Boolean result = QueryEvaluator.evaluatePostfix(expression);
 //        System.out.println("Result calculated: " + result);
 
-        return result == null ? false : result;
+        return result;
     }
 
     // update the layer visibility of an element
