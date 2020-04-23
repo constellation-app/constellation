@@ -171,10 +171,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                         interaction.notify(PluginNotificationLevel.INFO, "Action cancelled: " + graphs.getGraph() + ": " + getName());
                         throw e;
                     } catch (Exception e) {
-                        final String msg = Bundle.MSG_Query_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + "\n" + e.getMessage());
                         cancelled = true;
-                        LOGGER.log(Level.WARNING, msg, e);
+                        final String msg = Bundle.MSG_Query_Failed(graph, getName());
+                        LOGGER.log(Level.WARNING, msg);
                         throw e;
                     }
 

@@ -427,13 +427,11 @@ public final class GraphVisualAccess implements VisualAccess {
             // Do all structural stuff
             if (verticesRebuilding || connectionsRebuilding) {
                 recalculateStructure();
-                if (recordChanges) {
-                    if (verticesRebuilding) {
-                        changes.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
-                    }
-                    if (connectionsRebuilding) {
-                        changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build());
-                    }
+                if (recordChanges && verticesRebuilding) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
+                }
+                if (recordChanges && connectionsRebuilding) {
+                    changes.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build());
                 }
             }
 

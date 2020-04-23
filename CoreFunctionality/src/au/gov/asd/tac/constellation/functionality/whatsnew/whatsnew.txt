@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-04-20 Data Access View
+<p>You can now remove a previously saved preference in Data Access View under Options -> Load.</p>
+
 == 2020-04-15 New Layers View
 <p>You can now add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.
 Access to the Layers view is achieved through Experimental &gt; Views &gt; Layers View.</p>
