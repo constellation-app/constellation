@@ -148,7 +148,7 @@ public final class SharedDrawable {
                     try (final OutputStream out = new FileOutputStream(outputFile)) {
                         glyphManager.writeGlyphBuffer(page, out);
                     } catch (IOException ex) {
-                        // Nothing to do here - this is just for developer testing.
+                        LOGGER.severe(ex.getLocalizedMessage());
                     }
                 }
             });
