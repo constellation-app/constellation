@@ -212,9 +212,6 @@ class PQNodeList implements Iterable<PQNode> {
 
     public static class PQNodeListTest {
 
-        public PQNodeListTest() {
-        }
-
         private PQNode makeNode() {
             return new PQNode(NodeType.LEAF_NODE);
         }

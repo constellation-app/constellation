@@ -412,9 +412,6 @@ public class TimelinePanel extends Region {
         btnShowLabels.setSelected(isShowingLabels);
     }
 
-    protected void setLabelString(final String label) {
-    }
-
     protected double getTimelineLowerTimeExtent() {
         return timeline.getLowerExtent();
     }

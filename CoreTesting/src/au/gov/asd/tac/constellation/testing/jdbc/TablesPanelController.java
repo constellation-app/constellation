@@ -68,10 +68,12 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
 
     @Override
     public void addChangeListener(ChangeListener l) {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
     public void removeChangeListener(ChangeListener l) {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
@@ -89,6 +91,7 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
 
     @Override
     public void prepareValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
@@ -143,5 +146,6 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
 
     @Override
     public void finishValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 }

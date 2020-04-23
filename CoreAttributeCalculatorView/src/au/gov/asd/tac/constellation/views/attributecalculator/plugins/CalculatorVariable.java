@@ -530,6 +530,7 @@ public enum CalculatorVariable {
 //        }
 //    }
     public void init(GraphReadMethods graph) {
+        //Intetionally left blank, overridden within this class
     }
     
     private class CalculatorVariableConstants {
