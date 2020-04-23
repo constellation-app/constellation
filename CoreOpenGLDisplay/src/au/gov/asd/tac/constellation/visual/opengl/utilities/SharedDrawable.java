@@ -145,7 +145,7 @@ public final class SharedDrawable {
 
                 for (int page = 0; page < glyphManager.getGlyphPageCount(); page++) {
                     final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + ".png");
-                    try ( OutputStream out = new FileOutputStream(outputFile)) {
+                    try (final OutputStream out = new FileOutputStream(outputFile)) {
                         glyphManager.writeGlyphBuffer(page, out);
                     } catch (IOException ex) {
                         // Nothing to do here - this is just for developer testing.
