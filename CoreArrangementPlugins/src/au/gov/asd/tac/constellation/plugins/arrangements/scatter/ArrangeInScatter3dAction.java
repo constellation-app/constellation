@@ -34,11 +34,11 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dAction")
 @ActionRegistration(displayName = "#CTL_ArrangeInScatter3dAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/scatter/resources/scatter3d.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 0),
-    @ActionReference(path = "Toolbars/Arrange", position = 0),
+    @ActionReference(path = "Menu/Arrange", position = 1000, separatorBefore = 999),
+    @ActionReference(path = "Toolbars/Arrange", position = 300),
     @ActionReference(path = "Shortcuts", name = "C-A-S")
 })
-@Messages("CTL_ArrangeInScatter3dAction=Scatter3d")
+@Messages("CTL_ArrangeInScatter3dAction=Scatter 3D")
 
 public final class ArrangeInScatter3dAction extends AbstractAction {
 

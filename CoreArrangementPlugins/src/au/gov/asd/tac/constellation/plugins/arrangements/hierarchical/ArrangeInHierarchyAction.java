@@ -45,7 +45,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyAction")
 @ActionRegistration(displayName = "#CTL_ArrangeInHierarchyAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/hierarchical/resources/hierarchical.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 300),
+    @ActionReference(path = "Menu/Arrange", position = 400),
     @ActionReference(path = "Shortcuts", name = "C-H")
 })
 @NbBundle.Messages("CTL_ArrangeInHierarchyAction=Hierarchy")
