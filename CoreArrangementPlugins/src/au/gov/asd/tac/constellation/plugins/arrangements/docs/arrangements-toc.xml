@@ -7,6 +7,7 @@
         <tocitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical"/>
         <tocitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
         <tocitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
+        <tocitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter"/>
         <tocitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
         <tocitem text="Layer by Time" target="au.gov.asd.tac.constellation.plugins.arrangements.layerByTime"/>
         <tocitem text="Clusters on Hilbert Curve" target="au.gov.asd.tac.constellation.plugins.arrangements.clustersOnHilbertCurve"/>
