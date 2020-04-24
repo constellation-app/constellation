@@ -48,13 +48,13 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
-    public HideVisualisation buildControl() {
-        return new HideVisualisation(this);
+    public HideVisualisation<ElementScore> buildControl() {
+        return new HideVisualisation<>(this);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                 return;
             }
 
-            final ScoreResult scoreResults = (ScoreResult) result;
+            final ScoreResult scoreResults = result;
 
             if (reset) {
                 for (final ElementScore scoreResult : scoreResults.get()) {

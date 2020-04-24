@@ -13,77 +13,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
+package au.gov.asd.tac.constellation.plugins.arrangements.scatter;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphComponentArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridChoiceParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import java.util.Set;
-import org.openide.util.NbBundle;
+import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Arrange components in scatter3ds.
  *
- * @author algol
+ * @author CrucisGamma
  */
 @ServiceProvider(service = Plugin.class)
-@NbBundle.Messages("ArrangeInHierarchyPlugin=Arrange in Hierarchy")
-public class ArrangeInHierarchyPlugin extends SimpleEditPlugin {
-
-    public static final String ROOTS_PARAMETER_ID = PluginParameter.buildId(ArrangeInHierarchyPlugin.class, "roots");
+@Messages("ArrangeInScatter3dComponentsPlugin=Arrange Components in Scatter3ds")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+public class ArrangeInScatter3dComponentsPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        @SuppressWarnings("unchecked") //roots will be a set of integers, which extends object type
-        final Set<Integer> roots = (Set<Integer>) parameters.getParameters().get(ROOTS_PARAMETER_ID).getObjectValue();
+        interaction.setProgress(0, 0, "Arranging...", true);
 
         if (graph.getVertexCount() > 0) {
             final SetRadiusForArrangement radiusSetter = new SetRadiusForArrangement(graph);
             radiusSetter.setRadii();
 
-            final GridChoiceParameters innerGcParams = GridChoiceParameters.getDefaultParameters();
-            final Arranger inner = new HierarchicalArranger(roots);
-            final GridChoiceParameters outerGcParams = GridChoiceParameters.getDefaultParameters();
-            outerGcParams.setRowOffsets(false);
-            final Arranger outer = new GridArranger(outerGcParams);
+            final Scatter3dChoiceParameters innerGcParams = Scatter3dChoiceParameters.getDefaultParameters();
+            final Arranger inner = new Scatter3dArranger(innerGcParams);
+            final Scatter3dChoiceParameters outerGcParams = Scatter3dChoiceParameters.getDefaultParameters();
+            final Arranger outer = new Scatter3dArranger(outerGcParams);
 
             final GraphTaxonomyArranger arranger = new GraphComponentArranger(inner, outer, Connections.LINKS);
-            arranger.setSingletonArranger(new GridArranger(innerGcParams));
-            arranger.setDoubletArranger(new GridArranger(innerGcParams, true));
+            arranger.setSingletonArranger(new Scatter3dArranger(innerGcParams));
             arranger.setInteraction(interaction);
 
-            arranger.setMaintainMean(true);
-
+            // We need to include links to dicover the components.
             final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, Connections.LINKS);
-
             arranger.arrange(selectedGraph.getInclusionGraph());
             selectedGraph.retrieveCoords();
         }
-    }
 
-    @Override
-    public PluginParameters createParameters() {
-        final PluginParameters parameters = new PluginParameters();
-
-        final PluginParameter<ObjectParameterValue> roots = ObjectParameterType.build(ROOTS_PARAMETER_ID);
-        roots.setName("The root nodes");
-        roots.setDescription("A list of the root vertex ids");
-        parameters.addParameter(roots);
-
-        return parameters;
+        interaction.setProgress(1, 0, "Finished", true);
     }
 }

@@ -98,7 +98,7 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
      *
      * @return
      */
-    public abstract Class<? extends AnalyticResult> getResultType();
+    public abstract Class<? extends AnalyticResult<?>> getResultType();
 
     /**
      * Determines whether this analytic appear in the Categories section of the

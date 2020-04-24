@@ -26,13 +26,13 @@ import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtiliti
  */
 public class AnalyticAggregatorParameterValue extends ParameterValue {
 
-    private AnalyticAggregator analyticAggregator;
+    private AnalyticAggregator<?> analyticAggregator;
 
     public AnalyticAggregatorParameterValue() {
         this.analyticAggregator = null;
     }
 
-    public AnalyticAggregatorParameterValue(final AnalyticAggregator analyticAggregator) {
+    public AnalyticAggregatorParameterValue(final AnalyticAggregator<?> analyticAggregator) {
         this.analyticAggregator = analyticAggregator;
     }
 

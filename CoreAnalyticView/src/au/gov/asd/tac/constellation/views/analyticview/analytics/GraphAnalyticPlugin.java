@@ -98,7 +98,7 @@ public abstract class GraphAnalyticPlugin extends AnalyticPlugin<GraphResult> {
     }
 
     @Override
-    public final Class<? extends AnalyticResult> getResultType() {
+    public final Class<? extends AnalyticResult<?>> getResultType() {
         return GraphResult.class;
     }
 }
