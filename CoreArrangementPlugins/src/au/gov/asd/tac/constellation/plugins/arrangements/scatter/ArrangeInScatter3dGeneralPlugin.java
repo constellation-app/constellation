@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages({
-    "ArrangeInScatter3dGeneralPlugin=Arrange in Scatter3D",
+    "ArrangeInScatter3dGeneralPlugin=Arrange in Scatter 3D",
     "SelectedOnly=Arrange only selected nodes"
 })
 public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
