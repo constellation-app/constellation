@@ -185,6 +185,10 @@ public class Scatter3dArranger implements Arranger {
     }
 
     private float getFloatValueFromObject(Object attributeValue, boolean logarithmic) {
+        if (attributeValue == null) {
+            return 0.0f;
+        }
+
         if (attributeValue instanceof Float) {
             return scaleValue((float) attributeValue, logarithmic);
         }
