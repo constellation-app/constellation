@@ -42,13 +42,13 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
     public static final String CUSTOM_QUESTION_NAME = "Custom";
     public static final String CUSTOM_QUESTION_DESCRIPTION = "An analytic built by the user.";
 
-    private final AnalyticQuestionDescription<?> questionDescription;
+    private final AnalyticQuestionDescription<R> questionDescription;
     private final Map<AnalyticPlugin<R>, PluginParameters> pluginsWithParameters;
     private AnalyticAggregator<R> aggregator;
     private R result;
     private final List<Exception> exceptions;
 
-    public AnalyticQuestion(final AnalyticQuestionDescription<?> questionDescription) {
+    public AnalyticQuestion(final AnalyticQuestionDescription<R> questionDescription) {
         this.questionDescription = questionDescription;
         this.pluginsWithParameters = new HashMap<>();
         this.aggregator = null;

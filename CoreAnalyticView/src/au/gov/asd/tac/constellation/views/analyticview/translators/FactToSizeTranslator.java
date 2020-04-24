@@ -46,13 +46,13 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 
     @Override
-    public SizeVisualisation buildControl() {
-        return new SizeVisualisation(this);
+    public SizeVisualisation<ElementFact> buildControl() {
+        return new SizeVisualisation<>(this);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 return;
             }
 
-            final FactResult factResults = (FactResult) result;
+            final FactResult factResults = result;
 
             if (reset) {
                 for (final ElementFact factResult : factResults.get()) {

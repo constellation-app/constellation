@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.HideVisuali
  * @param <R>
  * @param <C>
  */
-public abstract class AbstractHideTranslator<R extends AnalyticResult, C> extends GraphVisualisationTranslator<R, HideVisualisation> {
+public abstract class AbstractHideTranslator<R extends AnalyticResult<?>, C> extends GraphVisualisationTranslator<R, HideVisualisation<C>> {
 
     protected static class InvalidElementTypeException extends RuntimeException {
 
