@@ -204,8 +204,6 @@
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
-                <package>com.sun.java.help.impl</package>
-                <package>com.sun.java.help.search</package>
                 <package>com.sun.mail.auth</package>
                 <package>com.sun.mail.handlers</package>
                 <package>com.sun.mail.iap</package>
@@ -484,14 +482,6 @@
                 <package>javax.faces.view</package>
                 <package>javax.faces.view.facelets</package>
                 <package>javax.faces.webapp</package>
-                <package>javax.help</package>
-                <package>javax.help.event</package>
-                <package>javax.help.plaf</package>
-                <package>javax.help.plaf.basic</package>
-                <package>javax.help.plaf.gtk</package>
-                <package>javax.help.resources</package>
-                <package>javax.help.search</package>
-                <package>javax.help.tagext</package>
                 <package>javax.inject</package>
                 <package>javax.interceptor</package>
                 <package>javax.jms</package>

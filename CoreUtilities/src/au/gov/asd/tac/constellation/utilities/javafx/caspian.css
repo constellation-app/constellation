@@ -1,30 +1,26 @@
 /*
-    Document   : caspian
-*/
-/*
- * Copyright (c) 2009, 2011, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
- *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
- *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
- *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
- *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
+ * Copyright (c) 2009, 2014, Oracle and/or its affiliates. All rights reserved.
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER. 
+ *  
+ * This code is free software; you can redistribute it and/or modify it 
+ * under the terms of the GNU General Public License version 2 only, as 
+ * published by the Free Software Foundation.  Oracle designates this 
+ * particular file as subject to the "Classpath" exception as provided 
+ * by Oracle in the LICENSE file that accompanied this code. 
+ *  
+ * This code is distributed in the hope that it will be useful, but WITHOUT 
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or 
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License 
+ * version 2 for more details (a copy is included in the LICENSE file that 
+ * accompanied this code). 
+ *  
+ * You should have received a copy of the GNU General Public License version 
+ * 2 along with this work; if not, write to the Free Software Foundation, 
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA. 
+ *  
+ * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA 
+ * or visit www.oracle.com if you need additional information or have any 
  * questions.
- *
  */
 
 /*******************************************************************************
@@ -34,19 +30,19 @@
  *                                                                             *
  ******************************************************************************/
 
-.root {
+ .root {
     /***************************************************************************
      *                                                                         *
      * The main color palette from which the rest of the colors are derived.   *
      *                                                                         *
      **************************************************************************/
 
-    /* A light gray that is the base color for objects.  Instead of using
+    /* A light grey that is the base color for objects.  Instead of using
      * -fx-base directly, the sections in this file will typically use -fx-color.
      */
     -fx-base: #d0d0d0;
 
-    /* A very light gray used for the background of windows.  See also
+    /* A very light grey used for the background of windows.  See also
      * -fx-text-background-color, which should be used as the -fx-text-fill
      * value for text painted on top of backgrounds colored with -fx-background.
      */
@@ -113,7 +109,7 @@
         derive(-fx-base,20%) 20%,
         derive(-fx-base,30%) 35%,
         derive(-fx-base,40%) 50%
-        );
+     );
 
     /* A little darker than -fx-base and used as the -fx-color for the
      * "armed" pseudoclass state.
@@ -137,7 +133,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-        );
+     );
 
     /* The default color for all text.  Sections should change the -fx-text-fill
      * property if change the background color to something else.  See also:
@@ -156,7 +152,7 @@
         -fx-color,
         black 20%,
         derive(-fx-color,-30%) 30%
-        );
+    );
 
     /* Darker than -fx-background and used to draw boxes around text boxes and
      * password boxes.
@@ -165,7 +161,7 @@
         -fx-background,
         black 10%,
         derive(-fx-background, -15%) 30%
-        );
+    );
 
     /* Typically lighter than -fx-background and used to provide a small
      * highlight under controls and tick marks for checkboxes and radio buttons.
@@ -181,7 +177,7 @@
         derive(-fx-background,100%) 85%,
         derive(-fx-background,100%) 97%,
         derive(-fx-background,-10%) 97.5%
-        );
+      );
 
     /* A gradient that goes from a little darker than -fx-color on the top to
      * even more darker than -fx-color on the bottom.  Typically is the second
@@ -191,9 +187,9 @@
      */
     -fx-outer-border: linear-gradient(
         to bottom,
-        derive(-fx-color,-9%) 0%,
+        derive(-fx-color,-9%) 0%, 
         derive(-fx-color,-33%) 100%
-        );
+    );
 
     /* A gradient that goes from a bit lighter than -fx-color on the top to
      * a little darker at the bottom.  Typically is the third color in the
@@ -202,32 +198,32 @@
      */
     -fx-inner-border: linear-gradient(
         to bottom,
-        ladder(-fx-color,
-        derive(-fx-color,80%) 60%,
-        white 82%) 0%,
-        ladder(-fx-color,
-        derive(-fx-color,20%) 10%,
-        derive(-fx-color,-10%) 80%) 100%
-        );
+        ladder(-fx-color, 
+               derive(-fx-color,80%) 60%, 
+               white 82%) 0%,
+        ladder(-fx-color, 
+               derive(-fx-color,20%) 10%, 
+               derive(-fx-color,-10%) 80%) 100%
+    );
 
     -fx-inner-border-horizontal: linear-gradient(
         to right,
-        ladder(-fx-color,
-        derive(-fx-color,80%) 60%,
-        white 82%) 0%,
-        ladder(-fx-color,
-        derive(-fx-color,20%) 10%,
-        derive(-fx-color,-10%) 80%) 100%
-        );
+        ladder(-fx-color, 
+               derive(-fx-color,80%) 60%, 
+               white 82%) 0%,
+        ladder(-fx-color, 
+               derive(-fx-color,20%) 10%, 
+               derive(-fx-color,-10%) 80%) 100%
+    );
 
     -fx-inner-border-bottomup: linear-gradient(
         to top,
-        ladder(-fx-color,
-        derive(-fx-color,80%) 60%,
-        white 82%) 0%,
-        ladder(-fx-color,
-        derive(-fx-color,20%) 10%,
-        derive(-fx-color,-10%) 80%) 100%);
+        ladder(-fx-color, 
+               derive(-fx-color,80%) 60%, 
+               white 82%) 0%,
+        ladder(-fx-color, 
+               derive(-fx-color,20%) 10%, 
+               derive(-fx-color,-10%) 80%) 100%);
 
     /* A gradient that goes from a little lighter than -fx-color at the top to
      * a little darker than -fx-color at the bottom and is used to fill the
@@ -239,13 +235,13 @@
         to bottom,
         derive(-fx-color,34%) 0%,
         derive(-fx-color,-18%) 100%
-        );
-
+    );
+        
     -fx-body-color-bottomup:  linear-gradient(
         to top,
         derive(-fx-color,34%) 0%,
         derive(-fx-color,-18%) 100%
-        );
+    );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-base, -fx-color, and -fx-body-color.
@@ -256,7 +252,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-        );
+    );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-control-inner-background.
@@ -267,7 +263,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-        );
+    );
 
     /* The color to use for small mark-like objects such as checks on check
      * boxes, filled in circles in radio buttons, arrows on scroll bars, etc.
@@ -276,7 +272,7 @@
         -fx-color,
         white 30%,
         derive(-fx-color,-63%) 31%
-        );
+    );
 
     /* The small thin light "shadow" for mark-like objects. Typically used in
      * conjunction with -fx-mark-color with an insets of 1 0 -1 0.
@@ -285,7 +281,7 @@
         -fx-color,
         derive(-fx-color,80%) 60%,
         white 70%
-        );
+    );
 
     /* Background for items in list like things such as menus, lists, trees,
      * and tables.
@@ -298,7 +294,7 @@
         to bottom,
         derive(-fx-background,-7%) 0%,
         derive(-fx-background,-34%) 100%
-        );
+    );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-selection-bar.
@@ -309,7 +305,7 @@
         -fx-background,
         -fx-light-text-color 50%,
         -fx-mid-text-color   51%
-        );
+    );
 
     /* The default border color for a tab.
      *
@@ -322,17 +318,17 @@
     -fx-background-radius: inherit;
     -fx-background-insets: inherit;
     -fx-padding: inherit;
-
+    
     /* The color to use in ListView/TreeView/TableView to indicate hover. */
     -fx-cell-hover-color: #cce3f4;
-
+    
     -fx-cell-focus-inner-border: #85b9de;
-
+    
     /* The colors to use in Pagination */
-    -fx-page-bullet-border: #acacac;
+    -fx-page-bullet-border: #acacac;    
     -fx-page-indicator-hover-border: #accee5;
-
-
+    
+    
 }
 
 .mnemonic-underline {
@@ -351,7 +347,6 @@
  ** section that defines the following:                                       **
  **                                                                           **
  ** .control-name {                                                           **
- **     -fx-skin: "com.sun.javafx.scene.control.skin.ControlNameSkin";        **
  **     -fx-background-color: a, b, c, d                                      **
  **     -fx-background-insets: e, f, g, h                                     **
  **     -fx-background-radius: i, j, k, l                                     **
@@ -392,7 +387,7 @@
  **            with corners with a smaller radius (radius = 4).               **
  **    d/h/l = -fx-body-color, 2, 3                                           **
  **            Draws the body last, inset 2 pixels from the control edge and  **
- **            with cornersd with an even smaller radius (radius = 3).        **
+ **            with corners with an even smaller radius (radius = 3).         **
  **    m     = Padding from the edge of the control to the outer edge of the  **
  **            skin content.                                                  **
  **    n     = If specified, the color chosen for -fx-text-fill should match  **
@@ -472,7 +467,6 @@
  ******************************************************************************/
 
 .label {
-    -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin";
     -fx-text-fill: -fx-text-background-color;
 }
 
@@ -480,9 +474,9 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.label:show-mnemonics .mnemonic-underline {
+.label:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 /* The opacity of the parent is applied to the children.  So we make the
  * opacity 1.0 here to avoid double translucency.
@@ -498,7 +492,6 @@
  ******************************************************************************/
 
 .button {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ButtonSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 5, 5, 4, 3;
@@ -522,7 +515,7 @@
 .button:armed {
     -fx-color: -fx-pressed-base;
 }
-
+ 
 .button:default {
     -fx-base: -fx-accent;
 }
@@ -534,7 +527,7 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.button:show-mnemonics .mnemonic-underline {
+.button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
 }
 /*******************************************************************************
@@ -544,7 +537,6 @@
  ******************************************************************************/
 
 .toggle-button {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ToggleButtonSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 5, 5, 4, 3;
@@ -594,9 +586,9 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.toggle-button:show-mnemonics .mnemonic-underline {
+.toggle-button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 /*******************************************************************************
  *                                                                             *
@@ -605,7 +597,6 @@
  ******************************************************************************/
 
 .radio-button {
-    -fx-skin: "com.sun.javafx.scene.control.skin.RadioButtonSkin";
     -fx-label-padding: 0.0em 0.0em 0.0em 0.416667em; /* 0 0 0 5 */
     -fx-text-fill: -fx-text-background-color;
 }
@@ -614,45 +605,45 @@
     -fx-color: -fx-focused-base;
 }
 
-.radio-button .radio  {
-    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0 0 -1 0,  0,  1,  2;
-    -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
-    -fx-padding: 0.333333em; /* 4 -- padding from outside edge to the inner black dot */
+.radio-button > .radio  {
+   -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+   -fx-background-insets: 0 0 -1 0,  0,  1,  2;
+   -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
+   -fx-padding: 0.333333em; /* 4 -- padding from outside edge to the inner black dot */
 }
 
-.radio-button:focused .radio {
+.radio-button:focused > .radio {
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
     -fx-background-insets: -1.4, 0, 1, 2;
 }
 
-.radio-button:hover .radio {
+.radio-button:hover > .radio {
     -fx-color: -fx-hover-base;
 }
-.radio-button:armed .radio {
+.radio-button:armed > .radio {
     -fx-color: -fx-pressed-base;
 }
 
-.radio-button .dot {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
-    -fx-padding: 0.25em; /* 3 -- radius of the inner black dot when selected */
+.radio-button > .radio > .dot {
+   -fx-background-color: transparent;
+   -fx-background-insets: 0;
+   -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
+   -fx-padding: 0.25em; /* 3 -- radius of the inner black dot when selected */
 }
 
-.radio-button:selected .dot {
-    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
-    -fx-background-insets: 0 0 -1 0, 0;
+.radio-button:selected > .radio > .dot {
+   -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+   -fx-background-insets: 0 0 -1 0, 0;
 }
 
 .radio-button:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.radio-button:show-mnemonics .mnemonic-underline {
+.radio-button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 /*******************************************************************************
  *                                                                             *
@@ -661,7 +652,6 @@
  ******************************************************************************/
 
 .check-box {
-    -fx-skin: "com.sun.javafx.scene.control.skin.CheckBoxSkin";
     -fx-label-padding: 0.0em 0.0em 0.0em 0.416667em; /* 0 0 0 5 */
     -fx-text-fill: -fx-text-background-color;
 }
@@ -670,28 +660,28 @@
     -fx-color: -fx-focused-base;
 }
 
-.check-box .box {
+.check-box > .box {
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 2, 2, 1, 1;
     -fx-padding: 0.25em; /* 3 -- padding from the outside edge to the mark */
 }
 
-.check-box:focused .box {
+.check-box:focused > .box {
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: -1.4, 0, 1, 2;
     -fx-background-radius: 3.4, 2, 1, 1;
 }
 
-.check-box:hover .box {
+.check-box:hover > .box {
     -fx-color: -fx-hover-base;
 }
 
-.check-box:armed .box {
+.check-box:armed > .box {
     -fx-color: -fx-pressed-base;
 }
 
-.check-box .mark {
+.check-box > .box > .mark {
     -fx-background-color: transparent;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em; /* 4 -- this is half the size of the mark */
@@ -701,13 +691,13 @@
 /* TODO: scale the shape - the problem is that it is not within a square
  * boundary.
  */
-.check-box:indeterminate .mark {
+.check-box:indeterminate > .box > .mark {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-shape: "M0,0H8V2H0Z";
     -fx-scale-shape: false;
 }
 
-.check-box:selected .mark {
+.check-box:selected > .box > .mark {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
 }
 
@@ -715,9 +705,9 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.check-box:show-mnemonics .mnemonic-underline {
+.check-box:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 /*******************************************************************************
  *                                                                             *
@@ -726,7 +716,6 @@
  ******************************************************************************/
 
 .hyperlink {
-    -fx-skin: "com.sun.javafx.scene.control.skin.HyperlinkSkin";
     -fx-padding: 0.166667em; /* 2 */
     -fx-cursor: hand;
     -fx-content-display: LEFT;
@@ -742,7 +731,7 @@
 .hyperlink:focused {
     -fx-color: -fx-focused-base;
     -fx-border-color: -fx-focus-color;
-    -fx-border-style: dotted;
+    -fx-border-style: segments(0.166667em, 0.166667em);
     -fx-border-width: 1px;
 }
 
@@ -754,9 +743,9 @@
     -fx-underline: true;
 }
 
-.hyperlink:show-mnemonics .mnemonic-underline {
+.hyperlink:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 
 /*******************************************************************************
@@ -766,36 +755,43 @@
  ******************************************************************************/
 
 .context-menu {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ContextMenuSkin";
+    -fx-color: -fx-base;
     -fx-background-color:
         derive(-fx-color,-40%),
         derive(-fx-color,100%),
         linear-gradient(to bottom, derive(-fx-color,100%) 0%, derive(-fx-color,50%) 12%, derive(-fx-color,65%) 88%, derive(-fx-color,23%) 100%);
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
-    /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+/*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
 }
 
-.context-menu .separator {
+.context-menu > .separator {
     -fx-padding: 0.0em 0.333333em 0.0em 0.333333em; /* 0 4 0 4 */
 }
 
-.context-menu .scroll-arrow {
+.context-menu > .scroll-arrow {
     -fx-padding: 0.416667em 0.416667em 0.416667em 0.416667em; /* 5 */
     -fx-background-color: transparent;
 }
 
-.context-menu .scroll-arrow:hover {
+.context-menu > .scroll-arrow:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.context-menu:show-mnemonics .mnemonic-underline {
+.context-menu:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
 }
 
+/*
+ * RT-33312 - if the context-menu is belongs to a menu-button, then set the context-menu's -fx-color to -fx-base
+ * effectively overriding the menu-button:armed, menu-button:hover styling of -fx-color
+ */
+.menu-button > * > .context-menu {
+    -fx-color: -fx-base;
+}
 
 /*******************************************************************************
  *                                                                             *
@@ -804,7 +800,6 @@
  ******************************************************************************/
 
 .menu {
-    /*    -fx-skin: "com.sun.javafx.scene.control.skin.MenuSkin";*/
     -fx-background-color: transparent;
     -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
 }
@@ -813,29 +808,29 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.menu:show-mnemonics .mnemonic-underline {
+.menu:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
 }
-
-/* This hides the down arrow that would show on a menu placed in a menubar */
-.menu-bar .menu .arrow {
-    -fx-padding: 0;
-    -fx-background-color: transparent;
-    -fx-shape: null;
-}
-
-.menu-bar .menu .arrow-button {
-    -fx-padding: 0;
-}
-
-.menu .arrow {
+.menu > .right-container > .arrow {
+    -fx-padding: 0.458em 0.167em 0.458em 0.167em; /* 4.5 2 4.5 2 */
     -fx-background-color: -fx-mark-color;
     -fx-shape: "M0,-4L4,0L0,4Z";
     -fx-scale-shape: false;
 }
 
-.menu:focused:showing .arrow, .menu:hover:showing .arrow, .menu:focused .arrow, .menu:showing .arrow {
+.menu:focused > .right-container > .arrow {
     -fx-background-color: white;
+}
+
+/* This hides the down arrow that would show on a menu placed in a menubar */
+.menu-bar > .container > .menu > .arrow-button > .arrow {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-shape: null;
+}
+
+.menu-bar > .container > .menu > .arrow-button {
+    -fx-padding: 0;
 }
 
 .menu-up-arrow {
@@ -865,7 +860,6 @@
  * derive(-fx-base,-70%); #3e3e3e                                     */
 
 .menu-bar {
-    -fx-skin: "com.sun.javafx.scene.control.skin.MenuBarSkin";
     -fx-padding: 0.0em 0.666667em 0.0em 0.666667em; /* 0 8 0 8 */
     -fx-spacing: 0.166667em; /* 2 */
     -fx-base: derive(#d0d0d0,-70%);
@@ -875,17 +869,17 @@
 }
 
 /* Show nothing for background of normal menu button in a menu bar */
-.menu-bar .menu-button {
+.menu-bar > .container > .menu-button {
     -fx-background-radius: 0;
     -fx-background-color: transparent;
-    -fx-background-insets: 0;
+    -fx-background-insets: 0; 
 }
 /* Change padding of menu buttons when in menu bar */
-.menu-bar .menu-button .label {
+.menu-bar > .container > .menu-button > .label {
     -fx-padding: 0.333em 0.5em 0.333em 0.5em; /* 4 6 4 6*/
 }
 
-.menu-bar .menu-button:hover, .menu-bar .menu-button:focused, .menu-bar .menu-button:showing {
+.menu-bar > .container > .menu-button:hover, .menu-bar > .container > .menu-button:focused, .menu-bar > .container > .menu-button:showing {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
@@ -898,13 +892,13 @@
     -fx-text-fill: -fx-selection-bar-text;
 }*/
 
-.menu-bar .menu-button:hover {
+.menu-bar > .container > .menu-button:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.menu-bar:show-mnemonics .mnemonic-underline {
+.menu-bar:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
 }
 
@@ -915,81 +909,69 @@
  ******************************************************************************/
 
 .menu-item {
-    /*    -fx-skin: "com.sun.javafx.scene.control.skin.MenuItemSkin";*/
     -fx-background-color: transparent;
     -fx-padding: 0.333333em 0.41777em 0.333333em 0.41777em;  /* 4 5 4 5 */
 }
 
-.menu-item .left-container {
+.menu-item > .left-container {
     -fx-padding: 0.458em 0.791em 0.458em 0.458em;
 }
 
-.menu-item .graphic-container {
+.menu-item > .graphic-container {
     -fx-padding: 0em 0.333em 0em 0em;
 }
 
-.menu-item .label {
+.menu-item >.label {
     -fx-padding: 0em 0.5em 0em 0em;
     -fx-text-fill: -fx-text-base-color;
 }
 
-.menu-item:disabled .label {
+.menu-item:disabled > .label {
     -fx-opacity: -fx-disabled-opacity;
 }
 
 .menu-item:focused {
-    -fx-background: -fx-accent;
-    -fx-background-color: -fx-selection-bar;
-    -fx-text-fill: -fx-selection-bar-text;
+     -fx-background: -fx-accent;
+     -fx-background-color: -fx-selection-bar;
+     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.menu-item:focused .label {
+.menu-item:focused > .label {
     -fx-text-fill: white;
 }
-.menu-item .right-container {
+.menu-item > .right-container {
     -fx-padding: 0em 0em 0em 0.5em;
 }
 
-.menu-item:show-mnemonics .mnemonic-underline {
+.menu-item:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
-
-.radio-menu-item:checked .radio {
+.radio-menu-item:checked > .left-container > .radio {
     -fx-background-color: -fx-mark-color;
     -fx-shape: "M0,5H2L4,8L8,0H10L5,10H3Z";
     -fx-scale-shape: false;
 }
 
-.radio-menu-item:focused:checked .radio {
+.radio-menu-item:focused:checked > .left-container > .radio {
     -fx-background-color: white;
 }
 
-.check-menu-item:checked .check {
+.check-menu-item:checked > .left-container > .check {
     -fx-background-color: -fx-mark-color;
     -fx-shape: "M0,5H2L4,8L8,0H10L5,10H3Z";
     -fx-scale-shape: false;
 }
 
-.check-menu-item:focused:checked .check {
+.check-menu-item:focused:checked > .left-container > .check {
     -fx-background-color: white;
 }
 
-.menu .arrow {
-    -fx-padding: 0.458em 0.167em 0.458em 0.167em; /* 4.5 2 4.5 2 */
-    -fx-background-color: -fx-mark-color;
-    -fx-shape: "M0,-4L4,0L0,4Z";
-    -fx-scale-shape: false;
-}
-
-.menu:selected .arrow {
-    -fx-background-color: white;
-}
 /*.radio.selected {
     -fx-background-color: -fx-mark-color;
     -fx-padding: 0.666667em;  8
     -fx-shape: "M7,3.5C7,5.433,5.433,7,3.5,7C1.567,7,0,5.433,0,3.5C0,1.567,1.63,0,3.5,0C5.433,0,7,1.567,7,3.5z";
-    -fx-scale-shape: false;
+    -fx-scale-shape: false; 
 }*/
 
 /*.check.checked {
@@ -1015,11 +997,10 @@
  ******************************************************************************/
 
 .choice-box {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ChoiceBoxSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 5, 5, 4, 3;
-    -fx-padding: 0.0em 0.5em 0.0em 0.0em; /* 0 6 0 0 */
+    -fx-padding: 0;
     -fx-alignment: CENTER;
     -fx-content-display: LEFT;
 }
@@ -1039,17 +1020,17 @@
     -fx-color: -fx-pressed-base;
 }
 
-.choice-box .label {
+.choice-box > .label {
     -fx-padding: 0.166667em 0.333333em 0.25em 0.5em; /* 2 4 3 6 */
     -fx-text-fill: -fx-text-base-color;
 }
 
-.choice-box .open-button {
+.choice-box > .open-button {
     -fx-background-color: null;
-    -fx-padding: 0.083333em 0.0em 0.0em 0.666667em; /* 1 0 0 8 */
+    -fx-padding: 0.083333em 0.666667em 0 0; /* 1 0 0 8 */
 }
 
-.choice-box .arrow {
+.choice-box > .open-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     /* padding determines the size of the arrow;
@@ -1058,13 +1039,13 @@
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
 }
 
-.choice-box .context-menu {
+.choice-box > .context-menu {
     -fx-background-radius: 6, 5, 4;
 }
 
-.choice-box .menu-item {
+/*.choice-box > .context-menu > .menu-item {
     -fx-accelerator-gutter: 0;
-}
+}*/
 
 /* TODO: need to use the ID here.  For some reason, the other form does not
  * work.  This might be related to popup issues.
@@ -1088,11 +1069,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.slider {
-    -fx-skin: "com.sun.javafx.scene.control.skin.SliderSkin";
-}
-
-.slider .thumb {
+.slider > .thumb {
     -fx-background-color:
         derive(-fx-color,-36%),
         derive(-fx-color,73%),
@@ -1102,7 +1079,7 @@
     -fx-padding: 0.583333em; /* 7 */
 }
 
-.slider:focused .thumb {
+.slider:focused > .thumb {
     -fx-color: -fx-focused-base;
     -fx-background-color:
         -fx-focus-color,
@@ -1113,7 +1090,7 @@
     -fx-background-radius: 1.0em; /* makes sure this remains circular */
 }
 
-.slider .thumb:hover {
+.slider > .thumb:hover {
     -fx-color: -fx-hover-base;
 }
 
@@ -1123,7 +1100,7 @@
 }
 */
 
-.slider .track {
+.slider > .track {
     -fx-background-color:
         -fx-shadow-highlight-color,
         derive(-fx-color,-22%),
@@ -1133,7 +1110,7 @@
     -fx-padding: 0.208333em; /* 2.5 */
 }
 
-.slider:vertical .track {
+.slider:vertical > .track {
     -fx-background-color:
         -fx-shadow-highlight-color,
         derive(-fx-color,-22%),
@@ -1141,9 +1118,9 @@
     -fx-background-insets: 0 -1 0 1, 0, 1;
 }
 
-.slider .axis {
+.slider > .axis {
     -fx-tick-mark-stroke: ladder(-fx-background, derive(-fx-background,30%) 40%, derive(-fx-background,-30%) 41%);
-    -fx-tick-label-font: 0.833333em System;
+    -fx-tick-label-font-size: 0.833333em; 
     -fx-tick-label-fill: -fx-text-background-color;
 }
 
@@ -1156,10 +1133,6 @@
  * ScrollBar                                                                   *
  *                                                                             *
  ******************************************************************************/
-
-.scroll-bar {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ScrollBarSkin";
-}
 
 .scroll-bar:horizontal {
     -fx-background-color:
@@ -1191,7 +1164,7 @@
     -fx-background-insets: -1.4, 0, 1;
 }
 
-.scroll-bar:horizontal .thumb {
+.scroll-bar:horizontal > .thumb {
     -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,95%), derive(-fx-color,10%)),
@@ -1200,7 +1173,7 @@
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
 
-.scroll-bar:vertical .thumb {
+.scroll-bar:vertical > .thumb {
     -fx-background-color:
         -fx-box-border,
         linear-gradient(to right, derive(-fx-color,95%), derive(-fx-color,10%)),
@@ -1209,11 +1182,11 @@
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
 
-.scroll-bar:focused .thumb {
+.scroll-bar:focused > .thumb {
     -fx-color: -fx-focused-base;
 }
 
-.scroll-bar .thumb:hover {
+.scroll-bar > .thumb:hover {
     -fx-color: -fx-hover-base;
 }
 
@@ -1223,73 +1196,69 @@
 }
 */
 
-.scroll-bar:horizontal .track {
-    -fx-background-color:
+.scroll-bar:horizontal > .track {
+     -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
-.scroll-bar:horizontal .track-background {
-    -fx-background-color:
+.scroll-bar:horizontal > .track-background {
+     -fx-background-color:
         -fx-box-border,
-        linear-gradient(to bottom, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
+        linear-gradient(to top, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
 }
 
-.scroll-bar:vertical .track {
-    -fx-background-color:
+.scroll-bar:vertical > .track {
+     -fx-background-color:
         -fx-box-border,
         linear-gradient(to right, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
 
-.scroll-bar:vertical .track-background {
-    -fx-background-color:
+.scroll-bar:vertical > .track-background {
+     -fx-background-color:
         -fx-box-border,
-        linear-gradient(to right, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
+        linear-gradient(to left, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
 }
 
-.scroll-bar .increment-button {
-    -fx-background-color:
-        -fx-box-border,
-        linear-gradient(to bottom, derive(-fx-color,30%) 5%, derive(-fx-color,-17%));
-    -fx-background-insets:  0, 1;
+.scroll-bar > .increment-button {
+    -fx-background-color: transparent;
+    -fx-background-insets:  0;
     -fx-padding: 0.25em; /* 3 */
 }
 
-.scroll-bar .decrement-button {
-    -fx-background-color:
-        -fx-box-border,
-        linear-gradient(to bottom, derive(-fx-color,30%) 5%, derive(-fx-color,-17%));
-    -fx-background-insets:  0, 1;
+.scroll-bar > .decrement-button {
+    -fx-background-color: transparent;
+    -fx-background-insets:  0;
     -fx-padding: 0.25em; /* 3 */
 }
 
-.scroll-bar:horizontal .increment-arrow {
+.scroll-bar:horizontal > .increment-button > .increment-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.5em 0.333333em 0.0em 0.0em; /* 6 4 0 0 */
     -fx-shape: "M 4 0 L 0 -3 L 0 3 z";
 }
 
-.scroll-bar:vertical .increment-arrow {
+.scroll-bar:vertical > .increment-button > .increment-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
     -fx-shape: "M -3 0 L 0 4 L 3 0 z";
 }
 
-.scroll-bar:horizontal .decrement-arrow {
+.scroll-bar:horizontal > .decrement-button > .decrement-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.5em 0.333333em 0.0em 0.0em; /* 6 4 0 0 */
     -fx-shape: "M 0 0 L 4 -3 L 4 3 z";
 }
 
-.scroll-bar:vertical .decrement-arrow {
+.scroll-bar:vertical > .decrement-button > .decrement-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.333333em 0.5em 0.0em 0.0em; /* 4 6 0 0 */
@@ -1314,7 +1283,6 @@
  ******************************************************************************/
 
 .scroll-pane {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ScrollPaneSkin";
     -fx-background-color: -fx-box-border,-fx-background;
     -fx-background-insets: 0, 1;
     -fx-padding: 1.0;
@@ -1335,7 +1303,7 @@
     -fx-padding: 0.0 0.0 0.0 0.0;
 }
 
-.scroll-pane .corner {
+.scroll-pane > .corner {
     -fx-background-color: -fx-box-border, -fx-base;
     -fx-background-insets: 0, 1 0 0 1;
 }
@@ -1350,22 +1318,18 @@
  *                                                                             *
  ******************************************************************************/
 
-.separator {
-    -fx-skin: "com.sun.javafx.scene.control.skin.SeparatorSkin";
-}
-
-.separator .line {
+.separator > .line {
     -fx-border-style: segments(0.166667em, 0.166667em);
     -fx-border-width: 0.083333em; /* 1 */
 }
 
-.separator:horizontal .line {
+.separator:horizontal > .line {
     -fx-background-color: null;
     -fx-padding: 0.083333em 0.0em 0.0em 0.0em; /* 1 0 0 0 */
     -fx-border-color: derive(-fx-background,-20%) transparent transparent transparent;
 }
 
-.separator:vertical .line {
+.separator:vertical > .line {
     -fx-background-color: null;
     -fx-padding: 0.0em 0.083333em 0.0em 0.0em; /* 0 1 0 0 */
     -fx-border-color:  transparent derive(-fx-background,-20%) transparent transparent;
@@ -1379,6 +1343,11 @@
 
 .text-input {
     -fx-text-fill: -fx-text-inner-color;
+    -fx-highlight-fill: derive(-fx-control-inner-background,-20%);
+    -fx-highlight-text-fill: -fx-text-inner-color;
+}
+
+.text-input:focused {
     -fx-highlight-fill: -fx-accent;
     -fx-highlight-text-fill: white;
 }
@@ -1390,11 +1359,10 @@
  ******************************************************************************/
 
 .text-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TextFieldSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
+    -fx-padding: 0.25em 0.416667em  0.333333em 0.416667em; /* 3 5 4 5 */
     -fx-text-fill: -fx-text-inner-color;
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
     -fx-cursor: text;
@@ -1418,7 +1386,6 @@
  ******************************************************************************/
 
 .password-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.PasswordFieldSkin";
     -fx-text-fill: -fx-text-inner-color;
 }
 
@@ -1429,7 +1396,6 @@
  ******************************************************************************/
 
 .text-area {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TextAreaSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 3, 2, 2;
@@ -1437,12 +1403,12 @@
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
 }
 
-.text-area .scroll-pane {
+.text-area > .scroll-pane {
     -fx-background-color: transparent;
 }
 
 .text-area .content {
-    -fx-padding: 3 5 3 5;
+    -fx-padding: 3 5 3 5; 
     -fx-cursor: text;
 }
 
@@ -1463,7 +1429,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.cell .choice-box {
+.cell > .choice-box {
     -fx-background-color: transparent;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -1472,15 +1438,15 @@
     -fx-content-display: LEFT;
 }
 
-.cell .choice-box .label {
+.cell > .choice-box > .label {
     -fx-padding: 0em 0.333333em 0.0em 0.333333; /* 2 4 3 6 */
 }
 
-.cell:focused:selected .choice-box .label {
+.cell:focused:selected > .choice-box > .label {
     -fx-text-fill: white;
 }
 
-.cell:focused:selected .choice-box .arrow {
+.cell:focused:selected > .choice-box > .open-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, white;
 }
 
@@ -1491,12 +1457,11 @@
  ******************************************************************************/
 
 .list-view {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ListViewSkin";
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
 
-    /* There is some oddness if padding is in em values rather than pixels,
-       in particular, the left border of the control doesn't show. */
+     /* There is some oddness if padding is in em values rather than pixels,
+        in particular, the left border of the control doesn't show. */
     -fx-padding: 1; /* 0.083333em; */
 }
 
@@ -1510,27 +1475,26 @@
     -fx-padding: 1; /* 0.083333em; */
 }
 
-.list-view .scroll-bar:vertical{
+.list-view > .virtual-flow > .scroll-bar:vertical{
     -fx-background-insets: 0, 0 0 0 1;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: -1 -1 -1 0;
 }
 
-.list-view .scroll-bar:horizontal{
+.list-view > .virtual-flow > .scroll-bar:horizontal{
     -fx-background-insets: 0, 1 0 0 0;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: 0 -1 -1 -1;
 }
 
 .list-view:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.list-view .corner {
+.list-view > .virtual-flow > .corner {
     -fx-background-color: -fx-box-border, -fx-base;
     -fx-background-insets: 0, 1 0 0 1;
 }
 
 .list-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ListCellSkin";
     -fx-background-color: -fx-control-inner-background;
     -fx-padding: 0.25em; /* 3 */
     -fx-text-fill: -fx-text-inner-color;
@@ -1541,31 +1505,32 @@
     -fx-background-color: derive(-fx-control-inner-background,-5%);
 }
 
-.list-view:focused .list-cell:focused {
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:focused {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
 }
 
-.list-view:focused .list-cell:focused:odd {
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:focused:odd {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, derive(-fx-control-inner-background,-5%);
     -fx-background-insets: 0, 1, 2;
 }
 
 /* When the list-cell is selected and focused */
-.list-view:focused .list-cell:filled:focused:selected {
-    -fx-background: -fx-accent;
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
+    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.list-view:focused .list-cell:filled:selected, .list-view:focused .list-cell:filled:selected:hover {
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected, 
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.list-view:focused .list-cell:filled:focused:selected:hover {
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:focused:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
@@ -1573,12 +1538,15 @@
 }
 
 /* When the ListView is _not_ focused, we show alternate selection colors */
-.list-cell:filled:selected:focused, .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected {
+.list-cell:filled:selected:focused,
+.list-cell:filled:selected,
+.list-view:horizontal > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected {
     -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.list-cell:filled:selected:focused:disabled, .list-cell:filled:selected:disabled {
+.list-cell:filled:selected:focused:disabled, 
+.list-cell:filled:selected:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
@@ -1587,13 +1555,14 @@
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.list-view:focused .list-cell:filled:focused:hover {
+.list-view:focused > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:focused:hover {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.list-view:horizontal .list-cell:filled:selected, .list-view:horizontal .list-cell:filled:selected:hover {
+.list-view:horizontal > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected,
+.list-view:horizontal > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
     -fx-background-color: linear-gradient(to right, derive(-fx-accent,-7%), derive(-fx-accent,-25%));
 }
 
@@ -1604,7 +1573,6 @@
  ******************************************************************************/
 
 .tree-view {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TreeViewSkin";
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
 
@@ -1623,27 +1591,26 @@
     -fx-padding: 1; /* 0.083333em; */
 }
 
-.tree-view .scroll-bar:vertical{
+.tree-view > .virtual-flow > .scroll-bar:vertical{
     -fx-background-insets: 0, 0 0 0 1;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: -1 -1 -1 0;
 }
 
-.tree-view .scroll-bar:horizontal{
+.tree-view > .virtual-flow > .scroll-bar:horizontal{
     -fx-background-insets: 0, 1 0 0 0;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: 0 -1 -1 -1;
 }
 
 .tree-view:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.tree-view .corner {
+.tree-view > .virtual-flow > .corner {
     -fx-background-color: -fx-box-border, -fx-base;
     -fx-background-insets: 0, 1 0 0 1;
 }
 
 .tree-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TreeCellSkin";
     -fx-background-color: -fx-control-inner-background;
     -fx-padding: 0.25em; /* 3 */
     -fx-text-fill: -fx-text-inner-color;
@@ -1654,27 +1621,26 @@
     -fx-padding: 0.0em 0.0em 0.0em 0.25em; /* 0 0 0 3 */
 }
 
-
-
-.tree-view:focused .tree-cell:focused {
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:focused {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
 }
 
-.tree-view:focused .tree-cell:filled:focused:selected {
-    -fx-background: -fx-accent;
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
+    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.tree-view:focused .tree-cell:filled:selected, .tree-view:focused .tree-cell:filled:selected:hover {
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:selected, 
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.tree-view:focused .tree-cell:filled:focused:selected:hover {
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:focused:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
@@ -1682,55 +1648,65 @@
 }
 
 /* When the TreeView is _not_ focused, we show alternate selection colors */
-.tree-cell:filled:selected:focused, .tree-cell:filled:selected {
+.tree-cell:filled:selected:focused, 
+.tree-cell:filled:selected {
     -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.tree-cell:filled:selected:focused:disabled, .tree-cell:filled:selected:disabled {
+.tree-cell:filled:selected:focused:disabled, 
+.tree-cell:filled:selected:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.tree-cell .tree-disclosure-node {
-    /** put a bit of padding around the disclosure node to make the clicking region larger */
+.tree-cell > .tree-disclosure-node,
+.tree-table-row-cell > .tree-disclosure-node {
     -fx-padding: 4 2 4 8;
     -fx-background-color: transparent;
 }
 
-.tree-cell .tree-disclosure-node:disabled {
+.tree-cell > .tree-disclosure-node:disabled,
+.tree-table-row-cell > .tree-disclosure-node:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.tree-cell .tree-disclosure-node .arrow {
+.tree-cell > .tree-disclosure-node > .arrow,
+.tree-table-row-cell > .tree-disclosure-node > .arrow {
     -fx-background-color: -fx-mark-color;
     -fx-padding: 0.333333em; /* 4 */
     -fx-shape: "M 0 -4 L 8 0 L 0 4 z";
 }
 
-.tree-cell:expanded .tree-disclosure-node .arrow {
+.tree-cell:expanded > .tree-disclosure-node > .arrow,
+.tree-table-row-cell:expanded > .tree-disclosure-node > .arrow {
     -fx-rotate: 90;
 }
 
-.tree-cell:filled:selected .tree-disclosure-node .arrow {
+.tree-cell:filled:selected > .tree-disclosure-node > .arrow,
+.tree-table-row-cell:filled:selected > .tree-disclosure-node > .arrow {
     -fx-background-color: -fx-selection-bar-text;
 }
 
-.tree-cell:filled:hover {
+.tree-cell:filled:hover,
+.tree-table-row-cell:filled:hover {
     -fx-background-color: -fx-cell-hover-color;
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.tree-cell:filled:hover .tree-disclosure-node .arrow {
+.tree-cell:filled:hover > .tree-disclosure-node > .arrow,
+.tree-table-row-cell:filled:hover > .tree-disclosure-node > .arrow {
     -fx-background-color: -fx-mark-color;
 }
 
-.tree-view:focused .tree-cell:filled:focused:hover {
+.tree-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-cell:filled:focused:hover,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:hover {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
     -fx-background-insets: 0, 1, 2;
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.tree-cell:filled:selected:hover .tree-disclosure-node .arrow {
+.tree-cell:filled:selected:hover > .tree-disclosure-node > .arrow,
+.tree-table-row-cell:filled:selected:hover > .tree-disclosure-node > .arrow {
     -fx-background-color: -fx-selection-bar-text;
 }
 
@@ -1741,7 +1717,6 @@
  ******************************************************************************/
 
 .menu-button {
-    -fx-skin: "com.sun.javafx.scene.control.skin.MenuButtonSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 5, 5, 4, 3;
@@ -1749,8 +1724,13 @@
     -fx-text-fill: -fx-text-base-color;
 }
 
-/* TODO workaround for RT-19062 */
-.menu-button .label { -fx-text-fill: -fx-text-base-color; }
+.menu-button > .label { 
+    /* TODO workaround for RT-19062 */
+    -fx-text-fill: -fx-text-base-color; 
+    
+    /* The MenuButton skin uses an inner Label part */
+    -fx-padding: 0.166667em 0.667em 0.25em 0.833333em; /* 2 8 3 10 */
+}
 
 .menu-button:focused {
     -fx-color: -fx-focused-base;
@@ -1767,25 +1747,20 @@
     -fx-color: -fx-pressed-base;
 }
 
-/* The MenuButton skin uses an inner Label part */
-.menu-button .label {
-    -fx-padding: 0.166667em 1.5em 0.25em 0.833333em; /* 2 18 3 10 */
-}
-
-.menu-button .arrow-button {
+.menu-button > .arrow-button {
     -fx-background-insets: 0;
     -fx-background-radius: 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.0em; /* 6 5 6 0 */
+    -fx-padding: 0.5em 0.667em 0.5em 0.0em; /* 6 8 6 0 */
 }
 
-.menu-button .arrow {
+.menu-button > .arrow-button > .arrow {
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-padding: 0.25em; /* 3 */
     -fx-shape: "M 0 -3.5 v 7 l 4 -3.5 z";
 }
 
-.menu-button:openvertically .arrow {
+.menu-button:openvertically > .arrow-button > .arrow {
     -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 4 2 4 */
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
 }
@@ -1794,9 +1769,9 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.menu-button:show-mnemonics .mnemonic-underline {
+.menu-button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 
 
@@ -1807,7 +1782,6 @@
  ******************************************************************************/
 
 .split-menu-button {
-    -fx-skin: "com.sun.javafx.scene.control.skin.SplitMenuButtonSkin";
     -fx-background-color: -fx-shadow-highlight-color;
     -fx-background-insets: 0 0 -1 0;
     -fx-background-radius: 5;
@@ -1822,45 +1796,45 @@
     -fx-background-radius: 6.4;
 }
 
-.split-menu-button .label:hover {
+.split-menu-button > .label:hover {
     -fx-color: -fx-hover-base;
 }
 
-.split-menu-button:armed .label {
+.split-menu-button:armed > .label {
     -fx-color: -fx-pressed-base;
 }
 
 /* The SplitMenuButton skin uses an inner Label part */
-.split-menu-button .label {
+.split-menu-button > .label {
     -fx-background-color:  -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0, 1, 2;
+    -fx-background-insets: 0, 1 0 1 1, 2 1 2 2;
     -fx-background-radius: 5 0 0 5, 4 0 0 4, 3 0 0 3;
-    -fx-padding: 0.166667em 1.5em 0.25em 0.833333em; /* 2 18 3 10 */
+    -fx-padding: 0.166667em 0.667em 0.25em 0.833333em; /* 2 8 3 10 */
 }
 
-.split-menu-button .arrow-button {
+.split-menu-button > .arrow-button {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em; /* 6 5 6 5 */
+    -fx-padding: 0.5em 0.667em 0.5em 0.667em; /* 6 8 6 8 */
 }
 
-.split-menu-button .arrow-button:hover {
+.split-menu-button > .arrow-button:hover {
     -fx-color: -fx-hover-base;
 }
 
-.split-menu-button .arrow-button:armed {
+.split-menu-button > .arrow-button:pressed {
     -fx-color: -fx-pressed-base;
 }
 
-.split-menu-button .arrow {
+.split-menu-button > .arrow-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.25em; /* 3 */
     -fx-shape: "M 0 -3.5 v 7 l 4 -3.5 z";
 }
 
-.split-menu-button:openvertically .arrow {
+.split-menu-button:openvertically > .arrow-button > .arrow {
     -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 4 2 4 */
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
 }
@@ -1869,9 +1843,9 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.split-menu-button:show-mnemonics .mnemonic-underline {
+.split-menu-button:show-mnemonics > .mnemonic-underline {
     -fx-stroke: -fx-text-fill;
-}
+} 
 
 
 
@@ -1882,22 +1856,13 @@
  ******************************************************************************/
 
 .tooltip {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TooltipSkin";
     -fx-background-color:
         linear-gradient(#cec340, #a59c31),
         linear-gradient(#fefefc, #e6dd71),
         linear-gradient(#fef592, #e5d848);
     -fx-background-insets: 0,1,2;
-    -fx-background-radius: 0 0 13 0;
     -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
-}
-
-.page-corner {
-    -fx-padding: 4.5 4.5 4.5 4.5;
-    -fx-background-color: linear-gradient( from 0% 0% to 50% 50%, #fcf7b6, #a59c31);
-    -fx-shape: "M0,0H9L0,9Z";
-    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
 }
 
 /*******************************************************************************
@@ -1914,10 +1879,6 @@
  *                                                                             *
  ******************************************************************************/
 
-.tool-bar {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ToolBarSkin";
-}
-
 .tool-bar:vertical {
     -fx-background: derive(-fx-base,-20%);
     -fx-background-color:
@@ -1930,20 +1891,20 @@
     -fx-alignment: TOP_LEFT;
 }
 
-.tool-bar .separator:vertical .line {
+.tool-bar > .container > .separator:vertical > .line {
     -fx-border-style: solid;
     -fx-background-color: null;
     -fx-border-color:  transparent derive(-fx-base,-35%) transparent transparent;
 }
 
-.tool-bar .separator:horizontal .line {
+.tool-bar > .container > .separator:horizontal > .line {
     -fx-border-style: solid;
     -fx-background-color: null;
     -fx-border-color:  transparent transparent derive(-fx-base,-35%) transparent;
 }
 
-.tool-bar:vertical .separator {
-    -fx-orientation: horizontal;
+.tool-bar:vertical > .container > .separator {
+    -fx-orientation: horizontal;    
     -fx-padding: 0.0em 0.0835em 0.0em 0.0835em; /* 0 1 0 1 */
 }
 
@@ -1959,7 +1920,7 @@
     -fx-alignment: CENTER_LEFT;
 }
 
-.tool-bar:horizontal .separator {
+.tool-bar:horizontal > .container > .separator {
     -fx-orientation: vertical;
     -fx-padding: 0.0835em 0.0em 0.0835em 0.0em; /* 1 0 1 0 */
 }
@@ -1969,21 +1930,21 @@
     -fx-padding: 0.666667em 0.916667em 0em 0em; /* 8 11 0 0 */
 }
 
-.tool-bar-overflow-button .arrow {
+.tool-bar-overflow-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.666667em 0.916667em 0em 0em; /* 8 11 0 0 */
     -fx-shape: "M337.273,297.622l-0.016,1.069l2.724,2.639l-2.723,2.628l0.015,1.048h0.881l3.81-3.685l-3.788-3.699H337.273z M343.783,297.622h-0.902l-0.015,1.069l2.724,2.639l-2.724,2.628l0.015,1.048h0.882l3.809-3.685L343.783,297.622z" ;
 }
 
-.tool-bar-overflow-button:focused .arrow {
-    -fx-background-color: -fx-mark-highlight-color, derive(-fx-accent, -15%);
-    -fx-background-insets: 1 0 -1 0, 0;
+.tool-bar-overflow-button:focused > .arrow {
+   -fx-background-color: -fx-mark-highlight-color, derive(-fx-accent, -15%);
+   -fx-background-insets: 1 0 -1 0, 0;
 }
 
-.tool-bar-overflow-button:hover .arrow {
-    -fx-background-color: -fx-mark-highlight-color, derive(-fx-hover-base, -35%);
-    -fx-background-insets: 1 0 -1 0, 0;
+.tool-bar-overflow-button:hover > .arrow {
+   -fx-background-color: -fx-mark-highlight-color, derive(-fx-hover-base, -35%);
+   -fx-background-insets: 1 0 -1 0, 0;
 }
 
 /*******************************************************************************
@@ -1993,7 +1954,6 @@
  ******************************************************************************/
 
 .progress-bar {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ProgressBarSkin";
     -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,30%) 5%, derive(-fx-color,-17%));
@@ -2004,7 +1964,7 @@
     -fx-indeterminate-bar-animation-time: 2;
 }
 
-.progress-bar .bar {
+.progress-bar > .bar {
     -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-accent,95%), derive(-fx-accent,10%)),
@@ -2013,12 +1973,12 @@
     -fx-padding: 0.416667em; /* 5 */
 }
 
-.progress-bar:indeterminate .bar {
+.progress-bar:indeterminate > .bar {
     -fx-background-color: linear-gradient(to left, transparent, -fx-accent);
 }
 
-.progress-bar .track {
-    -fx-background-color:
+.progress-bar > .track {
+     -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
@@ -2035,30 +1995,30 @@
  ******************************************************************************/
 
 .progress-indicator {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ProgressIndicatorSkin";
-    -fx-progress-color: dodgerblue;
+    -fx-indeterminate-segment-count: 8;
+    -fx-spin-enabled: true;
 }
 
-.progress-indicator .indicator {
+.progress-indicator > .determinate-indicator > .indicator {
     -fx-background-color:
         -fx-box-border,
         -fx-outer-border,
         -fx-inner-border,
         -fx-body-color;
     -fx-background-insets: 1 0 -1 0, 0, 1, 2;
-    -fx-padding: 0.083333em; /* 1 */
+    -fx-padding: 1px;
 }
 
-.progress-indicator .progress {
+.progress-indicator > .determinate-indicator > .progress {
     -fx-background-color:
-        linear-gradient(to bottom, derive(-fx-box-border,38%), derive(-fx-box-border,-60%)),
-        linear-gradient(to bottom, derive(-fx-box-border,38%), -fx-box-border);
+        linear-gradient(to bottom, derive(-fx-accent,38%), derive(-fx-accent,-60%)),
+        linear-gradient(to bottom, derive(-fx-accent,20%), -fx-accent);
     -fx-background-insets: 0, 1;
-    -fx-padding: 0.75em; /* 9 */
+    -fx-padding: 0.25em; /* 3px */
 }
 
 /* TODO: scaling the shape seems to make it disappear */
-.progress-indicator .tick {
+.progress-indicator > .determinate-indicator > .tick {
     -fx-background-color: -fx-mark-color, white;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.416667em; /* 5 */
@@ -2066,17 +2026,45 @@
     -fx-scale-shape: false;
 }
 
-.progress-indicator:indeterminate .spinner {
+.progress-indicator:indeterminate > .spinner {
     -fx-padding: 0.833333em; /* 10 */
 }
 
-.progress-indicator .percentage {
+.progress-indicator > .percentage {
     -fx-font-size: 0.916667em; /* 11pt - 1 less than the default font */
     -fx-fill: -fx-text-background-color;
 }
 
 .progress-indicator:disabled {
     -fx-opacity: -fx-disabled-opacity;
+}
+
+.progress-indicator:indeterminate .segment {
+    -fx-background-color: -fx-accent;
+}
+.progress-indicator:indeterminate .segment0 {
+    -fx-shape:"M18.191,4.264l-2.457,1.721l0,0C16.559,7.161,17,8.564,17,10h3C20,7.948,19.369,5.946,18.191,4.264z";
+}
+.progress-indicator:indeterminate .segment1 {
+    -fx-shape:"M11.736,0.152l-0.521,2.955l0,0c1.416,0.249,2.719,0.928,3.734,1.943l2.122-2.121C15.62,1.478,13.758,0.508,11.736,0.152z";
+}
+.progress-indicator:indeterminate .segment2 {
+    -fx-shape:"M10,0C7.947,0,5.945,0.631,4.264,1.809l1.72,2.457l0,0C7.162,3.442,8.563,3,10,3V0z";
+}
+.progress-indicator:indeterminate .segment3 {
+    -fx-shape:"M2.929,2.929C1.478,4.38,0.508,6.242,0.152,8.264l2.955,0.521l0,0C3.356,7.369,4.035,6.066,5.05,5.05l0,0L2.929,2.929z";
+}
+.progress-indicator:indeterminate .segment4 {
+    -fx-shape:"M0,10c0,2.052,0.631,4.055,1.809,5.735l2.458-1.721C3.442,12.838,3,11.437,3,10H0z";
+}
+.progress-indicator:indeterminate .segment5 {
+    -fx-shape:"M8.785,16.894c-1.416-0.25-2.719-0.929-3.735-1.944l0,0l-2.122,2.122c1.451,1.45,3.313,2.42,5.335,2.776L8.785,16.894z";
+}
+.progress-indicator:indeterminate .segment6 {
+    -fx-shape:"M14.016,15.734C12.838,16.558,11.437,17,10,17v3c2.053,0,4.055-0.632,5.736-1.809L14.016,15.734z";
+}
+.progress-indicator:indeterminate .segment7 {
+    -fx-shape:"M16.894,11.215c-0.249,1.415-0.929,2.719-1.944,3.734l2.122,2.122c1.45-1.451,2.421-3.314,2.776-5.335L16.894,11.215z";
 }
 
 /*******************************************************************************
@@ -2086,7 +2074,6 @@
  ******************************************************************************/
 
 .table-view {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TableViewSkin";
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0,1;
 
@@ -2095,15 +2082,16 @@
     -fx-padding: 1; /* 0.083333em; */
 
     /* Constants used throughout the tableview.
-     * TODO: should these be derived from the palette in .scene?
+     * TODO: Should these be derived from the palette in .scene?
      */
     -fx-table-header-border-color: #959595;
-    /*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
+/*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
     -fx-table-cell-border-color: #bbbbbb;
 }
 
 /** Draws focus border around tableview */
-.table-view:focused {
+.table-view:focused,
+.tree-table-view:focused {
     -fx-background-color: -fx-focus-color,-fx-box-border,-fx-control-inner-background;
     -fx-background-insets: -1.4, 0, 1;
     -fx-background-radius: 1.4, 0, 0;
@@ -2113,21 +2101,25 @@
     -fx-padding: 1; /* 0.083333em; */
 }
 
-.table-view:disabled {
+.table-view:disabled,
+.tree-table-view:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.table-view .scroll-bar:vertical{
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.tree-table-view > .virtual-flow > .scroll-bar:vertical {
     -fx-background-insets: 0, 0 0 0 1;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: -1 -1 -1 0;
 }
 
-.table-view .scroll-bar:horizontal{
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.tree-table-view > .virtual-flow > .scroll-bar:horizontal {
     -fx-background-insets: 0, 1 0 0 0;
-    -fx-padding: 0.0 0.0 0.0 0.0;
+    -fx-padding: 0 -1 -1 -1;
 }
 
-.table-view .corner {
+.table-view > .virtual-flow > .corner,
+.tree-table-view > .virtual-flow > .corner {
     -fx-background-color: -fx-box-border, -fx-base;
     -fx-background-insets: 0, 1 0 0 1;
 }
@@ -2135,7 +2127,6 @@
 /* Each row in the table is a table-row-cell. Inside a table-row-cell is any
    number of table-cell. */
 .table-row-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TableRowSkin";
     -fx-background-color: -fx-table-cell-border-color, -fx-control-inner-background;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em; /* 0 */
@@ -2147,7 +2138,8 @@
     -fx-background-insets: 0, 0 0 1 0;
 }
 
-.table-row-cell:focused {
+.table-row-cell:focused,
+.tree-table-row-cell:focused {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1, 2;
 }
@@ -2158,24 +2150,28 @@
 }
 
 /* When the table-row-cell is selected and focused */
-.table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background: -fx-accent;
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:focused:selected,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:selected {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
+    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-view:focused .table-row-cell:filled:selected .table-cell {
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .table-cell,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected > .tree-table-cell {
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-view:focused .table-row-cell:filled:selected, .table-view:row-selection .table-row-cell:filled:hover:selected {
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected, 
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-view:focused .table-row-cell:filled:focused:selected:hover {
+.table-view:row-selection:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:focused:selected:hover,
+.tree-table-view:row-selection:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:selected:hover{
     -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0, 1, 2;
@@ -2183,29 +2179,40 @@
 }
 
 /* When the TableView is _not_ focused, we show alternate selection colors */
-.table-row-cell:filled:selected:focused, .table-row-cell:filled:selected {
+.table-row-cell:filled:selected:focused, 
+.table-row-cell:filled:selected,
+.tree-table-row-cell:filled:selected:focused, 
+.tree-table-row-cell:filled:selected {
     -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-row-cell:selected:disabled {
+.table-row-cell:selected:disabled,
+.tree-table-row-cell:selected:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.table-view:row-selection .table-row-cell:filled:hover {
+.table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:hover { 
     -fx-background-color: -fx-table-cell-border-color, -fx-cell-hover-color;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-text-fill: -fx-text-inner-color;
 }
 
-.table-view:row-selection .table-row-cell:filled:focused:hover {
+.tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:hover {
+    /* No 1-pixel bottom border for the TreeTableView (unlike the TableView above) */
+    -fx-background-color: -fx-cell-hover-color;
+    -fx-background-insets: 0;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:focused:hover,
+.tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:hover { 
     -fx-background-color: -fx-table-cell-border-color, -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
     -fx-background-insets: 0, 0 0 1 0, 1 1 2 1, 2 2 3 2, 3 3 4 3;
     -fx-text-fill: -fx-text-inner-color;
 }
 
 .table-cell {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TableCellSkin";
     -fx-padding: 0.166667em; /* 2px, plus border adds 1px */
 
     -fx-background-color: transparent;
@@ -2218,43 +2225,52 @@
 /* When in constrained resize mode, the right-most visible cell should not have
    a right-border, as it is not possible to get this cleanly out of view without
    introducing horizontal scrollbars (see RT-14886). */
-.table-view:constrained-resize .table-cell:last-visible {
+.table-view:constrained-resize > .virtual-flow > .clipped-container > .sheet > .table-row-cell > .table-cell:last-visible,
+.tree-table-view:constrained-resize > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell:last-visible {
     -fx-border-color: transparent;
 }
-.table-view:constrained-resize .column-header:last-visible {
+.table-view:constrained-resize > .column-header:last-visible,
+.tree-table-view:constrained-resize > .column-header:last-visible {
     -fx-border-width: 0.083333em 0.0em 0.083333em 0.083333em, 0.083333em 0.0em 0.083333em 0.083333em;
 }
-.table-view:constrained-resize .filler {
-    -fx-border-color:
-        derive(-fx-base, 80%)
+.table-view:constrained-resize .filler,
+.tree-table-view:constrained-resize .filler {
+    -fx-border-color: 
+        derive(-fx-base, 80%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%)
-        derive(-fx-base, 10%)
+        derive(-fx-base, 10%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%),
         /* Outer border: */
         transparent -fx-table-header-border-color -fx-table-header-border-color -fx-table-header-border-color;
     -fx-border-insets: 0 1 1 1, 0 0 0 0;
 }
 
-.table-view:focused .table-cell:focused {
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell > .table-cell:focused,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell:focused {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-control-inner-background;
     -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
 }
 
-.table-view:focused .table-row-cell:filled .table-cell:focused:selected {
-    -fx-background: -fx-accent;
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled .table-cell:focused:selected,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled .tree-table-cell:focused:selected {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
+    -fx-background: -fx-accent;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-view:focused .table-row-cell:filled .table-cell:selected, .table-view:cell-selection .table-row-cell:filled .table-cell:hover:selected {
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .table-cell:selected, 
+.table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .table-cell:hover:selected,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:selected, 
+.tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:hover:selected {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
     -fx-background-insets: 0 0 1 0;
 }
 
-.table-view:focused .table-row-cell:filled .table-cell:focused:selected:hover {
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .table-cell:focused:selected:hover,
+.tree-table-view:focused > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:focused:selected:hover{
     -fx-background: -fx-accent;
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
     -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
@@ -2262,12 +2278,16 @@
 }
 
 /* When the TableView is _not_ focused, we show alternate selection colors */
-.table-row-cell:filled .table-cell:selected:focused,  .table-row-cell:filled .table-cell:selected {
+ .table-row-cell:filled > .table-cell:selected:focused, 
+ .table-row-cell:filled > .table-cell:selected,
+ .tree-table-row-cell:filled > .tree-table-cell:selected:focused, 
+ .tree-table-row-cell:filled > .tree-table-cell:selected {
     -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.table-cell:selected:disabled {
+.table-cell:selected:disabled,
+.tree-table-cell:selected:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
@@ -2276,20 +2296,23 @@
     -fx-background-insets: 0, 1.4;
 }*/
 
-.table-view:cell-selection  .table-row-cell:filled .table-cell:hover {
+.table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .table-cell:hover,
+.tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:hover {
     -fx-background-color: -fx-cell-hover-color;
     -fx-text-fill: -fx-text-inner-color;
     -fx-background-insets: 0 0 1 0;
 }
 
-.table-view:cell-selection .table-row-cell:filled .table-cell:focused:hover {
+.table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .table-cell:focused:hover,
+.tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:focused:hover {
     -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
     -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
     -fx-text-fill: -fx-text-inner-color;
 }
 
 /* The column-resize-line is shown when the user is attempting to resize a column. */
-.table-view .column-resize-line {
+.table-view .column-resize-line,
+.tree-table-view .column-resize-line {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-padding: 0.0em 0.0416667em 0.0em 0.0416667em; /* 0 0.571429 0 0.571429 */
@@ -2297,7 +2320,8 @@
 
 /* This is the area behind the column headers. An ideal place to specify background
    and border colors for the whole area (not individual column-header's). */
-.table-view .column-header-background {
+.table-view .column-header-background,
+.tree-table-view .column-header-background {
     -fx-background-color: -fx-body-color;
     -fx-padding: 0;
 }
@@ -2305,21 +2329,22 @@
 /* The column header row is made up of a number of column-header, one for each
    TableColumn, and a 'filler' area that extends from the right-most column
    to the edge of the tableview, or up to the 'column control' button. */
-.table-view .column-header, .table-view .filler {
+.table-view .column-header,
+.tree-table-view .column-header {
     -fx-text-fill: -fx-selection-bar-text;
 
     /* TODO: for some reason, this doesn't scale. */
     -fx-font-size: 1.083333em; /* 13pt - 1 more than the default font */
     -fx-size: 25;
     -fx-border-style: solid;
-    -fx-border-color:
-        /*
+    -fx-border-color: 
+        /* 
           Inner border: we have different colours along the top, right, bottom and left.
           Refer to RT-12298 for the spec.
         */
-        derive(-fx-base, 80%)
+        derive(-fx-base, 80%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%)
-        derive(-fx-base, 10%)
+        derive(-fx-base, 10%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%),
         /* Outer border: */
         transparent -fx-table-header-border-color -fx-table-header-border-color transparent;
@@ -2327,30 +2352,78 @@
     -fx-border-width: 0.083333em, 0.083333em;
 }
 
-.table-view .column-header .sort-order {
+.table-view .filler,
+.tree-table-view .filler {
+    -fx-size: 25;
+    -fx-border-style: solid;
+    -fx-border-color: 
+        /* 
+          Inner border: we have different colours along the top, right, bottom and left.
+          Refer to RT-12298 for the spec.
+        */
+        derive(-fx-base, 80%) 
+        linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%)
+        derive(-fx-base, 10%) 
+        linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%),
+        /* Outer border: */
+        transparent transparent -fx-table-header-border-color transparent;
+    -fx-border-insets: 0 0 1 0, 0 0 0 0;
+    -fx-border-width: 0.083333em, 0.083333em 0 0.083333em 0.083333em;
+}
+
+.table-view .column-header .sort-order-dots-container,
+.tree-table-view .column-header .sort-order-dots-container{
+    -fx-padding: 2 0 2 0;
+}
+
+.table-view .column-header .sort-order,
+.tree-table-view .column-header .sort-order{
     -fx-font-size: 0.916667em; /* 11pt - 1 less than the default font */
 }
 
-.table-view .show-hide-columns-button {
+.table-view .column-header .sort-order-dot,
+.tree-table-view .column-header .sort-order-dot {
+    -fx-background-color: derive(-fx-mark-highlight-color, 40%), -fx-mark-color;
+    -fx-padding: 0.0625em 0.104em 0.0625em 0.104em;
+}
+
+.table-view .column-header .sort-order-dot.ascending,
+.tree-table-view .column-header .sort-order-dot.ascending {
+    -fx-background-insets: -1 0 1 0, 0; 
+}
+
+.table-view .column-header .sort-order-dot.descending,
+.tree-table-view .column-header .sort-order-dot.descending {
+    -fx-background-insets: 1 0 -1 0, 0; 
+}
+
+.table-view .column-header .label,
+.tree-table-view .column-header .label {
+    -fx-alignment: center;
+}
+
+.table-view > .column-header-background > .show-hide-columns-button,
+.tree-table-view > .column-header-background > .show-hide-columns-button{
     -fx-background-color: -fx-body-color;
 
     -fx-border-color:
         /* inner border: A copy of the inner border used above in the general column header area. */
-        derive(-fx-base, 80%)
+        derive(-fx-base, 80%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%),
-        derive(-fx-base, 10%)
+        derive(-fx-base, 10%) 
         linear-gradient(to bottom, derive(-fx-base,80%) 20%, derive(-fx-base,-10%) 90%),
         /* outer border: Slightly different to the above*/
         transparent transparent -fx-table-header-border-color -fx-table-header-border-color;
-    -fx-border-insets: 0 0 1 1, 0 0 0 0;
+    -fx-border-insets: 0 0 0 1, 0 0 0 0;
 }
 
-.table-view .show-hide-column-image {
+.table-view .show-hide-column-image,
+.tree-table-view .show-hide-column-image {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
 
     -fx-padding: 0.25em; /* 3px */
-    -fx-shape: "M398.902,298.045c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c-0.667,0-1.333,0-2,0c0,0.666,0,1.332,0,1.999c-0.667,0-1.333,0-2,0c0-0.667,0-1.333,0-1.999c-0.666,0-1.333,0-1.999,0c0-0.667,0-1.334,0-2c0.666,0,1.333,0,1.999,0C398.902,299.378,398.902,298.711,398.902,298.045z";
+    -fx-shape: "M398.902,298.045c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c-0.667,0-1.333,0-2,0c0,0.666,0,1.332,0,1.999c-0.667,0-1.333,0-2,0c0-0.667,0-1.333,0-1.999c-0.666,0-1.333,0-1.999,0c0-0.667,0-1.334,0-2c0.666,0,1.333,0,1.999,0C398.902,299.378,398.902,298.711,398.902,298.045z"; 
 }
 
 /*.nested-column-header .column-header {
@@ -2361,7 +2434,8 @@
    is a region that follows along the column header area to indicate where the
    column will be dropped. This region can be styled using the .column-drag-header
    name. */
-.table-view .column-drag-header {
+.table-view .column-drag-header,
+.tree-table-view .column-drag-header {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-border-color: transparent;
@@ -2369,12 +2443,14 @@
 }
 
 /* Semi-transparent overlay to indicate the column that is currently being moved */
-.table-view .column-overlay {
+.table-view .column-overlay,
+.tree-table-view .column-overlay {
     -fx-background-color: darkgray;
     -fx-opacity: 0.3;
 }
 
-.table-view .arrow {
+.table-view /*> column-header-background > nested-column-header >*/ .arrow,
+.tree-table-view /*> column-header-background > nested-column-header >*/ .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
@@ -2382,7 +2458,8 @@
 }
 
 /* This is shown when the table has no rows and/or no columns. */
-.table-view .empty-table {
+.table-view .empty-table,
+.tree-table-view .empty-table {
     -fx-background-color: white;
     -fx-font-size: 1.166667em; /* 14pt - 2 more than the default font */
 }
@@ -2394,7 +2471,6 @@
  ******************************************************************************/
 
 .titled-pane {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TitledPaneSkin";
     -fx-text-fill: -fx-text-base-color;
 }
 
@@ -2420,15 +2496,11 @@
     -fx-padding: 0.0em 0.25em 0.0em 0.0em; /* 0 3 0 0 */
 }
 
-.titled-pane > .title > .arrow-button .arrow {
+.titled-pane > .title > .arrow-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.25em 0.3125em 0.25em 0.3125em; /* 3 3.75 3 3.75 */
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
-}
-
-.titled-pane:collapsed > .title > .arrow-button .arrow {
-    -fx-rotate: -90;
 }
 
 .titled-pane > *.content {
@@ -2439,7 +2511,7 @@
     -fx-padding: 0.167em;
 }
 
-.titled-pane:focused > .title > .arrow-button .arrow {
+.titled-pane:focused > .title > .arrow-button > .arrow {
     -fx-background-color: white;
 }
 
@@ -2450,11 +2522,7 @@
  *                                                                             *
  ******************************************************************************/
 
-.accordion {
-    -fx-skin: "com.sun.javafx.scene.control.skin.AccordionSkin";
-}
-
-.accordion .titled-pane .title {
+.accordion > .titled-pane > .title {
     -fx-background-color:
         -fx-box-border,
         -fx-inner-border,
@@ -2463,35 +2531,35 @@
     -fx-background-radius: 0, 0, 0;
 }
 
-.accordion .first-titled-pane .title {
+.accordion > .first-titled-pane > .title {
     -fx-background-insets: 0, 1, 2;
 }
 
-.accordion .titled-pane:focused > .title {
+.accordion > .titled-pane:focused > .title {
     -fx-color: -fx-focus-color;
 }
 
-.accordion .titled-pane:focused {
+.accordion > .titled-pane:focused {
     -fx-text-fill: white;
 }
 
-.accordion .titled-pane:focused > .title > .arrow-button .arrow {
+.accordion > .titled-pane:focused > .title > .arrow-button > .arrow {
     -fx-background-color: white;
 }
 
-.accordion .titled-pane:focused .titled-pane:collapsed > .title > .arrow-button .arrow {
+.accordion > .titled-pane:focused > .titled-pane:collapsed > .title > .arrow-button > .arrow {
     -fx-background-color: white;
 }
 
-.accordion .titled-pane:collapsed:focused > .title {
+.accordion > .titled-pane:collapsed:focused > .title {
     -fx-color: -fx-focus-color;
 }
 
-.accordion .titled-pane:expanded:focused > .title {
+.accordion > .titled-pane:expanded:focused > .title {
     -fx-color: -fx-focus-color;
 }
 
-.accordion .titled-pane:hover > .title {
+.accordion > .titled-pane:hover > .title {
     -fx-color: -fx-hover-base;
 }
 
@@ -2501,48 +2569,54 @@
  *                                                                             *
  ******************************************************************************/
 
-.split-pane > * > * > .table-view { -fx-padding: 0px; }
-.split-pane > * > * > .list-view { -fx-padding: 0px; }
-.split-pane > * > * > .tree-view { -fx-padding: 0px; }
-.split-pane > * > * > .scroll-pane { -fx-padding: 0px; }
-.split-pane > * > * > .split-pane {
+.tab-pane > * > .tab-pane,
+.tab-pane > * > .table-view,
+.tab-pane > * > .list-view,
+.tab-pane > * > .tree-view,
+.tab-pane > * > .scroll-pane,
+.tab-pane > * > .split-pane,
+.split-pane > * > .tab-pane,
+.split-pane > * > .table-view,
+.split-pane > * > .list-view,
+.split-pane > * > .tree-view,
+.split-pane > * > .scroll-pane,
+.split-pane > * > .split-pane {
     -fx-background-insets: 0, 0;
     -fx-padding: 0;
-}
+ }
 
 .split-pane {
-    -fx-skin: "com.sun.javafx.scene.control.skin.SplitPaneSkin";
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
     -fx-padding: 1;
 }
 
-.split-pane *.split-pane-divider {
+.split-pane > .split-pane-divider {
     -fx-padding: 0 2 0 2; /* 0 3 0 3 */
 }
 
 /* horizontal the two nodes are placed to the left/right of each other. */
-.split-pane:horizontal > * > .split-pane-divider {
-    -fx-border-color: transparent -fx-box-border transparent #BBBBBB;
-    -fx-background-color: transparent, -fx-inner-border-horizontal;
-    -fx-background-insets: 0, 0 1 0 1;
+.split-pane:horizontal > .split-pane-divider {
+   -fx-border-color: transparent -fx-box-border transparent #BBBBBB;
+   -fx-background-color: transparent, -fx-inner-border-horizontal;
+   -fx-background-insets: 0, 0 1 0 1;
 }
 
 /* vertical the two nodes are placed on top of each other. */
-.split-pane:vertical > * > .split-pane-divider {
-    -fx-border-color:  #BBBBBB transparent -fx-box-border transparent;
-    -fx-background-color: transparent, -fx-inner-border;
-    -fx-background-insets: 0, 1 0 1 0;
+.split-pane:vertical > .split-pane-divider {
+   -fx-border-color:  #BBBBBB transparent -fx-box-border transparent;
+   -fx-background-color: transparent, -fx-inner-border;
+   -fx-background-insets: 0, 1 0 1 0;
 }
 
-.split-pane *.horizontal-grabber {
+.split-pane > .split-pane-divider > .horizontal-grabber {
     -fx-padding: 5 1 5 1;
     -fx-background-color: #FFFFFF, -fx-box-border;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-shape: "M0 0 L0 0 L2 0 L2 2 L0 2 Z M0 4 L0 4 L2 4 L2 6 L0 6 Z M0 8 L0 8 L2 8 L2 10 L0 10 Z";
 }
 
-.split-pane *.vertical-grabber {
+.split-pane > .split-pane-divider > .vertical-grabber {
     -fx-padding: 1 5 1 5;
     -fx-background-color: #FFFFFF, -fx-box-border;
     -fx-background-insets: 1 0 -1 0, 0;
@@ -2556,16 +2630,14 @@
  ******************************************************************************/
 
 .tab-pane {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TabPaneSkin";
     /* -fx-tab-min-width: 4.583em;  55 */
     /* -fx-tab-max-width: 4.583em; 55 */
-    -fx-tab-min-height: 2em; /* 24 */
-    -fx-tab-max-height: 2em; /* 24 */
+    -fx-tab-min-height: 1.75em; /* 21 */
+    -fx-tab-max-height: 1.75em; /* 21 */
 }
 
-.tab .tab-label {
-    -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin";
-    -fx-background-color: transparent;
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-label {
+    -fx-background-color: transparent;    
     -fx-alignment: CENTER;
     -fx-text-fill: -fx-text-base-color;
 }
@@ -2574,130 +2646,133 @@
     -fx-effect: dropshadow(two-pass-box , rgba(255, 255, 255, 0.4), 1, 0.0 , 0, 1);
 }*/
 
-.tab-content-area {
+.tab-pane > .tab-content-area {
     -fx-background-color: -fx-control-inner-background;
     -fx-padding: 0.0em; /* 0 */
     /* -fx-opacity: -fx-disabled-opacity;*/
 }
 
-.tab {
+.tab-pane > .tab-header-area > .headers-region > .tab {
     /* This is how it is done in Button, but the -1 inset caused a white line  */
     /* to appear beneath the tab, which looks bad, so it's taken out below.    */
-    /*    -fx-background-color: -fx-shadow-highlight-color, -fx-tab-border-color, -fx-inner-border, -fx-body-color;
-        -fx-background-radius: 5 5 0 0, 5 5 0 0, 4 4 0 0, 3 3 0 0;
-        -fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
-    -fx-background-insets: 0, 1, 2;
+/*    -fx-background-color: -fx-shadow-highlight-color, -fx-tab-border-color, -fx-inner-border, -fx-body-color;
+    -fx-background-radius: 5 5 0 0, 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
+    /*-fx-background-insets: 0, 1, 2;*/
+    -fx-background-insets: 0 1 1 0, 1 2 1 1, 2 3 1 2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
     -fx-padding: 0.083333em 0.5em 0.083333em 0.5em; /* 1 6 1 6 */
-    /*    -fx-text-fill: -fx-text-base-color;*/
+/*    -fx-text-fill: -fx-text-base-color;*/
 }
 
-.tab:top {
+.tab-pane > .tab-header-area > .headers-region > .tab:top {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
 }
 
-.tab:right {
+.tab-pane > .tab-header-area > .headers-region > .tab:right {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border-bottomup, -fx-body-color-bottomup;
 }
 
-.tab:bottom {
+.tab-pane > .tab-header-area > .headers-region > .tab:bottom {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border-bottomup, -fx-body-color-bottomup;
 }
 
-.tab:left {
+.tab-pane > .tab-header-area > .headers-region > .tab:left {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
 }
 
-.tab:hover {
+.tab-pane > .tab-header-area > .headers-region > .tab:hover {
     -fx-color: -fx-hover-base;
 }
 
-.tab:selected {
-    /*    -fx-background-color: white;*/
+.tab-pane > .tab-header-area > .headers-region > .tab:selected {
+/*    -fx-background-color: white;*/
 
-    /*    -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
-        -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
-        -fx-background-insets: 0, 1 1 0 1, 2 2 0 2;*/
+/*    -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
+    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+    -fx-background-insets: 0, 1 1 0 1, 2 2 0 2;*/
     -fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
-    -fx-background-insets: 0, 1 1 0 1;
+    -fx-background-insets: 0 1 0 0, 1 2 0 1;
     -fx-background-radius: 5 5 0 0, 4 4 0 0;
 }
 
-.tab:disabled {
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-style: segments(0.166667em, 0.166667em);
+    -fx-border-width: 1;
+    -fx-border-color: -fx-focus-color;
+}
+
+.tab-pane > .tab-header-area > .headers-region > .tab:disabled {
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.tab:disabled:hover {
+.tab-pane > .tab-header-area > .headers-region > .tab:disabled:hover {
     -fx-color: -fx-base;
     -fx-opacity: -fx-disabled-opacity;
 }
 
-.tab-pane *.tab-header-background {
+.tab-pane > .tab-header-area > .tab-header-background {
     -fx-background-color: -fx-outer-border, -fx-inner-border, derive(-fx-color, -20%);
     -fx-effect: innershadow(two-pass-box , rgba(0,0,0,0.6) , 4, 0.0 , 0 , 0);
 }
 
 /*.tab-pane *.tab-header-area {*/
-/* I would like to use -fx-tab-border-color here, but for some reason it */
-/* just isn't the correct color, even though it works in :top above */
+    /* I would like to use -fx-tab-border-color here, but for some reason it */
+    /* just isn't the correct color, even though it works in :top above */
 /*    -fx-background-color: -fx-tab-border-color, lightgray;*/
 /*}*/
 
-.tab-pane:top *.tab-header-area {
+.tab-pane:top > .tab-header-area {
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.416667em 0.166667em 0.0em 0.833em; /* 5 2 0 10 */
 }
 
-.tab-pane:bottom *.tab-header-area {
+.tab-pane:bottom > .tab-header-area {
     -fx-background-insets: 0, 1 0 0 0;
     -fx-padding: 0 0.166667em 0.416667em 0.833em; /* 0 2 5 0 */
 }
 
-.tab-pane:left *.tab-header-area {
+.tab-pane:left > .tab-header-area {
     -fx-background-insets: 0, 0 1 0 0;
     -fx-padding: 0.833em 0.0em 0.166667em 0.416667em; /* 10 0 2 5 */
 }
 
-.tab-pane:right *.tab-header-area {
+.tab-pane:right > .tab-header-area {
     -fx-background-insets: 0, 0 0 0 1;
     -fx-padding: 0.833em 0.416667em 0.166667em 0.0em; /* 10 5 2 0 */
 }
 
-.tab-pane .headers-region {
-    -fx-effect: dropshadow(two-pass-box , rgba(0,0,0,0.6) , 4, 0.0 , 0, 0);
-}
-
 /* TODO: scaling the shape seems to make it way too large */
-.tab-close-button {
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button {
     -fx-background-color: -fx-mark-color;
     -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
     -fx-scale-shape: false;
     -fx-effect: dropshadow(two-pass-box , rgba(255, 255, 255, 0.4), 1, 0.0 , 0, 1);
 }
 
-.tab-close-button:hover {
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button:hover {
     -fx-background-color: derive(-fx-mark-color, -30%);
 }
 
 /* CONTROL BUTTONS */
-.control-buttons-tab {
+.tab-pane > .tab-header-area > .control-buttons-tab {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
     -fx-padding: 0.083333em 0.25em 0.083333em 0.25em; /* 1 3 1 3 */
 }
 
-.tab-down-button {
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button {
     -fx-background-color: transparent;
     -fx-padding: 0.0em 0.416667em 0.0em 0.416667em; /* 0 5 0 5 */
 }
 
-.tab-down-button:hover {
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button:hover {
     -fx-background-color: -fx-body-color;
     -fx-color: -fx-hover-base;
 }
 
-.tab-down-button .arrow {
+.tab-pane > .tab-header-area > .control-buttons-tab > .container > .tab-down-button .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.238083em 0.416667em 0.238083em 0.416667em; /* 2.857 5 2.857 5 */
@@ -2705,29 +2780,30 @@
 }
 
 /* FLOATING TABS CUSTOMISATION */
-.tab-pane.floating *.tab-header-background {
+.tab-pane.floating > .tab-header-area > .tab-header-background {
     -fx-background-color: null;
 }
 
-.tab-pane.floating *.tab-header-area {
+.tab-pane.floating > .tab-header-area {
     -fx-background-color: null;
 }
 
-.tab-pane.floating *.tab-content-area {
+.tab-pane.floating > .tab-content-area {
     -fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
     -fx-background-radius: 5, 4;
+    -fx-padding: 2;
 }
 
-.tab-pane.floating *.tab {
+.tab-pane.floating > .tab-header-area > .headers-region > .tab {
     -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0, 1, 2;
+    -fx-background-insets: 0 1 1 0, 1 2 1 1, 2 3 1 2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
 }
 
-.tab-pane.floating *.tab:selected {
+.tab-pane.floating  > .tab-header-area > .headers-region > .tab:selected {
     -fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
-    -fx-background-insets: 0 0 -1 0, 1 1 -1 1;
+    -fx-background-insets: 0 1 -1 0, 1 2 -1 1;
     -fx-background-radius: 5 5 0 0, 4 4 0 0;
 }
 
@@ -2752,18 +2828,16 @@
     -fx-font-size: 1.4em;
 }
 .chart-legend {
-    -fx-background-color:  #cccccc, #eeeeee;
-    -fx-background-insets: 0,1;
-    -fx-background-radius: 6,5;
-    -fx-padding: 6px;
-}
-.chart-horizontal-grid-lines {
-    -fx-horizontal-grid-lines-visible: false;
+   -fx-background-color: ladder(-fx-background, derive(-fx-box-border, -10%) 50%, derive(-fx-box-border, 10%) 51%),
+                         ladder(-fx-background, derive(-fx-control-inner-background, 5%) 50%, derive(-fx-control-inner-background, -5%) 51%);
+   -fx-background-insets: 0,1;
+   -fx-background-radius: 6,5;
+   -fx-padding: 6px;
 }
 
 /* ====== AXIS ============================================================================ */
 .axis {
-    -fx-tick-label-font: 0.833333em System; /* 10 pix */
+    -fx-tick-label-font-size: 0.833333em;  /* 10 pix */ 
     -fx-tick-label-fill: -fx-text-background-color;
 }
 .axis:top {
@@ -2788,7 +2862,7 @@
 }
 
 .axis .text {
-    -fx-font-smoothing-type: lcd;
+  -fx-font-smoothing-type: lcd;
 }
 
 /* ====== CHART PLOT BACKGROUND =========================================================== */
@@ -2956,32 +3030,32 @@
 .default-color7.chart-bubble { -fx-bubble-fill: #ff5700aa; }
 
 /* ====== BAR CHART =========================================================== */
-/* TODO: flip gradient vertical for negative bars */
+/* TODO flip gradient vertical for negative bars */
 .chart-bar {
     -fx-bar-fill: #22bad9;
     -fx-background-color: linear-gradient(derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-        linear-gradient(derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
-        linear-gradient(derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+                          linear-gradient(derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
+                          linear-gradient(derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-insets: 0,1,2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
 }
 
 .negative.chart-bar {
-    -fx-background-color: linear-gradient(to top, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-        linear-gradient(to top, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill,0%)),
-        linear-gradient(to top, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
-    -fx-background-radius: 0 0 5 5, 0 0 4 4, 0 0 3 3;
+   -fx-background-color: linear-gradient(to top, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
+                          linear-gradient(to top, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill,0%)),
+                          linear-gradient(to top, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+   -fx-background-radius: 0 0 5 5, 0 0 4 4, 0 0 3 3;
 }
-.bar-chart:horizontal .chart-bar {
+.bar-chart:horizontal .chart-bar, .stacked-bar-chart:horizontal .chart-bar {
     -fx-background-color: linear-gradient(to left, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-        linear-gradient(to left, derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
-        linear-gradient(to left, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+                          linear-gradient(to left, derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
+                          linear-gradient(to left, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
 }
-.bar-chart:horizontal .negative.chart-bar {
+.bar-chart:horizontal .negative.chart-bar, .stacked-bar-chart:horizontal .negative.chart-bar {
     -fx-background-color: linear-gradient(to right, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-        linear-gradient(to right, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill, 0%)),
-        linear-gradient(to right, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+                          linear-gradient(to right, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill, 0%)),
+                          linear-gradient(to right, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-radius: 5 0 0 5, 4 0 0 4, 3 0 0 3;
 }
 .default-color0.chart-bar { -fx-bar-fill: #f9d900; }
@@ -3004,6 +3078,7 @@
 }
 .chart-pie-label {
     -fx-padding: 3px;
+    -fx-fill: -fx-text-base-color;
 }
 .chart-pie-label-line {
     -fx-stroke: #aaaaaa;
@@ -3031,7 +3106,6 @@
 
 /* ------- MAIN BUTTON ------- */
 .combo-box-base  {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin";
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-radius: 5, 5, 4, 3;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
@@ -3058,30 +3132,38 @@
 }
 
 /* ------- OPEN BUTTON ------- */
-.combo-box-base .arrow-button {
+.combo-box-base > .arrow-button {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em; /* 6 5 6 5  */
+    -fx-padding: 0 0.667em 0 0.667em; /* 6 8 6 8 */
+    /*-fx-padding: 0; *//* 6 8 6 8 */
 }
-/*    -fx-background-color: null;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em;  6 5 6 5
-}*/
-/*.combo-box-base.split-button .arrow-button {
+
+.combo-box-base:hover > .arrow-button,
+.date-picker:hover > .arrow-button {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em;  6 5 6 5
-}*/
+}
+
+.combo-box-base:showing > .arrow-button,
+.date-picker:showing > .arrow-button {
+    -fx-color: -fx-pressed-base;
+} 
 
 /* ------- ARROW* ------- */
-.combo-box-base .arrow {
+.combo-box-base > .arrow-button > .arrow,
+.web-view .form-select-button .arrow {
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-padding: 0.166667em 0.333333em 0.166667em 0.333333em; /* 2 4 2 4 */
     -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+.web-view .form-select-button {
+    -fx-background-radius: 2, 2, 1, 0;
+    -fx-background-insets: 2 2 1 2, 2, 3, 4;
 }
 
 /* ------- POPUP MENU ------- */
@@ -3095,81 +3177,75 @@ all inherit from Menu Control's popup-menu. --- */
 /*--- The editable ComboBox TextBox inherits its properties from the TextBox Control.
 Only the properties with values that are different from the TextBox are specified here. ---*/
 
-.combo-box-base:editable .text-field {
-    -fx-padding: 3 5 2 5;
-    -fx-background-radius: 4 5 5 4, 3 4 4 3, 2 3 3 2;
-    -fx-background-insets: 0 0 -1 0, 0, 1;
-    -fx-vpos: CENTER;
-    -fx-content-display: LEFT;
+.combo-box-base:editable > .text-field,
+.date-picker > .text-field {
+    -fx-padding: 0.166667em 0.416667em 0.25em 0.416667em; /* 2 5 3 5 */
+    /*-fx-padding: 0px;*/
+    /*-fx-background-color: yellow;*/
+    -fx-background-radius: 4 0 0 4, 3 0 0 3, 2 0 0 2;
+    -fx-background-insets: 0 0 -1 0, 0, 1 0 1 1;
 }
 
-.combo-box-base:editable .text-field:focused {
+.combo-box-base:editable:contains-focus,
+.date-picker:contains-focus {
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-control-inner-background;
     -fx-background-radius: 5.4, 3, 2;
     -fx-background-insets: -1.4, 0, 1;
 }
 
-.combo-box-base:editable:focused {
-    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-control-inner-background;
-    -fx-background-radius: 5, 5, 4, 3;
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
-}
-
 /* -------------- STYLES FOR THE DEFAULT LISTVIEW-BASED COMBOBOX ------------- */
-.combo-box {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxListViewSkin";
-}
 
-/* Customie the ListCell that appears in the ComboBox button itself */
-.combo-box .list-cell {
+/* Customise the ListCell that appears in the ComboBox button itself */
+.combo-box > .list-cell {
     -fx-background: transparent;
     -fx-background-color: transparent;
     -fx-text-fill: -fx-text-base-color;
-    -fx-padding: 3 0 2 7;
-    -fx-cell-size: 1.66667em; /* 20 */
+    -fx-padding: 0.25em 0 0.166667em 0.583333em; /* 3 0 2 7 */
+    -fx-cell-size: 1.7500em; /* 21 */
 }
 
-.combo-box-popup .list-view {
+.combo-box-popup > .list-view {
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
 }
 
-.combo-box-popup .list-view .list-cell {
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-padding: 4 0 4 5;
-
+    
     /* No alternate highlighting */
     -fx-background-color: -fx-control-inner-background;
 }
 
-.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover {
+.combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected, 
+.combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:selected:hover {
     -fx-background: -fx-accent;
     -fx-background-color: -fx-selection-bar;
     -fx-text-fill: -fx-selection-bar-text;
 }
 
-.combo-box-popup .list-view .list-cell:filled:hover {
+.combo-box-popup  > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell:filled:hover {
     -fx-background-color: -fx-cell-hover-color;
     -fx-text-fill: -fx-text-inner-color;
 }
 
-/* -------------------------- STYLES FOR THE COLOR-PICKER CONTROL ----- */
-.color-picker {
-    -fx-skin: "com.sun.javafx.scene.control.skin.ColorPickerSkin";
+.combo-box-popup > .list-view > .placeholder > .label {
+    -fx-text-fill: derive(-fx-control-inner-background,-30%);
 }
 
-.color-picker .arrow-button {
+/* -------------------------- STYLES FOR THE COLOR-PICKER CONTROL ----- */
+
+.color-picker {
+    -fx-color-rect-width: 0.916667em; /* 11px */
+    -fx-color-rect-height: 0.916667em; /* 11px */
+}
+.color-picker > .arrow-button {
     -fx-background-color: null;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
-    -fx-padding: 0.5em 0.416667em 0.5em 0.416667em; /* 6 5 6 5 */
 }
 
-.color-picker .color-picker-label .text {
-    -fx-padding: 0.0em 0.833333em 0.0em 0.0em;  /* 0 10 0 0 */
-}
-
-.color-picker .split-button .arrow-button {
+.combo-box-base.color-picker.split-button > .arrow-button {
     -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
@@ -3180,31 +3256,48 @@ Only the properties with values that are different from the TextBox are specifie
     -fx-color: -fx-base;
 }
 
-.color-picker .split-button .arrow-button:hover {
+/** Fix for RT-35422 where border was being shown incorrectly on non-split-buttons */
+.combo-box-base.color-picker:hover > .arrow-button {
+    -fx-background-insets: 0, 1 1 1 0, 2 2 2 0;
+}
+
+.color-picker.button {
+    -fx-padding: 0 5 0 0;
+}
+
+.color-picker.button > .arrow-button {
+    -fx-background-color: -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 0 5 5 0, 0 4 4 0;
+}
+
+.color-picker > .split-button > .arrow-button:hover {
     -fx-color: -fx-hover-base;
 }
 
-.color-picker .split-button .color-picker-label:hover {
-    -fx-color: -fx-hover-base;
+.color-picker > .split-button > .color-picker-label:hover {
+     -fx-color: -fx-hover-base;
 }
 
-.color-picker .picker-color {
-    -fx-padding: 4;
+.color-picker > .color-picker-label > .picker-color {
+    -fx-padding: 0.416667em 0.333333em 0.416667em 0.333333em; /* 5 4 5 4 */
     -fx-background-color: null;
 }
 
-.color-picker .picker-color .picker-color-rect {
+.color-picker > .color-picker-label > .picker-color > .picker-color-rect {
     -fx-stroke: -fx-pressed-base;
+    -fx-stroke-type: inside;
 }
 
 .color-palette {
-    -fx-background-color:
+    -fx-spacing: 15px;
+     -fx-background-color:
         derive(-fx-color,-40%),
         derive(-fx-color,100%),
-        linear-gradient(to bottom,
-        derive(-fx-color,100%) 0%,
-        derive(-fx-color,50%) 12%,
-        derive(-fx-color,65%) 88%,
+        linear-gradient(to bottom, 
+        derive(-fx-color,100%) 0%, 
+        derive(-fx-color,50%) 12%, 
+        derive(-fx-color,65%) 88%, 
         derive(-fx-color,23%) 100%);
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
@@ -3212,57 +3305,101 @@ Only the properties with values that are different from the TextBox are specifie
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
 }
 
-.color-palette .color-rect {
+.color-palette > .color-picker-grid > .color-square > .color-rect {
     -fx-stroke: black;
     -fx-stroke-width: 0.4;
     -fx-border-color: black;
 }
 
-.color-palette .color-picker-grid {
-    -fx-border-color: black;
+.color-palette > .color-picker-grid {
+    -fx-border-color: transparent;
 }
 
-.color-palette .color-square {
+.color-palette > .color-picker-grid > .color-square {
     -fx-background-color: transparent;
-    -fx-background-insets: -1, 0;
+    -fx-background-insets: -1, 0;   
     -fx-padding: 0.5;
     -fx-border: black;
 }
+
 /* the color over which the user is hovering */
-.color-palette .color-square:focused, .color-palette .color-square:selected:focused {
-    -fx-background-color: -fx-focus-color;
-}
-
-/* the currently selected color */
-.color-palette .color-square:selected {
-    /*    -fx-background-color: derive(-fx-base, -27%)  #989898 , white, derive(-fx-base, -59%)  #555555 ;*/
+.color-palette-region > .color-square.hover-square {
     -fx-background-color: black;
+    -fx-background-insets: -1;
+    -fx-padding: 1;
 }
 
-.color-palette .separator .line {
-    -fx-background-color: -fx-pressed-base;
-    /*    -fx-background-color: white;*/
-    -fx-padding: 6 0 0 0;
-    -fx-background-insets: 4 -10 0 -10,5 -10 0 -10;
+.color-palette > .separator > .line {
+    -fx-border-color: -fx-text-box-border transparent transparent transparent,
+        -fx-shadow-highlight-color transparent transparent transparent;
+    -fx-border-insets: 0, 1 0 0 0;
     -fx-border-style: none;
-    -fx-border-color: null;
-}
-.custom-color-dialog .color-rect-pane {
-    -fx-padding: 15 8 15 15;
-    /*    -fx-background-color: -fx-background;*/
+    -fx-padding: 0;
 }
 
-.custom-color-dialog .controls-pane {
-    -fx-padding: 15 15 15 0;
-    /*    -fx-background-color: -fx-background;*/
+
+/* ------- CUSTOM COLOR DIALOG ------- */
+.custom-color-dialog > .color-rect-pane {
+    -fx-spacing: 0.75em;
+    -fx-pref-height: 16.666667em;
+    -fx-alignment: top-left;
+    -fx-fill-height: true;
 }
+
+.custom-color-dialog .color-rect-pane .color-rect {
+    -fx-min-width: 16.666667em;
+    -fx-min-height: 16.666667em;
+}
+
+.custom-color-dialog .color-rect-pane .color-rect-border {
+    -fx-border-color: derive(-fx-base, -20%);
+}
+
+.custom-color-dialog > .color-rect-pane #color-rect-indicator {
+    -fx-background-color: null;
+    -fx-border-color: white;
+    -fx-border-radius: 0.4166667em;
+    -fx-translate-x: -0.4166667em;
+    -fx-translate-y: -0.4166667em;
+    -fx-pref-width: 0.833333em;
+    -fx-pref-height: 0.833333em;
+    -fx-effect: dropshadow(three-pass-box, black, 2, 0.0, 0, 1);
+}
+
+.custom-color-dialog > .color-rect-pane > .color-bar {
+    -fx-min-width: 1.666667em;
+    -fx-min-height: 16.666667em;
+    -fx-max-width: 1.666667em;
+    -fx-border-color: derive(-fx-base, -20%);
+}
+
+.custom-color-dialog > .color-rect-pane > .color-bar > #color-bar-indicator {
+    -fx-border-radius: 0.333333em;
+    -fx-border-color: white;
+    -fx-effect: dropshadow(three-pass-box, black, 2, 0.0, 0, 1);
+    -fx-pref-width: 2em;
+    -fx-pref-height: 0.833333em;
+    -fx-translate-x: -0.1666667em;
+    -fx-translate-y: -0.4166667em;
+}
+
 .custom-color-dialog  {
     -fx-background-color: -fx-background;
+    -fx-padding: 1.25em;
+    -fx-spacing: 1.25em;
 }
+
+/* The fix for RT-37494 forces the web color text's major direction to
+ * LTR. The following keeps the text right-aligned when in RTL mode. */
+.custom-color-dialog .webcolor-field:dir(rtl) > .text-field:dir(ltr) {
+    -fx-alignment: baseline-right;
+}
+
+
 /* -------- Toggle Button ---------------- */
 .custom-color-dialog .controls-pane .toggle-button {
-    -fx-background-radius: 4, 4, 3, 2;
-    -fx-padding: 3 6 3 6;
+    -fx-background-radius: 0.333333em, 0.333333em, 0.25em, 0.1666667em;
+    -fx-padding: 0.25em 0.5em 0.25em 0.5em;
 }
 
 .custom-color-dialog .controls-pane .toggle-button:focused {
@@ -3279,208 +3416,354 @@ Only the properties with values that are different from the TextBox are specifie
 .custom-color-dialog .controls-pane .toggle-button:selected {
     -fx-background-color:
         -fx-shadow-highlight-color,
-        linear-gradient( to bottom, derive(-fx-color,-90%) 0%, derive(-fx-color,-60%) 100% ),
-        linear-gradient( to bottom, derive(-fx-color,-60%) 0%, derive(-fx-color,-35%) 50%, derive(-fx-color,-30%) 98%, derive(-fx-color,-50%) 100% ),
+        linear-gradient( to bottom, derive(-fx-color,-90%) 0%, derive(-fx-color,-60%) 100% ),        
+        linear-gradient( to bottom, derive(-fx-color,-60%) 0%, derive(-fx-color,-35%) 50%, derive(-fx-color,-30%) 98%, derive(-fx-color,-50%) 100% ),    
         linear-gradient( to right, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0) 10%, rgba(0,0,0,0) 90%, rgba(0,0,0,0.3) 100% );
-    -fx-background-insets: 0 0 -1 0, 0, 1, 1;
+    -fx-background-insets: 0 0 -0.083333em 0, 0, 0.083333em, 0.083333em;
     /* TODO: -fx-text-fill should be derived */
     -fx-text-fill: -fx-light-text-color;
 }
-.custom-color-dialog .controls-pane #toggle-button-left {
-    -fx-background-radius: 3 0 0 3;
-    -fx-background-insets: 0 0 -1 0, 0, 1 0 1 1, 2 0 2 2;
+.custom-color-dialog .controls-pane .left-pill {
+    -fx-background-radius: 0.25em 0 0 0.25em;
+    -fx-background-insets: 0 0 -0.083333em 0, 0, 0.083333em 0 0.083333em 0.083333em, 0.1666667em 0 0.1666667em 0.1666667em;
     -fx-border-color: transparent -fx-outer-border transparent transparent;
-    -fx-border-insets: 4 0 4 0;
-    -fx-padding: -2 8 -2 8;
+    -fx-border-insets: 0.333333em 0 0.333333em 0;
+    -fx-padding: -0.1666667em 0.666667em -0.1666667em 0.666667em;
 }
-.custom-color-dialog .controls-pane #toggle-button-left:focused {
-    -fx-background-radius: 3 0 0 3;
-    -fx-background-insets: -1.4 0 -1.4 -1.4, 0 0 0 0, 1, 2;
+.custom-color-dialog .controls-pane .left-pill:focused {
+    -fx-background-radius: 0.25em 0 0 0.25em;
+    -fx-background-insets: -0.11666667em 0 -0.11666667em -0.11666667em, 0 0 0 0, 0.083333em, 0.1666667em;
     -fx-border-color: transparent;
 }
-.custom-color-dialog .controls-pane #toggle-button-left:selected, .controls-pane #toggle-button-left:selected:focused {
-    -fx-background-insets: 0 0 -1 0, 0, 1 0 1 1, 1 0 1 1;
+.custom-color-dialog .controls-pane .left-pill:selected, .controls-pane .left-pill:selected:focused {
+    -fx-background-insets: 0 0 -0.083333em 0, 0, 0.083333em 0 0.083333em 0.083333em, 0.083333em 0 0.083333em 0.083333em;
     -fx-border-color: transparent;
 }
-.custom-color-dialog .controls-pane #toggle-button-center {
+.custom-color-dialog .controls-pane .center-pill {
     -fx-background-radius: 0;
     -fx-background-insets: 0;
-    -fx-background-insets: 0 0 -1 0, 0, 1 0 1 0, 2 0 2 0;
+    -fx-background-insets: 0 0 -0.083333em 0, 0, 0.083333em 0 0.083333em 0, 0.1666667em 0 0.1666667em 0;
     -fx-border-color: transparent -fx-outer-border transparent transparent;
-    -fx-border-insets: 4 0 4 0;
-    -fx-padding: -2 8 -2 8;
+    -fx-border-insets: 0.333333em 0 0.333333em 0;
+    -fx-padding: -0.1666667em 0.666667em -0.1666667em 0.666667em;
 }
-.custom-color-dialog .controls-pane #toggle-button-center:focused {
+.custom-color-dialog .controls-pane .center-pill:focused {
     -fx-background-radius: 0;
-    -fx-background-insets: -1.4 0 -1.4 -1, 0 0 0 -1, 1 1 1 0, 2 2 2 1;
+    -fx-background-insets: -0.11666667em 0 -0.11666667em -0.083333em, 0 0 0 -0.083333em, 0.083333em 0.083333em 0.083333em 0, 0.1666667em 0.1666667em 0.1666667em 0.083333em;
     -fx-border-color: transparent;
 }
-.custom-color-dialog .controls-pane #toggle-button-center:selected, .controls-pane #toggle-button-center:selected:focused {
-    -fx-background-insets: -1.4 0 -1.4 -1, 0 0 0 -1, 1 1 1 0, 1 1 1 0;
+.custom-color-dialog .controls-pane .center-pill:selected, .controls-pane .center-pill:selected:focused {
+    -fx-background-insets: -0.11666667em 0 -0.11666667em -0.083333em, 0 0 0 -0.083333em, 0.083333em 0.083333em 0.083333em 0, 0.083333em 0.083333em 0.083333em 0;
     -fx-border-color: transparent;
 }
 
-.custom-color-dialog .controls-pane #toggle-button-right {
-    -fx-background-radius: 0 3 3 0;
-    -fx-background-insets: 0 0 -1 0, 0, 1 1 1 0, 2 2 2 0;
-    -fx-padding: 3 8 3 8;
+.custom-color-dialog .controls-pane .right-pill {
+    -fx-background-radius: 0 0.25em 0.25em 0;
+    -fx-background-insets: 0 0 -0.083333em 0, 0, 0.083333em 0.083333em 0.083333em 0, 0.1666667em 0.1666667em 0.1666667em 0;
+    -fx-padding: 0.25em 0.666667em 0.25em 0.666667em;
 }
-.custom-color-dialog .controls-pane #toggle-button-right:focused {
-    -fx-background-radius: 0 3 3 0;
-    -fx-background-insets: -1.4 -1.4 -1.4 -1, 0 0 0 -1, 1 1 1 0, 2 2 2 1;
+.custom-color-dialog .controls-pane .right-pill:focused {
+    -fx-background-radius: 0 0.25em 0.25em 0;
+    -fx-background-insets: -0.11666667em -0.11666667em -0.11666667em -0.083333em, 0 0 0 -0.083333em, 0.083333em 0.083333em 0.083333em 0, 0.1666667em 0.1666667em 0.1666667em 0.083333em;
 }
-.custom-color-dialog .controls-pane #toggle-button-right:selected, .controls-pane #toggle-button-right:selected:focused {
-    -fx-background-insets: -1.4 -1.4 -1.4 -1, 0 0 0 -1, 1 1 1 0, 1 1 1 0;
+.custom-color-dialog .controls-pane .right-pill:selected, .controls-pane .right-pill:selected:focused {
+    -fx-background-insets: -0.11666667em -0.11666667em -0.11666667em -0.083333em, 0 0 0 -0.083333em, 0.083333em 0.083333em 0.083333em 0, 0.083333em 0.083333em 0.083333em 0;
 }
 
-.custom-color-dialog .controls-pane .current-new-color-grid #transparent-current, .controls-pane .current-new-color-grid #transparent-new {
-    -fx-background-image: url("pattern-transparent.png");
+.custom-color-dialog .controls-pane .current-new-color-grid #current-new-color-border {
+    -fx-border-color: derive(-fx-base, -20%);
+    -fx-border-width: 2px;
+}
+
+.custom-color-dialog .controls-pane .current-new-color-grid .color-rect {
+    -fx-min-width: 10.666667em;
+    -fx-min-height: 1.75em;
+    -fx-pref-width: 10.666667em;
+    -fx-pref-height: 1.75em;
+}
+
+.custom-color-dialog .transparent-pattern {
+    -fx-background-image: url("pattern-transparent.png"); 
     -fx-background-repeat: repeat;
     -fx-background-size: auto;
-    -fx-padding: 9 64 9 64;
+}
+
+.custom-color-dialog .controls-pane #spacer1 {
+    -fx-min-height: 0.1666667em;
+    -fx-max-height: 0.1666667em;
+    -fx-pref-height: 0.1666667em;
+}
+
+.custom-color-dialog .controls-pane #spacer2 {
+    -fx-min-height: 1em;
+    -fx-max-height: 1em;
+    -fx-pref-height: 1em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane {
+    -fx-hgap: 0.4166667em;
+    -fx-vgap: 0.3333333em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .settings-label {
+    -fx-min-width: 5.75em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .settings-unit {
+    -fx-max-width: 1em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .slider {
+    -fx-pref-width: 8.25em;
+}
+
+.custom-color-dialog .controls-pane .color-input-field {
+    -fx-pref-column-count: 3;
+    -fx-max-width: 3.25em;
+    -fx-min-width: 3.25em;
+    -fx-pref-width: 3.25em;
+}
+
+.custom-color-dialog .controls-pane .web-field {
+    -fx-pref-column-count: 6;
+    -fx-pref-width: 8.25em;
+}
+
+.custom-color-dialog .controls-pane #spacer-side {
+    -fx-min-width: 0.5em;
+    -fx-pref-width: 0.5em;
+}
+
+.custom-color-dialog .controls-pane #spacer-bottom {
+    -fx-pref-height: 0.833333em;
+    -fx-min-height: 0.833333em;
 }
 
 .custom-color-dialog .controls-pane .customcolor-controls-background {
-    -fx-background-color: -fx-text-box-border, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
-}
-
-.custom-color-dialog .controls-pane .alpha-settings .text-field {
-    /*    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;*/
     -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1;
-    -fx-background-radius: 3, 2;
-    -fx-padding: 3 5 3 5;
-    -fx-text-fill: -fx-text-inner-color;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-cursor: text;
+    -fx-background-insets: 
+        0.8333333em 0 0.4166667em 0,
+        1em 0.166667em 0.5833333em 0.166667em;
+    -fx-background-radius: 0.3333333em, 0.166667em;
 }
 
 .custom-color-dialog .controls-pane .current-new-color-grid .label {
-    -fx-padding: 0 0 0 5;
+    -fx-padding: 0 0 0 0.4166667em;
 }
 
-.custom-color-dialog #input-text-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.TextFieldSkin";
+.custom-color-dialog .controls-pane #buttons-hbox {
+    -fx-spacing: 0.333333em;
+    -fx-padding: 1em 0 0 0;
+    -fx-alignment: bottom-right;
 }
 
-.custom-color-dialog .input-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.InputFieldSkin";
-    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+
+
+
+/*******************************************************************************
+ *                                                                             *
+ * DatePicker                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+
+.date-picker > .arrow-button > .arrow {
+    -fx-shape: "M0,0v9h9V0H0z M2,8H1V7h1V8z M2,6H1V5h1V6z M2,4H1V3h1V4z M4,8H3V7h1V8z M4,6H3V5h1V6z M4,4H3V3h1V4z M6,8H5V7h1V8z M6,6H5 V5h1V6z M6,4H5V3h1V4z M8,8H7V7h1V8z M8,6H7V5h1V6z M8,4H7V3h1V4z";
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.416667em 0.416667em 0.333333em 0.333333em; /*5 5 4 4 */
+    -fx-scale-shape: true;
+}
+
+.date-picker-popup {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 1;
+    /*-fx-background-radius: 0 6 6 6, 0 5 5 5;*/
+    -fx-background-radius: 0;
+    -fx-padding: 0;
+    -fx-alignment: CENTER; /* VBox */
+    -fx-spacing: 0; /* VBox */
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}
+.date-picker-popup > .month-year-pane {
+    -fx-padding: 0.5em; /* 6 6 6 6 */
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-cursor: text;
+    -fx-background-radius: 0;
 }
-
-.custom-color-dialog .input-field:focused {
-    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: -0.4, 1, 2;
-    -fx-background-radius: 3.4, 2, 2;
+.date-picker-popup > * > .spinner {
+    -fx-spacing: 0.25em;
+    -fx-alignment: CENTER;
+    -fx-fill-height: false;
 }
-
-.custom-color-dialog .input-field:disabled {
+.date-picker-popup > * > .spinner > .button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+}
+.date-picker-popup > * > .spinner > .button:hover {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-radius: 3, 2, 1;
+}
+.date-picker-popup > * > .spinner > .button:focused {
+    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-focus-color, -fx-body-color;
+    -fx-background-radius: 3, 2, 1;
+}
+.date-picker-popup > * > .spinner > .left-button {
+    -fx-padding: 0 0.333333em 0 0.25em; /* 0 4 0 3 */
+}
+.date-picker-popup > * > .spinner > .right-button {
+    -fx-padding: 0 0.25em 0 0.333333em; /* 0 3 0 4 */
+}
+.date-picker-popup > * > .spinner > .button > .right-arrow {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.5em 0.333333em 0 0; /* 6 4 0 0 */
+    -fx-shape: "M 4 0 L 0 -3 L 0 3 z";
+    -fx-scale-shape: true;
+}
+.date-picker-popup > * > .spinner > .button > .left-arrow {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.5em 0.333333em 0 0; /* 6 4 0 0 */
+    -fx-shape: "M 0 0 L 4 -3 L 4 3 z";
+    -fx-scale-shape: true;
+}
+.date-picker-popup > * > .spinner > .label {
+    -fx-alignment: CENTER;
+}
+.date-picker-popup > .month-year-pane > .secondary-label {
+    -fx-alignment: BASELINE_CENTER;
+    -fx-padding: 0.5em 0 0 0; /* 6 0 0 0 */
+    -fx-text-fill: firebrick;
+}
+.date-picker-popup > .calendar-grid {
+    -fx-background-color: derive(-fx-base, 6.8%);
+    -fx-background-insets: 1;
+    -fx-padding: 1;
+}
+.date-picker-popup > * > .date-cell {
+    -fx-background-color: transparent;
+    -fx-background-insets: 1, 2;
+    -fx-padding: 0.166667em;
+    -fx-alignment: BASELINE_CENTER;
+    -fx-opacity: 1.0;
+}
+.date-cell:disabled > * {
     -fx-opacity: -fx-disabled-opacity;
 }
-
-.custom-color-dialog .integer-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.IntegerFieldSkin";
-    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-cursor: text;
+.date-picker-popup > * > .day-name-cell,
+.date-picker-popup > * > .week-number-cell {
+    -fx-font-size: 0.916667em;
+}
+.date-picker-popup > * > .week-number-cell {
+    /* Add one pixel to the top padding to
+     * compensate for the smaller font size. */
+    -fx-padding: 0.416667em 0.583333em 0.333333em 0.583333em; /* 5 7 4 7 */
+    -fx-border-color: -fx-background;
+    -fx-border-width: 1px;
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: -fx-accent;
+}
+.date-picker-popup > * > .day-cell {
+    -fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
+    -fx-border-color: derive(-fx-control-inner-background,-10%);
+    -fx-border-width: 1px;
+    -fx-background: -fx-control-inner-background;
+    -fx-background-color: -fx-background;
+    -fx-text-fill: -fx-text-background-color;
+}
+.date-picker-popup > * > .hijrah-day-cell {
+    -fx-alignment: TOP_LEFT;
+    -fx-padding: 0.083333em 0.333333em 0.083333em 0.333333em; /* 1 4 1 4 */
+    -fx-cell-size: 2.75em;
+}
+.date-picker-popup > * > .day-cell > .secondary-text {
+    -fx-fill: firebrick;
+}
+.date-picker-popup > * > .today {
+    -fx-background-color: -fx-control-inner-background, derive(-fx-base, -10%), -fx-control-inner-background;
+    -fx-background-insets: 1, 2, 3;
+}
+.date-picker-popup > * > .day-cell:hover,
+.date-picker-popup > * > .selected,
+.date-picker-popup > * > .previous-month.selected,
+.date-picker-popup > * > .next-month.selected {
+    -fx-background-color: -fx-selection-bar;
+    -fx-background: -fx-accent;
+}
+.date-picker-popup > * > .today:hover,
+.date-picker-popup > * > .today.selected {
+    -fx-background-color: -fx-selection-bar, derive(-fx-base, -10%),-fx-selection-bar;
+}
+.date-picker-popup > * > .day-cell:focused,
+.date-picker-popup > * > .today:focused {
+    -fx-background-color: -fx-control-inner-background, -fx-cell-focus-inner-border, -fx-control-inner-background;
+    -fx-background-insets: 1, 2, 3;
+}
+.date-picker-popup > * > .day-cell:focused:hover,
+.date-picker-popup > * > .today:focused:hover,
+.date-picker-popup > * > .today.selected:focused,
+.date-picker-popup > * > .selected:focused {
+    -fx-background-color: -fx-selection-bar, -fx-cell-focus-inner-border, -fx-selection-bar;
+}
+.date-picker-popup > * > .previous-month,
+.date-picker-popup > * > .next-month {
+    -fx-background: derive(-fx-control-inner-background,-5%);
+}
+.date-picker-popup > * > .previous-month:hover,
+.date-picker-popup > * > .next-month:hover {
+    -fx-background: lightgrey;
+    -fx-text-fill: -fx-dark-text-color;
+}
+.date-picker-popup > * > .day-cell:hover > .secondary-text,
+.date-picker-popup > * > .previous-month > .secondary-text,
+.date-picker-popup > * > .next-month > .secondary-text,
+.date-picker-popup > * > .selected > .secondary-text {
+    -fx-fill: -fx-text-background-color;
+}
+.date-picker-popup > * > .previous-month.today,
+.date-picker-popup > * > .next-month.today {
+    -fx-background-color: derive(-fx-control-inner-background,-5%), derive(-fx-base, -10%), derive(-fx-control-inner-background,-5%);
+}
+.date-picker-popup > * > .previous-month.today:hover,
+.date-picker-popup > * > .next-month.today:hover {
+    -fx-background-color: lightgrey, derive(-fx-base, -10%), lightgrey;
 }
 
-.custom-color-dialog .integer-field:focused {
-    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: -0.4, 1, 2;
-    -fx-background-radius: 3.4, 2, 2;
-}
-
-/*.integer-field:disabled {
-    -fx-opacity: -fx-disabled-opacity;
-}*/
-
-.custom-color-dialog .double-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.DoubleFieldSkin";
-    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-cursor: text;
-}
-
-.custom-color-dialog .double-field:focused {
-    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: -0.4, 1, 2;
-    -fx-background-radius: 3.4, 2, 2;
-}
-
-.custom-color-dialog .double-field:disabled {
-    -fx-opacity: -fx-disabled-opacity;
-}
-
-
-.custom-color-dialog .webcolor-field {
-    -fx-skin: "com.sun.javafx.scene.control.skin.WebColorFieldSkin";
-    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: 0, 1, 2;
-    -fx-background-radius: 3, 2, 2;
-    -fx-padding: 3 5 3 5;
-    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%);
-    -fx-cursor: text;
-}
-
-.custom-color-dialog .webcolor-field:focused {
-    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
-    -fx-background-insets: -0.4, 1, 2;
-    -fx-background-radius: 3.4, 2, 2;
-}
-
-.custom-color-dialog .webcolor-field:disabled {
-    -fx-opacity: -fx-disabled-opacity;
-}
 
 
 /* -------------------------- STYLES FOR PAGINATION CONTROL ----- */
 .pagination {
-    -fx-skin: "com.sun.javafx.scene.control.skin.PaginationSkin";
-    -fx-padding: 0;
+    -fx-padding: 0;        
     -fx-arrows-visible: true;
     -fx-tooltip-visible: true;
     -fx-page-information-visible: true;
-    -fx-page-information-alignment: bottom;
+    -fx-page-information-alignment: bottom;        
 }
-.pagination .page {
+.pagination > .page {
     -fx-background-color: transparent;
 }
 
-.pagination .pagination-control {
-    -fx-background-color: transparent;
+.pagination > .pagination-control {
+    -fx-background-color: transparent;    
     -fx-padding: 0.833333em 0em 0.833333em 0em;
 }
 
-.pagination .pagination-control .control-box {
+.pagination > .pagination-control > .control-box {
     -fx-spacing: 4;
     -fx-alignment: center;
 }
 
-.pagination .pagination-control .left-arrow-button{
+.pagination > .pagination-control > .control-box > .left-arrow-button{
     -fx-background-radius: 0;
     -fx-padding: 0.166667em 0.416em 0.25em 0.333em;
 }
-.pagination .pagination-control .right-arrow-button {
+.pagination > .pagination-control > .control-box > .right-arrow-button {
     -fx-background-radius: 0;
     -fx-padding: 0.166667em 0.333em 0.25em 0.416em;
 }
 
-.pagination .pagination-control .left-arrow {
+.pagination > .pagination-control .left-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.375em 0.291em 0.375em 0.291em;
@@ -3488,7 +3771,7 @@ Only the properties with values that are different from the TextBox are specifie
     -fx-scale-shape: true;
 }
 
-.pagination .pagination-control .right-arrow {
+.pagination > .pagination-control .right-arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.375em 0.291em 0.375em 0.291em;
@@ -3496,31 +3779,491 @@ Only the properties with values that are different from the TextBox are specifie
     -fx-scale-shape: true;
 }
 
-.pagination .pagination-control .bullet-button {
-    -fx-background-radius: 0, 4em, 4em, 4em, 4em;
-    -fx-padding: 0.333em;
-
-    -fx-background-color: transparent, -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: 0, 4 4 3 4,  5,  6,  7;
+.pagination > .pagination-control > .control-box > .bullet-button {   
+   -fx-background-radius: 0, 4em, 4em, 4em, 4em;
+   -fx-padding: 0.333em;
+   
+   -fx-background-color: transparent, -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+   -fx-background-insets: 0, 4 4 3 4,  5,  6,  7;
 }
 
-.pagination .pagination-control .bullet-button:selected {
+.pagination > .pagination-control > .control-box > .bullet-button:selected {   
     -fx-base: -fx-accent;
 }
 
-.pagination.bullet .pagination-control .left-arrow-button, .pagination.bullet .pagination-control .right-arrow-button {
+.pagination.bullet > .pagination-control > .control-box > .left-arrow-button, 
+.pagination.bullet > .pagination-control > .control-box > .right-arrow-button {
     -fx-background-radius: 4em;
 }
 
-.pagination .pagination-control .number-button {
+.pagination > .pagination-control > .control-box > .number-button {
     -fx-background-radius: 0;
     -fx-padding: 0.166667em 0.25em 0.25em 0.333em;
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
 }
 
-.pagination .pagination-control .number-button:selected {
+.pagination > .pagination-control > .control-box > .number-button:selected {   
     -fx-base: -fx-accent;
 }
-.pagination .pagination-control .page-information {
+.pagination > .pagination-control > .page-information {   
     -fx-padding: 0.416em 0 0 0;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * TreeTableView                                                               *
+ * Note: A lot of the CSS for TreeTableView is included with the TreeView and  *
+ * TableView CSS styles elsewhere in caspian.css (as they are the same, just   *
+ * targeting different CSS style classes).                                     *
+ ******************************************************************************/
+.tree-table-view {
+    -fx-background-color: -fx-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0,1;
+
+    /* There is some oddness if padding is in em values rather than pixels,
+       in particular, the left border of the control doesn't show. */
+    -fx-padding: 1; /* 0.083333em; */
+
+    /* Constants used throughout the tableview.
+     * TODO: Should these be derived from the palette in .scene?
+     */
+    -fx-table-header-border-color: #959595;
+/*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
+    -fx-table-cell-border-color: #bbbbbb;
+}
+
+.tree-table-row-cell {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-padding: 0.0em; /* 0 */
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.tree-table-cell {
+    -fx-padding: 0.166667em; /* 2px, plus border adds 1px */
+
+    -fx-background-color: transparent;
+    -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
+    -fx-border-width: 0.083333em; /* 1 */
+    -fx-cell-size: 2.0em; /* 24 */
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+
+/*******************************************************************************
+ *                                                                             *
+ * TreeTableView cell spanning                                                 *
+ *                                                                             *
+ ******************************************************************************/
+
+.cell-span-tree-table-view > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell {
+    -fx-background-color: transparent;
+} 
+
+/* All table-row-cells - we don't care if they are even or odd */
+.cell-span-tree-table-view > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell {
+    -fx-background-color: -fx-table-cell-border-color, -fx-control-inner-background;
+    -fx-background-insets: 0, 0 1 0 0;
+    -fx-alignment: center;
+}
+
+/** Selection styles */
+/*.cell-span-table-view > .virtual-flow > .clipped-container > .sheet > .table-row-cell > .table-cell:focused:selected, */
+.cell-span-tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:selected > .tree-table-cell,
+.cell-span-tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:selected > .tree-table-cell,
+.cell-span-tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:selected:hover > .tree-table-cell,
+.cell-span-tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell:filled:selected,
+.cell-span-tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell:filled:focused:selected,
+.cell-span-tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell > .tree-table-cell:filled:focused:selected:hover{
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-selection-bar;
+    -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
+    -fx-background: -fx-accent;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+/** Hover styles */
+/** --- Row selection mode hover */
+.cell-span-tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:hover > .tree-table-cell { 
+    -fx-background-color: -fx-table-cell-border-color, -fx-cell-hover-color;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+.cell-span-tree-table-view:row-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled:focused:hover > .tree-table-cell { 
+    -fx-background-color: -fx-table-cell-border-color, -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
+    -fx-background-insets: 0, 0 0 1 0, 1 1 2 1, 2 2 3 2, 3 3 4 3;
+    -fx-text-fill: -fx-text-inner-color;
+}
+
+/** --- Cell selection mode hover */
+.cell-span-tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:hover{
+    -fx-background-color: -fx-table-cell-border-color, -fx-cell-hover-color;
+    -fx-text-fill: -fx-text-inner-color;
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.cell-span-tree-table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .tree-table-row-cell:filled > .tree-table-cell:focused:hover{
+    -fx-background-color: -fx-focus-color, -fx-cell-focus-inner-border, -fx-cell-hover-color;
+    -fx-background-insets: 0 1 0 0, 1 2 1 1, 2 3 2 2;
+    -fx-text-fill: -fx-text-inner-color;
+}
+/** End of hover styles */
+
+/********************************************************************************
+ *                                                                              *
+ * HTMLEditor                                                                   *
+ *                                                                              *
+ ********************************************************************************/
+
+.html-editor {
+    -fx-border-width: 1;
+    -fx-border-style: solid;
+    -fx-padding: 0;
+    -fx-border-color: derive(-fx-base,-35%);
+}
+.html-editor .button,
+.html-editor .toggle-button {
+    -fx-padding: 0.333333em 0.833333em 0.416667em 0.833333em; /* 2 10 3 10 */
+}
+.html-editor .combo-box > .list-cell {
+    -fx-cell-size: 2.0833em; /* 21 */
+}
+/* Each Toolbar is constructed of two stacked shapes */
+.html-editor > * > .top-toolbar {
+    -fx-background-color:
+        linear-gradient(to bottom, white 10%, derive(-fx-base, 50%) 90%),
+        linear-gradient(to bottom, derive(-fx-base, 65%) 0%, derive(-fx-base, 5%) 90%);
+    -fx-background-insets: 0, 1;
+    -fx-border-color: transparent transparent derive(-fx-base,-20%) transparent, transparent;
+    -fx-border-width: 1, 0;
+    -fx-padding: 0.333em 0.5em 0.333em 0.5em; /* 4 6 4 6;*/
+}
+
+.html-editor > * > .bottom-toolbar {
+    -fx-background-color:
+        linear-gradient(to bottom,  derive(-fx-base, 50%) 10%, derive(-fx-base, -60%) 90%),
+        linear-gradient(to bottom,  derive(-fx-base, 5%) 0%, derive(-fx-base, -15%) 90%);
+    -fx-background-insets: 0, 1;
+    -fx-border-color: transparent derive(-fx-base,50%) transparent derive(-fx-base,50%),
+    transparent transparent derive(-fx-base,-60%) transparent;
+    -fx-border-width: 1, 0;
+    -fx-padding: 0.166667em 0.5em 0.166667em 1.5em; /* 2 6 2 6;*/
+}
+
+.html-editor-foreground, .html-editor-background {
+    -fx-color-label-visible: false;
+    -fx-color-rect-x: 0;
+    -fx-color-rect-y: 10;
+    -fx-color-rect-width: 16;
+    -fx-color-rect-height: 5;
+    -fx-padding: 0;
+}
+.html-editor-foreground > .color-picker-label,
+.html-editor-background > .color-picker-label {
+    -fx-padding: 0 0 -0.083333em 0;
+}
+/* Note: The Separator is constructed of a 1-pixel shape
+whose borders are styled.  Only the right border is specified
+with a color; the other three borders are transparent.*/
+
+/* Note: This first section of CSS (below) specifies the Separator’s color.
+Specifying the color here ensures the same color for both .top-toolbar
+and .bottom-toolbar Separators, as they will inherit the color. */
+
+.html-editor > * > * > .separator:vertical > .line{
+    -fx-border-style: solid;
+    -fx-background-color: null;
+    -fx-border-color: transparent derive(-fx-base,-35%) transparent transparent; /* #878787 */
+}
+
+/* Note: This next section of CSS (below) specifies the Separator’s length.
+The length of the Separator is determined by adding its -fx-padding values
+to the top and bottom -fx-padding values of the parent toolbar. */
+
+.html-editor > * > .top-toolbar > .separator {
+    -fx-padding: 1 0 1 0;
+}
+
+.html-editor > * > .bottom-toolbar:horizontal {
+    -fx-padding: 0.417em; /* 5px */
+}
+
+.html-editor > * > .bottom-toolbar > .separator {
+    -fx-padding:  1 2 1 2;
+}
+
+.html-editor > * > * > .button {
+    -fx-background-color: null;
+    -fx-background-insets: -1, 0, 1;
+    -fx-background-radius: 0.25em; /* 3 */
+    -fx-padding: 0.25em;  /* 3 */
+    -fx-alignment: CENTER;
+    -fx-graphic-vpos: CENTER;
+}
+
+.html-editor > * > .top-toolbar > .button:hover {
+    -fx-background-color: transparent, derive(-fx-base,-10%), derive(-fx-base,65%);
+}
+
+.html-editor > * > .bottom-toolbar > .button:hover {
+    -fx-background-color: transparent, derive(-fx-base,-25%), derive(-fx-base,15%);
+}
+
+.html-editor > * > * > .toggle-button {
+    -fx-background-color: transparent;
+    -fx-background-insets: -1, 0, 1;
+    -fx-background-radius: 3;
+    -fx-padding: 0.25em;  /* 3 */
+    -fx-alignment: CENTER;
+    -fx-graphic-vpos: CENTER;
+}
+
+.html-editor > * > .top-toolbar > .toggle-button:hover {
+    -fx-background-color: transparent, derive(-fx-base,-10%), derive(-fx-base,65%);
+}
+
+.html-editor > * > .bottom-toolbar > .toggle-button:hover {
+    -fx-background-color: transparent, derive(-fx-base,-25%), derive(-fx-base,15%);
+}
+
+.html-editor > * > .toggle-button:focused {
+    -fx-color: transparent;
+    -fx-background-color: -fx-focus-color, derive(-fx-base,-25%), derive(-fx-base,15%);
+    -fx-background-insets: -1.2, 0, 1;
+    -fx-background-radius: 3.2, 3, 3;
+}
+
+.html-editor > * > * > .toggle-button:selected {
+    -fx-background-color: transparent,
+    linear-gradient(to bottom,  derive(-fx-base, -70%) 10%, derive(-fx-base, -40%) 90%),
+    linear-gradient(to bottom,  derive(-fx-base, -40%) 0%, derive(-fx-base, -20%) 50%, derive(-fx-base, -10%) 98%, derive(-fx-base, -35%) 100%);
+}
+
+.html-editor > * > * > .font-menu-button {
+    -fx-background-radius: 5, 5, 4, 3;
+}
+
+.html-editor > * > * > .font-menu-button .label{
+    -fx-padding: 0.166667em 0.5em 0.25em 0.5em; /* 2 6 3 6 */
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Spinner                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+
+.spinner {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0, 0 0 1 0, 1 1 2 1;
+    -fx-background-radius: 3, 3, 2;
+}
+.spinner:focused,
+.spinner:contains-focus {
+    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-insets: -1.4 -1.4 -0.4 -1.4, 0 0 1 0, 1 1 2 1;
+    -fx-background-radius: 4, 3, 2;
+}
+.spinner:disabled {
+    -fx-opacity: -fx-disabled-opacity;
+}
+.spinner > .text-field {
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+    -fx-background-insets: 0 0 1 0, 1 0 2 1;
+    -fx-background-radius: 3 0 0 3, 2 0 0 2;
+}
+
+.spinner .increment-arrow-button {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 1, 2;
+    -fx-background-radius: 0 3 0 0, 0 2 0 0, 0 1 0 0;
+    -fx-padding: 0.333em 0.666em 0.333em 0.666em; /* 4 8 4 8 */
+}
+.spinner .decrement-arrow-button {
+    -fx-background-color: -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: -1 0 1 0, 0 1 2 1, 0 2 3 2;
+    -fx-background-radius: 0 0 3 0, 0 0 2 0, 0 0 1 0;
+    -fx-padding: 0.250em 0.666em 0.5em 0.666em; /* 3 8 6 8 */
+}
+
+.spinner .increment-arrow-button .increment-arrow {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: -0.6 0 1 0, 0;
+    -fx-padding: 0.167em 0.333em 0.167em 0.333em; /* 2 4 2 4 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+    -fx-rotate: 180;
+}
+.spinner .decrement-arrow-button .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 1 0 -1 0, 0;
+    -fx-padding: 0.167em 0.333em 0.167em 0.333em; /* 2 4 2 4 */
+    -fx-shape: "M 0 0 h 7 l -3.5 4 z";
+}
+
+/* Spinner - Horizontal arrows */
+.spinner.split-arrows-horizontal .increment-arrow-button .increment-arrow,
+.spinner.arrows-on-right-horizontal .increment-arrow-button .increment-arrow,
+.spinner.arrows-on-left-horizontal .increment-arrow-button .increment-arrow,
+.spinner.split-arrows-horizontal .decrement-arrow-button .decrement-arrow,
+.spinner.arrows-on-right-horizontal .decrement-arrow-button .decrement-arrow,
+.spinner.arrows-on-left-horizontal .decrement-arrow-button .decrement-arrow{
+    -fx-padding: 0.333em 0.166em 0.333em 0.166em; /* 4 2 4 2 */
+    -fx-shape: "M 4 0 v 7 l -4 -3.5 z";
+}
+
+/* Spinner - STYLE_CLASS_ARROWS_ON_RIGHT_HORIZONTAL */
+.spinner.arrows-on-right-horizontal .increment-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 0, 2 2 3 1;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0;
+    -fx-padding: 0.333em 0.666em 0.333em 0.583em; /* 4 8 4 7 */
+
+}
+.spinner.arrows-on-right-horizontal .decrement-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 1, 2 2 3 2;
+    -fx-background-radius: 0, 0, 0;
+    -fx-padding: 0.333em 0.666em 0.333em 0.666em; /* 4 8 4 8 */
+}
+
+/* Spinner - STYLE_CLASS_ARROWS_ON_LEFT_VERTICAL */
+.spinner.arrows-on-left-vertical > .text-field {
+    -fx-background-insets: 0 0 1 0, 1 1 2 0;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0;
+}
+.spinner.arrows-on-left-vertical .increment-arrow-button {
+    -fx-background-radius: 3 0 0 0, 2 0 0 0, 1 0 0 0;
+}
+.spinner.arrows-on-left-vertical .decrement-arrow-button {
+    -fx-background-radius: 0 0 0 3, 0 0 0 2, 0 0 0 1;
+}
+
+/* Spinner - STYLE_CLASS_ARROWS_ON_LEFT_HORIZONTAL */
+.spinner.arrows-on-left-horizontal > .text-field {
+    -fx-background-insets: 0 0 1 -1, 1 1 2 -1;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0;
+}
+.spinner.arrows-on-left-horizontal .increment-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 0, 2 2 3 1;
+    -fx-background-radius: 0, 0, 0;
+    -fx-padding: 0.333em 0.666em 0.333em 0.583em; /* 4 8 4 7 */
+}
+.spinner.arrows-on-left-horizontal .decrement-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 1, 2 2 3 2;
+    -fx-background-radius: 3 0 0 3, 2 0 0 2, 1 0 0 1;
+    -fx-padding: 0.333em 0.666em 0.333em 0.666em; /* 4 8 4 8 */
+}
+
+/* Spinner - STYLE_CLASS_SPLIT_ARROWS_VERTICAL */
+.spinner.split-arrows-vertical > .text-field {
+    -fx-background-insets: 0, 0 1 0 1;
+    -fx-background-radius: 0, 0;
+}
+.spinner.split-arrows-vertical .increment-arrow-button {
+    -fx-background-radius: 3 3 0 0, 2 2 0 0, 1 1 0 0;
+}
+.spinner.split-arrows-vertical .decrement-arrow-button {
+    -fx-background-insets: -1 0 1 0, 0 1 2 1, 1 2 3 2;
+    -fx-background-radius: 0 0 3 3, 0 0 2 2, 0 0 1 1;
+    -fx-padding: 0.25em 0.666em 0.417em 0.666em; /* 3 8 5 8 */
+}
+
+/* Spinner - STYLE_CLASS_SPLIT_ARROWS_HORIZONTAL */
+.spinner.split-arrows-horizontal > .text-field {
+    -fx-background-insets: 0 0 1 0, 1 0 2 0;
+    -fx-background-radius: 0, 0;
+}
+.spinner.split-arrows-horizontal .increment-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 1, 2 2 3 2;
+    -fx-background-radius: 0 3 3 0, 0 2 2 0, 0 1 1 0;
+    -fx-padding: 0.333em 0.666em 0.333em 0.666em; /* 4 8 4 8 */
+}
+.spinner.split-arrows-horizontal .decrement-arrow-button {
+    -fx-background-insets: 0 0 1 0, 1 1 2 1, 2 2 3 2;
+    -fx-background-radius: 3 0 0 3, 2 0 0 2, 1 0 0 1;
+    -fx-padding: 0.333em 0.666em 0.333em 0.666em; /* 4 8 4 8 */
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Dialog                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+
+.dialog-pane {
+    -fx-background-color: -fx-background;
+    -fx-padding: 0;
+}
+
+.dialog-pane > .expandable-content {
+    -fx-padding: 0.666em; /* 8px */
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-padding: 0.833em; /* 10px */
+}
+
+.dialog-pane > .content.label {
+    -fx-alignment: top-left;
+    -fx-padding: 1.333em 0.833em 0 0.833em; /* 16px 10px 0px 10px */
+}
+
+.dialog-pane > .content {
+    -fx-padding: 0.833em; /* 10 */
+}
+
+.dialog-pane:no-header .graphic-container {
+    -fx-padding: 0.833em 0 0 0.833em; /* 10px 0px 0px 10px */
+}
+
+.dialog-pane:header .header-panel {
+    /*-fx-padding: 0.833em 1.166em 0.833em 1.166em; *//* 10px 14px 10px 14px */
+    -fx-padding: 0.833em; /* 10px */
+    -fx-background-color: -fx-box-border, linear-gradient(-fx-background, derive(-fx-background, 30%));
+    -fx-background-insets: 0, 0 0 1 0;
+}
+
+.dialog-pane:header .header-panel .label {
+    -fx-font-size: 1.167em; /* 14px */
+    -fx-wrap-text: true;
+}
+
+.dialog-pane:header .header-panel .graphic-container {
+    /* This prevents the text in the header running directly into the graphic */
+    -fx-padding: 0 0 0 0.833em; /* 0px 0px 0px 10px */
+}
+
+.dialog-pane > .button-bar > .container > .details-button {
+    -fx-alignment: baseline-left;
+    -fx-focus-traversable: false;
+    -fx-padding: 0.416em; /* 5px */
+    -fx-font-size: 0.833em; /* 10px */
+}
+
+.dialog-pane > .button-bar > .container > .details-button.more {
+    -fx-graphic: url("dialog-more-details.png");
+}
+
+.dialog-pane > .button-bar > .container > .details-button.less {
+    -fx-graphic: url("dialog-fewer-details.png");
+}
+
+.dialog-pane > .button-bar > .container > .details-button:hover {
+    -fx-underline: true;
+}
+
+.alert.confirmation.dialog-pane,
+.text-input-dialog.dialog-pane,
+.choice-dialog.dialog-pane {
+    -fx-graphic: url("dialog-confirm.png");
+}
+
+.alert.information.dialog-pane {
+    -fx-graphic: url("dialog-information.png");
+}
+
+.alert.error.dialog-pane {
+    -fx-graphic: url("dialog-error.png");
+}
+
+.alert.warning.dialog-pane {
+    -fx-graphic: url("dialog-warning.png");
 }
