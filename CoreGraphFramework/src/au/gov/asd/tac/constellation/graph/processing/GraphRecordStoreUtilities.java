@@ -1162,6 +1162,7 @@ public class GraphRecordStoreUtilities {
 
         final Map<?, ?> read = om.readValue(json, Map.class);
         if (read.containsKey(VX)) {
+            @SuppressWarnings("unchecked") //vertices will list of maps of string to object
             final List<Map<String, Object>> vertices = (List<Map<String, Object>>) read.get(VX);
             for (final Map<String, Object> vertex : vertices) {
                 rs.add();
@@ -1175,6 +1176,7 @@ public class GraphRecordStoreUtilities {
         }
 
         if (read.containsKey(TX)) {
+            @SuppressWarnings("unchecked") //transactions will be a list of maps of string to object
             final List<Map<String, Object>> transactions = (List<Map<String, Object>>) read.get(TX);
             for (final Map<String, Object> transaction : transactions) {
                 rs.add();
