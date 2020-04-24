@@ -69,6 +69,7 @@ public class Scatter3dArranger implements Arranger {
         final boolean xLogarithmic;
         final boolean yLogarithmic;
         final boolean zLogarithmic;
+        final boolean doNotScale;
         if (params != null) {
             xDimension = params.getXDimension();
             yDimension = params.getYDimension();
@@ -76,6 +77,7 @@ public class Scatter3dArranger implements Arranger {
             xLogarithmic = params.getLogarithmicX();
             yLogarithmic = params.getLogarithmicY();
             zLogarithmic = params.getLogarithmicZ();
+            doNotScale = params.getDoNotScale();
         } else {
             return;
         }
@@ -153,7 +155,7 @@ public class Scatter3dArranger implements Arranger {
                 maxZ += 1;
             }
 
-            for (int i = 0; i < vxPos; i++) {
+            for (int i = 0; i < vxPos && !doNotScale; i++) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
