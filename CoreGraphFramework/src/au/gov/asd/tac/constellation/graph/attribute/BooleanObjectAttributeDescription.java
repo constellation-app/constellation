@@ -47,6 +47,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
     @SuppressWarnings("unchecked") // Casts are manually checked
     protected Boolean convertFromObject(final Object object) {
         if (object == null) {
+            // Intentionally returning null instead of a boolean
             return null;
         } else if (object instanceof Number) {
             return ((Number) object).longValue() != 0;

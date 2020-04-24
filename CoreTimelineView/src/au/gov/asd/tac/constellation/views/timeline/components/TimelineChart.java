@@ -666,7 +666,8 @@ public class TimelineChart extends XYChart<Number, Number> {
 
     @Override
     protected void dataItemChanged(final Data<Number, Number> item) {
-    } // currently not needed.
+        // currently not needed.
+    }
 
     @Override
     protected void seriesAdded(final Series<Number, Number> series, int seriesIndex) {

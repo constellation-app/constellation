@@ -72,10 +72,12 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
 
     @Override
     public void graphOpened(Graph graph) {
+        // Required for implementation of GraphManagerListener
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // Required for implementation of GraphManagerListener
     }
 
     public Graph getCurrentGraph() {

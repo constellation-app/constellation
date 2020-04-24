@@ -465,6 +465,7 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void valueForPathChanged(final TreePath path, final Object newValue) {
+        // required for implementation of TreeModel
     }
 
     @Override
@@ -486,10 +487,12 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void addTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
     @Override
     public void removeTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
 }

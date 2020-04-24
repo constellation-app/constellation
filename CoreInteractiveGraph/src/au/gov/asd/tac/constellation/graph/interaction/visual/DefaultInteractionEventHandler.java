@@ -361,10 +361,12 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void keyReleased(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -629,14 +631,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseEntered(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**

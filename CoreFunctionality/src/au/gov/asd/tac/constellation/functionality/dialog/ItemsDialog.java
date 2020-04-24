@@ -166,6 +166,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
     }
 
     protected void selectRows(List<ItemsRow<T>> rows) throws InterruptedException {
+        // Method overriden LeadNodeSelectionDialog
     }
 
     public void setOkButtonAction(EventHandler<ActionEvent> event) {
