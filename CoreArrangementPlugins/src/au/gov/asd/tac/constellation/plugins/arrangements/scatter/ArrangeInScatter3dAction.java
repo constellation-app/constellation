@@ -15,15 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.scatter;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -56,16 +50,8 @@ public final class ArrangeInScatter3dAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-
-        final Plugin plugin = PluginRegistry.get(ArrangementPluginRegistry.SCATTER_3D);
-        final PluginParameters params = plugin.createParameters();
-        final Graph graph = context.getGraph();
-        plugin.updateParameters(graph, params);
-
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_ArrangeInScatter3dAction(), params);
-        dialog.showAndWait();
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-            PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);
-        }
+        PluginExecution.withPlugin(ArrangementPluginRegistry.SCATTER_3D)
+                .interactively(true)
+                .executeLater(context.getGraph());
     }
 }

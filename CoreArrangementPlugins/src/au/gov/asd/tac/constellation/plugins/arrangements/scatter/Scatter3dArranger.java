@@ -51,6 +51,7 @@ public class Scatter3dArranger implements Arranger {
     }
 
     @Override
+    // Not relevant for Scatter3D
     public void setMaintainMean(final boolean b) {
     }
 
@@ -79,9 +80,9 @@ public class Scatter3dArranger implements Arranger {
             return;
         }
 
-        final int xDim = wg.getAttribute(GraphElementType.VERTEX, xDimension);
-        final int yDim = wg.getAttribute(GraphElementType.VERTEX, yDimension);
-        final int zDim = wg.getAttribute(GraphElementType.VERTEX, zDimension);
+        final int xDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, xDimension);
+        final int yDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, yDimension);
+        final int zDimensionAttribute = wg.getAttribute(GraphElementType.VERTEX, zDimension);
 
         final int vxCount = wg.getVertexCount();
 
@@ -115,9 +116,9 @@ public class Scatter3dArranger implements Arranger {
                 }
                 final int vxId = vxOrder[i];
 
-                xVal = getFloatValueFromObject(wg.getObjectValue(xDim, vxId), xLogarithmic);
-                yVal = getFloatValueFromObject(wg.getObjectValue(yDim, vxId), yLogarithmic);
-                zVal = getFloatValueFromObject(wg.getObjectValue(zDim, vxId), zLogarithmic);
+                xVal = getFloatValueFromObject(wg.getObjectValue(xDimensionAttribute, vxId), xLogarithmic);
+                yVal = getFloatValueFromObject(wg.getObjectValue(yDimensionAttribute, vxId), yLogarithmic);
+                zVal = getFloatValueFromObject(wg.getObjectValue(zDimensionAttribute, vxId), zLogarithmic);
 
                 if (firstVals) {
                     firstVals = false;
@@ -175,16 +176,15 @@ public class Scatter3dArranger implements Arranger {
 
     private float scaleValue(float value, boolean logarithmic) {
         if (logarithmic) {
+            if (value <= 0.0) {
+                return 0.0f;
+            }
             return (float) Math.log10(value);
         }
         return value;
     }
 
     private float getFloatValueFromObject(Object attributeValue, boolean logarithmic) {
-        if (attributeValue == null) {
-            return 0.0f;
-        }
-
         if (attributeValue instanceof Float) {
             return scaleValue((float) attributeValue, logarithmic);
         }
@@ -208,7 +208,7 @@ public class Scatter3dArranger implements Arranger {
 
         if (attributeValue instanceof Integer) {
             float ret = (Integer) attributeValue;
-            return ret;
+            return scaleValue(ret, logarithmic);
         }
 
         if (attributeValue instanceof ConstellationColor) {

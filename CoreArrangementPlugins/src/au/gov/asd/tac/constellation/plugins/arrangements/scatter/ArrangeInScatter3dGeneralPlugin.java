@@ -84,23 +84,23 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<SingleChoiceParameterValue> x_attribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
-        x_attribute.setName(X_ATTRIBUTE);
-        x_attribute.setDescription("The attribute to use for the x dimension");
-        x_attribute.setStringValue("");
-        parameters.addParameter(x_attribute);
+        final PluginParameter<SingleChoiceParameterValue> xAttribute = SingleChoiceParameterType.build(SCATTER_3D_X_ATTRIBUTE);
+        xAttribute.setName(X_ATTRIBUTE);
+        xAttribute.setDescription("The attribute to use for the x dimension");
+        xAttribute.setStringValue("");
+        parameters.addParameter(xAttribute);
 
-        final PluginParameter<SingleChoiceParameterValue> y_attribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
-        y_attribute.setName(Y_ATTRIBUTE);
-        y_attribute.setDescription("The attribute to use for the y dimension");
-        y_attribute.setStringValue("");
-        parameters.addParameter(y_attribute);
+        final PluginParameter<SingleChoiceParameterValue> yAttribute = SingleChoiceParameterType.build(SCATTER_3D_Y_ATTRIBUTE);
+        yAttribute.setName(Y_ATTRIBUTE);
+        yAttribute.setDescription("The attribute to use for the y dimension");
+        yAttribute.setStringValue("");
+        parameters.addParameter(yAttribute);
 
-        final PluginParameter<SingleChoiceParameterValue> z_attribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
-        z_attribute.setName(Z_ATTRIBUTE);
-        z_attribute.setDescription("The attribute to use for the z dimension");
-        z_attribute.setStringValue("");
-        parameters.addParameter(z_attribute);
+        final PluginParameter<SingleChoiceParameterValue> zAttribute = SingleChoiceParameterType.build(SCATTER_3D_Z_ATTRIBUTE);
+        zAttribute.setName(Z_ATTRIBUTE);
+        zAttribute.setDescription("The attribute to use for the z dimension");
+        zAttribute.setStringValue("");
+        parameters.addParameter(zAttribute);
 
         final PluginParameter<BooleanParameterValue> xLogarithmic = BooleanParameterType.build(SCATTER_3D_X_LOGARITHMIC);
         xLogarithmic.setName(X_LOGARITHMIC);
@@ -137,13 +137,13 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
         final List<String> keys = new ArrayList<>(vertexAttributes.keySet());
 
-        final PluginParameter<SingleChoiceParameterValue> xdimension = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(xdimension, keys);
+        final PluginParameter<SingleChoiceParameterValue> xAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_X_ATTRIBUTE);
+        SingleChoiceParameterType.setOptions(xAttribute, keys);
 
-        final PluginParameter<SingleChoiceParameterValue> ydimension = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(ydimension, keys);
+        final PluginParameter<SingleChoiceParameterValue> yAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Y_ATTRIBUTE);
+        SingleChoiceParameterType.setOptions(yAttribute, keys);
 
-        final PluginParameter<SingleChoiceParameterValue> zdimension = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
-        SingleChoiceParameterType.setOptions(zdimension, keys);
+        final PluginParameter<SingleChoiceParameterValue> zAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(SCATTER_3D_Z_ATTRIBUTE);
+        SingleChoiceParameterType.setOptions(zAttribute, keys);
     }
 }
