@@ -17,8 +17,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
- * @author limowreck11
+ * Unit test for {@link AnalyticConcept}.
+ * 
+ * @author cygnus_x-1
  */
 public class AnalyticConceptNGTest {
 
