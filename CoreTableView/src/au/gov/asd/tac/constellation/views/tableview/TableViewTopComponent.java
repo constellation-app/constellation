@@ -501,9 +501,11 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     }
 
     void writeProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     /**

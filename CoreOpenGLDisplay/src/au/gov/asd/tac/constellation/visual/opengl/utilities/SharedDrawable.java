@@ -227,17 +227,6 @@ public final class SharedDrawable {
     }
 
     /**
-     * Delete textures.
-     * <p>
-     * Given that this texture is shared amongst all contexts, we probably don't
-     * want to do this.
-     */
-    public static void deleteTextures() {
-        gl.glDeleteTextures(1, new int[]{iconTextureName}, 0);
-        glyphTextureController.dispose(gl);
-    }
-
-    /**
      * The simple icon shader draws non-interactive icons.
      *
      * @param glCurrent the current OpenGL context.

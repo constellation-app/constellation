@@ -92,10 +92,12 @@ public class IdValueUpdater3 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
+                // This method has been left intentionally blank
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
+                // This method has been left intentionally blank
             }
         },
         new ValueGetter() {
