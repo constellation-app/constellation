@@ -14,12 +14,12 @@
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml"/>
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml"/>
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
-    <property name="jre.filename.windows" value="zulu11.37.19-ca-fx-jre11.0.6-win_x64"/>
+    <property name="jre.filename.windows" value="zulu11.39.15-ca-jre11.0.7-win_x64.zip"/>
     <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip"/>
-    <property name="jre.filename.linux" value="zulu11.37.19-ca-fx-jre11.0.6-linux_x64"/>
+    <property name="jre.filename.macosx" value="zulu11.39.15-ca-jre11.0.7-macosx_x64.zip"/>
+    <property name="jre.url.macosx" value="https://cdn.azul.com/zulu/bin/${jre.filename.macosx}.zip"/>
+    <property name="jre.filename.linux" value="zulu11.39.15-ca-jre11.0.7-linux_x64.zip"/>
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz"/>
-    <property name="jre.filename.macosx" value="zulu11.37.19-ca-fx-jre11.0.6-macosx_x64"/>
-    <property name="jre.url.macosx" value="https://cdn.azul.com/zulu/bin/${jre.filename.macosx}.tar.gz"/>
     <property name="dist.version" value="v2.0.0-beta"/>
     <property name="dist.filename.linux" value="constellation-linux-${dist.version}"/>
     <property name="dist.filename.windows" value="constellation-win-${dist.version}"/>
@@ -255,6 +255,67 @@
         <delete dir="${basedir}/${jre.filename.windows}/"/>
     </target>
     
+    <!-- MacOSX Section -->
+
+    <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
+    <target name="-download-macosx-jre" >
+        <echo message="downloading JRE..."/>
+        <get src="${jre.url.macosx}"
+                 dest="${basedir}" usetimestamp="true"/>
+        <unzip src="${basedir}/${jre.filename.macosx}.zip" dest="${basedir}"/>
+        <delete file="${basedir}/${jre.filename.macosx}.zip"/>
+    </target>
+
+    <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
+    <target name="build-zip-with-macosx-jre" depends="build,build-launchers,-download-macosx-jre" 
+                description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for MacOSX.">
+        <mkdir dir="${dist.dir}"/>
+        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
+        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
+        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
+        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
+            <property name="dest.dir" value="${temp.dir.rest}"/>
+            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
+            <property name="build.dir" value="${suite.build.dir}"/>
+            <resources refid="zip.platform.clusters"/>
+        </subant>
+        <fixcrlf srcdir="${build.launcher.dir}/etc/"
+                     destdir="${build.launcher.dir}/etc/"
+                     preservelastmodified="true"
+                     eol="lf" />
+        
+        <!-- work around to get the modified help jars to the build -->
+        <copy file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" todir="${temp.dir.rest}/platform/modules/ext" verbose="true"/>
+        
+        <!-- delete the harness folder which is only required for testing -->
+        <delete dir="${temp.dir.rest}/harness"/>
+        
+        <tar destfile="${dist.dir}/${dist.filename.macosx}.tar">
+            <!-- Using pre-built executable files that come with the Constellation icon -->
+            <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
+            <tarfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}" uid="${nobody}" gid="${nobody}">
+                <exclude name="*.bat"/>
+            </tarfileset>
+            <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc" uid="${nobody}" gid="${nobody}"/>
+            <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}" uid="${nobody}" gid="${nobody}"/>
+            <tarfileset dir="${temp.dir.rest}" prefix="${app.name}" uid="${nobody}" gid="${nobody}"/>
+
+            <!-- Make sure the files in jre/bin are executable -->
+            <tarfileset dir="${basedir}/${jre.filename.macosx}/" prefix="${app.name}/jre" uid="${nobody}" gid="${nobody}">
+                <exclude name="bin/*"/>
+            </tarfileset>
+            <tarfileset dir="${basedir}/${jre.filename.macosx}/bin/" filemode="755" prefix="${app.name}/jre/bin" uid="${nobody}" gid="${nobody}"/>
+
+            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
+            <tarfileset dir="${cluster}" prefix="${app.name}/${app.name}" uid="${nobody}" gid="${nobody}">
+                <exclude name="config/Modules/*.xml_hidden"/>
+            </tarfileset>
+        </tar>
+        <gzip src="${dist.dir}/${dist.filename.macosx}.tar" destfile="${dist.dir}/${dist.filename.macosx}.tar.gz"/>
+        <delete file="${dist.dir}/${dist.filename.macosx}.tar"/>
+        <delete dir="${basedir}/${jre.filename.macosx}/"/>
+    </target>
+    
     <!-- Linux Section -->
 
     <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
@@ -314,67 +375,6 @@
         <gzip src="${dist.dir}/${dist.filename.linux}.tar" destfile="${dist.dir}/${dist.filename.linux}.tar.gz"/>
         <delete file="${dist.dir}/${dist.filename.linux}.tar"/>
         <delete dir="${basedir}/${jre.filename.linux}/"/>
-    </target>
-    
-    <!-- MacOSX Section -->
-
-    <!-- This is a copy of -download-windows-jre, if there is a better way to do this then let me know -->
-    <target name="-download-macosx-jre" >
-        <echo message="downloading JRE..."/>
-        <get src="${jre.url.macosx}"
-                 dest="${basedir}" usetimestamp="true"/>
-        <untar src="${basedir}/${jre.filename.macosx}.tar.gz" dest="${basedir}" compression="gzip"/>
-        <delete file="${basedir}/${jre.filename.macosx}.tar.gz"/>
-    </target>
-
-    <!-- This is a copy of build-zip-with-windows-jre", if there is a better way to do this then let me know -->
-    <target name="build-zip-with-macosx-jre" depends="build,build-launchers,-download-macosx-jre" 
-                description="Builds a ZIP distribution of the suite, launchers, and selected modules from the platform. This includes the JRE for MacOSX.">
-        <mkdir dir="${dist.dir}"/>
-        <!-- pathfileset does not support 'prefix' and 'filemode' parameters, we have to copy them to temp location -->
-        <tempfile property="temp.dir.nbexec" destdir="${suite.build.dir}" deleteonexit="true" prefix="nbexec"/>
-        <tempfile property="temp.dir.rest" destdir="${suite.build.dir}" deleteonexit="delete" prefix="rest"/>
-        <subant genericantfile="${harness.dir}/suite.xml" target="copy-cluster" inheritrefs="true">
-            <property name="dest.dir" value="${temp.dir.rest}"/>
-            <property name="nbexec.dir" value="${temp.dir.nbexec}"/>
-            <property name="build.dir" value="${suite.build.dir}"/>
-            <resources refid="zip.platform.clusters"/>
-        </subant>
-        <fixcrlf srcdir="${build.launcher.dir}/etc/"
-                     destdir="${build.launcher.dir}/etc/"
-                     preservelastmodified="true"
-                     eol="lf" />
-        
-        <!-- work around to get the modified help jars to the build -->
-        <copy file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" todir="${temp.dir.rest}/platform/modules/ext" verbose="true"/>
-        
-        <!-- delete the harness folder which is only required for testing -->
-        <delete dir="${temp.dir.rest}/harness"/>
-        
-        <tar destfile="${dist.dir}/${dist.filename.macosx}.tar">
-            <!-- Using pre-built executable files that come with the Constellation icon -->
-            <!--<tarfileset dir="${build.launcher.dir}/bin/" filemode="755" prefix="${app.name}/bin"/>-->
-            <tarfileset dir="${basedir}/distribution/" filemode="755" prefix="${app.name}" uid="${nobody}" gid="${nobody}">
-                <exclude name="*.bat"/>
-            </tarfileset>
-            <tarfileset dir="${build.launcher.dir}/etc/" prefix="${app.name}/etc" uid="${nobody}" gid="${nobody}"/>
-            <tarfileset dir="${temp.dir.nbexec}" filemode="755" prefix="${app.name}" uid="${nobody}" gid="${nobody}"/>
-            <tarfileset dir="${temp.dir.rest}" prefix="${app.name}" uid="${nobody}" gid="${nobody}"/>
-
-            <!-- Make sure the files in jre/bin are executable -->
-            <tarfileset dir="${basedir}/${jre.filename.macosx}/" prefix="${app.name}/jre" uid="${nobody}" gid="${nobody}">
-                <exclude name="bin/*"/>
-            </tarfileset>
-            <tarfileset dir="${basedir}/${jre.filename.macosx}/bin/" filemode="755" prefix="${app.name}/jre/bin" uid="${nobody}" gid="${nobody}"/>
-
-            <!-- Yes, the doubled app.name is a bit ugly, but better than the alternative; cf. #66441: -->
-            <tarfileset dir="${cluster}" prefix="${app.name}/${app.name}" uid="${nobody}" gid="${nobody}">
-                <exclude name="config/Modules/*.xml_hidden"/>
-            </tarfileset>
-        </tar>
-        <gzip src="${dist.dir}/${dist.filename.macosx}.tar" destfile="${dist.dir}/${dist.filename.macosx}.tar.gz"/>
-        <delete file="${dist.dir}/${dist.filename.macosx}.tar"/>
-        <delete dir="${basedir}/${jre.filename.macosx}/"/>
     </target>
     
     <!-- Useful Dependency Utilities -->

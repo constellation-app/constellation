@@ -117,16 +117,14 @@ public class UndoGraphEditState {
             longStack[i] = in.readLong();
         }
 
-        Map<Integer, Class<?>> classMap = new HashMap<>();
-        objectMap.put(0, null);
-        byte[] buffer = new byte[1024];
-
         objectCount = in.readInt();
         objectStack = new Object[objectCount];
+        byte[] buffer = new byte[1024];
+        Map<Integer, Class<?>> classMap = new HashMap<>();
         for (int i = 0; i < objectCount; i++) {
             int objectClassIndex = in.readInt();
             Class<?> objectClass;
-            if (objectMap.containsKey(objectClassIndex)) {
+            if (classMap.containsKey(objectClassIndex)) {
                 objectClass = classMap.get(objectClassIndex);
             } else {
                 int classLength = in.readInt();
@@ -138,6 +136,7 @@ public class UndoGraphEditState {
                 objectClass = Class.forName(objectName);
                 classMap.put(objectClassIndex, objectClass);
             }
+            classMap.forEach((k, v) -> objectMap.put(v, k));
         }
     }
 
