@@ -188,17 +188,21 @@ public class CompareGraphPlugin extends SimpleReadPlugin {
             }
         }
 
+        @SuppressWarnings("unchecked") //ORIGINAL_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> originalGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ORIGINAL_GRAPH_PARAMETER_ID);
         SingleChoiceParameterType.setOptions(originalGraph, graphNames);
         SingleChoiceParameterType.setChoice(originalGraph, GraphNode.getGraphNode(activeGraph.getId()).getDisplayName());
 
+        @SuppressWarnings("unchecked") //COMPARE_GRAPH_PARAMETER will always be of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> compareGraph = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(COMPARE_GRAPH_PARAMETER_ID);
         SingleChoiceParameterType.setOptions(compareGraph, graphNames);
 
+        @SuppressWarnings("unchecked") //IGNORE_VERTEX_ATTRIBUTES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> ignoreVertexAttributes = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(IGNORE_VERTEX_ATTRIBUTES_PARAMETER_ID);
         MultiChoiceParameterType.setOptions(ignoreVertexAttributes, new ArrayList<>(registeredVertexAttributes));
         MultiChoiceParameterType.setChoices(ignoreVertexAttributes, ignoredVertexAttributes);
 
+        @SuppressWarnings("unchecked") //IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER will always be of type MultiChoiceParameter
         final PluginParameter<MultiChoiceParameterValue> ignoreTransactionAttributes = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(IGNORE_TRANSACTION_ATTRIBUTES_PARAMETER_ID);
         MultiChoiceParameterType.setOptions(ignoreTransactionAttributes, new ArrayList<>(registeredTransactionAttributes));
         MultiChoiceParameterType.setChoices(ignoreTransactionAttributes, ignoredTransactionAttributes);
