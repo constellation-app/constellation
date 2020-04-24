@@ -253,13 +253,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
         if (parameters != null && parameters.getParameters() != null) {
 
-            final PluginParameter contentAttribute = parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-            contentAttribute.suppressEvent(true, new ArrayList());
+            @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER will always be of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
+            contentAttribute.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
             if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
                 SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
             }
-            contentAttribute.suppressEvent(false, new ArrayList());
+            contentAttribute.suppressEvent(false, new ArrayList<>());
         }
     }
 

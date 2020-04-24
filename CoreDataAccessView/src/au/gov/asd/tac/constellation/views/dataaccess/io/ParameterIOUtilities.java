@@ -240,7 +240,7 @@ public class ParameterIOUtilities {
                     final String id = param.getKey();
                     if (global.has(id)) {
                         final JsonNode value = global.get(id);
-                        final PluginParameter pp = param.getValue();
+                        final PluginParameter<?> pp = param.getValue();
                         pp.setStringValue(value.isNull() ? null : value.textValue());
 
                         globalParams.add(id);
