@@ -41,6 +41,6 @@ public abstract class AnalyticTranslator<R extends AnalyticResult<?>, V extends 
 
     public abstract String getName();
 
-    @SuppressWarnings("rawtypes") //taw type needed for AnyToReport implementation
+    @SuppressWarnings("rawtypes") //raw type needed for AnyToReport implementation
     public abstract Class<? extends AnalyticResult> getResultType();
 }
