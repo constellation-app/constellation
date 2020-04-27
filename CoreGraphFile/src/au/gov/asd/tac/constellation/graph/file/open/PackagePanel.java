@@ -104,7 +104,7 @@ public class PackagePanel extends JPanel {
     private void initComponents2() {
         okButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_okButton"));
         cancelButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_cancelButton"));
-        list = new JList<>((String[]) pkgs.toArray());
+        list = new JList<>(pkgs.toArray(new String[0]));
 
         setLayout(new BorderLayout(0, 5));
         setBorder(new javax.swing.border.EmptyBorder(8, 8, 8, 8));
