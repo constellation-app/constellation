@@ -116,7 +116,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final ImportFileParser parser = (ImportFileParser) parameters.getParameters().get(PARSER_PARAMETER_ID).getObjectValue();
+        @SuppressWarnings("unchecked") //files will be a list of file which extends from object type
         final List<File> files = (List<File>) parameters.getParameters().get(FILES_PARAMETER_ID).getObjectValue();
+        @SuppressWarnings("unchecked") //definitions will be a list of import defintions which extends from object type
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();

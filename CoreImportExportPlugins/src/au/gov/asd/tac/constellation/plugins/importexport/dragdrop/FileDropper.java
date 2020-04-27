@@ -17,13 +17,13 @@ package au.gov.asd.tac.constellation.plugins.importexport.dragdrop;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
-import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
+import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -67,6 +67,7 @@ public class FileDropper implements GraphDropper {
             try {
                 final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                 return (graph, dropInfo) -> {
+                    @SuppressWarnings("unchecked") //data will be list of files which extends from object type
                     final List<File> files = (List<File>) data;
                     files.stream().forEach(file -> {
                         if (file.isFile()) {
