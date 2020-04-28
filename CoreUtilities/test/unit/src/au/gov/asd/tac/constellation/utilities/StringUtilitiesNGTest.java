@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.text;
+package au.gov.asd.tac.constellation.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.util.Arrays;
 import java.util.List;
 import static org.testng.Assert.assertEquals;
@@ -154,12 +156,5 @@ public class StringUtilitiesNGTest {
         final String s = "The quick brown fox";
         final String expected = "The Quick Brown Fox";
         assertEquals(StringUtilities.camelCase(s), expected);
-    }
-
-    @Test
-    public void removeSpecialCharactersWithSymbols() {
-        final String s = "@bcd3fgh! JklmnøP";
-        final String expected = "bcd3fghJklmnP";
-        assertEquals(StringUtilities.removeSpecialCharacters(s), expected);
     }
 }

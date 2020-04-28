@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -64,7 +63,7 @@ public class SupportPackageNGTest {
     public void testZipFolder() throws IOException {
         final Date now = new Date();
         final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-        final String username = StringUtilities.removeSpecialCharacters(System.getProperty("user.name"));
+        final String username = System.getenv("username");
 
         final File file = new File(this.getClass().getResource("..").getFile());
         final List<String> list = new ArrayList<>();
