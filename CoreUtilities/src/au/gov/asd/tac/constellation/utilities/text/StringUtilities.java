@@ -129,7 +129,7 @@ public class StringUtilities {
      */
     public static List<String> splitEscaped(final String string, final String delimiter) {
         final List<String> splits = new ArrayList<>();
-        
+
         if (string == null) {
             return splits;
         }
@@ -279,11 +279,11 @@ public class StringUtilities {
 
     public static List<String> unquoteAndSplitString(String string, final char delimiter, final char quote, final char escapeCharacter) {
         final List<String> strings = new ArrayList<>();
-        
+
         if (string == null) {
             return strings;
         }
-        
+
         while (!string.isEmpty()) {
             int delimiterIndex = -1;
             do {
@@ -368,5 +368,15 @@ public class StringUtilities {
         } else {
             return text;
         }
+    }
+
+    /**
+     * Remove special characters from the {@link String}
+     *
+     * @param text the string to be modified.
+     * @return A {@link String} without special characters
+     */
+    public static String removeSpecialCharacters(final String text) {
+        return text != null ? text.replaceAll("[^A-Za-z0-9]", "") : null;
     }
 }

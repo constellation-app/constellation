@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.support;
 
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -51,7 +52,7 @@ public final class SupportPackageAction implements ActionListener {
         if (saveAsDirectory != null) {
             final Date now = new Date();
             final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-            final String username = System.getenv("username");
+            final String username = StringUtilities.removeSpecialCharacters(System.getProperty("user.name"));
 
             final File destination = new File(saveAsDirectory.getPath(), String.format("%s-%s-%s.zip", "SupportPackage", username, simpleDateFormat.format(now)));
             final SupportPackage supportPackage = new SupportPackage();
