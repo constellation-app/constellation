@@ -143,7 +143,7 @@ public class AnalyticConfigurationPane extends VBox {
                 .map(plugin -> plugin.getPlugin().getResultType())
                 .collect(Collectors.toSet()).size() <= 1) :
                 "A category should be populated only with analytics of the same result type.";
-        this.categoryList = new ListView<String>();
+        this.categoryList = new ListView<>();
         final List<String> categories = new ArrayList<>(categoryToPluginsMap.keySet());
         Collections.sort(categories, (category1, category2) -> {
             return category1.compareToIgnoreCase(category2);

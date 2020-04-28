@@ -846,7 +846,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 if (params != null) {
                     final Map<String, PluginParameter<?>> paramsMap = params.getParameters();
                     for (Map.Entry<String, PluginParameter<?>> entry : paramsMap.entrySet()) {
-                        final PluginParameter value = entry.getValue();
+                        final PluginParameter<?> value = entry.getValue();
                         if (value.getError() != null) {
                             return false;
                         }
