@@ -347,8 +347,9 @@ public class MapViewTileRenderer extends PApplet {
         map.setTweening(true);
 
         dispatcher = MapUtils.createDefaultEventDispatcher(this, map);
-        // The map library, Unfolded, defaults to a hard-coded left click pan  
+        // The map library, Unfolding Maps, defaults to a hard-coded left click pan  
         dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+        dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
                 
         layers = Lookup.getDefault().lookupAll(MapLayer.class);
         layers.forEach(layer -> layer.initialise(this, map));
@@ -444,6 +445,17 @@ public class MapViewTileRenderer extends PApplet {
             // zoom to box
             boxOriginX = event.getX();
             boxOriginY = event.getY();
+        }else if(event.getButton() == PConstants.RIGHT && event.getCount() == 2){
+            dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
+            // Pan + Zoom (order is important)
+            PanMapEvent panMapEvent = new PanMapEvent(this, map.getId());
+            Location location = map.getLocation(mouseX, mouseY);
+            panMapEvent.setToLocation(location);
+            dispatcher.fireMapEvent(panMapEvent);
+            ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL, 1);
+            zoomMapEvent.setTransformationCenterLocation(location);
+            dispatcher.fireMapEvent(zoomMapEvent);
+            dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
         }
 
         overlays.forEach(overlay -> overlay.mousePressed(event));
@@ -561,9 +573,25 @@ public class MapViewTileRenderer extends PApplet {
     @Override
     public void mouseWheel(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
         layers.forEach(layer -> layer.mouseWheel(event));
+        
         overlays.forEach(overlay -> overlay.mouseWheel(event));
+        ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL);
+
+        // Use location as zoom center, so listening maps can zoom correctly
+        Location location = map.getLocation(mouseX, mouseY);
+        zoomMapEvent.setTransformationCenterLocation(location);
+        int delta = event.getCount();
+        // Zoom in or out
+        if (delta < 0) {
+            zoomMapEvent.setZoomLevelDelta(1);
+        } else if (delta > 0) {
+            zoomMapEvent.setZoomLevelDelta(-1);
+        }
+        dispatcher.fireMapEvent(zoomMapEvent);
+            
+        dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
     }
 
     @Override
