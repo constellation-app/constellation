@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationAbstractM
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationClusterMarker;
 import au.gov.asd.tac.constellation.views.mapview.markers.ConstellationMarkerFactory;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
+import au.gov.asd.tac.constellation.views.mapview.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerCache;
@@ -96,7 +97,6 @@ public class MapViewTileRenderer extends PApplet {
     private int boxOriginY;
     private int boxDeltaX;
     private int boxDeltaY;
-
     private boolean updating = false;
 
     public MapViewTileRenderer(final MapViewTopComponent parent) {
@@ -452,38 +452,47 @@ public class MapViewTileRenderer extends PApplet {
     @Override
     public void mouseDragged(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
-
-        if (event.getButton() == PConstants.CENTER) {
-            // zoom to box
-            boxZoomEnabled = true;
-            boxDeltaX = event.getX();
-            boxDeltaY = event.getY();
-        } else if (event.getButton() == PConstants.RIGHT) {
-            // select markers
-            boxSelectionEnabled = false;
-            
-            //Checks to see if click was on the map
-            final boolean ignoreMapInteractions = overlays.stream().anyMatch(overlay
-                    -> overlay.isEnabled()
-                    && mouseX > overlay.getX() && mouseY > overlay.getY()
-                    && mouseX < overlay.getX() + overlay.getWidth()
-                    && mouseY < overlay.getY() + overlay.getHeight());
-            if (!ignoreMapInteractions) {
-                // Triggers a pan event for a right click & drag if within map
-                dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
-                Location oldLocation = map.getLocation(pmouseX, pmouseY);
-                Location newLocation = map.getLocation(mouseX, mouseY);
-                PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
-                panMapEvent.setFromLocation(oldLocation);
-                panMapEvent.setToLocation(newLocation);
-                dispatcher.fireMapEvent(panMapEvent);
-                dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
-            }
-        } else if (event.getButton() == PConstants.LEFT) {
-            // select markers
-            boxSelectionEnabled = true;
-            boxDeltaX = event.getX();
-            boxDeltaY = event.getY();
+        
+        //Checks to see if click was on the map
+        final boolean ignoreMapInteractions = overlays.stream().anyMatch(overlay
+                        -> overlay.isEnabled()
+                                && mouseX > overlay.getX() && mouseY > overlay.getY()
+                                && mouseX < overlay.getX() + overlay.getWidth()
+                                && mouseY < overlay.getY() + overlay.getHeight());
+        
+        switch (event.getButton()) {
+            case PConstants.CENTER:
+                // zoom to box
+                boxZoomEnabled = true;
+                boxDeltaX = event.getX();
+                boxDeltaY = event.getY();
+                break;
+            case PConstants.RIGHT:
+                // select markers
+                boxSelectionEnabled = false;
+                
+                if (!ignoreMapInteractions) {
+                    // Triggers a pan event for a right click & drag if within map
+                    dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
+                    Location oldLocation = map.getLocation(pmouseX, pmouseY);
+                    Location newLocation = map.getLocation(mouseX, mouseY);
+                    PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
+                    panMapEvent.setFromLocation(oldLocation);
+                    panMapEvent.setToLocation(newLocation);
+                    dispatcher.fireMapEvent(panMapEvent);
+                    dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+                }   
+                break;
+            case PConstants.LEFT:
+                // select markers
+                if (!ignoreMapInteractions) {
+                    boxSelectionEnabled = true;
+                    boxDeltaX = event.getX();
+                    boxDeltaY = event.getY();
+                }
+                break;
+            default:
+                break;
         }
 
         layers.forEach(layer -> layer.mouseDragged(event));
@@ -655,8 +664,12 @@ public class MapViewTileRenderer extends PApplet {
      */
     private void handleMouseSelection(final MouseEvent event, final Set<ConstellationAbstractMarker> markers) {
         assert !SwingUtilities.isEventDispatchThread();
-
-        if (event == null || markers == null) {
+        
+        final boolean isMeasuring = overlays.stream().filter( overlay -> 
+                ToolsOverlay.class.isInstance(overlay) && overlay.isEnabled()
+            ).anyMatch(tooloverlay -> ((ToolsOverlay) tooloverlay).isMeasureActive());
+                                       
+        if (event == null || markers == null || isMeasuring) {
             return;
         }
 

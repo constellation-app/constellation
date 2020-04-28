@@ -120,6 +120,14 @@ public class ToolsOverlay extends MapOverlay {
     public float getY() {
         return renderer.getComponent().getY() + 10f;
     }
+    
+     /**
+     * @return the measureActive
+     */
+    public boolean isMeasureActive() {
+        return measureActive;
+    }
+
 
     private Location getMeasureToolStart() {
         if (measureOriginX == -1 && measureOriginY == -1) {
