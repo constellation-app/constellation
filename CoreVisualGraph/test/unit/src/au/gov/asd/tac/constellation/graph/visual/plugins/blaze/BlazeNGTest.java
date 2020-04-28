@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.blaze;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -60,12 +62,12 @@ public class BlazeNGTest {
         int selectedAttr;
 
         graph = new StoreGraph();
-        blazeAttr = graph.addAttribute(GraphElementType.VERTEX, "blaze", "blaze", null, null, null);
+        blazeAttr = graph.addAttribute(GraphElementType.VERTEX, BlazeAttributeDescription.ATTRIBUTE_NAME, "blaze", null, null, null);
         if (blazeAttr == Graph.NOT_FOUND) {
             fail();
         }
 
-        selectedAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "selected", false, null);
+        selectedAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
         if (selectedAttr == Graph.NOT_FOUND) {
             fail();
         }

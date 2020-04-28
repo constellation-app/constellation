@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,15 +42,15 @@ public class BooleanIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final boolean attrVal = jnode.booleanValue();
-        graph.setBooleanValue(attributeId, elementId, attrVal);
+        final boolean attributeValue = jnode.booleanValue();
+        graph.setBooleanValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final boolean attrVal = graph.getBooleanValue(attribute.getId(), elementId);
-            jsonGenerator.writeBooleanField(attribute.getName(), attrVal);
+            final boolean attributeValue = graph.getBooleanValue(attribute.getId(), elementId);
+            jsonGenerator.writeBooleanField(attribute.getName(), attributeValue);
         }
     }
 }

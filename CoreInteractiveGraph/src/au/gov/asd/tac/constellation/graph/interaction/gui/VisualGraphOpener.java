@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,8 @@ public final class VisualGraphOpener extends GraphOpener {
         if (props != null) {
             final String dtprop = props.getProperty(AutosaveUtilities.DT);
             if (dtprop != null) {
-                final ZonedDateTime zdtAutosave = ZonedDateTimeAttributeDescription.parseString(dtprop);
+                final ZonedDateTimeAttributeDescription datetimeAttributeDescription = new ZonedDateTimeAttributeDescription();
+                final ZonedDateTime zdtAutosave = datetimeAttributeDescription.convertFromString(dtprop);
                 final long dtFile = f.lastModified();
                 if (zdtAutosave.toEpochSecond() * 1000 > dtFile) {
                     final String dtf = new Date(dtFile).toString();

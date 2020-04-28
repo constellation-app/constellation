@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,11 +40,11 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
-        ConstellationColor colorValue = (ConstellationColor) attrVal;
+        ConstellationColor colorValue = (ConstellationColor) value;
 
         String strValue = colorValue.getName();
         if (strValue == null || strValue.isEmpty()) {

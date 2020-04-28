@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import org.openide.util.lookup.ServiceProvider;
@@ -31,36 +29,18 @@ public class DecoratorsAttributeDescription extends AbstractObjectAttributeDescr
 
     public static final String ATTRIBUTE_NAME = "decorators";
     public static final Class<VertexDecorators> NATIVE_CLASS = VertexDecorators.class;
-    private static final VertexDecorators DEFAULT_VALUE = VertexDecorators.NO_DECORATORS;
+    public static final VertexDecorators DEFAULT_VALUE = VertexDecorators.NO_DECORATORS;
 
     public DecoratorsAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
-    /**
-     * Extract a Decorators from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A Decorators.
-     */
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
-    protected VertexDecorators convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof VertexDecorators) {
-            return (VertexDecorators) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected VertexDecorators convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to Decorators", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return VertexDecorators.valueOf(string);
         }
-    }
-
-    @Override
-    protected VertexDecorators convertFromString(String string) {
-        return VertexDecorators.valueOf(string);
     }
 }

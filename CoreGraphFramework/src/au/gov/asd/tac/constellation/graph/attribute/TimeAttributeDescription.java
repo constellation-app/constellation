@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,8 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,110 +40,28 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class TimeAttributeDescription extends AbstractAttributeDescription {
 
-    private static final Logger LOGGER = Logger.getLogger(TimeAttributeDescription.class.getName());
-    private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "time";
-    public static final int NULL_VALUE = Integer.MIN_VALUE;
+    public static final int ATTRIBUTE_VERSION = 1;
+    public static final Class<Integer> NATIVE_CLASS = Integer.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.INT;
+    public static final int DEFAULT_VALUE = Integer.MIN_VALUE;
 
     private int[] data = new int[0];
-    private int defaultValue = NULL_VALUE;
+    private int defaultValue = DEFAULT_VALUE;
 
-    private static final DateTimeFormatter FORMATTER = TemporalFormatting.TIME_FORMATTER;
-
-    @Override
-    public String getName() {
-        return ATTRIBUTE_NAME;
-    }
-
-    @Override
-    public int getCapacity() {
-        return data.length;
-    }
-
-    @Override
-    public void setCapacity(final int capacity) {
-        final int len = data.length;
-        data = Arrays.copyOf(data, capacity);
-        if (capacity > len) {
-            Arrays.fill(data, len, capacity, defaultValue);
-        }
-    }
-
-    @Override
-    public void clear(final int id) {
-        data[id] = defaultValue;
-    }
-
-    @Override
-    public void setInt(final int id, final int value) {
-        data[id] = value;
-    }
-
-    @Override
-    public void setLong(final int id, final long value) {
-        data[id] = (int) value;
-    }
-
-    private static int parseObject(final Object value) {
-        if (value == null) {
-            return NULL_VALUE;
-        } else if (value instanceof LocalTime) {
-            return ((LocalTime) value).get(ChronoField.MILLI_OF_DAY);
-        } else if (value instanceof Number) {
-            return ((Number) value).intValue();
-        } else if (value instanceof String) {
-            return parseString((String) value);
+    private int convertFromObject(final Object object) {
+        if (object == null) {
+            return (int) getDefault();
+        } else if (object instanceof LocalTime) {
+            return ((LocalTime) object).get(ChronoField.MILLI_OF_DAY);
+        } else if (object instanceof Number) {
+            return ((Number) object).intValue();
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
         } else {
-            final String msg = String.format("Error converting '%s' to TimeAttributeDescription", value.getClass());
-            throw new IllegalArgumentException(msg);
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to time", object.getClass()));
         }
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = parseObject(value);
-    }
-
-    @Override
-    public void setString(final int id, final String value) {
-        data[id] = parseString(value);
-    }
-
-    @Override
-    public int getInt(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public long getLong(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        if (data[id] == NULL_VALUE) {
-            return null;
-        } else {
-            return LocalTime.ofNanoOfDay(((long) data[id]) * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
-        }
-    }
-
-    @Override
-    public String getString(final int id) {
-        if (data[id] == NULL_VALUE) {
-            return null;
-        } else {
-            return getAsString(LocalTime.ofNanoOfDay(((long) data[id]) * TemporalConstants.NANOSECONDS_IN_MILLISECOND));
-        }
-    }
-
-    @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
-        final TimeAttributeDescription attribute = new TimeAttributeDescription();
-        attribute.data = Arrays.copyOf(data, data.length);
-        attribute.defaultValue = this.defaultValue;
-        attribute.graph = graph;
-        return attribute;
     }
 
     /**
@@ -164,53 +79,151 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
      * to be a problem. However, this should not be taken as an excuse to write
      * syntactically incorrect datetime strings elsewhere.
      *
-     * @param time An (almost) ISO datetime to be parsed.
+     * @param string An (almost) ISO datetime to be parsed.
      *
      * @return A Calendar representing the input datetime.
      */
-    public static int parseString(final String time) {
-        if (time == null || time.isEmpty()) {
-            return NULL_VALUE;
+    private int convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return (int) getDefault();
+        } else {
+            try {
+                final int hour = Integer.parseInt(string.substring(0, 2), 10);
+                final int mintue = Integer.parseInt(string.substring(3, 5), 10);
+                final int second = Integer.parseInt(string.substring(6, 8), 10);
+                final int millisecond = Integer.parseInt(string.substring(9, 12));
+                return (hour * 3600000) + (mintue * 60000) + (second * 1000) + millisecond;
+            } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to time (expected hh:mm:ss[.SSS])", string), ex);
+            }
         }
-
-        try {
-            final int hour = Integer.parseInt(time.substring(0, 2), 10);
-            final int min = Integer.parseInt(time.substring(3, 5), 10);
-            final int sec = Integer.parseInt(time.substring(6, 8), 10);
-            final int ms = Integer.parseInt(time.substring(9, 12));
-
-            return (hour * 3600000) + (min * 60000) + (sec * 1000) + ms;
-        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can''t parse time string ''{0}'': {1}", new Object[]{time, ex.getMessage()});
-        }
-        return NULL_VALUE;
     }
 
-    /**
-     * Return the time in its canonical format.
-     *
-     * @param time The time in internal int representation.
-     *
-     * @return The time in its canonical format.
-     */
-    public static String getAsString(LocalTime time) {
-        return time.format(FORMATTER);
+    @Override
+    public String getName() {
+        return ATTRIBUTE_NAME;
+    }
+
+    @Override
+    public int getVersion() {
+        return ATTRIBUTE_VERSION;
     }
 
     @Override
     public Class<?> getNativeClass() {
-        return TimeAttributeDescription.class;
+        return NATIVE_CLASS;
     }
 
     @Override
-    public void setDefault(final Object value) {
-        final int parsedValue = parseObject(value);
-        defaultValue = parsedValue != NULL_VALUE ? parsedValue : NULL_VALUE;
+    public NativeAttributeType getNativeType() {
+        return NATIVE_TYPE;
     }
 
     @Override
     public Object getDefault() {
-        return defaultValue == NULL_VALUE ? null : LocalTime.ofNanoOfDay(((long) defaultValue) * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+        return defaultValue == DEFAULT_VALUE ? 0
+                : LocalTime.ofNanoOfDay(((long) defaultValue)
+                        * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+    }
+
+    @Override
+    public void setDefault(final Object value) {
+        defaultValue = convertFromObject(value);
+    }
+
+    @Override
+    public int getCapacity() {
+        return data.length;
+    }
+
+    @Override
+    public void setCapacity(final int capacity) {
+        final int len = data.length;
+        data = Arrays.copyOf(data, capacity);
+        if (capacity > len) {
+            Arrays.fill(data, len, capacity, defaultValue);
+        }
+    }
+
+    @Override
+    public int getInt(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setInt(final int id, final int value) {
+        data[id] = value;
+    }
+
+    @Override
+    public long getLong(final int id) {
+        return (long) data[id];
+    }
+
+    @Override
+    public void setLong(final int id, final long value) {
+        data[id] = (int) value;
+    }
+
+    @Override
+    public String getString(final int id) {
+        return data[id] == DEFAULT_VALUE ? null
+                : LocalTime.ofNanoOfDay(((long) data[id])
+                        * TemporalConstants.NANOSECONDS_IN_MILLISECOND)
+                        .format(TemporalFormatting.TIME_FORMATTER);
+    }
+
+    @Override
+    public void setString(final int id, final String value) {
+        data[id] = convertFromString(value);
+    }
+
+    @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final Exception ex) {
+            return ex.getMessage();
+        }
+    }
+
+    @Override
+    public Object getObject(final int id) {
+        return data[id] == DEFAULT_VALUE ? null 
+                : LocalTime.ofNanoOfDay(((long) data[id]) 
+                        * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
+    }
+
+    @Override
+    public Object convertToNativeValue(final Object object) {
+        return object == null ? DEFAULT_VALUE : ((LocalTime) object)
+                .get(ChronoField.MILLI_OF_DAY);
+    }
+
+    @Override
+    public boolean isClear(final int id) {
+        return data[id] == defaultValue;
+    }
+
+    @Override
+    public void clear(final int id) {
+        data[id] = defaultValue;
+    }
+
+    @Override
+    public AttributeDescription copy(GraphReadMethods graph) {
+        final TimeAttributeDescription attribute = new TimeAttributeDescription();
+        attribute.data = Arrays.copyOf(data, data.length);
+        attribute.defaultValue = this.defaultValue;
+        attribute.graph = graph;
+        return attribute;
     }
 
     @Override
@@ -224,21 +237,6 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 8;
-    }
-
-    @Override
-    public boolean isClear(final int id) {
-        return data[id] == defaultValue;
-    }
-
-    @Override
     public Object saveData() {
         return Arrays.copyOf(data, data.length);
     }
@@ -247,20 +245,5 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final int[] sd = (int[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
-    }
-
-    @Override
-    public NativeAttributeType getNativeType() {
-        return NativeAttributeType.INT;
-    }
-
-    @Override
-    public Object convertToNativeValue(Object objectValue) {
-        return objectValue == null ? NULL_VALUE : ((LocalTime) objectValue).get(ChronoField.MILLI_OF_DAY);
-    }
-
-    @Override
-    public int getVersion() {
-        return DESCRIPTION_VERSION;
     }
 }

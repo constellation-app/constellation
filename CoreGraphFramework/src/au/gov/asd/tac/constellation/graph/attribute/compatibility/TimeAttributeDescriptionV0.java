@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -324,16 +324,6 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
             }
             return false;
         }
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 8;
     }
 
     @Override

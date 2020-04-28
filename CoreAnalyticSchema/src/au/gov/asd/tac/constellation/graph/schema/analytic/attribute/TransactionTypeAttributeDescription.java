@@ -50,8 +50,8 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected SchemaTransactionType convertFromString(final String string) {
-        if (string == null) {
-            return defaultValue;
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
             return SchemaTransactionTypeUtilities.getTypeOrBuildNew(string);
         }
@@ -61,7 +61,7 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
     public void setDefault(final Object value) {
         super.setDefault(value);
 
-        // Ensure that the default is a registered type.
+        // ensure that the default is a registered type.
         if (defaultValue instanceof SchemaTransactionType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }

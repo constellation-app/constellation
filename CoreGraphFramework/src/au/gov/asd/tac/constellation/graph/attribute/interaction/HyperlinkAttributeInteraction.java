@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,9 @@ import java.net.URI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeInteraction}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -33,11 +35,11 @@ public class HyperlinkAttributeInteraction extends AbstractAttributeInteraction<
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return attrVal.toString();
+        return value.toString();
     }
 
     @Override

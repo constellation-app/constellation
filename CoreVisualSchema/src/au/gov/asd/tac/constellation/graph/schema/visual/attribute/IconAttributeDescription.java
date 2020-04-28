@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,22 +42,12 @@ public final class IconAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    @SuppressWarnings("unchecked") // All casts are checked
-    protected ConstellationIcon convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof ConstellationIcon) {
-            return (ConstellationIcon) object;
+    protected ConstellationIcon convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
-            throw new IllegalArgumentException(String.format("Error converting '%s' to IconAttributeDescription", object.getClass()));
+            return IconManager.getIcon(string == null ? "" : string);
         }
-    }
-
-    @Override
-    protected ConstellationIcon convertFromString(String string) {
-        return IconManager.getIcon(string == null ? "" : string);
     }
 
     @Override

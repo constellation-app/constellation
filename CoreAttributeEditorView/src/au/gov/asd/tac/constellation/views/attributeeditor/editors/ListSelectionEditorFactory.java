@@ -82,7 +82,7 @@ public class ListSelectionEditorFactory extends AbstractEditorFactory<List<Strin
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
 
             VBox nonSelectedItemsBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);

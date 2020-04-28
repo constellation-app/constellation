@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,9 +43,9 @@ public class PasteUndirectedTransactionNGTest {
 //        final String name1 = "node1";
 //
 //        final StoreGraph graph = new StoreGraph();
-//        final int nameAttr = graph.addAttribute(GraphElementType.VERTEX, "string", "name", "", "", null);
-//        final int selectedVertexAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "", "", null);
-//        final int selectedTransactionAttr = graph.addAttribute(GraphElementType.TRANSACTION, "boolean", "selected", "", "", null);
+//        final int nameAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "", "", null);
+//        final int selectedVertexAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", "", null);
+//        final int selectedTransactionAttr = graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", "", null);
 //        int[] keys = new int[1];
 //        keys[0] = nameAttr;
 //        graph.setPrimaryKey(GraphElementType.VERTEX, keys);

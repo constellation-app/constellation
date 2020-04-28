@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class DateAttributeTranslator extends AttributeTranslator {
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DateAttributeTranslator.class, "custom");
 
     private static final Map<String, String> DATE_FORMATS = new LinkedHashMap<>();
-    private static final DateTimeFormatter RESULT_FORMAT = DateAttributeDescription.FORMATTER;
+    private static final DateTimeFormatter RESULT_FORMAT = TemporalFormatting.DATE_FORMATTER;
 
     static {
         DATE_FORMATS.put("yyyy-MM-dd", "yyyy-MM-dd");

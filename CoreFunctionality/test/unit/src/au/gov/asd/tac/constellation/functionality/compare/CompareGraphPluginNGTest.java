@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
@@ -95,9 +96,9 @@ public class CompareGraphPluginNGTest {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, "string", "Label", "", "", null);
+        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Label", "", "", null);
         lineStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(originalGraph);
-        fooAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, "string", "foo", "", "", null);
+        fooAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         originalGraph.setPrimaryKey(GraphElementType.TRANSACTION, lineStyleAttribute);
 
@@ -115,8 +116,8 @@ public class CompareGraphPluginNGTest {
         originalGraph.setStringValue(labelAttribute, vx4, "vx4");
 
         final StoreGraph compareGraph = new StoreGraph(schema);
-        labelAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, "string", "Label", "", "", null);
-        fooAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, "string", "foo", "", "", null);
+        labelAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Label", "", "", null);
+        fooAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "foo", "", "", null);
         lineStyleAttribute = VisualConcept.TransactionAttribute.LINE_STYLE.ensure(compareGraph);
         compareGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
         compareGraph.setPrimaryKey(GraphElementType.TRANSACTION, lineStyleAttribute);
@@ -479,7 +480,7 @@ public class CompareGraphPluginNGTest {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
 
         final StoreGraph originalGraph = new StoreGraph(schema);
-        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, "string", "Name", "", "", null);
+        labelAttribute = originalGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         originalGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
 
         vx0 = originalGraph.addVertex();
@@ -493,7 +494,7 @@ public class CompareGraphPluginNGTest {
         originalGraph.setStringValue(labelAttribute, vx3, "vx3");
 
         final StoreGraph compareGraph = new StoreGraph(schema);
-        labelAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, "string", "Name", "", "", null);
+        labelAttribute = compareGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         compareGraph.setPrimaryKey(GraphElementType.VERTEX, labelAttribute);
 
         vx0 = compareGraph.addVertex();
@@ -1112,7 +1113,7 @@ public class CompareGraphPluginNGTest {
     public void testCollectStatisticsFromGraph() {
         final int vx0, vx1, tx0;
         final StoreGraph graph = new StoreGraph();
-        final int labelAttribute = graph.addAttribute(GraphElementType.VERTEX, "string", "Name", "", "", null);
+        final int labelAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         vx0 = graph.addVertex();
         vx1 = graph.addVertex();
         tx0 = graph.addTransaction(vx0, vx1, true);

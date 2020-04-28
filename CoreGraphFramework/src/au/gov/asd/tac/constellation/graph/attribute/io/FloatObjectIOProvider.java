@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,16 +42,16 @@ public class FloatObjectIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final Float attrVal = jnode.isNull() ? null : (float) jnode.doubleValue();
-        graph.setObjectValue(attributeId, elementId, attrVal);
+        final Float attributeue = jnode.isNull() ? null : (float) jnode.doubleValue();
+        graph.setObjectValue(attributeId, elementId, attributeue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final Float attrVal = graph.getObjectValue(attribute.getId(), elementId);
-            if (attrVal != null) {
-                jsonGenerator.writeNumberField(attribute.getName(), attrVal);
+            final Float attributeValue = graph.getObjectValue(attribute.getId(), elementId);
+            if (attributeValue != null) {
+                jsonGenerator.writeNumberField(attribute.getName(), attributeValue);
             } else {
                 jsonGenerator.writeNullField(attribute.getName());
             }

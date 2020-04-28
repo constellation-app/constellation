@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -161,16 +161,6 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1].equals(data[id2]);
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return false;
-    }
-
-    @Override
-    public int ordering() {
-        return 9;
     }
 
     @Override

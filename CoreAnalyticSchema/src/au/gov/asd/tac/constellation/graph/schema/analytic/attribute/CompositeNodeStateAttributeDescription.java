@@ -50,22 +50,12 @@ public class CompositeNodeStateAttributeDescription extends AbstractObjectAttrib
     }
 
     @Override
-    protected CompositeNodeState convertFromObject(Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof CompositeNodeState) {
-            return (CompositeNodeState) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            final String msg = String.format("Error converting Object '%s' to CompositeNodeState", object.getClass());
-            throw new IllegalArgumentException(msg);
-        }
-    }
-
-    @Override
     protected CompositeNodeState convertFromString(final String string) {
-        return CompositeNodeState.createFromString(string);
+        if (string == null || string.isEmpty()) {
+            return getDefault();
+        } else {
+            return CompositeNodeState.createFromString(string);
+        }
     }
 
     @Override

@@ -50,11 +50,11 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    protected SchemaVertexType convertFromString(final String value) {
-        if (value == null) {
-            return defaultValue;
+    protected SchemaVertexType convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
-            return SchemaVertexTypeUtilities.getTypeOrBuildNew(value);
+            return SchemaVertexTypeUtilities.getTypeOrBuildNew(string);
         }
     }
 
@@ -62,7 +62,7 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     public void setDefault(final Object value) {
         super.setDefault(value);
 
-        // Ensure that the default is a registered type.
+        // ensure that the default is a registered type.
         if (defaultValue instanceof SchemaVertexType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }

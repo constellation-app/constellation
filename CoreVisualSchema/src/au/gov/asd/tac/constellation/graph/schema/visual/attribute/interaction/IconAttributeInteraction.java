@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public class IconAttributeInteraction extends AbstractAttributeInteraction<Const
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        final ConstellationIcon icon = (ConstellationIcon) attrVal;
+    public String getDisplayText(Object value) {
+        final ConstellationIcon icon = (ConstellationIcon) value;
         if (icon == null) {
             return null;
         }
@@ -50,10 +50,10 @@ public class IconAttributeInteraction extends AbstractAttributeInteraction<Const
     }
 
     @Override
-    public List<Node> getDisplayNodes(Object attrVal, double width, double height) {
+    public List<Node> getDisplayNodes(Object value, double width, double height) {
         Image iconImage = null;
 
-        final ConstellationIcon icon = (ConstellationIcon) attrVal;
+        final ConstellationIcon icon = (ConstellationIcon) value;
         if (icon != null) {
             iconImage = icon.buildImage();
         }

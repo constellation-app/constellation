@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.select;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -64,27 +66,27 @@ public class InvertSelectionNGTest {
 
     private void generateData() throws InterruptedException {
         graph = new StoreGraph();
-        attrX = graph.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0.0, null);
+        attrX = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
         if (attrX == Graph.NOT_FOUND) {
             AssertJUnit.fail();
         }
 
-        attrY = graph.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0.0, null);
+        attrY = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
         if (attrY == Graph.NOT_FOUND) {
             AssertJUnit.fail();
         }
 
-        attrZ = graph.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0.0, null);
+        attrZ = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
         if (attrZ == Graph.NOT_FOUND) {
             AssertJUnit.fail();
         }
 
-        vAttrId = graph.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "selected", false, null);
+        vAttrId = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
         if (vAttrId == Graph.NOT_FOUND) {
             AssertJUnit.fail();
         }
 
-        tAttrId = graph.addAttribute(GraphElementType.TRANSACTION, "boolean", "selected", "selected", false, null);
+        tAttrId = graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
         if (tAttrId == Graph.NOT_FOUND) {
             AssertJUnit.fail();
         }

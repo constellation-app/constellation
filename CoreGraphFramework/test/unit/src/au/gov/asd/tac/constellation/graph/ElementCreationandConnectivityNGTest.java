@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import java.util.ArrayList;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -94,7 +95,7 @@ public class ElementCreationandConnectivityNGTest {
     public void nodeIterator() {
         int numNodes = 10;
         StoreGraph graph = new StoreGraph();
-        final int attrInt = graph.addAttribute(GraphElementType.VERTEX, "integer", "intattr", "descr", 23, null);
+        final int attrInt = graph.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "intattr", "descr", 23, null);
 
         for (int i = 0; i < numNodes; i++) {
             final int ix = graph.addVertex();

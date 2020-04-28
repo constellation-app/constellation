@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,41 +42,26 @@ public class LayerNameAttributeDescription extends AbstractObjectAttributeDescri
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
-    protected LayerName convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof LayerName) {
-            return (LayerName) object;
-        } else if (object instanceof String) {
-            if (object.equals("DEFAULT")) {
-                // handle default value from file import
-                return DEFAULT_VALUE;
-            } else {
-                return convertFromString((String) object);
-            }
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting %s to LayerName.", object.getClass()));
-        }
-    }
-
-    @Override
     protected LayerName convertFromString(final String string) {
-        LayerName layerName = null;
-
-        if (string != null) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
+        } else if (string.equals("DEFAULT")) {
+            // handle default value from file import
+            return DEFAULT_VALUE;
+        } else {
             final int ix = string.indexOf(',');
             if (ix > 0) {
                 try {
                     final int layer = Integer.parseInt(string.substring(0, ix));
                     final String name = string.substring(ix + 1);
-                    layerName = new LayerName(layer, name);
+                    return new LayerName(layer, name);
                 } catch (final NumberFormatException ex) {
+                    throw new IllegalArgumentException(String.format(
+                            "Error converting String '%s' to layer_name", string), ex);
                 }
             }
+            return null;
         }
-
-        return layerName;
     }
 
     @Override

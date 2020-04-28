@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,18 +40,18 @@ public class HyperlinkIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final String attrVal = jnode.isNull() ? null : jnode.textValue();
-        graph.setStringValue(attributeId, elementId, attrVal);
+        final String attributeValue = jnode.isNull() ? null : jnode.textValue();
+        graph.setStringValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final String attrVal = graph.getStringValue(attr.getId(), elementId);
-            if (attrVal == null) {
+            final String attributeValue = graph.getStringValue(attr.getId(), elementId);
+            if (attributeValue == null) {
                 jsonGenerator.writeNullField(attr.getName());
             } else {
-                jsonGenerator.writeStringField(attr.getName(), attrVal);
+                jsonGenerator.writeStringField(attr.getName(), attributeValue);
             }
         }
     }

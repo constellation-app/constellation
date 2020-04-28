@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimpleAction;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -84,7 +85,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             final GraphTaxonomy tax = treeArranger.getTaxonomy(graph);
 
             if (VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, "icon", "background_icon", "background_icon", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon", "background_icon", null, null);
             }
             final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
 

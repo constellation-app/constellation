@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import org.openide.util.lookup.ServiceProvider;
@@ -29,8 +27,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class VertexGraphLabelsAttributeDescription extends AbstractObjectAttributeDescription<GraphLabels> {
 
-    private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "graph_labels_nodes";
+    private static final int ATTRIBUTE_VERSION = 1;
     public static final Class<GraphLabels> NATIVE_CLASS = GraphLabels.class;
     private static final GraphLabels DEFAULT_VALUE = GraphLabels.NO_LABELS;
 
@@ -38,35 +36,17 @@ public final class VertexGraphLabelsAttributeDescription extends AbstractObjectA
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
-    /**
-     * Extract a GraphLabels from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A GraphLabels.
-     */
     @Override
-    @SuppressWarnings("unchecked") //Casts are checked manually
-    protected GraphLabels convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof GraphLabels) {
-            return (GraphLabels) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected GraphLabels convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to GraphLabels", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return GraphLabels.valueOf(string);
         }
     }
 
     @Override
-    protected GraphLabels convertFromString(String string) {
-        return GraphLabels.valueOf(string);
-    }
-
-    @Override
     public int getVersion() {
-        return DESCRIPTION_VERSION;
+        return ATTRIBUTE_VERSION;
     }
 }

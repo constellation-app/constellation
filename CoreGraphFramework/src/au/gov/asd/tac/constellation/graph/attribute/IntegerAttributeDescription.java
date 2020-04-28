@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,38 @@ import org.openide.util.lookup.ServiceProvider;
 public final class IntegerAttributeDescription extends AbstractAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "integer";
+    public static final Class<Integer> NATIVE_CLASS = int.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.INT;
     public static final int DEFAULT_VALUE = 0;
-    private int defaultValue = DEFAULT_VALUE;
+    
     private int[] data = new int[0];
+    private int defaultValue = DEFAULT_VALUE;
+    
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    private int convertFromObject(final Object object) {
+        if (object == null) {
+            return (int) getDefault();
+        } else if (object instanceof Number) {
+            return ((Number) object).intValue();
+        } else if (object instanceof Boolean) {
+            return ((Boolean) object) ? 1 : 0;
+        } else if (object instanceof Character) {
+            return (int) ((Character) object);
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to integer", object.getClass()));
+        }
+    }
+
+    private int convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return (int) getDefault();
+        } else {
+            return Integer.parseInt(string);
+        }
+    }
 
     @Override
     public String getName() {
@@ -55,12 +84,12 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public Class<?> getNativeClass() {
-        return int.class;
+        return NATIVE_CLASS;
     }
 
     @Override
     public NativeAttributeType getNativeType() {
-        return NativeAttributeType.INT;
+        return NATIVE_TYPE;
     }
 
     @Override
@@ -70,7 +99,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = setObject(value);
+        defaultValue = convertFromObject(value);
     }
 
     @Override
@@ -87,20 +116,6 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
         }
     }
 
-    private static int setObject(final Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).intValue();
-        } else if (value instanceof String) {
-            return Integer.parseInt((String) value);
-        } else if (value instanceof Boolean) {
-            return ((Boolean) value) ? 1 : 0;
-        } else if (value instanceof Character) {
-            return (char) value;
-        } else {
-            return DEFAULT_VALUE;
-        }
-    }
-
     @Override
     public byte getByte(final int id) {
         return (byte) data[id];
@@ -108,7 +123,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (int) value;
     }
 
     @Override
@@ -118,7 +133,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value;
+        data[id] = (int) value;
     }
 
     @Override
@@ -133,7 +148,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public long getLong(final int id) {
-        return data[id];
+        return (long) data[id];
     }
 
     @Override
@@ -143,7 +158,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public float getFloat(final int id) {
-        return data[id];
+        return (float) data[id];
     }
 
     @Override
@@ -153,7 +168,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public double getDouble(final int id) {
-        return data[id];
+        return (double) data[id];
     }
 
     @Override
@@ -178,17 +193,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value;
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = setObject(value);
+        data[id] = (int) value;
     }
 
     @Override
@@ -198,25 +203,27 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setString(final int id, final String value) {
-        if (value == null || value.isEmpty()) {
-            data[id] = (Integer) getDefault();
-        } else {
-            try {
-                data[id] = Integer.parseInt(value);
-            } catch (final NumberFormatException ex) {
-                data[id] = (int) Float.parseFloat(value);
-            }
+        data[id] = convertFromString(value);
+    }
+
+    @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final Exception ex) {
+            return ex.getMessage();
         }
     }
 
     @Override
-    public String acceptsString(String value) {
-        try {
-            Integer.parseInt(value);
-            return null;
-        } catch (Exception ex) {
-            return "Not a valid integer value";
-        }
+    public Object getObject(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
     }
 
     @Override
@@ -230,22 +237,12 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final IntegerAttributeDescription attribute = new IntegerAttributeDescription();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
         return attribute;
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 3;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.attribute.compatibility;
+package au.gov.asd.tac.constellation.graph.attribute.io;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
+import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -30,36 +28,32 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * IOProvider for attributes described by
- * {@link au.gov.asd.tac.constellation.graph.attribute.AttrListAttributeDescription}.
- * <p>
- * Note that this attribute description should no longer be used and only
- * remains to support legacy graph files.
+ * {@link au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription}
  *
- * @author twilight_sparkle
+ * @author cygnus_x-1
  */
-@Deprecated
 @ServiceProvider(service = AbstractGraphIOProvider.class)
-public class AttrListIOProviderV0 extends AbstractGraphIOProvider {
+public class DoubleObjectIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public String getName() {
-        return AttrListAttributeDescriptionV0.ATTR_NAME;
+        return DoubleObjectAttributeDescription.ATTRIBUTE_NAME;
     }
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final String attrVal = jnode.isNull() ? null : jnode.textValue();
-        graph.setStringValue(attributeId, elementId, attrVal);
+        final Double attributeValue = jnode.isNull() ? null : jnode.doubleValue();
+        graph.setObjectValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
-        if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final String attrVal = graph.getStringValue(attr.getId(), elementId);
-            if (attrVal == null) {
-                jsonGenerator.writeNullField(attr.getName());
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
+        if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
+            final Double attributeValue = graph.getObjectValue(attribute.getId(), elementId);
+            if (attributeValue != null) {
+                jsonGenerator.writeNumberField(attribute.getName(), attributeValue);
             } else {
-                jsonGenerator.writeStringField(attr.getName(), attrVal);
+                jsonGenerator.writeNullField(attribute.getName());
             }
         }
     }

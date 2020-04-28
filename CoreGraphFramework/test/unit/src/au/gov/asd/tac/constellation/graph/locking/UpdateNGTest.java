@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.graph.locking;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import org.openide.awt.UndoRedo;
 import org.openide.util.Exceptions;
 import org.testng.Assert;
@@ -44,7 +47,7 @@ public class UpdateNGTest {
             DualGraph g = new DualGraph(null);
             WritableGraph wg = g.getWritableGraph("", true);
             try {
-                a = wg.addAttribute(GraphElementType.VERTEX, "string", "label", "description", null, null);
+                a = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "label", "description", null, null);
                 v = wg.addVertex();
                 wg.setStringValue(a, v, "Hello");
             } finally {
@@ -90,8 +93,8 @@ public class UpdateNGTest {
             final int ac;
             final int v;
             try {
-                af = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-                ac = wg.addAttribute(GraphElementType.VERTEX, "integer", "level", "description", null, null);
+                af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+                ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
                 v = wg.addVertex();
                 wg.setFloatValue(af, v, 2.71828f);
                 wg.setStringValue(ac, v, "3");
@@ -122,8 +125,8 @@ public class UpdateNGTest {
             final int ac;
             final int v;
             try {
-                af = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-                ac = wg.addAttribute(GraphElementType.VERTEX, "integer", "level", "description", null, null);
+                af = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+                ac = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "level", "description", null, null);
                 v = wg.addVertex();
                 wg.setFloatValue(af, v, 2.71828f);
                 wg.setStringValue(ac, v, "3");
@@ -203,7 +206,7 @@ public class UpdateNGTest {
 //            final WritableGraph wg = g.getWritableGraph("add stuff", true);
 //            int attrId, vxId;
 //            try {
-//                attrId = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", defaultValue, null);
+//                attrId = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", defaultValue, null);
 //                vxId = wg.addVertex();
 //            } finally {
 //                wg.commit();
@@ -256,7 +259,7 @@ public class UpdateNGTest {
             wg = g.getWritableGraph("Tx test", true);
             for (int i = 0; i < 100; i++) {
                 final String s = String.format("x%d", i);
-                wg.addAttribute(GraphElementType.VERTEX, "float", s, s, 0, null);
+                wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, s, s, 0, null);
             }
             int vx = 0;
             for (int i = 0; i < 100; i++) {
@@ -292,7 +295,7 @@ public class UpdateNGTest {
 //        int vx1;
 //        try {
 //            wg = g.getWritableGraph("Add attributes", true);
-//            attrId = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
+//            attrId = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
 //            vx0 = wg.addVertex();
 //            vx1 = wg.addVertex();
 //            wg.setFloatValue(attrId, vx0, f0);

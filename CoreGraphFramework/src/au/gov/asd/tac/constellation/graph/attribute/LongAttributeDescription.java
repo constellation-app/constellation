@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,39 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class LongAttributeDescription extends AbstractAttributeDescription {
 
+    public static final String ATTRIBUTE_NAME = "long";
+    public static final Class<Long> NATIVE_CLASS = long.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
     private static final long DEFAULT_VALUE = 0L;
+    
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
-    public static final String ATTRIBUTE_NAME = "long";
+    
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    private long convertFromObject(final Object object) {
+        if (object == null) {
+            return (long) getDefault();
+        } else if (object instanceof Number) {
+            return ((Number) object).longValue();
+        } else if (object instanceof Boolean) {
+            return ((Boolean) object) ? 1L : 0L;
+        } else if (object instanceof Character) {
+            return (long) ((Character) object);
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to long", object.getClass()));
+        }
+    }
+
+    private long convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return (long) getDefault();
+        } else {
+            return Long.parseLong(string);
+        }
+    }
 
     @Override
     public String getName() {
@@ -60,7 +89,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public NativeAttributeType getNativeType() {
-        return NativeAttributeType.LONG;
+        return NATIVE_TYPE;
     }
 
     @Override
@@ -70,7 +99,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = setObject(value);
+        defaultValue = convertFromObject(value);
     }
 
     @Override
@@ -108,7 +137,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -118,7 +147,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -128,7 +157,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = value;
+        data[id] = (long) value;
     }
 
     @Override
@@ -143,7 +172,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public float getFloat(final int id) {
-        return data[id];
+        return (float) data[id];
     }
 
     @Override
@@ -153,7 +182,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public double getDouble(final int id) {
-        return data[id];
+        return (double) data[id];
     }
 
     @Override
@@ -163,7 +192,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public boolean getBoolean(final int id) {
-        return data[id] != 0;
+        return data[id] != 0L;
     }
 
     @Override
@@ -178,17 +207,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value;
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = setObject(value);
+        data[id] = (long) value;
     }
 
     @Override
@@ -198,15 +217,27 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public void setString(final int id, final String value) {
-        if (value == null || value.isEmpty()) {
-            data[id] = DEFAULT_VALUE;
-        } else {
-            try {
-                data[id] = Long.parseLong(value);
-            } catch (final NumberFormatException ex) {
-                data[id] = DEFAULT_VALUE;
-            }
+        data[id] = convertFromString(value);
+    }
+
+    @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final Exception ex) {
+            return ex.getMessage();
         }
+    }
+
+    @Override
+    public Object getObject(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
     }
 
     @Override
@@ -220,7 +251,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final LongAttributeDescription attribute = new LongAttributeDescription();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
@@ -241,11 +272,6 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     @Override
     public void save(final int id, final ParameterWriteAccess access) {
         access.setLong(data[id]);
-    }
-
-    @Override
-    public int ordering() {
-        return 4;
     }
 
     @Override

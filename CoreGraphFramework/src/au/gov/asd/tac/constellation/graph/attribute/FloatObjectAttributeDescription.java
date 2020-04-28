@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
-import java.util.Arrays;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -30,7 +28,6 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
     public static final String ATTRIBUTE_NAME = "float_or_null";
     public static final Class<Float> NATIVE_CLASS = Float.class;
     public static final Float DEFAULT_VALUE = null;
-    private final int nullHash = 0x7f800001;
 
     public FloatObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
@@ -39,18 +36,18 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
     @Override
     @SuppressWarnings("unchecked") // Casts are manually checked
     protected Float convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof Number) {
-            return ((Number) object).floatValue();
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1.0f : 0.0f;
-        } else if (object instanceof Character) {
-            return (float) object;
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting Object '%s' to Float", object.getClass()));
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof Number) {
+                return ((Number) object).floatValue();
+            } else if (object instanceof Boolean) {
+                return ((Boolean) object) ? 1.0f : 0.0f;
+            } else if (object instanceof Character) {
+                return (float) object;
+            } else {
+                throw ex;
+            }
         }
     }
 
@@ -59,17 +56,13 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
         if (string == null || string.isEmpty()) {
             return getDefault();
         } else {
-            try {
-                return Float.parseFloat(string);
-            } catch (final NumberFormatException ex) {
-                return getDefault();
-            }
+            return Float.parseFloat(string);
         }
     }
 
     @Override
     public byte getByte(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]).byteValue();
+        return data[id] != null ? ((Float) data[id]).byteValue() : (byte) 0;
     }
 
     @Override
@@ -79,7 +72,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public short getShort(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]).shortValue();
+        return data[id] != null ? ((Float) data[id]).shortValue() : (short) 0;
     }
 
     @Override
@@ -89,7 +82,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public int getInt(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]).intValue();
+        return data[id] != null ? ((Float) data[id]).intValue() : 0;
     }
 
     @Override
@@ -99,7 +92,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public long getLong(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]).longValue();
+        return data[id] != null ? ((Float) data[id]).longValue() : 0L;
     }
 
     @Override
@@ -109,7 +102,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public float getFloat(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]);
+        return data[id] != null ? (Float) data[id] : 0.0f;
     }
 
     @Override
@@ -119,7 +112,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public double getDouble(final int id) {
-        return data[id] == null ? 0 : ((Float) data[id]).doubleValue();
+        return data[id] != null ? ((Float) data[id]).doubleValue() : 0.0;
     }
 
     @Override
@@ -139,7 +132,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     public char getChar(final int id) {
-        return data[id] == null ? 0 : (char) (float) data[id];
+        return data[id] != null ? (char) (float) data[id] : (char) 0;
     }
 
     @Override
@@ -148,38 +141,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
     }
 
     @Override
-    public String acceptsString(String value) {
-        try {
-            Float.parseFloat(value);
-            return null;
-        } catch (NumberFormatException ex) {
-            return "Not a valid float value";
-        }
-    }
-
-    @Override
     public int hashCode(final int id) {
         return data[id] == null ? nullHash : Float.floatToIntBits((Float) data[id]);
-    }
-
-    @Override
-    public int ordering() {
-        return 5;
-    }
-
-    @Override
-    public void restore(final int id, final ParameterReadAccess access) {
-        data[id] = (Float) access.getUndoObject();
-    }
-
-    @Override
-    public Object saveData() {
-        return Arrays.copyOf(data, data.length);
-    }
-
-    @Override
-    public void restoreData(final Object savedData) {
-        final Float[] sd = (Float[]) savedData;
-        data = Arrays.copyOf(sd, sd.length);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import javax.swing.undo.UndoManager;
 import static org.testng.Assert.fail;
@@ -67,37 +70,37 @@ public class UndoRedoNGTest {
 
         WritableGraph wg = graph.getWritableGraph("original load", true);
         try {
-            attrX = wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0.0, null);
+            attrX = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0.0, null);
             if (attrX == Graph.NOT_FOUND) {
                 fail();
             }
 
-            attrY = wg.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0.0, null);
+            attrY = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0.0, null);
             if (attrY == Graph.NOT_FOUND) {
                 fail();
             }
 
-            attrZ = wg.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0.0, null);
+            attrZ = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0.0, null);
             if (attrZ == Graph.NOT_FOUND) {
                 fail();
             }
 
-            vNameAttr = wg.addAttribute(GraphElementType.VERTEX, "string", "name", "descr", "", null);
+            vNameAttr = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
             if (vNameAttr == Graph.NOT_FOUND) {
                 fail();
             }
 
-            tNameAttr = wg.addAttribute(GraphElementType.TRANSACTION, "string", "name", "descr", "", null);
+            tNameAttr = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "descr", "", null);
             if (tNameAttr == Graph.NOT_FOUND) {
                 fail();
             }
 
-            vSelAttr = wg.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "selected", false, null);
+            vSelAttr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
             if (vSelAttr == Graph.NOT_FOUND) {
                 fail();
             }
 
-            tSelAttr = wg.addAttribute(GraphElementType.TRANSACTION, "boolean", "selected", "selected", false, null);
+            tSelAttr = wg.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "selected", false, null);
             if (tSelAttr == Graph.NOT_FOUND) {
                 fail();
             }

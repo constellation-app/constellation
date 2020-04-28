@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,10 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
+import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.lang.reflect.InvocationTargetException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 
 /**
@@ -25,6 +28,9 @@ import java.util.Arrays;
  * @author cygnus_x-1
  */
 public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
+    
+    protected final SecureRandom RANDOM = new SecureRandom();
+    protected final int nullHash = RANDOM.nextInt();
     
     protected final String name;
     protected final Class<T> nativeClass;
@@ -37,13 +43,12 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         this.defaultValue = defaultValue;
     }
     
-    protected T convertFromObject(final Object object) {
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    protected T convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
-            return null;
+            return defaultValue;
         } else if (nativeClass.isAssignableFrom(object.getClass())) {
-            @SuppressWarnings("unchecked") //tObject will be of type T which extends from Object type
-            final T tObject = (T) object;
-            return tObject;
+            return (T) object;
         } else if (object instanceof String) {
             return convertFromString((String) object);
         } else {
@@ -52,7 +57,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         }
     }
     
-    protected T convertFromString(final String string) {
+    protected T convertFromString(final String string) throws IllegalArgumentException {
         throw new IllegalArgumentException(String.format("Error converting String to %s", nativeClass));
     }
     
@@ -92,7 +97,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     
     @Override
     public String getString(final int id) {
-        return data[id] != null ? String.valueOf((T) data[id]) : null;
+        return String.valueOf((T) data[id]);
     }
     
     @Override
@@ -101,10 +106,19 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     }
     
     @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final Exception ex) {
+            return ex.getMessage();
+        }
+    }
+    
+    @Override
+    @SuppressWarnings("unchecked") // idData will be of type T which extends from Object type
     public T getObject(final int id) {
-        @SuppressWarnings("unchecked") //idData will be of type T which extends from Object type
-        final T idData = (T) data[id];
-        return idData;
+        return (T) data[id];
     }
     
     @Override
@@ -146,6 +160,16 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
+    }
+        
+    @Override
+    public void save(final int id, final ParameterWriteAccess access) {
+        access.setObject((T) data[id]);
+    }
+
+    @Override
+    public void restore(final int id, final ParameterReadAccess access) {
+        data[id] = (T) access.getUndoObject();
     }
     
     @Override

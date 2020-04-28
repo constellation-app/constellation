@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,36 +31,18 @@ public final class ConnectionModeAttributeDescription extends AbstractObjectAttr
 
     public static final String ATTRIBUTE_NAME = "connection_mode";
     public static final Class<ConnectionMode> NATIVE_CLASS = ConnectionMode.class;
-    private static final ConnectionMode DEFAULT_VALUE = ConnectionMode.EDGE;
+    public static final ConnectionMode DEFAULT_VALUE = ConnectionMode.EDGE;
 
     public ConnectionModeAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
-    /**
-     * Extract a ConnectionMode from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A ConnectionMode.
-     */
     @Override
-    @SuppressWarnings("unchecked") // Casts are checked manually
-    protected ConnectionMode convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof ConnectionMode) {
-            return (ConnectionMode) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected ConnectionMode convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to ConnectionMode", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return ConnectionMode.valueOf(string);
         }
-    }
-
-    @Override
-    protected ConnectionMode convertFromString(String string) {
-        return ConnectionMode.valueOf(string);
     }
 }

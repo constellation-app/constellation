@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,14 +33,15 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescription {
 
+    public static final String ATTRIBUTE_NAME = "blaze";
     private static final BlazeV0 DEFAULT_VALUE = null;
+    
     private BlazeV0[] data = new BlazeV0[0];
     private BlazeV0 defaultValue = DEFAULT_VALUE;
-    public static final String ATTR_NAME = "blaze";
 
     @Override
     public String getName() {
-        return ATTR_NAME;
+        return ATTRIBUTE_NAME;
     }
 
     @Override
@@ -214,11 +215,6 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == data[id2];
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return false;
     }
 
     @Override

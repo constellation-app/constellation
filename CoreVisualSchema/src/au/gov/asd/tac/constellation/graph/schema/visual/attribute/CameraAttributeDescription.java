@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,11 @@ import org.openide.util.lookup.ServiceProvider;
 public final class CameraAttributeDescription extends ObjectAttributeDescription {
 
     public static final String ATTRIBUTE_NAME = "camera";
+    public static final int ATTRIBUTE_VERSION = 1;
+
+    public CameraAttributeDescription() {
+        super(ATTRIBUTE_NAME);
+    }
 
     // TODO: This is a complete hack, but will work as we never allow the camera
     // to have its default value changed from the camera created by invoking the
@@ -42,12 +47,8 @@ public final class CameraAttributeDescription extends ObjectAttributeDescription
         return super.convertFromObject(object);
     }
 
-    public CameraAttributeDescription() {
-        super(ATTRIBUTE_NAME);
-    }
-
     @Override
     public int getVersion() {
-        return 1;
+        return ATTRIBUTE_VERSION;
     }
 }

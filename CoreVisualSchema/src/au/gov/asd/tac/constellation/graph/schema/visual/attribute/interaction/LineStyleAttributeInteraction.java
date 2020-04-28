@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,14 +34,14 @@ public class LineStyleAttributeInteraction extends AbstractAttributeInteraction<
 
     @Override
     @SuppressWarnings("unchecked") //Cast is manually checked
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        if (attrVal instanceof LineStyle) {
-            return ((LineStyle) attrVal).name();
+        if (value instanceof LineStyle) {
+            return ((LineStyle) value).name();
         } else {
-            return attrVal.toString();
+            return value.toString();
         }
     }
 

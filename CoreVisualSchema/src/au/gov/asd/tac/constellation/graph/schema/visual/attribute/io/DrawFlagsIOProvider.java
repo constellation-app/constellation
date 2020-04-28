@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,15 +46,15 @@ public class DrawFlagsIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final int attrVal = jnode.isNull() ? ((DrawFlags) graph.getAttributeDefaultValue(attributeId)).getFlags() : jnode.intValue();
-        graph.setIntValue(attributeId, elementId, attrVal);
+        final int attributeValue = jnode.isNull() ? ((DrawFlags) graph.getAttributeDefaultValue(attributeId)).getFlags() : jnode.intValue();
+        graph.setIntValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final int attrVal = graph.getIntValue(attr.getId(), elementId);
-            jsonGenerator.writeNumberField(attr.getName(), attrVal);
+            final int attributeValue = graph.getIntValue(attr.getId(), elementId);
+            jsonGenerator.writeNumberField(attr.getName(), attributeValue);
         }
     }
 }

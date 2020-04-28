@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * This describes a type of attribute whose values are primitive floats.
  * <p>
- *
  * When setting these attribute values from numeric types, the values are
  * implicitly or explicitly cast as necessary. The
  * {@link #setString setString()} method will utilise {@link Float#parseFloat}.
@@ -43,11 +42,40 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class FloatAttributeDescription extends AbstractAttributeDescription {
 
-    private static final float DEFAULT_VALUE = 0;
+    public static final String ATTRIBUTE_NAME = "float";
+    public static final Class<Float> NATIVE_CLASS = float.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.FLOAT;
+    public static final float DEFAULT_VALUE = 0.0f;
+    
     private float[] data = new float[0];
     private float defaultValue = DEFAULT_VALUE;
-    public static final String ATTRIBUTE_NAME = "float";
 
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    private float convertFromObject(final Object object) {
+        if (object == null) {
+            return (float) getDefault();
+        } else if (object instanceof Number) {
+            return ((Number) object).floatValue();
+        } else if (object instanceof Boolean) {
+            return ((Boolean) object) ? 1.0f : 0.0f;
+        } else if (object instanceof Character) {
+            return (float) ((Character) object);
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to float", object.getClass()));
+        }
+    }
+
+    private float convertFromString(final String string) {
+        if (string == null || string.isEmpty()) {
+            return (float) getDefault();
+        } else {
+            return Float.parseFloat(string);
+        }
+    }
+    
     @Override
     public String getName() {
         return ATTRIBUTE_NAME;
@@ -55,7 +83,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public Class<?> getNativeClass() {
-        return float.class;
+        return NATIVE_CLASS;
+    }
+    
+    @Override
+    public NativeAttributeType getNativeType() {
+        return NATIVE_TYPE;
     }
 
     @Override
@@ -65,13 +98,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setDefault(final Object value) {
-        if (value instanceof Number) {
-            defaultValue = ((Number) value).floatValue();
-        } else if (value instanceof String) {
-            defaultValue = Float.parseFloat((String) value);
-        } else {
-            defaultValue = DEFAULT_VALUE;
-        }
+        defaultValue = convertFromObject(value);
     }
 
     @Override
@@ -88,20 +115,6 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
         }
     }
 
-    private static float setObject(final Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).floatValue();
-        } else if (value instanceof String) {
-            return Float.parseFloat((String) value);
-        } else if (value instanceof Boolean) {
-            return ((Boolean) value) ? 1.0f : 0.0f;
-        } else if (value instanceof Character) {
-            return (char) value;
-        } else {
-            return DEFAULT_VALUE;
-        }
-    }
-
     @Override
     public byte getByte(final int id) {
         return (byte) data[id];
@@ -109,7 +122,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value;
+        data[id] = (float) value;
     }
 
     @Override
@@ -119,7 +132,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value;
+        data[id] = (float) value;
     }
 
     @Override
@@ -129,7 +142,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setInt(final int id, final int value) {
-        data[id] = value;
+        data[id] = (float) value;
     }
 
     @Override
@@ -139,7 +152,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] = value;
+        data[id] = (float) value;
     }
 
     @Override
@@ -154,7 +167,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public double getDouble(final int id) {
-        return data[id];
+        return (double) data[id];
     }
 
     @Override
@@ -179,17 +192,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value;
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = setObject(value);
+        data[id] = (float) value;
     }
 
     @Override
@@ -199,25 +202,27 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public void setString(final int id, final String value) {
-        if (value == null || value.isEmpty()) {
-            data[id] = (Float) getDefault();
-        } else {
-            try {
-                data[id] = Float.parseFloat(value);
-            } catch (final NumberFormatException ex) {
-                data[id] = (Float) getDefault();
-            }
+        data[id] = convertFromString(value);
+    }
+
+    @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final Exception ex) {
+            return ex.getMessage();
         }
     }
 
     @Override
-    public String acceptsString(String value) {
-        try {
-            Float.parseFloat(value);
-            return null;
-        } catch (Exception ex) {
-            return "Not a valid float value";
-        }
+    public Object getObject(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
     }
 
     @Override
@@ -231,27 +236,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final FloatAttributeDescription attribute = new FloatAttributeDescription();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
         return attribute;
-    }
-
-    @Override
-    public NativeAttributeType getNativeType() {
-        return NativeAttributeType.FLOAT;
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 5;
     }
 
     @Override

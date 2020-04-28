@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 /**
- *
  * The attribute interaction that is used when no specific interaction is
  * provided for a given attribute type.
- *
+ * <p>
  * Not searchable by lookup as a singleton instance should only ever be used by
  * AbstractAttributeInteraction when lookup fails for a type specific
  * interaction.
@@ -28,7 +27,7 @@ package au.gov.asd.tac.constellation.graph.attribute.interaction;
  */
 public final class DefaultAttributeInteraction extends AbstractAttributeInteraction<Object> {
 
-    static final DefaultAttributeInteraction DEFAULT_ATTRIBUTE_INTERACTION = new DefaultAttributeInteraction();
+    public static final DefaultAttributeInteraction DEFAULT_ATTRIBUTE_INTERACTION = new DefaultAttributeInteraction();
 
     private DefaultAttributeInteraction() {
     }
@@ -39,11 +38,11 @@ public final class DefaultAttributeInteraction extends AbstractAttributeInteract
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
-        return attrVal.toString();
+        return value.toString();
     }
 
     @Override

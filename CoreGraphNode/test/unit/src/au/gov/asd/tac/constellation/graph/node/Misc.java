@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.node;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -64,8 +66,8 @@ public class Misc {
                 public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                     for (int i = 0; i < 10; i++) {
                         final String s = String.format("x%d", i);
-                        wg.addAttribute(GraphElementType.VERTEX, "object", s, s, 99, null);
-                        wg.addAttribute(GraphElementType.TRANSACTION, "float", s, s, 99, null);
+                        wg.addAttribute(GraphElementType.VERTEX, ObjectAttributeDescription.ATTRIBUTE_NAME, s, s, 99, null);
+                        wg.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, s, s, 99, null);
                     }
 
                     int vx = 0;

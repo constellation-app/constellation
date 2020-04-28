@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class PlaneStateIOProvider extends AbstractGraphIOProvider {
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
-            final PlaneState ps = new PlaneState();
+            final PlaneState state = new PlaneState();
             final ArrayList<Plane> planes = new ArrayList<>();
 
             final JsonNode planeList = jnode.get(PLANE_LIST);
@@ -60,9 +60,9 @@ public class PlaneStateIOProvider extends AbstractGraphIOProvider {
                 final Plane p = Plane.readNode(element, graph, byteReader);
                 planes.add(p);
             }
-            ps.setPlanes(planes);
+            state.setPlanes(planes);
 
-            graph.setObjectValue(attributeId, elementId, ps);
+            graph.setObjectValue(attributeId, elementId, state);
         }
     }
 
