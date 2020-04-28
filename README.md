@@ -21,7 +21,7 @@
 Constellation is a graph-focused data visualisation and interactive analysis 
 application enabling data access, federation and manipulation capabilities 
 across large and complex data sets.
-
+ 
 # Table of Contents
 
 - [Vision Statement](#vision-statement)
