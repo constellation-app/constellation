@@ -16,11 +16,14 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.scatter;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -53,6 +56,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     public static final String SCATTER_3D_X_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_x");
     public static final String SCATTER_3D_Y_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_y");
     public static final String SCATTER_3D_Z_LOGARITHMIC = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_logarithmic_z");
+    public static final String SCATTER_3D_DO_NOT_SCALE = PluginParameter.buildId(ArrangeInScatter3dGeneralPlugin.class, "scatter3d_do_not_scale");
 
     private final String X_ATTRIBUTE = "X Attribute";
     private final String Y_ATTRIBUTE = "Y Attribute";
@@ -60,6 +64,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
     private final String X_LOGARITHMIC = "Use Logarithmic Scaling for X";
     private final String Y_LOGARITHMIC = "Use Logarithmic Scaling for Y";
     private final String Z_LOGARITHMIC = "Use Logarithmic Scaling for Z";
+    private final String DO_NOT_USE_SCALE = "Do not use final Scaling algorithm";
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -69,15 +74,27 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
 
         final Map<String, PluginParameter<?>> pp = parameters.getParameters();
         final Scatter3dChoiceParameters scatter3dParams = Scatter3dChoiceParameters.getDefaultParameters();
-        scatter3dParams.setXDimension(pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue());
-        scatter3dParams.setYDimension(pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue());
-        scatter3dParams.setZDimension(pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue());
+
+        final String xDimensionName = pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
+        final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
+        final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
+
+        scatter3dParams.setXDimension(xDimensionName);
+        scatter3dParams.setYDimension(yDimensionName);
+        scatter3dParams.setZDimension(zDimensionName);
         scatter3dParams.setLogarithmicX(pp.get(SCATTER_3D_X_LOGARITHMIC).getBooleanValue());
         scatter3dParams.setLogarithmicY(pp.get(SCATTER_3D_Y_LOGARITHMIC).getBooleanValue());
         scatter3dParams.setLogarithmicZ(pp.get(SCATTER_3D_Z_LOGARITHMIC).getBooleanValue());
+        scatter3dParams.setDoNotScale(pp.get(SCATTER_3D_DO_NOT_SCALE).getBooleanValue());
+
+        final SelectedInclusionGraph selectedGraph = new SelectedInclusionGraph(graph, SelectedInclusionGraph.Connections.NONE);
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, xDimensionName)));
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, yDimensionName)));
+        selectedGraph.addAttributeToCopy(new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, zDimensionName)));
 
         final Scatter3dArranger arranger = new Scatter3dArranger(scatter3dParams);
-        arranger.arrange(graph);
+        arranger.arrange(selectedGraph.getInclusionGraph());
+        selectedGraph.retrieveCoords();
     }
 
     @Override
@@ -119,6 +136,12 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         zLogarithmic.setDescription("Scale the Z axis in Logarithmic Scale");
         zLogarithmic.setBooleanValue(false);
         parameters.addParameter(zLogarithmic);
+
+        final PluginParameter<BooleanParameterValue> doNotScale = BooleanParameterType.build(SCATTER_3D_DO_NOT_SCALE);
+        doNotScale.setName(DO_NOT_USE_SCALE);
+        doNotScale.setDescription("Don't scale resultant scattergram");
+        doNotScale.setBooleanValue(false);
+        parameters.addParameter(doNotScale);
 
         return parameters;
     }
