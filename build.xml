@@ -14,11 +14,11 @@
     <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml"/>
     <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml"/>
     <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
-    <property name="jre.filename.windows" value="zulu11.39.15-ca-jre11.0.7-win_x64.zip"/>
+    <property name="jre.filename.windows" value="zulu11.39.15-ca-fx-jre11.0.7-win_x64.zip"/>
     <property name="jre.url.windows" value="https://cdn.azul.com/zulu/bin/${jre.filename.windows}.zip"/>
-    <property name="jre.filename.macosx" value="zulu11.39.15-ca-jre11.0.7-macosx_x64.zip"/>
+    <property name="jre.filename.macosx" value="zulu11.39.15-ca-fx-jre11.0.7-macosx_x64.tar.gz"/>
     <property name="jre.url.macosx" value="https://cdn.azul.com/zulu/bin/${jre.filename.macosx}.zip"/>
-    <property name="jre.filename.linux" value="zulu11.39.15-ca-jre11.0.7-linux_x64.zip"/>
+    <property name="jre.filename.linux" value="zulu11.39.15-ca-fx-jre11.0.7-linux_x64.tar.gz"/>
     <property name="jre.url.linux" value="https://cdn.azul.com/zulu/bin/${jre.filename.linux}.tar.gz"/>
     <property name="dist.version" value="v2.0.0-beta"/>
     <property name="dist.filename.linux" value="constellation-linux-${dist.version}"/>
@@ -262,7 +262,7 @@
         <echo message="downloading JRE..."/>
         <get src="${jre.url.macosx}"
                  dest="${basedir}" usetimestamp="true"/>
-        <unzip src="${basedir}/${jre.filename.macosx}.zip" dest="${basedir}"/>
+        <untar src="${basedir}/${jre.filename.macosx}.tar.gz" dest="${basedir}" compression="gzip"/>
         <delete file="${basedir}/${jre.filename.macosx}.zip"/>
     </target>
 
