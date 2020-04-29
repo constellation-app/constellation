@@ -103,6 +103,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
     }
 
     @Override
+    @SuppressWarnings("fallthrough") //the fallthrough at the switch statement is intentional
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 

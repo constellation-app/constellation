@@ -38,7 +38,7 @@ public class ChartBuilder<X, Y> {
         this.yAxisBuilder = yAxis;
     }
 
-    public ScatterChart build(GraphReadMethods graph, ScatterPlotState state, Set<ScatterData> currentData, Set<ScatterData> currentSelectedData) {
+    public ScatterChart<X, Y> build(GraphReadMethods graph, ScatterPlotState state, Set<ScatterData> currentData, Set<ScatterData> currentSelectedData) {
         currentData.clear();
         currentSelectedData.clear();
 
@@ -55,7 +55,7 @@ public class ChartBuilder<X, Y> {
                 final String elementLabel = graph.getStringValue(labelAttribute, elementId);
                 final X vertexXValue = xAxisBuilder.getValue(graph, state.getElementType(), state.getXAttribute().getId(), elementId);
                 final Y vertexYValue = yAxisBuilder.getValue(graph, state.getElementType(), state.getYAttribute().getId(), elementId);
-                final XYChart.Data<X, Y> data = new XYChart.Data(vertexXValue, vertexYValue);
+                final XYChart.Data<X, Y> data = new XYChart.Data<>(vertexXValue, vertexYValue);
                 final ScatterData scatterData = new ScatterData(elementId, elementLabel, data);
                 currentData.add(scatterData);
                 if (graph.getBooleanValue(selectedAttribute, elementId)) {
@@ -71,7 +71,7 @@ public class ChartBuilder<X, Y> {
         final Axis<Y> yAxis = yAxisBuilder.build();
         yAxis.setLabel(state.getYAttribute().getName());
 
-        final ScatterChart scatterChart = new ScatterChart(xAxis, yAxis);
+        final ScatterChart<X, Y> scatterChart = new ScatterChart<>(xAxis, yAxis);
         scatterChart.setLegendVisible(false);
         scatterChart.setHorizontalGridLinesVisible(false);
         scatterChart.setVerticalGridLinesVisible(false);

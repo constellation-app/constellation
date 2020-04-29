@@ -91,12 +91,14 @@ public class MultiChoiceInputPane extends HBox {
 
         parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
             Platform.runLater(() -> {
+                @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
                 PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
                     case VALUE:
                         isAdjusting = true;
                         options.clear();
                         options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
+                        @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
                         List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
                         field.getCheckModel().getCheckedItems();
