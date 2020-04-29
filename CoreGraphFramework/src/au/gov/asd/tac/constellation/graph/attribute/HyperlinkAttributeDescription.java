@@ -15,16 +15,15 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import static au.gov.asd.tac.constellation.graph.attribute.LocalDateTimeAttributeDescription.DEFAULT_VALUE;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Hyperlink attribute.
+ * This describes a type of attribute whose values are URIs.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescription<URI> {

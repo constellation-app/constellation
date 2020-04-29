@@ -24,7 +24,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * A Boolean Object attribute that can be null.
  *
- * @author twilight_sparkle
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanObjectAttributeDescription extends AbstractObjectAttributeDescription<Boolean> {

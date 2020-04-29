@@ -39,7 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
  * as 0, whilst true is represented as 1. The {@link #getString getString()}
  * method will utilise {@link String#valueOf}.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanAttributeDescription extends AbstractAttributeDescription {

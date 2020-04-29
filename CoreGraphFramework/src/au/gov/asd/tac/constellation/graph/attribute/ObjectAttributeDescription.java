@@ -28,7 +28,7 @@ import org.openide.util.lookup.ServiceProvider;
  * methods to throw an {@link IllegalArgumentException}. This may be changed in
  * the future.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class ObjectAttributeDescription extends AbstractObjectAttributeDescription<Object> {

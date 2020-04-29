@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * The {@link #getBoolean getBoolean()} method will return false for 0, and true
  * for any other value.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class IntegerAttributeDescription extends AbstractAttributeDescription {

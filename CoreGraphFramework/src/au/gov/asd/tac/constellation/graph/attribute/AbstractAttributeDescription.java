@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.io.Serializable;
 
 /**
- * abstract class for an attribute description
+ * Abstract class for an attribute description which provides many defaults.
  *
  * @author algol
  */

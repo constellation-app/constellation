@@ -35,7 +35,7 @@ import org.openide.util.lookup.ServiceProvider;
  * false for null or empty strings, otherwise
  * {@link Boolean#parseBoolean Boolean.parseBoolean()}.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class StringAttributeDescription extends AbstractAttributeDescription {
