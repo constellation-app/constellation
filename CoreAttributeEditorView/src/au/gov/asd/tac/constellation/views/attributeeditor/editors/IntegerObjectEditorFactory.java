@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate. All Rights Reserved.
+ * Copyright 2010-2019 Australian Signals Directorate. All Rights Reserved.
  * 
  * NOTICE: All information contained herein remains the property of the
  * Australian Signals Directorate. The intellectual and technical concepts 
