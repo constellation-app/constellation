@@ -718,12 +718,12 @@ public enum UndoGraphEditOperation {
             if (VERBOSE) {
                 System.out.println("setDoubleValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())) + ")");
             }
-            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
+            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
         }
 
         @Override
         public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
-            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
+            graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
         }
 
         @Override
