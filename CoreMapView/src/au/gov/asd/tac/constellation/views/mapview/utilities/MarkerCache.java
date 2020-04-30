@@ -273,7 +273,6 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
                                             colors.add(MarkerUtilities.value(MarkerUtilities.DEFAULT_CUSTOM_COLOR));
                                             selected |= marker.isSelected();
                                             dimmed |= marker.isDimmed();
-                                            hidden |= marker.isHidden();
                                         }
                                         continue;
                                 }
@@ -345,7 +344,6 @@ public abstract class MarkerCache extends ObjectCache<ConstellationAbstractMarke
 
                             // update dimming
                             marker.setDimmed(dimmed);
-
                             // update visibility
                             if ((markerState.isShowSelectedOnly() && !marker.isSelected())
                                     || (!markerState.isShowPointMarkers() && marker instanceof ConstellationPointMarker)

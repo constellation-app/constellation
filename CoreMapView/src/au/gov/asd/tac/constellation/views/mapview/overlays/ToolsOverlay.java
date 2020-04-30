@@ -389,7 +389,7 @@ public class ToolsOverlay extends MapOverlay {
 
     @Override
     public void mouseClicked(final MouseEvent event) {
-        if (event.getButton() == PConstants.LEFT) {
+        if (event.getButton() == PConstants.LEFT && !renderer.isIgnoreMapInteractions()) {
 
             // draw measure line
             if (mouseLeftMeasureToolRegion && measureActive) {
