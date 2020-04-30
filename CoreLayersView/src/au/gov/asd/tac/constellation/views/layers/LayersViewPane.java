@@ -195,9 +195,9 @@ public class LayersViewPane extends BorderPane {
         this.layers.clear();
         currentIndex = 0;
         final List<LayerDescription> layersCopy = new ArrayList();
-        for (final LayerDescription layer : layers) {
+        layers.forEach((layer) -> {
             layersCopy.add(new LayerDescription(layer));
-        }
+        });
         this.layers.addAll(layersCopy);
         updateLayers();
     }
