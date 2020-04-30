@@ -62,6 +62,7 @@ public class BlazePluginUtilities {
         } else if (vParam.getClass() == BitSet.class) {
             vertices = (BitSet) vParam;
         } else {
+            @SuppressWarnings("unchecked") //vParam will be list of objects which extends from object type
             final List<Object> vertexList = (List<Object>) vParam;
             vertices = new BitSet(vertexList.size());
             vertexList.stream().forEach(ix -> vertices.set(toInt(ix)));
