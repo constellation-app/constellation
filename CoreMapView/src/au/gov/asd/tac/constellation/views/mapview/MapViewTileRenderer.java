@@ -433,7 +433,7 @@ public class MapViewTileRenderer extends PApplet {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
             }
         }
-        
+
         overlays.forEach(overlay -> overlay.mouseClicked(event));
     }
 
@@ -445,14 +445,14 @@ public class MapViewTileRenderer extends PApplet {
             // zoom to box
             boxOriginX = event.getX();
             boxOriginY = event.getY();
-        }else if(event.getButton() == PConstants.RIGHT && event.getCount() == 2){
+        } else if(event.getButton() == PConstants.RIGHT && event.getCount() == 2){
             dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
             // Pan + Zoom (order is important)
-            PanMapEvent panMapEvent = new PanMapEvent(this, map.getId());
-            Location location = map.getLocation(mouseX, mouseY);
+            final PanMapEvent panMapEvent = new PanMapEvent(this, map.getId());
+            final Location location = map.getLocation(mouseX, mouseY);
             panMapEvent.setToLocation(location);
             dispatcher.fireMapEvent(panMapEvent);
-            ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL, 1);
+            final ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL, 1);
             zoomMapEvent.setTransformationCenterLocation(location);
             dispatcher.fireMapEvent(zoomMapEvent);
             dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
@@ -579,11 +579,11 @@ public class MapViewTileRenderer extends PApplet {
         
         final boolean ignoreMapInteractions = isIgnoreMapInteractions();
         if(!ignoreMapInteractions){
-            ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL);
+            final ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL);
 
             // Use location as zoom center, so listening maps can zoom correctly
 
-            Location location = map.getLocation(mouseX, mouseY);
+            final Location location = map.getLocation(mouseX, mouseY);
             zoomMapEvent.setTransformationCenterLocation(location);
             int delta = event.getCount();
             // Zoom in or out
