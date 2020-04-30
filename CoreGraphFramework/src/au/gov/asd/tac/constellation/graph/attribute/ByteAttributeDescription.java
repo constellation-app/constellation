@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -27,9 +28,9 @@ import org.openide.util.lookup.ServiceProvider;
  * <p>
  * When setting these attribute values from numeric types, the values are
  * implicitly or explicitly cast as necessary. The
- * {@link #setString setString()} method will utilise
- * {@link Byte#parseByte}. The {@link #setBoolean setBoolean()} method will
- * yield 1 for true and 0 for false.
+ * {@link #setString setString()} method will utilise {@link Byte#parseByte}.
+ * The {@link #setBoolean setBoolean()} method will yield 1 for true and 0 for
+ * false.
  * <p>
  * When retrieving these attribute values as numeric types the values are
  * implicitly or explicitly cast as necessary. The
@@ -41,17 +42,17 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class ByteAttributeDescription extends AbstractAttributeDescription {
-    
+
     public static final String ATTRIBUTE_NAME = "byte";
     public static final Class<Byte> NATIVE_CLASS = byte.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.BYTE;
     private static final byte DEFAULT_VALUE = 0;
-    
+
     private byte[] data = new byte[0];
     private byte defaultValue = DEFAULT_VALUE;
 
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private byte convertFromObject(final Object object) {
+    private byte convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (byte) getDefault();
         } else if (object instanceof Number) {
@@ -66,14 +67,19 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
         }
     }
 
-    private byte convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private byte convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (byte) getDefault();
         } else {
-            return Byte.parseByte(string);
+            try {
+                return Byte.parseByte(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
-    
+
     @Override
     public String getName() {
         return ATTRIBUTE_NAME;
@@ -83,7 +89,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     public Class<?> getNativeClass() {
         return NATIVE_CLASS;
     }
-    
+
     @Override
     public NativeAttributeType getNativeType() {
         return NATIVE_TYPE;
@@ -208,7 +214,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

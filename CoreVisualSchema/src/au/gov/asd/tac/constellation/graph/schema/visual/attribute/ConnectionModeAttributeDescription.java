@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,7 +40,7 @@ public final class ConnectionModeAttributeDescription extends AbstractObjectAttr
 
     @Override
     protected ConnectionMode convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return ConnectionMode.valueOf(string);

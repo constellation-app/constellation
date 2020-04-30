@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.TimeZone;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -58,7 +59,7 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
 
     @Override
     protected ZoneId convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             try {

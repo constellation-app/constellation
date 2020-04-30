@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,7 +51,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     private long[] data = new long[0];
     private long defaultValue = DEFAULT_VALUE;
 
-    private long convertFromObject(final Object object) {
+    private long convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (long) getDefault();
         } else if (object instanceof LocalDate) {
@@ -88,8 +89,8 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
      *
      * @return A Calendar representing the input datetime.
      */
-    public long convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    public long convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (long) getDefault();
         } else {
             try {
@@ -175,7 +176,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

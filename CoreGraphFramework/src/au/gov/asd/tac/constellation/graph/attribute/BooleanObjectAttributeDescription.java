@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndex;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -29,8 +30,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanObjectAttributeDescription extends AbstractObjectAttributeDescription<Boolean> {
 
-    private final int trueHash = RANDOM.nextInt();
-    private final int falseHash = RANDOM.nextInt();
+    private final int trueHash = random.nextInt();
+    private final int falseHash = random.nextInt();
 
     public static final String ATTRIBUTE_NAME = "boolean_or_null";
     public static final Class<Boolean> NATIVE_CLASS = Boolean.class;
@@ -58,7 +59,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     protected Boolean convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return Boolean.parseBoolean(string);

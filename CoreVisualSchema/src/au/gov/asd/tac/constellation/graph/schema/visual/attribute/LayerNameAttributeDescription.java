@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerN
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,7 +44,7 @@ public class LayerNameAttributeDescription extends AbstractObjectAttributeDescri
 
     @Override
     protected LayerName convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else if (string.equals("DEFAULT")) {
             // handle default value from file import

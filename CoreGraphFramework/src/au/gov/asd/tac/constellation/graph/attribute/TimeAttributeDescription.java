@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
 import java.time.temporal.ChronoField;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,7 +50,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;
 
-    private int convertFromObject(final Object object) {
+    private int convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (int) getDefault();
         } else if (object instanceof LocalTime) {
@@ -83,8 +84,8 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
      *
      * @return A Calendar representing the input datetime.
      */
-    private int convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private int convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (int) getDefault();
         } else {
             try {
@@ -184,7 +185,7 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

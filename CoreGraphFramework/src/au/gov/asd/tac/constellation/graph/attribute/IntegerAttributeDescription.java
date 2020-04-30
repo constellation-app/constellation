@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -47,12 +48,12 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     public static final Class<Integer> NATIVE_CLASS = int.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.INT;
     public static final int DEFAULT_VALUE = 0;
-    
+
     private int[] data = new int[0];
     private int defaultValue = DEFAULT_VALUE;
-    
+
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private int convertFromObject(final Object object) {
+    private int convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (int) getDefault();
         } else if (object instanceof Number) {
@@ -69,11 +70,16 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
         }
     }
 
-    private int convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private int convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (int) getDefault();
         } else {
-            return Integer.parseInt(string);
+            try {
+                return Integer.parseInt(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
 
@@ -211,7 +217,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

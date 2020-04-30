@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -53,7 +54,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
 
     @Override
     protected Float convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return Float.parseFloat(string);

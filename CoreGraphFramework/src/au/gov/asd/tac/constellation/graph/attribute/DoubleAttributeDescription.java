@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,17 +42,17 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class DoubleAttributeDescription extends AbstractAttributeDescription {
-    
+
     public static final String ATTRIBUTE_NAME = "double";
     public static final Class<Double> NATIVE_CLASS = double.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.DOUBLE;
     private static final double DEFAULT_VALUE = 0;
-    
+
     private double[] data = new double[0];
     private double defaultValue = DEFAULT_VALUE;
 
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private double convertFromObject(final Object object) {
+    private double convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (double) getDefault();
         } else if (object instanceof Number) {
@@ -68,14 +69,19 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
         }
     }
 
-    private double convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private double convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (double) getDefault();
         } else {
-            return Double.parseDouble(string);
+            try {
+                return Double.parseDouble(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
-    
+
     @Override
     public String getName() {
         return ATTRIBUTE_NAME;
@@ -85,7 +91,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     public Class<?> getNativeClass() {
         return NATIVE_CLASS;
     }
-    
+
     @Override
     public NativeAttributeType getNativeType() {
         return NATIVE_TYPE;
@@ -210,7 +216,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

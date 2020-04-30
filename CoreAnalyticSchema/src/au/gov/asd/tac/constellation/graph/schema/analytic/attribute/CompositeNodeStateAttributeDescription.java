@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +52,7 @@ public class CompositeNodeStateAttributeDescription extends AbstractObjectAttrib
 
     @Override
     protected CompositeNodeState convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return CompositeNodeState.createFromString(string);

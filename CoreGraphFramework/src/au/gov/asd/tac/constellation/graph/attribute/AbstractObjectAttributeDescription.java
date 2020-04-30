@@ -31,8 +31,8 @@ import java.util.Arrays;
  */
 public abstract class AbstractObjectAttributeDescription<T extends Object> extends AbstractAttributeDescription {
 
-    protected final SecureRandom RANDOM = new SecureRandom();
-    protected final int nullHash = RANDOM.nextInt();
+    protected final SecureRandom random = new SecureRandom();
+    protected final int nullHash = random.nextInt();
 
     protected final String name;
     protected final Class<T> nativeClass;

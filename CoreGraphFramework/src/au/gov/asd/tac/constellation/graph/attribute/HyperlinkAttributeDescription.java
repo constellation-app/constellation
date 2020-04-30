@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,7 +58,7 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
 
     @Override
     protected URI convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             try {

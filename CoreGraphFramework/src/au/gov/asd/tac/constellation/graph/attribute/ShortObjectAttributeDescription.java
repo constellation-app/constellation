@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +52,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     protected Short convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return Short.parseShort(string);

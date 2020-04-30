@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,7 +43,7 @@ public final class DrawFlagsAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected DrawFlags convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return new DrawFlags(Integer.parseInt(string));

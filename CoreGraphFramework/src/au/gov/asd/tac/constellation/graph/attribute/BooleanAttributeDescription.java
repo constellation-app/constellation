@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.security.SecureRandom;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,20 +45,20 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanAttributeDescription extends AbstractAttributeDescription {
 
-    private static final SecureRandom RANDOM = new SecureRandom();
-    private final int trueHash = RANDOM.nextInt();
-    private final int falseHash = RANDOM.nextInt();
-    
+    private final SecureRandom random = new SecureRandom();
+    private final int trueHash = random.nextInt();
+    private final int falseHash = random.nextInt();
+
     public static final String ATTRIBUTE_NAME = "boolean";
     public static final Class<Boolean> NATIVE_CLASS = boolean.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.BOOLEAN;
     public static final boolean DEFAULT_VALUE = false;
-    
+
     private boolean[] data = new boolean[0];
     private boolean defaultValue = DEFAULT_VALUE;
 
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private boolean convertFromObject(final Object object) {
+    private boolean convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (boolean) getDefault();
         } else if (object instanceof Number) {
@@ -74,11 +75,16 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         }
     }
 
-    private boolean convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private boolean convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (boolean) getDefault();
         } else {
-            return Boolean.parseBoolean(string);
+            try {
+                return Boolean.parseBoolean(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
 
@@ -216,7 +222,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

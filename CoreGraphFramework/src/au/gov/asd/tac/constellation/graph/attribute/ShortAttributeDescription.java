@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +52,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     private short defaultValue = DEFAULT_VALUE;
 
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private short convertFromObject(final Object object) {
+    private short convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (short) getDefault();
         } else if (object instanceof Number) {
@@ -66,11 +67,16 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
         }
     }
 
-    private short convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private short convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (short) getDefault();
         } else {
-            return Short.parseShort(string);
+            try {
+                return Short.parseShort(string);
+            }  catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
     
@@ -198,7 +204,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

@@ -23,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Calendar;
 import java.util.Date;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -87,7 +88,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
      */
     @Override
     protected LocalDateTime convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             try {

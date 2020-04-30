@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,12 +47,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     public static final Class<Float> NATIVE_CLASS = float.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.FLOAT;
     public static final float DEFAULT_VALUE = 0.0f;
-    
+
     private float[] data = new float[0];
     private float defaultValue = DEFAULT_VALUE;
 
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private float convertFromObject(final Object object) {
+    private float convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (float) getDefault();
         } else if (object instanceof Number) {
@@ -68,14 +69,19 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
         }
     }
 
-    private float convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+    private float convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
             return (float) getDefault();
         } else {
-            return Float.parseFloat(string);
+            try {
+                return Float.parseFloat(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
         }
     }
-    
+
     @Override
     public String getName() {
         return ATTRIBUTE_NAME;
@@ -85,7 +91,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     public Class<?> getNativeClass() {
         return NATIVE_CLASS;
     }
-    
+
     @Override
     public NativeAttributeType getNativeType() {
         return NATIVE_TYPE;
@@ -210,7 +216,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }

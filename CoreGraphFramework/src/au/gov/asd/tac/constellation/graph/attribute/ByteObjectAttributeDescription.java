@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +52,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     protected Byte convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return Byte.parseByte(string);

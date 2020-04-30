@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,7 +44,7 @@ public final class IconAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     protected ConstellationIcon convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return IconManager.getIcon(string == null ? "" : string);

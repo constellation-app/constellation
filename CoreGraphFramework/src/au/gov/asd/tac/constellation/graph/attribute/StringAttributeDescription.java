@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -49,7 +50,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     private String defaultValue = DEFAULT_VALUE;
     
     @SuppressWarnings("unchecked") // Casts are manually checked
-    private String convertFromObject(final Object object) {
+    private String convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
             return (String) getDefault();
         } else if (object instanceof Number) {
@@ -67,7 +68,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     }
 
     private String convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return (String) getDefault();
         } else {
             return string;
@@ -196,16 +197,6 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     @Override
     public void setString(final int id, final String value) {
         data[id] = value;
-    }
-
-    @Override
-    public String acceptsString(String value) {
-        try {
-            convertFromString(value);
-            return null;
-        } catch (final Exception ex) {
-            return ex.getMessage();
-        }
     }
     
     @Override
