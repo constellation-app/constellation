@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState.AnalyticViewConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

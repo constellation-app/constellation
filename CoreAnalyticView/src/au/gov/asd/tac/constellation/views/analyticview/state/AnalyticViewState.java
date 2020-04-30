@@ -15,11 +15,19 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.state;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Stores all AnalyticQuestion currently active in the Analytic View.
@@ -103,4 +111,38 @@ public class AnalyticViewState {
             );
         }
     }
+    /**
+    * Attribute provider for attributes specific to the Analytic View.
+    *
+    * @author cygnus_x-1
+    */
+   @ServiceProvider(service = SchemaConcept.class)
+   public static class AnalyticViewConcept extends SchemaConcept {
+
+       @Override
+       public String getName() {
+           return "Analytic View";
+       }
+
+       @Override
+       public Set<Class<? extends SchemaConcept>> getParents() {
+           final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
+           parentSet.add(ConstellationViewsConcept.class);
+           return Collections.unmodifiableSet(parentSet);
+       }
+
+       public static class MetaAttribute {
+
+           public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")
+                   .setDescription("The current state of the analytic view with relation to the active graph")
+                   .build();
+       }
+
+       @Override
+       public Collection<SchemaAttribute> getSchemaAttributes() {
+           final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
+           schemaAttributes.add(MetaAttribute.ANALYTIC_VIEW_STATE);
+           return Collections.unmodifiableCollection(schemaAttributes);
+       }
+   }
 }

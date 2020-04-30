@@ -15,9 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.layers.state;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Stores all Layer Queries currently active in the Layers View.
@@ -62,5 +70,40 @@ public class LayersViewState {
         });
         layers.clear();
         layers.addAll(layersList);
+    }
+
+    /**
+     * Attribute provider for attributes specific to the Layers View.
+     *
+     * @author aldebaran30701
+     */
+    @ServiceProvider(service = SchemaConcept.class)
+    public static class LayersViewConcept extends SchemaConcept {
+
+        @Override
+        public String getName() {
+            return "Layers View";
+        }
+
+        @Override
+        public Set<Class<? extends SchemaConcept>> getParents() {
+            final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
+            parentSet.add(SchemaConcept.ConstellationViewsConcept.class);
+            return Collections.unmodifiableSet(parentSet);
+        }
+
+        public static class MetaAttribute {
+
+            public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "layers_view_state", "layers_view_state")
+                    .setDescription("The current state of the layers view with relation to the active graph")
+                    .build();
+        }
+
+        @Override
+        public Collection<SchemaAttribute> getSchemaAttributes() {
+            final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
+            schemaAttributes.add(MetaAttribute.LAYERS_VIEW_STATE);
+            return Collections.unmodifiableCollection(schemaAttributes);
+        }
     }
 }

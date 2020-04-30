@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState.AnalyticViewConcept;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
