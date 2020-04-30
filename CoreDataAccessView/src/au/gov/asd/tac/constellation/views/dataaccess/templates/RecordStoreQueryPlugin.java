@@ -350,9 +350,9 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
      * position
      */
     private void saveOriginalPositionCoordinates(final GraphWriteMethods wg, final float[] xOriginal, final float[] yOriginal, final float[] zOriginal) {
-        final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-        final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-        final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int xAttr = VisualConcept.VertexAttribute.X.ensure(wg);
+        final int yAttr = VisualConcept.VertexAttribute.Y.ensure(wg);
+        final int zAttr = VisualConcept.VertexAttribute.Z.ensure(wg);
 
         final int vertexCount = wg.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
