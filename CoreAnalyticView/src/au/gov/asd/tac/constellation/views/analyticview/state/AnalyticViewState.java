@@ -76,7 +76,7 @@ public class AnalyticViewState {
         if (activeAnalyticQuestions.contains(question)) {
             setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
             selectablePlugins.forEach(plugin -> {
-                if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
+                if (!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)) {
                     activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
                 }
             });
@@ -98,51 +98,55 @@ public class AnalyticViewState {
     }
 
     /**
-     * Check the currently selected Question index of plugins for other plugins 
+     * Check the currently selected Question index of plugins for other plugins
      * matching the selected category
+     *
      * @param currentCategory the currently selected plugin category to remove
      * from
      */
     public void removePluginsMatchingCategory(String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
-            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
-                plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
-                )
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory))
             );
         }
     }
+
     /**
-    * Attribute provider for attributes specific to the Analytic View.
-    *
-    * @author cygnus_x-1
-    */
-   @ServiceProvider(service = SchemaConcept.class)
-   public static class AnalyticViewConcept extends SchemaConcept {
+     * Attribute provider for attributes specific to the Analytic View.
+     *
+     * @author cygnus_x-1
+     */
+    @ServiceProvider(service = SchemaConcept.class)
+    public static class AnalyticViewConcept extends SchemaConcept {
 
-       @Override
-       public String getName() {
-           return "Analytic View";
-       }
+        @Override
+        public String getName() {
+            return "Analytic View";
+        }
 
-       @Override
-       public Set<Class<? extends SchemaConcept>> getParents() {
-           final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
-           parentSet.add(ConstellationViewsConcept.class);
-           return Collections.unmodifiableSet(parentSet);
-       }
+        @Override
+        public Set<Class<? extends SchemaConcept>> getParents() {
+            final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
+            parentSet.add(ConstellationViewsConcept.class);
+            return Collections.unmodifiableSet(parentSet);
+        }
 
-       public static class MetaAttribute {
+        public static class MetaAttribute {
 
-           public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")
-                   .setDescription("The current state of the analytic view with relation to the active graph")
-                   .build();
-       }
+            private MetaAttribute() {
+                throw new IllegalStateException("Utility class");
+            }
 
-       @Override
-       public Collection<SchemaAttribute> getSchemaAttributes() {
-           final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-           schemaAttributes.add(MetaAttribute.ANALYTIC_VIEW_STATE);
-           return Collections.unmodifiableCollection(schemaAttributes);
-       }
-   }
+            public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")
+                    .setDescription("The current state of the analytic view with relation to the active graph")
+                    .build();
+        }
+
+        @Override
+        public Collection<SchemaAttribute> getSchemaAttributes() {
+            final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
+            schemaAttributes.add(MetaAttribute.ANALYTIC_VIEW_STATE);
+            return Collections.unmodifiableCollection(schemaAttributes);
+        }
+    }
 }

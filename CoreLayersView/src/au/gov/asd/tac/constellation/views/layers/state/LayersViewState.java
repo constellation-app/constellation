@@ -94,6 +94,10 @@ public class LayersViewState {
 
         public static class MetaAttribute {
 
+            private MetaAttribute() {
+                throw new IllegalStateException("Utility class");
+            }
+
             public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "layers_view_state", "layers_view_state")
                     .setDescription("The current state of the layers view with relation to the active graph")
                     .build();
