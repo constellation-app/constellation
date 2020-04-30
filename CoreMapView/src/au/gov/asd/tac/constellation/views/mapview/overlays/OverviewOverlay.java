@@ -37,7 +37,7 @@ public class OverviewOverlay extends MapOverlay {
     private UnfoldingMap overviewMap;
     private float deltaX;
     private float deltaY;
-    
+
     public OverviewOverlay() {
         super();
         this.enabled = false;
