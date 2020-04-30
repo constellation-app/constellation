@@ -106,6 +106,7 @@ The following is a list of third-party libraries used in the development of Cons
 |poi-ooxml-3.11.jar| Apache2 |
 |poi-ooxml-schemas-3.11.jar| Apache2 |
 |qdox-1.12.1.jar| Apache2 |
+|queryevaluator.jar| CC BY-NC-ND 2.5 IN | https://creativecommons.org/licenses/by-nc-nd/2.5/in/deed.en_US
 |rsyntaxtextarea-2.5.1.jar| BSD |
 |servlet-api-2.5-20081211.jar| CDDL |  https://javaee.github.io/servlet-spec/LICENSE
 |servlet-api-3.0.jar| CDDL |  https://javaee.github.io/servlet-spec/LICENSE

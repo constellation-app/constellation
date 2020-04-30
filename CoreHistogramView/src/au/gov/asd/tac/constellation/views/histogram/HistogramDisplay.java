@@ -259,17 +259,15 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
                 final int[] dims = calculateHeightAndBarWidth();
                 preferredHeight = dims[0];
                 barHeight = dims[1];
-            }
-
-            // We want to get the width of the widest text so we know how much space to reserve for text.
-            final int correction = setFontToFit(g2, barHeight);
-
-            if (binCollectionOutOfDate) {
+                
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
                 calculateTextAndBarLength(g2, iconPadding);
                 binCollectionOutOfDate = false;
             }
+
+            // We want to get the width of the widest text so we know how much space to reserve for text.
+            final int correction = setFontToFit(g2, barHeight);
 
             g2.setColor(BACKGROUND_COLOR);
             g2.fillRect(0, 0, getWidth(), preferredHeight - 1);
@@ -531,26 +529,32 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -565,6 +569,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentMoved(ComponentEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -574,5 +579,6 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        // Override required, intentionally left blank
     }
 }

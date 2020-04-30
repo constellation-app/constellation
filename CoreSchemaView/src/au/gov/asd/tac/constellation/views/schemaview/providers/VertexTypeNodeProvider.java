@@ -87,8 +87,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         vertexTypes = new ArrayList<>();
         detailsView = new HBox();
         detailsView.setPadding(new Insets(5));
-        backgroundIcons = new HashMap();
-        foregroundIcons = new HashMap();
+        backgroundIcons = new HashMap<>();
+        foregroundIcons = new HashMap<>();
 
         // A shiny cell factory so the tree nodes show the correct text and graphic.
         treeView.setCellFactory(p -> new TreeCell<SchemaVertexType>() {

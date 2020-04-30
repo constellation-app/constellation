@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views;
 
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -32,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.monitor.MonitorTransitionFilter;
 import au.gov.asd.tac.constellation.graph.monitor.StructureMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Collections;
 import java.util.HashMap;
@@ -55,6 +55,8 @@ import org.openide.windows.TopComponent;
 public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> implements GraphManagerListener, GraphChangeListener, PreferenceChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(ListeningTopComponent.class.getName());
+    
+    private static final String ADDED_MONITOR_COUNT_FORMAT = "Added AttributeValueMonitor, count is {0}";
 
     protected final Map<GlobalMonitor, Consumer<Graph>> globalMonitors;
     protected final Map<StructureMonitor, Consumer<Graph>> structureMonitors;
@@ -512,7 +514,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         final AttributeValueMonitor attributeValueMonitor = new AttributeValueMonitor(attribute);
         initialiseMonitor(attributeValueMonitor);
         attributeValueMonitors.put(attributeValueMonitor, Tuple.create(handler, getDefaultTransitionFilter()));
-        LOGGER.log(Level.FINE, "Added AttributeValueMonitor, count is {0}", attributeValueMonitors.size());
+        LOGGER.log(Level.FINE, ADDED_MONITOR_COUNT_FORMAT, attributeValueMonitors.size());
         return attributeValueMonitor;
     }
 
@@ -533,7 +535,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         final AttributeValueMonitor attributeValueMonitor = new AttributeValueMonitor(elementType, attributeName);
         initialiseMonitor(attributeValueMonitor);
         attributeValueMonitors.put(attributeValueMonitor, Tuple.create(handler, getDefaultTransitionFilter()));
-        LOGGER.log(Level.FINE, "Added AttributeValueMonitor, count is {0}", attributeValueMonitors.size());
+        LOGGER.log(Level.FINE, ADDED_MONITOR_COUNT_FORMAT, attributeValueMonitors.size());
         return attributeValueMonitor;
     }
 
@@ -554,7 +556,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         final AttributeValueMonitor attributeValueMonitor = new AttributeValueMonitor(attribute);
         initialiseMonitor(attributeValueMonitor);
         attributeValueMonitors.put(attributeValueMonitor, Tuple.create(handler, filter));
-        LOGGER.log(Level.FINE, "Added AttributeValueMonitor, count is {0}", attributeValueMonitors.size());
+        LOGGER.log(Level.FINE, ADDED_MONITOR_COUNT_FORMAT, attributeValueMonitors.size());
         return attributeValueMonitor;
     }
 
@@ -579,7 +581,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         final AttributeValueMonitor attributeValueMonitor = new AttributeValueMonitor(elementType, attributeName);
         initialiseMonitor(attributeValueMonitor);
         attributeValueMonitors.put(attributeValueMonitor, Tuple.create(handler, filter));
-        LOGGER.log(Level.FINE, "Added AttributeValueMonitor, count is {0}", attributeValueMonitors.size());
+        LOGGER.log(Level.FINE, ADDED_MONITOR_COUNT_FORMAT, attributeValueMonitors.size());
         return attributeValueMonitor;
     }
 

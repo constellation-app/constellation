@@ -116,14 +116,13 @@ public class FlowNetwork {
                     for (int i = 0; i < numNodes; ++i) {
                         nodeFlow[i] /= sumNodeRank;
                     }
-                }
-
-                // Update link data to represent flow instead of weight.
-                if (sumNodeRank != 0) {
+                    
+                    // Update link data to represent flow instead of weight.
                     for (final Connection conn : flowConns) {
                         conn.setFlow(conn.getFlow() * (nodeFlowSteadyState[conn.getSource()] / sumLinkOutWeight[conn.getSource()] / sumNodeRank));
                     }
                 }
+
             } else { // undirected
                 for (int i = 0; i < numConns; ++i) {
                     flowConns[i].setFlow(flowConns[i].getFlow() / sumUndirConnWeight);

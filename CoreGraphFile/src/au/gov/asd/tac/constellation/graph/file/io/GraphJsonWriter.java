@@ -29,8 +29,6 @@ import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -65,6 +63,8 @@ public final class GraphJsonWriter implements Cancellable {
     private volatile boolean isCancelled;
     private final GraphByteWriter byteWriter;
     private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
+    
+    private static final String DEFAULT_FIELD = "default";
 
     /**
      * Construct a new GraphJsonWriter.
@@ -328,14 +328,12 @@ public final class GraphJsonWriter implements Cancellable {
             // This should be done in a safe, extensible and verifiable manner, and more importantly, in a manner consistent with the way the attribute values themselves are written out (using IO providers). The long term solution to this
             // is probably not to just change the code here (or add in some default writing/reading stuff in IO providers), but to actually integrate the getting and setting of defaults into the getting and setting of
             // actual attribute values inside the attribute descriptions.
-            if (attr.getDefaultValue() != null) {
-                if (isNumeric(attr)) {
-                    jg.writeNumberField("default", ((Number) attr.getDefaultValue()).doubleValue());
-                } else if (attr.getAttributeType().equals("boolean")) {
-                    jg.writeBooleanField("default", (Boolean) attr.getDefaultValue());
-                } else {
-                    jg.writeStringField("default", attr.getDefaultValue().toString());
-                }
+            if (attr.getDefaultValue() != null && isNumeric(attr)) {
+                jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
+            } else if (attr.getDefaultValue() != null && attr.getAttributeType().equals("boolean")) {
+                jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
+            } else if (attr.getDefaultValue() != null) {
+                jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -397,8 +395,6 @@ public final class GraphJsonWriter implements Cancellable {
 
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
-                final ObjectMapper om = new ObjectMapper();
-                final ObjectNode root = om.createObjectNode();
                 for (Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
@@ -414,14 +410,10 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeEndObject();
 
                 counter++;
-                if (counter % REPORT_INTERVAL == 0) {
-                    if (isCancelled) {
-                        return;
-                    }
-
-                    if (progress != null) {
-                        progress.progress(counter);
-                    }
+                if (counter % REPORT_INTERVAL == 0 && isCancelled) {
+                    return;
+                } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
+                    progress.progress(counter);
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -447,14 +439,10 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeEndObject();
 
                 counter++;
-                if (counter % REPORT_INTERVAL == 0) {
-                    if (isCancelled) {
-                        return;
-                    }
-
-                    if (progress != null) {
-                        progress.progress(counter);
-                    }
+                if (counter % REPORT_INTERVAL == 0 && isCancelled) {
+                    return;
+                } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
+                    progress.progress(counter);
                 }
             }
         }

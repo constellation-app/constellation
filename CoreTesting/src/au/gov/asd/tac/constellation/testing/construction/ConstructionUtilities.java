@@ -45,7 +45,7 @@ public class ConstructionUtilities {
      *
      * @throws IOException is an error occurs while reading the icon resources.
      */
-    public static Map<String, byte[]> loadIcons(final Class cls, final String... names) throws IOException {
+    public static Map<String, byte[]> loadIcons(final Class<?> cls, final String... names) throws IOException {
         final HashMap<String, byte[]> iconBytes = new HashMap<>();
 
         for (String name : names) {

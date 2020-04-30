@@ -43,7 +43,9 @@ public abstract class AbstractCalculatorUtilities {
      * @return all calculator utilities
      */
     public static Collection<AbstractCalculatorUtilities> getAllUtilities() {
-        return (Collection<AbstractCalculatorUtilities>) Lookup.getDefault().lookupAll(AbstractCalculatorUtilities.class);
+        @SuppressWarnings("unchecked") //utils will be a Collection<AbstractCalculatorUtilities>
+        Collection<AbstractCalculatorUtilities> utils = (Collection<AbstractCalculatorUtilities>) Lookup.getDefault().lookupAll(AbstractCalculatorUtilities.class);
+        return utils;
     }
 
     //  - it is not the java or python null values, nor the special obliterator object

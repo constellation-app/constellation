@@ -351,7 +351,7 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
                     fos.flush();
                 }
             } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:\n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 nd.setTitle("Icon file error");
                 DialogDisplayer.getDefault().notify(nd);
             }
@@ -464,6 +464,7 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void valueForPathChanged(final TreePath path, final Object newValue) {
+        // required for implementation of TreeModel
     }
 
     @Override
@@ -485,10 +486,12 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void addTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
     @Override
     public void removeTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
 }
@@ -525,11 +528,9 @@ class IconListModel implements ListModel<IconListElement> {
     public IconListModel(final TreeMap<String, ConstellationIcon> icons) {
         names = new ArrayList<>(icons.size());
         iconValue = new ArrayList<>(icons.size());
-        int i = 0;
         for (String part : icons.navigableKeySet()) {
             names.add(part);
             iconValue.add(icons.get(part));
-            i++;
         }
 
         listeners = new ArrayList<>();

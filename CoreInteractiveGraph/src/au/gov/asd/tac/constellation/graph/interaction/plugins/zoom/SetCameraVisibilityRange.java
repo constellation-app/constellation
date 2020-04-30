@@ -81,8 +81,8 @@ public final class SetCameraVisibilityRange extends SimpleEditPlugin {
             final Camera oldCamera = graph.getObjectValue(cameraAttribute, 0);
             final Camera camera = new Camera(oldCamera);
 
-            camera.visibilityLow = visibilityLow;
-            camera.visibilityHigh = visibilityHigh;
+            camera.setVisibilityLow(visibilityLow);
+            camera.setVisibilityHigh(visibilityHigh);
             graph.setObjectValue(cameraAttribute, 0, camera);
         }
     }

@@ -81,7 +81,7 @@ public class NewLineRenderable implements GLRenderable {
 
     @Override
     public int getPriority() {
-        return GLRenderable.ANNOTATIONS_PRIORITY;
+        return RenderablePriority.ANNOTATIONS_PRIORITY.getValue();
     }
 
     /**
@@ -131,26 +131,22 @@ public class NewLineRenderable implements GLRenderable {
 
     @Override
     public void update(final GLAutoDrawable drawable) {
-        if (modelQueue != null) {
-            final Camera camera = parent.getDisplayCamera();
-            NewLineModel updatedModel = modelQueue.peek();
-            while (updatedModel != null && updatedModel.getCamera() != camera) {
-                modelQueue.remove();
-                updatedModel = modelQueue.peek();
-            }
-            if (updatedModel != null) {
-                updatedModel = modelQueue.remove();
-                NewLineModel nextModel = modelQueue.peek();
-                while (nextModel != null && nextModel.getCamera() == camera) {
-                    updatedModel = modelQueue.remove();
-                    nextModel = modelQueue.peek();
-                }
-                modelQueue.addFirst(updatedModel);
-            }
-            model = updatedModel;
-        } else {
-            model = null;
+        final Camera camera = parent.getDisplayCamera();
+        NewLineModel updatedModel = modelQueue.peek();
+        while (updatedModel != null && updatedModel.getCamera() != camera) {
+            modelQueue.remove();
+            updatedModel = modelQueue.peek();
         }
+        if (updatedModel != null) {
+            updatedModel = modelQueue.remove();
+            NewLineModel nextModel = modelQueue.peek();
+            while (nextModel != null && nextModel.getCamera() == camera) {
+                updatedModel = modelQueue.remove();
+                nextModel = modelQueue.peek();
+            }
+            modelQueue.addFirst(updatedModel);
+        }
+        model = updatedModel;
     }
 
     /**

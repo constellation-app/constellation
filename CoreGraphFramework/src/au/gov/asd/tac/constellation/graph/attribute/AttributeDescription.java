@@ -31,6 +31,10 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
  * methods meaning that the attribute designer has a lot of freedom to store the
  * data in an efficient manner.
  * <p>
+ * Every attribute must work with #getObject and #getString. Everything else is
+ * optional. This means that comparison of values, #getObject and #getString are
+ * the safest choice.
+ * <p>
  * Access to the attribute values held by this AttributeDescription are accessed
  * by a collection of getter/setter pairs covering all the primitive types as
  * well as Objects and Strings. The general principle is that these
@@ -668,14 +672,17 @@ public interface AttributeDescription {
 
         @Override
         public void addElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
         public void removeElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
         public void updateElement(int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
@@ -690,6 +697,7 @@ public interface AttributeDescription {
 
         @Override
         public void expandCapacity(int newCapacity) {
+            // Override required for implementation of GraphIndex
         }
     };
 }

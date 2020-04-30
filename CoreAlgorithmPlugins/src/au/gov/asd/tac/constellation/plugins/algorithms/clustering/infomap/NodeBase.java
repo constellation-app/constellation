@@ -289,13 +289,13 @@ public class NodeBase {
      *
      * @return
      */
-    private static int getid(NodeBase n) {
+    private static int getNodeBaseid(NodeBase n) {
         return n == null ? -1 : n.id;
     }
 
     protected String getNeighbourhood() {
         return String.format("parent: %d, prev: %d, next: %d, firstChild: %d, lastChild: %d, childDegree: %d",
-                getid(parent), getid(previous), getid(next), getid(firstChild), getid(lastChild), childDegree);
+                getNodeBaseid(parent), getNodeBaseid(previous), getNodeBaseid(next), getNodeBaseid(firstChild), getNodeBaseid(lastChild), childDegree);
     }
 
     @Override

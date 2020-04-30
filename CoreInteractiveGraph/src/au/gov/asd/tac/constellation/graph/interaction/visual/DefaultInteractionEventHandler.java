@@ -361,10 +361,12 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void keyReleased(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -629,14 +631,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseEntered(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -1055,7 +1060,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         for (final ContextMenuProvider pmp : popups) {
             final List<String> items = pmp.getItems(rg, elementType, clickedId);
-            if (items != null && !items.isEmpty()) {
+            if (!items.isEmpty()) {
                 final List<String> menuPath = pmp.getMenuPath(elementType);
                 if (menuPath == null || menuPath.isEmpty()) {
                     items.forEach(item -> {

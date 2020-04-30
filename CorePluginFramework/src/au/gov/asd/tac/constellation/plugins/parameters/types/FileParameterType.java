@@ -305,7 +305,9 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public boolean setObjectValue(final Object o) {
-            return set((List<File>) o);
+            @SuppressWarnings("unchecked") //o will be list of files which extends object type
+            final List<File> listFileO = (List<File>) o;
+            return set(listFileO);
         }
 
         @Override

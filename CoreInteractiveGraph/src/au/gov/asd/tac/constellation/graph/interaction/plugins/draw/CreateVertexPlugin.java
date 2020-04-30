@@ -44,9 +44,6 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
     private float y;
     private float z;
 
-    public CreateVertexPlugin() {
-    }
-
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();

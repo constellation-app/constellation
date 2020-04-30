@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -35,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import java.util.List;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -81,6 +81,7 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
             if (vParam.getClass() == int[].class) {
                 vertices = (int[]) vParam;
             } else {
+                @SuppressWarnings("unchecked") //vParam will be list of integers which extends from object type
                 final List<Integer> vertexList = (List<Integer>) vParam;
                 vertices = vertexList.stream().mapToInt(i -> i).toArray();
             }

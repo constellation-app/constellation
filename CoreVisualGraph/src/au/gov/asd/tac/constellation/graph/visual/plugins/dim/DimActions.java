@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -44,7 +43,7 @@ import org.openide.util.actions.Presenter;
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.dim.DimActions")
 @ActionRegistration(displayName = "", lazy = false)
-@ActionReference(path = "Toolbars/Visualisation", position = 300)
+@ActionReference(path = "Toolbars/Display", position = 300)
 @Messages("CTL_DimAction=Dim")
 public final class DimActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
@@ -154,7 +153,6 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
     @Override
     public void actionPerformed(final ActionEvent e) {
         final String command = e.getActionCommand();
-        final Plugin plugin;
 
         switch (command) {
             case DIM_SELECTED_ACTION:
@@ -193,10 +191,12 @@ public final class DimActions extends AbstractAction implements Presenter.Toolba
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override

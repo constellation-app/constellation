@@ -305,7 +305,7 @@ public final class VisualManager {
 
         @Override
         public int getPriority() {
-            return SIGNIFY_IDLE_PRIORITY;
+            return VisualPriority.SIGNIFY_IDLE_PRIORITY.getValue();
         }
 
         @Override
@@ -318,7 +318,7 @@ public final class VisualManager {
 
         @Override
         public int getPriority() {
-            return REFRESH_PRIORITY;
+            return VisualPriority.REFRESH_PRIORITY.getValue();
         }
 
         @Override

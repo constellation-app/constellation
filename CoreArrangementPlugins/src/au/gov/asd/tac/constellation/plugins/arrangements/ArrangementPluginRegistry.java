@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.proximity.ArrangeByProx
 import au.gov.asd.tac.constellation.plugins.arrangements.random.RandomArrangementPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.resize.ContractGraphPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphPlugin;
+import au.gov.asd.tac.constellation.plugins.arrangements.scatter.ArrangeInScatter3dGeneralPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.spectral.SpectralArrangementPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInBubbleTreePlugin;
@@ -70,6 +71,7 @@ public class ArrangementPluginRegistry {
     public static final String MDS = ArrangeInMDSPlugin.class.getName();
     public static final String PENDANTS = PendantsArranger.class.getName();
     public static final String RANDOM = RandomArrangementPlugin.class.getName();
+    public static final String SCATTER_3D = ArrangeInScatter3dGeneralPlugin.class.getName();
     public static final String SPECTRAL = SpectralArrangementPlugin.class.getName();
     public static final String SPHERE = ArrangeInSpherePlugin.class.getName();
     public static final String TIME = LayerByTimePlugin.class.getName();

@@ -38,7 +38,7 @@ public interface AnalyticQuestionDescription<R extends AnalyticResult<?>> {
 
     public Class<? extends AnalyticAggregator<R>> getAggregatorType();
 
-    public Class<? extends AnalyticResult> getResultType();
+    public Class<? extends AnalyticResult<?>> getResultType();
 
     /**
      * Gives you the opportunity to initialise parameters for the given plugin.

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
 import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
 import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
@@ -108,6 +109,14 @@ public final class AttributeCalculatorPane extends GridPane {
     private boolean helpSideBarHidden = false;
 
     private InsertListCategory savedScriptsCat;
+    
+    private static final String NEW_ATTRIBUTE_DESCRIPTION = "<new attribute>";
+    private static final String TEXT_COLOR = "#0096C9";
+    private static final String NODE_ATTRIBUTES = "Node Attributes";
+    private static final String SOURCE_NODE_ATTRIBUTES = "Source Node Attributes";
+    private static final String DESTINATION_NODE_ATTRIBUTES = "Destination Node Attributes";
+    private static final String TRANSACTION_ATTRIBUTES = "Transaction Attributes";
+    private static final String COMPLETE_SCRIPTS_CATEGORY = "Complete Scripts";
 
     public AttributeCalculatorPane(final AttributeCalculatorController controller) {
 
@@ -154,7 +163,7 @@ public final class AttributeCalculatorPane extends GridPane {
         elementTypeLabel.setLabelFor(elementTypeComboBox);
         calculatorControls.getChildren().add(elementTypeLabel);
 
-        elementTypeComboBox.getStyleClass().add("uneditableCombo");
+        elementTypeComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         elementTypeComboBox.setItems(FXCollections.observableArrayList(GraphElementType.VERTEX, GraphElementType.TRANSACTION));
         elementTypeComboBox.setCellFactory((ListView<GraphElementType> param) -> {
             return new ListCell<GraphElementType>() {
@@ -195,7 +204,7 @@ public final class AttributeCalculatorPane extends GridPane {
                 updateAttributeDescriptionHelp(a, attribute.getDescription(), attribute.getAttributeType());
             } else {
                 attributeTypeComboBox.setDisable(false);
-                updateAttributeDescriptionHelp(a, "<new attribute>", attributeTypeComboBox.getSelectionModel().getSelectedItem());
+                updateAttributeDescriptionHelp(a, NEW_ATTRIBUTE_DESCRIPTION, attributeTypeComboBox.getSelectionModel().getSelectedItem());
             }
         });
         attributeComboBox.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
@@ -207,7 +216,7 @@ public final class AttributeCalculatorPane extends GridPane {
                 updateAttributeDescriptionHelp(a, attribute.getDescription(), attribute.getAttributeType());
             } else {
                 attributeTypeComboBox.setDisable(false);
-                updateAttributeDescriptionHelp(a, "<new attribute>", attributeTypeComboBox.getSelectionModel().getSelectedItem());
+                updateAttributeDescriptionHelp(a, NEW_ATTRIBUTE_DESCRIPTION, attributeTypeComboBox.getSelectionModel().getSelectedItem());
             }
         });
         calculatorControls.getChildren().add(attributeComboBox);
@@ -223,10 +232,10 @@ public final class AttributeCalculatorPane extends GridPane {
             if (attribute != null) {
                 updateAttributeDescriptionHelp(a, attribute.getDescription(), attribute.getAttributeType());
             } else {
-                updateAttributeDescriptionHelp(a, "<new attribute>", attributeTypeComboBox.getSelectionModel().getSelectedItem());
+                updateAttributeDescriptionHelp(a, NEW_ATTRIBUTE_DESCRIPTION, attributeTypeComboBox.getSelectionModel().getSelectedItem());
             }
         });
-        attributeTypeComboBox.getStyleClass().add("uneditableCombo");
+        attributeTypeComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         attributeTypeComboBox.setMinWidth(220);
         AttributeCalculatorController.ATTRIBUTE_TYPES.sort((String o1, String o2) -> {
             return o1.compareTo(o2);
@@ -241,7 +250,7 @@ public final class AttributeCalculatorPane extends GridPane {
         calculatorControls.getChildren().add(insertLabel);
 
         insertComboBox.setMinWidth(220);
-        insertComboBox.getStyleClass().add("uneditableCombo");
+        insertComboBox.getStyleClass().add(JavafxStyleManager.UNEDITABLE_COMBOBOX);
         insertComboBox.setOnAction((ActionEvent event) -> {
             InsertListCategory current = insertComboBox.getSelectionModel().getSelectedItem();
             if (current != null && current.equals(savedScriptsCat)) {
@@ -269,7 +278,7 @@ public final class AttributeCalculatorPane extends GridPane {
         });
 
         createCategories();
-        ObservableList insertItems = FXCollections.observableArrayList(insertCategories);
+        ObservableList<InsertListCategory> insertItems = FXCollections.observableArrayList(insertCategories);
         insertComboBox.setItems(insertItems);
         insertComboBox.getSelectionModel().select(savedScriptsCat);
         calculatorControls.getChildren().add(insertComboBox);
@@ -405,7 +414,7 @@ public final class AttributeCalculatorPane extends GridPane {
             final String categoryName = category.name;
             final Text categoryHeadingText = new Text(categoryName + ":\t");
             categoryHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
-            categoryHeadingText.setFill(Color.web("#0096C9"));
+            categoryHeadingText.setFill(Color.web(TEXT_COLOR));
             templateCategoryHelp.getChildren().add(categoryHeadingText);
             final String categoryContext = category.contextName;
             final Text categoryContextText = new Text(categoryContext + "\n");
@@ -456,7 +465,7 @@ public final class AttributeCalculatorPane extends GridPane {
 
         final Text objectNameText = new Text(itemName + ":\n");
         objectNameText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
-        objectNameText.setFill(Color.web("#0096C9"));
+        objectNameText.setFill(Color.web(TEXT_COLOR));
         templateObjectHelp.getChildren().add(objectNameText);
 
         String objDescrip = "   " + itemDescription + "\n";
@@ -478,11 +487,11 @@ public final class AttributeCalculatorPane extends GridPane {
 
         final Text objectNameText = new Text(description.templateName + ":\n");
         objectNameText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
-        objectNameText.setFill(Color.web("#0096C9"));
+        objectNameText.setFill(Color.web(TEXT_COLOR));
         templateObjectHelp.getChildren().add(objectNameText);
 
         StringBuilder objUsage = new StringBuilder("Usage(s):\n");
-        for (String str : description.usage) {
+        for (String str : description.getUsage()) {
             objUsage.append("\t").append(str).append("\n");
         }
         final Text objectUsageText = new Text(objUsage.toString() + "\n");
@@ -497,9 +506,9 @@ public final class AttributeCalculatorPane extends GridPane {
         objectDescripText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectDescripText);
 
-        if (description.arguments.length != 0) {
+        if (description.getArguments().length != 0) {
             StringBuilder objArguments = new StringBuilder("Arguments:\n");
-            for (String str : description.arguments) {
+            for (String str : description.getArguments()) {
                 objArguments.append("\t").append(str).append("\n");
             }
             final Text objectArgumentsText = new Text(objArguments.toString() + "\n");
@@ -516,9 +525,9 @@ public final class AttributeCalculatorPane extends GridPane {
         objectReturnsText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectReturnsText);
 
-        if (description.notes.length != 0) {
+        if (description.getNotes().length != 0) {
             StringBuilder objNotes = new StringBuilder("Notes:\n");
-            for (String str : description.notes) {
+            for (String str : description.getNotes()) {
                 objNotes.append("\t- ").append(str).append("\n");
             }
             final Text objectNotesText = new Text(objNotes.toString() + "\n");
@@ -535,7 +544,7 @@ public final class AttributeCalculatorPane extends GridPane {
             attributeDescriptionHelp.getChildren().clear();
             final Text attributeHeadingText = new Text("Attribute to set:\n");
             attributeHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
-            attributeHeadingText.setFill(Color.web("#0096C9"));
+            attributeHeadingText.setFill(Color.web(TEXT_COLOR));
             final Text attributeLabelText = new Text(attributeName);
             attributeLabelText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 12));
             attributeLabelText.setFill(Color.WHITE);
@@ -623,10 +632,10 @@ public final class AttributeCalculatorPane extends GridPane {
         Platform.runLater(() -> {
             final ReadableGraph readableGraph = graph.getReadableGraph();
             try {
-                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "", "Node Attributes");
-                updateInsertAttributeVariables(readableGraph, GraphElementType.TRANSACTION, "", "Transaction Attributes");
-                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "source_", "Source Node Attributes");
-                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "dest_", "Destination Node Attributes");
+                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "", NODE_ATTRIBUTES);
+                updateInsertAttributeVariables(readableGraph, GraphElementType.TRANSACTION, "", TRANSACTION_ATTRIBUTES);
+                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "source_", SOURCE_NODE_ATTRIBUTES);
+                updateInsertAttributeVariables(readableGraph, GraphElementType.VERTEX, "dest_", DESTINATION_NODE_ATTRIBUTES);
 
                 vertexAttributeTypes.clear();
                 int attributeCount = readableGraph.getAttributeCount(GraphElementType.VERTEX);
@@ -687,23 +696,23 @@ public final class AttributeCalculatorPane extends GridPane {
 
     private void createCategories() {
 
-        savedScriptsCat = new InsertListCategory(null, "Complete Scripts");
+        savedScriptsCat = new InsertListCategory(null, COMPLETE_SCRIPTS_CATEGORY);
         insertCategories.add(savedScriptsCat);
-        categoryLookup.put("Complete Scripts", savedScriptsCat);
+        categoryLookup.put(COMPLETE_SCRIPTS_CATEGORY, savedScriptsCat);
         updateInsertCompleteScripts();
 
-        InsertListCategory vertexCat = new InsertListCategory(GraphElementType.VERTEX, "Node Attributes");
+        InsertListCategory vertexCat = new InsertListCategory(GraphElementType.VERTEX, NODE_ATTRIBUTES);
         insertCategories.add(vertexCat);
-        categoryLookup.put("Node Attributes", vertexCat);
-        InsertListCategory transCat = new InsertListCategory(GraphElementType.TRANSACTION, "Transaction Attributes");
+        categoryLookup.put(NODE_ATTRIBUTES, vertexCat);
+        InsertListCategory transCat = new InsertListCategory(GraphElementType.TRANSACTION, TRANSACTION_ATTRIBUTES);
         insertCategories.add(transCat);
-        categoryLookup.put("Transaction Attributes", transCat);
-        InsertListCategory sourceCat = new InsertListCategory(GraphElementType.TRANSACTION, "Source Node Attributes");
+        categoryLookup.put(TRANSACTION_ATTRIBUTES, transCat);
+        InsertListCategory sourceCat = new InsertListCategory(GraphElementType.TRANSACTION, SOURCE_NODE_ATTRIBUTES);
         insertCategories.add(sourceCat);
-        categoryLookup.put("Source Node Attributes", sourceCat);
-        InsertListCategory destCat = new InsertListCategory(GraphElementType.TRANSACTION, "Destination Node Attributes");
+        categoryLookup.put(SOURCE_NODE_ATTRIBUTES, sourceCat);
+        InsertListCategory destCat = new InsertListCategory(GraphElementType.TRANSACTION, DESTINATION_NODE_ATTRIBUTES);
         insertCategories.add(destCat);
-        categoryLookup.put("Destination Node Attributes", destCat);
+        categoryLookup.put(DESTINATION_NODE_ATTRIBUTES, destCat);
 
         for (CalculatorVariable variable : CalculatorVariable.values()) {
             final String name = variable.getDirectoryString();
@@ -753,7 +762,7 @@ public final class AttributeCalculatorPane extends GridPane {
     }
 
     private void updateInsertCompleteScripts() {
-        InsertListCategory category = categoryLookup.get("Complete Scripts");
+        InsertListCategory category = categoryLookup.get(COMPLETE_SCRIPTS_CATEGORY);
         category.insertlistItems.clear();
         Map<String, String[]> savedScripts = ScriptIO.getScriptNamesAndDescriptions();
         for (Entry<String, String[]> nameDesc : savedScripts.entrySet()) {

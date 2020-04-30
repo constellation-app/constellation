@@ -336,7 +336,7 @@ public final class Matrix44f {
         for (int i = 0; i < 4; i++) {
             det += (i & 0x1) == 1 ? (-m.a[i] * detIJ(m, 0, i)) : (m.a[i] * detIJ(m, 0, i));
         }
-        det = 1.0f / det;
+        det = (det != 0.0f ? (1.0f / det) : Float.POSITIVE_INFINITY);
 
         // Calculate inverse.
         for (int i = 0; i < 4; i++) {

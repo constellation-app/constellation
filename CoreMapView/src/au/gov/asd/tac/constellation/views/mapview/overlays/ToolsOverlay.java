@@ -51,6 +51,8 @@ import processing.event.MouseEvent;
 public class ToolsOverlay extends MapOverlay {
 
     private static final Logger LOGGER = Logger.getLogger(ToolsOverlay.class.getName());
+    
+    private static final String DISABLED = "Disabled";
 
     private enum MeasurementSystem {
 
@@ -144,7 +146,7 @@ public class ToolsOverlay extends MapOverlay {
     }
 
     private Location getDrawToolStart() {
-        if (drawOriginX == -1 && drawOriginX == -1) {
+        if (drawOriginX == -1 && drawOriginY == -1) {
             return null;
         }
         return map.getLocation(drawOriginX, drawOriginY);
@@ -204,7 +206,7 @@ public class ToolsOverlay extends MapOverlay {
                 float distance = measureSystem.getMeasureFunction().apply(start, end).floatValue();
                 drawValue(String.format("%s", PApplet.nf(distance, 1, 3)), measureToolX, yOffset, measureToolWidth, false, false);
             } else {
-                drawValue("Disabled", measureToolX, yOffset, measureToolWidth, false, false);
+                drawValue(DISABLED, measureToolX, yOffset, measureToolWidth, false, false);
             }
         } else if (measureActive) {
             final Location start = getMeasureToolStart();
@@ -223,7 +225,7 @@ public class ToolsOverlay extends MapOverlay {
                 drawValue("Enabled", measureToolX, yOffset, measureToolWidth, false, true);
             }
         } else {
-            drawValue("Disabled", measureToolX, yOffset, measureToolWidth, false, false);
+            drawValue(DISABLED, measureToolX, yOffset, measureToolWidth, false, false);
         }
 
         // update map based on measure tool state
@@ -329,7 +331,7 @@ public class ToolsOverlay extends MapOverlay {
                     + " > Click on a drawn marker to remove it.";
             drawInfo(drawDescription, yOffset - (padding * 2), width - (margin * 2) - (padding * 2), true);
         } else {
-            drawValue("Disabled", drawToolX, yOffset, drawToolWidth, false, false);
+            drawValue(DISABLED, drawToolX, yOffset, drawToolWidth, false, false);
         }
 
         // update map based on draw tool state

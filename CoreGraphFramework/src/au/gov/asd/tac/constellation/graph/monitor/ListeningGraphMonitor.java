@@ -133,10 +133,12 @@ public class ListeningGraphMonitor extends ManualGraphMonitor implements GraphCh
 
     @Override
     public void graphOpened(Graph graph) {
+        // Required for GraphManagerListener
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // GraphManagerListener
     }
 
     @Override

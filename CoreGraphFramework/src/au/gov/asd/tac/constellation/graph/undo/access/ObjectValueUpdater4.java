@@ -35,13 +35,13 @@ public class ObjectValueUpdater4 implements ValueUpdater32 {
             return lastBits;
         } else if (delta >= 0 && delta <= 255) {
             state.addByte((byte) (delta + Byte.MIN_VALUE));
-            return (1 << 2) | lastBits;
+            return 4 | lastBits; // 1<<2 = 4
         } else if (delta >= 0 && delta <= 65535) {
             state.addShort((short) (delta + Short.MIN_VALUE));
-            return (2 << 2) | lastBits;
+            return 8 | lastBits; //2<<2 = 8
         } else {
             state.addInt(delta);
-            return (3 << 2) | lastBits;
+            return 12 | lastBits; //3<<2 = 12
         }
     }
 
@@ -61,10 +61,14 @@ public class ObjectValueUpdater4 implements ValueUpdater32 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState edit) {
+                // Default case when the position of the value getter is equal to 0
+                // It has been intentionally left blank
             }
 
             @Override
             public void getUndo(UndoGraphEditState edit) {
+                // Default case when the position of the value getter is equal to 0
+                // It has been intentionally left blank
             }
         },
         new ValueGetter() {

@@ -188,7 +188,7 @@ public class DelimitedFileImporterStage extends Stage {
         setScene(scene);
         setTitle("Import from Delimited File");
         getIcons().add(new Image(DELIMITED_IMPORTER_ICON_PATH));
-        centerOnScreen();
+        DelimitedFileImporterStage.this.centerOnScreen();
     }
 
     public void update(final ImportController importController, final List<ImportDefinition> definitions) {
