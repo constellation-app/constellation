@@ -106,7 +106,9 @@ public class PermanentMergePlugin extends SimpleEditPlugin implements HelpCtx.Pr
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         int selectedNode = parameters.getParameters().get(PRIMARY_NODE_PARAMETER_ID).getIntegerValue();
+        @SuppressWarnings("unchecked") //SELECTED_NODES_PARAMETER will generate list of integers which extends from object type
         final List<Integer> selections = (List<Integer>) parameters.getParameters().get(SELECTED_NODES_PARAMETER_ID).getObjectValue();
+        @SuppressWarnings("unchecked") //ATTRIBUTES_PARAMETER will generate map of integers to strings which extends from object type
         final Map<Integer, String> attributes = (Map<Integer, String>) parameters.getParameters().get(ATTTRIBUTES_PARAMETER_ID).getObjectValue();
         final boolean createNode = parameters.getParameters().get(CREATE_NEW_NODE_PARAMETER_ID).getBooleanValue();
         final boolean createLoops = parameters.getParameters().get(CREATE_LOOPS_PARAMETER_ID).getBooleanValue();

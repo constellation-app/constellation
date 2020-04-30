@@ -745,7 +745,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setNewFilter() {
         final RowSorter<? extends TableModel> oldSorter = dataTable.getRowSorter();
         final GraphTableModel gtm = (GraphTableModel) dataTable.getModel();
-        final TableRowSorter sorter = new TableRowSorter<>(gtm);
+        final TableRowSorter<GraphTableModel> sorter = new TableRowSorter<>(gtm);
         sorter.setSortKeys(oldSorter.getSortKeys());
         if (selectedOnlyButton.isSelected()) {
             sorter.setRowFilter(new SelectionRowFilter(graphNode.getGraph(), currentElementType));
@@ -759,7 +759,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private void setNewModel() {
         final RowSorter<? extends TableModel> oldSorter = dataTable.getRowSorter();
         final GraphTableModel gtm = new GraphTableModel(graphNode.getGraph(), currentElementType);
-        final TableRowSorter sorter = new TableRowSorter<>(gtm);
+        final TableRowSorter<GraphTableModel> sorter = new TableRowSorter<>(gtm);
         sorter.setSortKeys(oldSorter.getSortKeys());
         if (selectedOnlyButton.isSelected()) {
             sorter.setRowFilter(new SelectionRowFilter(graphNode.getGraph(), currentElementType));
