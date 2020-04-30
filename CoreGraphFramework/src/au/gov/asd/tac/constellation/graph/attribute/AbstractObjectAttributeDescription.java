@@ -112,7 +112,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         try {
             convertFromString(value);
             return null;
-        } catch (final Exception ex) {
+        } catch (final IllegalArgumentException ex) {
             return ex.getMessage();
         }
     }
