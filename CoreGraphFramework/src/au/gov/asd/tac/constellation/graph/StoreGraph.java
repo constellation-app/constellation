@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
@@ -1999,10 +2000,16 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      */
     private int recalculateLayerMask(final GraphElementType elementType, final int elementId) {
         int bitmask = 0;
-        if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId >= 0 && vertexLayerVisibilityAttributeId >= 0) {
-            bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
-        } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId >= 0 && transactionLayerVisibilityAttributeId >= 0) {
-            bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
+        if (elementType == GraphElementType.VERTEX) {
+            vertexLayerMaskAttribureId = GraphManager.getDefault().getActiveGraph().getReadableGraph().getAttribute(GraphElementType.VERTEX, LAYER_MASK_ATTRIBUTE_LABEL);
+            if (vertexLayerMaskAttribureId > 0 && vertexLayerVisibilityAttributeId > 0){
+                bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
+            }
+        } else if (elementType == GraphElementType.TRANSACTION) {
+            transactionFilterBitmaskAttrId = GraphManager.getDefault().getActiveGraph().getReadableGraph().getAttribute(GraphElementType.TRANSACTION, LAYER_MASK_ATTRIBUTE_LABEL);
+            if (transactionFilterBitmaskAttrId > 0 && transactionLayerVisibilityAttributeId > 0){
+                bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
+            }
         }
 
         synchronized (this) {
@@ -2040,6 +2047,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (queries.isEmpty()) {
             return true;
         }
+        //GraphManager.getDefault().getActiveGraph().getObjectValue(.ensure(GraphManager.getDefault().getActiveGraph()), 0);
 
         // iterate over rules
         String evaluatedResult = "";
@@ -2151,6 +2159,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         final int bitmask = recalculateLayerMask(elementType, elementId);
 
         if (elementType == GraphElementType.VERTEX) {
+            vertexLayerVisibilityAttributeId = GraphManager.getDefault().getActiveGraph().getReadableGraph().getAttribute(GraphElementType.VERTEX, LAYER_VISIBILITY_ATTRIBUTE_LABEL);
+
 
             // when attr ids are found
             if (vertexLayerMaskAttribureId >= 0 && vertexLayerVisibilityAttributeId >= 0) {
@@ -2162,7 +2172,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     setIntValue(vertexLayerMaskAttribureId, elementId, bitmask);
                     avoidLayerUpdate = false;
                 }
-                final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
+                                final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
                 if ((bitmask & currentVisibleMask) > 0) {
                     // A value > 0 indicates the object is mapped to at least one visible layer
                     if (existingVisibility != 1.0f) {
@@ -2180,13 +2190,15 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
+            transactionLayerVisibilityAttributeId = GraphManager.getDefault().getActiveGraph().getReadableGraph().getAttribute(GraphElementType.TRANSACTION, LAYER_VISIBILITY_ATTRIBUTE_LABEL);
+
             if (transactionFilterBitmaskAttrId >= 0 && transactionLayerVisibilityAttributeId >= 0) {
                 if (attributeId != transactionFilterBitmaskAttrId) {
                     avoidLayerUpdate = true;
                     setIntValue(transactionFilterBitmaskAttrId, elementId, bitmask);
                     avoidLayerUpdate = false;
                 }
-                final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
+                                final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
                 if ((bitmask & currentVisibleMask) > 0) {
                     if (existingVisibility != 1.0f) {
                         attributeDescriptions[transactionLayerVisibilityAttributeId].setFloat(elementId, 1.0f);
