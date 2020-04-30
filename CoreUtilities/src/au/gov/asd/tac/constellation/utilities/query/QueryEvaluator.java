@@ -56,9 +56,7 @@ public class QueryEvaluator {
 
     public static List<String> convertToPostfix(final String infix) {
         if (infix.isBlank()) {
-            @SuppressWarnings("unchecked") //Empty list will specifically be empty list of strings
-            List<String> emptyStringList = (List<String>) Collections.EMPTY_LIST;
-            return emptyStringList;
+            return Collections.emptyList();
         }
         
         // create a stack
