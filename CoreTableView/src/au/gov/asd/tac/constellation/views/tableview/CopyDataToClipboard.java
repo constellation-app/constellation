@@ -255,7 +255,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
         @Override
         public DataFlavor[] getTransferDataFlavors() {
 
-            return (DataFlavor[]) HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
+            return HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
         }
 
         @Override
