@@ -137,8 +137,10 @@ public class CompleteGraphBuilderPlugin extends SimpleEditPlugin {
             tChoices.add(tAttributes.get(0));
         }
         if (parameters != null && parameters.getParameters() != null) {
-            final PluginParameter nAttribute = parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
-            final PluginParameter tAttribute = parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
             MultiChoiceParameterType.setOptions(nAttribute, nAttributes);
             MultiChoiceParameterType.setOptions(tAttribute, tAttributes);
             MultiChoiceParameterType.setChoices(nAttribute, nChoices);

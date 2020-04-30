@@ -57,7 +57,7 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testGetColor() {
-        SchemaElementType instance = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> instance = SchemaVertexType.unknownType();
         ConstellationColor expResult = ConstellationColor.GREY;
         ConstellationColor result = instance.getColor();
         assertEquals(result, expResult);
@@ -68,9 +68,9 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testGetSuperType() {
-        SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
-        SchemaElementType expResult = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType result = instance.getSuperType();
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
+        SchemaElementType<SchemaVertexType> expResult = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> result = instance.getSuperType();
         assertEquals(result, expResult);
     }
 
@@ -79,7 +79,7 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testIsTopLevelTypeWhenItIs() {
-        SchemaElementType instance = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.LOCATION;
         boolean expResult = true;
         boolean result = instance.isTopLevelType();
         assertEquals(result, expResult);
@@ -87,7 +87,7 @@ public class SchemaElementTypeNGTest {
 
     @Test
     public void testIsTopLevelTypeWhenItIsNot() {
-        SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
         boolean expResult = false;
         boolean result = instance.isTopLevelType();
         assertEquals(result, expResult);
@@ -98,17 +98,17 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testGetTopLevelTypeWhenCheckingTopLevelType() {
-        SchemaElementType instance = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType expResult = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType result = instance.getTopLevelType();
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> expResult = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> result = instance.getTopLevelType();
         assertEquals(result, expResult);
     }
 
     @Test
     public void testGetTopLevelTypeWhenCheckingSubType() {
-        SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
-        SchemaElementType expResult = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType result = instance.getTopLevelType();
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
+        SchemaElementType<SchemaVertexType> expResult = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> result = instance.getTopLevelType();
         assertEquals(result, expResult);
     }
 
@@ -117,8 +117,8 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testIsSubTypeOfWhenValid() {
-        SchemaElementType type = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
+        SchemaElementType<SchemaVertexType> type = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
         boolean expResult = true;
         boolean result = instance.isSubTypeOf(type);
         assertEquals(result, expResult);
@@ -126,8 +126,8 @@ public class SchemaElementTypeNGTest {
 
     @Test
     public void testIsSubTypeOfWhenInalid() {
-        SchemaElementType type = AnalyticConcept.VertexType.LOCATION;
-        SchemaElementType instance = AnalyticConcept.VertexType.DOCUMENT;
+        SchemaElementType<SchemaVertexType> type = AnalyticConcept.VertexType.LOCATION;
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.DOCUMENT;
         boolean expResult = false;
         boolean result = instance.isSubTypeOf(type);
         assertEquals(result, expResult);
@@ -138,7 +138,7 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testGetHierachyWithOneLevel() {
-        final SchemaElementType instance = AnalyticConcept.VertexType.LOCATION;
+        final SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.LOCATION;
         String expResult = "Location";
         String result = instance.getHierachy();
         assertEquals(result, expResult);
@@ -146,7 +146,7 @@ public class SchemaElementTypeNGTest {
 
     @Test
     public void testGetHierachyWithTwoLevels() {
-        final SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
+        final SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
         String expResult = "Location.Country";
         String result = instance.getHierachy();
         assertEquals(result, expResult);
@@ -157,7 +157,7 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testIsIncomplete() {
-        SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
+        SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
         boolean expResult = false;
         boolean result = instance.isIncomplete();
         assertEquals(result, expResult);
@@ -168,7 +168,7 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testToString() {
-        final SchemaElementType instance = AnalyticConcept.VertexType.COUNTRY;
+        final SchemaElementType<SchemaVertexType> instance = AnalyticConcept.VertexType.COUNTRY;
         String expResult = "Location.Country";
         String result = instance.toString();
         assertEquals(result, expResult);
@@ -179,9 +179,9 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testGetUnknownType() {
-        SchemaElementType instance = SchemaVertexType.unknownType();
-        SchemaElementType expResult = SchemaVertexType.unknownType();
-        SchemaElementType result = instance;
+        SchemaElementType<SchemaVertexType> instance = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> expResult = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> result = instance;
         assertEquals(result, expResult);
     }
 
@@ -190,9 +190,9 @@ public class SchemaElementTypeNGTest {
      */
     @Test
     public void testCopy() {
-        SchemaElementType instance = SchemaVertexType.unknownType();
-        SchemaElementType expResult = SchemaVertexType.unknownType();
-        SchemaElementType result = instance.copy();
+        SchemaElementType<SchemaVertexType> instance = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> expResult = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> result = instance.copy();
         assertEquals(result, expResult);
     }
 
@@ -202,9 +202,9 @@ public class SchemaElementTypeNGTest {
     @Test
     public void testRename() {
         String name = "foo";
-        SchemaElementType instance = SchemaVertexType.unknownType();
-        SchemaElementType expResult = new SchemaVertexType.Builder(SchemaVertexType.unknownType(), name).build();
-        SchemaElementType result = instance.rename(name);
+        SchemaElementType<SchemaVertexType> instance = SchemaVertexType.unknownType();
+        SchemaElementType<SchemaVertexType> expResult = new SchemaVertexType.Builder(SchemaVertexType.unknownType(), name).build();
+        SchemaElementType<SchemaVertexType> result = instance.rename(name);
         assertEquals(result, expResult);
     }
 //
