@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -46,13 +47,17 @@ public class LayersViewPane extends BorderPane {
     private final VBox layersViewPane;
     private final HBox options;
     private int currentIndex;
+    private final List<LayerDescription> layers;
 
     public LayersViewPane(final LayersViewController controller) {
 
         // create controller
         this.controller = controller;
+        
+        // instantiate list of layers
+        layers = new ArrayList<>();
 
-        // create layers
+        // create layer headings
         final Label layerIdHeadingText = new Label("Layer\nID");
         final Label visibilityHeadingText = new Label("Visibility");
         final Label queryHeadingText = new Label("Query");
@@ -81,16 +86,19 @@ public class LayersViewPane extends BorderPane {
 
         // add default layers
         this.currentIndex = 0;
-        createLayer(true);
-        createLayer(false);
-
+        createLayer(++currentIndex, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION);
+        layers.add(new LayerDescription(currentIndex, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
+        createLayer(++currentIndex, false, "", "");
+        layers.add(new LayerDescription(currentIndex, false, "",""));
+        
         // create options
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= 32) { // 32 layers plus headings
-                createLayer(false);
-                controller.updateState();
+                createLayer(++currentIndex, false, "", "");
+                layers.add(new LayerDescription(currentIndex, false, "", ""));
+                controller.updateState(true);
             } else {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
                         "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
@@ -112,84 +120,97 @@ public class LayersViewPane extends BorderPane {
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
 
         this.setCenter(layersViewPane);
+        controller.updateState(false);
+    }
+    
+    public LayersViewController getController() {
+        return controller;
     }
 
-    private int createLayer(final boolean defaultLayer) {
-        final Label layerIdText = new Label(String.format("%02d", ++currentIndex));
+    private int createLayer(final int currentIndex, final boolean checkBoxSelected, final String query, final String description) {
+        final Label layerIdText = new Label(String.format("%02d", currentIndex));
         layerIdText.setMinWidth(30);
         layerIdText.setPrefWidth(40);
         layerIdText.setTextAlignment(TextAlignment.CENTER);
         layerIdText.setPadding(new Insets(0, 0, 0, 10));
 
-        final CheckBox visibilityCheckBox = new CheckBox();
-        visibilityCheckBox.setMinWidth(60);
-        visibilityCheckBox.setPadding(new Insets(0, 30, 0, 15));
-        visibilityCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+        final Node visibilityCheckBox = new CheckBox();
+        
+        ((CheckBox) visibilityCheckBox).setMinWidth(60);
+        ((CheckBox) visibilityCheckBox).setPadding(new Insets(0, 30, 0, 15));
+        ((CheckBox) visibilityCheckBox).setSelected(checkBoxSelected);
+        visibilityCheckBox.setOnMouseClicked(e -> {
+            Node source = (Node) e.getSource();
+            LayerDescription layer = layers.get(GridPane.getRowIndex(source)-1);
+            layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
             controller.submit();
             controller.execute();
-            controller.updateState();
+            controller.updateState(true);
+        });
+        
+        final Node queryTextArea = new TextArea();
+        ((TextArea) queryTextArea).setPrefRowCount(1);
+        ((TextArea) queryTextArea).setText(query);
+        ((TextArea) queryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(!newVal){
+                LayerDescription layer = layers.get(currentIndex-1);
+                layer.setQueryText(((TextArea) queryTextArea).getText());
+                controller.updateState(true);
+            }
+        });
+        
+        final Node descriptionTextArea = new TextArea();
+        ((TextArea) descriptionTextArea).setPrefRowCount(1);
+        ((TextArea) descriptionTextArea).setText(description);
+        ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
+            if(!newVal){
+                LayerDescription layer = layers.get(currentIndex-1);
+                layer.setDescriptionText(((TextArea) descriptionTextArea).getText());
+                controller.updateState(true);
+            }
         });
 
-        final TextArea queryTextArea = new TextArea();
-        queryTextArea.setPrefRowCount(1);
-        queryTextArea.textProperty().addListener((observable, oldVal, newVal) -> {
-            controller.updateState();
-        });
-
-        final TextArea descriptionTextArea = new TextArea();
-        descriptionTextArea.setPrefRowCount(1);
-        descriptionTextArea.textProperty().addListener((observable, oldVal, newVal) -> {
-            controller.updateState();
-        });
-
-        if (defaultLayer) {
+        if (query.equals(LayerDescription.DEFAULT_QUERY_STRING)) {
             layerIdText.setDisable(true);
-            visibilityCheckBox.setSelected(true);
+            ((CheckBox) visibilityCheckBox).setSelected(true);
             visibilityCheckBox.setDisable(true);
-            queryTextArea.setText(LayerDescription.DEFAULT_QUERY_STRING);
             queryTextArea.setDisable(true);
-            descriptionTextArea.setText(LayerDescription.DEFAULT_QUERY_DESCRIPTION);
             descriptionTextArea.setDisable(true);
         }
         layersGridPane.addRow(currentIndex, layerIdText,
                 visibilityCheckBox, queryTextArea, descriptionTextArea);
+        
         return currentIndex;
-    }
-
-    public synchronized GridPane getLayers() {
-        return layersGridPane;
     }
 
     public HBox getOptions() {
         return options;
     }
-
-    public void setLayers(final LayersViewState newState) {
+    
+    public List<LayerDescription> getlayers() {
+        return List.copyOf(layers);
+    }
+    
+    public synchronized void setLayers(final List<LayerDescription> layers) {
+        this.layers.clear();
         currentIndex = 0;
+        final List<LayerDescription> layersCopy = new ArrayList();
+        for (final LayerDescription layer : layers) {
+            layersCopy.add(new LayerDescription(layer));
+        }
+        this.layers.addAll(layersCopy);
+        updateLayers();
+    }
+    
+    private void updateLayers() {
         Platform.runLater(() -> {
             synchronized (this) {
                 layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
-                for (final LayerDescription layer : newState.getAllLayers()) {
-                    detailLayer(createLayer(false), layer);
+                for (final LayerDescription layer : layers) {
+                    createLayer(layer.getLayerIndex(), layer.getCurrentLayerVisibility(), layer.getLayerQuery(), layer.getLayerDescription());
+                    ++currentIndex;
                 }
             }
         });
-    }
-
-    private void detailLayer(final int rowIndex, final LayerDescription layerInfo) {
-        for (final Node cell : layersGridPane.getChildren()) {
-            if (GridPane.getRowIndex(cell) == rowIndex && cell instanceof CheckBox) {
-                ((CheckBox) cell).setSelected(layerInfo.getCurrentLayerVisibility());
-                ((CheckBox) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
-            } else if (GridPane.getRowIndex(cell) == rowIndex && cell instanceof TextArea) {
-                if (GridPane.getColumnIndex(cell) == 2) {
-                    ((TextArea) cell).setText(layerInfo.getLayerQuery());
-                    ((TextArea) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
-                } else if (GridPane.getColumnIndex(cell) == 3) {
-                    ((TextArea) cell).setText(layerInfo.getLayerDescription());
-                    ((TextArea) cell).setDisable(layerInfo.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING));
-                }
-            }
-        }
     }
 }

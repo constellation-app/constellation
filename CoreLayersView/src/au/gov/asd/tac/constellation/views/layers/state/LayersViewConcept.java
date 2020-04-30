@@ -36,17 +36,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class)
 public class LayersViewConcept extends SchemaConcept {
 
-    private static final LayersViewState DEFAULT_STATE = new LayersViewState(
-            new ArrayList<LayerDescription>() {
-        {
-            this.add(new LayerDescription(1, true,
-                    LayerDescription.DEFAULT_QUERY_STRING,
-                    LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-            this.add(new LayerDescription(2, false, "", ""));
-        }
-    }
-    );
-
     @Override
     public String getName() {
         return "Layers View";
@@ -63,7 +52,6 @@ public class LayersViewConcept extends SchemaConcept {
 
         public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "layers_view_state", "layers_view_state")
                 .setDescription("The current state of the layers view with relation to the active graph")
-                .setDefaultValue(DEFAULT_STATE)
                 .build();
     }
 

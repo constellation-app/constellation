@@ -29,13 +29,6 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -46,6 +39,7 @@ public class LayersViewController {
 
     private final LayersViewTopComponent parent;
     private LayersViewPane pane = null;
+    public boolean stateChanged = false;
 
     public LayersViewController(final LayersViewTopComponent parent) {
         this.parent = parent;
@@ -61,26 +55,14 @@ public class LayersViewController {
         if (pane == null) {
             return;
         }
-
         int newBitmask = 0b0;
-        Label layerIdText = null;
-        CheckBox visibilityCheckBox = null;
-        for (final Node node : pane.getLayers().getChildren()) {
-
-            if (GridPane.getRowIndex(node) > 0) { // skip layer 1
-                layerIdText = GridPane.getColumnIndex(node) == 0 ? (Label) node : layerIdText;
-                visibilityCheckBox = GridPane.getColumnIndex(node) == 1 ? (CheckBox) node : visibilityCheckBox;
-
-                if (GridPane.getColumnIndex(node) == 2) {
-                    // only add layer id to list when it is checked
-                    newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
-                }
+        for (LayerDescription layer : pane.getlayers()) {
+            if(!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)){
+                newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
             }
         }
-
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
         newBitmask = (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
-
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
@@ -94,37 +76,40 @@ public class LayersViewController {
         if (pane == null) {
             return;
         }
-
         final List<String> layerQueries = new ArrayList<>();
-        for (final Node node : pane.getLayers().getChildren()) {
-            if (GridPane.getRowIndex(node) > 0 && GridPane.getColumnIndex(node) == 2) {
-                final TextArea queryTextArea = (TextArea) node;
-                layerQueries.add(queryTextArea.getText().isBlank() ? null : queryTextArea.getText());
+        for (LayerDescription layer : pane.getlayers()) {
+            if(!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)){
+                layerQueries.add(layer.getLayerQuery() == "" ? null : layer.getLayerQuery());
             }
         }
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     /**
+     * Executes the plugin with parameters dependent on if the trigger was an update event.
+     */
+    public void updateState(final boolean wasUpdate) {
+        pane = parent.getContent();
+        stateChanged = true;
+        PluginExecution.withPlugin(new LayersViewStateUpdater(pane, wasUpdate)).executeLater(GraphManager.getDefault().getActiveGraph());
+        
+    }
+
+
+    /**
      * Executes a plugin to grab current Layers View selections and save them to
-     * the graph's Layers View State Attribute.
+     * the graph's Layers View State Attribute only when it has changed.
      */
-    public void updateState() {
+    public void writeState() {
         pane = parent.getContent();
-        PluginExecution.withPlugin(new LayersViewStateUpdater(pane, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+        if(stateChanged){
+            stateChanged = false;
+            PluginExecution.withPlugin(new LayersViewStateWriter(pane)).executeLater(GraphManager.getDefault().getActiveGraph());
+        }
     }
 
     /**
-     * Executes a plugin to grab current Layers View state and load them into
-     * the Layers View UI.
-     */
-    public void loadOrCreateState() {
-        pane = parent.getContent();
-        PluginExecution.withPlugin(new LayersViewStateUpdater(pane, false)).executeLater(GraphManager.getDefault().getActiveGraph());
-    }
-
-    /**
-     * Update the display by reading and writing to/from the state attribute.
+     * Updates the pane with current state selections, updates the state when changed.
      */
     private static final class LayersViewStateUpdater extends SimpleEditPlugin {
 
@@ -141,51 +126,16 @@ public class LayersViewController {
             if (pane == null) {
                 return;
             }
+            
             int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
-            // no state or on a graph update
-            if (graph.getObjectValue(stateAttributeId, 0) == null || isUpdateCall) {
+            LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+            currentState = (currentState == null) ? new LayersViewState() : new LayersViewState(currentState);
+            if (isUpdateCall) {
                 // Take a snapshot of the UI and store that state
-                LayersViewState newState = captureState();
-                graph.setObjectValue(stateAttributeId, 0, newState);
-            } else {
-                // When a state exists, write it to the Layers View
-                updateLayersView(graph.getObjectValue(stateAttributeId, 0));
-            }
-        }
-
-        private LayersViewState captureState() {
-            int layerNumber = -1;
-            boolean layerSelected = false;
-            String layerQuery = "";
-            String layerDescription;
-            LayerDescription layer;
-            final LayersViewState currentState = new LayersViewState();
-            for (final Node node : pane.getLayers().getChildren()) {
-                // when not on a heading
-                if (GridPane.getRowIndex(node) > 0) {
-                    if (null != GridPane.getColumnIndex(node)) {
-                        switch (GridPane.getColumnIndex(node)) {
-                            case 0:
-                                layerNumber = Integer.parseInt(((Label) node).getText());
-                                break;
-                            case 1:
-                                layerSelected = ((CheckBox) node).isSelected();
-                                break;
-                            case 2:
-                                layerQuery = ((TextArea) node).getText();
-                                break;
-                            case 3:
-                                layerDescription = ((TextArea) node).getText();
-                                layer = new LayerDescription(layerNumber, layerSelected, layerQuery, layerDescription);
-                                currentState.addLayer(layer);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-            return currentState;
+                currentState.setLayers(pane.getlayers());
+                pane.getController().writeState();
+            } 
+            pane.setLayers(currentState.getAllLayers());
         }
 
         @Override
@@ -197,15 +147,39 @@ public class LayersViewController {
         public String getName() {
             return "Layers View: Update State";
         }
+    }
+    
+    /**
+     * Write the current pane layer contents to the state attribute.
+     */
+    private static final class LayersViewStateWriter extends SimpleEditPlugin {
 
-        /**
-         * Update the UI for Layers View to reflect the queries loaded from
-         * state.
-         *
-         * @param newState the LayersViewState to load into the UI
-         */
-        private void updateLayersView(final LayersViewState newState) {
-            pane.setLayers(newState);
+        private LayersViewPane pane = null;
+
+        public LayersViewStateWriter(final LayersViewPane pane) {
+            this.pane = pane;
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            if (pane == null) {
+                return;
+            }
+            int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            LayersViewState newState = graph.getObjectValue(stateAttributeId, 0);
+            newState = newState == null ? new LayersViewState() : new LayersViewState(newState);
+            newState.setLayers(pane.getlayers());
+            graph.setObjectValue(stateAttributeId, 0, newState);
+        }
+
+        @Override
+        protected boolean isSignificant() {
+            return false;
+        }
+
+        @Override
+        public String getName() {
+            return "Layers View: Update State";
         }
     }
 }

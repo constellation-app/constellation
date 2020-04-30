@@ -26,15 +26,22 @@ public class LayerDescription {
     public static final String DEFAULT_QUERY_DESCRIPTION = "Show All";
 
     private final int layerIndex;
-    private final boolean currentVisibility;
-    private final String query;
-    private final String description;
+    private boolean currentVisibility;
+    private String query;
+    private String description;
 
     public LayerDescription(final int layerIndex, final boolean currentVisibility, final String query, final String description) {
         this.layerIndex = layerIndex;
         this.currentVisibility = currentVisibility;
         this.query = query;
         this.description = description;
+    }
+    
+    public LayerDescription(LayerDescription copy) {
+        this.layerIndex = copy.layerIndex;
+        this.currentVisibility = copy.currentVisibility;
+        this.query = copy.query;
+        this.description = copy.description;
     }
 
     public int getLayerIndex() {
@@ -44,6 +51,10 @@ public class LayerDescription {
     public boolean getCurrentLayerVisibility() {
         return currentVisibility;
     }
+    
+    public void setCurrentLayerVisibility(final boolean value) {
+        currentVisibility = value;
+    }
 
     public String getLayerQuery() {
         return query == null ? DEFAULT_QUERY_STRING : query;
@@ -51,5 +62,13 @@ public class LayerDescription {
 
     public String getLayerDescription() {
         return query == null ? DEFAULT_QUERY_DESCRIPTION : description;
+    }
+
+    public void setDescriptionText(final String newDescription) {
+        description = newDescription;
+    }
+
+    public void setQueryText(final String newQuery) {
+        query = newQuery;
     }
 }

@@ -26,17 +26,21 @@ import java.util.List;
  */
 public class LayersViewState {
 
-    private List<LayerDescription> layers = new ArrayList<>();
+    private final List<LayerDescription> layers = new ArrayList<>();
 
     public LayersViewState() {
+        layers.add(new LayerDescription(1, true,
+                LayerDescription.DEFAULT_QUERY_STRING,
+                LayerDescription.DEFAULT_QUERY_DESCRIPTION));
+        layers.add(new LayerDescription(2, false, "", ""));
     }
 
     public LayersViewState(final List<LayerDescription> layers) {
-        this.layers = layers;
+        this.layers.addAll(layers);
     }
 
     public LayersViewState(final LayersViewState state) {
-        layers = List.copyOf(state.getAllLayers());
+        layers.addAll(state.getAllLayers());
     }
 
     public List<LayerDescription> getAllLayers() {
@@ -52,6 +56,11 @@ public class LayersViewState {
     }
 
     public void setLayers(final List<LayerDescription> layersList) {
-        layers = layersList;
+        final List<LayerDescription> layersCopy = new ArrayList();
+        layersList.forEach((layer) -> {
+            layersCopy.add(new LayerDescription(layer));
+        });
+        layers.clear();
+        layers.addAll(layersList);
     }
 }

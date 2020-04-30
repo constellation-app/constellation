@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -62,6 +63,10 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         layersViewController = new LayersViewController(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
         initContent();
+        
+        addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
+            layersViewController.writeState(); 
+        });
     }
 
     @Override
@@ -76,12 +81,17 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        layersViewController.loadOrCreateState();
+        layersViewController.updateState(false);
     }
     
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        layersViewController.loadOrCreateState();
+        layersViewController.updateState(false);
+    }
+    
+    @Override
+    protected void handleComponentOpened() {
+        layersViewController.updateState(false);
     }
     /**
      * This method is called from within the constructor to initialize the form.
