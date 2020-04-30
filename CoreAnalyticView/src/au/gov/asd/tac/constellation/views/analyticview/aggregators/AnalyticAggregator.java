@@ -32,5 +32,5 @@ public interface AnalyticAggregator<R extends AnalyticResult<?>> {
 
     public String getName();
 
-    public abstract Class<? extends AnalyticResult> getResultType();
+    public abstract Class<? extends AnalyticResult<?>> getResultType();
 }

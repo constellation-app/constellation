@@ -98,9 +98,9 @@ public class ItemsDialog<T> extends ConstellationDialog {
         table.setItems(rows);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.getSelectionModel().clearSelection();
-        table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener() {
+        table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener<>() {
             @Override
-            public void onChanged(ListChangeListener.Change c) {
+            public void onChanged(ListChangeListener.Change<? extends Integer> c) {
                 try {
                     List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
                     selectRows(selectedRows);
@@ -166,6 +166,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
     }
 
     protected void selectRows(List<ItemsRow<T>> rows) throws InterruptedException {
+        // Method overriden LeadNodeSelectionDialog
     }
 
     public void setOkButtonAction(EventHandler<ActionEvent> event) {

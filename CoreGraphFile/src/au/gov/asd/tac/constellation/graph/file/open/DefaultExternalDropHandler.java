@@ -172,7 +172,9 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         try {
             if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 //windows & mac
-                return (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                @SuppressWarnings("unchecked") //transferData will be a list of files which extends from Object type
+                List<File> transferData = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                return transferData;
             } else if (t.isDataFlavorSupported(getUriListDataFlavor())) {
                 //linux
                 String uriList = (String) t.getTransferData(getUriListDataFlavor());

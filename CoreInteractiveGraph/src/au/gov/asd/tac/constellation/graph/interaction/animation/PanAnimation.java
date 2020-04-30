@@ -92,6 +92,7 @@ public final class PanAnimation extends Animation {
 
     @Override
     public void reset(GraphWriteMethods wg) {
+        // Method override required, intentionally left blank
     }
 
     @Override

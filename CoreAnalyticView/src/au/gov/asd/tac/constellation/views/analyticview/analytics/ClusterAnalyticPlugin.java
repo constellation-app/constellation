@@ -131,7 +131,7 @@ public abstract class ClusterAnalyticPlugin extends AnalyticPlugin<ClusterResult
     }
 
     @Override
-    public final Class<? extends AnalyticResult> getResultType() {
+    public final Class<? extends AnalyticResult<?>> getResultType() {
         return ClusterResult.class;
     }
 }

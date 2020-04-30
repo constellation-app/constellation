@@ -60,7 +60,7 @@ public class AttributeTitledPane extends TitledPane {
         this(null, null);
     }
 
-    public AttributeTitledPane(EventHandler removeEventHandler, EventHandler modifyEventHandler) {
+    public AttributeTitledPane(EventHandler<ActionEvent> removeEventHandler, EventHandler<ActionEvent> modifyEventHandler) {
 
         if (removeEventHandler == null) {
             ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
@@ -97,7 +97,7 @@ public class AttributeTitledPane extends TitledPane {
         attributeData = data;
     }
 
-    public void addMenuItem(final String name, final EventHandler handler) {
+    public void addMenuItem(final String name, final EventHandler<ActionEvent> handler) {
         MenuItem menuItem = new MenuItem(name);
         menuItem.setOnAction(handler);
         ctxMenu.getItems().add(menuItem);

@@ -132,14 +132,17 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
             @Override
             public void componentMoved(ComponentEvent e) {
+                // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
+                // Override required for ComponentListener, intentionally left blank
             }
 
             @Override
             public void componentHidden(ComponentEvent e) {
+                // Override required for ComponentListener, intentionally left blank
             }
         });
     }
@@ -489,9 +492,11 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     }
 
     void writeProperties(final java.util.Properties p) {
+        //Unused Method
     }
 
     void readProperties(final java.util.Properties p) {
+        //Unused Method
     }
 
     // Make the entire parent chain of the container revalidate and repaint

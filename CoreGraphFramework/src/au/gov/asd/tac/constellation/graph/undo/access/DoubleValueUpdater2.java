@@ -58,10 +58,14 @@ public class DoubleValueUpdater2 implements ValueUpdater64 {
         new ValueGetter() {
             @Override
             public void getExecute(UndoGraphEditState state) {
+                // Default case when the position of the value getter is equal to 0
+                // It has been intentionally left blank
             }
 
             @Override
             public void getUndo(UndoGraphEditState state) {
+                // Default case when the position of the value getter is equal to 0
+                // It has been intentionally left blank
             }
         },
         new ValueGetter() {

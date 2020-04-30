@@ -759,5 +759,6 @@ public class MdsArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
+        // Required for Arranger, intentionally left blank
     }
 }

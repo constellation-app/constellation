@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.namedselection;
 
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
-import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
+import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionRenamerPanel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -194,6 +194,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
 
     @Override
     public void componentClosed() {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -673,9 +674,11 @@ public final class NamedSelectionTopComponent extends TopComponent {
     // End of variables declaration//GEN-END:variables
 
     void writeProperties(final java.util.Properties p) {
+        // Method Implementation required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
+        // Method Implementation required for @ConvertAsProperties, intentionally left blank
     }
 
     /**
@@ -731,7 +734,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         for (int index = (indices.length - 1); index >= 0; index--) {
             // Current Selection item lives at 0, and we want to ensure it cannot be deleted.
             if (indices[index] != 0) {
-                removeSelections.add((NamedSelection) selections.getElementAt(indices[index]));
+                removeSelections.add(selections.getElementAt(indices[index]));
             }
         }
 
@@ -748,7 +751,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final NamedSelectionListModel selections = (NamedSelectionListModel) lstNamedSelections.getModel();
 
         if (index > 0) {
-            final NamedSelection current = (NamedSelection) selections.getElementAt(index);
+            final NamedSelection current = selections.getElementAt(index);
 
             if (!current.isLocked()) {
                 final NamedSelectionRenamerPanel nsrp = new NamedSelectionRenamerPanel(current.getName());
@@ -778,7 +781,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final NamedSelectionListModel selections = (NamedSelectionListModel) lstNamedSelections.getModel();
 
         if (index > 0) {
-            final NamedSelection current = (NamedSelection) selections.getElementAt(index);
+            final NamedSelection current = selections.getElementAt(index);
 
             if (!current.isLocked()) {
                 final NamedSelectionModDescPanel nsmp = new NamedSelectionModDescPanel(current.getName(), current.getDescription());
@@ -808,7 +811,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final NamedSelectionListModel selections = (NamedSelectionListModel) lstNamedSelections.getModel();
 
         if (index > 0) {
-            final NamedSelection current = (NamedSelection) selections.getElementAt(index);
+            final NamedSelection current = selections.getElementAt(index);
 
             NamedSelectionManager.getDefault().toggleLockedNamedSelection(current);
         }
@@ -823,7 +826,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
     private void dimAllOthers() {
         final int index = lstNamedSelections.getSelectedIndex();
         final NamedSelectionListModel selections = (NamedSelectionListModel) lstNamedSelections.getModel();
-        final NamedSelection current = (NamedSelection) selections.getElementAt(index);
+        final NamedSelection current = selections.getElementAt(index);
 
         NamedSelectionManager.getDefault().dimOtherThanSelection(current);
     }
@@ -837,7 +840,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
     private void cloneSelection() {
         final int index = lstNamedSelections.getSelectedIndex();
         final NamedSelectionListModel selections = (NamedSelectionListModel) lstNamedSelections.getModel();
-        final NamedSelection current = (NamedSelection) selections.getElementAt(index);
+        final NamedSelection current = selections.getElementAt(index);
 
         NamedSelectionManager.getDefault().cloneNamedSelection(current);
     }
@@ -855,7 +858,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final ArrayList<NamedSelection> intersect = new ArrayList<>();
 
         for (int index = 0; index < indices.length; index++) {
-            intersect.add((NamedSelection) selections.getElementAt(indices[index]));
+            intersect.add(selections.getElementAt(indices[index]));
         }
 
         if (intersect.size() > 1) {
@@ -876,7 +879,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final ArrayList<NamedSelection> union = new ArrayList<>();
 
         for (int index = 0; index < indices.length; index++) {
-            union.add((NamedSelection) selections.getElementAt(indices[index]));
+            union.add(selections.getElementAt(indices[index]));
         }
 
         if (union.size() > 1) {
@@ -972,12 +975,12 @@ public final class NamedSelectionTopComponent extends TopComponent {
      *
      * @see JList
      */
-    private class NamedSelectionList extends JList {
+    private class NamedSelectionList extends JList<NamedSelection> {
 
         @Override
         public String getToolTipText(final MouseEvent e) {
             final NamedSelectionListModel selections = (NamedSelectionListModel) super.getModel();
-            final NamedSelection item = (NamedSelection) selections.getElementAt(super.locationToIndex(e.getPoint()));
+            final NamedSelection item = selections.getElementAt(super.locationToIndex(e.getPoint()));
 
             return !item.getDescription().isEmpty() ? item.getDescription() : null;
         }
@@ -1007,51 +1010,47 @@ public final class NamedSelectionTopComponent extends TopComponent {
      * @see ListCellRenderer
      * @see NamedSelection
      */
-    private class NamedSelectionCellRenderer extends NamedSelectionListElement implements ListCellRenderer {
+    private class NamedSelectionCellRenderer extends NamedSelectionListElement implements ListCellRenderer<NamedSelection> {
 
         @Override
-        public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+        public Component getListCellRendererComponent(final JList<? extends NamedSelection> list, final NamedSelection value, final int index,
                 final boolean isSelected, final boolean cellHasFocus) {
-            if (value instanceof NamedSelection) {
-                final NamedSelection selection = (NamedSelection) value;
-
-                lblNamedSelection.setText(selection.getName());
-                if (selection.getID() < 0) { // Check if this is the 'current selection' entity, and act accordingly:
-                    // We have the 'current selection' list item, which is not actually a named selection:
-                    lblNamedSelection.setText(Bundle.NamedSelection_CurrentSelection());
-                    lblNamedSelection.setFont(new Font(lblNamedSelection.getFont().getFontName(),
-                            Font.ITALIC, lblNamedSelection.getFont().getSize()));
+            lblNamedSelection.setText(value.getName());
+            if (value.getID() < 0) { // Check if this is the 'current selection' entity, and act accordingly:
+                // We have the 'current selection' list item, which is not actually a named selection:
+                lblNamedSelection.setText(Bundle.NamedSelection_CurrentSelection());
+                lblNamedSelection.setFont(new Font(lblNamedSelection.getFont().getFontName(),
+                        Font.ITALIC, lblNamedSelection.getFont().getSize()));
+                lblShortcutKey.setText("");
+                lblShortcutKey.setVisible(false);
+                lblShortcutText.setVisible(false);
+                super.setLockedStatus(false);
+            } else { // We have a regular named selection, so renderer it (along with shortcut if applicable).
+                lblNamedSelection.setFont(new Font(lblNamedSelection.getFont().getFontName(),
+                        Font.PLAIN, lblNamedSelection.getFont().getSize()));
+                if (value.getHotkey() != null) {
+                    lblShortcutKey.setText("<Ctrl-" + value.getHotkey() + ">");
+                    lblShortcutKey.setVisible(true);
+                    lblShortcutText.setVisible(true);
+                } else {
                     lblShortcutKey.setText("");
                     lblShortcutKey.setVisible(false);
                     lblShortcutText.setVisible(false);
-                    super.setLockedStatus(false);
-                } else { // We have a regular named selection, so renderer it (along with shortcut if applicable).
-                    lblNamedSelection.setFont(new Font(lblNamedSelection.getFont().getFontName(),
-                            Font.PLAIN, lblNamedSelection.getFont().getSize()));
-                    if (selection.getHotkey() != null) {
-                        lblShortcutKey.setText("<Ctrl-" + selection.getHotkey() + ">");
-                        lblShortcutKey.setVisible(true);
-                        lblShortcutText.setVisible(true);
-                    } else {
-                        lblShortcutKey.setText("");
-                        lblShortcutKey.setVisible(false);
-                        lblShortcutText.setVisible(false);
-                    }
                 }
+            }
 
-                if (isSelected) { // Change the colour if the named selection has been selected:
-                    super.setBackground(list.getSelectionBackground());
-                    super.setLockedStatusSelected(selection.isLocked());
-                    lblNamedSelection.setForeground(list.getSelectionForeground());
-                    lblShortcutKey.setForeground(list.getSelectionForeground());
-                    lblShortcutText.setForeground(list.getSelectionForeground());
-                } else { // Change colouring for non selected items:
-                    super.setBackground(list.getBackground());
-                    super.setLockedStatus(selection.isLocked());
-                    lblNamedSelection.setForeground(list.getForeground());
-                    lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting colour.
-                    lblShortcutText.setForeground(java.awt.SystemColor.controlDkShadow); // Less prominent than selection name.
-                }
+            if (isSelected) { // Change the colour if the named selection has been selected:
+                super.setBackground(list.getSelectionBackground());
+                super.setLockedStatusSelected(value.isLocked());
+                lblNamedSelection.setForeground(list.getSelectionForeground());
+                lblShortcutKey.setForeground(list.getSelectionForeground());
+                lblShortcutText.setForeground(list.getSelectionForeground());
+            } else { // Change colouring for non selected items:
+                super.setBackground(list.getBackground());
+                super.setLockedStatus(value.isLocked());
+                lblNamedSelection.setForeground(list.getForeground());
+                lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting colour.
+                lblShortcutText.setForeground(java.awt.SystemColor.controlDkShadow); // Less prominent than selection name.
             }
 
             return this;
@@ -1065,7 +1064,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
      * @see AbstractListModel
      * @see NamedSelection
      */
-    private class NamedSelectionListModel extends AbstractListModel {
+    private class NamedSelectionListModel extends AbstractListModel<NamedSelection> {
 
         private final ArrayList<NamedSelection> selections = new ArrayList<>();
 
@@ -1075,7 +1074,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
         }
 
         @Override
-        public Object getElementAt(final int index) {
+        public NamedSelection getElementAt(final int index) {
             return selections.get(index);
         }
 

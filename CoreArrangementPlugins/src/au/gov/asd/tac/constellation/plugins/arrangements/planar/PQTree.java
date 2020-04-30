@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.planar;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,7 +33,7 @@ class PQTree {
     private PQNode root;
     private PQNode pertinentRoot;
     private int currentNumber;
-    private Set<PQNode>[] leaves;
+    private List<Set<PQNode>> leaves;
     private PQNode directionIndicatorLocation = null;
     private int numPertinentLeaves;
 
@@ -39,17 +41,14 @@ class PQTree {
         for (int i : childNums) {
             PQNode leaf = new PQNode(NodeType.LEAF_NODE, i, currentNumber);
             toNode.addChild(leaf);
-            leaves[i - 1].add(leaf);
+            leaves.get(i - 1).add(leaf);
         }
     }
 
     public PQTree(final int numberNodes) {
         currentNumber = 1;
         this.root = new PQNode(NodeType.PNODE);
-        leaves = new Set[numberNodes];
-        for (int i = 0; i < numberNodes; i++) {
-            leaves[i] = new HashSet<>();
-        }
+        leaves = new ArrayList<>(Collections.nCopies(numberNodes, new HashSet<>()));
     }
 
     public PQNode getRoot() {
@@ -65,7 +64,7 @@ class PQTree {
         final Deque<PQNode> nodesToBubble = new LinkedList<>();
         final Set<PQNode> bubbled = new HashSet<>();
 
-        for (PQNode leaf : leaves[currentNumber - 1]) {
+        for (PQNode leaf : leaves.get(currentNumber - 1)) {
 //            if (leaf.virtualNum == currentNumber) {
             leaf.setPertinentLeafCount(1);
             if (leaf.getParent() != null) {
@@ -455,7 +454,7 @@ class PQTree {
 
     private void removeLeaves(PQNode node) {
         if (node.type.equals(NodeType.LEAF_NODE)) {
-            leaves[node.getVirtualNum() - 1].remove(node);
+            leaves.get(node.getVirtualNum() - 1).remove(node);
         } else {
             for (PQNode child : node.children) {
                 removeLeaves(child);

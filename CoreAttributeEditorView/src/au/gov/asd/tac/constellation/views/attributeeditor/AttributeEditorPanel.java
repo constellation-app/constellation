@@ -279,6 +279,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             final EditOperation editOperation = value -> {
                 prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             };
+            @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
@@ -581,7 +582,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         Button editButton = new Button("Edit");
         editButton.setAlignment(Pos.CENTER);
         editButton.setMinWidth(buttonSize);
-        AttributeValueEditorFactory editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
@@ -740,7 +741,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private void copySelectedItems(final ListView<Object> list, final String dataType) {
         ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
-        AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(dataType);
+        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
         StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
             if (item == null) {
@@ -846,7 +847,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         final ValueValidator<AttributePrototype> validator = v -> {
             return extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         };
-        final AbstractEditor editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
         ((AttributeEditor) editor).setTypeModifiable(true);
@@ -860,7 +861,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         final ValueValidator<AttributePrototype> validator = v -> {
             return extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         };
-        final AbstractEditor editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
         ((AttributeEditor) editor).setTypeModifiable(false);
@@ -871,7 +872,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private void updateTimeZoneAction(final AttributeData attr) {
         final EditOperation editOperation = zoneId -> 
                 PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        final AbstractEditor editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -894,25 +895,25 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
                 rg.release();
             }
             final EditOperation editOperation = new PrimaryKeyEditOperation(elementType);
-            final DefaultGetter defaultGetter = new PrimaryKeyDefaultGetter(elementType);
-            final AbstractEditor editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
+            final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
+            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         }
     }
 
-    private EventHandler getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
+    private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
         return e -> {
             final Object value = values.length == 1 ? values[0] : null;
-            final AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
             final String editType = editorFactory.getAttributeType();
             final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
             final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-            final ValueValidator validator = interaction.fromEditValidator(editType);
+            final ValueValidator<?> validator = interaction.fromEditValidator(editType);
             final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter defaultGetter = attributeData::getDefaultValue;
-            final AbstractEditor editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+            final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
+            final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         };
@@ -968,7 +969,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         boolean isNull = !noneSelected && (values[0] == null);
         parent.setAttribute(attribute);
 
-        AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
+        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
 
         final String displayText;
         final List<Node> displayNodes;
@@ -1032,7 +1033,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         public void updateItem(Object item, boolean empty) {
             super.updateItem(item, empty);
 
-            AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
+            AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
             final String displayText;
             final List<Node> displayNodes;
             if (item == null) {

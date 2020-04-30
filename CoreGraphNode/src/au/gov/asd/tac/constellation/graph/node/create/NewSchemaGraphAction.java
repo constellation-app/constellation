@@ -75,6 +75,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        // Override required for ActionListener
     }
 
     @Override

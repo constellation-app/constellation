@@ -18,18 +18,18 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.composite;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.VertexDominanceCalculator;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
-import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.CompositeUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.utilities.VertexDominanceCalculator;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Optional;
@@ -74,6 +74,7 @@ public class CreateCompositesFromDominantNodesPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        @SuppressWarnings("unchecked") //the default VertexDominanceCalculator extends VertexDominanceCalculator<SchemaVertexType>
         final Comparator<SchemaVertexType> comparator = VertexDominanceCalculator.getDefault().getComparator();
         final int vxTypeAttr = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.get(graph);

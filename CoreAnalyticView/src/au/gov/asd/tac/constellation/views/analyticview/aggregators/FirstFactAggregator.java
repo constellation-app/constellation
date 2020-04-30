@@ -44,7 +44,7 @@ public class FirstFactAggregator implements AnalyticAggregator<FactResult> {
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 }

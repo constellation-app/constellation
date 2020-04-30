@@ -135,10 +135,10 @@ public class AnalyticViewPane extends BorderPane {
 
                     running = true;
                     try {
-                        AnalyticQuestion question = analyticConfigurationPane.answerCurrentQuestion();
+                        AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                         analyticResultsPane.displayResults(question);
                     } catch (AnalyticException ex) {
-                        final AnalyticQuestion question = new AnalyticQuestion(analyticConfigurationPane.getCurrentQuestion());
+                        final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                         question.addException(ex);
                         analyticResultsPane.displayResults(question);
                     } finally {
