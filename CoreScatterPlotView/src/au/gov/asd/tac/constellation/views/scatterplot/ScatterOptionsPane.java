@@ -25,13 +25,13 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.CategoryAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;
@@ -64,9 +64,9 @@ import org.openide.util.Lookup;
  */
 public class ScatterOptionsPane extends BorderPane {
 
-    protected static final Map<String, AxisBuilder> VALID_TYPES_X = new HashMap<>();
-    protected static final Map<String, AxisBuilder> VALID_TYPES_Y = new HashMap<>();
-    protected static final AxisBuilder DEFAULT_AXIS_BUILDER = new CategoryAxisBuilder();
+    protected static final Map<String, AxisBuilder<?>> VALID_TYPES_X = new HashMap<>();
+    protected static final Map<String, AxisBuilder<?>> VALID_TYPES_Y = new HashMap<>();
+    protected static final AxisBuilder<?> DEFAULT_AXIS_BUILDER = new CategoryAxisBuilder();
     private static final String[] NUMBER_TYPE_STRINGS = {"float", "float_or_null", "integer", "integer_or_null", "long", "long_or_null"};
 
     static {
@@ -81,7 +81,7 @@ public class ScatterOptionsPane extends BorderPane {
     private final ScatterPlotPane scatterPlot;
     private final FlowPane optionsPane;
     private final ToolBar optionsToolBar;
-    private final ChoiceBox elementTypeComboBox;
+    private final ChoiceBox<String> elementTypeComboBox;
     private final ComboBox<Attribute> xAttributeComboBox;
     private final ComboBox<Attribute> yAttributeComboBox;
     private final ToggleButton selectedOnlyButton;
@@ -110,7 +110,7 @@ public class ScatterOptionsPane extends BorderPane {
             }
         };
 
-        this.elementTypeComboBox = new ChoiceBox();
+        this.elementTypeComboBox = new ChoiceBox<>();
         elementTypeComboBox.getItems().addAll(GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel());
         elementTypeComboBox.getSelectionModel().select(GraphElementType.VERTEX.getShortLabel());
         elementTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {

@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.scatterplot;
 
-import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
-import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
+import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -66,7 +66,7 @@ public class ScatterChartPane extends BorderPane {
 
     private static final String SCATTER_PLOT_THREAD_NAME = "Scatter Plot";
     private final ScatterPlotPane scatterPlot;
-    private ScatterChart scatterChart;
+    private ScatterChart<?, ?> scatterChart;
     private final Rectangle selection;
     private final Tooltip tooltip;
     private final Set<ScatterData> currentData;
@@ -382,7 +382,8 @@ public class ScatterChartPane extends BorderPane {
                         continue;
                     }
 
-                    Data<Number, Number> data2 = data.getData();
+                    @SuppressWarnings("unchecked") // getData will return data of type number and number 
+                    Data<Number, Number> data2 = (Data<Number, Number>) data.getData();
                     Node dataNode = data2.getNode();
                     dataNode.setEffect(null);
                 }
@@ -455,7 +456,7 @@ public class ScatterChartPane extends BorderPane {
                 final Attribute xAttribute = scatterPlotState.getXAttribute();
                 final Attribute yAttribute = scatterPlotState.getYAttribute();
 
-                final ChartBuilder chartBuilder = new ChartBuilder(ScatterOptionsPane.VALID_TYPES_X.getOrDefault(xAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER), ScatterOptionsPane.VALID_TYPES_Y.getOrDefault(yAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER));
+                final ChartBuilder<?, ?> chartBuilder = new ChartBuilder<>(ScatterOptionsPane.VALID_TYPES_X.getOrDefault(xAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER), ScatterOptionsPane.VALID_TYPES_Y.getOrDefault(yAttribute.getAttributeType(), ScatterOptionsPane.DEFAULT_AXIS_BUILDER));
                 scatterChart = chartBuilder.build(graph, scatterPlotState, currentData, currentSelectedData);
 
                 scatterChart.setOnMouseEntered(mouseHandler);

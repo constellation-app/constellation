@@ -56,7 +56,7 @@ public class QueryEvaluator {
 
     public static List<String> convertToPostfix(final String infix) {
         if (infix.isBlank()) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         
         // create a stack

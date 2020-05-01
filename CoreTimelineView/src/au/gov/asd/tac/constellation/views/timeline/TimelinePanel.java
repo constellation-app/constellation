@@ -41,7 +41,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
@@ -566,32 +565,26 @@ public class TimelinePanel extends Region {
         return tb;
     }
 
-    private ComboBox createComboNodeLabels() {
-        final ComboBox newComboBox = new ComboBox<>();
+    private ComboBox<String> createComboNodeLabels() {
+        final ComboBox<String> newComboBox = new ComboBox<>();
         newComboBox.setPrefWidth(150.0);
         newComboBox.setVisible(false);
         newComboBox.setPromptText(Bundle.SelectLabelAttribute());
-        newComboBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(final ObservableValue<? extends String> observable, final String oldValue, final String newValue) {
-                if (oldValue == null && newValue != null) {
-                    coordinator.setNodeLabelsAttr(newValue);
-                } else if (oldValue != null && newValue != null && !oldValue.equals(newValue)) {
-                    coordinator.setNodeLabelsAttr(newValue);
-                }
+        newComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (oldValue == null && newValue != null) {
+                coordinator.setNodeLabelsAttr(newValue);
+            } else if (oldValue != null && newValue != null && !oldValue.equals(newValue)) {
+                coordinator.setNodeLabelsAttr(newValue);
             }
         });
 
         //scroll on button only not drop downlist.
-        newComboBox.setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(final ScrollEvent t) {
-                if (t.getDeltaY() < 0) {
-                    newComboBox.getSelectionModel().selectNext();
-                } else if (t.getDeltaY() > 0) {
-
-                    newComboBox.getSelectionModel().selectPrevious();
-                }
+        newComboBox.setOnScroll(t -> {
+            if (t.getDeltaY() < 0) {
+                newComboBox.getSelectionModel().selectNext();
+            } else if (t.getDeltaY() > 0) {
+                
+                newComboBox.getSelectionModel().selectPrevious();
             }
         });
 
@@ -649,7 +642,7 @@ public class TimelinePanel extends Region {
 
     public void setDateTimeAttributes(final List<String> attrList,
             final String currentDateTimeAttr) {
-        final ObservableList attrs = FXCollections.observableArrayList(attrList);
+        final ObservableList<String> attrs = FXCollections.observableArrayList(attrList);
 
         cmbDatetimeAttributes.setItems(attrs);
         if (currentDateTimeAttr == null) {

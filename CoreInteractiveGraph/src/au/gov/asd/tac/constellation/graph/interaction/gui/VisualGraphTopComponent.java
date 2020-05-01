@@ -243,6 +243,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     try {
                         dtde.acceptDrop(DnDConstants.ACTION_COPY);
+                        @SuppressWarnings("unchecked") //files will be list of file which extends from object type
                         final List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         for (final File file : files) {
                             try (final InputStream in = file.getName().endsWith(".gz") ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {

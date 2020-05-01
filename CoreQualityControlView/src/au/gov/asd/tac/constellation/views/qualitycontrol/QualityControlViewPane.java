@@ -209,7 +209,9 @@ public final class QualityControlViewPane extends BorderPane {
 
                     cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
+                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                            showRuleDialog(qualityTable, sourceCell);
                         }
                     });
 
@@ -233,7 +235,9 @@ public final class QualityControlViewPane extends BorderPane {
 
                     cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
+                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                            showRuleDialog(qualityTable, sourceCell);
                         }
                     });
 
@@ -258,7 +262,9 @@ public final class QualityControlViewPane extends BorderPane {
 
                     cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
+                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                            showRuleDialog(qualityTable, sourceCell);
                         }
                     });
 
@@ -282,7 +288,9 @@ public final class QualityControlViewPane extends BorderPane {
 
                     cell.setOnMouseClicked(value -> {
                         if (value.getClickCount() == 2) {
-                            showRuleDialog(qualityTable, (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource());
+                            @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
+                            final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
+                            showRuleDialog(qualityTable, sourceCell);
                         }
                     });
 

@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
@@ -215,7 +216,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
                     dialog.showAndWait();
                     if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                        final String geoType = SingleChoiceParameterType.getChoice((PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE));
+                        @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
+                        final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
+                        final String geoType = SingleChoiceParameterType.getChoice(parameterType);
                         final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
                         final ConstellationAbstractMarker marker;
                         switch (geoType) {
@@ -284,7 +287,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         toolBar.add(zoomMenu);
 
         final List<String> markerTypes = Arrays.asList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY);
-        this.markerVisibilityComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.VISIBLE.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), markerTypes);
+        this.markerVisibilityComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.VISIBLE.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), markerTypes);
         markerVisibilityComboBox.addSelectedItems(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI);
         markerVisibilityComboBox.addSelectionListener(event -> {
             final Set<String> visibleMarkerTypes = markerVisibilityComboBox.getSelectedItems();
@@ -344,7 +347,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         toolBar.add(markerLabelComboBox);
 
         final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
-        this.exportMenu = new JDropDownMenu(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
+        this.exportMenu = new JDropDownMenu<>(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
         exportMenu.addActionListener(event -> {
             final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
             PluginExecution
@@ -458,13 +461,13 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter geoTypeParameter = SingleChoiceParameterType.build(PARAMETER_TYPE);
+        final PluginParameter<SingleChoiceParameterValue> geoTypeParameter = SingleChoiceParameterType.build(PARAMETER_TYPE);
         geoTypeParameter.setName("Geo Type");
         SingleChoiceParameterType.setOptions(geoTypeParameter, Arrays.asList(GEO_TYPE_COORDINATE, GEO_TYPE_GEOHASH, GEO_TYPE_MGRS));
         SingleChoiceParameterType.setChoice(geoTypeParameter, GEO_TYPE_COORDINATE);
         parameters.addParameter(geoTypeParameter);
 
-        final PluginParameter locationParameter = StringParameterType.build(PARAMETER_LOCATION);
+        final PluginParameter<StringParameterValue> locationParameter = StringParameterType.build(PARAMETER_LOCATION);
         locationParameter.setName("Location");
         locationParameter.setDescription("Enter a coordinate in decimal degrees (and optionally "
                 + "a radius in kilometers) with components separated by spaces or commas");
@@ -472,7 +475,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         parameters.addParameter(locationParameter);
 
         PluginParameterController controller = ((master, params, change) -> {
-            switch (SingleChoiceParameterType.getChoice((PluginParameter<SingleChoiceParameterValue>) master)) {
+            @SuppressWarnings("unchecked") //master will need to be of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> typedMaster = (PluginParameter<SingleChoiceParameterValue>) master;
+            switch (SingleChoiceParameterType.getChoice(typedMaster)) {
                 case GEO_TYPE_COORDINATE:
                     params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a coordinate in decimal degrees (and optionally a radius "
