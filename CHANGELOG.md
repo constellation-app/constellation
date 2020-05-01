@@ -1,6 +1,6 @@
 # Constellation Changes
 
-== 2020-05-01 Changes in May 2020
+## 2020-05-01 Changes in May 2020
 * Fixed a bug effecting the histogram scrolling
 
 ## 2020-03-01 Changes in March 2020
