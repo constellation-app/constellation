@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2020-05-01 Changes in May 2020
+* Fixed a bug effecting the histogram scrolling
+
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
@@ -16,6 +19,7 @@
 * Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from. 
 * Added `RenderablePriority` enum to `GLRenderable` to house the constants that sat in that class
 * Added `VisualPriority` enum to `VisualOperation` to house the constants that sat in that class
+
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
