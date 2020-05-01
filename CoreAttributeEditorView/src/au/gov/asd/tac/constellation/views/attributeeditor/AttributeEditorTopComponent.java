@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
@@ -23,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.prefs.PreferenceChangeEvent;
@@ -191,13 +191,16 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     }
 
     void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 
     void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 
     @Override
     public void graphOpened(Graph graph) {
+        // This method is required for implementation of GraphManagerListener
     }
 
     @Override

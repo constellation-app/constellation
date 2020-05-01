@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.utilities;
 
-import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
@@ -25,6 +23,8 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -92,7 +92,7 @@ public class VisualGraphUtilities {
     public static Vector3f getMixedVertexCoordinates(final GraphReadMethods graph, final int vertexId) {
         final Vector3f coordinates = getVertexCoordinates(graph, vertexId);
         final Vector3f altCoordinates = getAlternateVertexCoordinates(graph, vertexId);
-        final float mixRatio = getCamera(graph).mixRatio;
+        final float mixRatio = getCamera(graph).getMixRatio();
         if (coordinates != null && altCoordinates != null) {
             coordinates.convexCombineWith(altCoordinates, mixRatio);
         }

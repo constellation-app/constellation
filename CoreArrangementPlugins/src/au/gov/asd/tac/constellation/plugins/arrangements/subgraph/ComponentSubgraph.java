@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
@@ -792,5 +793,10 @@ public class ComponentSubgraph implements GraphWriteMethods {
     @Override
     public Object getAttributeDefaultValue(int attribute) {
         return proxy.getAttributeDefaultValue(attribute);
+    }
+
+    @Override
+    public void setLayerQueries(List<String> queries) {
+        throw new UnsupportedOperationException("Not supported yet."); // TODO: DISCOVER WHERE THIS IS USED
     }
 }

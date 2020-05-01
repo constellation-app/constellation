@@ -335,7 +335,7 @@ public class AttributeReader {
         if (!values.isEmpty()) {
             final Object o = values.iterator().next();
             if (o instanceof Comparable) {
-                final Comparable[] valuesArray = new Comparable[values.size()];
+                final Comparable<Object>[] valuesArray = new Comparable[values.size()];
                 values.toArray(valuesArray);
                 Arrays.sort(valuesArray, (a, b) -> a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b)));
 

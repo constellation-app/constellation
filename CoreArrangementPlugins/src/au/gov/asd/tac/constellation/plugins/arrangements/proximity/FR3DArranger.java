@@ -15,16 +15,17 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
-import au.gov.asd.tac.constellation.plugins.arrangements.utilities.Point3D;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.Point3D;
+import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Implements a 3D version of the Fruchterman-Reingold force-directed algorithm
@@ -57,6 +58,8 @@ import java.util.Random;
  * @author algol
  */
 public class FR3DArranger implements Arranger {
+    
+    private static final String ARRANGING_INTERACTION = "Arranging...";
 
     private static final int MAX_PSEUDO_SIZE = 100;
     public static final int MAX_ITERATIONS = 10;
@@ -80,7 +83,7 @@ public class FR3DArranger implements Arranger {
     private GraphWriteMethods wg;
     boolean maintainMean = false;
     
-    private final Random r = new Random();
+    private final SecureRandom r = new SecureRandom();
 
     /**
      * Creates a new arranger using the specified {@link PluginInteraction}.
@@ -97,7 +100,7 @@ public class FR3DArranger implements Arranger {
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         this.wg = wg;
 
-        interaction.setProgress(0, MAX_ITERATIONS, "Arranging...", true);
+        interaction.setProgress(0, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
         final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
 
@@ -126,7 +129,7 @@ public class FR3DArranger implements Arranger {
      */
     //@Override
     protected Object run() throws InterruptedException {
-        interaction.setProgress(0, MAX_ITERATIONS, "Arranging...", true);
+        interaction.setProgress(0, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
         // Guess an initial size of the layout based on the number of nodes in the graph.
         final int size = 3 * (int) Math.floor(Math.sqrt(Math.min(wg.getVertexCount(), MAX_PSEUDO_SIZE)));
@@ -171,7 +174,7 @@ public class FR3DArranger implements Arranger {
 
     public void layout() throws InterruptedException {
         for (int i = 0; i < MAX_ITERATIONS; i++) {
-            interaction.setProgress(i + 1, MAX_ITERATIONS, "Arranging...", true);
+            interaction.setProgress(i + 1, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
             wg.vertexStream().parallel().forEach(vertexId -> {
                 repulse(vertexId);
@@ -217,13 +220,13 @@ public class FR3DArranger implements Arranger {
         final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName()) == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
         }
         final int x2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X2.getName());
         final int y2Attr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());

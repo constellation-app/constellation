@@ -145,6 +145,12 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String DARK_THEME = "resources/Style-AttributeEditor-Dark.css";
+    private static final String NO_VALUE_TEXT = "<No Value>";
+    
+    private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOUR = "#8a1d1d";
+    private static final String CUSTOM_ATTRIBUTE_COLOUR = "#1f4f8a";
+    private static final String HIDDEN_ATTRIBUTE_COLOUR = "#999999";
 
     private JFXPanel container = new JFXPanel();
     private StackPane root;
@@ -273,6 +279,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             final EditOperation editOperation = value -> {
                 prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             };
+            @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
             dialog.showDialog();
@@ -283,16 +290,16 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private Menu createColoursMenu() {
         final Menu coloursMenu = new Menu("Attribute Editor Colours");
 
-        final Color schemaColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333")).getJavaFXColor();
+        final Color schemaColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Schema Attributes", AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, schemaColour));
 
-        final Color primaryKeyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d")).getJavaFXColor();
+        final Color primaryKeyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Primary Key Attributes", AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, primaryKeyColour));
 
-        final Color customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a")).getJavaFXColor();
+        final Color customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Custom Attributes (Not in the Schema)", AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, customColour));
 
-        final Color hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999")).getJavaFXColor();
+        final Color hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR)).getJavaFXColor();
         coloursMenu.getItems().add(createColourMenuItem("Hidden Attributes", AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, hiddenColour));
 
         final HBox restoreMenuNode = new HBox(5);
@@ -301,10 +308,10 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         restoreMenuText.setStyle("-fx-fill: white; -fx-font-smoothing-type:lcd;");
         restoreMenuNode.getChildren().add(restoreMenuText);
         restoreMenuItem.setOnAction(e -> {
-            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333");
-            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d");
-            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a");
-            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999");
+            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
         });
         coloursMenu.getItems().add(restoreMenuItem);
         return coloursMenu;
@@ -533,29 +540,29 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         if (attribute.isKey()) {
             final String colour;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999"));
-                final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d"));
+                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
+                final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR));
                 colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + keyColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + keyColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + keyColour.getBlue() * 0.5f, 1f)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, "#8a1d1d");
+                colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle("-fx-base:" + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (!attribute.isSchema()) {
             final String colour;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999"));
-                final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#8a1d1d"));
+                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
+                final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR));
                 colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + customColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + customColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + customColour.getBlue() * 0.5f, 1f)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, "#1f4f8a");
+                colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle("-fx-base:" + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
         } else if (hidden) {
-            final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, "#999999");
-            attributePane.setStyle("-fx-base:" + hiddenColour + ";");
+            final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColour + ";");
         } else {
-            final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, "#333333");
-            attributePane.setStyle("-fx-base:" + schemaColour + ";");
+            final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColour + ";");
         }
 
         if (!multiValue) {
@@ -575,7 +582,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         Button editButton = new Button("Edit");
         editButton.setAlignment(Pos.CENTER);
         editButton.setMinWidth(buttonSize);
-        AttributeValueEditorFactory editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
@@ -734,11 +741,11 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     private void copySelectedItems(final ListView<Object> list, final String dataType) {
         ObservableList<Object> selectedItems = list.getSelectionModel().getSelectedItems();
-        AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(dataType);
+        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(dataType);
         StringBuilder buffer = new StringBuilder();
         selectedItems.stream().map(item -> {
             if (item == null) {
-                buffer.append("<No Value>");
+                buffer.append(NO_VALUE_TEXT);
             } else {
                 buffer.append(interaction.getDisplayText(item));
             }
@@ -840,7 +847,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         final ValueValidator<AttributePrototype> validator = v -> {
             return extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         };
-        final AbstractEditor editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
         ((AttributeEditor) editor).setTypeModifiable(true);
@@ -854,7 +861,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         final ValueValidator<AttributePrototype> validator = v -> {
             return extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         };
-        final AbstractEditor editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
+        final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
         ((AttributeEditor) editor).setTypeModifiable(false);
@@ -865,7 +872,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private void updateTimeZoneAction(final AttributeData attr) {
         final EditOperation editOperation = zoneId -> 
                 PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
-        final AbstractEditor editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();
     }
@@ -888,25 +895,25 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
                 rg.release();
             }
             final EditOperation editOperation = new PrimaryKeyEditOperation(elementType);
-            final DefaultGetter defaultGetter = new PrimaryKeyDefaultGetter(elementType);
-            final AbstractEditor editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
+            final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
+            final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         }
     }
 
-    private EventHandler getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
+    private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
         return e -> {
             final Object value = values.length == 1 ? values[0] : null;
-            final AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
             final String editType = editorFactory.getAttributeType();
             final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
             final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-            final ValueValidator validator = interaction.fromEditValidator(editType);
+            final ValueValidator<?> validator = interaction.fromEditValidator(editType);
             final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter defaultGetter = attributeData::getDefaultValue;
-            final AbstractEditor editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+            final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
+            final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         };
@@ -962,7 +969,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         boolean isNull = !noneSelected && (values[0] == null);
         parent.setAttribute(attribute);
 
-        AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
+        AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attribute.getDataType());
 
         final String displayText;
         final List<Node> displayNodes;
@@ -970,7 +977,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             displayText = "<Multiple Values>";
             displayNodes = Collections.emptyList();
         } else if (isNull) {
-            displayText = "<No Value>";
+            displayText = NO_VALUE_TEXT;
             displayNodes = Collections.emptyList();
         } else if (noneSelected) {
             displayText = "<Nothing Selected>";
@@ -1026,11 +1033,11 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         public void updateItem(Object item, boolean empty) {
             super.updateItem(item, empty);
 
-            AbstractAttributeInteraction interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
+            AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
             final String displayText;
             final List<Node> displayNodes;
             if (item == null) {
-                displayText = "<No Value>";
+                displayText = NO_VALUE_TEXT;
                 displayNodes = Collections.emptyList();
             } else {
                 displayText = interaction.getDisplayText(item);

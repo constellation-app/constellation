@@ -56,7 +56,7 @@ public class AppendGraphAggregator implements AnalyticAggregator<GraphResult> {
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return GraphResult.class;
     }
 }

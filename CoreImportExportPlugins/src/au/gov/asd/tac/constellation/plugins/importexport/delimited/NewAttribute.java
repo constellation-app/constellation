@@ -33,6 +33,8 @@ public class NewAttribute implements Attribute {
     private final String name;
     private final String description;
     private int id = ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
+    
+    private static final String CANNOT_SET_VALUES = "You cannot set values on a NewAttribute";
 
     public NewAttribute(final Attribute original) {
         this(original.getElementType(), original.getAttributeType(), original.getName(), original.getDescription());
@@ -63,7 +65,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setElementType(final GraphElementType elementType) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -73,7 +75,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setAttributeType(final String attributeType) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setName(final String name) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -93,7 +95,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setDescription(final String description) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setDefaultValue(final Object value) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setDataType(final Class<? extends AttributeDescription> dataType) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 
     @Override
@@ -123,6 +125,6 @@ public class NewAttribute implements Attribute {
 
     @Override
     public void setAttributeMerger(final GraphAttributeMerger attributeMerger) {
-        throw new UnsupportedOperationException("You cannot set values on a NewAttribute");
+        throw new UnsupportedOperationException(CANNOT_SET_VALUES);
     }
 }

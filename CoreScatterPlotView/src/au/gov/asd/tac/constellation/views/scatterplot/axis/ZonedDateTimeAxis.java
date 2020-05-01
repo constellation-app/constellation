@@ -177,8 +177,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     @Override
     protected void setRange(Object range, boolean animating) {
         final Object[] dateTimeRange = (Object[]) range;
-        final ZonedDateTime oldLowerBound = getLowerBound();
-        final ZonedDateTime oldUpperBound = getUpperBound();
         final ZonedDateTime newLowerBound = (ZonedDateTime) dateTimeRange[0];
         final ZonedDateTime newUpperBound = (ZonedDateTime) dateTimeRange[1];
         setLowerBound(newLowerBound);
@@ -339,7 +337,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         // finally, add the upper bound.
         dateTimeList.add(upperBound);
 
-        List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList, datetime);
+        List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList);
         // if there are at least three datetimes, check if the gap between the lower datetime and the second datetime 
         // is at least half the gap of the second and third datetime, then repeat for the upper bound. 
         // if gaps between datetimes are too small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown; 
@@ -415,7 +413,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
      * @param dateTimes The list of dates.
      * @return The new list of dates.
      */
-    private List<ZonedDateTime> makeDateTimesEven(final List<ZonedDateTime> dateTimes, ZonedDateTime datetime) {
+    private List<ZonedDateTime> makeDateTimesEven(final List<ZonedDateTime> dateTimes) {
         // if the dates contain more dates than just the lower and upper bounds, make the dates in between even.
         if (dateTimes.size() > 2) {
             List<ZonedDateTime> evenDateTimes = new ArrayList<>();
@@ -424,62 +422,62 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
             // this is because Axis stores each value and won't update the tick labels, if the value is already known.
             // this happens if you display days and then add a date many years in the future the tick label will still be displayed as day.
             for (int i = 0; i < dateTimes.size(); i++) {
-                datetime = dateTimes.get(i);
+                ZonedDateTime evenDateTime = dateTimes.get(i);
                 switch (actualInterval.interval) {
                     case YEARS:
                         // if it's not the first or last date (lower and upper bound), make the year begin with first month and let the months begin with first day.
                         if (i != 0 && i != dateTimes.size() - 1) {
-                            datetime = datetime.withMonth(0);
-                            datetime = datetime.withDayOfMonth(1);
+                            evenDateTime = evenDateTime.withMonth(0);
+                            evenDateTime = evenDateTime.withDayOfMonth(1);
                         }
-                        datetime = datetime.withHour(0);
-                        datetime = datetime.withMinute(0);
-                        datetime = datetime.withSecond(0);
-                        datetime = datetime.withNano(6 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withHour(0);
+                        evenDateTime = evenDateTime.withMinute(0);
+                        evenDateTime = evenDateTime.withSecond(0);
+                        evenDateTime = evenDateTime.withNano(6 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case MONTHS:
                         // if it's not the first or last date (lower and upper bound), make the months begin with first day.
                         if (i != 0 && i != dateTimes.size() - 1) {
-                            datetime = datetime.withDayOfMonth(1);
+                            evenDateTime = evenDateTime.withDayOfMonth(1);
                         }
-                        datetime = datetime.withHour(0);
-                        datetime = datetime.withMinute(0);
-                        datetime = datetime.withSecond(0);
-                        datetime = datetime.withNano(5 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withHour(0);
+                        evenDateTime = evenDateTime.withMinute(0);
+                        evenDateTime = evenDateTime.withSecond(0);
+                        evenDateTime = evenDateTime.withNano(5 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case WEEKS:
                         // make weeks begin with first day of week?
-                        datetime = datetime.withHour(0);
-                        datetime = datetime.withMinute(0);
-                        datetime = datetime.withSecond(0);
-                        datetime = datetime.withNano(4 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withHour(0);
+                        evenDateTime = evenDateTime.withMinute(0);
+                        evenDateTime = evenDateTime.withSecond(0);
+                        evenDateTime = evenDateTime.withNano(4 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case DAYS:
-                        datetime = datetime.withHour(0);
-                        datetime = datetime.withMinute(0);
-                        datetime = datetime.withSecond(0);
-                        datetime = datetime.withNano(3 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withHour(0);
+                        evenDateTime = evenDateTime.withMinute(0);
+                        evenDateTime = evenDateTime.withSecond(0);
+                        evenDateTime = evenDateTime.withNano(3 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case HOURS:
                         if (i != 0 && i != dateTimes.size() - 1) {
-                            datetime = datetime.withMinute(0);
-                            datetime = datetime.withSecond(0);
+                            evenDateTime = evenDateTime.withMinute(0);
+                            evenDateTime = evenDateTime.withSecond(0);
                         }
-                        datetime = datetime.withNano(2 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withNano(2 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case MINUTES:
                         if (i != 0 && i != dateTimes.size() - 1) {
-                            datetime = datetime.withSecond(0);
+                            evenDateTime = evenDateTime.withSecond(0);
                         }
-                        datetime = datetime.withNano(1 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withNano(1 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     case SECONDS:
-                        datetime = datetime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
+                        evenDateTime = evenDateTime.withNano(0 * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
                         break;
                     default:
                         break;
                 }
-                evenDateTimes.add(datetime);
+                evenDateTimes.add(evenDateTime);
             }
 
             return evenDateTimes;

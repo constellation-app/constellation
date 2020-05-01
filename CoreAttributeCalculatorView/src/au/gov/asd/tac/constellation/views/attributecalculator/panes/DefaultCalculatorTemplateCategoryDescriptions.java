@@ -23,7 +23,9 @@ import java.util.Map;
  * @author twilight_sparkle
  */
 public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalculatorTemplateCategoryDescriptions {
-
+    
+    private static final String STRUCTURAL_PROPERTIES = "Structural properties of nodes, such as the number of neighbours.";
+    
     private static final Map<String, String[]> TEMPLATE_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, String[]> TEMPLATE_USAGE_EXAMPLES = new HashMap<>();
 
@@ -59,19 +61,19 @@ public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalcu
 
     private static final String NODE_PROPERTIES = "Node Properties";
     private static final String[] NODE_PROPERTIES_DESCRIPTION = {
-        "Structural properties of nodes, such as the number of neighbours.",
+        STRUCTURAL_PROPERTIES,
         "These will give the value that each node has for the property."
     };
 
     private static final String SOURCE_NODE_PROPERTIES = "Source Node Properties";
     private static final String[] SOURCE_NODE_PROPERTIES_DESCRIPTION = {
-        "Structural properties of nodes, such as the number of neighbours.",
+        STRUCTURAL_PROPERTIES,
         "These will give the value that the source node of each transaction has for the property."
     };
 
     private static final String DEST_NODE_PROPERTIES = "Destination Node Properties";
     private static final String[] DEST_NODE_PROPERTIES_DESCRIPTION = {
-        "Structural properties of nodes, such as the number of neighbours.",
+        STRUCTURAL_PROPERTIES,
         "These will give the value that the destination node of each transaction has for the property."
     };
 
@@ -220,9 +222,6 @@ public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalcu
         TEMPLATE_USAGE_EXAMPLES.put(LIST_METHODS, LIST_METHODS_EXAMPLESS);
         TEMPLATE_USAGE_EXAMPLES.put(TYPE_CONVERSIONS, TYPE_CONVERSIONS_EXAMPLES);
         TEMPLATE_USAGE_EXAMPLES.put(DATETIME_PROCESSING, DATETIME_PROCESSING_EXAMPLES);
-    }
-
-    public DefaultCalculatorTemplateCategoryDescriptions() {
     }
 
     @Override

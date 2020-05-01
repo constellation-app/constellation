@@ -86,6 +86,7 @@ public class Schema {
      * @param graph the graph holding the vertex.
      */
     public void completeGraph(final GraphWriteMethods graph) {
+        //Unpopulated method, called in CompleteSchemaPlugin
     }
 
     /**

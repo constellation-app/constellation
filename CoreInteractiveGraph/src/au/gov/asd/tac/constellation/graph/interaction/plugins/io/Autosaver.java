@@ -64,12 +64,6 @@ public final class Autosaver implements Runnable {
         REQUEST_PROCESSOR.schedule(new Autosaver(), dm, TimeUnit.MINUTES);
     }
 
-    /**
-     * Construct a new AutoSaver instance.
-     */
-    public Autosaver() {
-    }
-
     @Override
     public void run() {
         StatusDisplayer.getDefault().setStatusText(String.format("Auto saving %s at %s...", "", new Date()));

@@ -49,7 +49,7 @@ import org.openide.util.actions.Presenter;
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.hop.HopActions")
 @ActionRegistration(displayName = "", lazy = false)
-@ActionReference(path = "Toolbars/Visualisation", position = 500)
+@ActionReference(path = "Toolbars/Display", position = 500)
 @Messages("CTL_HopActions=Hop")
 public final class HopActions extends AbstractAction implements Presenter.Toolbar, GraphManagerListener {
 
@@ -174,10 +174,12 @@ public final class HopActions extends AbstractAction implements Presenter.Toolba
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(final Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override

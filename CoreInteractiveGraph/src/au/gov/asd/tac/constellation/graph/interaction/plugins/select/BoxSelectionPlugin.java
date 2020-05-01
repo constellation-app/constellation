@@ -58,7 +58,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
-        final float mix = camera.mixRatio;
+        final float mix = camera.getMixRatio();
         final float inverseMix = 1.0f - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
 
@@ -82,8 +82,8 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         final SetBooleanValuesOperation selectVerticesOperation = new SetBooleanValuesOperation(graph, GraphElementType.VERTEX, vxSelectedAttr);
         final SetBooleanValuesOperation selectTransactionsOperation = new SetBooleanValuesOperation(graph, GraphElementType.TRANSACTION, txSelectedAttr);
 
-        final float visibilityHigh = camera.visibilityHigh;
-        final float visibilityLow = camera.visibilityLow;
+        final float visibilityHigh = camera.getVisibilityHigh();
+        final float visibilityLow = camera.getVisibilityLow();
 
         // Get a copy of the current rotation matrix.
         final Vector3f diff = Vector3f.subtract(camera.lookAtEye, camera.lookAtCentre);
@@ -109,15 +109,13 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
         boolean requiresTransactionVisibility = txVisibilityAttr != Graph.NOT_FOUND;
 
         // If the mix value is either 0 or 1 then no mixing is required
-        if (requiresMix) {
-            if (mix == 0.0f) {
-                requiresMix = false;
-            } else if (mix == 1.0f) {
-                xAttr = x2Attr;
-                yAttr = y2Attr;
-                zAttr = z2Attr;
-                requiresMix = false;
-            }
+        if (requiresMix && mix == 0.0f) {
+            requiresMix = false;
+        } else if (requiresMix && mix == 1.0f) {
+            xAttr = x2Attr;
+            yAttr = y2Attr;
+            zAttr = z2Attr;
+            requiresMix = false;
         }
 
         final BitSet vxIncluded = new BitSet();

@@ -170,7 +170,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         suppressed = true;
         manualUpdate();
         suppressed = false;
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (analyticViewPane != null) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
     
     @Override
@@ -216,7 +218,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
 
         public void selectOnInternalVisualisations(final GraphElementType elementType, final Graph graph) {
-            final AnalyticResult result = analyticViewPane.getResultsPane().getResult();
+            final AnalyticResult<?> result = analyticViewPane.getResultsPane().getResult();
 
             if (graph != null && result != null) {
                 final List<Integer> selected = new ArrayList<>();

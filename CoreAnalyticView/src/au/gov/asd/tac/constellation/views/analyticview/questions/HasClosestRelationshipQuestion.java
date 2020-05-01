@@ -59,7 +59,7 @@ public class HasClosestRelationshipQuestion implements AnalyticQuestionDescripti
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 

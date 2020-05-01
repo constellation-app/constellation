@@ -37,7 +37,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
     protected AnalyticController analyticController = null;
-    protected final List<ResultListener> resultListeners = new ArrayList<>();
+    protected final List<ResultListener<D>> resultListeners = new ArrayList<>();
 
     public void setSelectionOnGraph(final List<D> results) {
         final List<Integer> verticesToSelect = new ArrayList<>();
@@ -112,7 +112,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.analyticController = analyticController;
     }
 
-    public final void addResultListener(final ResultListener listener) {
+    public final void addResultListener(final ResultListener<D> listener) {
         this.resultListeners.add(listener);
     }
 

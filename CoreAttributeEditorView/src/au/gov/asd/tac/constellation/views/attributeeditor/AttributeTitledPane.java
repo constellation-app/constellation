@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
-import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -54,12 +55,12 @@ public class AttributeTitledPane extends TitledPane {
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
     private final ContextMenu ctxMenu;
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
-
+            
     public AttributeTitledPane() {
         this(null, null);
     }
 
-    public AttributeTitledPane(EventHandler removeEventHandler, EventHandler modifyEventHandler) {
+    public AttributeTitledPane(EventHandler<ActionEvent> removeEventHandler, EventHandler<ActionEvent> modifyEventHandler) {
 
         if (removeEventHandler == null) {
             ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
@@ -96,7 +97,7 @@ public class AttributeTitledPane extends TitledPane {
         attributeData = data;
     }
 
-    public void addMenuItem(final String name, final EventHandler handler) {
+    public void addMenuItem(final String name, final EventHandler<ActionEvent> handler) {
         MenuItem menuItem = new MenuItem(name);
         menuItem.setOnAction(handler);
         ctxMenu.getItems().add(menuItem);
@@ -111,15 +112,15 @@ public class AttributeTitledPane extends TitledPane {
     }
 
     private void hide() {
-        if (!this.getStyleClass().contains("hidden")) {
-            this.getStyleClass().add("hidden");
+        if (!this.getStyleClass().contains(JavafxStyleManager.HIDDEN)) {
+            this.getStyleClass().add(JavafxStyleManager.HIDDEN);
         }
         hideAttributeMenuItem.setSelected(true);
 
     }
 
     private void unhide() {
-        this.getStyleClass().remove("hidden");
+        this.getStyleClass().remove(JavafxStyleManager.HIDDEN);
         hideAttributeMenuItem.setSelected(false);
     }
 

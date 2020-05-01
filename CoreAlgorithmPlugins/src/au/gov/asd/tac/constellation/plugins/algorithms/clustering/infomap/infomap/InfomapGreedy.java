@@ -502,9 +502,7 @@ public abstract class InfomapGreedy extends InfomapBase {
         InfoMath.getRandomizedIndexVector(randomOrder, rand);
 
         final DeltaFlow[] moduleDeltaEnterExit = new DeltaFlow[numNodes];
-        for (int i = 0; i < numNodes; i++) {
-            moduleDeltaEnterExit[i] = new DeltaFlow();
-        }
+        Arrays.fill(moduleDeltaEnterExit, new DeltaFlow());
 
         final int[] redirect = new int[numNodes];
         Arrays.fill(redirect, 0);

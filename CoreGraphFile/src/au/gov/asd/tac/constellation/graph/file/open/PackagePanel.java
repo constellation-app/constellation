@@ -104,7 +104,7 @@ public class PackagePanel extends JPanel {
     private void initComponents2() {
         okButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_okButton"));
         cancelButton = new JButton(NbBundle.getMessage(PackagePanel.class, "LBL_cancelButton"));
-        list = new JList(pkgs.toArray());
+        list = new JList<>(pkgs.toArray(new String[0]));
 
         setLayout(new BorderLayout(0, 5));
         setBorder(new javax.swing.border.EmptyBorder(8, 8, 8, 8));
@@ -125,14 +125,14 @@ public class PackagePanel extends JPanel {
         if (pkgLevel != -1) {
             list.setSelectedIndex(pkgLevel);
         }
-        list.setCellRenderer(new ListCellRenderer() {
+        list.setCellRenderer(new ListCellRenderer<>() {
             private final Icon folderIcon = new ImageIcon(OpenFile.class.getResource("resources/folder.gif")); // NOI18N
             private final Icon rootFolderIcon = new ImageIcon(OpenFile.class.getResource("resources/rootFolder.gif")); // NOI18N
             private final JLabel lab = new JLabel();
 
             @Override
-            public Component getListCellRendererComponent(final JList lst, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
-                String pkg2 = (String) value;
+            public Component getListCellRendererComponent(final JList<? extends String> lst, final String value, final int index, final boolean isSelected, final boolean cellHasFocus) {
+                String pkg2 = value;
                 if (pkg2.isEmpty()) { // NOI18N
                     lab.setText(NbBundle.getMessage(PackagePanel.class, "LBL_packageWillBeDefault"));
                     lab.setIcon(rootFolderIcon);
@@ -171,6 +171,7 @@ public class PackagePanel extends JPanel {
 
             @Override
             public void focusLost(final java.awt.event.FocusEvent e) {
+                // Required for implementation of the FocusListener
             }
         });
         add(field, BorderLayout.SOUTH);

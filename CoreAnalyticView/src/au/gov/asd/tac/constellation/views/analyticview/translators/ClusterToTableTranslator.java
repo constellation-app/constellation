@@ -41,13 +41,13 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ClusterResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ClusterData> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ClusterData> buildVisualisation() {
+        final TableVisualisation<ClusterData> tableVisualisation = new TableVisualisation<>(this);
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
         tableVisualisation.addColumn(CLUSTER_COLUMN_NAME, (100 / 3));
         List<ClusterData> displayResult = result.get();
@@ -80,7 +80,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellValue.getClusterNumber();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -94,7 +94,7 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
             case CLUSTER_COLUMN_NAME:
                 return cellItem.toString();
             default:
-                throw new UnrecognisedColumnException("Column not recognised: " + columnName);
+                throw new UnrecognisedColumnException(columnName);
         }
     }
 

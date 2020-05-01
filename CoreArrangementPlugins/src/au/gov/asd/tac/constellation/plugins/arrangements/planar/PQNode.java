@@ -427,6 +427,7 @@ class PQNode {
     public static class PQNodeTest {
 
         public PQNodeTest() {
+            //Only used for testing, unpopulated method
         }
 
         private PQNode makeNode() {

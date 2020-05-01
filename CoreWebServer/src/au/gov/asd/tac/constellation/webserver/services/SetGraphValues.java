@@ -27,9 +27,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SetGraphValues extends RestService {
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    
+    private static final String COLUMNS = "columns";
 
     @Override
     public String getName() {
@@ -94,14 +96,14 @@ public class SetGraphValues extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
-        if(!json.hasNonNull("columns") || !json.get("columns").isArray()) {
+        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
             throw new RestServiceException("Could not find columns object containing column names");
         }
 
         if (!json.hasNonNull("data") || !json.get("data").isArray()) {
             throw new RestServiceException("Could not find data object containing data rows");
         }
-        final ArrayNode columns = (ArrayNode) json.get("columns");
+        final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final ArrayNode data = (ArrayNode) json.get("data");
 
         // Do we have one and only one row of data?

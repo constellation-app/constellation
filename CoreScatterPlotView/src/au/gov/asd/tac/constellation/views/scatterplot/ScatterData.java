@@ -59,7 +59,7 @@ public class ScatterData {
      * @return the scatter plot data associated with the element represented by
      * this ScatterData.
      */
-    public XYChart.Data getData() {
+    public XYChart.Data<? extends Object, ? extends Object> getData() {
         return data;
     }
 }

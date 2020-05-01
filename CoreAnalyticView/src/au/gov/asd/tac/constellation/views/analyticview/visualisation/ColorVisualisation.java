@@ -31,10 +31,10 @@ import javafx.scene.control.ToggleButton;
  */
 public class ColorVisualisation<C> extends GraphVisualisation {
 
-    private final AbstractColorTranslator translator;
+    private final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton colorButton;
 
-    public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult, C> translator) {
+    public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
         this.colorButton = new ToggleButton("Color");

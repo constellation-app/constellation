@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisuali
  * @param <R>
  * @param <C>
  */
-public abstract class AbstractSizeTranslator<R extends AnalyticResult, C> extends GraphVisualisationTranslator<R, SizeVisualisation> {
+public abstract class AbstractSizeTranslator<R extends AnalyticResult<?>, C> extends GraphVisualisationTranslator<R, SizeVisualisation<C>> {
 
     protected static class InvalidElementTypeException extends RuntimeException {
 

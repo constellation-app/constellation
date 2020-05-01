@@ -39,7 +39,7 @@ import org.openide.windows.WindowManager;
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTrussAction")
 @ActionRegistration(displayName = "#CTL_KTrussAction", iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/ktruss/ktruss.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Toolbars/Visualisation", position = 600)
+    @ActionReference(path = "Toolbars/Display", position = 600)
 })
 @Messages("CTL_KTrussAction=K-Truss")
 public final class KTrussAction extends AbstractAction {

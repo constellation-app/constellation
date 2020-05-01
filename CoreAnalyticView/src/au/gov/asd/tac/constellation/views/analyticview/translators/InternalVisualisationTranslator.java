@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVis
  * @param <R>
  * @param <V>
  */
-public abstract class InternalVisualisationTranslator<R extends AnalyticResult, V extends InternalVisualisation> extends AnalyticTranslator<R, V> {
+public abstract class InternalVisualisationTranslator<R extends AnalyticResult<?>, V extends InternalVisualisation> extends AnalyticTranslator<R, V> {
 
     public abstract V buildVisualisation();
 }

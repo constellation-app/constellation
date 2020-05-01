@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,25 +53,32 @@ public class TemporalConcept extends SchemaConcept {
     public static class VertexAttribute {
 
         public static final SchemaAttribute DATETIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "DateTime")
-                .setDescription("The datetime at which this node occurred").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The datetime at which this node occurred")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute CREATED = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "Created")
-                .setDescription("The datetime at which this node was created").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The datetime at which this node was created")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute MODIFIED = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "Modified")
-                .setDescription("The datetime at which this node was last modified").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The datetime at which this node was last modified")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute FIRST_SEEN = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "FirstSeen")
-                .setDescription("The first time this node was seen").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The first time this node was seen")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute LAST_SEEN = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "LastSeen")
-                .setDescription("The last time this node was seen").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The last time this node was seen")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute START_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "StartTime")
-                .setDescription("The time at which this node becomes active or valid").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The time at which this node becomes active or valid")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute END_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "EndTime")
-                .setDescription("The time at which this node ceases to be active or valid").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The time at which this node ceases to be active or valid")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
     }
 
@@ -80,10 +88,12 @@ public class TemporalConcept extends SchemaConcept {
                 .setDescription("The datetime at which this transaction occurred")
                 .build();
         public static final SchemaAttribute CREATED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "Created")
-                .setDescription("The datetime at which this transaction was created").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The datetime at which this transaction was created")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute MODIFIED = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "Modified")
-                .setDescription("The datetime at which this transaction was last modified").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The datetime at which this transaction was last modified")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute FIRST_SEEN = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "FirstSeen")
                 .setDescription("The first time this transaction was seen")
@@ -98,10 +108,12 @@ public class TemporalConcept extends SchemaConcept {
                 .setDescription("A bitmap of days this transaction represents")
                 .build();
         public static final SchemaAttribute START_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "StartTime")
-                .setDescription("The time at which this transaction becomes active or valid").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The time at which this transaction becomes active or valid")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
         public static final SchemaAttribute END_TIME = new SchemaAttribute.Builder(GraphElementType.VERTEX, ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME, "EndTime")
-                .setDescription("The time at which this transaction ceases to be active or valid").setFormat("DDMMYYYYHHMMSS")
+                .setDescription("The time at which this transaction ceases to be active or valid")
+                .setFormat(TemporalConstants.DATE_TIME_FULL_FORMAT)
                 .build();
     }
 

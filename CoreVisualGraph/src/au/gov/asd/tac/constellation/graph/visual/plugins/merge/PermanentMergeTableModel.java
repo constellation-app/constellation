@@ -31,12 +31,6 @@ public final class PermanentMergeTableModel extends DefaultTableModel {
     private ArrayList<Attribute> vertex_attributes = new ArrayList<>();
 
     /**
-     * Default constructor
-     */
-    public PermanentMergeTableModel() {
-    }
-
-    /**
      * Initializes the table model.
      *
      * @param graph the graph that holds the vertices to be merged.

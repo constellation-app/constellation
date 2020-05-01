@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.tree.SpanningTree;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
@@ -88,9 +89,9 @@ public class BubbleTreeArranger implements Arranger {
 
         tree = st.createSpanningTree(isMinimal, false, rootVxId);
 
-        tree.addAttribute(GraphElementType.VERTEX, "float", "x", "x", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, "float", "y", "y", 0, null);
-        tree.addAttribute(GraphElementType.VERTEX, "float", "z", "z", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", 0, null);
+        tree.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", 0, null);
 
         xId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         yId = tree.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -115,9 +116,9 @@ public class BubbleTreeArranger implements Arranger {
         final int wgxId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int wgyId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int wgzId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-        final int wgx2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "x2", "x2", 0, null);
-        final int wgy2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "y2", "y2", 0, null);
-        final int wgz2Id = wg.addAttribute(GraphElementType.VERTEX, "float", "z2", "z2", 0, null);
+        final int wgx2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        final int wgy2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        final int wgz2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
         final int vxCount = tree.getVertexCount();
         for (int position = 0; position < vxCount; position++) {
             // Make the layout 3D in x,y,z, 2D in x2,y2,z2.
@@ -345,7 +346,6 @@ public class BubbleTreeArranger implements Arranger {
         // the virtual vertex, the enclosing circle's centre, and the grandfather of the vertex.
         final Vector3d bend = new Vector3d(relativePositions[vxId][4], 0, 0);
         final Vector3d zeta = new Vector3d(relativePositions[vxId][2], relativePositions[vxId][3], 0);
-        final Vector3d zetaOriginal = new Vector3d(zeta);
 
         final Vector3d vect = Vector3d.subtract(originalNodePosition, enclosingCircleCentre);
         vect.normalize();

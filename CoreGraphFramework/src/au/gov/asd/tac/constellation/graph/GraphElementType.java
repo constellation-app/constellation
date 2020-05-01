@@ -48,6 +48,7 @@ public enum GraphElementType {
 
         @Override
         public void removeElement(GraphWriteMethods graph, int element) {
+            // Override required for implementation
         }
 
         @Override
@@ -97,6 +98,7 @@ public enum GraphElementType {
 
         @Override
         public void completeWithSchema(GraphWriteMethods graph, int element) {
+            // Override required for implementation
         }
 
         @Override
@@ -125,6 +127,7 @@ public enum GraphElementType {
 
         @Override
         public void removeElement(GraphWriteMethods graph, int element) {
+            // Override required for implementation
         }
 
         @Override
@@ -302,6 +305,7 @@ public enum GraphElementType {
 
         @Override
         public void removeElement(GraphWriteMethods graph, int element) {
+            // Override required for implementation
         }
 
         @Override
@@ -400,6 +404,7 @@ public enum GraphElementType {
 
         @Override
         public void removeElement(GraphWriteMethods graph, int element) {
+            // Override required for implementation
         }
 
         @Override

@@ -6,6 +6,7 @@
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical" url="hierarchical.html"/>
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.tree" url="tree.html"/>
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.circle" url="circle.html"/>
+    <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d" url="scatter3d.html"/>
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.sphere" url="sphere.html"/>
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField" url="flatten-z-field.html"/>
     <mapID target="au.gov.asd.tac.constellation.plugins.arrangements.contractGraph" url="contract-graph.html"/>

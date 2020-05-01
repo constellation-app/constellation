@@ -61,7 +61,7 @@ public class OverviewPanel extends Pane {
     private static final String LIGHT_THEME = "resources/Style-Overview-Light.css";
     private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
-    private final AreaChart histogram;
+    private final AreaChart<Number, Number> histogram;
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private final Rectangle pov;
@@ -272,7 +272,7 @@ public class OverviewPanel extends Pane {
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Histogram Component">
-    private AreaChart createHistogram() {
+    private AreaChart<Number, Number> createHistogram() {
         // Create the axes:
         xAxis = new NumberAxis();
         yAxis = new NumberAxis();
@@ -282,7 +282,7 @@ public class OverviewPanel extends Pane {
         yAxis.setAnimated(false);
 
         // Create the histogram:
-        final AreaChart chart = new AreaChart(xAxis, yAxis);
+        final AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         chart.setPadding(new Insets(0.0, 0.0, 20.0, 0.0));
         chart.setAnimated(true);
 

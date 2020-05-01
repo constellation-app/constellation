@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.schema.type;
 
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -272,14 +272,11 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
                     name,
                     description,
                     color != null ? color : superType != null
-                                    ? superType.color : UNKNOWN != null
-                                            ? UNKNOWN.color : color,
+                                    ? superType.color : UNKNOWN.color,
                     style != null ? style : superType != null
-                                    ? superType.style : UNKNOWN != null
-                                            ? UNKNOWN.style : style,
+                                    ? superType.style : UNKNOWN.style,
                     directed != null ? directed : superType != null
-                                    ? superType.directed : UNKNOWN != null
-                                            ? UNKNOWN.directed : directed,
+                                    ? superType.directed : UNKNOWN.directed,
                     superType,
                     overridenType,
                     properties,
