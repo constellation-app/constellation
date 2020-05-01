@@ -341,8 +341,11 @@ public class TimelinePanel extends Region {
                     element.setNodeItem(nodeItem);
                 }
             }
-
-            if (nodeItem != null) {
+            
+            final boolean nodeInRange = (long) nodeItem.getXValue() > (long) timeline.getLowerExtent()
+                    && (long) nodeItem.getXValue() < (long) timeline.getUpperExtent();
+            
+            if (nodeInRange) {
                 series.getData().add(nodeItem);
 
                 lowestObservedY = Math.min(element.getLowerDisplayPos(), lowestObservedY);
