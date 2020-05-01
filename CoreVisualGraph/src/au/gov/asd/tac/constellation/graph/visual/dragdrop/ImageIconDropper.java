@@ -91,7 +91,8 @@ public class ImageIconDropper implements GraphDropper {
             } else if (transferable.isDataFlavorSupported(IMAGE_FILE_FLAVOR)) {
                 Object data = transferable.getTransferData(IMAGE_FILE_FLAVOR);
                 if (data instanceof List) {
-                    List<File> fileList = (List<File>) data;
+                    @SuppressWarnings("unchecked") //data is be list of files which extends from object type
+                    final List<File> fileList = (List<File>) data;
                     if (fileList.size() == 1) {
                         File file = fileList.get(0);
                         image = ImageIO.read(file);

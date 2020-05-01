@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2020-05-01 Changes in May 2020
+* Fixed a bug effecting the histogram scrolling
+
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
@@ -22,6 +25,7 @@
 * Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
 * Updated the java source detected by SonarQube to check for Java 11.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
+
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

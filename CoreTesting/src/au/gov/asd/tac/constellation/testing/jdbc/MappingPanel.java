@@ -131,7 +131,7 @@ public class MappingPanel extends javax.swing.JPanel {
 
         final TableColumn tcol = table.getColumnModel().getColumn(columnIndex);
         tcol.setCellRenderer(new MappingCellRenderer(values));
-        tcol.setCellEditor(new DefaultCellEditor(new JComboBox(values)));
+        tcol.setCellEditor(new DefaultCellEditor(new JComboBox<>(values)));
     }
 
     /**

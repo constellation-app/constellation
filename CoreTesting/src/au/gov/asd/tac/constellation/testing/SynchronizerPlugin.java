@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.security.SecureRandom;
 import java.util.Map;
@@ -59,7 +60,8 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
         parameters.addParameter(StringParameterType.build(COPY_PARAMETER_ID));
         parameters.addController(NAME_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
-                final PluginParameter slave = params.get(COPY_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //COPY_PARAMETER will be of type StringParameter
+                final PluginParameter<StringParameterValue> slave = (PluginParameter<StringParameterValue>) params.get(COPY_PARAMETER_ID);
                 slave.setStringValue("COPY: " + master.getStringValue());
             }
         });

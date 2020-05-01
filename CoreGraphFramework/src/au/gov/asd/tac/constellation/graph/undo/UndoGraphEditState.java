@@ -32,11 +32,13 @@ import java.util.Map;
  */
 public class UndoGraphEditState {
 
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
+    
     private static final boolean PRINT_STATS = false;
 
-    static final int REPEAT_MASK = 3;
-    static final int REPEAT_SHIFT = 5;
-    static final int OPERATION_MASK = 0x1F;
+    private static final int REPEAT_MASK = 3;
+    private static final int REPEAT_SHIFT = 5;
+    private static final int OPERATION_MASK = 0x1F;
 
     private short[] operationStack = new short[1];
     private int operationCount = 0;
@@ -70,7 +72,6 @@ public class UndoGraphEditState {
     private long currentLong = 0;
     private long currentDouble = 0;
 
-
     private int finalAttribute;
     private int finalId;
     private int finalInt;
@@ -83,10 +84,10 @@ public class UndoGraphEditState {
     private int extraOperationsCount = 0;
 
     public UndoGraphEditState() {
+        // do nothing
     }
 
-    public UndoGraphEditState(DataInputStream in) throws Exception {
-
+    public UndoGraphEditState(final DataInputStream in) throws Exception {
         operationCount = in.readInt();
         operationStack = new short[operationCount];
         for (int i = 0; i < operationCount; i++) {
@@ -117,34 +118,38 @@ public class UndoGraphEditState {
             longStack[i] = in.readLong();
         }
 
+        final Map<Integer, Class<?>> classMap = new HashMap<>();
+        classMap.put(0, null);
+        
         objectCount = in.readInt();
-        objectStack = new Object[objectCount];
         byte[] buffer = new byte[1024];
-        Map<Integer, Class<?>> classMap = new HashMap<>();
         for (int i = 0; i < objectCount; i++) {
-            int objectClassIndex = in.readInt();
-            Class<?> objectClass;
+            final int objectClassIndex = in.readInt();
+            final Class<?> objectClass;
             if (classMap.containsKey(objectClassIndex)) {
                 objectClass = classMap.get(objectClassIndex);
             } else {
-                int classLength = in.readInt();
+                final int classLength = in.readInt();
                 if (classLength > buffer.length) {
                     buffer = Arrays.copyOf(buffer, classLength);
                 }
                 in.read(buffer, 0, classLength);
-                String objectName = new String(buffer, 0, classLength, UTF8);
+                final String objectName = new String(buffer, 0, classLength, UTF8);
                 objectClass = Class.forName(objectName);
-                classMap.put(objectClassIndex, objectClass);
             }
-            classMap.forEach((k, v) -> objectMap.put(v, k));
+            classMap.put(objectClassIndex, objectClass);
+            objectMap.put(objectClass, objectClassIndex);
         }
+        
+        objectStack = new Object[objectCount];
+        Arrays.setAll(objectStack, index -> classMap.get(index));
     }
 
     public byte[] getByteStack() {
         return byteStack;
     }
 
-    public void setByteStack(byte[] byteStack) {
+    public void setByteStack(final byte[] byteStack) {
         this.byteStack = byteStack;
     }
 
@@ -152,7 +157,7 @@ public class UndoGraphEditState {
         return bytePointer;
     }
 
-    public void setBytePointer(int bytePointer) {
+    public void setBytePointer(final int bytePointer) {
         this.bytePointer = bytePointer;
     }
 
@@ -160,7 +165,7 @@ public class UndoGraphEditState {
         return shortStack;
     }
 
-    public void setShortStack(short[] shortStack) {
+    public void setShortStack(final short[] shortStack) {
         this.shortStack = shortStack;
     }
 
@@ -168,7 +173,7 @@ public class UndoGraphEditState {
         return shortPointer;
     }
 
-    public void setShortPointer(int shortPointer) {
+    public void setShortPointer(final int shortPointer) {
         this.shortPointer = shortPointer;
     }
 
@@ -176,7 +181,7 @@ public class UndoGraphEditState {
         return intStack;
     }
 
-    public void setIntStack(int[] intStack) {
+    public void setIntStack(final int[] intStack) {
         this.intStack = intStack;
     }
 
@@ -184,7 +189,7 @@ public class UndoGraphEditState {
         return intPointer;
     }
 
-    public void setIntPointer(int intPointer) {
+    public void setIntPointer(final int intPointer) {
         this.intPointer = intPointer;
     }
 
@@ -192,7 +197,7 @@ public class UndoGraphEditState {
         return longStack;
     }
 
-    public void setLongStack(long[] longStack) {
+    public void setLongStack(final long[] longStack) {
         this.longStack = longStack;
     }
 
@@ -200,7 +205,7 @@ public class UndoGraphEditState {
         return longPointer;
     }
 
-    public void setLongPointer(int longPointer) {
+    public void setLongPointer(final int longPointer) {
         this.longPointer = longPointer;
     }
 
@@ -208,7 +213,7 @@ public class UndoGraphEditState {
         return objectStack;
     }
 
-    public void setObjectStack(Object[] objectStack) {
+    public void setObjectStack(final Object[] objectStack) {
         this.objectStack = objectStack;
     }
 
@@ -216,7 +221,7 @@ public class UndoGraphEditState {
         return currentAttribute;
     }
 
-    public void setCurrentAttribute(int currentAttribute) {
+    public void setCurrentAttribute(final int currentAttribute) {
         this.currentAttribute = currentAttribute;
     }
 
@@ -224,7 +229,7 @@ public class UndoGraphEditState {
         return currentId;
     }
 
-    public void setCurrentId(int currentId) {
+    public void setCurrentId(final int currentId) {
         this.currentId = currentId;
     }
 
@@ -232,7 +237,7 @@ public class UndoGraphEditState {
         return currentInt;
     }
 
-    public void setCurrentInt(int currentInt) {
+    public void setCurrentInt(final int currentInt) {
         this.currentInt = currentInt;
     }
 
@@ -240,7 +245,7 @@ public class UndoGraphEditState {
         return currentObject;
     }
 
-    public void setCurrentObject(int currentObject) {
+    public void setCurrentObject(final int currentObject) {
         this.currentObject = currentObject;
     }
 
@@ -248,7 +253,7 @@ public class UndoGraphEditState {
         return currentFloat;
     }
 
-    public void setCurrentFloat(int currentFloat) {
+    public void setCurrentFloat(final int currentFloat) {
         this.currentFloat = currentFloat;
     }
 
@@ -256,7 +261,7 @@ public class UndoGraphEditState {
         return currentLong;
     }
 
-    public void setCurrentLong(long currentLong) {
+    public void setCurrentLong(final long currentLong) {
         this.currentLong = currentLong;
     }
 
@@ -264,11 +269,11 @@ public class UndoGraphEditState {
         return currentDouble;
     }
 
-    public void setCurrentDouble(long currentDouble) {
+    public void setCurrentDouble(final long currentDouble) {
         this.currentDouble = currentDouble;
     }
     
-    public void addInstruction(short operation) {
+    public void addInstruction(final short operation) {
         if (currentOperation == operation) {
             operationStack[operationCount - 1] = (short) (operation | (++extraOperationsCount << REPEAT_SHIFT));
             if (extraOperationsCount == REPEAT_MASK) {
@@ -285,36 +290,36 @@ public class UndoGraphEditState {
         }
     }
 
-    public void addByte(byte value) {
+    public void addByte(final byte value) {
         if (byteCount == byteStack.length) {
             byteStack = Arrays.copyOf(byteStack, byteCount * 2);
         }
         byteStack[byteCount++] = value;
     }
 
-    public void addShort(short value) {
+    public void addShort(final short value) {
         if (shortCount == shortStack.length) {
             shortStack = Arrays.copyOf(shortStack, shortCount * 2);
         }
         shortStack[shortCount++] = value;
     }
 
-    public void addInt(int value) {
+    public void addInt(final int value) {
         if (intCount == intStack.length) {
             intStack = Arrays.copyOf(intStack, intCount * 2);
         }
         intStack[intCount++] = value;
     }
 
-    public void addLong(long value) {
+    public void addLong(final long value) {
         if (longCount == longStack.length) {
             longStack = Arrays.copyOf(longStack, longCount * 2);
         }
         longStack[longCount++] = value;
     }
 
-    public int addObject(Object object) {
-        Integer existingObjectIndex = objectMap.get(object);
+    public int addObject(final Object object) {
+        final Integer existingObjectIndex = objectMap.get(object);
         if (existingObjectIndex != null) {
             return existingObjectIndex;
         }
@@ -322,7 +327,7 @@ public class UndoGraphEditState {
         if (objectCount == objectStack.length) {
             objectStack = Arrays.copyOf(objectStack, objectCount * 2);
         }
-        int objectIndex = objectCount;
+        final int objectIndex = objectCount;
         objectStack[objectCount++] = object;
         return objectIndex;
     }
@@ -364,7 +369,7 @@ public class UndoGraphEditState {
         currentLong = 0L;
         currentDouble = 0L;
 
-        int[][] stats = new int[UndoGraphEditOperation.values().length][6];
+        final int[][] stats = new int[UndoGraphEditOperation.values().length][6];
         int oldBytePointer = 0;
         int oldShortPointer = 0;
         int oldIntPointer = 0;
@@ -372,14 +377,11 @@ public class UndoGraphEditState {
 
         int graphOperationCount = 0;
 
-        for (int operation : operationStack) {
-
-            int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
+        for (final int operation : operationStack) {
+            final int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
             for (int run = 0; run < runCount; run++) {
-
-                UndoGraphEditOperation op = UndoGraphEditOperation.values()[operation & OPERATION_MASK];
+                final UndoGraphEditOperation op = UndoGraphEditOperation.values()[operation & OPERATION_MASK];
                 op.updateExecute(this, operation);
-
                 if (op == UndoGraphEditOperation.EXECUTE_GRAPH_OPERATION) {
                     graphOperationCount += ((GraphOperation) objectStack[currentObject]).size();
                 }
@@ -398,20 +400,20 @@ public class UndoGraphEditState {
             oldLongPointer = longPointer;
         }
 
-        int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
+        final int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
         System.out.println("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
-        for (UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
+        for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
             System.out.print("    " + operation.ordinal() + " " + operation.getName());
-            int[] counts = stats[operation.ordinal()];
+            final int[] counts = stats[operation.ordinal()];
             for (int i = 0; i < 6; i++) {
                 System.out.print(" " + counts[i]);
             }
-            int size = (counts[0] * 2) + counts[2] + (counts[3] * 2) + (counts[4] * 4) + (counts[5] * 8);
+            final int size = (counts[0] * 2) + counts[2] + (counts[3] * 2) + (counts[4] * 4) + (counts[5] * 8);
             System.out.println(" " + size);
         }
     }
 
-    public void execute(GraphWriteMethods graph) {
+    public void execute(final GraphWriteMethods graph) {
 
         bytePointer = 0;
         shortPointer = 0;
@@ -426,9 +428,8 @@ public class UndoGraphEditState {
         currentLong = 0L;
         currentDouble = 0L;
 
-        for (int operation : operationStack) {
-
-            int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
+        for (final int operation : operationStack) {
+            final int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
             for (int run = 0; run < runCount; run++) {
                 UndoGraphEditOperation.values()[operation & OPERATION_MASK].updateExecute(this, operation);
                 UndoGraphEditOperation.values()[operation & OPERATION_MASK].execute(this, graph);
@@ -436,7 +437,7 @@ public class UndoGraphEditState {
         }
     }
 
-    public void undo(GraphWriteMethods graph) {
+    public void undo(final GraphWriteMethods graph) {
 
         bytePointer = byteCount;
         shortPointer = shortCount;
@@ -452,9 +453,8 @@ public class UndoGraphEditState {
         currentDouble = finalDouble;
 
         for (int operationIndex = operationCount - 1; operationIndex >= 0; operationIndex--) {
-            int operation = operationStack[operationIndex];
-
-            int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
+            final int operation = operationStack[operationIndex];
+            final int runCount = ((operation >>> REPEAT_SHIFT) & REPEAT_MASK) + 1;
             for (int run = 0; run < runCount; run++) {
                 UndoGraphEditOperation.values()[operation & OPERATION_MASK].undo(this, graph);
                 UndoGraphEditOperation.values()[operation & OPERATION_MASK].updateUndo(this, operation);
@@ -462,10 +462,7 @@ public class UndoGraphEditState {
         }
     }
 
-    private static final Charset UTF8 = StandardCharsets.UTF_8;
-
-    public void write(DataOutputStream out) throws IOException {
-
+    public void write(final DataOutputStream out) throws IOException {
         out.writeInt(operationCount);
         for (int i = 0; i < operationCount; i++) {
             out.writeShort(operationStack[i]);

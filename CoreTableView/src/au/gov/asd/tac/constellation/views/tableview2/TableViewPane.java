@@ -25,13 +25,13 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,8 +69,8 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -357,26 +357,28 @@ public final class TableViewPane extends BorderPane {
         final CustomMenuItem keyColumns = new CustomMenuItem(new Label(KEY_COLUMNS));
         keyColumns.setHideOnClick(false);
         keyColumns.setOnAction(e -> {
-            final Set<GraphAttribute> keyAttributes = new HashSet<>();
-            final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
-            try {
-                final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
-                for (int vertexKey : vertexKeys) {
-                    keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
+            if (parent.getCurrentGraph() != null) {
+                final Set<GraphAttribute> keyAttributes = new HashSet<>();
+                final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
+                try {
+                    final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
+                    for (int vertexKey : vertexKeys) {
+                        keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
+                    }
+                    final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
+                    for (int transactionKey : transactionKeys) {
+                        keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
+                    }
+                } finally {
+                    readableGraph.release();
                 }
-                final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
-                for (int transactionKey : transactionKeys) {
-                    keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
-                }
-            } finally {
-                readableGraph.release();
+                updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
+                        columnIndex.stream()
+                                .filter(columnTuple -> keyAttributes.stream()
+                                .anyMatch(keyAttribute -> keyAttribute.equals(columnTuple.getSecond())))
+                                .collect(Collectors.toList()), UpdateMethod.REPLACE);
+                e.consume();
             }
-            updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
-                    columnIndex.stream()
-                            .filter(columnTuple -> keyAttributes.stream()
-                            .anyMatch(keyAttribute -> keyAttribute.equals(columnTuple.getSecond())))
-                            .collect(Collectors.toList()), UpdateMethod.REPLACE);
-            e.consume();
         });
 
         final CustomMenuItem noColumns = new CustomMenuItem(new Label(NO_COLUMNS));
@@ -458,7 +460,7 @@ public final class TableViewPane extends BorderPane {
 
         final MenuItem copyRow = new MenuItem(COPY_ROW);
         copyRow.setOnAction(e -> {
-            final String rowData = ((ObservableList<String>) cell.getTableRow().getItem()).stream()
+            final String rowData = cell.getTableRow().getItem().stream()
                     .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2).get();
             TableViewUtilities.copyToClipboard(rowData);
             e.consume();
