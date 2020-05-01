@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages({
-    "ArrangeInGridGeneralPlugin=Arrange in Grid (General)",
+    "ArrangeInGridGeneralPlugin=Arrange in Grid",
     "SelectedOnly=Arrange only selected nodes"
 })
 public class ArrangeInGridGeneralPlugin extends SimpleEditPlugin {

@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author CrucisGamma
  */
 @ServiceProvider(service = Plugin.class)
-@Messages("ArrangeInScatter3dComponentsPlugin=Arrange Components in Scatter3ds")
+@Messages("ArrangeInScatter3dComponentsPlugin=Arrange Components in Scatter 3D")
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 public class ArrangeInScatter3dComponentsPlugin extends SimpleEditPlugin {
 
