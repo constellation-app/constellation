@@ -357,26 +357,28 @@ public final class TableViewPane extends BorderPane {
         final CustomMenuItem keyColumns = new CustomMenuItem(new Label(KEY_COLUMNS));
         keyColumns.setHideOnClick(false);
         keyColumns.setOnAction(e -> {
-            final Set<GraphAttribute> keyAttributes = new HashSet<>();
-            final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
-            try {
-                final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
-                for (int vertexKey : vertexKeys) {
-                    keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
+            if (parent.getCurrentGraph() != null) {
+                final Set<GraphAttribute> keyAttributes = new HashSet<>();
+                final ReadableGraph readableGraph = parent.getCurrentGraph().getReadableGraph();
+                try {
+                    final int[] vertexKeys = readableGraph.getPrimaryKey(GraphElementType.VERTEX);
+                    for (int vertexKey : vertexKeys) {
+                        keyAttributes.add(new GraphAttribute(readableGraph, vertexKey));
+                    }
+                    final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
+                    for (int transactionKey : transactionKeys) {
+                        keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
+                    }
+                } finally {
+                    readableGraph.release();
                 }
-                final int[] transactionKeys = readableGraph.getPrimaryKey(GraphElementType.TRANSACTION);
-                for (int transactionKey : transactionKeys) {
-                    keyAttributes.add(new GraphAttribute(readableGraph, transactionKey));
-                }
-            } finally {
-                readableGraph.release();
+                updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
+                        columnIndex.stream()
+                                .filter(columnTuple -> keyAttributes.stream()
+                                .anyMatch(keyAttribute -> keyAttribute.equals(columnTuple.getSecond())))
+                                .collect(Collectors.toList()), UpdateMethod.REPLACE);
+                e.consume();
             }
-            updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(),
-                    columnIndex.stream()
-                            .filter(columnTuple -> keyAttributes.stream()
-                            .anyMatch(keyAttribute -> keyAttribute.equals(columnTuple.getSecond())))
-                            .collect(Collectors.toList()), UpdateMethod.REPLACE);
-            e.consume();
         });
 
         final CustomMenuItem noColumns = new CustomMenuItem(new Label(NO_COLUMNS));
