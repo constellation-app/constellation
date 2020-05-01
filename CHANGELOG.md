@@ -1,5 +1,8 @@
 # Constellation Changes
 
+== 2020-05-01 Changes in May 2020
+* Fixed a bug effecting the histogram scrolling
+
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
 * Added new module Core Plugin Reporter to separate it from the plugin framework.
