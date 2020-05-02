@@ -179,7 +179,7 @@ public class Scatter3dArranger implements Arranger {
     private float scaleValue(float value, boolean logarithmic) {
         if (logarithmic) {
             if (value <= 0.0) {
-                return 0.0f;
+                return (float) Math.log10(-value) * -1;
             }
             return (float) Math.log10(value);
         }
