@@ -56,7 +56,6 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
 public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDateTime> {
-
     @Override
     public AbstractEditor<ZonedDateTime> createEditor(final EditOperation editOperation, final DefaultGetter<ZonedDateTime> defaultGetter, final ValueValidator<ZonedDateTime> validator, final String editedItemName, final ZonedDateTime initialValue) {
         return new DateTimeEditor(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -120,9 +119,13 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
+            final String dateString = datePicker.getEditor().getText();
+            //The converter is being used here to try and determine if the entered date is a LocalDate
+            //It will throw an exception and won't convert it if its invalid
             try {
-                final String dateString = datePicker.getEditor().getText();
-                datePicker.getConverter().fromString(dateString);
+                if (!dateString.equals("")) {
+                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
+                }
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }

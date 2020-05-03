@@ -69,9 +69,13 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
+            final String dateString = datePicker.getEditor().getText();
+            //The converter is being used here to try and determine if the entered date is a LocalDate
+            //It will throw an exception and won't convert it if its invalid
             try {
-                final String dateString = datePicker.getEditor().getText();
-                datePicker.getConverter().fromString(dateString);
+                if (!dateString.equals("")) {
+                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
+                }
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }

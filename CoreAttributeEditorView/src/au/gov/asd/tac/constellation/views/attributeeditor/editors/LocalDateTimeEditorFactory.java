@@ -95,9 +95,11 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
+            final String dateString = datePicker.getEditor().getText();
             try {
-                final String dateString = datePicker.getEditor().getText();
-                datePicker.getConverter().fromString(dateString);
+                if (!dateString.equals("")) {
+                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
+                }
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }
