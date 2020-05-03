@@ -96,6 +96,8 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
             final String dateString = datePicker.getEditor().getText();
+            //The converter is being used here to try and determine if the entered date is a LocalDate
+            //It will throw an exception and won't convert it if its invalid
             try {
                 if (!dateString.equals("")) {
                     datePicker.setValue(datePicker.getConverter().fromString(dateString));
