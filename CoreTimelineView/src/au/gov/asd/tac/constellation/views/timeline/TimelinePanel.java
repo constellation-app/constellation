@@ -301,8 +301,6 @@ public class TimelinePanel extends Region {
                                 break;
                             case Graph.UPHILL:
                                 throw new IllegalArgumentException("source > dest is always downhill");
-//                                label = labelMaker(sourceBLabel, '→', sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                             default:
                                     // Undirected / Bi-directional
                                 label = labelMaker(sourceALabel, '-', sourceBLabel);
@@ -319,8 +317,6 @@ public class TimelinePanel extends Region {
                         switch (directionality) {
                             case Graph.DOWNHILL:
                                 throw new IllegalArgumentException("source < dest is always uphill");
-//                                label = labelMaker(sourceBLabel, '→', sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                             case Graph.UPHILL:
                                 label = labelMaker(sourceALabel, '→', sourceBLabel);
                                 transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
