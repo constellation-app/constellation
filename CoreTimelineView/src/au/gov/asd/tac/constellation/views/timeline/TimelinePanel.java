@@ -241,6 +241,7 @@ public class TimelinePanel extends Region {
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
+            boolean nodeInRange = false;
             if (nodeItem == null) {
                 if (element instanceof TreeLeaf) {
                     final TreeLeaf leaf = (TreeLeaf) element;
@@ -342,8 +343,15 @@ public class TimelinePanel extends Region {
                 }
             }
             
-            final boolean nodeInRange = (long) nodeItem.getXValue() > (long) timeline.getLowerExtent()
-                    && (long) nodeItem.getXValue() < (long) timeline.getUpperExtent();
+            if (element instanceof TreeLeaf) {
+                final TreeLeaf leaf = (TreeLeaf) element;
+                nodeInRange = leaf.getDatetime() > (long) timeline.getLowerExtent() 
+                        && leaf.getDatetime() < (long) timeline.getUpperExtent();
+            } else {
+                //don't render the block as soon as none of it is in view
+                nodeInRange = element.getUpperTimeExtent() > (long) timeline.getLowerExtent() 
+                        && element.getLowerTimeExtent() < (long) timeline.getUpperExtent();
+            }
             
             if (nodeInRange) {
                 series.getData().add(nodeItem);
