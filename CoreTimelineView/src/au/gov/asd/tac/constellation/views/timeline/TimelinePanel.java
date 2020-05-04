@@ -241,7 +241,6 @@ public class TimelinePanel extends Region {
 
         for (final TreeElement element : clusteringManager.getElementsToDraw()) {
             XYChart.Data<Number, Number> nodeItem = element.getNodeItem();
-            boolean nodeInRange = false;
             if (nodeItem == null) {
                 if (element instanceof TreeLeaf) {
                     final TreeLeaf leaf = (TreeLeaf) element;
@@ -349,6 +348,7 @@ public class TimelinePanel extends Region {
                 }
             }
             
+            final boolean nodeInRange;
             if (element instanceof TreeLeaf) {
                 final TreeLeaf leaf = (TreeLeaf) element;
                 nodeInRange = leaf.getDatetime() > (long) timeline.getLowerExtent() 
