@@ -176,12 +176,12 @@ public class Scatter3dArranger implements Arranger {
         }
     }
 
-    private float scaleValue(float value, boolean logarithmic) {
+    private float scaleValue(final float value, final boolean logarithmic) {
         if (logarithmic) {
-            if (value <= 0.0) {
-                return (float) Math.log10(-value) * -1;
+            if (value != 0.0) {
+                return (float) Math.log10(Math.abs(value)) * Math.signum(value);
             }
-            return (float) Math.log10(value);
+            return 0.0f;
         }
         return value;
     }
