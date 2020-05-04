@@ -293,16 +293,21 @@ public class TimelinePanel extends Region {
                         vertexB = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
                                 sourceBSelected, transSelected, btnShowLabels.isSelected());
 
-                        if (directionality == Graph.DOWNHILL) {
-                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                        } else if (directionality == Graph.UPHILL) {
-                            throw new IllegalArgumentException("source > dest is always downhill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
+                        final String label;
+                        switch (directionality) {
+                            case Graph.DOWNHILL:
+                                label = labelMaker(sourceALabel, '→', sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
+                                break;
+                            case Graph.UPHILL:
+                                throw new IllegalArgumentException("source > dest is always downhill");
+//                                label = labelMaker(sourceBLabel, '→', sourceALabel);
 //                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                        } else { // Undirected / Bi-directional
-                            final String label = labelMaker(sourceALabel, '-', sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                            default:
+                                    // Undirected / Bi-directional
+                                label = labelMaker(sourceALabel, '-', sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, transSelected);
+                                break;
                         }
                     } else if (sourceA < sourceB) {
                         vertexA = new Vertex(sourceB, sourceB, sourceBLabel, sourceBColor,
@@ -310,16 +315,21 @@ public class TimelinePanel extends Region {
                         vertexB = new Vertex(sourceA, sourceA, sourceALabel, sourceAColor,
                                 sourceASelected, transSelected, btnShowLabels.isSelected());
 
-                        if (directionality == Graph.DOWNHILL) {
-                            throw new IllegalArgumentException("source < dest is always uphill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
+                        final String label;
+                        switch (directionality) {
+                            case Graph.DOWNHILL:
+                                throw new IllegalArgumentException("source < dest is always uphill");
+//                                label = labelMaker(sourceBLabel, '→', sourceALabel);
 //                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
-                        } else if (directionality == Graph.UPHILL) {
-                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
-                            transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
-                        } else { // Undirected / Bi-directional
-                            final String label = labelMaker(sourceBLabel, '-', sourceALabel);
-                            transaction = new Transaction(transactionID, transColor, label, transSelected);
+                            case Graph.UPHILL:
+                                label = labelMaker(sourceALabel, '→', sourceBLabel);
+                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
+                                break;
+                            default:
+                                // Undirected / Bi-directional
+                                label = labelMaker(sourceBLabel, '-', sourceALabel);
+                                transaction = new Transaction(transactionID, transColor, label, transSelected);
+                                break;
                         }
                     } else {
                         // Same source and destination: a loop.
