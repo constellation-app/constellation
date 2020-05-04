@@ -21,7 +21,6 @@
 * Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
 * Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
 * Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from.
-* Removed `AttrListAttributeDescriptionV0` and `AttrListIOProviderV0.java` as they have not been supported or in use for years.
 * Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
 * Updated the java source detected by SonarQube to check for Java 11.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.

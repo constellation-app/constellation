@@ -33,7 +33,7 @@ public class ConnectionModeAttributeInteraction extends AbstractAttributeInterac
     }
 
     @Override
-    @SuppressWarxnings("unchecked") // value will be Enum of ConnectionMode
+    @SuppressWarnings("unchecked") // value will be Enum of ConnectionMode
     public String getDisplayText(Object value) {
         return ((Enum<ConnectionMode>) value).name();
     }
