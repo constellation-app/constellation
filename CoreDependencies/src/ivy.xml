@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-    <info organisation="au.gov.asd.tac" module="third-party-dependencies" revision="working"/>
+    <info organisation="au.gov.asd.tac" module="third-party-dependencies"/>
     
     <configurations defaultconfmapping="*->default,master">
         <conf name="compile" description="Compile-time dependencies" visibility="public"/>
@@ -86,6 +86,7 @@
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>
         <exclude org="javax.media" module="jai_imageio"/>
+        <exclude org="javax.media" module="jai_widget"/>
         <exclude type="source" ext="jar" conf="*"/>
         <exclude type="javadoc" ext="jar" conf="*"/>
         <exclude type="license" ext="txt" conf="*"/>
