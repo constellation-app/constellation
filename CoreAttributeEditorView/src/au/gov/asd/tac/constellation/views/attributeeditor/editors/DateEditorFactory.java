@@ -28,6 +28,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.GridPane;
 import javafx.util.converter.LocalDateStringConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -73,7 +74,7 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
             //The converter is being used here to try and determine if the entered date is a LocalDate
             //It will throw an exception and won't convert it if its invalid
             try {
-                if (!dateString.equals("")) {
+                if (!StringUtils.isBlank(dateString)) {
                     datePicker.setValue(datePicker.getConverter().fromString(dateString));
                 }
             } catch (final DateTimeParseException ex) {
