@@ -42,11 +42,14 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -75,6 +78,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     private InteractionEventHandler handler;
     private DropTargetListener targetListener;
     private DropTarget target;
+    
+    private static final Logger LOGGER = Logger.getLogger(InteractiveGLVisualProcessor.class.getName());
 
     /**
      * Create a new InteractiveGLVisualProcessor.
@@ -316,5 +321,21 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
+    }
+    
+    @Override
+    public float getDPIScalingFactor(){
+        // HACK_DPI - Get the X Scale value from the GLCanva's transform matrix
+        // This method was derived from the JOGL post found here:
+        // http://forum.jogamp.org/canvas-not-filling-frame-td4040092.html#a4040210
+        try
+        {
+        	return (float)((Graphics2D)getCanvas().getGraphics()).getTransform().getScaleX();
+        }
+        catch (Exception ex)
+        {
+        	LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+        	return 1.0f;	
+        }
     }
 }
