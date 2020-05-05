@@ -482,9 +482,9 @@ public class MapViewTileRenderer extends PApplet {
                 if (!ignoreMapInteractions) {
                     // Triggers a pan event for a right click & drag if within map
                     dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
-                    Location oldLocation = map.getLocation(pmouseX, pmouseY);
-                    Location newLocation = map.getLocation(mouseX, mouseY);
-                    PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
+                    final Location oldLocation = map.getLocation(pmouseX, pmouseY);
+                    final Location newLocation = map.getLocation(mouseX, mouseY);
+                    final PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
                     panMapEvent.setFromLocation(oldLocation);
                     panMapEvent.setToLocation(newLocation);
                     dispatcher.fireMapEvent(panMapEvent);
