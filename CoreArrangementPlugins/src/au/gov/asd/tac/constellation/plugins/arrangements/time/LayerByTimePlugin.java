@@ -549,6 +549,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         // Now that we have the total number of layers, tell the graph so it
         // can handle the visibility toggle.
+        wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "The number of layers to layer by time", 1, null);
         final int nLayersAttr = wgcopy.getAttribute(GraphElementType.GRAPH, NLAYERS);
         wgcopy.setIntValue(nLayersAttr, 0, remappedLayers.keySet().size());
 
