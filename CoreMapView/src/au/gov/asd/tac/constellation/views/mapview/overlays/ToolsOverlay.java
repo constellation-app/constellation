@@ -51,7 +51,7 @@ import processing.event.MouseEvent;
 public class ToolsOverlay extends MapOverlay {
 
     private static final Logger LOGGER = Logger.getLogger(ToolsOverlay.class.getName());
-
+    
     private enum MeasurementSystem {
 
         IMPERIAL("mi", (start, end) -> Distance.Haversine.estimateDistanceInMiles(start.getLat(), start.getLon(), end.getLat(), end.getLon())),
@@ -178,6 +178,7 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
+                this.isInFocus = !this.isInFocus;
                 mouseLeftMeasureToolRegion = false;
             }
         } else {
