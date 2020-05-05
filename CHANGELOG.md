@@ -1,5 +1,7 @@
 # Constellation Changes
 
+## 2020-05-01 Changes in May 2020
+* Fixed a bug effecting the histogram scrolling
 
 ## 2020-04-03 Changes in April 2020
 * Added search feature to Table View Column Selection.
@@ -12,19 +14,23 @@
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
 * Added Layers view to the Experimental views tab.
-* Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
-* Updated the java source detected by SonarQube to check for Java 11.
+* Added `RenderablePriority` enum to `GLRenderable` to house the constants that sat in that class.
+* Added `VisualPriority` enum to `VisualOperation` to house the constants that sat in that class.
+* Added `DoubleAttributeDescription`, `DoubleAttributeInteraction` and `DoubleIOProvider` to support high precision numbers in attributes.
+* Added `DoubleObjectAttributeDescription`, `DoubleObjectAttributeInteraction` and `DoubleObjectIOProvider` as a nullable alternative to the double attribute type.
+* Added `ShortAttributeDescription`, `ShortAttributeInteraction` and `ShortIOProvider` to support numbers with lower memory usage in attributes.
+* Added `ShortObjectAttributeDescription`, `ShortObjectAttributeInteraction` and `ShortObjectIOProvider` as a nullable alternative to the short attribute type.
+* Added `ByteAttributeDescription`, `ByteAttributeInteraction` and `ByteIOProvider` to support numbers with lower memory usage in attributes.
+* Added `ByteObjectAttributeDescription`, `ByteObjectAttributeInteraction` and `ByteObjectIOProvider` as a nullable alternative to the byte attribute type.
 * Removed the container image to build the NetBeans 8 version of Constellation.
-* Added Layers view to the Experimental views tab.
 * Renamed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting.
 * Renamed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting.
 * Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
-* Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
 * Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
-* Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from. 
-* Added `RenderablePriority` enum to `GLRenderable` to house the constants that sat in that class
-* Added `VisualPriority` enum to `VisualOperation` to house the constants that sat in that class
-
+* Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from.
+* Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
+* Updated the java source detected by SonarQube to check for Java 11.
+* Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

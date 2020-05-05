@@ -30,15 +30,25 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author arcturus
  */
-public interface PasswordKey {
+public interface PasswordSecret {
+
+    /**
+     * An initialisation vector to obfuscate/de-obfuscate passwords. This should
+     * return a random 16 bit initialisation vector.
+     * <p>
+     * WARNING: Do not attempt to use this for encryption.
+     *
+     * @return An initialisation vector which is a 16 bit byte array.
+     */
+    public byte[] getIV();
 
     /**
      * A key to obfuscate/de-obfuscate passwords. This should return a random 16
      * bit key.
      * <p>
-     * Do not attempt to use this for encryption.
+     * WARNING: Do not attempt to use this for encryption.
      *
-     * @return A key which is a 16 bit byte array
+     * @return A key which is a 16 bit byte array.
      */
     public byte[] getKey();
 }

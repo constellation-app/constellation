@@ -34,7 +34,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.utilities.FlattenZFieldAction")
 @ActionRegistration(displayName = "#CTL_FlattenZFieldAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 1200, separatorBefore = 1199)
+    @ActionReference(path = "Menu/Arrange", position = 2000, separatorBefore = 1999)
 })
 @Messages("CTL_FlattenZFieldAction=Flatten Z-Field")
 public final class FlattenZFieldAction extends AbstractAction {

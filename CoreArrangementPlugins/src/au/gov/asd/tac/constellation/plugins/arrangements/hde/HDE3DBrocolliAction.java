@@ -34,7 +34,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.hde.HDE3DBrocolliAction")
 @ActionRegistration(displayName = "#CTL_HDE3DBrocolliAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 600, separatorBefore = 599),
+    @ActionReference(path = "Menu/Arrange", position = 1500),
     @ActionReference(path = "Shortcuts", name = "C-A-G")
 })
 @NbBundle.Messages("CTL_HDE3DBrocolliAction=HDE 3D")

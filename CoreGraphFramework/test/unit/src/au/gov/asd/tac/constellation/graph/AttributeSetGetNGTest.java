@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertSame;
 import static org.testng.AssertJUnit.assertTrue;
@@ -160,9 +163,9 @@ public class AttributeSetGetNGTest {
     @Test
     public void getMultiMany() {
         final GraphWriteMethods graph = new StoreGraph();
-        final int intAttr = graph.addAttribute(GraphElementType.VERTEX, "integer", "intattr", null, null, null);
-        final int floatAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "floatattr", null, null, null);
-        final int stringAttr = graph.addAttribute(GraphElementType.VERTEX, "string", "stringattr", null, null, null);
+        final int intAttr = graph.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "intattr", null, null, null);
+        final int floatAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "floatattr", null, null, null);
+        final int stringAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "stringattr", null, null, null);
 
         // Add lots of values for this attribute.
         final int N = 10000;

@@ -34,12 +34,12 @@ public class TransactionGraphLabelsAttributeInteraction extends AbstractAttribut
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
 
-        GraphLabels labelsValue = ((GraphLabels) attrVal);
+        GraphLabels labelsValue = ((GraphLabels) value);
         StringBuilder labelsString = new StringBuilder();
         labelsValue.getLabels().forEach(label -> {
             labelsString.append(label.getAttributeName());

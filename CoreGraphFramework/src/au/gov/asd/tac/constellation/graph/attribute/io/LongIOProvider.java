@@ -42,15 +42,15 @@ public class LongIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final long attrVal = jnode.longValue();
-        graph.setLongValue(attributeId, elementId, attrVal);
+        final long attributeValue = jnode.longValue();
+        graph.setLongValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final long attrVal = graph.getLongValue(attribute.getId(), elementId);
-            jsonGenerator.writeNumberField(attribute.getName(), attrVal);
+            final long attributeValue = graph.getLongValue(attribute.getId(), elementId);
+            jsonGenerator.writeNumberField(attribute.getName(), attributeValue);
         }
     }
 }

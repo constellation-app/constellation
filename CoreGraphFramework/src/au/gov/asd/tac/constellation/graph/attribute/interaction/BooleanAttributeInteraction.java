@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -31,11 +33,11 @@ public class BooleanAttributeInteraction extends AbstractAttributeInteraction<Bo
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
-        return (Boolean) attrVal ? "True" : "False";
+        return (Boolean) value ? "True" : "False";
     }
 
     @Override

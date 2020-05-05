@@ -16,11 +16,14 @@
 package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalDate;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -32,11 +35,11 @@ public class DateAttributeInteraction extends AbstractAttributeInteraction<Local
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return DateAttributeDescription.getAsString((LocalDate) attrVal);
+        return ((LocalDate) value).format(TemporalFormatting.DATE_FORMATTER);
     }
 
     @Override

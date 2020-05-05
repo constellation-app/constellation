@@ -68,13 +68,13 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
             try {
                 return Float.parseFloat(numberField.getText());
             } catch (final NumberFormatException ex) {
-                throw new ControlsInvalidException("Entered value is not a decimal.");
+                throw new ControlsInvalidException("Entered value is not a float.");
             }
         }
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
@@ -94,6 +94,5 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
             controls.addRow(1, noValueCheckBox);
             return controls;
         }
-
     }
 }

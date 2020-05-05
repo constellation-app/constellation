@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import org.testng.Assert;
@@ -57,15 +58,15 @@ public class RemoveUnusedAttributesPluginTest {
         vertex1 = graph.addVertex();
         vertex2 = graph.addVertex();
         vertex3 = graph.addVertex();
-        vertexAttribute1 = graph.addAttribute(GraphElementType.VERTEX, "string", "test1", "test1 desc.", null, null);
-        vertexAttribute2 = graph.addAttribute(GraphElementType.VERTEX, "string", "test2", "test1 desc.", null, null);
-        vertexAttribute3 = graph.addAttribute(GraphElementType.VERTEX, "string", "test3", "test1 desc.", null, null);
+        vertexAttribute1 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "test1", "test1 desc.", null, null);
+        vertexAttribute2 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "test2", "test1 desc.", null, null);
+        vertexAttribute3 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "test3", "test1 desc.", null, null);
         // adding transactions to the graph
         transaction1 = graph.addTransaction(vertex1, vertex2, true);
         transaction2 = graph.addTransaction(vertex1, vertex3, true);
-        transactionAttribute1 = graph.addAttribute(GraphElementType.TRANSACTION, "string", "test4", "test1 desc.", null, null);
-        transactionAttribute2 = graph.addAttribute(GraphElementType.TRANSACTION, "string", "test5", "test1 desc.", null, null);
-        transactionAttribute3 = graph.addAttribute(GraphElementType.TRANSACTION, "string", "test6", "test1 desc.", null, null);
+        transactionAttribute1 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test4", "test1 desc.", null, null);
+        transactionAttribute2 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test5", "test1 desc.", null, null);
+        transactionAttribute3 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "test6", "test1 desc.", null, null);
     }
 
     @AfterMethod

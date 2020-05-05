@@ -34,8 +34,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphAction")
 @ActionRegistration(displayName = "#CTL_ExpandGraphAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resize/resources/expand.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 1600),
-    @ActionReference(path = "Toolbars/Arrange", position = 300)
+    @ActionReference(path = "Menu/Arrange", position = 2200),
+    @ActionReference(path = "Toolbars/Arrange", position = 500)
 })
 @Messages("CTL_ExpandGraphAction=Expand Graph")
 public final class ExpandGraphAction extends AbstractAction {

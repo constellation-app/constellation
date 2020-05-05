@@ -72,7 +72,7 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
 
         @Override
         protected Node createEditorControls() {
-            VBox controls = new VBox();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
 
             numberField = new TextField();
@@ -83,6 +83,5 @@ public class FloatEditorFactory extends AttributeValueEditorFactory<Float> {
             controls.getChildren().add(numberField);
             return controls;
         }
-
     }
 }

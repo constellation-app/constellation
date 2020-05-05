@@ -84,15 +84,15 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             attributeList = new ListView<>();
 
-            List<String> attributeNames = new ArrayList<>();
+            final List<String> attributeNames = new ArrayList<>();
             // get all vertex attributes currently in the graph
-            ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
             try {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
@@ -101,7 +101,7 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
                 rg.release();
             }
 
-            Label nameLabel = new Label("Attribute name:");
+            final Label nameLabel = new Label("Attribute name:");
             nameText = new TextField();
             final VBox nameBox = new VBox(10);
             nameBox.getChildren().addAll(nameLabel, nameText);
@@ -113,7 +113,7 @@ public class VertexAttributeNameEditorFactory extends AttributeValueEditorFactor
                 update();
             });
 
-            Label listLabel = new Label("Current attributes:");
+            final Label listLabel = new Label("Current attributes:");
             Collections.sort(attributeNames);
             attributeList.getItems().addAll(attributeNames);
 

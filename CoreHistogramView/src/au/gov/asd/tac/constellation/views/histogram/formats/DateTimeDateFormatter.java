@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.histogram.formats;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.attribute.DateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.views.histogram.Bin;
 import au.gov.asd.tac.constellation.views.histogram.bins.AttributeBin;
 import au.gov.asd.tac.constellation.views.histogram.bins.ObjectBin;
@@ -53,7 +53,7 @@ public class DateTimeDateFormatter extends BinFormatter {
     private class DateTimeDateBin extends ObjectBin {
 
         private final AttributeBin bin;
-        private final DateTimeFormatter formatter = DateAttributeDescription.FORMATTER;
+        private final DateTimeFormatter formatter = TemporalFormatting.DATE_FORMATTER;
 
         public DateTimeDateBin(AttributeBin bin) {
             this.bin = bin;

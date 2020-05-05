@@ -117,8 +117,8 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             rc.setVgrow(Priority.ALWAYS);
             controls.getRowConstraints().add(rc);
 
-            //build tree structure of icon
-            IconNode builtInNode = new IconNode("(Built-in)", IconManager.getIconNames(false));
+            // build tree structure of icon
+            final IconNode builtInNode = new IconNode("(Built-in)", IconManager.getIconNames(false));
 
             //convert structure to jfx treeview
             builtInItem = new TreeItem<>(builtInNode);
@@ -329,9 +329,9 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
                 // dimension text
                 if (iconImage != null) {
-                    int width = (int) (iconImage.getWidth());
-                    int height = (int) (iconImage.getHeight());
-                    Text dimensionText = new Text(String.format("(%dx%d)", width, height));
+                    final int width = (int) (iconImage.getWidth());
+                    final int height = (int) (iconImage.getHeight());
+                    final Text dimensionText = new Text(String.format("(%dx%d)", width, height));
                     dimensionText.setFill(Color.web("#d3d3d3"));
                     gridPane.add(dimensionText, 0, 1);
                 }
@@ -373,16 +373,16 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
         public IconNode(String name, Set<String> iconLabels) {
             this.name = name;
             this.parent = null;
-            for (String iconName : iconLabels) {
-                String[] splitString = iconName.split("\\.");
+            for (final String iconName : iconLabels) {
+                final String[] splitString = iconName.split("\\.");
                 if (splitString.length == 1) {
                     icons.add(iconName);
                 } else if (splitString.length > 1) {
                     IconNode currentNode = this;
                     // every element up to the last element is a category, the last element is the icon name.
                     for (int i = 0; i < splitString.length - 1; i++) {
-                        IconNode childNode = new IconNode(splitString[i], currentNode);
-                        IconNode tempNode = currentNode.addChild(childNode);
+                        final IconNode childNode = new IconNode(splitString[i], currentNode);
+                        final IconNode tempNode = currentNode.addChild(childNode);
                         if (tempNode == null) {
                             currentNode = childNode;
                         } else {

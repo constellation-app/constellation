@@ -34,7 +34,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.spectral.SpectralArrangementAction")
 @ActionRegistration(displayName = "#CTL_SpectralArrangementAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 900),
+    @ActionReference(path = "Menu/Arrange", position = 1400),
     @ActionReference(path = "Shortcuts", name = "C-A-L")
 })
 @Messages("CTL_SpectralArrangementAction=Spectral 3D")

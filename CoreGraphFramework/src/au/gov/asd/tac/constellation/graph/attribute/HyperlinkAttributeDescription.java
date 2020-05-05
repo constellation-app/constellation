@@ -18,12 +18,13 @@ package au.gov.asd.tac.constellation.graph.attribute;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Hyperlink attribute.
+ * This describes a type of attribute whose values are URIs.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescription<URI> {
@@ -31,48 +32,41 @@ public class HyperlinkAttributeDescription extends AbstractObjectAttributeDescri
     public static final String ATTRIBUTE_NAME = "hyperlink";
     public static final Class<URI> NATIVE_CLASS = URI.class;
     public static final URI DEFAULT_VALUE = null;
-    
-    private static final String ERROR_CONVERTING_MESSAGE = "Error converting object to hyperlink: ";
 
     public HyperlinkAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
+    @SuppressWarnings("unchecked") // Casts are manually checked
     protected URI convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof URI) {
-            return (URI) object;
-        } else if (object instanceof URL) {
-            try {
-                return ((URL) object).toURI();
-            } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + object);
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof URL) {
+                try {
+                    return ((URL) object).toURI();
+                } catch (final URISyntaxException ex2) {
+                    throw new IllegalArgumentException(String.format(
+                            "Error converting Object '%s' to hyperlink", object.getClass()));
+                }
+            } else {
+                throw ex;
             }
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else {
-            throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + object);
         }
     }
 
     @Override
-    protected URI convertFromString(String string) {
-        if (string == null) {
-            return null;
+    protected URI convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
             try {
                 return new URI(string);
-            } catch (URISyntaxException ex) {
-                throw new IllegalArgumentException(ERROR_CONVERTING_MESSAGE + string);
+            } catch (final URISyntaxException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to hyperlink", string));
             }
         }
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return false;
     }
 }
