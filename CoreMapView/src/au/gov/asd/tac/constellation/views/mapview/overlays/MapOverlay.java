@@ -35,7 +35,6 @@ public abstract class MapOverlay {
     protected EventDispatcher eventDispatcher;
     protected boolean enabled;
     protected boolean debug;
-    protected boolean isInFocus = false;
 
     // positions and sizes
     protected float x;
@@ -233,9 +232,5 @@ public abstract class MapOverlay {
         renderer.noStroke();
         renderer.fill(separatorColor);
         renderer.rect(x + margin, y, width - (margin * 2), 1);
-    }
-    
-    public final boolean isInFocus(){
-        return this.isInFocus;
     }
 }

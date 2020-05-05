@@ -494,8 +494,8 @@ public class MapViewTileRenderer extends PApplet {
             case PConstants.LEFT:
                 // select markers
                 final boolean isMeasuring = overlays.stream().filter( overlay -> 
-                        overlay.isEnabled()
-                    ).anyMatch(overlay -> overlay.isInFocus());
+                        ToolsOverlay.class.isInstance(overlay) && overlay.isEnabled()
+                    ).anyMatch(tooloverlay -> ((ToolsOverlay) tooloverlay).isMeasureActive());
                 if (!ignoreMapInteractions && !isMeasuring) {
                     boxSelectionEnabled = true;
                     boxDeltaX = event.getX();
@@ -699,8 +699,8 @@ public class MapViewTileRenderer extends PApplet {
         
         // Is the measuring tool currently active 
         final boolean isMeasuring = overlays.stream().filter( overlay -> 
-                        overlay.isEnabled()
-                    ).anyMatch(overlay -> overlay.isInFocus());
+                        ToolsOverlay.class.isInstance(overlay) && overlay.isEnabled()
+                    ).anyMatch(tooloverlay -> ((ToolsOverlay) tooloverlay).isMeasureActive());
         
         if (event == null || markers == null || isMeasuring) {
             return;

@@ -178,7 +178,6 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
-                this.isInFocus = !this.isInFocus;
                 mouseLeftMeasureToolRegion = false;
             }
         } else {
