@@ -425,11 +425,11 @@ public class MapViewTileRenderer extends PApplet {
                     .stream().map(marker -> (ConstellationAbstractMarker) marker).collect(Collectors.toList());
         }
 
-        if (event.getButton() == PConstants.LEFT) {
+        if (event.getButton() == PConstants.LEFT && event.getCount() == 2) {
             // select markers
-            if (event.getCount() == 2) {
+            if (hitMarkers.isEmpty()) {
                 handleMouseSelection(event, new HashSet<>());
-            } else if (!hitMarkers.isEmpty()) {
+            } else {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
             }
         }
