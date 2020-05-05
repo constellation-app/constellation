@@ -16,10 +16,9 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,36 +30,18 @@ public class DecoratorsAttributeDescription extends AbstractObjectAttributeDescr
 
     public static final String ATTRIBUTE_NAME = "decorators";
     public static final Class<VertexDecorators> NATIVE_CLASS = VertexDecorators.class;
-    private static final VertexDecorators DEFAULT_VALUE = VertexDecorators.NO_DECORATORS;
+    public static final VertexDecorators DEFAULT_VALUE = VertexDecorators.NO_DECORATORS;
 
     public DecoratorsAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
-    /**
-     * Extract a Decorators from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A Decorators.
-     */
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
-    protected VertexDecorators convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof VertexDecorators) {
-            return (VertexDecorators) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected VertexDecorators convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to Decorators", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return VertexDecorators.valueOf(string);
         }
-    }
-
-    @Override
-    protected VertexDecorators convertFromString(String string) {
-        return VertexDecorators.valueOf(string);
     }
 }

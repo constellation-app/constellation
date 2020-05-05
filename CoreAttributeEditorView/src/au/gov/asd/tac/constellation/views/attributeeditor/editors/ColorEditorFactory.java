@@ -84,7 +84,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);

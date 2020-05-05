@@ -46,8 +46,8 @@ public class RawAttributeDescription extends AbstractObjectAttributeDescription<
 
     @Override
     protected RawData convertFromString(final String string) {
-        if (string == null) {
-            return defaultValue;
+        if (string == null || string.isBlank()) {
+            return getDefault();
         } else {
             return new RawData(string);
         }

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -77,8 +78,8 @@ public class IONGTest {
 
         try {
             final StoreGraph graph = new StoreGraph();
-            final int nameAttrId = graph.addAttribute(GraphElementType.VERTEX, "string", nameAttrLabel, nameAttrLabel, "", null);
-            final int nndAttrId = graph.addAttribute(GraphElementType.VERTEX, "string", nndAttrLabel, "All nulls", defaultValue, null);
+            final int nameAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nameAttrLabel, nameAttrLabel, "", null);
+            final int nndAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, nndAttrLabel, "All nulls", defaultValue, null);
             final int v0 = graph.addVertex();
             Assert.assertEquals(graph.getStringValue(nameAttrId, v0), "");
             Assert.assertNotNull(graph.getStringValue(nndAttrId, v0));
@@ -130,9 +131,9 @@ public class IONGTest {
     @Test
     public void attributeMergerSaveTest() throws IOException, InterruptedException, GraphParseException {
         final StoreGraph storeGraph = new StoreGraph();
-        storeGraph.addAttribute(GraphElementType.VERTEX, "string", "defaultMergerAttribute", null, null, GraphAttributeMerger.getDefault().getId());
-        storeGraph.addAttribute(GraphElementType.VERTEX, "string", "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
-        storeGraph.addAttribute(GraphElementType.VERTEX, "string", "noMergerAttribute", null, null, null);
+        storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "defaultMergerAttribute", null, null, GraphAttributeMerger.getDefault().getId());
+        storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
+        storeGraph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMergerAttribute", null, null, null);
         final GraphJsonWriter writer = new GraphJsonWriter();
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         writer.writeGraphToStream(storeGraph, out, false, Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION, GraphElementType.META));

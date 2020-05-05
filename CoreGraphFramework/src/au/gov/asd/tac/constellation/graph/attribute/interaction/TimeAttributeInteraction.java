@@ -16,11 +16,14 @@
 package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalTime;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -35,16 +38,18 @@ public class TimeAttributeInteraction extends AbstractAttributeInteraction<Local
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        String representation = TimeAttributeDescription.getAsString((LocalTime) attrVal);
+        
+        String representation = ((LocalTime) value).format(TemporalFormatting.TIME_FORMATTER);
 
         // If the milliseconds component is 0, trim it from the string representation
-        if (((LocalTime) attrVal).getNano() / 1000000 == 0) {
+        if (((LocalTime) value).getNano() / 1000000 == 0) {
             representation = representation.substring(0, MILLISECONDS_START_INDEX) + representation.substring(MILLISECONDS_END_INDEX);
         }
+        
         return representation;
     }
 

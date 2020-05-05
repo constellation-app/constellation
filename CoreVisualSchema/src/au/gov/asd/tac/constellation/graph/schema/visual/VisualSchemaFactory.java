@@ -146,7 +146,7 @@ public class VisualSchemaFactory extends SchemaFactory {
 
     protected class VisualSchema extends Schema {
 
-        private final SecureRandom RANDOM = new SecureRandom();
+        private final SecureRandom random = new SecureRandom();
 
         public VisualSchema(final SchemaFactory factory) {
             super(factory);
@@ -297,7 +297,7 @@ public class VisualSchemaFactory extends SchemaFactory {
         }
 
         private ConstellationColor randomColor() {
-            return ConstellationColor.getColorValue(RANDOM.nextFloat(), RANDOM.nextFloat(), RANDOM.nextFloat(), 1.0f);
+            return ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1.0f);
         }
     }
 }

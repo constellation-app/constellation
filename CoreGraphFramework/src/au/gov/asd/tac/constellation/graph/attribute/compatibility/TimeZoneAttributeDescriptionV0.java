@@ -164,16 +164,6 @@ public final class TimeZoneAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public boolean canBeImported() {
-        return false;
-    }
-
-    @Override
-    public int ordering() {
-        return 9;
-    }
-
-    @Override
     public boolean isClear(final int id) {
         return equals(data[id], defaultValue);
     }

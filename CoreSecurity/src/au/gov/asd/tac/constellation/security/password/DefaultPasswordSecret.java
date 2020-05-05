@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.security.password;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The default implementation of a {@link PasswordKey}. It is highly recommended
+ * The default implementation of a {@link PasswordSecret}. It is highly recommended
  * to override this with your own implementation in your module. This only
  * exists as a fall back.
  * <p>
@@ -30,9 +30,17 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author arcturus
  */
-@ServiceProvider(service = PasswordKey.class)
-public class DefaultPasswordKey implements PasswordKey {
+@ServiceProvider(service = PasswordSecret.class)
+public class DefaultPasswordSecret implements PasswordSecret {
 
+    @Override
+    public byte[] getIV() {
+        return new byte[]{
+            (byte) 0x00, (byte) 0x01, (byte) 0x02, (byte) 0x03, (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07,
+            (byte) 0x08, (byte) 0x09, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15
+        };
+    }
+    
     @Override
     public byte[] getKey() {
         return new byte[]{

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.undo.UndoGraphEdit;
 import org.testng.annotations.Test;
@@ -37,9 +38,9 @@ public class AttributeMergerNGTest {
     @Test
     public void attributeMergerSetGetTest() {
         final StoreGraph g = new StoreGraph();
-        final int defaultMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, "string", "defaultMergerAttribute", null, null, GraphAttributeMerger.getDefault().getId());
-        final int customMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, "string", "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
-        final int noMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, "string", "noMergerAttribute", null, null, null);
+        final int defaultMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "defaultMergerAttribute", null, null, GraphAttributeMerger.getDefault().getId());
+        final int customMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMergerAttribute", null, null, ConcatenatedSetGraphAttributeMerger.ID);
+        final int noMergerAttributeId = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMergerAttribute", null, null, null);
         assert g.getAttributeMerger(defaultMergerAttributeId) == GraphAttributeMerger.getDefault();
         assert g.getAttributeMerger(customMergerAttributeId) == GraphAttributeMerger.getMergers().get(ConcatenatedSetGraphAttributeMerger.ID);
         assert g.getAttributeMerger(noMergerAttributeId) == null;
@@ -52,7 +53,7 @@ public class AttributeMergerNGTest {
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void unknownMergerSetTest() {
         final StoreGraph g = new StoreGraph();
-        g.addAttribute(GraphElementType.VERTEX, "string", "unknownMergerAttribute", null, null, "UnknownAttributeMergerId");
+        g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "unknownMergerAttribute", null, null, "UnknownAttributeMergerId");
     }
 
     /**
@@ -70,9 +71,9 @@ public class AttributeMergerNGTest {
         graph.setGraphEdit(addEdit);
 
         // Add attributes with no, the default, and a custom merger
-        int noMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, "string", "noMerger", null, null, null);
-        int defaultMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, "string", "defaultMerger", null, null, GraphAttributeMerger.getDefault().getId());
-        int customMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, "string", "customMerger", null, null, ConcatenatedSetGraphAttributeMerger.ID);
+        int noMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMerger", null, null, null);
+        int defaultMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "defaultMerger", null, null, GraphAttributeMerger.getDefault().getId());
+        int customMergerAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMerger", null, null, ConcatenatedSetGraphAttributeMerger.ID);
 
         // Assert that the attribute mergers are correct
         assert graph.getAttributeMerger(noMergerAttribute) == null;

@@ -32,7 +32,10 @@ import org.openide.windows.WindowManager;
 public class Startup implements Runnable {
 
     private static final String SYSTEM_ENVIRONMENT = "constellation.environment";
-    private static final String UNDER_DEVELOPMENT = "(under development)";
+    
+    // DO NOT CHANGE THIS VALUE
+    // continous integration scripts use this to update the version dynamically
+    private static final String VERSION = "(under development)";
 
     @Override
     public void run() {
@@ -44,16 +47,10 @@ public class Startup implements Runnable {
                 ? String.format("%s %s", BrandingUtilities.APPLICATION_NAME, environment)
                 : BrandingUtilities.APPLICATION_NAME;
 
-        // Change the main window title to reflect the most recent module version as the application version.
+        // update the main window title with the version number
         WindowManager.getDefault().invokeWhenUIReady(() -> {
-            /*String mostRecentVersion = MostRecentModules.getMostRecentVersion();
-            if (mostRecentVersion == null) {
-                // once issue #86 is fixed this should go back to UNDER_DEVELOPMENT"
-                mostRecentVersion = "1.20200225.104006";
-            }*/
-
             final JFrame frame = (JFrame) WindowManager.getDefault().getMainWindow();
-            final String title = String.format("%s - %s", name, "2.0.0-beta");
+            final String title = String.format("%s - %s", name, VERSION);
             frame.setTitle(title);
         });
 

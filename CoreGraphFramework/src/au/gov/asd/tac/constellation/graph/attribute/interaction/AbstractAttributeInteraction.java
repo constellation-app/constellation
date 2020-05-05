@@ -82,18 +82,18 @@ public abstract class AbstractAttributeInteraction<T> {
      * to return a string from which the original value of the attribute can be
      * recovered.
      *
-     * @param attrVal an object representing the value the attribute.
+     * @param value an object representing the value the attribute.
      * @return the text that best visually represents a particular value of this
      * attribute type.
      */
-    public abstract String getDisplayText(final Object attrVal);
+    public abstract String getDisplayText(final Object value);
 
     /**
      * Get a list of nodes that visually represent a particular value of this
      * attribute type. This method should be able to create said nodes to fit
      * the dimensions specified by the requesting view.
      *
-     * @param attrVal The attribute value for which to get a visual
+     * @param value The attribute value for which to get a visual
      * representation.
      * @param width the width the nodes should be set to, or a negative value to
      * indicate no preference.
@@ -102,7 +102,7 @@ public abstract class AbstractAttributeInteraction<T> {
      * @return a list of nodes that visually represent a particular value of
      * this attribute type.
      */
-    public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
+    public List<Node> getDisplayNodes(final Object value, final double width, final double height) {
         return Collections.emptyList();
     }
 
@@ -223,12 +223,12 @@ public abstract class AbstractAttributeInteraction<T> {
      * Note that this should throw an UnsupportedOperationException when and
      * only when {@link #isComparable isComparable()} returns false.
      *
-     * @param attrVal an object representing the attribute value.
+     * @param value an object representing the attribute value.
      * @return a comparable version of the supplied attribute value.
      */
-    public Comparable<?> getComparable(final Object attrVal) {
+    public Comparable<?> getComparable(final Object value) {
         if (isComparable()) {
-            return (Comparable<?>) attrVal;
+            return (Comparable<?>) value;
         }
         throw new UnsupportedOperationException();
     }

@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertEquals;
@@ -64,7 +66,7 @@ public class AttributeDefinitionNGTest {
         final GraphElementType elementType = GraphElementType.VERTEX;
         final String name = "_node";
         final GraphWriteMethods graph = new StoreGraph();
-        int newix = graph.addAttribute(elementType, "string", name, null, null, null);
+        int newix = graph.addAttribute(elementType, StringAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
         assertTrue("New attribute has index < 0", newix <= 0);
     }
 
@@ -73,7 +75,7 @@ public class AttributeDefinitionNGTest {
         final GraphElementType elementType = GraphElementType.VERTEX;
         final String name = "anOldName";
         final GraphWriteMethods graph = new StoreGraph();
-        int newAttrId = graph.addAttribute(elementType, "string", name, null, null, null);
+        int newAttrId = graph.addAttribute(elementType, StringAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
         assertTrue("New attribute has index >= 0", newAttrId >= 0);
 
         graph.updateAttributeName(newAttrId, "aNewName");
@@ -87,7 +89,7 @@ public class AttributeDefinitionNGTest {
         final String name = "aField";
         final GraphWriteMethods graph = new StoreGraph();
 
-        int newAttrId = graph.addAttribute(GraphElementType.VERTEX, "string", name, "no description", null, null);
+        int newAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, name, "no description", null, null);
         assertTrue("New attribute has index < 0", newAttrId >= 0);
 
         Attribute attr = new GraphAttribute(graph, newAttrId);
@@ -105,7 +107,7 @@ public class AttributeDefinitionNGTest {
         final String name = "aField";
         final GraphWriteMethods graph = new StoreGraph();
 
-        int newAttrId = graph.addAttribute(GraphElementType.VERTEX, "string", name, "no description", "nothing", null);
+        int newAttrId = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, name, "no description", "nothing", null);
         assertTrue("New attribute has index < 0", newAttrId >= 0);
 
         Attribute attr = new GraphAttribute(graph, newAttrId);
@@ -128,7 +130,7 @@ public class AttributeDefinitionNGTest {
         final String attributeType = "string";
         final GraphWriteMethods graph = new StoreGraph();
         graph.addAttribute(elementType, attributeType, name, null, null, null);
-        graph.addAttribute(elementType, "integer", name, null, null, null);
+        graph.addAttribute(elementType, IntegerAttributeDescription.ATTRIBUTE_NAME, name, null, null, null);
         fail("Shouldn't be able to add attribute twice");
     }
 

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -132,7 +133,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int vertexVisibilityAttributeId;
             final boolean multipleFrames = images.size() > 1;
             if (multipleFrames) {
-                final int attrLayers = graph.addAttribute(GraphElementType.GRAPH, "integer", "layers", "layers", 0, null);
+                final int attrLayers = graph.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layers", "layers", 0, null);
                 graph.setIntValue(attrLayers, 0, images.size());
                 vertexVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
             } else {

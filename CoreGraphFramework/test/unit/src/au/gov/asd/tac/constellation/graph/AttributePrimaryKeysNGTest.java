@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import static org.testng.AssertJUnit.assertEquals;
@@ -53,12 +55,12 @@ public class AttributePrimaryKeysNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(BareSchemaFactory.NAME).createSchema());
-        attr1 = graph.addAttribute(GraphElementType.VERTEX, "string", "field1", null, null, null);
-        attr2 = graph.addAttribute(GraphElementType.VERTEX, "string", "field2", null, null, null);
-        attr3 = graph.addAttribute(GraphElementType.VERTEX, "string", "field3", null, null, null);
-        attr4 = graph.addAttribute(GraphElementType.VERTEX, "integer", "field4", null, null, null);
-        attr5 = graph.addAttribute(GraphElementType.VERTEX, "integer", "field5", null, null, null);
-        attr6 = graph.addAttribute(GraphElementType.TRANSACTION, "string", "field6", null, null, null);
+        attr1 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "field1", null, null, null);
+        attr2 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "field2", null, null, null);
+        attr3 = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "field3", null, null, null);
+        attr4 = graph.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "field4", null, null, null);
+        attr5 = graph.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "field5", null, null, null);
+        attr6 = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "field6", null, null, null);
     }
 
     @AfterMethod

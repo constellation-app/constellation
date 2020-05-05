@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twilight_sparkle
  */
 @Deprecated
-@ServiceProvider(service = AbstractGraphIOProvider.class)
+//@ServiceProvider(service = AbstractGraphIOProvider.class)
 public class AttrListIOProviderV0 extends AbstractGraphIOProvider {
 
     @Override
