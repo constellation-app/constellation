@@ -17,12 +17,7 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.interaction
 
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.RawAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
-import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
-import java.util.Arrays;
-import java.util.List;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,31 +33,11 @@ public class RawAttributeInteraction extends AbstractAttributeInteraction<RawDat
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return attrVal.toString();
-    }
-
-    @Override
-    public List<String> getPreferredEditTypes() {
-        return Arrays.asList(StringAttributeDescription.ATTRIBUTE_NAME);
-    }
-
-    @Override
-    public ValueValidator<RawData> fromEditValidator(String dataType) {
-        return ValueValidator.getAlwaysFailValidator("Raw values are uneditable.");
-    }
-
-    @Override
-    public AttributeValueTranslator toEditTranslator(String dataType) {
-        if (dataType.equals(StringAttributeDescription.ATTRIBUTE_NAME)) {
-            return v -> {
-                return v == null ? v : getDisplayText(v);
-            };
-        }
-        return super.toEditTranslator(dataType);
+        return value.toString();
     }
 
     @Override

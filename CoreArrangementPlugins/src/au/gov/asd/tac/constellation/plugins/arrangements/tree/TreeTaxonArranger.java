@@ -94,12 +94,12 @@ public class TreeTaxonArranger extends GraphTaxonomyArranger {
 //        {
 //            if(VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph)==Graph.NOT_FOUND)
 //            {
-//                graph.addAttribute(GraphElementType.VERTEX, "icon", "background_icon", "background_icon");
+//                graph.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon", "background_icon");
 //            }
 //            final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
 //            if(VisualConcept.VertexAttribute.COLOR.get(graph)==Graph.NOT_FOUND)
 //            {
-//                graph.addAttribute(GraphElementType.VERTEX, "color", "color", "color");
+//                graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, "color", "color");
 //            }
 //            final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
 //            final Random r = new Random();

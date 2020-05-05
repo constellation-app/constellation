@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription}
+ * 
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -31,11 +33,11 @@ public class LongAttributeInteraction extends AbstractAttributeInteraction<Long>
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return attrVal.toString();
+        return value.toString();
     }
 
     @Override

@@ -21,7 +21,9 @@ import java.time.ZoneId;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.TimeZoneAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -33,11 +35,11 @@ public class TimeZoneAttributeInteraction extends AbstractAttributeInteraction<Z
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return TimeZoneUtilities.getTimeZoneAsString((ZoneId) attrVal);
+        return TimeZoneUtilities.getTimeZoneAsString((ZoneId) value);
     }
 
     @Override

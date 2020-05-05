@@ -52,23 +52,23 @@ public class RawIOProvider extends AbstractGraphIOProvider {
         if (jnode.isNull()) {
             graph.setObjectValue(attributeId, elementId, null);
         } else {
-            final JsonNode rawIdentifier = jnode.get(RAW_IDENTIFIER_TAG);
-            final JsonNode rawType = jnode.get(RAW_TYPE_TAG);
-            final RawData rawValue = new RawData(rawIdentifier.isNull() ? null : rawIdentifier.textValue(), rawType.isNull() ? null : jnode.get(RAW_TYPE_TAG).textValue());
-            graph.setObjectValue(attributeId, elementId, cache.deduplicate(rawValue));
+            final JsonNode identifier = jnode.get(RAW_IDENTIFIER_TAG);
+            final JsonNode type = jnode.get(RAW_TYPE_TAG);
+            final RawData attributeValue = new RawData(identifier.isNull() ? null : identifier.textValue(), type.isNull() ? null : jnode.get(RAW_TYPE_TAG).textValue());
+            graph.setObjectValue(attributeId, elementId, cache.deduplicate(attributeValue));
         }
     }
 
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final RawData rawValue = graph.getObjectValue(attr.getId(), elementId);
-            if (rawValue == null) {
+            final RawData attributeValue = graph.getObjectValue(attr.getId(), elementId);
+            if (attributeValue == null) {
                 jsonGenerator.writeNullField(attr.getName());
             } else {
                 jsonGenerator.writeObjectFieldStart(attr.getName());
-                jsonGenerator.writeStringField(RAW_IDENTIFIER_TAG, rawValue.getRawIdentifier());
-                jsonGenerator.writeStringField(RAW_TYPE_TAG, rawValue.getRawType());
+                jsonGenerator.writeStringField(RAW_IDENTIFIER_TAG, attributeValue.getRawIdentifier());
+                jsonGenerator.writeStringField(RAW_TYPE_TAG, attributeValue.getRawType());
                 jsonGenerator.writeEndObject();
             }
         }

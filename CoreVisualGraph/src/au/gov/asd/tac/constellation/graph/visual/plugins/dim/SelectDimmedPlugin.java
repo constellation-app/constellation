@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.dim;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -42,7 +43,7 @@ public class SelectDimmedPlugin extends SimpleEditPlugin {
         int txDimAttr = VisualConcept.TransactionAttribute.DIMMED.get(graph);
 
         if (vxDimAttr != Graph.NOT_FOUND) {
-            final int vxSelectedAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
+            final int vxSelectedAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
             final int vxCount = graph.getVertexCount();
             for (int position = 0; position < vxCount; position++) {
                 final int vxId = graph.getVertex(position);
@@ -55,7 +56,7 @@ public class SelectDimmedPlugin extends SimpleEditPlugin {
         }
 
         if (txDimAttr != Graph.NOT_FOUND) {
-            final int txSelectedAttr = graph.addAttribute(GraphElementType.TRANSACTION, "boolean", VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
+            final int txSelectedAttr = graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, VisualConcept.VertexAttribute.SELECTED.getName(), VisualConcept.VertexAttribute.SELECTED.getName(), false, null);
 
             final int txCount = graph.getTransactionCount();
             for (int position = 0; position < txCount; position++) {

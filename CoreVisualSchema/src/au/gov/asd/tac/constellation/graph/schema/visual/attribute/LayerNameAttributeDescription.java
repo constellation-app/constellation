@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.LayerN
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,41 +43,26 @@ public class LayerNameAttributeDescription extends AbstractObjectAttributeDescri
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are manually checked
-    protected LayerName convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof LayerName) {
-            return (LayerName) object;
-        } else if (object instanceof String) {
-            if (object.equals("DEFAULT")) {
-                // handle default value from file import
-                return DEFAULT_VALUE;
-            } else {
-                return convertFromString((String) object);
-            }
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting %s to LayerName.", object.getClass()));
-        }
-    }
-
-    @Override
     protected LayerName convertFromString(final String string) {
-        LayerName layerName = null;
-
-        if (string != null) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else if (string.equals("DEFAULT")) {
+            // handle default value from file import
+            return DEFAULT_VALUE;
+        } else {
             final int ix = string.indexOf(',');
             if (ix > 0) {
                 try {
                     final int layer = Integer.parseInt(string.substring(0, ix));
                     final String name = string.substring(ix + 1);
-                    layerName = new LayerName(layer, name);
+                    return new LayerName(layer, name);
                 } catch (final NumberFormatException ex) {
+                    throw new IllegalArgumentException(String.format(
+                            "Error converting String '%s' to layer_name", string), ex);
                 }
             }
+            return null;
         }
-
-        return layerName;
     }
 
     @Override

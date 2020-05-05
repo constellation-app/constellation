@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertNotSame;
 import org.testng.annotations.AfterClass;
@@ -49,8 +50,8 @@ public class CopyNGTest {
         final String labelc = "labelc";
 
         final StoreGraph graph = new StoreGraph();
-        final int nodeAttr = graph.addAttribute(GraphElementType.VERTEX, "string", "nattr", "descr string", "", null);
-        final int edgeAttr = graph.addAttribute(GraphElementType.TRANSACTION, "string", "eattr", "descr string", "", null);
+        final int nodeAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "nattr", "descr string", "", null);
+        final int edgeAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "eattr", "descr string", "", null);
 
         final int nodea = graph.addVertex();
         graph.setStringValue(nodeAttr, nodea, labela);
@@ -86,7 +87,7 @@ public class CopyNGTest {
     @Test
     public void testCopyDoesNotModifyOriginal() {
         final StoreGraph graph = new StoreGraph();
-        final int nameAttribute = graph.addAttribute(GraphElementType.VERTEX, "string", "name", "", "", null);
+        final int nameAttribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "", "", null);
 
         final int vx0 = graph.addVertex();
         graph.setStringValue(nameAttribute, vx0, "hello");
@@ -98,7 +99,7 @@ public class CopyNGTest {
         GraphWriteMethods writableCopy = ((GraphWriteMethods) copy);
         assertEquals(graph.getStringValue(nameAttribute, vx0), writableCopy.getStringValue(nameAttribute, vx0));
 
-        writableCopy.addAttribute(GraphElementType.VERTEX, "string", "name2", "", "", null);
+        writableCopy.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name2", "", "", null);
 
         writableCopy.setStringValue(nameAttribute, vx0, "good bye");
 

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import java.util.ArrayList;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -94,7 +95,7 @@ public class ElementCreationandConnectivityNGTest {
     public void nodeIterator() {
         int numNodes = 10;
         StoreGraph graph = new StoreGraph();
-        final int attrInt = graph.addAttribute(GraphElementType.VERTEX, "integer", "intattr", "descr", 23, null);
+        final int attrInt = graph.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "intattr", "descr", 23, null);
 
         for (int i = 0; i < numNodes; i++) {
             final int ix = graph.addVertex();
