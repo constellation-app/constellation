@@ -56,7 +56,7 @@ public class LayersViewController {
             return;
         }
         int newBitmask = 0b0;
-        for (LayerDescription layer : pane.getlayers()) {
+        for (final LayerDescription layer : pane.getlayers()) {
             if(!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)){
                 newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
             }
@@ -165,7 +165,7 @@ public class LayersViewController {
             if (pane == null) {
                 return;
             }
-            int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             LayersViewState newState = graph.getObjectValue(stateAttributeId, 0);
             newState = newState == null ? new LayersViewState() : new LayersViewState(newState);
             newState.setLayers(pane.getlayers());

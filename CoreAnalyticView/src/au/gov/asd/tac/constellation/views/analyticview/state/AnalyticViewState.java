@@ -106,7 +106,9 @@ public class AnalyticViewState {
      */
     public void removePluginsMatchingCategory(String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
-            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory))
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
+                    -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)
+                            .analyticCategory().equals(currentCategory))
             );
         }
     }
