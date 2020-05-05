@@ -101,7 +101,7 @@ public class ToolsOverlay extends MapOverlay {
     private int drawOriginY = -1;
     private int drawDeltaX = -1;
     private int drawDeltaY = -1;
-
+    
     public ToolsOverlay() {
         this.enabled = false;
     }
@@ -178,6 +178,7 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
+                this.isInFocus = !this.isInFocus;
                 mouseLeftMeasureToolRegion = false;
             }
         } else {
