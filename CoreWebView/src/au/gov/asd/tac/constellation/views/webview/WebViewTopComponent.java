@@ -98,11 +98,6 @@ public final class WebViewTopComponent extends CloneableTopComponent {
 
     @Override
     public void componentClosed() {
-    }
-
-    void writeProperties(final java.util.Properties p) {
-    }
-
-    void readProperties(final java.util.Properties p) {
+        // Override intentionally left blank
     }
 }

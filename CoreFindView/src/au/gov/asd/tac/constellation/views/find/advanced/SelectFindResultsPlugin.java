@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.advanced;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -63,11 +62,9 @@ public class SelectFindResultsPlugin extends SimplePlugin {
     @Override
     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters)
             throws InterruptedException {
-        Graph graph = graphs.getGraph();
         WritableGraph wg = graphs.getGraph().getWritableGraph(getName(), true);
         try {
-            final QueryServices qs = new QueryServices(graph);
-            qs.selectOnGraph(wg, results, isHeld);
+            QueryServices.selectOnGraph(wg, results, isHeld);
         } finally {
             wg.commit();
         }

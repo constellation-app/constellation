@@ -153,17 +153,23 @@
             <folder name="Build Graph">
                 <attr name="position" intvalue="100"/>
             </folder>
-            <folder name="Arrangements">
+            <folder name="Import">
                 <attr name="position" intvalue="200"/>
             </folder>
-            <folder name="Animations">
+            <folder name="Export">
                 <attr name="position" intvalue="300"/>
             </folder>
-            <folder name="Tools">
+            <folder name="Arrangements">
                 <attr name="position" intvalue="400"/>
             </folder>
-            <folder name="Views">
+            <folder name="Animations">
                 <attr name="position" intvalue="500"/>
+            </folder>
+            <folder name="Tools">
+                <attr name="position" intvalue="600"/>
+            </folder>
+            <folder name="Views">
+                <attr name="position" intvalue="700"/>
             </folder>
             <folder name="Developer">
                 <attr name="position" intvalue="600"/>

@@ -74,6 +74,16 @@ public final class GraphJsonReader {
     private long structModCount;
     private final Map<Integer, Long> attrValCount = new HashMap<>();
     private GraphByteReader byteReader;
+    
+    private static final String ATTRIBUTE_MOD_COUNT = "attribute_mod_count";
+    private static final String GLOBAL_MOD_COUNT = "global_mod_count";
+    private static final String STRUCTURE_MOD_COUNT = "structure_mod_count";
+    
+    private static final String DID_NOT_FIND_FORMAT = "Did not find '%s' at '%s'";
+    private static final String EXPECTED_LONG_FORMAT = "Expected long value, found '%s' at %s";
+    private static final String EXPECTED_NUMERIC_FORMAT = "Expected numeric value, found '%s' at %s";
+    private static final String EXPECTED_START_OBJECT_FORMAT = "Expected START_OBJECT, found '%s'.";
+    private static final String EXPECTED_END_OBJECT_FORMAT = "Expected END_OBJECT, found '%s'.";
 
     /**
      * No construction.
@@ -136,43 +146,43 @@ public final class GraphJsonReader {
     private JsonToken readGraphModCounts(JsonToken current) throws IOException, GraphParseException {
         //read global mod count
         final JsonNode node = jp.readValueAsTree();
-        if (!node.has("global_mod_count")) {
+        if (!node.has(GLOBAL_MOD_COUNT)) {
             final String msg = String.
-                    format("Expected long value, found '%s' at %s", current, jp.getCurrentLocation());
+                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        if (!node.has("structure_mod_count")) {
+        if (!node.has(STRUCTURE_MOD_COUNT)) {
             final String msg = String.
-                    format("Expected long value, found '%s' at %s", current, jp.getCurrentLocation());
+                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        if (!node.has("attribute_mod_count")) {
+        if (!node.has(ATTRIBUTE_MOD_COUNT)) {
             final String msg = String.
-                    format("Expected long value, found '%s' at %s", current, jp.getCurrentLocation());
+                    format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         //global
-        if (node.get("global_mod_count").isNumber()) {
-            globalModCount = node.get("global_mod_count").asLong();
+        if (node.get(GLOBAL_MOD_COUNT).isNumber()) {
+            globalModCount = node.get(GLOBAL_MOD_COUNT).asLong();
         } else {
             final String msg = String.
-                    format("Expected numeric value, found '%s' at %s", node.get("global_mod_count").asText(), jp.getCurrentLocation());
+                    format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         //structure
-        if (node.get("structure_mod_count").isNumber()) {
-            globalModCount = node.get("structure_mod_count").asLong();
+        if (node.get(STRUCTURE_MOD_COUNT).isNumber()) {
+            globalModCount = node.get(STRUCTURE_MOD_COUNT).asLong();
         } else {
             final String msg = String.
-                    format("Expected numeric value, found '%s' at %s", node.get("structure_mod_count"), jp.getCurrentLocation());
+                    format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         //attribute
-        if (node.get("attribute_mod_count").isNumber()) {
-            globalModCount = node.get("attribute_mod_count").asLong();
+        if (node.get(ATTRIBUTE_MOD_COUNT).isNumber()) {
+            globalModCount = node.get(ATTRIBUTE_MOD_COUNT).asLong();
         } else {
             final String msg = String.
-                    format("Expected numeric value, found '%s' at %s", node.get("global_mod_count"), jp.getCurrentLocation());
+                    format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
         current = jp.getLastClearedToken();
@@ -217,7 +227,7 @@ public final class GraphJsonReader {
 
         JsonToken current = jp.nextToken();
         if (current != JsonToken.START_ARRAY) {
-            throw new GraphParseException(String.format("Expected START_ARRAY at start, found '%s'.", current));
+            throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
         }
 
         // Read the graph data.
@@ -225,7 +235,7 @@ public final class GraphJsonReader {
         // META is optional.
         current = jp.nextToken();
         if (current != JsonToken.START_OBJECT) {
-            throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+            throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
         }
 
         // Read the file format version number.
@@ -300,7 +310,7 @@ public final class GraphJsonReader {
         }
 
         if (current != JsonToken.END_OBJECT) {
-            throw new GraphParseException(String.format("Expected END_OBJECT, found '%s'.", current));
+            throw new GraphParseException(String.format(EXPECTED_END_OBJECT_FORMAT, current));
         }
 
         SchemaFactory schemaFactory = SchemaFactoryUtilities.getSchemaFactory(schemaFactoryName);
@@ -327,7 +337,7 @@ public final class GraphJsonReader {
             // **************************
             current = jp.nextToken();
             if (current != JsonToken.START_OBJECT) {
-                throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
             }
 
             current = jp.nextToken();
@@ -340,7 +350,7 @@ public final class GraphJsonReader {
 
             current = jp.nextToken();
             if (current != JsonToken.END_OBJECT) {
-                throw new GraphParseException(String.format("Expected END_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_END_OBJECT_FORMAT, current));
             }
 
             // ***************************
@@ -348,7 +358,7 @@ public final class GraphJsonReader {
             // ***************************
             current = jp.nextToken();
             if (current != JsonToken.START_OBJECT) {
-                throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
             }
 
             current = jp.nextToken();
@@ -361,7 +371,7 @@ public final class GraphJsonReader {
 
             current = jp.nextToken();
             if (current != JsonToken.END_OBJECT) {
-                throw new GraphParseException(String.format("Expected END_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_END_OBJECT_FORMAT, current));
             }
 
             // ********************************
@@ -369,7 +379,7 @@ public final class GraphJsonReader {
             // ********************************
             current = jp.nextToken();
             if (current != JsonToken.START_OBJECT) {
-                throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
             }
 
             current = jp.nextToken();
@@ -382,7 +392,7 @@ public final class GraphJsonReader {
 
             current = jp.nextToken();
             if (current != JsonToken.END_OBJECT) {
-                throw new GraphParseException(String.format("Expected END_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_END_OBJECT_FORMAT, current));
             }
 
             // **********************************
@@ -390,7 +400,7 @@ public final class GraphJsonReader {
             // **********************************
             current = jp.nextToken();
             if (current != JsonToken.START_OBJECT) {
-                throw new GraphParseException(String.format("Expected START_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_START_OBJECT_FORMAT, current));
             }
 
             current = jp.nextToken();
@@ -403,7 +413,7 @@ public final class GraphJsonReader {
 
             current = jp.nextToken();
             if (current != JsonToken.END_OBJECT) {
-                throw new GraphParseException(String.format("Expected END_OBJECT, found '%s'.", current));
+                throw new GraphParseException(String.format(EXPECTED_END_OBJECT_FORMAT, current));
             }
 
             // Ensure the document finishes correctly.
@@ -446,7 +456,7 @@ public final class GraphJsonReader {
             Exceptions.printStackTrace(ex);
         }
 
-        graph = new DualGraph(schemaFactory == null ? null : schemaFactory.createSchema(), storeGraph);
+        graph = new DualGraph(schemaFactory.createSchema(), storeGraph);
 
         if (progress != null) {
             progress.finish();
@@ -519,8 +529,7 @@ public final class GraphJsonReader {
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
             final Object attrDefault
-                    = dv == null ? null
-                            : dv.isNull() ? null
+                    = (dv == null || dv.isNull()) ? null
                             : dv.isNumber() ? dv.numberValue()
                             : dv.isBoolean() ? dv.booleanValue()
                             : dv.textValue();
@@ -625,7 +634,7 @@ public final class GraphJsonReader {
             if (elementType == GraphElementType.VERTEX) {
                 final JsonNode idNode = node.get(GraphFileConstants.VX_ID);
                 if (idNode == null) {
-                    final String msg = String.format("Did not find '%s' at '%s'", GraphFileConstants.VX_ID, jp.getCurrentLocation());
+                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.VX_ID, jp.getCurrentLocation());
                     throw new GraphParseException(msg);
                 }
 
@@ -639,19 +648,19 @@ public final class GraphJsonReader {
 
                 final JsonNode srcNode = node.get(GraphFileConstants.SRC);
                 if (srcNode == null) {
-                    final String msg = String.format("Did not find '%s' at '%s'", GraphFileConstants.SRC, jp.getCurrentLocation());
+                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.SRC, jp.getCurrentLocation());
                     throw new GraphParseException(msg);
                 }
 
                 final JsonNode dstNode = node.get(GraphFileConstants.DST);
                 if (dstNode == null) {
-                    final String msg = String.format("Did not find '%s' at '%s'", GraphFileConstants.DST, jp.getCurrentLocation());
+                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DST, jp.getCurrentLocation());
                     throw new GraphParseException(msg);
                 }
 
                 final JsonNode dirNode = node.get(GraphFileConstants.DIR);
                 if (dirNode == null) {
-                    final String msg = String.format("Did not find '%s' at '%s'", GraphFileConstants.DIR, jp.getCurrentLocation());
+                    final String msg = String.format(DID_NOT_FIND_FORMAT, GraphFileConstants.DIR, jp.getCurrentLocation());
                     throw new GraphParseException(msg);
                 }
 
@@ -678,28 +687,22 @@ public final class GraphJsonReader {
                 final String label = entry.getKey();
                 final JsonNode jnode = entry.getValue();
                 final AttrInfo ai = attributes.get(label);
-                if (ai != null) {
-                    if (providers.containsKey(ai.attrType)) {
-                        AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
-                        ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
-                    } else {
-                        throw new Exception("No IO provider found for attribute type: " + ai.attrType);
-                    }
+                if (ai != null && providers.containsKey(ai.attrType)) {
+                    AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
+                    ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
+                } else if (ai != null) {
+                    throw new Exception("No IO provider found for attribute type: " + ai.attrType);
                 }
             }
 
             if (++counter % REPORT_INTERVAL == 0) {
                 final String msg = String.format("Vertices: %d; Transactions %d", graph.getVertexCount(), graph.getTransactionCount());
                 final long charOffset = jp.getCurrentLocation().getByteOffset();
-                if (entrySize != -1 && charOffset != -1) {
+                if (entrySize != -1 && charOffset != -1 && ph != null) {
                     final int workunit = (int) (100 * (charOffset / (double) entrySize));
-                    if (ph != null) {
-                        ph.progress(msg, workunit);
-                    }
-                } else {
-                    if (ph != null) {
-                        ph.progress(msg);
-                    }
+                    ph.progress(msg, workunit);
+                } else if (ph != null) {
+                    ph.progress(msg);
                 }
             }
         }

@@ -41,7 +41,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 /**
- * The consolidated dialog is similar to @{code MultipleMatchesDialog}, however
+ * The consolidated dialog is similar to {@link MultipleMatchesDialog}, however
  * can be presented to the user once, avoiding displaying separate dialogs
  * repeatedly. Objects are grouped using accordion panes, with each pane
  * displaying options.

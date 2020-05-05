@@ -71,6 +71,9 @@ public class SwaggerServlet extends ConstellationHttpServlet {
      * This *must* match the URL pattern for RestServiceServlet.
      */
     private static final String SERVICE_PATH = "/v2/service/%s";
+    
+    private static final String DESCRIPTION = "description";
+    private static final String SCHEMA = "schema";
 
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
@@ -123,8 +126,8 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         param.put("name", pp.getId());
                         param.put("in", pp.getName().toLowerCase(Locale.US).contains("(body)") ? "body" : "query");
                         param.put("required", false); // TODO Hard-code this until PluginParameters grows a required field.
-                        param.put("description", pp.getDescription());
-                        final ObjectNode schema = param.putObject("schema");
+                        param.put(DESCRIPTION, pp.getDescription());
+                        final ObjectNode schema = param.putObject(SCHEMA);
                         schema.put("type", pp.getType().getId());
                     });
 
@@ -133,16 +136,16 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     secretParam.put("name", "X-CONSTELLATION-SECRET");
                     secretParam.put("in", "header");
                     secretParam.put("required", true);
-                    secretParam.put("description", "CONSTELLATION secret");
-                    final ObjectNode secretSchema = secretParam.putObject("schema");
+                    secretParam.put(DESCRIPTION, "CONSTELLATION secret");
+                    final ObjectNode secretSchema = secretParam.putObject(SCHEMA);
                     secretSchema.put("type", "string");
 
                     final ObjectNode responses = httpMethod.putObject("responses");
                     final ObjectNode success = responses.putObject("200");
-                    success.put("description", rs.getDescription());
+                    success.put(DESCRIPTION, rs.getDescription());
                     final ObjectNode content = success.putObject("content");
                     final ObjectNode mime = content.putObject(rs.getMimeType());
-                    final ObjectNode schema = mime.putObject("schema");
+                    final ObjectNode schema = mime.putObject(SCHEMA);
                     if(rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
                         schema.put("type", "string");
                         schema.put("format", "binary");

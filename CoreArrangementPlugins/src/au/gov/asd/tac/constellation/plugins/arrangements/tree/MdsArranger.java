@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
@@ -153,8 +154,7 @@ public class MdsArranger implements Arranger {
             final boolean useLocs = false; //verticesToUseExistingLoc.contains( thisVertex );
             if (arrangeIt && useLocs) {
                 vxsToArrange[numVxsToArrange++] = vxId;
-            }
-            if (arrangeIt && !useLocs) {
+            } else if (arrangeIt && !useLocs) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
             }
             if (influence && (useLocs || !arrangeIt)) {
@@ -188,13 +188,13 @@ public class MdsArranger implements Arranger {
         final float[] gammas = new float[wg.getVertexCapacity()];
 
         if (wg.getAttribute(GraphElementType.VERTEX, "x") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "x", "x", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x", "x", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, "y") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "y", "y", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y", "y", null, null);
         }
         if (wg.getAttribute(GraphElementType.VERTEX, "z") == Graph.NOT_FOUND) {
-            wg.addAttribute(GraphElementType.VERTEX, "float", "z", "z", null, null);
+            wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z", "z", null, null);
         }
         final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -759,5 +759,6 @@ public class MdsArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
+        // Required for Arranger, intentionally left blank
     }
 }

@@ -46,7 +46,9 @@ public class ObjectBin extends Bin {
         } else if (bin.key == ERROR_OBJECT) {
             return -1;
         } else {
-            return ((Comparable<Object>) key).compareTo(bin.key);
+            @SuppressWarnings("unchecked") //comparableKey will be comparable object
+            final Comparable<Object> comparableKey = (Comparable<Object>) key;
+            return comparableKey.compareTo(bin.key);
         }
     }
 

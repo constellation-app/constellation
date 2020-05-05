@@ -84,7 +84,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
     @Override
     public void setContent(final Tab tab) {
         final Map<String, String> pluginNames = new TreeMap<>();
-        final Map<String, ObservableList<PluginParameter>> pluginParameters = new HashMap<>();
+        final Map<String, ObservableList<PluginParameter<?>>> pluginParameters = new HashMap<>();
         final Map<String, String> dataAccessTypes = new HashMap<>();
 
         // Get plugins in order of description.
@@ -114,9 +114,9 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                 try {
                     final PluginParameters parameters = plugin.createParameters();
                     if (parameters != null) {
-                        final ObservableList<PluginParameter> parameterList = FXCollections.observableArrayList();
+                        final ObservableList<PluginParameter<?>> parameterList = FXCollections.observableArrayList();
                         parameters.getParameters().entrySet().stream().forEach(entry -> {
-                            final PluginParameter parameter = entry.getValue();
+                            final PluginParameter<?> parameter = entry.getValue();
                             parameterList.add(parameter);
                         });
 
@@ -158,22 +158,22 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             if (pluginParameters.containsKey(pluginName)) {
                 grid.add(boldLabel("Parameters"), 0, 3);
 
-                final TableColumn<PluginParameter, String> colName = new TableColumn<>("Name");
+                final TableColumn<PluginParameter<?>, String> colName = new TableColumn<>("Name");
                 colName.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getId()));
 
-                final TableColumn<PluginParameter, String> colType = new TableColumn<>("Type");
+                final TableColumn<PluginParameter<?>, String> colType = new TableColumn<>("Type");
                 colType.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getType().getId()));
 
-                final TableColumn<PluginParameter, String> colLabel = new TableColumn<>("Label");
+                final TableColumn<PluginParameter<?>, String> colLabel = new TableColumn<>("Label");
                 colLabel.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getName()));
 
-                final TableColumn<PluginParameter, String> colDescr = new TableColumn<>("Description");
+                final TableColumn<PluginParameter<?>, String> colDescr = new TableColumn<>("Description");
                 colDescr.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getDescription()));
 
-                final TableColumn<PluginParameter, String> colDefault = new TableColumn<>("Default Value");
+                final TableColumn<PluginParameter<?>, String> colDefault = new TableColumn<>("Default Value");
                 colDefault.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getStringValue()));
 
-                final TableView<PluginParameter> parameterTable = new TableView<>(pluginParameters.get(pluginName));
+                final TableView<PluginParameter<?>> parameterTable = new TableView<>(pluginParameters.get(pluginName));
                 parameterTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
                 parameterTable.getColumns().addAll(colName, colType, colLabel, colDescr, colDefault);
                 parameterTable.setFixedCellSize(25);
@@ -264,14 +264,14 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
             PluginRegistry.getPluginClassNames().stream().forEach((final String pname) -> {
                 final Plugin plugin = PluginRegistry.get(pname);
                 final String name = plugin.getName();
-                final Map<String, List<PluginParameter>> params = new HashMap<>();
+                final Map<String, List<PluginParameter<?>>> params = new HashMap<>();
 
                 try {
                     final PluginParameters pp = plugin.createParameters();
                     if (pp != null) {
-                        final List<PluginParameter> paramList = new ArrayList();
+                        final List<PluginParameter<?>> paramList = new ArrayList<>();
                         pp.getParameters().entrySet().stream().forEach(entry -> {
-                            final PluginParameter param = entry.getValue();
+                            final PluginParameter<?> param = entry.getValue();
                             paramList.add(param);
                         });
 

@@ -41,7 +41,7 @@ public class AnalyticResultsPane extends VBox {
     private final BorderPane progressIndicatorPane;
     private final TabPane internalVisualisationPane;
     private final ToolBar graphVisualisationPane;
-    private AnalyticResult result;
+    private AnalyticResult<?> result;
     private final AnalyticController analyticController;
 
     public AnalyticResultsPane(final AnalyticController analyticController) {
@@ -91,11 +91,11 @@ public class AnalyticResultsPane extends VBox {
         return graphVisualisationPane;
     }
 
-    protected final AnalyticResult getResult() {
+    protected final AnalyticResult<?> getResult() {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion question) {
+    protected final void displayResults(final AnalyticQuestion<?> question) {
         result = question.getResult() == null ? new EmptyResult() : question.getResult();
         result.setAnalyticController(analyticController);
 

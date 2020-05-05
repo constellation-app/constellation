@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities;
 
+import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -24,8 +26,8 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -106,5 +108,32 @@ public class AttributeUtilities {
         }
 
         return types != null ? new TreeSet<>(types) : new TreeSet<>();
+    }
+
+    /**
+     * Return a set of vertex attributes
+     *
+     * @param graph The graph
+     * @param vxId The vertex id to test in the graph
+     * @return Map of attribute names
+     */
+    public static Map<String, Integer> getVertexAttributes(final GraphReadMethods graph, final int vxId) {
+        final Map<String, Integer> attributeIds = new TreeMap<>();
+
+        if (graph == null) {
+            return attributeIds;
+        }
+
+        int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
+        for (int i = 0; i < attributeCount; i++) {
+
+            final Attribute attr = new GraphAttribute(graph, graph.getAttribute(GraphElementType.VERTEX, i));
+
+            if (attr != null) {
+                attributeIds.put(attr.getName(), attr.getId());
+            }
+        }
+
+        return attributeIds;
     }
 }

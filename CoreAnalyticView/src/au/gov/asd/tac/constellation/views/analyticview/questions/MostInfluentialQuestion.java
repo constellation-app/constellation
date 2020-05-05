@@ -55,7 +55,7 @@ public class MostInfluentialQuestion implements AnalyticQuestionDescription<Scor
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 

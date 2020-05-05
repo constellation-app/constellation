@@ -41,6 +41,8 @@ import org.openide.util.NbBundle;
 final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private final ApplicationOptionsPanelController controller;
+    
+    private static final String USER_HOME_PROPERTY = "user.home";
 
     public ApplicationOptionsPanel(final ApplicationOptionsPanelController controller) {
         this.controller = controller;
@@ -410,7 +412,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
     {//GEN-HEADEREND:event_userDirectoryButtonActionPerformed
-        final JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+        final JFileChooser fc = new JFileChooser(System.getProperty(USER_HOME_PROPERTY));
         final String dir = userDirectoryText.getText().trim();
         if (!dir.isEmpty()) {
             fc.setSelectedFile(new File(dir));
@@ -429,7 +431,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private void notebookDirectoryButtonActionPerformed(ActionEvent evt)//GEN-FIRST:event_notebookDirectoryButtonActionPerformed
     {//GEN-HEADEREND:event_notebookDirectoryButtonActionPerformed
-        final JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+        final JFileChooser fc = new JFileChooser(System.getProperty(USER_HOME_PROPERTY));
         final String dir = notebookDirectoryText.getText().trim();
         if (!dir.isEmpty()) {
             fc.setSelectedFile(new File(dir));
@@ -442,7 +444,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_notebookDirectoryButtonActionPerformed
 
     private void restDirectoryButtonActionPerformed(ActionEvent evt) {//GEN-FIRST:event_restDirectoryButtonActionPerformed
-        final JFileChooser fc = new JFileChooser(System.getProperty("user.home"));
+        final JFileChooser fc = new JFileChooser(System.getProperty(USER_HOME_PROPERTY));
         final String dir = restDirectoryText.getText().trim();
         if (!dir.isEmpty()) {
             fc.setSelectedFile(new File(dir));

@@ -151,8 +151,10 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (parameters != null && parameters.getParameters() != null) {
-            final PluginParameter nAttribute = parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
-            final PluginParameter tAttribute = parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //NODE_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> nAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(NODE_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER will always be of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> tAttribute = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
             MultiChoiceParameterType.setOptions(nAttribute, nAttributes);
             MultiChoiceParameterType.setOptions(tAttribute, tAttributes);
             MultiChoiceParameterType.setChoices(nAttribute, nChoices);
@@ -299,22 +301,18 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         }
 
         if (!PreferenceUtilites.isGraphViewFrozen()) {
-            if (n < 10000) {
-                // Do a trees layout.
-                try {
+            try {
+                if (n < 10000) {
+                    // Do a trees layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            } else {
-                // Do a grid layout.
-                try {
+                } else {
+                    // Do a grid layout.
                     PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                             .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } catch (PluginException ex) {
-                    Exceptions.printStackTrace(ex);
                 }
+            } catch (PluginException ex) {
+                Exceptions.printStackTrace(ex);
             }
         } else {
             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);

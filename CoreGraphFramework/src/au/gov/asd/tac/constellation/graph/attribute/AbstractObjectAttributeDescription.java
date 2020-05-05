@@ -41,7 +41,9 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         if (object == null) {
             return null;
         } else if (nativeClass.isAssignableFrom(object.getClass())) {
-            return (T) object;
+            @SuppressWarnings("unchecked") //tObject will be of type T which extends from Object type
+            final T tObject = (T) object;
+            return tObject;
         } else if (object instanceof String) {
             return convertFromString((String) object);
         } else {
@@ -100,7 +102,9 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
     
     @Override
     public T getObject(final int id) {
-        return (T) data[id];
+        @SuppressWarnings("unchecked") //idData will be of type T which extends from Object type
+        final T idData = (T) data[id];
+        return idData;
     }
     
     @Override

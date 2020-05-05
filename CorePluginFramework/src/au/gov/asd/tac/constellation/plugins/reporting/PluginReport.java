@@ -328,7 +328,7 @@ public class PluginReport {
      * @return a list of all the plugin reports that are children of this plugin
      * report.
      */
-    public List<PluginReport> getChildReports() {
+    public List<PluginReport> getUChildReports() {
         return uChildReports;
     }
 }

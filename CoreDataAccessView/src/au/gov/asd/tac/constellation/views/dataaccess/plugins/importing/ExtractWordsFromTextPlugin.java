@@ -61,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle.Messages;
@@ -252,13 +253,14 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
         if (parameters != null && parameters.getParameters() != null) {
 
-            final PluginParameter contentAttribute = parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-            contentAttribute.suppressEvent(true, new ArrayList());
+            @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER will always be of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> contentAttribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
+            contentAttribute.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(contentAttribute, attributes);
             if (attributes.contains(ContentConcept.TransactionAttribute.CONTENT.getName())) {
                 SingleChoiceParameterType.setChoice(contentAttribute, ContentConcept.TransactionAttribute.CONTENT.getName());
             }
-            contentAttribute.suppressEvent(false, new ArrayList());
+            contentAttribute.suppressEvent(false, new ArrayList<>());
         }
     }
 
@@ -325,7 +327,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             // Use them as-is for the power users.
             //
             final List<Pattern> patterns = new ArrayList<>();
-            if(words!=null && !words.isEmpty()) {
+            if(StringUtils.isNotBlank(words)) {
                 for(String word : words.split("\n")) {
                     word = word.strip();
                     if(!word.isEmpty()) {
@@ -356,7 +358,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     /*
                      Does the transaction have content?
                      */
-                    if (content == null || content.isEmpty()) {
+                    if (StringUtils.isBlank(content)) {
                         continue;
                     }
 
@@ -439,7 +441,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 /*
                  Does the transaction have content?
                  */
-                if (content == null || content.isEmpty()) {
+                if (StringUtils.isBlank(content)) {
                     continue;
                 }
 
@@ -486,7 +488,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                      }
                 }
 
-                if (words == null || words.isEmpty()) {
+                if (StringUtils.isBlank(words)) {
                     /*
                      Extracting all words of the specified length if no word list has been provided
                      */

@@ -47,13 +47,13 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
-    public SizeVisualisation buildControl() {
-        return new SizeVisualisation(this);
+    public SizeVisualisation<ElementScore> buildControl() {
+        return new SizeVisualisation<>(this);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                 return;
             }
 
-            final ScoreResult scoreResults = (ScoreResult) result;
+            final ScoreResult scoreResults = result;
 
             if (reset) {
                 for (final ElementScore scoreResult : scoreResults.get()) {

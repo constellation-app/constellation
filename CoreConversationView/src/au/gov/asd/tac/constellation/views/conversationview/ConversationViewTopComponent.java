@@ -131,8 +131,10 @@ public final class ConversationViewTopComponent extends TopComponent {
     }
 
     void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 
     void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 }

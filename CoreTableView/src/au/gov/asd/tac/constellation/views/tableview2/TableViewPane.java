@@ -25,13 +25,13 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.tableview2.io.TableViewPreferencesIOUtilities;
 import au.gov.asd.tac.constellation.views.tableview2.state.TableViewState;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -69,8 +69,8 @@ import javafx.scene.control.Separator;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
@@ -95,6 +95,9 @@ public final class TableViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
+    private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
+    private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
+    
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
     private static final String KEY_COLUMNS = "Show Key Columns";
@@ -455,7 +458,7 @@ public final class TableViewPane extends BorderPane {
 
         final MenuItem copyRow = new MenuItem(COPY_ROW);
         copyRow.setOnAction(e -> {
-            final String rowData = ((ObservableList<String>) cell.getTableRow().getItem()).stream()
+            final String rowData = cell.getTableRow().getItem().stream()
                     .reduce((cell1, cell2) -> cell1 + SeparatorConstants.COMMA + cell2).get();
             TableViewUtilities.copyToClipboard(rowData);
             e.consume();
@@ -594,11 +597,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // clear current columnIndex, but cache the column objects for reuse
@@ -853,11 +856,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // set progress indicator
@@ -987,11 +990,11 @@ public final class TableViewPane extends BorderPane {
             if (graph != null && state != null) {
 
                 if (Platform.isFxApplicationThread()) {
-                    throw new IllegalStateException("Attempting to process on the JavaFX Application Thread");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_JAVAFX);
                 }
 
                 if (SwingUtilities.isEventDispatchThread()) {
-                    throw new IllegalStateException("Attempting to process on the EDT");
+                    throw new IllegalStateException(ATTEMPT_PROCESS_EDT);
                 }
 
                 // get graph selection

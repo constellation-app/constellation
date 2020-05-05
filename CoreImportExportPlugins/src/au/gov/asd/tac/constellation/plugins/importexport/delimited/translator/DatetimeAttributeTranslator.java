@@ -43,6 +43,8 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     public static final String FORMAT_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "format");
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "custom");
+    
+    private static final String CUSTOM = "CUSTOM";
 
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();
 
@@ -55,7 +57,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         DATETIME_FORMATS.put("yyyyMMdd HHmmss'Z'", "yyyyMMdd HHmmss'Z'");
         DATETIME_FORMATS.put("yyyyMMddHHmmss", "yyyyMMddHHmmss");
         DATETIME_FORMATS.put("EPOCH", null);
-        DATETIME_FORMATS.put("CUSTOM", null);
+        DATETIME_FORMATS.put(CUSTOM, null);
     }
 
     public DatetimeAttributeTranslator() {
@@ -78,14 +80,14 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
         customParam.setName("Custom Format");
         customParam.setDescription("A custom datetime format");
         // customParam should be enabled and editable if "CUSTOM" format has been specified.
-        customParam.setEnabled(formatParam.getStringValue().equals("CUSTOM"));
+        customParam.setEnabled(formatParam.getStringValue().equals(CUSTOM));
         customParam.setStringValue("");
         parameters.addParameter(customParam);
 
         parameters.addController(FORMAT_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
                 final PluginParameter<?> slave = params.get(CUSTOM_PARAMETER_ID);
-                slave.setEnabled(master.getStringValue().equals("CUSTOM"));
+                slave.setEnabled(master.getStringValue().equals(CUSTOM));
             }
         });
 
@@ -101,7 +103,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             final TemporalAccessor dateTime;
             if (format.equals("EPOCH")) {
                 dateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
-            } else if (format.equals("CUSTOM")) {
+            } else if (format.equals(CUSTOM)) {
                 format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();
                 DateTimeFormatter df = DateTimeFormatter.ofPattern(format);
                 dateTime = df.parse(value);

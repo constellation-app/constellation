@@ -77,8 +77,5 @@ public final class NonoverlappingRepulsionAction implements ActionListener {
             return null;
         }
 
-        @Override
-        protected void done() {
-        }
     }
 }

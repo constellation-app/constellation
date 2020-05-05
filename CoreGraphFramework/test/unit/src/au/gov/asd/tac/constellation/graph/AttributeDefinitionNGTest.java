@@ -91,13 +91,13 @@ public class AttributeDefinitionNGTest {
         assertTrue("New attribute has index < 0", newAttrId >= 0);
 
         Attribute attr = new GraphAttribute(graph, newAttrId);
-        String value = (String) (attr.getDescription());
+        String value = attr.getDescription();
         assertEquals("Check description:", value, "no description");
         graph.updateAttributeDescription(newAttrId, "new description");
 
         int attrId = graph.getAttribute(GraphElementType.VERTEX, name);
         Attribute attr2 = new GraphAttribute(graph, attrId);
-        assertEquals("Check description:", (String) (attr2.getDescription()), "new description");
+        assertEquals("Check description:", attr2.getDescription(), "new description");
     }
 
     @Test

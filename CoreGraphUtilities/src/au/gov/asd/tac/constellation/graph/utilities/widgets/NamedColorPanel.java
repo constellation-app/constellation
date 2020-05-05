@@ -112,6 +112,7 @@ final class NamedColorPanel extends AbstractColorChooserPanel {
 
     @Override
     protected void buildChooser() {
+        // Method Override required for AbstractColorChooserPanel
     }
 
     @Override

@@ -61,6 +61,8 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final int NUMBER_SPINNER_WIDTH = 55;
         private static final int MILLIS_SPINNER_WIDTH = 60;
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
+        
+        private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
         private CheckBox noValueCheckBox;
@@ -69,7 +71,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
+        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
@@ -153,23 +155,23 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             final Label dateLabel = new Label("Date:");
-            dateLabel.setId("label");
+            dateLabel.setId(LABEL_ID);
             dateLabel.setLabelFor(datePicker);
 
             final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId("label");
+            hourSpinnerLabel.setId(LABEL_ID);
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
             final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId("label");
+            minSpinnerLabel.setId(LABEL_ID);
             minSpinnerLabel.setLabelFor(minSpinner);
 
             final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId("label");
+            secSpinnerLabel.setId(LABEL_ID);
             secSpinnerLabel.setLabelFor(secSpinner);
 
             final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId("label");
+            milliSpinnerLabel.setId(LABEL_ID);
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);
