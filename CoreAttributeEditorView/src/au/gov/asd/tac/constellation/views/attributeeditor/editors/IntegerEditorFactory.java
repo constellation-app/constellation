@@ -72,7 +72,7 @@ public class IntegerEditorFactory extends AttributeValueEditorFactory<Integer> {
 
         @Override
         protected Node createEditorControls() {
-            VBox controls = new VBox();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
 
             numberField = new TextField();

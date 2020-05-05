@@ -32,8 +32,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.resize.ContractGraphAction")
 @ActionRegistration(displayName = "#CTL_ContractGraphAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resize/resources/contract.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 1500),
-    @ActionReference(path = "Toolbars/Arrange", position = 200)
+    @ActionReference(path = "Menu/Arrange", position = 2100),
+    @ActionReference(path = "Toolbars/Arrange", position = 400)
 })
 @Messages("CTL_ContractGraphAction=Contract Graph")
 public final class ContractGraphAction extends AbstractAction {

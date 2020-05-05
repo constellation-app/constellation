@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -48,22 +49,12 @@ public final class LineStyleAttributeDescription extends AbstractObjectAttribute
     }
 
     @Override
-    @SuppressWarnings("unchecked") // Casts are checked manually
-    protected LineStyle convertFromObject(Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof LineStyle) {
-            return (LineStyle) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected LineStyle convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            throw new IllegalArgumentException(String.format("Error converting '%s' to RawValue", object.getClass()));
+            return LineStyle.valueOf(string);
         }
-    }
-
-    @Override
-    protected LineStyle convertFromString(final String value) {
-        return LineStyle.valueOf(value);
     }
 
     @Override

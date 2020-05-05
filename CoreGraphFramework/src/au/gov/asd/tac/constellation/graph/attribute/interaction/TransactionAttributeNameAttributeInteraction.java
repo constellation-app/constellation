@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.attribute.TransactionAttributeNameAttr
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.TransactionAttributeNameAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -31,8 +33,8 @@ public class TransactionAttributeNameAttributeInteraction extends AbstractAttrib
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        return (String) attrVal;
+    public String getDisplayText(Object value) {
+        return (String) value;
     }
 
     @Override

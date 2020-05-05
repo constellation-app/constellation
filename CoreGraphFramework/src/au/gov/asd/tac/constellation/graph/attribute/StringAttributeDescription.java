@@ -16,8 +16,11 @@
 package au.gov.asd.tac.constellation.graph.attribute;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import static au.gov.asd.tac.constellation.graph.attribute.AbstractAttributeDescription.equals;
+import au.gov.asd.tac.constellation.graph.NativeAttributeType;
+import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
+import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -33,15 +36,44 @@ import org.openide.util.lookup.ServiceProvider;
  * false for null or empty strings, otherwise
  * {@link Boolean#parseBoolean Boolean.parseBoolean()}.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class StringAttributeDescription extends AbstractAttributeDescription {
 
+    public static final String ATTRIBUTE_NAME = "string";
+    public static final Class<String> NATIVE_CLASS = String.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.OBJECT;
     private static final String DEFAULT_VALUE = null;
+    
     private String[] data = new String[0];
     private String defaultValue = DEFAULT_VALUE;
-    public static final String ATTRIBUTE_NAME = "string";
+    
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    private String convertFromObject(final Object object) throws IllegalArgumentException {
+        if (object == null) {
+            return (String) getDefault();
+        } else if (object instanceof Number) {
+            return ((Number) object).toString();
+        } else if (object instanceof Boolean) {
+            return ((Boolean) object).toString();
+        } else if (object instanceof Character) {
+            return ((Character) object).toString();
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to String", object.getClass()));
+        }
+    }
+
+    private String convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return (String) getDefault();
+        } else {
+            return string;
+        }
+    }
 
     @Override
     public String getName() {
@@ -50,7 +82,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public Class<?> getNativeClass() {
-        return String.class;
+        return NATIVE_CLASS;
     }
 
     @Override
@@ -60,7 +92,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public void setDefault(final Object value) {
-        defaultValue = value == null ? null : String.valueOf(value);
+        defaultValue = convertFromObject(value);
     }
 
     @Override
@@ -79,7 +111,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public byte getByte(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0 : Byte.parseByte(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Byte.parseByte(data[id]): (byte) 0;
     }
 
     @Override
@@ -89,7 +121,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public short getShort(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0 : Short.parseShort(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Short.parseShort(data[id]) : (short) 0;
     }
 
     @Override
@@ -99,7 +131,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public int getInt(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0 : Integer.parseInt(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Integer.parseInt(data[id]) : 0;
     }
 
     @Override
@@ -109,7 +141,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public long getLong(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0L : Long.parseLong(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Long.parseLong(data[id]) : 0L;
     }
 
     @Override
@@ -119,7 +151,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public float getFloat(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0.0f : Float.parseFloat(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Float.parseFloat(data[id]) : 0.0f;
     }
 
     @Override
@@ -129,7 +161,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public double getDouble(final int id) {
-        return data[id] == null || data[id].isEmpty() ? 0.0 : Double.parseDouble(data[id]);
+        return data[id] != null && !data[id].isEmpty() ? Double.parseDouble(data[id]) : 0.0;
     }
 
     @Override
@@ -149,22 +181,12 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public char getChar(final int id) {
-        return data[id] == null || data[id].isEmpty() ? (char) 0 : data[id].charAt(0);
+        return data[id] != null && !data[id].isEmpty() ? data[id].charAt(0) : (char) 0;
     }
 
     @Override
     public void setChar(final int id, final char value) {
         data[id] = String.valueOf(value);
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = value == null ? null : String.valueOf(value);
     }
 
     @Override
@@ -175,6 +197,16 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     @Override
     public void setString(final int id, final String value) {
         data[id] = value;
+    }
+    
+    @Override
+    public Object getObject(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = value != null ? String.valueOf(value) : null;
     }
 
     @Override
@@ -188,17 +220,12 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final StringAttributeDescription attribute = new StringAttributeDescription();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
         return attribute;
-    }
-
-    @Override
-    public int ordering() {
-        return 1;
     }
 
     @Override
@@ -209,6 +236,16 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
+    }
+    
+    @Override
+    public void save(final int id, final ParameterWriteAccess access) {
+        access.setObject(data[id]);
+    }
+
+    @Override
+    public void restore(final int id, final ParameterReadAccess access) {
+        data[id] = (String) access.getUndoObject();
     }
 
     @Override

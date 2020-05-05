@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,36 +32,18 @@ public final class ConnectionModeAttributeDescription extends AbstractObjectAttr
 
     public static final String ATTRIBUTE_NAME = "connection_mode";
     public static final Class<ConnectionMode> NATIVE_CLASS = ConnectionMode.class;
-    private static final ConnectionMode DEFAULT_VALUE = ConnectionMode.EDGE;
+    public static final ConnectionMode DEFAULT_VALUE = ConnectionMode.EDGE;
 
     public ConnectionModeAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
-    /**
-     * Extract a ConnectionMode from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A ConnectionMode.
-     */
     @Override
-    @SuppressWarnings("unchecked") // Casts are checked manually
-    protected ConnectionMode convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof ConnectionMode) {
-            return (ConnectionMode) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected ConnectionMode convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to ConnectionMode", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return ConnectionMode.valueOf(string);
         }
-    }
-
-    @Override
-    protected ConnectionMode convertFromString(String string) {
-        return ConnectionMode.valueOf(string);
     }
 }

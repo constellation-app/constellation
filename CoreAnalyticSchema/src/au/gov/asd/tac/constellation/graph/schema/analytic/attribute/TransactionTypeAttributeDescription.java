@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,8 +51,8 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
 
     @Override
     protected SchemaTransactionType convertFromString(final String string) {
-        if (string == null) {
-            return defaultValue;
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
             return SchemaTransactionTypeUtilities.getTypeOrBuildNew(string);
         }
@@ -61,7 +62,7 @@ public class TransactionTypeAttributeDescription extends AbstractObjectAttribute
     public void setDefault(final Object value) {
         super.setDefault(value);
 
-        // Ensure that the default is a registered type.
+        // ensure that the default is a registered type.
         if (defaultValue instanceof SchemaTransactionType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }

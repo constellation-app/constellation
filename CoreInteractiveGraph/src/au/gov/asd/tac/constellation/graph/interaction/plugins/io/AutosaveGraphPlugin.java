@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -105,7 +106,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
                 p.setProperty(AutosaveUtilities.NAME, gnode.getName());
                 p.setProperty(AutosaveUtilities.PATH, gnode.getDataObject().getPrimaryFile().getPath());
                 p.setProperty(AutosaveUtilities.UNSAVED, Boolean.toString(gnode.getDataObject().isInMemory()));
-                p.setProperty(AutosaveUtilities.DT, ZonedDateTimeAttributeDescription.getAsString(ZonedDateTime.now()));
+                p.setProperty(AutosaveUtilities.DT, ZonedDateTime.now().format(TemporalFormatting.ZONED_DATE_TIME_FORMATTER));
                 try (OutputStream s = new FileOutputStream(new File(saveDir, gname + "_auto"))) {
                     p.store(s, null);
                 }

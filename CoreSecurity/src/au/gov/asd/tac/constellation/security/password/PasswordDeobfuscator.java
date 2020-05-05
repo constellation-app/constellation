@@ -20,12 +20,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.security.AlgorithmParameters;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -46,29 +49,27 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class PasswordDeobfuscator {
 
-    protected static final String ALG = "AES";
-    protected static final String ALG_SPEC = ALG; // + "/CBC/PKCS5Padding"; // Specifying the mode and padding causes a parameter error
-
     /**
      * Return the de-obfuscated password.
      *
      * This is returned as a String which is not ideal. In future this should be
      * changed to a mutable character type.
      *
-     * @param pwd The obfuscated password
+     * @param password The obfuscated password
      *
      * @return The de-obfuscated password.
      */
-    public static CharSequence deobfuscate(final ObfuscatedPassword pwd) {
-        final byte[] encPassword = pwd.getBytes();
-        final SecretKeySpec cv = new SecretKeySpec(PasswordUtilities.getKey(), ALG);
+    public static String deobfuscate(final ObfuscatedPassword password) {
+        final IvParameterSpec iv = new IvParameterSpec(PasswordUtilities.getIV());
+        final SecretKeySpec key = new SecretKeySpec(PasswordUtilities.getKey(), PasswordUtilities.ALG);
         try {
-            final Cipher cipher = Cipher.getInstance(ALG_SPEC);
-            cipher.init(Cipher.DECRYPT_MODE, cv);
-            final byte[] plainText = cipher.doFinal(encPassword);
-            return new String(plainText, 0, plainText.length, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException | NoSuchPaddingException e) {
-            throw new RuntimeException(e);
+            final Cipher cipher = Cipher.getInstance(PasswordUtilities.ALG_SPEC);
+            cipher.init(Cipher.DECRYPT_MODE, key, iv);
+            final byte[] unencrypted = cipher.doFinal(password.getBytes());
+            return new String(unencrypted, 0, unencrypted.length, StandardCharsets.UTF_8);
+        } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException 
+                | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -79,7 +80,7 @@ public class PasswordDeobfuscator {
      * constellation\CoreSecurity\build\classes on the command prompt and run
      * the following command:
      * <pre>
-     * java -cp . au.gov.asd.tac.constellation.security.password.PasswordDeobfuscator
+     * java -cp {path/to/org-openide-util-lookup.jar};. au.gov.asd.tac.constellation.security.password.PasswordDeobfuscator
      * </pre>
      *
      * @param args
@@ -91,12 +92,12 @@ public class PasswordDeobfuscator {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
         System.out.print("Enter the obfuscated password to decrypt: ");
         System.out.flush();
-        final String pwd = input.readLine();
-        if (pwd != null) {
+        final String password = input.readLine();
+        if (password != null) {
+            final String deobfuscatedPassword = deobfuscate(new ObfuscatedPassword(password));
             System.out.print("The password is: ");
-            System.out.println(deobfuscate(new ObfuscatedPassword(pwd)).toString());
+            System.out.println(deobfuscatedPassword);
             System.out.flush();
         }
-
     }
 }

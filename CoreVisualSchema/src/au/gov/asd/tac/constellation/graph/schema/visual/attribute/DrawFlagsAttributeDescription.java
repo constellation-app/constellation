@@ -16,10 +16,9 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -31,7 +30,7 @@ public final class DrawFlagsAttributeDescription extends AbstractObjectAttribute
 
     public static final String ATTRIBUTE_NAME = "draw_flags";
     public static final Class<DrawFlags> NATIVE_CLASS = DrawFlags.class;
-    private static final DrawFlags DEFAULT_VALUE = DrawFlags.ALL;
+    public static final DrawFlags DEFAULT_VALUE = DrawFlags.ALL;
 
     public DrawFlagsAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
@@ -42,31 +41,13 @@ public final class DrawFlagsAttributeDescription extends AbstractObjectAttribute
         return ATTRIBUTE_NAME;
     }
 
-    /**
-     * Extract a DrawFlags from an Object.
-     *
-     * @param object An Object.
-     *
-     * @return A DrawFlags.
-     */
     @Override
-    @SuppressWarnings("unchecked") // All casts are checked
-    protected DrawFlags convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof DrawFlags) {
-            return ((DrawFlags) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
+    protected DrawFlags convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            final String msg = String.format("Error converting Object '%s' to DrawFlags", object.getClass());
-            throw new IllegalArgumentException(msg);
+            return new DrawFlags(Integer.parseInt(string));
         }
-    }
-
-    @Override
-    protected DrawFlags convertFromString(String string) {
-        return new DrawFlags(Integer.parseInt(string));
     }
 
     @Override

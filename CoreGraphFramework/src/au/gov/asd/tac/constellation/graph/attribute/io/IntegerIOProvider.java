@@ -42,15 +42,15 @@ public class IntegerIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final int attrVal = jnode.intValue();
-        graph.setIntValue(attributeId, elementId, attrVal);
+        final int attributeValue = jnode.intValue();
+        graph.setIntValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final int attrVal = graph.getIntValue(attribute.getId(), elementId);
-            jsonGenerator.writeNumberField(attribute.getName(), attrVal);
+            final int attributeValue = graph.getIntValue(attribute.getId(), elementId);
+            jsonGenerator.writeNumberField(attribute.getName(), attributeValue);
         }
     }
 }

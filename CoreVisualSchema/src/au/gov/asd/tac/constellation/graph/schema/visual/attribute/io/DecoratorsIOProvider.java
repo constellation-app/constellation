@@ -20,10 +20,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
-import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
-import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
@@ -59,8 +56,8 @@ public class DecoratorsIOProvider extends AbstractGraphIOProvider {
             final String sw = jnode.get(SOUTH_WEST).textValue();
             graph.setObjectValue(attributeId, elementId, new VertexDecorators(nw, ne, se, sw));
         } else {
-            final String attrVal = jnode.isNull() ? null : jnode.textValue();
-            graph.setStringValue(attributeId, elementId, attrVal);
+            final String attributeValue = jnode.isNull() ? null : jnode.textValue();
+            graph.setStringValue(attributeId, elementId, attributeValue);
         }
     }
 

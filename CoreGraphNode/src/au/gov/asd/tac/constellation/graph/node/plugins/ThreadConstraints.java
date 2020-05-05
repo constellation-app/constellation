@@ -24,26 +24,11 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
  */
 public class ThreadConstraints {
 
+    private static final ThreadLocal<ThreadConstraints> THREAD_LOCAL = new ThreadLocal<>();
+    
+    private PluginReport currentReport;
     private boolean alwaysSilent;
     private int silentCount;
-    private static final ThreadLocal<ThreadConstraints> THREAD_LOCAL = new ThreadLocal<>();
-    private PluginReport currentReport;
-
-    public boolean isAlwaysSilent() {
-        return alwaysSilent;
-    }
-
-    public void setAlwaysSilent(final boolean alwaysSilent) {
-        this.alwaysSilent = alwaysSilent;
-    }
-
-    public int getSilentCount() {
-        return silentCount;
-    }
-
-    public void setSilentCount(final int silentCount) {
-        this.silentCount = silentCount;
-    }
 
     public static ThreadConstraints getConstraints() {
         ThreadConstraints constraints = THREAD_LOCAL.get();
@@ -60,5 +45,21 @@ public class ThreadConstraints {
 
     public void setCurrentReport(PluginReport currentReport) {
         this.currentReport = currentReport;
+    }
+
+    public boolean isAlwaysSilent() {
+        return alwaysSilent;
+    }
+
+    public void setAlwaysSilent(final boolean alwaysSilent) {
+        this.alwaysSilent = alwaysSilent;
+    }
+
+    public int getSilentCount() {
+        return silentCount;
+    }
+
+    public void setSilentCount(final int silentCount) {
+        this.silentCount = silentCount;
     }
 }

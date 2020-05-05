@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@Messages("ArrangeInGridComponentsPlugin=Arrange Components in Grids")
+@Messages("ArrangeInGridComponentsPlugin=Arrange Components in Grid")
 @PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 public class ArrangeInGridComponentsPlugin extends SimpleEditPlugin {
 
