@@ -25,10 +25,10 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.construction.GraphBuilder;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  *
@@ -36,7 +36,7 @@ import java.util.Random;
  */
 public class AttributeFillBuilder extends GraphBuilder {
     
-    private static final Random R = new Random();
+    private static final SecureRandom R = new SecureRandom();
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID) {
         return fillAttribute(graph, attrID, null, null);

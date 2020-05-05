@@ -26,11 +26,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import java.security.SecureRandom;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Fly around the graph using a succession of Catmull-Rom splines to generate a
@@ -147,10 +147,10 @@ public final class FlyingAnimation extends Animation {
 
     private int step;
 
-    private final Random random;
+    private final SecureRandom random;
 
     public FlyingAnimation() {
-        random = new Random();
+        random = new SecureRandom();
 
         xyzQueue = new ArrayDeque<>(VERTICES_PER_SPLINE);
 

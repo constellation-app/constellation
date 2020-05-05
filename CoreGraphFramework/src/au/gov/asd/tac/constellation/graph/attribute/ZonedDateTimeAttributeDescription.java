@@ -191,7 +191,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDe
 
     @Override
     public String acceptsString(String value) {
-        return value != null && parseString(value) == null ? "Not a valid datetime" : null;
+        return value != null && parseString(value) == null ? "Not a valid datetime (Expected yyyy-MM-ddTHH:mm:ss.SSS[zone])" : null;
     }
 
     /**

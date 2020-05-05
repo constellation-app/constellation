@@ -53,7 +53,6 @@ public class NodeQuickSearchProvider implements SearchProvider {
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final Graph graph = graphRetriever.getGraph();
-        int i = 0;
 
         if (graph != null) {
             final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.VERTEX, request.getText());
@@ -70,14 +69,12 @@ public class NodeQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-            if (results != null) {
                 for (FindResult item : results) {
                     if (item != null) {
                         // We have a valid result, so report:
                         response.addResult(new SelectContent(graph, item), item.toString());
                     }
                 }
-            }
         }
     }
 
