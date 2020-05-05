@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisualisation;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.openide.util.lookup.ServiceProvider;
@@ -39,13 +39,13 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 
     @Override
-    public TableVisualisation buildVisualisation() {
-        final TableVisualisation<ElementScore> tableVisualisation = new TableVisualisation(this);
+    public TableVisualisation<ElementScore> buildVisualisation() {
+        final TableVisualisation<ElementScore> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> scoreNames = result.getUniqueScoreNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / (scoreNames.size() + 2)) * 2);
         scoreNames.forEach(scoreName -> {
@@ -54,7 +54,7 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         tableVisualisation.populateTable(result.getIgnoreNullResults()
                 ? result.get().stream().filter(elementMultiScore -> !elementMultiScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener((change) -> {
+        tableVisualisation.setSelectionModelListener(change -> {
             result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
         });
         return tableVisualisation;
@@ -64,16 +64,12 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
     public Object getCellData(final ElementScore cellValue, final String columnName) {
         if (cellValue == null) {
             return null;
-        }
-        switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-                return cellValue.getIdentifier();
-            default:
-                if (cellValue.getNames().contains(columnName)) {
-                    return cellValue.getNamedScores().get(columnName);
-                } else {
-                    throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                }
+        } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            return cellValue.getIdentifier();
+        } else if (cellValue.getNames().contains(columnName)) {
+            return cellValue.getNamedScores().get(columnName);
+        } else {
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -81,16 +77,12 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
     public String getCellText(final ElementScore cellValue, final Object cellItem, final String columnName) {
         if (cellValue == null) {
             return null;
-        }
-        switch (columnName) {
-            case IDENTIFIER_COLUMN_NAME:
-                return cellItem.toString();
-            default:
-                if (cellValue.getNames().contains(columnName)) {
-                    return cellItem.toString();
-                } else {
-                    throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                }
+        } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            return cellItem.toString();
+        } else if (cellValue.getNames().contains(columnName)) {
+            return cellItem.toString();
+        } else {
+            throw new UnrecognisedColumnException(columnName);
         }
     }
 
@@ -99,20 +91,14 @@ public class ScoreToTableTranslator extends AbstractTableTranslator<ScoreResult,
         final float intensity;
         if (cellValue == null) {
             intensity = 0f;
+        } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
+            intensity = Math.max(0f, Math.min(1f, cellValue.getNamedScores().values().stream()
+                    .reduce((x, y) -> x + y).get()
+                    / cellValue.getNamedScores().size()));
+        } else if (cellValue.getNames().contains(columnName)) {
+            intensity = Math.max(0f, Math.min(1f, (float) cellItem));
         } else {
-            switch (columnName) {
-                case IDENTIFIER_COLUMN_NAME:
-                    intensity = Math.max(0f, Math.min(1f, cellValue.getNamedScores().values().stream()
-                            .reduce((x, y) -> x + y).get()
-                            / cellValue.getNamedScores().size()));
-                    break;
-                default:
-                    if (cellValue.getNames().contains(columnName)) {
-                        intensity = Math.max(0f, Math.min(1f, (float) cellItem));
-                    } else {
-                        throw new UnrecognisedColumnException("Column not recognised: " + columnName);
-                    }
-            }
+            throw new UnrecognisedColumnException(columnName);
         }
 
         return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);

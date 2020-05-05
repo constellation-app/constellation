@@ -74,8 +74,6 @@ public abstract class GraphOpener {
     public abstract void openGraph(Graph graph, String name, boolean numbered);
 
     public static GraphOpener getDefault() {
-        final GraphOpener go = Lookup.getDefault().lookup(GraphOpener.class);
-
-        return go;
+        return Lookup.getDefault().lookup(GraphOpener.class);
     }
 }

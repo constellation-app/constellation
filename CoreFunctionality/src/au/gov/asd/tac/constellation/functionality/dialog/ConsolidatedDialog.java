@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Pair;
 
 /**
- * The consolidated dialog is similar to @{code MultipleMatchesDialog}, however
+ * The consolidated dialog is similar to {@link MultipleMatchesDialog}, however
  * can be presented to the user once, avoiding displaying separate dialogs
  * repeatedly. Objects are grouped using accordion panes, with each pane
  * displaying options.

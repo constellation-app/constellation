@@ -88,26 +88,24 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
     @Override
     public void cancel() {
+        // Required for OptionsPanelController, intentionally left blank
     }
 
     @Override
     public boolean isValid() {
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
-        final boolean valid = applicationOptionsPanel.getUserDirectory() != null
+        return applicationOptionsPanel.getUserDirectory() != null
                 && applicationOptionsPanel.getAustosaveFrequency() > 0
                 && applicationOptionsPanel.getWebserverPort() > 0
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null;
-
-        return valid;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
-        final boolean changed
-                = !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
+        return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
                 && applicationOptionsPanel.getAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
                 && applicationOptionsPanel.getAustosaveFrequency() == prefs.getInt(ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE, ApplicationPreferenceKeys.AUTOSAVE_SCHEDULE_DEFAULT)
                 && applicationOptionsPanel.getTutorialOnStartup() == prefs.getBoolean(ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP, ApplicationPreferenceKeys.TUTORIAL_ON_STARTUP_DEFAULT)
@@ -117,8 +115,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.getDownloadPythonClient() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
                 && applicationOptionsPanel.getRememberSaveLocation() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_SAVE_LOCATION_DEFAULT));
-
-        return changed;
     }
 
     @Override

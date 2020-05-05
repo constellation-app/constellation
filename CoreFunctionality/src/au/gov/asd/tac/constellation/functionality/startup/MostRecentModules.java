@@ -57,12 +57,12 @@ public class MostRecentModules {
             final String[] versionParts = modules.get(0).getSpecificationVersion().toString().split("\\.");
             if (versionParts.length == 4) {
                 final String yyyymmdd = versionParts[2];
-                String hhmmss = String.valueOf(versionParts[3]);
+                StringBuilder hhmmss = new StringBuilder(String.valueOf(versionParts[3]));
                 while (hhmmss.length() < 6) {
-                    hhmmss = "0" + hhmmss;
+                    hhmmss.insert(0, "0");
                 }
 
-                mostRecentVersion = String.format("%s.%s", yyyymmdd, hhmmss);
+                mostRecentVersion = String.format("%s.%s", yyyymmdd, hhmmss.toString());
 
                 // Just in case...
                 if (mostRecentVersion.length() > 15) {
@@ -114,6 +114,7 @@ public class MostRecentModules {
         final ArrayList<ModuleInfo> moduleList = new ArrayList<>();
         for (ModuleInfo mi : modules) {
             if (!mi.getCodeNameBase().startsWith("org.netbeans")
+                    && !mi.getCodeNameBase().startsWith("org.apache")
                     && !mi.getCodeNameBase().startsWith("org.openide")
                     && !mi.getCodeNameBase().startsWith("org.jdesktop")
                     && !mi.getCodeNameBase().startsWith("net.java.html")) {

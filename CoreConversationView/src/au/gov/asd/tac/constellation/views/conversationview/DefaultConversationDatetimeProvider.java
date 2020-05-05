@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;

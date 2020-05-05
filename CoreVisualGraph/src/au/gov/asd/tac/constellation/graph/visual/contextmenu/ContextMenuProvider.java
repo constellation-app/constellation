@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.visual.contextmenu;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.List;
 
 /**
@@ -55,7 +55,7 @@ public interface ContextMenuProvider {
      * @param elementId the id of the element that has been right-clicked on.
      * @return a list of items to be placed into the context menu.
      */
-    public List<String> getItems(GraphReadMethods graph, GraphElementType elementType, int elementId);
+    public List<String> getItems(final GraphReadMethods graph, final GraphElementType elementType, final int elementId);
 
     /**
      * This method is called when a user selects an item in the context menu.
@@ -68,5 +68,5 @@ public interface ContextMenuProvider {
      * @param unprojected the unprojected location of the mouse where the click
      * occurred.
      */
-    public void selectItem(String item, Graph graph, GraphElementType elementType, int elementId, Vector3f unprojected);
+    public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected);
 }

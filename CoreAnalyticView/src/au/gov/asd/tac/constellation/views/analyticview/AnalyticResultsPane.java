@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public class AnalyticResultsPane extends VBox {
     private final BorderPane progressIndicatorPane;
     private final TabPane internalVisualisationPane;
     private final ToolBar graphVisualisationPane;
-    private AnalyticResult result;
+    private AnalyticResult<?> result;
     private final AnalyticController analyticController;
 
     public AnalyticResultsPane(final AnalyticController analyticController) {
@@ -91,17 +91,17 @@ public class AnalyticResultsPane extends VBox {
         return graphVisualisationPane;
     }
 
-    protected final AnalyticResult getResult() {
+    protected final AnalyticResult<?> getResult() {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion question) {
+    protected final void displayResults(final AnalyticQuestion<?> question) {
         result = question.getResult() == null ? new EmptyResult() : question.getResult();
         result.setAnalyticController(analyticController);
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
-            AnalyticUtilities.getInternalVisualisationTranslators().forEach((translator) -> {
+            AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
                     translator.setResult(result);
@@ -113,7 +113,7 @@ public class AnalyticResultsPane extends VBox {
                 }
             });
             graphVisualisationPane.getItems().clear();
-            AnalyticUtilities.getGraphVisualisationTranslators().forEach((translator) -> {
+            AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
                     translator.setResult(result);

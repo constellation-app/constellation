@@ -32,7 +32,7 @@ public abstract class EsriMapProvider extends MapProvider {
 
     private static final Logger LOGGER = Logger.getLogger(EsriMapProvider.class.getName());
 
-    public static enum MapServerType {
+    public enum MapServerType {
         /**
          * The {@link MapServerType#TILE} type supports ESRI tile-based mapping
          * services, this is the default.
@@ -77,7 +77,7 @@ public abstract class EsriMapProvider extends MapProvider {
         }
 
         if (url == null || url.isEmpty()) {
-            LOGGER.log(Level.WARNING, "Tile URL, %s, is invalid", url);
+            LOGGER.log(Level.WARNING, "Tile URL, {0}, is invalid", url);
         }
 
         return new String[]{url};

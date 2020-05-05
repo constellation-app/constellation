@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.interaction.HitState;
-import au.gov.asd.tac.constellation.visual.graphics3d.Vector3f;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +43,7 @@ final class EventState extends HitState {
     /**
      * Constants defining the various actions that may be performed.
      */
-    static enum SceneAction {
+    enum SceneAction {
 
         ROTATING("Rotate"),
         PANNING("Pan"),
@@ -62,7 +62,7 @@ final class EventState extends HitState {
     /**
      * Constants defining the various modes of creating graph elements.
      */
-    static enum CreationMode {
+    enum CreationMode {
 
         CREATING_VERTEX,
         CREATING_TRANSACTION,

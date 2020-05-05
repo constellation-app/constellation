@@ -43,12 +43,12 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
         fontListScrollPane.setRowHeaderView(numberedTextArea);
 
         final String[] styles = Arrays.stream(FontStyle.class.getEnumConstants())
-                .map(s -> s.name())
+                .map(Enum::name)
                 .toArray(String[]::new);
         addStyleComboBox.setModel(new DefaultComboBoxModel<>(styles));
 
         final String[] scripts = Arrays.stream(Character.UnicodeScript.class.getEnumConstants())
-                .map(s -> s.name())
+                .map(Enum::name)
                 .sorted()
                 .toArray(String[]::new);
         Arrays.sort(scripts);

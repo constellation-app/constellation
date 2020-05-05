@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,18 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
@@ -170,7 +170,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         suppressed = true;
         manualUpdate();
         suppressed = false;
-        analyticViewPane.getConfigurationPane().updateState(false);
+        if (analyticViewPane != null) {
+            analyticViewPane.getConfigurationPane().updateState(false);
+        }
     }
     
     @Override
@@ -208,13 +210,15 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                 graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
                             }
                             break;
+                        default:
+                            break;
                     }
                 }
             }).executeLater(getCurrentGraph());
         }
 
         public void selectOnInternalVisualisations(final GraphElementType elementType, final Graph graph) {
-            final AnalyticResult result = analyticViewPane.getResultsPane().getResult();
+            final AnalyticResult<?> result = analyticViewPane.getResultsPane().getResult();
 
             if (graph != null && result != null) {
                 final List<Integer> selected = new ArrayList<>();
@@ -242,6 +246,8 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                     selected.add(transactionId);
                                 }
                             }
+                            break;
+                        default:
                             break;
                     }
                 } finally {

@@ -113,7 +113,7 @@ public abstract class ConversationContributionProvider implements Comparable<Con
      *
      * @return A list of all providers.
      */
-    public static synchronized final List<ConversationContributionProvider> getProviders() {
+    public static final synchronized List<ConversationContributionProvider> getProviders() {
         if (PROVIDERS == null) {
             PROVIDERS = new ArrayList<>(Lookup.getDefault().lookupAll(ConversationContributionProvider.class));
             PROVIDERS.sort((ConversationContributionProvider o1, ConversationContributionProvider o2) -> Integer.compare(o1.priority, o2.priority));

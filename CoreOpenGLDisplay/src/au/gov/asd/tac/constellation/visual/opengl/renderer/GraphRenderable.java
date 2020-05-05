@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.InfoTextPanel;
-import au.gov.asd.tac.constellation.visual.camera.Camera;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.display.VisualAccess;
-import au.gov.asd.tac.constellation.visual.display.VisualProcessor.VisualChangeProcessor;
-import au.gov.asd.tac.constellation.visual.display.VisualProperty;
-import au.gov.asd.tac.constellation.visual.drawflags.DrawFlags;
-import au.gov.asd.tac.constellation.visual.graphics3d.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.visual.graphics3d.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
+import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.BlazeBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.ConnectionLabelBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.IconBatcher;
@@ -395,11 +395,11 @@ public final class GraphRenderable implements GLRenderable {
 
             // Direction Indicators.
             if (motion == -1) {
-                if (DirectionIndicatorsAction.showIndicators) {
+                if (DirectionIndicatorsAction.isShowIndicators()) {
                     initialMotion = System.currentTimeMillis();
                     motion = 0;
                 }
-            } else if (DirectionIndicatorsAction.showIndicators) {
+            } else if (DirectionIndicatorsAction.isShowIndicators()) {
                 motion = (System.currentTimeMillis() - initialMotion) / 100f;
             } else {
                 motion = -1;

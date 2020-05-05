@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -66,8 +67,8 @@ public class SubgraphUtilitiesNGTest {
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
         final int tx0 = graph.addTransaction(vx0, vx1, true);
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, "string", TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
 
@@ -99,7 +100,7 @@ public class SubgraphUtilitiesNGTest {
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
 
         graph.setStringValue(vxAttr, vx0, VX_VALUE);
@@ -126,8 +127,8 @@ public class SubgraphUtilitiesNGTest {
         final StoreGraph graph = new StoreGraph();
         final int vx0 = graph.addVertex();
         final int vx1 = graph.addVertex();
-        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, "string", VX_ATTRIBUTE, "", "", null);
-        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, "string", TX_ATTRIBUTE, "", "", null);
+        final int vxAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, VX_ATTRIBUTE, "", "", null);
+        final int txAttr = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, TX_ATTRIBUTE, "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, vxAttr);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, txAttr);
 
@@ -147,23 +148,4 @@ public class SubgraphUtilitiesNGTest {
         assertTrue(copy.getAttribute(GraphElementType.TRANSACTION, TX_ATTRIBUTE) != Graph.NOT_FOUND);
         assertEquals(copy.getStringValue(vxAttr, vx0), VX_VALUE);
     }
-
-    // TODO: testing loops everywhere including here
-//    /**
-//     * Test of getSubgraph method, of class SubGraphUtilities.
-//     */
-//    @Test
-//    public void testGetSubgraph() {
-//        System.out.println("getSubgraph");
-//        GraphReadMethods graph = null;
-//        Schema schema = null;
-//        Set<SchemaTransactionType> types = null;
-//        int transactionTypeAttributeId = 0;
-//        boolean isExclusive = false;
-//        StoreGraph expResult = null;
-//        StoreGraph result = SubGraphUtilities.getSubgraph(graph, schema, types, transactionTypeAttributeId, isExclusive);
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 }

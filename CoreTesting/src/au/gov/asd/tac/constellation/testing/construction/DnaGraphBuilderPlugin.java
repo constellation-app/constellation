@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.testing.construction;
 
-import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Color;
 import java.util.Date;
 import org.openide.util.NbBundle.Messages;
@@ -107,7 +107,7 @@ public class DnaGraphBuilderPlugin extends SimpleEditPlugin {
             graph.setObjectValue(txColorAttr, tx, edgeColor);
         }
 
-        PluginExecution.withPlugin(CorePluginRegistry.RESET).executeNow(graph);
+        PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         interaction.setProgress(1, 0, "Completed successfully", true);
     }
 }

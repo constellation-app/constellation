@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>Import/Export JDBC - Connection</title>
         <meta charset="UTF-8">
@@ -27,7 +27,7 @@
             <li>Password: the JDBC password</li>
             <li>
                 Connection URL: The JDBC URL that will be used to connect to the database.
-                This is typically of the form <span class="mono">jdbc:mysql://<i>server</i>/<i>schema</i></span>.
+                This is typically of the form <span class="mono">jdbc:mysql://<em>server</em>/<em>schema</em></span>.
             </li>
             <li>JDBC JAR file: a JAR file containing the driver implementation of the database.</li>
             <li>
@@ -70,8 +70,9 @@
 
         <h3>Export</h3>
         <table>
+            <caption>The JDBC API used to export for each attribute type</caption>
             <thead>
-                <tr><th>Attribute type</th><th>JDBC API</th></tr>
+                <tr><th scope="col">Attribute type</th><th scope="col">JDBC API</th></tr>
             </thead>
             <tbody>
                 <tr><td>boolean</td><td><span class="mono">ResultSet.updateBoolean()</span></td></tr>
@@ -87,8 +88,9 @@
 
         <h3>Import</h3>
         <table>
+            <caption>The JDBC API used to import for each attribute type</caption>
             <thead>
-                <tr><th>Attribute type</th><th>JDBC API</th></tr>
+                <tr><th scope="col">Attribute type</th><th scope="col">JDBC API</th></tr>
             </thead>
             <tbody>
                 <tr><td>boolean</td><td><span class="mono">ResultSet.getBoolean()</span></td></tr>

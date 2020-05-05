@@ -291,10 +291,7 @@ public class ConversationMessage {
         if (!Objects.equals(this.background, other.background)) {
             return false;
         }
-        if (!Objects.equals(this.backgroundColor, other.backgroundColor)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.backgroundColor, other.backgroundColor);
     }
 
 }

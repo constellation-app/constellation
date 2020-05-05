@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.functionality.dialog;
 
-import au.gov.asd.tac.constellation.functionality.copypaste.ClipboardUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Dimension;
 import java.util.List;
 import javafx.collections.ListChangeListener;
@@ -98,14 +98,14 @@ public class ItemsDialog<T> extends ConstellationDialog {
         table.setItems(rows);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.getSelectionModel().clearSelection();
-        table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener() {
+        table.getSelectionModel().getSelectedIndices().addListener(new ListChangeListener<>() {
             @Override
-            public void onChanged(ListChangeListener.Change c) {
+            public void onChanged(ListChangeListener.Change<? extends Integer> c) {
                 try {
                     List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
                     selectRows(selectedRows);
                 } catch (InterruptedException ex) {
-
+                    Thread.currentThread().interrupt();
                 }
             }
         });
@@ -166,6 +166,7 @@ public class ItemsDialog<T> extends ConstellationDialog {
     }
 
     protected void selectRows(List<ItemsRow<T>> rows) throws InterruptedException {
+        // Method overriden LeadNodeSelectionDialog
     }
 
     public void setOkButtonAction(EventHandler<ActionEvent> event) {

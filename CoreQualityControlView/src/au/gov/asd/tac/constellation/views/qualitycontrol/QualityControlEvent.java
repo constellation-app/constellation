@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.graph.schema.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import java.util.ArrayList;
 import java.util.Collections;

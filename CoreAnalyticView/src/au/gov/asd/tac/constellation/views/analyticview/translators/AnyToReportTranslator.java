@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.translators;
 
+import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ReportVisualisation;
+import java.util.List;
 import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -25,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = InternalVisualisationTranslator.class)
-public class AnyToReportTranslator extends InternalVisualisationTranslator<AnalyticResult, ReportVisualisation> {
+public class AnyToReportTranslator extends InternalVisualisationTranslator<AnalyticResult<?>, ReportVisualisation> {
 
     @Override
     public String getName() {
@@ -33,6 +35,7 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
     }
 
     @Override
+    @SuppressWarnings("rawtypes") //raw type needed to return AnalyticResult class
     public Class<? extends AnalyticResult> getResultType() {
         return AnalyticResult.class;
     }
@@ -40,18 +43,21 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
     @Override
     public ReportVisualisation buildVisualisation() {
         final ReportVisualisation report = new ReportVisualisation();
+        @SuppressWarnings("unchecked") // return type of getPlugins will be List<AnalyticPlugin<?>>
+        List<AnalyticPlugin<?>> questionPlugins = (List<AnalyticPlugin<?>>) question.getPlugins();
+        @SuppressWarnings("unchecked") // return type of getExceptions will always be List<Exception>
+        List<Exception> questionExceptions = question.getExceptions();
         report.populateReport(
-                question.getPlugins(),
+                questionPlugins,
                 result.size(),
                 question.getAggregator() == null
                 ? "None" : question.getAggregator().getName(),
-                question.getExceptions());
+                questionExceptions);
 
         if (result.hasMetadata()) {
+            @SuppressWarnings("unchecked") //the return type for getMetadata is actually Map<String, String>
             final Map<String, String> metadata = result.getMetadata();
-            metadata.forEach((metadataKey, metadataValue) -> {
-                report.extendReport(metadataKey, metadataValue);
-            });
+            metadata.forEach(report::extendReport);
         }
         return report;
     }

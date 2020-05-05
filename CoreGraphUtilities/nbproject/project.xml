@@ -31,7 +31,15 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.pluginframework</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.node</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.analytic</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -39,7 +47,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.schema.analyticschema</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -55,11 +63,69 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <specification-version>1.0.3</specification-version>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>2.41.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.netbeans.modules.settings</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <release-version>1</release-version>
+                        <specification-version>1.49.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.awt</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.67.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.dialogs</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.42.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.9.2</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.nodes</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>7.45.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -78,6 +144,22 @@
                         <specification-version>8.33.1</specification-version>
                     </run-dependency>
                 </dependency>
+                <dependency>
+                    <code-name-base>org.openide.util.ui</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.6.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.windows</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>6.75.1</specification-version>
+                    </run-dependency>
+                </dependency>
             </module-dependencies>
             <test-dependencies>
                 <test-type>
@@ -90,9 +172,11 @@
             </test-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.graph.utilities</package>
-                <package>au.gov.asd.tac.constellation.graph.utilities.attribute</package>
+                <package>au.gov.asd.tac.constellation.graph.utilities.banner</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities.io</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities.matrix</package>
+                <package>au.gov.asd.tac.constellation.graph.utilities.placeholder</package>
+                <package>au.gov.asd.tac.constellation.graph.utilities.widgets</package>
                 <package>au.gov.asd.tac.constellation.graph.utilities.wrapper</package>
             </public-packages>
         </data>

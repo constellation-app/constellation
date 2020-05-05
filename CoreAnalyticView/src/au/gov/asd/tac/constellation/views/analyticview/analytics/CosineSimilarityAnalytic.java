@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
-import au.gov.asd.tac.constellation.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.algorithms.sna.similarity.CosineSimilarityPlugin;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.pluginframework.Plugin;
-import au.gov.asd.tac.constellation.pluginframework.PluginInfo;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity.CosineSimilarityPlugin;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

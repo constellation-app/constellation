@@ -15,30 +15,34 @@
  */
 package au.gov.asd.tac.constellation.views.mapview;
 
-import au.gov.asd.tac.constellation.functionality.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.pluginframework.PluginException;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.PluginInteraction;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersDialog;
-import au.gov.asd.tac.constellation.pluginframework.gui.PluginParametersSwingDialog;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameterController;
-import au.gov.asd.tac.constellation.pluginframework.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.StringParameterType;
-import au.gov.asd.tac.constellation.pluginframework.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.schema.analyticschema.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterController;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 import au.gov.asd.tac.constellation.utilities.geospatial.Mgrs;
 import au.gov.asd.tac.constellation.utilities.gui.JDropDownMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JMultiChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
+import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature.ConstellationFeatureType;
@@ -52,9 +56,6 @@ import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState.MarkerColorScheme;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState.MarkerLabel;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
-import au.gov.asd.tac.constellation.visual.color.ConstellationColor;
-import au.gov.asd.tac.constellation.visual.icons.AnalyticIconProvider;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
 import de.fhpotsdam.unfolding.geo.Location;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -71,8 +72,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.JToolBar;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -97,7 +99,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 600),
+    @ActionReference(path = "Menu/Views", position = 700),
     @ActionReference(path = "Shortcuts", name = "CS-M")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_MapViewAction",
@@ -164,7 +166,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
         // initialise toolbar
-        this.toolBar = new JToolBar(JToolBar.HORIZONTAL);
+        this.toolBar = new JToolBar(SwingConstants.HORIZONTAL);
         toolBar.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         this.mapProviderMenu = new JSingleChoiceComboBoxMenu(AnalyticIconProvider.MAP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), providers);
@@ -214,7 +216,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                     final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
                     dialog.showAndWait();
                     if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                        final String geoType = SingleChoiceParameterType.getChoice((PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE));
+                        @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
+                        final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
+                        final String geoType = SingleChoiceParameterType.getChoice(parameterType);
                         final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
                         final ConstellationAbstractMarker marker;
                         switch (geoType) {
@@ -274,13 +278,16 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                         }
                         renderer.zoomToLocation(marker == null ? null : marker.getLocation());
                     }
+                    break;
+                default:
+                    break;
             }
         });
         zoomMenu.setToolTipText("Zoom based on markers or locations in the Map View");
         toolBar.add(zoomMenu);
 
         final List<String> markerTypes = Arrays.asList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY);
-        this.markerVisibilityComboBox = new JMultiChoiceComboBoxMenu(UserInterfaceIconProvider.VISIBLE.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), markerTypes);
+        this.markerVisibilityComboBox = new JMultiChoiceComboBoxMenu<>(UserInterfaceIconProvider.VISIBLE.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), markerTypes);
         markerVisibilityComboBox.addSelectedItems(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI);
         markerVisibilityComboBox.addSelectionListener(event -> {
             final Set<String> visibleMarkerTypes = markerVisibilityComboBox.getSelectedItems();
@@ -339,8 +346,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         markerLabelComboBox.setToolTipText("Chose the label for markers displayed in the Map View");
         toolBar.add(markerLabelComboBox);
 
-        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(exporter -> new MapExporterWrapper(exporter)).collect(Collectors.toList());
-        this.exportMenu = new JDropDownMenu(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
+        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
+        this.exportMenu = new JDropDownMenu<>(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
         exportMenu.addActionListener(event -> {
             final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
             PluginExecution
@@ -454,13 +461,13 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter geoTypeParameter = SingleChoiceParameterType.build(PARAMETER_TYPE);
+        final PluginParameter<SingleChoiceParameterValue> geoTypeParameter = SingleChoiceParameterType.build(PARAMETER_TYPE);
         geoTypeParameter.setName("Geo Type");
         SingleChoiceParameterType.setOptions(geoTypeParameter, Arrays.asList(GEO_TYPE_COORDINATE, GEO_TYPE_GEOHASH, GEO_TYPE_MGRS));
         SingleChoiceParameterType.setChoice(geoTypeParameter, GEO_TYPE_COORDINATE);
         parameters.addParameter(geoTypeParameter);
 
-        final PluginParameter locationParameter = StringParameterType.build(PARAMETER_LOCATION);
+        final PluginParameter<StringParameterValue> locationParameter = StringParameterType.build(PARAMETER_LOCATION);
         locationParameter.setName("Location");
         locationParameter.setDescription("Enter a coordinate in decimal degrees (and optionally "
                 + "a radius in kilometers) with components separated by spaces or commas");
@@ -468,7 +475,9 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         parameters.addParameter(locationParameter);
 
         PluginParameterController controller = ((master, params, change) -> {
-            switch (SingleChoiceParameterType.getChoice((PluginParameter<SingleChoiceParameterValue>) master)) {
+            @SuppressWarnings("unchecked") //master will need to be of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> typedMaster = (PluginParameter<SingleChoiceParameterValue>) master;
+            switch (SingleChoiceParameterType.getChoice(typedMaster)) {
                 case GEO_TYPE_COORDINATE:
                     params.get(PARAMETER_LOCATION)
                             .setDescription("Enter a coordinate in decimal degrees (and optionally a radius "
@@ -481,6 +490,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 case GEO_TYPE_MGRS:
                     params.get(PARAMETER_LOCATION)
                             .setDescription("Enter an MGRS value");
+                    break;
+                default:
                     break;
             }
         });
@@ -553,6 +564,8 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                             graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
                         }
                         break;
+                    default:
+                        break;
                 }
             }
         }).executeLater(getCurrentGraph());
@@ -572,12 +585,12 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected int getVerticalScrollPolicy() {
-        return JScrollPane.VERTICAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
     }
 
     @Override
     protected int getHorizontalScrollPolicy() {
-        return JScrollPane.HORIZONTAL_SCROLLBAR_NEVER;
+        return ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
     }
 
     @Override

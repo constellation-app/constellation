@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
-import au.gov.asd.tac.constellation.pluginframework.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.testing.CoreTestingPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

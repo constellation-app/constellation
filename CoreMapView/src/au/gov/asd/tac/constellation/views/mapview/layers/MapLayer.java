@@ -84,6 +84,7 @@ public abstract class MapLayer {
                     try {
                         Thread.sleep(WAIT_MILLIS);
                     } catch (InterruptedException ex) {
+                        Thread.currentThread().interrupt();
                     }
                 }
 

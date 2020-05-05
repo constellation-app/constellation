@@ -26,7 +26,7 @@ feel free to propose changes to this document in a pull request.
   * [Your First Code Contribution](#your-first-code-contribution)
   * [Pull Requests](#pull-requests)
 
-[Style Guides](Style_Guidelines.md)
+[Style Guides](STYLE_GUIDELINES.md)
   * [Git Commit Messages](#git-commit-messages)
 
 ## Code of Conduct
@@ -284,7 +284,7 @@ on how to do this, see the ***Build Constellation*** section in the
     <#if licenseFirst??>
     ${licenseFirst}
     </#if>
-    ${licensePrefix}Copyright 2010-2019 Australian Signals Directorate
+    ${licensePrefix}Copyright 2010-2020 Australian Signals Directorate
     ${licensePrefix}
     ${licensePrefix}Licensed under the Apache License, Version 2.0 (the "License");
     ${licensePrefix}you may not use this file except in compliance with the License.

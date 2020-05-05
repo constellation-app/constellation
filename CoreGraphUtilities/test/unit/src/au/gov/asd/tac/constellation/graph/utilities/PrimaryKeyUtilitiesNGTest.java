@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import java.util.HashSet;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
@@ -58,7 +59,7 @@ public class PrimaryKeyUtilitiesNGTest {
     @Test
     public void testGetPrimaryKeyNamesForVertices() {
         final StoreGraph graph = new StoreGraph();
-        final int attribute = graph.addAttribute(GraphElementType.VERTEX, "string", "Name", "", "", null);
+        final int attribute = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         graph.setPrimaryKey(GraphElementType.VERTEX, attribute);
 
         final Set<String> expResult = new HashSet<>();
@@ -71,7 +72,7 @@ public class PrimaryKeyUtilitiesNGTest {
     @Test
     public void testGetPrimaryKeyNamesForTransactions() {
         final StoreGraph graph = new StoreGraph();
-        final int attribute = graph.addAttribute(GraphElementType.TRANSACTION, "string", "Name", "", "", null);
+        final int attribute = graph.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "Name", "", "", null);
         graph.setPrimaryKey(GraphElementType.TRANSACTION, attribute);
 
         final Set<String> expResult = new HashSet<>();

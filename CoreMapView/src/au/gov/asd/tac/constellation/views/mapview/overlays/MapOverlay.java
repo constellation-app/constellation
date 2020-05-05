@@ -198,12 +198,12 @@ public abstract class MapOverlay {
 
             int bufferIndex = buffer.length();
             while (renderer.textWidth(buffer) > maxInfoLength) {
-                bufferIndex = buffer.lastIndexOf(" ");
+                bufferIndex = buffer.lastIndexOf(' ');
                 buffer = buffer.substring(0, bufferIndex);
             }
 
             if (buffer.contains("\n")) {
-                bufferIndex = buffer.indexOf("\n") + 1;
+                bufferIndex = buffer.indexOf('\n') + 1;
                 buffer = buffer.substring(0, bufferIndex);
             }
 

@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
-import au.gov.asd.tac.constellation.visual.icons.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -168,7 +168,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
 
     @Override
     public void newActiveGraph(final Graph graph) {
-        // TODO if the old graph and the new graph have the same schema, don't recalculate.
+        // TODO: if the old graph and the new graph have the same schema, don't recalculate.
         Platform.runLater(() -> {
             table.getColumns().clear();
 

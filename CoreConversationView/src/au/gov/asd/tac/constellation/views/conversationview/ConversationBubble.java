@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
-import au.gov.asd.tac.constellation.visual.tooltip.TooltipPane;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -106,7 +106,8 @@ public class ConversationBubble extends VBox {
 
         tail = new Path();
         final MoveTo start;
-        final ArcTo curve1, curve2;
+        final ArcTo curve1;
+        final ArcTo curve2;
         if (message.getConversationSide() == ConversationSide.LEFT) {
             start = new MoveTo(TAIL_OFFSET, 0);
             start.yProperty().bind(bubbleContent.heightProperty());

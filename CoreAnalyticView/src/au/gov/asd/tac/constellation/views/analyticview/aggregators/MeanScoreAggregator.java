@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ public class MeanScoreAggregator implements AnalyticAggregator<ScoreResult> {
             }
 
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, scores.stream().reduce((x, y) -> x + y).get() / scores.size());
+            aggregateScores.put(SCORE_NAME, scores.stream().reduce((x, y) -> x + y).orElse((float) 0.0) / scores.size());
 
             aggregateResult.add(new ElementScore(type, id, identifier, isNull, aggregateScores));
         }
@@ -91,7 +91,7 @@ public class MeanScoreAggregator implements AnalyticAggregator<ScoreResult> {
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 }

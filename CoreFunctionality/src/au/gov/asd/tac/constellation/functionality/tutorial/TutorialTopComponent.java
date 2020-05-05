@@ -19,11 +19,11 @@ import au.gov.asd.tac.constellation.functionality.CorePluginRegistry;
 import au.gov.asd.tac.constellation.functionality.browser.OpenInBrowserPlugin;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider;
 import au.gov.asd.tac.constellation.functionality.whatsnew.WhatsNewProvider.WhatsNewEntry;
-import au.gov.asd.tac.constellation.pluginframework.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
-import au.gov.asd.tac.constellation.utilities.branding.BrandingUtilities;
-import au.gov.asd.tac.constellation.visual.fonts.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.awt.BorderLayout;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -276,7 +276,7 @@ public final class TutorialTopComponent extends TopComponent {
             }
 
             if (dt != null) {
-                buf.append(String.format("<dl><dt>%s</dt>\n<dd>", dt));
+                buf.append(String.format("<dl><dt>%s</dt>%n<dd>", dt));
                 buf.append(wne.text);
                 buf.append("</dd></dl>\n");
             }

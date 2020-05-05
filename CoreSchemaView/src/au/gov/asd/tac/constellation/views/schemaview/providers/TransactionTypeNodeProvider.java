@@ -19,15 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.SchemaTransactionTypeUtilities;
-import au.gov.asd.tac.constellation.utilities.string.SeparatorConstants;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -114,16 +112,17 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
 
     @Override
     public void newActiveGraph(final Graph graph) {
-        // TODO if the old graph and the new graph have the same schema, don't recalculate.
+        // TODO: if the old graph and the new graph have the same schema, don't recalculate.
         Platform.runLater(() -> {
+            detailsView.getChildren().clear();
+            final Label nameLabel = new Label("No type selected");
+            detailsView.getChildren().add(nameLabel);
+            
             transactionTypes.clear();
 
             if (graph != null && graph.getSchema() != null && GraphNode.getGraphNode(graph) != null) {
                 final SchemaFactory schemaFactory = graph.getSchema().getFactory();
-                final Set<Class<? extends SchemaConcept>> concepts = new HashSet<>();
-                concepts.addAll(schemaFactory.getRegisteredConcepts());
-                SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())
-                        .forEach(childConcept -> concepts.add(childConcept.getClass()));
+                final Set<Class<? extends SchemaConcept>> concepts = schemaFactory.getRegisteredConcepts();
                 schemaLabel.setText(String.format("%s - %s", schemaFactory.getLabel(), GraphNode.getGraphNode(graph).getDisplayName()));
                 transactionTypes.addAll(SchemaTransactionTypeUtilities.getTypes(concepts));
                 Collections.sort(transactionTypes, (final SchemaTransactionType a, final SchemaTransactionType b) -> a.getName().compareToIgnoreCase(b.getName()));

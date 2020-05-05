@@ -21,8 +21,8 @@ import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.io.GraphFileConstants;
-import au.gov.asd.tac.constellation.graph.schema.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -131,7 +131,7 @@ public class MappingPanel extends javax.swing.JPanel {
 
         final TableColumn tcol = table.getColumnModel().getColumn(columnIndex);
         tcol.setCellRenderer(new MappingCellRenderer(values));
-        tcol.setCellEditor(new DefaultCellEditor(new JComboBox(values)));
+        tcol.setCellEditor(new DefaultCellEditor(new JComboBox<>(values)));
     }
 
     /**
@@ -240,24 +240,24 @@ public class MappingPanel extends javax.swing.JPanel {
                 // There are no existing mappings, so attempt to create some reasonable defaults.
                 final HashMap<String, String> canonical = new HashMap<>();
                 if (showTableColumns) {
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
                         }
                     });
                 } else {
-                    columnLabels.stream().forEach((label) -> {
+                    columnLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         canonical.put(clabel, label);
                     });
 
-                    attrLabels.stream().forEach((label) -> {
+                    attrLabels.stream().forEach(label -> {
                         final String clabel = JdbcUtilities.canonicalLabel(label);
                         if (canonical.containsKey(clabel)) {
                             mapping.put(label, canonical.get(clabel));
@@ -323,10 +323,12 @@ public class MappingPanel extends javax.swing.JPanel {
 
         @Override
         public void addTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
 
         @Override
         public void removeTableModelListener(final TableModelListener l) {
+            // Required for TableModel, Intentionally left blank
         }
     }
 

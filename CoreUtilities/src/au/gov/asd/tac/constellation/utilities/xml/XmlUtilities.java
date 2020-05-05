@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -74,6 +75,8 @@ public class XmlUtilities {
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(namespaceAware);
         transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "");
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
             transformer = transformerFactory.newTransformer();
@@ -117,7 +120,7 @@ public class XmlUtilities {
      * writing to.
      * @throws IOException if an error occurs while writing to the file.
      */
-    public void write(final Document document, final File file) throws FileNotFoundException, IOException, TransformerException {
+    public void write(final Document document, final File file) throws IOException, TransformerException {
         write(document, new FileOutputStream(file));
     }
 
@@ -416,10 +419,8 @@ public class XmlUtilities {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE) {
-                        if (data.getNodeName().equalsIgnoreCase(attrName)) {
-                            return data.getNodeValue();
-                        }
+                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
+                        return data.getNodeValue();
                     }
                 }
             }
@@ -446,10 +447,8 @@ public class XmlUtilities {
                 final NodeList childNodes = node.getChildNodes();
                 for (int j = 0; j < childNodes.getLength(); j++) {
                     final Node data = childNodes.item(j);
-                    if (data.getNodeType() == Node.ATTRIBUTE_NODE) {
-                        if (data.getNodeName().equalsIgnoreCase(attrName)) {
-                            return data.getNodeValue();
-                        }
+                    if (data.getNodeType() == Node.ATTRIBUTE_NODE && data.getNodeName().equalsIgnoreCase(attrName)) {
+                        return data.getNodeValue();
                     }
                 }
             }
@@ -665,7 +664,7 @@ public class XmlUtilities {
         }
 
         @Override
-        public int read(byte b[], int off, int len) throws IOException {
+        public int read(byte[] b, int off, int len) throws IOException {
             final int bytes = in.read(b, off, len);
             if (bytes != -1) {
                 for (int ix = off; ix < off + bytes; ix++) {

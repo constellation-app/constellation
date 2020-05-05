@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.utilities.preferences.PreferenceUtilites;
-import au.gov.asd.tac.constellation.functionality.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
@@ -43,7 +43,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 900),
+    @ActionReference(path = "Menu/Views", position = 1000),
     @ActionReference(path = "Shortcuts", name = "CS-Q")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_QualityControlViewAction",

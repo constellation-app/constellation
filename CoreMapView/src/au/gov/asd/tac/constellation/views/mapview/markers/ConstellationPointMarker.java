@@ -47,6 +47,9 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
     // point relative to image
     private float POINT_X_OFFSET;
     private float POINT_Y_OFFSET;
+    
+    private static final String POINT_MARKER_ONE_LOCATION_ONLY = "A point marker can only have one location.";
+    private static final String POINT_MARKER_ONE_LOCATION_MUST = "A point marker must have exactly one location.";
 
     public ConstellationPointMarker() {
         super();
@@ -85,38 +88,42 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
 
     @Override
     public void addLocation(Location location) {
-        throw new UnsupportedOperationException("A point marker can only have one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_ONLY);
     }
 
     @Override
     public void addLocation(float latitude, float longitude) {
-        throw new UnsupportedOperationException("A point marker can only have one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_ONLY);
     }
 
     @Override
     public void removeLocation(Location location) {
-        throw new UnsupportedOperationException("A point marker must have exactly one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_MUST);
     }
 
     @Override
     public void removeLocation(float latitude, float longitude) {
-        throw new UnsupportedOperationException("A point marker must have exactly one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_MUST);
     }
 
     @Override
     public void setLocations(final List<Location> locations) {
-        assert locations.size() == 1 : "A point marker can only have one location.";
-        super.setLocations(locations);
+        if(locations.size() == 1){
+            super.setLocations(locations);
+        } else {
+            throw new IllegalArgumentException(POINT_MARKER_ONE_LOCATION_ONLY);
+        }
+        
     }
 
     @Override
     public void addLocations(List<Location> locations) {
-        throw new UnsupportedOperationException("A point marker can only have one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_ONLY);
     }
 
     @Override
     public void removeLocations(List<Location> locations) {
-        throw new UnsupportedOperationException("A point marker must have exactly one location.");
+        throw new UnsupportedOperationException(POINT_MARKER_ONE_LOCATION_MUST);
     }
 
     @Override
@@ -178,10 +185,7 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
         if (!Objects.equals(this.getLocation(), other.getLocation())) {
             return false;
         }
-        if (!Objects.equals(this.getProperties(), other.getProperties())) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.getProperties(), other.getProperties());
     }
 
     @Override
