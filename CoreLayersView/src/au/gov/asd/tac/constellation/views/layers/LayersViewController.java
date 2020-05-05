@@ -62,7 +62,7 @@ public class LayersViewController {
             }
         }
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        newBitmask = (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
