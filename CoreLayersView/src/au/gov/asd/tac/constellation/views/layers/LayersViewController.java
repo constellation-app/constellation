@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewState.LayersVie
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -57,12 +58,10 @@ public class LayersViewController {
         }
         int newBitmask = 0b0;
         for (LayerDescription layer : pane.getlayers()) {
-            if(!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)){
-                newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
-            }
+            newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
         }
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        newBitmask = (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
@@ -77,10 +76,8 @@ public class LayersViewController {
             return;
         }
         final List<String> layerQueries = new ArrayList<>();
-        for (LayerDescription layer : pane.getlayers()) {
-            if(!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)){
-                layerQueries.add(layer.getLayerQuery() == "" ? null : layer.getLayerQuery());
-            }
+        for (LayerDescription layer : pane.getlayers()) { // TODO: This was the last change of tuesday
+            layerQueries.add(StringUtils.isBlank(layer.getLayerQuery()) ? null : layer.getLayerQuery());
         }
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
     }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -43,6 +44,7 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
     private float x;
     private float y;
     private float z;
+    private int layer;
 
     @Override
     public PluginParameters createParameters() {
@@ -79,8 +81,14 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         final int xAttrId = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttrId = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttrId = VisualConcept.VertexAttribute.Z.get(graph);
+        
+        final int vxLayerAttrId = VisualConcept.VertexAttribute.LAYER_MASK.get(graph);
+        final int graphLayerAttrId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
 
         final int vxId = graph.addVertex();
+        this.layer = graph.getIntValue(graphLayerAttrId, 0);
+        this.layer = layer == 1 ? 1 : layer | (1 << 0);
+        graph.setIntValue(vxLayerAttrId, vxId, layer);
         graph.setFloatValue(xAttrId, vxId, x);
         graph.setFloatValue(yAttrId, vxId, y);
         graph.setFloatValue(zAttrId, vxId, z);

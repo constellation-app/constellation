@@ -46,7 +46,6 @@ public class LayersViewPane extends BorderPane {
     private final GridPane layersGridPane;
     private final VBox layersViewPane;
     private final HBox options;
-    private int currentIndex;
     private final List<LayerDescription> layers;
 
     public LayersViewPane(final LayersViewController controller) {
@@ -85,19 +84,18 @@ public class LayersViewPane extends BorderPane {
         descriptionHeadingText.setMinWidth(80);
 
         // add default layers
-        this.currentIndex = 0;
-        createLayer(++currentIndex, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION);
-        layers.add(new LayerDescription(currentIndex, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-        createLayer(++currentIndex, false, "", "");
-        layers.add(new LayerDescription(currentIndex, false, "",""));
+        createLayer(layers.size()+1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION);
+        layers.add(new LayerDescription(layers.size()+1, true, LayerDescription.DEFAULT_QUERY_STRING, LayerDescription.DEFAULT_QUERY_DESCRIPTION));
+        createLayer(layers.size()+1, false, "", "");
+        layers.add(new LayerDescription(layers.size()+1, false, "",""));
         
         // create options
         final Button addButton = new Button("Add New Layer");
         addButton.setAlignment(Pos.CENTER_RIGHT);
         addButton.setOnAction(event -> {
             if (layersGridPane.getRowCount() <= 32) { // 32 layers plus headings
-                createLayer(++currentIndex, false, "", "");
-                layers.add(new LayerDescription(currentIndex, false, "", ""));
+                createLayer(layers.size()+1, false, "", "");
+                layers.add(new LayerDescription(layers.size()+1, false, "", ""));
                 controller.updateState(true);
             } else {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
@@ -193,7 +191,6 @@ public class LayersViewPane extends BorderPane {
     
     public synchronized void setLayers(final List<LayerDescription> layers) {
         this.layers.clear();
-        currentIndex = 0;
         final List<LayerDescription> layersCopy = new ArrayList();
         layers.forEach((layer) -> {
             layersCopy.add(new LayerDescription(layer));
@@ -208,7 +205,6 @@ public class LayersViewPane extends BorderPane {
                 layersGridPane.getChildren().removeIf(node -> GridPane.getRowIndex(node) > 0);
                 for (final LayerDescription layer : layers) {
                     createLayer(layer.getLayerIndex(), layer.getCurrentLayerVisibility(), layer.getLayerQuery(), layer.getLayerDescription());
-                    ++currentIndex;
                 }
             }
         });

@@ -2208,7 +2208,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private void updateLayerMask(final int attributeId, final int elementid) {
         if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
             // get the element type of selected layer mask and recalculate element mask
-            final int selectedLayerMask = (layerMaskSelectedAttributeId >= 0)
+            currentVisibleMask = (layerMaskSelectedAttributeId >= 0)
                     ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
             final GraphElementType elementType = getAttributeElementType(attributeId);
 
@@ -2219,29 +2219,28 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
 
-            updateLayerMask(attributeId, elementType, elementid, selectedLayerMask);
+            updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
         }
     }
 
     // update the layer visibility of all elements
     private void updateAllLayerMasks() {
-        final int selectedLayerMask = (layerMaskSelectedAttributeId >= 0)
+        currentVisibleMask = (layerMaskSelectedAttributeId >= 0)
                 ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
 
-        currentVisibleMask = selectedLayerMask;
         recalculateLayerVisibilities();
 
         // loop through all vertexes and recalculate masks
         final int vertexCount = getVertexCount();
         for (int i = 0; i < vertexCount; i++) {
             // TODO: attrId -1 should cause an error - what is happening here?
-            updateLayerMask(-1, GraphElementType.VERTEX, vStore.getElement(i), selectedLayerMask);
+            updateLayerMask(-1, GraphElementType.VERTEX, vStore.getElement(i), currentVisibleMask);
         }
 
         // loop through all transactions and recalculate masks
         final int transactionCount = getTransactionCount();
         for (int i = 0; i < transactionCount; i++) {
-            updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), selectedLayerMask);
+            updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
         }
     }
 
