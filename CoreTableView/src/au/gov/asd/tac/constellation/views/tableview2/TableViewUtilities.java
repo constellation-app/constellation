@@ -228,6 +228,10 @@ public class TableViewUtilities {
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             try (final SXSSFWorkbook workbook = new SXSSFWorkbook(SXSSFWorkbook.DEFAULT_WINDOW_SIZE)) {
+                File poi_dir = new File(System.getProperty("java.io.tmpdir"), "poifiles");
+                if (!poi_dir.exists()) {
+                    poi_dir.mkdir();
+                }
                 final Sheet sheet = workbook.createSheet(sheetName);
 
                 final List<Integer> visibleIndices = table.getColumns().stream()
