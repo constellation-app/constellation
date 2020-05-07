@@ -135,6 +135,7 @@ public class LabelDropper implements GraphDropper {
                 Exceptions.printStackTrace(ex);
             } catch (final ClassCastException ex) {
                 //Do nothing
+                //This exception occurs when dragging a label from Attribute Editor to graph area
             }
         }
 
