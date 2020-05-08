@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.query;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +36,9 @@ public class QueryEvaluator {
 
     private static final String PARENTHESES_REGEX = "(?<!(?<![^\\\\]\\\\(?:\\\\"
             + "{2}){0,10})\\\\)\\)|(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\(";
+    
+    private QueryEvaluator() {
+    }
 
     /**
      * Tokeniser takes input from the user and breaks it into terms such as
@@ -72,10 +77,6 @@ public class QueryEvaluator {
         }
 
         for (final char c : input.toCharArray()) {
-            if (c == '\\') {
-                System.out.println();
-            }
-
             if (c == '(' && prevChar != '\\') {
                 if (StringUtils.isBlank(currentString)) {
                     currentString = "(";
@@ -131,7 +132,10 @@ public class QueryEvaluator {
      * @return 0, 1 or 2 depending on the operator.
      */
     private static int getPrecedence(final String operator) {
-        return operator.equals("||") ? 1 : operator.equals("&&") ? 2 : 0;
+        if(operator.equals("||")){
+            return 1;
+        }
+        return operator.equals("&&") ? 2 : 0;
     }
 
     /**
@@ -143,8 +147,8 @@ public class QueryEvaluator {
     public static List<String> convertToPostfix(final List<String> queryAsList) {
         // list of queries to return in postfix order
         final List<String> orderedInPostfix = new ArrayList<>();
-        // initializing empty Stack to hold operators || && ( )
-        final Stack<String> operatorStack = new Stack<>();
+        // initializing empty Stack to hold operators
+        final Deque<String> operatorStack = new ArrayDeque<>();
 
         for (final String token : queryAsList) {
             // If the scanned character is an operand, add it to output. 
@@ -154,12 +158,12 @@ public class QueryEvaluator {
                 String trimmedToken = token;
 
                 while (trimmedToken.contains("\\") && moreToEscape) {
-                    if (trimmedToken.length() >= trimmedToken.indexOf("\\")) {
+                    if (trimmedToken.length() >= trimmedToken.indexOf('\\')) {
                         final StringBuilder sb = new StringBuilder(trimmedToken);
-                        sb.deleteCharAt(trimmedToken.indexOf("\\"));
+                        sb.deleteCharAt(trimmedToken.indexOf('\\'));
                         trimmedToken = sb.toString();
                         // when the trimmedToken has another \. meaning more to escape
-                        moreToEscape = trimmedToken.contains("\\") ? moreToEscape : false;
+                        moreToEscape = trimmedToken.contains("\\");// ? moreToEscape : false;
                     }
                 }
                 if (!StringUtils.isBlank(trimmedToken)) {

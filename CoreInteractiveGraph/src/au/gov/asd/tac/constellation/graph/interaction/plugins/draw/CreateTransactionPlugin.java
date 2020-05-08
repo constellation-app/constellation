@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -46,7 +45,6 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
     private int source;
     private int destination;
     private boolean directed;
-    private int layer;
 
     @Override
     public PluginParameters createParameters() {
@@ -83,8 +81,8 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
         final int graphLayerAttrId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
 
         final int txId = graph.addTransaction(source, destination, directed);
-        this.layer = graph.getIntValue(graphLayerAttrId, 0);
-        this.layer = layer | (1 << 1);
+        int layer = graph.getIntValue(graphLayerAttrId, 0);
+        layer = layer | (1 << 1);
         graph.setIntValue(txLayerAttrId, txId, layer);
         graph.getSchema().newTransaction(graph, txId);
     }
