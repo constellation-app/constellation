@@ -149,8 +149,8 @@ public class AnalyticConcept extends SchemaConcept {
                 .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
                 .setColor(ConstellationColor.EMERALD)
                 .setForegroundIcon(AnalyticIconProvider.CALL)
-                .setDetectionRegex(Pattern.compile("\\+?([0-9]{8,15})", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("\\+?([0-9]{8,15})", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("\\+?\\d{8,15}", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^\\+?\\d{8,15}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
                 .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
@@ -219,40 +219,40 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaVertexType IPV4 = new SchemaVertexType.Builder("IPv4 Address")
                 .setDescription("A node representing an IP address (in the IPv4 format) on a network, eg. the private ip address 192.168.0.1")
                 .setSuperType(IP_ADDRESS)
-                .setDetectionRegex(Pattern.compile("((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("(?:(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType IPV6 = new SchemaVertexType.Builder("IPv6 Address")
                 .setDescription("A node representing an IP address (in the IPv6 format) on a network, eg. the ip address 1:2:3:4:5:6:7:8")
                 .setSuperType(IP_ADDRESS)
-                .setDetectionRegex(Pattern.compile("("
-                        + "([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|" // 1:2:3:4:5:6:7:8
-                        + "([0-9a-f]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
-                        + "([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
-                        + "([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
-                        + "([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|" // 1::6:7:8 | 1:2:3:4::6:7:8 | 1:2:3:4::8
-                        + "([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|" // 1::5:6:7:8 | 1:2:3::5:6:7:8 | 1:2:3::8
-                        + "([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|" // 1::4:5:6:7:8 | 1:2::4:5:6:7:8 | 1:2::8
-                        + "[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
-                        + ":((:[0-9a-f]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 ::8 | ::
-                        + "fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
-                        + "::([f]{4}(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
-                        + "([0-9a-f]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+                .setDetectionRegex(Pattern.compile("(?:"
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
+                        + "[fe|FE]80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
+                        + ":(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 | ::8 | ::
+                        + "[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|" // 1::4:5:6:7:8 | 1:2::4:5:6:7:8 | 1:2::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|" // 1::5:6:7:8 | 1:2:3::5:6:7:8 | 1:2:3::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|" // 1::6:7:8 | 1:2:3:4::6:7:8 | 1:2:3:4::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
+                        + "(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
                         + ")", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("("
-                        + "([0-9a-f]{1,4}:){7,7}[0-9a-f]{1,4}|" // 1:2:3:4:5:6:7:8
-                        + "([0-9a-f]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
-                        + "([0-9a-f]{1,4}:){1,6}:[0-9a-f]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
-                        + "([0-9a-f]{1,4}:){1,5}(:[0-9a-f]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
-                        + "([0-9a-f]{1,4}:){1,4}(:[0-9a-f]{1,4}){1,3}|" // 1::6:7:8 | 1:2:3:4::6:7:8 | 1:2:3:4::8
-                        + "([0-9a-f]{1,4}:){1,3}(:[0-9a-f]{1,4}){1,4}|" // 1::5:6:7:8 | 1:2:3::5:6:7:8 | 1:2:3::8
-                        + "([0-9a-f]{1,4}:){1,2}(:[0-9a-f]{1,4}){1,5}|" // 1::4:5:6:7:8 | 1:2::4:5:6:7:8 | 1:2::8
-                        + "[0-9a-f]{1,4}:((:[0-9a-f]{1,4}){1,6})|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
-                        + ":((:[0-9a-f]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 ::8 | ::
-                        + "fe80:(:[0-9a-f]{0,4}){0,4}%[0-9a-z]{1,}|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
-                        + "::([f]{4}(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
-                        + "([0-9a-f]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]).){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
-                        + ")", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:"
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
+                        + "[fe|FE]80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
+                        + ":(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 | ::8 | ::
+                        + "[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,2}(?::[0-9a-fA-F]{1,4}){1,5}|" // 1::4:5:6:7:8 | 1:2::4:5:6:7:8 | 1:2::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,3}(?::[0-9a-fA-F]{1,4}){1,4}|" // 1::5:6:7:8 | 1:2:3::5:6:7:8 | 1:2:3::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}(?::[0-9a-fA-F]{1,4}){1,3}|" // 1::6:7:8 | 1:2:3:4::6:7:8 | 1:2:3:4::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
+                        + "(?:[0-9a-fA-F]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
+                        + "(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
+                        + ")$", Pattern.CASE_INSENSITIVE))
                 .build();
         // online location derived types
         public static final SchemaVertexType EMAIL_ADDRESS = new SchemaVertexType.Builder("Email")
@@ -260,8 +260,12 @@ public class AnalyticConcept extends SchemaConcept {
                 .setColor(ConstellationColor.MUSK)
                 .setForegroundIcon(AnalyticIconProvider.EMAIL)
                 .setSuperType(ONLINE_IDENTIFIER)
-                .setDetectionRegex(Pattern.compile("[0-9a-z_\\-\\.\\+\\&'=]{1,200}@[0-9a-zA-Z_\\-\\+\\&'=]{1,30}(\\.[0-9a-z_\\-\\+\\&'=]{1,30}){1,5}", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("[0-9a-z_\\-\\.\\+\\&'=]{1,200}@[0-9a-zA-Z_\\-\\+\\&'=]{1,30}(\\.[0-9a-z_\\-\\+\\&'=]{1,30}){1,5}", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
+                        Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
+                        Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType USER_NAME = new SchemaVertexType.Builder("User Name")
                 .setDescription("A node representing an online user name")
@@ -270,30 +274,64 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaVertexType HOST_NAME = new SchemaVertexType.Builder("Host Name")
                 .setDescription("A node representing a hostname")
                 .setSuperType(ONLINE_LOCATION)
-                .setDetectionRegex(Pattern.compile("(\\w+://)?([\\w\\-_]+(?:(?:\\.[\\w\\-_]+){1,}))", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("(\\w+://)?([\\w\\-_]+(?:(?:\\.[\\w\\-_]+){1,}))", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("(?:(?:[0-9a-zA-Z][0-9a-zA-Z\\-]{0,61}[0-9a-zA-Z]|[0-9a-zA-Z])\\.)+(?:[0-9a-zA-Z][0-9a-zA-Z\\-]{0,61}[0-9a-zA-Z]|[0-9a-zA-Z])", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:(?:[0-9a-z][0-9a-z\\-]{0,61}[0-9a-zA-Z]|[0-9a-zA-Z])\\.)+(?:[0-9a-zA-Z][0-9a-zA-Z\\-]{0,61}[0-9a-zA-Z]|[0-9a-zA-Z])$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType URL = new SchemaVertexType.Builder("URL")
                 .setDescription("A node representing a URL")
                 .setSuperType(ONLINE_LOCATION)
-                .setDetectionRegex(Pattern.compile("(\\w+://)?([\\w\\-_]+(?:(?:\\.[\\w\\-_]+){1,}))([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("(\\w+://)?([\\w\\-_]+(?:(?:\\.[\\w\\-_]+){1,}))([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("(?:(?<scheme>[a-zA-Z][a-zA-Z\\d\\+\\-\\.]*):)?" // protocol
+                        + "(?:"
+                        + "(?:"
+                        + "(?:\\/\\/"
+                        + "(?:"
+                        + "(?:(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=%]*)(?::(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:%]*))?)@)?" // user info
+                        + "(?:(?:[a-zA-Z\\d\\.\\-%]+)|(?:\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(?:\\[(?:[a-fA-F\\d\\.:]+)\\]))?" // host ip
+                        + "(?::(\\d*))?" // port
+                        + ")"
+                        + ")"
+                        + "(?:(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // slash path
+                        + ")"
+                        + "|(?:\\/(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*))?)" // slash path
+//                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
+                        + ")"
+                        + "(?:\\?(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?" // query string
+                        + "(?:\\#(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?", // fragment
+                        Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:([a-zA-Z][a-zA-Z\\d\\+\\-\\.]*):)?" // protocol
+                        + "(?:"
+                        + "(?:"
+                        + "(?:\\/\\/"
+                        + "(?:"
+                        + "(?:(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=%]*)(?::(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:%]*))?)@)?" // user info
+                        + "(?:(?:[a-zA-Z\\d\\.\\-%]+)|(?:\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})|(?:\\[(?:[a-fA-F\\d\\.:]+)\\]))?" // host ip
+                        + "(?::(\\d*))?" // port
+                        + ")"
+                        + ")"
+                        + "(?:(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // slash path
+                        + ")"
+                        + "|(?:\\/(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*))?)" // slash path
+//                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
+                        + ")"
+                        + "(?:\\?(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?" // query string
+                        + "(?:\\#(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?$", // fragment
+                        Pattern.CASE_INSENSITIVE))
                 .build();
         // location derived types
         public static final SchemaVertexType COUNTRY = new SchemaVertexType.Builder("Country")
                 .setDescription("A node representing the name of a country")
                 .setSuperType(LOCATION)
-                .setValidationRegex(Pattern.compile("(a-z){2,}", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^[a-zA-Z '\\-\\(\\)Åçé]{2,50}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType GEOHASH = new SchemaVertexType.Builder("Geohash")
                 .setDescription("A node representing a geohash")
                 .setSuperType(LOCATION)
-                .setValidationRegex(Pattern.compile("(0-9a-z=_)+", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^[0-9a-z=_]{1,12}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType MGRS = new SchemaVertexType.Builder("MGRS")
                 .setDescription("A node representing a Military Grid Reference System coordinate")
                 .setSuperType(LOCATION)
-                .setValidationRegex(Pattern.compile("[0-9]{1,2}[c-x!i!o]{1}([a-z!o]{2})?(([0-9][0-9]){1,5})?", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:[1-9]|[1-5]\\d|60)[^abioyz]{1}[^io]{2}(?:\\d\\d){0,5}$", Pattern.CASE_INSENSITIVE))
                 .build();
         // hash derived types
         public static final SchemaVertexType MD5 = new SchemaVertexType.Builder("MD5 Hash")
@@ -301,21 +339,21 @@ public class AnalyticConcept extends SchemaConcept {
                 .setForegroundIcon(AnalyticIconProvider.MD5)
                 .setSuperType(HASH)
                 .setDetectionRegex(Pattern.compile("[0-9a-fA-F]{32}", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("[0-9a-f]{32}", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^[0-9a-f]{32}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType SHA1 = new SchemaVertexType.Builder("SHA1 Hash")
                 .setDescription("A node representing an SHA1 hash")
                 .setForegroundIcon(AnalyticIconProvider.SHA1)
                 .setSuperType(HASH)
                 .setDetectionRegex(Pattern.compile("[0-9a-fA-F]{40}", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("[0-9a-f]{40}", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^[0-9a-f]{40}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType SHA256 = new SchemaVertexType.Builder("SHA256 Hash")
                 .setDescription("A node representing an SHA256 hash")
                 .setForegroundIcon(AnalyticIconProvider.SHA256)
                 .setSuperType(HASH)
                 .setDetectionRegex(Pattern.compile("[0-9a-fA-F]{64}", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("[0-9a-f]{64}", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^[0-9a-f]{64}$", Pattern.CASE_INSENSITIVE))
                 .build();
     }
 

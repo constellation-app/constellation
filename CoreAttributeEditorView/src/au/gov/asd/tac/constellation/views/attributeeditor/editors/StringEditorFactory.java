@@ -78,7 +78,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_SPACING);
 

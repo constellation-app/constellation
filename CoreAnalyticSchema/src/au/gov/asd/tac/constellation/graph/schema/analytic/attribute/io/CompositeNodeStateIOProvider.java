@@ -45,15 +45,15 @@ public class CompositeNodeStateIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final String attrVal = jnode.asText();
-        graph.setStringValue(attributeId, elementId, attrVal);
+        final String attributeValue = jnode.asText();
+        graph.setStringValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final String attrVal = graph.getStringValue(attribute.getId(), elementId);
-            jsonGenerator.writeStringField(attribute.getName(), attrVal);
+            final String attributeValue = graph.getStringValue(attribute.getId(), elementId);
+            jsonGenerator.writeStringField(attribute.getName(), attributeValue);
         }
     }
 }

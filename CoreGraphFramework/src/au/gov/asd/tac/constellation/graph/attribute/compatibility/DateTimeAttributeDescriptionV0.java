@@ -406,16 +406,6 @@ public final class DateTimeAttributeDescriptionV0 extends AbstractAttributeDescr
     }
 
     @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 6;
-    }
-
-    @Override
     public boolean isClear(final int id) {
         return data[id] == defaultValue;
     }

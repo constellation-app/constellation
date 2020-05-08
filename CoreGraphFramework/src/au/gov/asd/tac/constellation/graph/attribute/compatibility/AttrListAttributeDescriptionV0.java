@@ -34,7 +34,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @Deprecated
-@ServiceProvider(service = AttributeDescription.class)
+//@ServiceProvider(service = AttributeDescription.class)
 public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescription {
 
     private static final String DEFAULT_VALUE = null;
@@ -198,11 +198,6 @@ public final class AttrListAttributeDescriptionV0 extends AbstractAttributeDescr
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return false;
     }
 
     @Override

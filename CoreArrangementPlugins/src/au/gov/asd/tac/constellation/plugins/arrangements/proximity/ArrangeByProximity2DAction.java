@@ -34,7 +34,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.misc.ArrangeByProximity2DAction")
 @ActionRegistration(displayName = "#CTL_ArrangeByProximity2DAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 400),
+    @ActionReference(path = "Menu/Arrange", position = 300),
     @ActionReference(path = "Shortcuts", name = "C-P")
 })
 @Messages("CTL_ArrangeByProximity2DAction=Proximity")

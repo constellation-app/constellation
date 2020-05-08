@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,9 +33,10 @@ public class DrawFlagsModeAttributeInteraction extends AbstractAttributeInteract
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        final DrawFlags drawFlags = (DrawFlags) attrVal;
-        return String.format("nodes: %s; connections: %s; node_labels: %s; connection_labels: %s; blazes: %s", drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());
+    public String getDisplayText(Object value) {
+        final DrawFlags drawFlags = (DrawFlags) value;
+        return String.format("nodes: %s; connections: %s; node_labels: %s; connection_labels: %s; blazes: %s", 
+                drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());
     }
 
     @Override

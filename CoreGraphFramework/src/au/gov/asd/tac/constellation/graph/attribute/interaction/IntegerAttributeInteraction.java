@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription}
+ * 
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -31,11 +33,11 @@ public class IntegerAttributeInteraction extends AbstractAttributeInteraction<In
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(Object value) {
+        if (value == null) {
             return null;
         }
-        return attrVal.toString();
+        return value.toString();
     }
 
     @Override

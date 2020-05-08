@@ -45,7 +45,7 @@ import org.openide.util.NbBundle;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInBubbleTreeAction")
 @ActionRegistration(displayName = "#CTL_ArrangeInBubbleTreeAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/tree/resources/bubbletree.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 800),
+    @ActionReference(path = "Menu/Arrange", position = 1200),
     @ActionReference(path = "Shortcuts", name = "C-A-T")
 })
 @NbBundle.Messages("CTL_ArrangeInBubbleTreeAction=Bubble Tree 3D")

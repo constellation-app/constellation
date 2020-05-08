@@ -18,6 +18,12 @@ package au.gov.asd.tac.constellation.graph.attribute;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
@@ -27,69 +33,77 @@ import org.testng.annotations.Test;
  */
 public class ZonedDateTimeAttributeDescriptionNGTest {
 
-//    public ZonedDateTimeAttributeDescriptionNGTest() {
-//    }
-//
-//    @BeforeClass
-//    public static void setUpClass() throws Exception {
-//    }
-//
-//    @AfterClass
-//    public static void tearDownClass() throws Exception {
-//    }
-//
-//    @BeforeMethod
-//    public void setUpMethod() throws Exception {
-//    }
-//
-//    @AfterMethod
-//    public void tearDownMethod() throws Exception {
-//    }
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
+
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+    }
+
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+    
     @Test
     public void testParseConstellationStringWithZone() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "2016-11-03 23:16:27.000 +00:00 [UTC]";
         final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
+        final ZonedDateTime result = instance.convertFromString(value);
         assertEquals(result, expResult);
     }
 
     @Test
     public void testParseConstellationStringWithoutZone() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "2016-11-03 23:16:27.000";
         final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
+        final ZonedDateTime result = instance.convertFromString(value);
         assertEquals(result, expResult);
     }
 
     @Test
     public void testParseIsoZ() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "2016-11-03T23:16:27.000Z";
         final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
+        final ZonedDateTime result = instance.convertFromString(value);
         assertEquals(result, expResult);
     }
 
     @Test
     public void testParseIsoZWithSpace() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "2016-11-03 23:16:27.000Z";
         final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
+        final ZonedDateTime result = instance.convertFromString(value);
         assertEquals(result, expResult);
     }
 
     @Test
     public void testParseIsoZoneLetterIgnored() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "2016-11-03T23:16:27.000A";
         final ZonedDateTime expResult = ZonedDateTime.of(2016, 11, 3, 23, 16, 27, 0, ZoneId.of("UTC"));
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
+        final ZonedDateTime result = instance.convertFromString(value);
         assertEquals(result, expResult);
     }
 
     @Test
-    public void testParseWithInvalidDateUsingAllZeros() {
+    public void testParseWithInvalidDate() {
+        final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();
         final String value = "0000-00-00T00:00:00.000";
-        final ZonedDateTime expResult = null;
-        final ZonedDateTime result = ZonedDateTimeAttributeDescription.parseString(value);
-        assertEquals(result, expResult);
+        try {
+            final ZonedDateTime result = instance.convertFromString(value);
+        } catch (final IllegalArgumentException ex) {
+            assertTrue(ex != null);
+            return;
+        }
+        fail("The invalid datetime was parsed successfully?");
     }
 }

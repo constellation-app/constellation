@@ -23,7 +23,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.CopyToNewGraphPlugin;
@@ -358,9 +360,9 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final int txVisibilityAttr = wgcopy.addAttribute(GraphElementType.TRANSACTION, FloatAttributeDescription.ATTRIBUTE_NAME, VISIBILITY, VISIBILITY, 1, null);
 
             final int txColorAttr = wgcopy.getAttribute(GraphElementType.TRANSACTION, "color");
-            final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, "boolean", "layer_guideline", "This transaction is a layer guideline", false, null);
+            final int txGuideline = wgcopy.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "layer_guideline", "This transaction is a layer guideline", false, null);
             final ConstellationColor guidelineColor = ConstellationColor.getColorValue(0.25f, 0.25f, 0.25f, 1f);
-            wgcopy.addAttribute(GraphElementType.VERTEX, "integer", ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
+            wgcopy.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, ORIGINAL_ID_LABEL, "Original Node Id", -1, null);
 
             final ArrayList<Float> values = new ArrayList<>();
             final Map<Integer, ArrayList<Float>> remappedLayers = new HashMap<>();
@@ -515,7 +517,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
-            if (date != ZonedDateTimeAttributeDescription.NULL_VALUE && d1t <= date && date < d2t) {
+            if (d1t <= date && date < d2t) {
                 final long layerId = (date - d1t) / intervalLength;
                 final float layer = (float) layerId;
 
@@ -547,6 +549,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
         // Now that we have the total number of layers, tell the graph so it
         // can handle the visibility toggle.
+        wgcopy.addAttribute(GraphElementType.GRAPH, "integer", NLAYERS, "The number of layers to layer by time", 1, null);
         final int nLayersAttr = wgcopy.getAttribute(GraphElementType.GRAPH, NLAYERS);
         wgcopy.setIntValue(nLayersAttr, 0, remappedLayers.keySet().size());
 
@@ -589,7 +592,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
 
             // Only use transactions that have a datetime value set.
             final long date = wgcopy.getLongValue(dtAttr, txId);
-            if (date != ZonedDateTimeAttributeDescription.NULL_VALUE && (d1t <= date && date < d2t)) {
+            if (d1t <= date && date < d2t) {
                 dtg.setTimeInMillis(date);
                 dtg.setTimeZone(TimeZone.getTimeZone("UTC"));
 
@@ -640,8 +643,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             }
         }
 
-        // Now that we have the total number of layers, tell the graph so it
-        // can handle the visibility toggle.
+        // Now that we have the total number of layers, tell the graph so it can handle the visibility toggle.
         final int nLayersAttr = wgcopy.getAttribute(GraphElementType.GRAPH, NLAYERS);
         wgcopy.setIntValue(nLayersAttr, 0, remappedLayers.keySet().size());
         txToDelete.clear();
