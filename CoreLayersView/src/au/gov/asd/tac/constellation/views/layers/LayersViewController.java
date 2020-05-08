@@ -76,7 +76,7 @@ public class LayersViewController {
             return;
         }
         final List<String> layerQueries = new ArrayList<>();
-        for (LayerDescription layer : pane.getlayers()) { // TODO: This was the last change of tuesday
+        for (LayerDescription layer : pane.getlayers()) {
             layerQueries.add(StringUtils.isBlank(layer.getLayerQuery()) ? null : layer.getLayerQuery());
         }
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
