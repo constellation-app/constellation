@@ -323,19 +323,65 @@ public final class TableViewPane extends BorderPane {
         
         final Label columnFilterLabel = new Label("Filter:");
         final TextField columnFilterTextField = new TextField ();
+        final CheckBox columnCheckboxSource = new CheckBox("Filter Source.");
+        final CheckBox columnCheckboxDestination = new CheckBox("Filter Destination.");
+        final CheckBox columnCheckboxTransaction = new CheckBox("Filter Transaction.");
+
         final HBox filterBox = new HBox();
         filterBox.getChildren().addAll(columnFilterLabel, columnFilterTextField);
         
         final CustomMenuItem columnFilter = new CustomMenuItem(filterBox);
         columnFilter.setHideOnClick(false);
+        
+            
         columnFilterTextField.setOnKeyReleased(event -> {
             final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
+            
             columnCheckboxes.forEach(item -> {
                 final String columnName = item.getId().toLowerCase();
-                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
+                //item.setVisible((filterTerm.isBlank() || columnName.contains(filterTerm)) && (columnName.contains("source."))); 
+                refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
             });
         });
+        //.......................
+        columnCheckboxSource.setSelected(true); 
+        columnCheckboxDestination.setSelected(true);
+        columnCheckboxTransaction.setSelected(true);
+        final CustomMenuItem columnFilterSource = new CustomMenuItem(columnCheckboxSource);
+        columnFilterSource.setHideOnClick(false);        
+        columnFilterSource.setOnAction(e -> {
+            refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
+            e.consume();
+        });
         
+        final CustomMenuItem columnFilterDestination = new CustomMenuItem(columnCheckboxDestination);
+        columnFilterDestination.setHideOnClick(false);        
+        columnFilterDestination.setOnAction(e -> {
+            refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
+            e.consume();
+        });
+        
+        final CustomMenuItem columnFilterTransaction = new CustomMenuItem(columnCheckboxTransaction);
+        columnFilterTransaction.setHideOnClick(false);        
+        columnFilterTransaction.setOnAction(e -> {
+            refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
+            e.consume();
+        });
+        
+        refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
+        
+//        final CustomMenuItem columnFilter_Dest = new CustomMenuItem(new Label("Filter Dest."));
+//        columnFilter_Dest.setHideOnClick(false);
+//        columnFilter_Dest.setOnAction(e -> {
+//            final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
+//
+//            columnCheckboxes.forEach(item -> {
+//                final String columnName = item.getId().toLowerCase();
+//                item.setVisible((filterTerm.isBlank() || columnName.contains(filterTerm)) && (columnName.contains("destination.")));
+//            });
+//        });
+        
+        //.......................
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
         allColumns.setOnAction(e -> {
@@ -392,7 +438,8 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), columnFilter);
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), columnFilterSource,
+                columnFilterTransaction, columnFilterDestination, columnFilter);
 
         columnIndex.forEach(columnTuple -> {
             final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
@@ -413,6 +460,36 @@ public final class TableViewPane extends BorderPane {
         return cm;
     }
 
+    private void refreshColumnSelectionMenu(ArrayList<CustomMenuItem> columnCheckboxes, TextField columnFilterTextField, CheckBox columnCheckboxSource,
+            CheckBox columnCheckboxDestination, CheckBox columnCheckboxTransaction)
+    {
+        final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
+
+        columnCheckboxes.forEach(item -> {
+            final String columnName = item.getId().toLowerCase();
+//            boolean isVisible = ((CheckBox)((CustomMenuItem)e.getSource()).getContent()).isSelected()
+//                    ? (filterTerm.isBlank() || columnName.contains(filterTerm)) && columnName.contains("source.") 
+//                    : (filterTerm.isBlank() || columnName.contains(filterTerm));
+        
+            boolean isVisible = (filterTerm.isBlank() || columnName.contains(filterTerm));
+
+            if (columnName.startsWith("source.")) 
+            {
+                isVisible =  isVisible && columnCheckboxSource.isSelected();
+            }
+            else if (columnName.startsWith("destination."))
+            {
+                isVisible =  isVisible && columnCheckboxDestination.isSelected();
+            }
+            else if (columnName.startsWith("transaction."))
+            {
+                isVisible =  isVisible && columnCheckboxTransaction.isSelected();
+            }
+
+            item.setVisible(isVisible);
+        });
+    }
+            
     private void updateVisibleColumns(final Graph graph, final TableViewState state,
             final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columns, final UpdateMethod updateState) {
         if (graph != null && state != null) {
