@@ -138,8 +138,8 @@ public class LayersViewPane extends BorderPane {
         ((CheckBox) visibilityCheckBox).setPadding(new Insets(0, 30, 0, 15));
         ((CheckBox) visibilityCheckBox).setSelected(checkBoxSelected);
         visibilityCheckBox.setOnMouseClicked(e -> {
-            Node source = (Node) e.getSource();
-            LayerDescription layer = layers.get(GridPane.getRowIndex(source)-1);
+            final Node source = (Node) e.getSource();
+            final LayerDescription layer = layers.get(GridPane.getRowIndex(source)-1);
             layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
             controller.submit();
             controller.execute();
@@ -151,7 +151,7 @@ public class LayersViewPane extends BorderPane {
         ((TextArea) queryTextArea).setText(query);
         ((TextArea) queryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if(!newVal){
-                LayerDescription layer = layers.get(currentIndex-1);
+                final LayerDescription layer = layers.get(currentIndex-1);
                 layer.setQueryText(((TextArea) queryTextArea).getText());
                 controller.updateState(true);
             }
@@ -162,7 +162,7 @@ public class LayersViewPane extends BorderPane {
         ((TextArea) descriptionTextArea).setText(description);
         ((TextArea) descriptionTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if(!newVal){
-                LayerDescription layer = layers.get(currentIndex-1);
+                final LayerDescription layer = layers.get(currentIndex-1);
                 layer.setDescriptionText(((TextArea) descriptionTextArea).getText());
                 controller.updateState(true);
             }

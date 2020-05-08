@@ -134,7 +134,7 @@ public class AnalyticViewState {
         public static class MetaAttribute {
 
             private MetaAttribute() {
-                throw new IllegalStateException("Utility class");
+                throw new IllegalStateException("Concept class");
             }
 
             public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")

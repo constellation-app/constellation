@@ -163,7 +163,7 @@ public class QueryEvaluator {
                         sb.deleteCharAt(trimmedToken.indexOf('\\'));
                         trimmedToken = sb.toString();
                         // when the trimmedToken has another \. meaning more to escape
-                        moreToEscape = trimmedToken.contains("\\");// ? moreToEscape : false;
+                        moreToEscape = trimmedToken.contains("\\") && moreToEscape;
                     }
                 }
                 if (!StringUtils.isBlank(trimmedToken)) {

@@ -95,7 +95,7 @@ public class LayersViewState {
         public static class MetaAttribute {
 
             private MetaAttribute() {
-                throw new IllegalStateException("Utility class");
+                throw new IllegalStateException("Concept class");
             }
 
             public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "layers_view_state", "layers_view_state")
