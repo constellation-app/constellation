@@ -2009,7 +2009,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             for (int i = 0; i < layerQueries.size(); i++) {
                 // calculate bitmask for dynamic layers that are displayed
                 if (i < layerPrefs.size() && (layerPrefs.get(i) & 0b11) == 3 && layerQueries.get(i) != null) {
-                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.infixToPostfix(layerQueries.get(i)))
+                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.tokeniser(layerQueries.get(i)))
                             ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
                 }
             }

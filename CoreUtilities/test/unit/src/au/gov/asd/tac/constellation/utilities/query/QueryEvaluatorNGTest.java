@@ -29,44 +29,42 @@ import org.testng.annotations.Test;
  * @author aldebaran30701
  */
 public class QueryEvaluatorNGTest {
-    
-    final static String SEPARATOR = ":";
-    
+
+    static String SEPARATOR = "";
+
     // test conversion of single attribute
     @Test
     public void querySingleAttribute() {
-        
+
         // Test single attribute
         List<String> results = new ArrayList();
         String result1 = "color == #ffffff";
         results.add(result1);
-        
         String infix = "color == #ffffff";
-        
-        assertEquals(QueryEvaluator.infixToPostfix(infix).get(0), result1);
-        assertEquals(QueryEvaluator.infixToPostfix(infix).size(), results.size());
+
+        assertEquals(QueryEvaluator.tokeniser(infix).get(0), result1);
+        assertEquals(QueryEvaluator.tokeniser(infix).size(), results.size());
         results.clear();
-        
+
         // Test with brackets (part of attribute text)
         result1 = "(color == #ffffff)";
         results.add(result1);
-        
-        infix = "(color == #ffffff)";
-        
-        assertEquals(QueryEvaluator.infixToPostfix(infix).get(0), result1);
-        assertEquals(QueryEvaluator.infixToPostfix(infix).size(), results.size());
+        infix = "\\(color == #ffffff\\)";
+
+        assertEquals(QueryEvaluator.tokeniser(infix).get(0), result1);
+        assertEquals(QueryEvaluator.tokeniser(infix).size(), results.size());
         results.clear();
-        
+
         // Test with brackets () used as precedence
         result1 = "color == #ffffff";
         results.add(result1);
-        
-        infix = "(" + SEPARATOR + "color == #ffffff" + SEPARATOR + ")";
-        
-        assertEquals(QueryEvaluator.infixToPostfix(infix).get(0), result1);
-        assertEquals(QueryEvaluator.infixToPostfix(infix).size(), results.size());
+
+        infix = "( color == #ffffff )";
+        List<String> returning = QueryEvaluator.tokeniser(infix);
+        assertEquals(returning.get(0), result1);
+        assertEquals(returning.size(), results.size());
     }
-    
+
     @Test
     public void queryTwoAttributes() {
         // Test multiple attributes ||
@@ -78,16 +76,16 @@ public class QueryEvaluatorNGTest {
         results.add(result1);
         results.add(result2);
         results.add(result3);
-        
+
         String infix = "dim == True" + SEPARATOR + "||" + SEPARATOR + "color == #ffffff";
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
         assertEquals(resultArray.size(), results.size());
         results.clear();
         resultArray.clear();
-        
+
         // Test multiple attributes &&
         result1 = "color == #ffffff";
         result2 = "dim == True";
@@ -95,16 +93,16 @@ public class QueryEvaluatorNGTest {
         results.add(result1);
         results.add(result2);
         results.add(result3);
-        
+
         infix = "color == #ffffff" + SEPARATOR + "&&" + SEPARATOR + "dim == True";
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
         assertEquals(resultArray.size(), results.size());
         results.clear();
         resultArray.clear();
-        
+
         // Test multiple attributes && in multiple () parenthesis
         result1 = "dim == True";
         result2 = "color == #ffffff";
@@ -112,19 +110,19 @@ public class QueryEvaluatorNGTest {
         results.add(result1);
         results.add(result2);
         results.add(result3);
-        
-        infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + ")" 
-                + SEPARATOR + "&&" + SEPARATOR + "(" 
+
+        infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + ")"
+                + SEPARATOR + "&&" + SEPARATOR + "("
                 + SEPARATOR + "color == #ffffff" + SEPARATOR + ")";
-        
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
         assertEquals(resultArray.size(), results.size());
         results.clear();
         resultArray.clear();
-        
+
         // Test multiple attributes && in single () parenthesis
         result1 = "dim == True";
         result2 = "color == #ffffff";
@@ -132,11 +130,11 @@ public class QueryEvaluatorNGTest {
         results.add(result1);
         results.add(result2);
         results.add(result3);
-        
-        infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + "&&" 
+
+        infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + "&&"
                 + SEPARATOR + "color == #ffffff" + SEPARATOR + ")";
-        
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
@@ -144,7 +142,7 @@ public class QueryEvaluatorNGTest {
         results.clear();
         resultArray.clear();
     }
-    
+
     @Test
     public void queryThreeNestedAttributes() {
         List<String> resultArray = new ArrayList();
@@ -159,13 +157,12 @@ public class QueryEvaluatorNGTest {
         results.add(result3);
         results.add(result4);
         results.add(result5);
-        
-        String infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + "||" 
-                + SEPARATOR + "color == #ffffff" + SEPARATOR + ")" 
+
+        String infix = "(" + SEPARATOR + "dim == True" + SEPARATOR + "||"
+                + SEPARATOR + "color == #ffffff" + SEPARATOR + ")"
                 + SEPARATOR + "&&" + SEPARATOR + "Visibility > 0";
-        
-        
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
@@ -198,13 +195,13 @@ public class QueryEvaluatorNGTest {
         results.add(result7);
         results.add(result8);
         results.add(result9);
-        
-        String infix = "(" + SEPARATOR + "1" + SEPARATOR + "&&" + SEPARATOR + "2" 
-                + SEPARATOR + "||" + SEPARATOR + "3" + SEPARATOR + "&&" 
-                + SEPARATOR + "4" + SEPARATOR + ")" + SEPARATOR + "||" 
+
+        String infix = "(" + SEPARATOR + "1" + SEPARATOR + "&&" + SEPARATOR + "2"
+                + SEPARATOR + "||" + SEPARATOR + "3" + SEPARATOR + "&&"
+                + SEPARATOR + "4" + SEPARATOR + ")" + SEPARATOR + "||"
                 + SEPARATOR + "6";
-        
-        resultArray = QueryEvaluator.infixToPostfix(infix);
+
+        resultArray = QueryEvaluator.tokeniser(infix);
         assertEquals(resultArray.get(0), result1);
         assertEquals(resultArray.get(1), result2);
         assertEquals(resultArray.get(2), result3);
@@ -218,15 +215,15 @@ public class QueryEvaluatorNGTest {
         results.clear();
         resultArray.clear();
     }
-    
+
     @Test
     public void noInputTest() {
-        assertEquals(QueryEvaluator.infixToPostfix(""), Collections.EMPTY_LIST);
-        assertEquals(QueryEvaluator.infixToPostfix(null), Collections.EMPTY_LIST);
+        assertEquals(QueryEvaluator.tokeniser(""), Collections.EMPTY_LIST);
+        assertEquals(QueryEvaluator.tokeniser(null), Collections.EMPTY_LIST);
     }
-    
+
     @Test
-    public void evaluatePostfixTest(){
+    public void evaluatePostfixTest() {
         // || case
         String postfix = "true false ||";
         assertTrue(QueryEvaluator.evaluatePostfix(postfix));
@@ -236,7 +233,7 @@ public class QueryEvaluatorNGTest {
         assertTrue(QueryEvaluator.evaluatePostfix(postfix));
         postfix = "false false ||";
         assertFalse(QueryEvaluator.evaluatePostfix(postfix));
-        
+
         // &&  case
         postfix = "true false &&";
         assertFalse(QueryEvaluator.evaluatePostfix(postfix));
@@ -246,7 +243,7 @@ public class QueryEvaluatorNGTest {
         assertTrue(QueryEvaluator.evaluatePostfix(postfix));
         postfix = "false false &&";
         assertFalse(QueryEvaluator.evaluatePostfix(postfix));
-        
+
         // multiple cases
         postfix = "true false && true ||";
         assertTrue(QueryEvaluator.evaluatePostfix(postfix));
