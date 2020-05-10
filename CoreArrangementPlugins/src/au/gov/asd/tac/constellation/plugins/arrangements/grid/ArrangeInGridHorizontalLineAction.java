@@ -35,8 +35,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridHorizontalLineAction")
 @ActionRegistration(displayName = "#CTL_ArrangeInGridHorizontalLineAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/gridhoriz.png", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 0),
-    @ActionReference(path = "Toolbars/Arrange", position = 0),
+    @ActionReference(path = "Menu/Arrange", position = 30),
+    @ActionReference(path = "Toolbars/Arrange", position = 30),
     @ActionReference(path = "Shortcuts", name = "C-A-H")
 })
 @Messages("CTL_ArrangeInGridHorizontalLineAction=Horizontal Line")
