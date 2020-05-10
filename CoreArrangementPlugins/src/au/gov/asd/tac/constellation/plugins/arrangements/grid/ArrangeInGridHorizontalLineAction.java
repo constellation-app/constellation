@@ -28,20 +28,21 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Arranging components in a grid.
+ * Arranging components in a grid of grids.
  *
- * @author algol
+ * @author serpens24
  */
-@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInGridAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/grid.png", surviveFocusChange = true)
+@ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridHorizontalLineAction")
+@ActionRegistration(displayName = "#CTL_ArrangeInGridHorizontalLineAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/gridhoriz.png", surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 0),
     @ActionReference(path = "Toolbars/Arrange", position = 0),
-    @ActionReference(path = "Shortcuts", name = "C-G")
+    @ActionReference(path = "Shortcuts", name = "C-A-H")
 })
-@Messages("CTL_ArrangeInGridAction=Grid")
-public final class ArrangeInGridAction extends AbstractAction {
-
+@Messages("CTL_ArrangeInGridHorizontalLineAction=Horizontal Line")
+public final class ArrangeInGridHorizontalLineAction extends AbstractAction {
+    
+    
     private final GraphNode context;
 
     /**
@@ -49,19 +50,19 @@ public final class ArrangeInGridAction extends AbstractAction {
      *
      * @param context GraphNode context.
      */
-    public ArrangeInGridAction(final GraphNode context) {
+    public ArrangeInGridHorizontalLineAction(final GraphNode context) {
         this.context = context;
     }
 
+    
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
-                .set(ArrangeInGridGeneralPlugin.GRID_CHOICE_PARAMETER_ID, "Square")
+                .set(ArrangeInGridGeneralPlugin.GRID_CHOICE_PARAMETER_ID, "Horizontal line")
                 .set(ArrangeInGridGeneralPlugin.SIZE_GAIN_PARAMETER_ID, 1.25f)
                 .set(ArrangeInGridGeneralPlugin.HORIZONTAL_GAP_PARAMETER_ID, 1)
-                .set(ArrangeInGridGeneralPlugin.VERTICAL_GAP_PARAMETER_ID, 1)
                 .set(ArrangeInGridGeneralPlugin.OFFSET_ROWS_PARAMETER_ID, false)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
-                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
+                .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridHorizontalLineAction());
     }
 }
