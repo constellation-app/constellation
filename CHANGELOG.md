@@ -1,6 +1,8 @@
 # Constellation Changes
 
 ## 2020-05-01 Changes in May 2020
+* Fixed a bug effecting the histogram scrolling
+* Changed parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
 * Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
 
