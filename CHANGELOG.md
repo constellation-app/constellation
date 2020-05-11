@@ -4,6 +4,7 @@
 * Added feedback for delimiter import
 * Changed ImportController's processImport function to return the list of files it has imported.
 * Fixed a bug effecting the histogram scrolling
+* Fixed a bug preventing v1 graphs from being open.
 
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.
