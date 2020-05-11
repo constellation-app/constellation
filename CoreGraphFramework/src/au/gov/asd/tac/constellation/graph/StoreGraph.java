@@ -125,20 +125,20 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private NativeValue oldValue = new NativeValue();
     private NativeValue newValue = new NativeValue();
     private GraphEdit graphEdit;
-    private int layerMaskSelectedAttributeId = -1;
-    private int vertexLayerMaskAttribureId = -1;
-    private int transactionFilterBitmaskAttrId = -1;
-    private int vertexLayerVisibilityAttributeId = -1;
-    private int transactionLayerVisibilityAttributeId = -1;
-    private int cameraAttributeId = -1;
-    private int vertexSelectedAttributeId = -1;
-    private int transactionSelectedAttributeId = -1;
-    private int vertexXAttributeId = -1;
-    private int vertexYAttributeId = -1;
-    private int vertexZAttributeId = -1;
-    private int transactionXAttributeId = -1;
-    private int transactionYAttributeId = -1;
-    private int transactionZAttributeId = -1;
+    private int layerMaskSelectedAttributeId = Graph.NOT_FOUND;
+    private int vertexLayerMaskAttribureId = Graph.NOT_FOUND;
+    private int transactionFilterBitmaskAttrId = Graph.NOT_FOUND;
+    private int vertexLayerVisibilityAttributeId = Graph.NOT_FOUND;
+    private int transactionLayerVisibilityAttributeId = Graph.NOT_FOUND;
+    private int cameraAttributeId = Graph.NOT_FOUND;
+    private int vertexSelectedAttributeId = Graph.NOT_FOUND;
+    private int transactionSelectedAttributeId = Graph.NOT_FOUND;
+    private int vertexXAttributeId = Graph.NOT_FOUND;
+    private int vertexYAttributeId = Graph.NOT_FOUND;
+    private int vertexZAttributeId = Graph.NOT_FOUND;
+    private int transactionXAttributeId = Graph.NOT_FOUND;
+    private int transactionYAttributeId = Graph.NOT_FOUND;
+    private int transactionZAttributeId = Graph.NOT_FOUND;
 
     // TODO: TEMP VARIABLE to test updates - This will have to be migrated to a graph attribute
     private static int currentVisibleMask = 1;
@@ -2001,9 +2001,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      */
     private int recalculateLayerMask(final GraphElementType elementType, final int elementId) {
         int bitmask = 0;
-        if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId >= 0 && vertexLayerVisibilityAttributeId >= 0) {
+        if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
             bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
-        } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId >= 0 && transactionLayerVisibilityAttributeId >= 0) {
+        } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
             bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
         }
 
@@ -2155,7 +2155,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (elementType == GraphElementType.VERTEX) {
 
             // when attr ids are found
-            if (vertexLayerMaskAttribureId >= 0 && vertexLayerVisibilityAttributeId >= 0) {
+            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
                 // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
                 // is non-zero value then the element can be displayed, if not, layer filters will result in it being hidden.
 
@@ -2182,7 +2182,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
-            if (transactionFilterBitmaskAttrId >= 0 && transactionLayerVisibilityAttributeId >= 0) {
+            if (transactionFilterBitmaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
                 if (attributeId != transactionFilterBitmaskAttrId) {
                     avoidLayerUpdate = true;
                     setIntValue(transactionFilterBitmaskAttrId, elementId, bitmask);
@@ -2208,7 +2208,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
-        if(transactionLayerVisibilityAttributeId < 0) {
+        if(transactionLayerVisibilityAttributeId == Graph.NOT_FOUND) {
             transactionLayerVisibilityAttributeId = this.addAttribute(
                     GraphElementType.TRANSACTION, 
                     FloatAttributeDescription.ATTRIBUTE_NAME, 
@@ -2216,7 +2216,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     "The visibility of the transaction given "
                     + "the layers it belongs to", 1.0f, null);
         }
-        if(vertexLayerVisibilityAttributeId < 0 ) {
+        if(vertexLayerVisibilityAttributeId == Graph.NOT_FOUND) {
                 vertexLayerVisibilityAttributeId = this.addAttribute(
                     GraphElementType.VERTEX, 
                     FloatAttributeDescription.ATTRIBUTE_NAME, 
@@ -2224,21 +2224,21 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     "The visibility of the vertex given "
                     + "the layers it belongs to", 1.0f, null);
         }
-        if(layerMaskSelectedAttributeId < 0) {
+        if(layerMaskSelectedAttributeId == Graph.NOT_FOUND) {
                 layerMaskSelectedAttributeId = this.addAttribute(
                     GraphElementType.GRAPH, 
                     IntegerAttributeDescription.ATTRIBUTE_NAME, 
                     LAYER_MASK_SELECTED_ATTRIBUTE_LABEL,
                     "The layers currently enabled for display", 1, null);
         }
-        if(vertexLayerMaskAttribureId < 0) {
+        if(vertexLayerMaskAttribureId == Graph.NOT_FOUND) {
                 vertexLayerMaskAttribureId = this.addAttribute(
                     GraphElementType.VERTEX, 
                     IntegerAttributeDescription.ATTRIBUTE_NAME, 
                     LAYER_MASK_ATTRIBUTE_LABEL,
                     "Bitmask identifying the layers this vertex belongs to", 1, null);
         }
-        if(transactionFilterBitmaskAttrId < 0) {
+        if(transactionFilterBitmaskAttrId == Graph.NOT_FOUND) {
                 transactionFilterBitmaskAttrId = this.addAttribute(
                     GraphElementType.TRANSACTION, 
                     IntegerAttributeDescription.ATTRIBUTE_NAME, 
@@ -2247,7 +2247,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
         if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
             // get the element type of selected layer mask and recalculate element mask
-            final int selectedLayerMask = (layerMaskSelectedAttributeId >= 0)
+            final int selectedLayerMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
                     ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
             final GraphElementType elementType = getAttributeElementType(attributeId);
 
@@ -2264,7 +2264,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility of all elements
     private void updateAllLayerMasks() {
-        final int selectedLayerMask = (layerMaskSelectedAttributeId >= 0)
+        final int selectedLayerMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
                 ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
 
         currentVisibleMask = selectedLayerMask;
@@ -2377,7 +2377,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
         // if selected visible layers has changed then recalculate visibility of all objects, 
         // otherwise check if the change impacts an objects visibility
-        if (attribute == layerMaskSelectedAttributeId && layerMaskSelectedAttributeId >= 0) {
+        if (attribute == layerMaskSelectedAttributeId && layerMaskSelectedAttributeId != Graph.NOT_FOUND) {
             // one node changes, pass to change list then only iterate that?
             // hits here when changing layers only. not on update of elements to layers
             updateAllLayerMasks();
