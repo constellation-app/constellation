@@ -29,11 +29,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,20 +46,26 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SaveGraphPlugin=Save Graph")
 public class SaveGraphPlugin extends SimplePlugin {
 
+    private static final Logger LOGGER = Logger.getLogger(SaveGraphPlugin.class.getName());
+
     public static final String GRAPH_PARAMETER = PluginParameter.buildId(SaveGraphPlugin.class, "graphId");
-    public static final String FILE_PATH_PARAMETER = PluginParameter.buildId(SaveGraphPlugin.class, System.getProperty("user.home"));
+    public static final String FILE_PATH_PARAMETER = PluginParameter.buildId(SaveGraphPlugin.class, "saveFilePathId");
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER);
-        final PluginParameter<StringParameterValue> filePathParameter = StringParameterType.build(FILE_PATH_PARAMETER);
+        final PluginParameter<StringParameterValue> saveFilePath = StringParameterType.build(FILE_PATH_PARAMETER);
+
         graphIdParameter.setName("graphId");
         graphIdParameter.setDescription("The Id of the graph");
         parameters.addParameter(graphIdParameter);
-        filePathParameter.setName("SaveGraphPluginFilePath");
-        filePathParameter.setDescription("Save Graph Plugin File Path");
+
+        saveFilePath.setName("SaveGraphPluginFilePath");
+        saveFilePath.setDescription("Save Graph Plugin File Path");
+        saveFilePath.setStringValue(System.getProperty("user.home"));
+        parameters.addParameter(saveFilePath);
 
         return parameters;
     }
@@ -69,16 +76,16 @@ public class SaveGraphPlugin extends SimplePlugin {
         final String filePath = parameters.getStringValue(FILE_PATH_PARAMETER);
         final GraphNode gn = GraphNode.getGraphNode(g);
         try {
-            File fileLocation = new File(filePath);
+            final File fileLocation = new File(filePath);
             if (fileLocation.exists()) {
-                DataFolder df = DataFolder.findFolder(FileUtil.createFolder(fileLocation));
+                final DataFolder df = DataFolder.findFolder(FileUtil.createFolder(fileLocation));
                 //Move the GraphNode's data object to the location inputted by the user
                 gn.getDataObject().move(df);
                 SwingUtilities.invokeLater(() -> {
                     try {
                         ((VisualGraphTopComponent) gn.getTopComponent()).saveGraph();
                     } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                     }
                 });
             } else {
@@ -86,7 +93,7 @@ public class SaveGraphPlugin extends SimplePlugin {
             }
 
         } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
 
     }
