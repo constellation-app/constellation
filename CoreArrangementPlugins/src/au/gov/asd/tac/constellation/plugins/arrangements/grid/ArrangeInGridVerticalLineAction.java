@@ -42,7 +42,6 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ArrangeInGridVerticalLineAction=Vertical Line")
 public final class ArrangeInGridVerticalLineAction extends AbstractAction {
 
-    
     private final GraphNode context;
 
     /**
@@ -54,7 +53,6 @@ public final class ArrangeInGridVerticalLineAction extends AbstractAction {
         this.context = context;
     }
 
-    
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
