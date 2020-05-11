@@ -5,6 +5,7 @@
 * Changed parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
 * Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
+* Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`
 
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.
