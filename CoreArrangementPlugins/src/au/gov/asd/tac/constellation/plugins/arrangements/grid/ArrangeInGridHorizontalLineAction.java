@@ -41,8 +41,7 @@ import org.openide.util.NbBundle.Messages;
 })
 @Messages("CTL_ArrangeInGridHorizontalLineAction=Horizontal Line")
 public final class ArrangeInGridHorizontalLineAction extends AbstractAction {
-    
-    
+
     private final GraphNode context;
 
     /**
@@ -54,7 +53,6 @@ public final class ArrangeInGridHorizontalLineAction extends AbstractAction {
         this.context = context;
     }
 
-    
     @Override
     public void actionPerformed(final ActionEvent e) {
         PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
