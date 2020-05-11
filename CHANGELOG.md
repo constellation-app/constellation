@@ -1,7 +1,8 @@
 # Constellation Changes
 
 ## 2020-05-01 Changes in May 2020
-* Fixed a bug effecting the histogram scrolling
+* Fixed a bug effecting the histogram scrolling.
+* Fixed a bug preventing v1 graphs from being open.
 
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.
