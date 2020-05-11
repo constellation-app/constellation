@@ -40,7 +40,7 @@ import javafx.scene.layout.HBox;
 public class ActionPane extends BorderPane {
     
     private static final Logger LOGGER = Logger.getLogger(ActionPane.class.getName());
-    final private static String SUCCESS_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/success.jpg";
+    private static final String SUCCESS_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/success.jpg";
 
     private final ImportController importController;
     
@@ -92,14 +92,13 @@ public class ActionPane extends BorderPane {
                     displayAlert("Success", "Successfully imported "+ noOfRows
                             +" rows from the following file(s):\n"+String.join("\n", filenames), true);
                     
-                } catch (IOException ex) {
+                } catch (IOException | PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     displayAlert("Import Failed", ex.getLocalizedMessage(), false);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     displayAlert("import Failed", ex.getLocalizedMessage(), false);
-                } catch (PluginException ex) {
-                    displayAlert("Import Failed", ex.getLocalizedMessage(), false);
                 }
             }
         });
