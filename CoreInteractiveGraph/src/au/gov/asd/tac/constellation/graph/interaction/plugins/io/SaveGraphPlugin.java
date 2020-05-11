@@ -56,16 +56,16 @@ public class SaveGraphPlugin extends SimplePlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER);
-        final PluginParameter<StringParameterValue> saveFilePath = StringParameterType.build(FILE_PATH_PARAMETER);
+        final PluginParameter<StringParameterValue> filePathParameter = StringParameterType.build(FILE_PATH_PARAMETER);
 
         graphIdParameter.setName("graphId");
         graphIdParameter.setDescription("The Id of the graph");
         parameters.addParameter(graphIdParameter);
 
-        saveFilePath.setName("SaveGraphPluginFilePath");
-        saveFilePath.setDescription("Save Graph Plugin File Path");
-        saveFilePath.setStringValue(System.getProperty("user.home"));
-        parameters.addParameter(saveFilePath);
+        filePathParameter.setName("saveFilePath");
+        filePathParameter.setDescription("Save Graph Plugin File Path");
+        filePathParameter.setStringValue(System.getProperty("user.home"));
+        parameters.addParameter(filePathParameter);
 
         return parameters;
     }
