@@ -519,12 +519,10 @@ public final class GraphVisualAccess implements VisualAccess {
                 if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_VISIBILITY).forItems(accessGraph.getVertexCount()).build());
                 }
-                // TODO Start
                 count = vertexLayerVisibility == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(vertexLayerVisibility);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.LAYER_VISIBILITY, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_VISIBILITY).forItems(accessGraph.getVertexCount()).build());
                 }
-                // TODO endXXXX
                 count = vertexDimmed == Graph.NOT_FOUND ? -1 : accessGraph.getValueModificationCounter(vertexDimmed);
                 if (!Objects.equals(count, modCounts.put(VisualConcept.VertexAttribute.DIMMED, count))) {
                     changes.add(new VisualChangeBuilder(VisualProperty.VERTEX_DIM).forItems(accessGraph.getVertexCount()).build());

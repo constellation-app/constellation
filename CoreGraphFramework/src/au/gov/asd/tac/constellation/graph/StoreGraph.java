@@ -19,6 +19,8 @@ import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
@@ -2206,6 +2208,43 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
+        if(transactionLayerVisibilityAttributeId < 0) {
+            transactionLayerVisibilityAttributeId = this.addAttribute(
+                    GraphElementType.TRANSACTION, 
+                    FloatAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_VISIBILITY_ATTRIBUTE_LABEL,
+                    "The visibility of the transaction given "
+                    + "the layers it belongs to", 1.0f, null);
+        }
+        if(vertexLayerVisibilityAttributeId < 0 ) {
+                vertexLayerVisibilityAttributeId = this.addAttribute(
+                    GraphElementType.VERTEX, 
+                    FloatAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_VISIBILITY_ATTRIBUTE_LABEL,
+                    "The visibility of the vertex given "
+                    + "the layers it belongs to", 1.0f, null);
+        }
+        if(layerMaskSelectedAttributeId < 0) {
+                layerMaskSelectedAttributeId = this.addAttribute(
+                    GraphElementType.GRAPH, 
+                    IntegerAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_MASK_SELECTED_ATTRIBUTE_LABEL,
+                    "The layers currently enabled for display", 1, null);
+        }
+        if(vertexLayerMaskAttribureId < 0) {
+                vertexLayerMaskAttribureId = this.addAttribute(
+                    GraphElementType.VERTEX, 
+                    IntegerAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_MASK_ATTRIBUTE_LABEL,
+                    "Bitmask identifying the layers this vertex belongs to", 1, null);
+        }
+        if(transactionFilterBitmaskAttrId < 0) {
+                transactionFilterBitmaskAttrId = this.addAttribute(
+                    GraphElementType.TRANSACTION, 
+                    IntegerAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_MASK_ATTRIBUTE_LABEL,
+                    "Bitmask identifying the layers this transaction belongs to", 1, null);
+        }
         if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
             // get the element type of selected layer mask and recalculate element mask
             final int selectedLayerMask = (layerMaskSelectedAttributeId >= 0)
