@@ -45,8 +45,8 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
     }
 
     private void setVertices(final GraphWriteMethods graph, final int currentBitmask) {
-        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        final int vertexBitmaskAttributeId = VisualConcept.VertexAttribute.LAYER_MASK.get(graph);
+        final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int vertexBitmaskAttributeId = VisualConcept.VertexAttribute.LAYER_MASK.ensure(graph);
         if (vertexSelectedAttributeId != Graph.NOT_FOUND) {
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
@@ -65,8 +65,8 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
     }
 
     private void setTransactions(final GraphWriteMethods graph, final int currentBitmask) {
-        final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-        final int transactionBitmaskAttributeId = VisualConcept.TransactionAttribute.LAYER_MASK.get(graph);
+        final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        final int transactionBitmaskAttributeId = VisualConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         if (transactionSelectedAttributeId != Graph.NOT_FOUND) {
             final int transactionCount = graph.getTransactionCount();
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
