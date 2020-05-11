@@ -2,6 +2,7 @@
 
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import
+* Changed ImportController's processImport function to return the list of files it has imported.
 * Fixed a bug effecting the histogram scrolling
 
 ## 2020-04-01 Changes in April 2020
