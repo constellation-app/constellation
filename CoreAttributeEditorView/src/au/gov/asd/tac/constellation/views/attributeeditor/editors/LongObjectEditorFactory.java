@@ -74,7 +74,7 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 

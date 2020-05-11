@@ -52,6 +52,8 @@ import org.openide.util.Exceptions;
  */
 public class CopyDataToExcelFile implements ActionListener, Action {
 
+    private static final String EXCEL_EXTENSION = ".xlsx";
+    
     private final JTable table;
     private final String pluginName;
 
@@ -100,7 +102,7 @@ public class CopyDataToExcelFile implements ActionListener, Action {
         File f = new FileChooserBuilder(CopyDataToExcelFile.class.getName()).setTitle("Excel file").addFileFilter(new FileFilter() {
             @Override
             public boolean accept(final File pathname) {
-                return pathname.getName().toLowerCase().endsWith(".xlsx");
+                return pathname.getName().toLowerCase().endsWith(EXCEL_EXTENSION);
             }
 
             @Override
@@ -108,8 +110,8 @@ public class CopyDataToExcelFile implements ActionListener, Action {
                 return "Excel files";
             }
         }).showSaveDialog();
-        if (f != null && !f.getName().toLowerCase().endsWith(".xlsx")) {
-            f = new File(f.getAbsolutePath() + ".xlsx");
+        if (f != null && !f.getName().toLowerCase().endsWith(EXCEL_EXTENSION)) {
+            f = new File(f.getAbsolutePath() + EXCEL_EXTENSION);
         }
 
         return f;
@@ -234,10 +236,12 @@ public class CopyDataToExcelFile implements ActionListener, Action {
 
     @Override
     public void putValue(final String key, final Object value) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void setEnabled(final boolean b) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
@@ -247,10 +251,12 @@ public class CopyDataToExcelFile implements ActionListener, Action {
 
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     /**

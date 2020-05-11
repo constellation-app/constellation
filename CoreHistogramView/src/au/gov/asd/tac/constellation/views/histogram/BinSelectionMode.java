@@ -104,6 +104,7 @@ public enum BinSelectionMode {
 
         @Override
         public void select(HistogramTopComponent topComponent) {
+            // Intentionally left blank
         }
     },
     /**
@@ -170,6 +171,7 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
+            // Do nothing
         }
 
         @Override
@@ -241,6 +243,7 @@ public enum BinSelectionMode {
 
         @Override
         public void mouseReleased(boolean shiftDown, boolean controlDown, Bin[] bins, int dragStart, int dragEnd, HistogramTopComponent topComponent) {
+            // Do nothing
         }
 
         @Override

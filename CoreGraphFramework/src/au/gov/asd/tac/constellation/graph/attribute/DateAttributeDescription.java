@@ -20,12 +20,10 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,108 +42,32 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public final class DateAttributeDescription extends AbstractAttributeDescription {
 
-    private static final Logger LOGGER = Logger.getLogger(DateAttributeDescription.class.getName());
-    private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "date";
-    public static final long NULL_VALUE = Long.MIN_VALUE;
-    public static final DateTimeFormatter FORMATTER = TemporalFormatting.DATE_FORMATTER;
+    public static final int ATTRIBUTE_VERSION = 1;
+    public static final Class<Long> NATIVE_CLASS = Long.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.LONG;
+    public static final long DEFAULT_VALUE = Long.MIN_VALUE;
 
     private long[] data = new long[0];
-    private long defaultValue = NULL_VALUE;
+    private long defaultValue = DEFAULT_VALUE;
 
-    @Override
-    public String getName() {
-        return ATTRIBUTE_NAME;
-    }
-
-    @Override
-    public int getCapacity() {
-        return data.length;
-    }
-
-    @Override
-    public void setCapacity(final int capacity) {
-        final int len = data.length;
-        data = Arrays.copyOf(data, capacity);
-        if (capacity > len) {
-            Arrays.fill(data, len, capacity, defaultValue);
-        }
-    }
-
-    @Override
-    public void clear(final int id) {
-        data[id] = defaultValue;
-    }
-
-    @Override
-    public void setLong(final int id, final long value) {
-        data[id] = value;
-    }
-
-    /**
-     * Extract a long from an Object.
-     *
-     * @param value An Object.
-     *
-     * @return A long.
-     */
-    private static long parseObject(final Object value) {
-        if (value == null) {
-            return NULL_VALUE;
-        } else if (value instanceof LocalDate) {
-            return ((LocalDate) value).toEpochDay();
-        } else if (value instanceof Date) {
-            return ((Date) value).getTime() / TemporalConstants.MILLISECONDS_IN_DAY;
-        } else if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof Calendar) {
-            return ((Calendar) value).getTimeInMillis() / TemporalConstants.MILLISECONDS_IN_DAY;
-        } else if (value instanceof String) {
-            return parseString((String) value);
+    private long convertFromObject(final Object object) throws IllegalArgumentException {
+        if (object == null) {
+            return (long) getDefault();
+        } else if (object instanceof LocalDate) {
+            return ((LocalDate) object).toEpochDay();
+        } else if (object instanceof Date) {
+            return ((Date) object).getTime() / TemporalConstants.MILLISECONDS_IN_DAY;
+        } else if (object instanceof Calendar) {
+            return ((Calendar) object).getTimeInMillis() / TemporalConstants.MILLISECONDS_IN_DAY;
+        } else if (object instanceof Number) {
+            return ((Number) object).longValue();
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
         } else {
-            throw new IllegalArgumentException("Error converting Object to long");
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to date", object.getClass()));
         }
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = parseObject(value);
-    }
-
-    @Override
-    public void setString(final int id, final String value) {
-        data[id] = parseString(value);
-    }
-
-    @Override
-    public long getLong(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        if (data[id] == NULL_VALUE) {
-            return null;
-        } else {
-            return LocalDate.ofEpochDay(data[id]);
-        }
-    }
-
-    @Override
-    public String getString(final int id) {
-        if (data[id] == NULL_VALUE) {
-            return null;
-        }
-        return getAsString(LocalDate.ofEpochDay(data[id]));
-    }
-
-    @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
-        final DateAttributeDescription attribute = new DateAttributeDescription();
-        attribute.data = Arrays.copyOf(data, data.length);
-        attribute.defaultValue = this.defaultValue;
-        attribute.graph = graph;
-        return attribute;
     }
 
     /**
@@ -163,52 +85,134 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
      * to be a problem. However, this should not be taken as an excuse to write
      * syntactically incorrect datetime strings elsewhere.
      *
-     * @param value An (almost) ISO date to be parsed.
+     * @param string An (almost) ISO date to be parsed.
      *
      * @return A Calendar representing the input datetime.
      */
-    public static long parseString(final String value) {
-        if (value == null || value.isEmpty()) {
-            return NULL_VALUE;
+    public long convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
+            return (long) getDefault();
+        } else {
+            try {
+                final int year = Integer.parseInt(string.substring(0, 4), 10);
+                final int month = Integer.parseInt(string.substring(5, 7), 10);
+                final int day = Integer.parseInt(string.substring(8, 10), 10);
+                return LocalDate.of(year, month, day).toEpochDay();
+            } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to date (expected yyyy-mm-dd)", string), ex);
+            }
         }
-
-        try {
-            final int y = Integer.parseInt(value.substring(0, 4), 10);
-            final int m = Integer.parseInt(value.substring(5, 7), 10);
-            final int d = Integer.parseInt(value.substring(8, 10), 10);
-            return LocalDate.of(y, m, d).toEpochDay();
-        } catch (StringIndexOutOfBoundsException | NumberFormatException ex) {
-            LOGGER.log(Level.WARNING, "Can''t parse date string ''{0}'': {1}", new Object[]{value, ex.getMessage()});
-        }
-
-        return NULL_VALUE;
     }
 
-    /**
-     * Return the date in its canonical format.
-     *
-     * @param value The date in internal long representation.
-     *
-     * @return The date in its canonical format.
-     */
-    public static String getAsString(final LocalDate value) {
-        return value.format(FORMATTER);
+    @Override
+    public String getName() {
+        return ATTRIBUTE_NAME;
+    }
+
+    @Override
+    public int getVersion() {
+        return ATTRIBUTE_VERSION;
     }
 
     @Override
     public Class<?> getNativeClass() {
-        return DateAttributeDescription.class;
+        return NATIVE_CLASS;
     }
 
     @Override
-    public void setDefault(final Object value) {
-        final long parsedValue = parseObject(value);
-        defaultValue = parsedValue != NULL_VALUE ? parsedValue : NULL_VALUE;
+    public NativeAttributeType getNativeType() {
+        return NATIVE_TYPE;
     }
 
     @Override
     public Object getDefault() {
-        return defaultValue == NULL_VALUE ? null : LocalDate.ofEpochDay(defaultValue);
+        return defaultValue == DEFAULT_VALUE ? 0L 
+                : LocalDate.ofEpochDay(defaultValue);
+    }
+
+    @Override
+    public void setDefault(final Object value) {
+        defaultValue = convertFromObject(value);
+    }
+
+    @Override
+    public int getCapacity() {
+        return data.length;
+    }
+
+    @Override
+    public void setCapacity(final int capacity) {
+        final int len = data.length;
+        data = Arrays.copyOf(data, capacity);
+        if (capacity > len) {
+            Arrays.fill(data, len, capacity, defaultValue);
+        }
+    }
+
+    @Override
+    public long getLong(final int id) {
+        return data[id] == defaultValue ? 0L : data[id];
+    }
+
+    @Override
+    public void setLong(final int id, final long value) {
+        data[id] = value;
+    }
+
+    @Override
+    public String getString(final int id) {
+        return data[id] == defaultValue ? null 
+                : LocalDate.ofEpochDay(data[id]).format(TemporalFormatting.DATE_FORMATTER);
+    }
+
+    @Override
+    public void setString(final int id, final String value) {
+        data[id] = convertFromString(value);
+    }
+
+    @Override
+    public String acceptsString(final String value) {
+        try {
+            convertFromString(value);
+            return null;
+        } catch (final IllegalArgumentException ex) {
+            return ex.getMessage();
+        }
+    }
+
+    @Override
+    public Object getObject(final int id) {
+        return data[id] == DEFAULT_VALUE ? null : LocalDate.ofEpochDay(data[id]);
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
+    }
+
+    @Override
+    public Object convertToNativeValue(final Object object) {
+        return object == null ? DEFAULT_VALUE : ((LocalDate) object).toEpochDay();
+    }
+
+    @Override
+    public boolean isClear(final int id) {
+        return data[id] == defaultValue;
+    }
+
+    @Override
+    public void clear(final int id) {
+        data[id] = defaultValue;
+    }
+
+    @Override
+    public AttributeDescription copy(final GraphReadMethods graph) {
+        final DateAttributeDescription attribute = new DateAttributeDescription();
+        attribute.data = Arrays.copyOf(data, data.length);
+        attribute.defaultValue = this.defaultValue;
+        attribute.graph = graph;
+        return attribute;
     }
 
     @Override
@@ -222,21 +226,6 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 7;
-    }
-
-    @Override
-    public boolean isClear(final int id) {
-        return data[id] == defaultValue;
-    }
-
-    @Override
     public Object saveData() {
         return Arrays.copyOf(data, data.length);
     }
@@ -245,25 +234,5 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
     public void restoreData(final Object savedData) {
         final long[] sd = (long[]) savedData;
         data = Arrays.copyOf(sd, sd.length);
-    }
-
-    @Override
-    public NativeAttributeType getNativeType() {
-        return NativeAttributeType.LONG;
-    }
-
-    @Override
-    public Object convertToNativeValue(Object objectValue) {
-        return objectValue == null ? NULL_VALUE : ((LocalDate) objectValue).toEpochDay();
-    }
-
-    @Override
-    public String acceptsString(String value) {
-        return parseString(value) == NULL_VALUE ? "Not a valid date" : null;
-    }
-
-    @Override
-    public int getVersion() {
-        return DESCRIPTION_VERSION;
     }
 }

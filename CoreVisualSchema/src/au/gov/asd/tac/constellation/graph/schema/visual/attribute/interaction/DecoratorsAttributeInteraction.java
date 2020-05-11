@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,12 +33,12 @@ public class DecoratorsAttributeInteraction extends AbstractAttributeInteraction
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
 
-        final VertexDecorators decoratorsVal = ((VertexDecorators) attrVal);
+        final VertexDecorators decoratorsVal = ((VertexDecorators) value);
 
         final StringBuilder decoratorsString = new StringBuilder();
         if (decoratorsVal.getNorthWestDecoratorAttribute() != null) {

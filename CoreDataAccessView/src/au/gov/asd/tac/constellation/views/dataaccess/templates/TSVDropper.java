@@ -16,12 +16,12 @@
 package au.gov.asd.tac.constellation.views.dataaccess.templates;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
-import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
+import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -70,6 +70,7 @@ public class TSVDropper implements GraphDropper {
 
                 // Get the data as a list of files
                 final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                @SuppressWarnings("unchecked") //data will be list of files which extends Object type
                 final List<File> files = (List<File>) data;
 
                 // Create a record store to hold the combined results

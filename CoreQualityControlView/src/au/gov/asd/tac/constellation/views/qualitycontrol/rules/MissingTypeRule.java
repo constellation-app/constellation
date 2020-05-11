@@ -35,9 +35,6 @@ public class MissingTypeRule extends QualityControlRule {
             + "they could also indicate errors in the data.";
     private static final int RISK = 90;
 
-    public MissingTypeRule() {
-    }
-
     @Override
     public String getName() {
         return NAME;

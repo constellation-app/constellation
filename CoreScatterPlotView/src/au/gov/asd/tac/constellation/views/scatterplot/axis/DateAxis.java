@@ -178,8 +178,6 @@ public class DateAxis extends Axis<Date> {
     @Override
     protected void setRange(Object range, boolean animating) {
         final Object[] r = (Object[]) range;
-        final Date oldLowerBound = getLowerBound();
-        final Date oldUpperBound = getUpperBound();
         final Date newLowerBound = (Date) r[0];
         final Date newUpperBound = (Date) r[1];
         setLowerBound(newLowerBound);

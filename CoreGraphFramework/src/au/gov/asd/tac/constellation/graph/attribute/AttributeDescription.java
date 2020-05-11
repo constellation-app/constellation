@@ -31,6 +31,10 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
  * methods meaning that the attribute designer has a lot of freedom to store the
  * data in an efficient manner.
  * <p>
+ * Every attribute must work with #getObject and #getString. Everything else is
+ * optional. This means that comparison of values, #getObject and #getString are
+ * the safest choice.
+ * <p>
  * Access to the attribute values held by this AttributeDescription are accessed
  * by a collection of getter/setter pairs covering all the primitive types as
  * well as Objects and Strings. The general principle is that these
@@ -56,7 +60,7 @@ public interface AttributeDescription {
      *
      * @param graph the graph that this AttributeDescription belongs to.
      */
-    public void setGraph(GraphReadMethods graph);
+    public void setGraph(final GraphReadMethods graph);
 
     /**
      * Returns the name of this attribute.
@@ -113,7 +117,7 @@ public interface AttributeDescription {
      * method will accept the same range of object values as
      * {@link AttributeDescription#setObject(int, java.lang.Object) }.
      */
-    void setDefault(Object value);
+    void setDefault(final Object value);
 
     /**
      * Returns the current element capacity of this attribute. The attribute is
@@ -134,7 +138,7 @@ public interface AttributeDescription {
      * @param capacity the capacity of this attribute.
      * @see AttributeDescription#getCapacity()
      */
-    public void setCapacity(int capacity);
+    public void setCapacity(final int capacity);
 
     /**
      * Returns the value for the specified element as a byte. In general, the
@@ -149,7 +153,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a byte.
      */
-    public byte getByte(int id);
+    public byte getByte(final int id);
 
     /**
      * Sets the value for the specified element to the specified byte value. In
@@ -168,7 +172,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getByte(int)
      */
-    public void setByte(int id, byte value);
+    public void setByte(final int id, final byte value);
 
     /**
      * Returns the value for the specified element as a short. In general, the
@@ -183,7 +187,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a short.
      */
-    public short getShort(int id);
+    public short getShort(final int id);
 
     /**
      * Sets the value for the specified element to the specified short value. In
@@ -202,7 +206,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getShort(int)
      */
-    public void setShort(int id, short value);
+    public void setShort(final int id, final short value);
 
     /**
      * Returns the value for the specified element as an int. In general, the
@@ -217,7 +221,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as an int.
      */
-    public int getInt(int id);
+    public int getInt(final int id);
 
     /**
      * Sets the value for the specified element to the specified int value. In
@@ -236,7 +240,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getInt(int)
      */
-    public void setInt(int id, int value);
+    public void setInt(final int id, final int value);
 
     /**
      * Returns the value for the specified element as a long. In general, the
@@ -251,7 +255,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a long.
      */
-    public long getLong(int id);
+    public long getLong(final int id);
 
     /**
      * Sets the value for the specified element to the specified long value. In
@@ -270,7 +274,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getLong(int)
      */
-    public void setLong(int id, long value);
+    public void setLong(final int id, final long value);
 
     /**
      * Returns the value for the specified element as a float. In general, the
@@ -285,7 +289,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a float.
      */
-    public float getFloat(int id);
+    public float getFloat(final int id);
 
     /**
      * Sets the value for the specified element to the specified float value. In
@@ -304,7 +308,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getFloat(int)
      */
-    public void setFloat(int id, float value);
+    public void setFloat(final int id, final float value);
 
     /**
      * Returns the value for the specified element as a double. In general, the
@@ -319,7 +323,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a double.
      */
-    public double getDouble(int id);
+    public double getDouble(final int id);
 
     /**
      * Sets the value for the specified element to the specified double value.
@@ -338,7 +342,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getDouble(int)
      */
-    public void setDouble(int id, double value);
+    public void setDouble(final int id, final double value);
 
     /**
      * Returns the value for the specified element as a boolean. In general, the
@@ -353,7 +357,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a boolean.
      */
-    public boolean getBoolean(int id);
+    public boolean getBoolean(final int id);
 
     /**
      * Sets the value for the specified element to the specified boolean value.
@@ -372,7 +376,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getBoolean(int)
      */
-    public void setBoolean(int id, boolean value);
+    public void setBoolean(final int id, final boolean value);
 
     /**
      * Returns the value for the specified element as a char. In general, the
@@ -387,7 +391,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a char.
      */
-    public char getChar(int id);
+    public char getChar(final int id);
 
     /**
      * Sets the value for the specified element to the specified char value. In
@@ -406,42 +410,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getChar(int)
      */
-    public void setChar(int id, char value);
-
-    /**
-     * Returns the value for the specified element as an Object. In general, the
-     * native type of this attribute will be of a different type meaning that it
-     * is the responsibility of the attribute to convert the native type to an
-     * Object on the fly. The Object value returned by this method should be
-     * accepted by the
-     * {@link AttributeDescription#setObject(int, java.lang.Object) } method and
-     * cause the underlying native value to return to the original value.
-     *
-     * @param id the id of the element.
-     * @return the value for the specified element as an Object.
-     */
-    public Object getObject(int id);
-
-    /**
-     * Sets the value for the specified element to the specified Object value.
-     * In general the native type of this attribute will be of a different type
-     * meaning that it is the responsibility of the attribute to convert the
-     * specified value on the fly. In cases where this conversion is not
-     * possible the attribute should throw an IllegalArgumentException. In
-     * general, if the attribute accepts an Object value, it should cause the
-     * native attribute value for the specified element to reach a state that
-     * will return the same Object value when queried with the
-     * {@link AttributeDescription#getObject(int) } method. Likewise, this
-     * method should accept all values returned by the {@link AttributeDescription#getObject(int)
-     * }.
-     *
-     * @param id the id of the element.
-     * @param value the new value for the attribute.
-     * @throws IllegalArgumentException if the specified value cannot be
-     * converted to the attribute's native type.
-     * @see AttributeDescription#getObject(int)
-     */
-    public void setObject(int id, Object value);
+    public void setChar(final int id, final char value);
 
     /**
      * Returns the value for the specified element as a String. In general, the
@@ -455,7 +424,7 @@ public interface AttributeDescription {
      * @param id the id of the element.
      * @return the value for the specified element as a String.
      */
-    public String getString(int id);
+    public String getString(final int id);
 
     /**
      * Sets the value for the specified element to the specified String value.
@@ -476,9 +445,7 @@ public interface AttributeDescription {
      * converted to the attribute's native type.
      * @see AttributeDescription#getString(int)
      */
-    public void setString(int id, String value);
-
-    public String getSearchString(int id);
+    public void setString(final int id, final String value);
 
     /**
      * Validates a potential string value for this attribute value.
@@ -495,38 +462,42 @@ public interface AttributeDescription {
      * specified {@link String} value through its
      * {@link AttributeDescription#setString(int, java.lang.String)} method.
      */
-    public String acceptsString(String value);
+    public String acceptsString(final String value);
 
     /**
-     * Returns true if the value for the specified element is equal to the
-     * default value for this attribute.
+     * Returns the value for the specified element as an Object. In general, the
+     * native type of this attribute will be of a different type meaning that it
+     * is the responsibility of the attribute to convert the native type to an
+     * Object on the fly. The Object value returned by this method should be
+     * accepted by the
+     * {@link AttributeDescription#setObject(int, java.lang.Object) } method and
+     * cause the underlying native value to return to the original value.
      *
      * @param id the id of the element.
-     * @return true if the value for the specified element is equal to the
-     * default value for this attribute.
-     * @see AttributeDescription#clear(int)
+     * @return the value for the specified element as an Object.
      */
-    public boolean isClear(int id);
+    public Object getObject(final int id);
 
     /**
-     * Sets the value for the specified element to the default value for this
-     * attribute.
+     * Sets the value for the specified element to the specified Object value.
+     * In general the native type of this attribute will be of a different type
+     * meaning that it is the responsibility of the attribute to convert the
+     * specified value on the fly. In cases where this conversion is not
+     * possible the attribute should throw an IllegalArgumentException. In
+     * general, if the attribute accepts an Object value, it should cause the
+     * native attribute value for the specified element to reach a state that
+     * will return the same Object value when queried with the
+     * {@link AttributeDescription#getObject(int) } method. Likewise, this
+     * method should accept all values returned by the {@link AttributeDescription#getObject(int)
+     * }.
      *
      * @param id the id of the element.
+     * @param value the new value for the attribute.
+     * @throws IllegalArgumentException if the specified value cannot be
+     * converted to the attribute's native type.
+     * @see AttributeDescription#getObject(int)
      */
-    public void clear(int id);
-
-    /**
-     * Returns a deep copy of this AttributeDescription. It is important that
-     * this copy not rely on this instance in any way as the caller is free to
-     * call mutating methods on the copy at any time. As all attribute values in
-     * Constellation are defined to be immutable, simply copying the values is
-     * acceptable.
-     *
-     * @param graph the graph for that the copy will be attached to.
-     * @return a deep copy of this AttributeDescription.
-     */
-    public AttributeDescription copy(GraphReadMethods graph);
+    public void setObject(final int id, final Object value);
 
     /**
      * Convert an attribute value from its object representation to its native
@@ -538,27 +509,42 @@ public interface AttributeDescription {
      * that can be used to set values of this attribute directly through calls
      * to {@link NativeAttributeType#set}.
      *
-     * @param objectValue an attribute value represented as an Object, ie. a
+     * @param object an attribute value represented as an Object, ie. a
      * value obtained from a call to {@link #getObject}
      * @return An attribute value represented natively.
      */
-    public Object convertToNativeValue(final Object objectValue);
+    public Object convertToNativeValue(final Object object);
 
     /**
-     * indicator as to whether the import CSV import function supports this data
-     * type
+     * Returns true if the value for the specified element is equal to the
+     * default value for this attribute.
      *
-     * @return boolean
+     * @param id the id of the element.
+     * @return true if the value for the specified element is equal to the
+     * default value for this attribute.
+     * @see AttributeDescription#clear(int)
      */
-    public boolean canBeImported();
+    public boolean isClear(final int id);
 
     /**
-     * return the order of importance for the data type Currently used for
-     * listing the data types in the import panel
+     * Sets the value for the specified element to the default value for this
+     * attribute.
      *
-     * @return int
+     * @param id the id of the element.
      */
-    public int ordering();
+    public void clear(final int id);
+
+    /**
+     * Returns a deep copy of this AttributeDescription. It is important that
+     * this copy not rely on this instance in any way as the caller is free to
+     * call mutating methods on the copy at any time. As all attribute values in
+     * Constellation are defined to be immutable, simply copying the values is
+     * acceptable.
+     *
+     * @param graph the graph for that the copy will be attached to.
+     * @return a deep copy of this AttributeDescription.
+     */
+    public AttributeDescription copy(final GraphReadMethods graph);
 
     /**
      * Returns a hash code for the attribute value associated with the specified
@@ -568,7 +554,7 @@ public interface AttributeDescription {
      * @return a hash code for the attribute value associated with the specified
      * element id.
      */
-    public int hashCode(int id);
+    public int hashCode(final int id);
 
     /**
      * Returns true if the attribute values associated with the two specified
@@ -583,7 +569,7 @@ public interface AttributeDescription {
      * @return true if the attribute values associated with the two specified
      * element ids are considered equal.
      */
-    public boolean equals(int id1, int id2);
+    public boolean equals(final int id1, final int id2);
 
     /**
      * Causes the attribute value associated with specified element id to be
@@ -597,7 +583,7 @@ public interface AttributeDescription {
      * @param id the element id.
      * @param access the ParameterWriteAccess object.
      */
-    public void save(int id, ParameterWriteAccess access);
+    public void save(final int id, final ParameterWriteAccess access);
 
     /**
      * Causes the attribute value associated with the specified element id to be
@@ -609,7 +595,7 @@ public interface AttributeDescription {
      * @param id the element id.
      * @param access the ParameterReadAccess object.
      */
-    public void restore(int id, ParameterReadAccess access);
+    public void restore(final int id, final ParameterReadAccess access);
 
     /**
      * When this method is called, the AttributeDescription should return an
@@ -632,7 +618,7 @@ public interface AttributeDescription {
      * @param savedData the saved data object previously returned from a call to
      * {@link AttributeDescription#saveData() } on this object.
      */
-    public void restoreData(Object savedData);
+    public void restoreData(final Object savedData);
 
     /**
      * Returns true if this AttributeDescription supports the specified index
@@ -646,7 +632,7 @@ public interface AttributeDescription {
      * @return true if this AttributeDescription supports the specified index
      * type.
      */
-    public boolean supportsIndexType(GraphIndexType indexType);
+    public boolean supportsIndexType(final GraphIndexType indexType);
 
     /**
      * Causes this AttributeDescription to create an index of the specified
@@ -662,34 +648,38 @@ public interface AttributeDescription {
      * @param indexType the required index type.
      * @return the created GraphIndex object.
      */
-    public GraphIndex createIndex(GraphIndexType indexType);
+    public GraphIndex createIndex(final GraphIndexType indexType);
 
     public static final GraphIndex NULL_GRAPH_INDEX = new GraphIndex() {
 
         @Override
-        public void addElement(int element) {
+        public void addElement(final int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
-        public void removeElement(int element) {
+        public void removeElement(final int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
-        public void updateElement(int element) {
+        public void updateElement(final int element) {
+            // Override required for implementation of GraphIndex
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValue(Object value) {
+        public GraphIndexResult getElementsWithAttributeValue(final Object value) {
             return null;
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValueRange(Object start, Object end) {
+        public GraphIndexResult getElementsWithAttributeValueRange(final Object start, final Object end) {
             return null;
         }
 
         @Override
-        public void expandCapacity(int newCapacity) {
+        public void expandCapacity(final int newCapacity) {
+            // Override required for implementation of GraphIndex
         }
     };
 }

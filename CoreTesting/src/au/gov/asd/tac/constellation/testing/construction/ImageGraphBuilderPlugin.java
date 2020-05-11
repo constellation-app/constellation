@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -30,9 +32,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -88,6 +89,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         interaction.setProgress(0, 0, "Building...", true);
 
+        @SuppressWarnings("unchecked") //imageFiles will be a list of files which extends from object type
         final List<File> imageFiles = (List<File>) parameters.getObjectValue(IMAGE_FILE_PARAMETER_ID);
 
         for (final File imageFile : imageFiles) {
@@ -131,7 +133,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int vertexVisibilityAttributeId;
             final boolean multipleFrames = images.size() > 1;
             if (multipleFrames) {
-                final int attrLayers = graph.addAttribute(GraphElementType.GRAPH, "integer", "layers", "layers", 0, null);
+                final int attrLayers = graph.addAttribute(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layers", "layers", 0, null);
                 graph.setIntValue(attrLayers, 0, images.size());
                 vertexVisibilityAttributeId = VisualConcept.VertexAttribute.VISIBILITY.get(graph);
             } else {

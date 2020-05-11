@@ -19,21 +19,21 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
  *
  * @author algol
  *
- * @param <NodeType> the type of nodes the graph connects to.
+ * @param <Node> the type of nodes this edge connects to.
  */
-public class Edge<NodeType extends NodeBase> {
+public class Edge<Node extends NodeBase> {
 
-    private final NodeType source;
-    private final NodeType target;
+    private final Node source;
+    private final Node target;
     private final EdgeData data;
 
-    public Edge(final NodeType source, final NodeType target, final double weight, final double flow) {
+    public Edge(final Node source, final Node target, final double weight, final double flow) {
         this.source = source;
         this.target = target;
         this.data = new EdgeData(weight, flow);
     }
 
-    public NodeType other(final NodeType node) {
+    public Node other(final Node node) {
         return node == source ? target : source;
     }
 
@@ -41,11 +41,11 @@ public class Edge<NodeType extends NodeBase> {
         return source.equals(target);
     }
 
-    public NodeType getSource() {
+    public Node getSource() {
         return source;
     }
 
-    public NodeType getTarget() {
+    public Node getTarget() {
         return target;
     }
 

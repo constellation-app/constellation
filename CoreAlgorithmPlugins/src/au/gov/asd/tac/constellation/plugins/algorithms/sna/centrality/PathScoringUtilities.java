@@ -31,6 +31,9 @@ import java.util.BitSet;
  * @author cygnus_x-1
  */
 public class PathScoringUtilities {
+    
+    private static final String SCORETYPE_ERROR_FORMAT = "The requested ScoreType, %s, is not supported.";
+    private static final String OUT_OF_BOUNDS_EXCEPTION_STRING = "The 'selected' attribute does not exist on the given graph.";
 
     public enum ScoreType {
 
@@ -281,7 +284,7 @@ public class PathScoringUtilities {
                     updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
                     break;
                 default:
-                    throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -301,7 +304,7 @@ public class PathScoringUtilities {
                 }
                 return Tuple.create(traversal, distanceArray);
             default:
-                throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
         }
     }
 
@@ -383,7 +386,7 @@ public class PathScoringUtilities {
                     updateAveragePathScoresUndirected(distances, scores, turn, sendBuffer);
                     break;
                 default:
-                    throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -403,7 +406,7 @@ public class PathScoringUtilities {
                 }
                 return Tuple.create(traversal, distanceArray);
             default:
-                throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
         }
     }
 
@@ -481,7 +484,7 @@ public class PathScoringUtilities {
                     updateHarmonicFarnessScoresUndirected(graph, traversal, scores, sendBuffer, exclusions, turn, selectedOnly);
                     break;
                 default:
-                    throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
             }
 
             turn.clear();
@@ -653,7 +656,7 @@ public class PathScoringUtilities {
                     updateHarmonicFarnessScoresDirected(graph, traversalF, traversalB, scores, sendBufferF, sendBufferB, exclusionsF, exclusionsB, turn, selectedOnly);
                     break;
                 default:
-                    throw new IllegalArgumentException("The requested ScoreType, " + scoreType + ", is not supported.");
+                    throw new IllegalArgumentException(String.format(SCORETYPE_ERROR_FORMAT, scoreType));
 
             }
 
@@ -728,7 +731,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
@@ -758,7 +761,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBufferF, final BitSet[] sendBufferB, final BitSet[] exclusionsF, final BitSet[] exclusionsB, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBufferF[vertexPosition].clone();
@@ -788,7 +791,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
@@ -817,7 +820,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBufferF, final BitSet[] sendBufferB, final BitSet[] exclusionsF, final BitSet[] exclusionsB, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBufferF[vertexPosition].clone();
@@ -846,7 +849,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBuffer, final BitSet[] exclusions, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBuffer[vertexPosition].clone();
@@ -876,7 +879,7 @@ public class PathScoringUtilities {
             final BitSet[] sendBufferF, final BitSet[] sendBufferB, final BitSet[] exclusionsF, final BitSet[] exclusionsB, final BitSet turn, final boolean selectedOnly) {
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
         if (selectedOnly && selectedAttribute == GraphConstants.NOT_FOUND) {
-            throw new ArrayIndexOutOfBoundsException("The 'selected' attribute does not exist on the given graph.");
+            throw new ArrayIndexOutOfBoundsException(OUT_OF_BOUNDS_EXCEPTION_STRING);
         }
         for (int vertexPosition = turn.nextSetBit(0); vertexPosition >= 0; vertexPosition = turn.nextSetBit(vertexPosition + 1)) {
             final BitSet diff = (BitSet) sendBufferF[vertexPosition].clone();

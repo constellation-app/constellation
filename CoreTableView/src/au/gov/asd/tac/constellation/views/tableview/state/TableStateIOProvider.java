@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
 
     private static final String SELECTED_ONLY = "selectedOnly";
+    private static final String LABEL = "label";
     private static final Logger LOGGER = Logger.getLogger(TableStateIOProvider.class.getName());
 
     @Override
@@ -54,7 +55,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
             final ArrayNode columns = (ArrayNode) jnode.withArray("columns");
             for (final JsonNode column : columns) {
                 // Null labels means dummy value.
-                final String label = column.get("label").isNull() ? null : column.get("label").asText();
+                final String label = column.get(LABEL).isNull() ? null : column.get(LABEL).asText();
 
                 // If width is missing, use a marker <0
                 // to indicate deafult width.
@@ -96,7 +97,7 @@ public abstract class TableStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeArrayFieldStart("columns");
                 for (final ColumnState cs : state.columns) {
                     jsonGenerator.writeStartObject();
-                    jsonGenerator.writeStringField("label", cs.label);
+                    jsonGenerator.writeStringField(LABEL, cs.label);
                     jsonGenerator.writeStringField("segment", cs.segment.toString());
                     jsonGenerator.writeNumberField("width", cs.width);
                     jsonGenerator.writeEndObject();

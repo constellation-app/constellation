@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Arrange by high dimension embedding.
@@ -59,7 +59,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
     private static final boolean PART_ONLY = false;
     
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
 
     public HighDimensionEmbeddingArranger(final int dimensions) {
         this.dimensions = dimensions;
@@ -304,5 +304,6 @@ public class HighDimensionEmbeddingArranger implements Arranger {
 
     @Override
     public void setMaintainMean(final boolean b) {
+        // Required for Arranger, intentionally left blank
     }
 }

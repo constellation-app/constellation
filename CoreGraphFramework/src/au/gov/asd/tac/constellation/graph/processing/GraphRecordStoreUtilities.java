@@ -64,6 +64,10 @@ public class GraphRecordStoreUtilities {
     public static final String DIRECTED_KEY = "[directed]<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
+    
+    private static final String SELECTED_ATTRIBUTE_NAME = "selected";
+    private static final String FALSE = "false";
+    private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
@@ -515,7 +519,6 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's vertices.
      */
     public static GraphRecordStore getVertices(final GraphReadMethods graph, boolean singletonsOnly, boolean selectedOnly, boolean disassociateIds, final int[] offset, final int limit) {
-        final int[] key = graph.getPrimaryKey(GraphElementType.VERTEX);
         final GraphRecordStore recordStore = new GraphRecordStore();
 
         final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -525,7 +528,7 @@ public class GraphRecordStoreUtilities {
             attributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.VERTEX, "selected");
+        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE_NAME);
         final int vertexCount = graph.getVertexCount();
         boolean limitReached = false;
         for (int v = offset[0]; v < vertexCount; v++) {
@@ -627,7 +630,7 @@ public class GraphRecordStoreUtilities {
             final int attributeId = graph.getAttribute(GraphElementType.VERTEX, a);
             attributes[a] = new GraphAttribute(graph, attributeId);
         }
-        final int selected = graph.getAttribute(GraphElementType.VERTEX, "selected");
+        final int selected = graph.getAttribute(GraphElementType.VERTEX, SELECTED_ATTRIBUTE_NAME);
         final int vertexCount = graph.getVertexCount();
         final StringBuilder sb = new StringBuilder();
         for (int position = 0; position < vertexCount; position++) {
@@ -694,7 +697,7 @@ public class GraphRecordStoreUtilities {
         String copyId = "";
         for (int primarykeyAttr : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             final String val = graph.getStringValue(primarykeyAttr, vxId);
-            copyId += graph.getAttributeName(primarykeyAttr) + "<" + val == null ? "" : val + ">";
+            copyId += graph.getAttributeName(primarykeyAttr) + "<" + (val == null ? "" : val) + ">";
         }
         copiedId[0] = COPY + copyId;
         recordStore.set(SOURCE + ID, copiedId[0]);
@@ -732,7 +735,7 @@ public class GraphRecordStoreUtilities {
             vertexAttributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, "selected");
+        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE_NAME);
         final int transactionCount = graph.getTransactionCount();
         for (int t = 0; t < transactionCount; t++) {
             final int txId = graph.getTransaction(t);
@@ -753,7 +756,7 @@ public class GraphRecordStoreUtilities {
                     recordStore.set(DESTINATION + vertexAttribute.getName() + "<" + type + ">", graph.getStringValue(vertexAttribute.getId(), destination));
                 }
                 if (graph.getTransactionDirection(txId) == Graph.UNDIRECTED) {
-                    recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+                    recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
                 }
                 recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + txId : String.valueOf(txId));
                 recordStore.set(SOURCE + ID, disassociateIds ? "id-" + source : String.valueOf(source));
@@ -812,7 +815,7 @@ public class GraphRecordStoreUtilities {
             transactionAttributes[a] = new GraphAttribute(graph, attributeId);
         }
 
-        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, "selected");
+        final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE_NAME);
         final int transactionCount = graph.getTransactionCount();
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getTransaction(t);
@@ -828,7 +831,7 @@ public class GraphRecordStoreUtilities {
                 }
 
                 if (graph.getTransactionDirection(transaction) == Graph.UNDIRECTED) {
-                    recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+                    recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
                 }
                 recordStore.set(TRANSACTION + ID, COPY + String.valueOf(transaction));
                 recordStore.set(SOURCE + ID, COPY + String.valueOf(source));
@@ -916,9 +919,9 @@ public class GraphRecordStoreUtilities {
                     }
 
                     if (graph.getTransactionDirection(transaction) == Graph.UNDIRECTED) {
-                        recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+                        recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
                     }
-                    recordStore.set(TRANSACTION + ID, COPY + String.format("%d:%s:%s", transaction, srcId, dstId));
+                    recordStore.set(TRANSACTION + ID, COPY + String.format(NUMBER_STRING_STRING_FORMAT, transaction, srcId, dstId));
                     recordStore.set(SOURCE + ID, srcId);
                     recordStore.set(DESTINATION + ID, dstId);
                 }
@@ -1003,9 +1006,9 @@ public class GraphRecordStoreUtilities {
             }
 
             if (graph.getTransactionDirection(transaction) == Graph.UNDIRECTED) {
-                recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+                recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
             }
-            recordStore.set(TRANSACTION + ID, COPY + String.format("%d:%s:%s", transaction, sourceId, destId));
+            recordStore.set(TRANSACTION + ID, COPY + String.format(NUMBER_STRING_STRING_FORMAT, transaction, sourceId, destId));
             recordStore.set(SOURCE + ID, sourceId);
             recordStore.set(DESTINATION + ID, destId);
         }
@@ -1049,9 +1052,9 @@ public class GraphRecordStoreUtilities {
                 }
 
                 if (graph.getTransactionDirection(transaction) == Graph.UNDIRECTED) {
-                    recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+                    recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
                 }
-                recordStore.set(TRANSACTION + ID, COPY + String.format("%d:%s:%s", transaction, sourceId, destId));
+                recordStore.set(TRANSACTION + ID, COPY + String.format(NUMBER_STRING_STRING_FORMAT, transaction, sourceId, destId));
                 recordStore.set(SOURCE + ID, sourceId);
                 recordStore.set(DESTINATION + ID, destId);
             }
@@ -1120,7 +1123,7 @@ public class GraphRecordStoreUtilities {
      * transaction.
      */
     public static void setUndirected(RecordStore recordStore) {
-        recordStore.set(TRANSACTION + DIRECTED_KEY, "false");
+        recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
     }
 
     /**
@@ -1159,6 +1162,7 @@ public class GraphRecordStoreUtilities {
 
         final Map<?, ?> read = om.readValue(json, Map.class);
         if (read.containsKey(VX)) {
+            @SuppressWarnings("unchecked") //vertices will list of maps of string to object
             final List<Map<String, Object>> vertices = (List<Map<String, Object>>) read.get(VX);
             for (final Map<String, Object> vertex : vertices) {
                 rs.add();
@@ -1172,6 +1176,7 @@ public class GraphRecordStoreUtilities {
         }
 
         if (read.containsKey(TX)) {
+            @SuppressWarnings("unchecked") //transactions will be a list of maps of string to object
             final List<Map<String, Object>> transactions = (List<Map<String, Object>>) read.get(TX);
             for (final Map<String, Object> transaction : transactions) {
                 rs.add();

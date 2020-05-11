@@ -23,7 +23,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DragGestureEvent;
 import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DragGestureRecognizer;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
@@ -205,27 +204,32 @@ final class DragDropList extends JList<MyElement> {
         public MyDragListener(final DragDropList list) {
             this.list = list;
             ds = new DragSource();
-            DragGestureRecognizer dgr = ds.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_MOVE, this);
+            ds.createDefaultDragGestureRecognizer(list, DnDConstants.ACTION_MOVE, this);
         }
 
         @Override
         public void dragEnter(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragOver(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dropActionChanged(final DragSourceDragEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragExit(final DragSourceEvent dse) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override
         public void dragDropEnd(final DragSourceDropEvent dsde) {
+            // Required for implementation of DragGestureListener
         }
 
         @Override

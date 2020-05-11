@@ -170,6 +170,7 @@ public final class BroccoliArranger implements Arranger {
 
     @Override
     public void setMaintainMean(boolean b) {
+        // Required for Arranger, intentionally left blank
     }
 
     private Vector3f getCentre() {

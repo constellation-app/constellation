@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.mergers.ConcatenatedSetGraphAttributeMerger;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import org.openide.util.Exceptions;
@@ -43,7 +45,7 @@ public class PrimaryKeyUnitNGTest {
     @Test(expectedExceptions = {DuplicateKeyException.class})
     public void noMergerTest() {
         final StoreGraph g = new StoreGraph();
-        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "key", null, null, null);
+        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "key", null, null, null);
         g.setPrimaryKey(GraphElementType.VERTEX, keyAttribute);
         final int v1 = g.addVertex();
         final int v2 = g.addVertex();
@@ -61,7 +63,7 @@ public class PrimaryKeyUnitNGTest {
     @Test
     public void defaultMergerTest() {
         final StoreGraph g = new StoreGraph(new BareSchemaFactory().createSchema());
-        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "key", null, null, null);
+        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "key", null, null, null);
         g.setPrimaryKey(GraphElementType.VERTEX, keyAttribute);
         final int v1 = g.addVertex();
         final int v2 = g.addVertex();
@@ -83,10 +85,10 @@ public class PrimaryKeyUnitNGTest {
     @Test
     public void attributeMergerTest() {
         final StoreGraph g = new StoreGraph(new BareSchemaFactory().createSchema());
-        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "key", null, null, null);
-        final int defaultMergerAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "defaultMerger", null, null, GraphAttributeMerger.getDefault().getId());
-        final int customMergerAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "customMerger", null, null, ConcatenatedSetGraphAttributeMerger.ID);
-        final int noMergerAttribute = g.addAttribute(GraphElementType.VERTEX, "string", "noMerger", null, null, null);
+        final int keyAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "key", null, null, null);
+        final int defaultMergerAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "defaultMerger", null, null, GraphAttributeMerger.getDefault().getId());
+        final int customMergerAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "customMerger", null, null, ConcatenatedSetGraphAttributeMerger.ID);
+        final int noMergerAttribute = g.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "noMerger", null, null, null);
 
         g.setPrimaryKey(GraphElementType.VERTEX, keyAttribute);
         final int survivingVertex = g.addVertex();
@@ -123,8 +125,8 @@ public class PrimaryKeyUnitNGTest {
             WritableGraph wg = graph.getWritableGraph("Primary Key Test", true);
             try {
 
-                a1 = wg.addAttribute(GraphElementType.VERTEX, "boolean", "a", null, null, null);
-                a2 = wg.addAttribute(GraphElementType.VERTEX, "boolean", "b", null, null, null);
+                a1 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "a", null, null, null);
+                a2 = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "b", null, null, null);
 
                 wg.setPrimaryKey(GraphElementType.VERTEX, a1, a2);
 
@@ -174,8 +176,8 @@ public class PrimaryKeyUnitNGTest {
 
             WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
             try {
-                vName = wg.addAttribute(GraphElementType.VERTEX, "string", "name", "name", null, null);
-                tName = wg.addAttribute(GraphElementType.TRANSACTION, "string", "name", "name", null, null);
+                vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+                tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
 
                 wg.setPrimaryKey(GraphElementType.VERTEX, vName);
                 wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);
@@ -239,8 +241,8 @@ public class PrimaryKeyUnitNGTest {
 
             WritableGraph wg = graph.getWritableGraph("Set Up Graph", true);
             try {
-                vName = wg.addAttribute(GraphElementType.VERTEX, "string", "name", "name", null, null);
-                tName = wg.addAttribute(GraphElementType.TRANSACTION, "string", "name", "name", null, null);
+                vName = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
+                tName = wg.addAttribute(GraphElementType.TRANSACTION, StringAttributeDescription.ATTRIBUTE_NAME, "name", "name", null, null);
 
                 wg.setPrimaryKey(GraphElementType.VERTEX, vName);
                 wg.setPrimaryKey(GraphElementType.TRANSACTION, tName);

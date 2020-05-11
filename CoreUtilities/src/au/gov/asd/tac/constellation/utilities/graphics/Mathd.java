@@ -83,9 +83,9 @@ public final class Mathd {
 // Ditto above, but for doubles
 //    void m3dMatrixMultiply44(M3DMatrix44d product, final M3DMatrix44d a, final M3DMatrix44d b);
     public static void matrixMultiply(final Matrix44d product, final Matrix44d a, final Matrix44d b) {
-        final double[] pa = product.a;
-        final double[] aa = a.a;
-        final double[] ba = b.a;
+        final double[] pa = product.getA();
+        final double[] aa = a.getA();
+        final double[] ba = b.getA();
 
         for (int i = 0; i < 4; i++) {
             final double ai0 = aa[index44(i, 0)];
@@ -102,9 +102,9 @@ public final class Mathd {
 // Ditto above, but for doubles
 //    void m3dMatrixMultiply33(M3DMatrix33d product, final M3DMatrix33d a, final M3DMatrix33d b);
     public static void matrixMultiply(final Matrix33d product, final Matrix33d a, final Matrix33d b) {
-        final double[] pa = product.a;
-        final double[] aa = a.a;
-        final double[] ba = b.a;
+        final double[] pa = product.getA();
+        final double[] aa = a.getA();
+        final double[] ba = b.getA();
 
         for (int i = 0; i < 3; i++) {
             final double ai0 = aa[index33(i, 0)];
@@ -118,53 +118,53 @@ public final class Mathd {
 
 // Ditto above, but for doubles
     public static void transformVector(final Vector3d vOut, final Vector3d v, final Matrix44d m) {
-        vOut.a[0] = m.a[0] * v.a[0] + m.a[4] * v.a[1] + m.a[8] * v.a[2] + m.a[12];// * v[3];       // Assuming 1
-        vOut.a[1] = m.a[1] * v.a[0] + m.a[5] * v.a[1] + m.a[9] * v.a[2] + m.a[13];// * v[3];
-        vOut.a[2] = m.a[2] * v.a[0] + m.a[6] * v.a[1] + m.a[10] * v.a[2] + m.a[14];// * v[3];
+        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];// * v[3];       // Assuming 1
+        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];// * v[3];
+        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];// * v[3];
         //vOut[3] = m[3] * v[0] + m[7] * v[1] + m[11] * v[2] + m[15] * v[3];
     }
 
 // Ditto above, but for doubles
     public static void transformVector(final Vector4d vOut, final Vector4d v, final Matrix44d m) {
-        vOut.a[0] = m.a[0] * v.a[0] + m.a[4] * v.a[1] + m.a[8] * v.a[2] + m.a[12] * v.a[3];
-        vOut.a[1] = m.a[1] * v.a[0] + m.a[5] * v.a[1] + m.a[9] * v.a[2] + m.a[13] * v.a[3];
-        vOut.a[2] = m.a[2] * v.a[0] + m.a[6] * v.a[1] + m.a[10] * v.a[2] + m.a[14] * v.a[3];
-        vOut.a[3] = m.a[3] * v.a[0] + m.a[7] * v.a[1] + m.a[11] * v.a[2] + m.a[15] * v.a[3];
+        vOut.getA()[0] = m.getA()[0] * v.getA()[0] + m.getA()[4] * v.getA()[1] + m.getA()[8] * v.getA()[2] + m.getA()[12] * v.getA()[3];
+        vOut.getA()[1] = m.getA()[1] * v.getA()[0] + m.getA()[5] * v.getA()[1] + m.getA()[9] * v.getA()[2] + m.getA()[13] * v.getA()[3];
+        vOut.getA()[2] = m.getA()[2] * v.getA()[0] + m.getA()[6] * v.getA()[1] + m.getA()[10] * v.getA()[2] + m.getA()[14] * v.getA()[3];
+        vOut.getA()[3] = m.getA()[3] * v.getA()[0] + m.getA()[7] * v.getA()[1] + m.getA()[11] * v.getA()[2] + m.getA()[15] * v.getA()[3];
     }
 
 // Ditto above, but for doubles
     public static void rotateVector(final Vector3d vOut, final Vector3d p, final Matrix33d m) {
-        vOut.a[0] = m.a[0] * p.a[0] + m.a[3] * p.a[1] + m.a[6] * p.a[2];
-        vOut.a[1] = m.a[1] * p.a[0] + m.a[4] * p.a[1] + m.a[7] * p.a[2];
-        vOut.a[2] = m.a[2] * p.a[0] + m.a[5] * p.a[1] + m.a[8] * p.a[2];
+        vOut.a[0] = m.getA()[0] * p.a[0] + m.getA()[3] * p.a[1] + m.getA()[6] * p.a[2];
+        vOut.a[1] = m.getA()[1] * p.a[0] + m.getA()[4] * p.a[1] + m.getA()[7] * p.a[2];
+        vOut.a[2] = m.getA()[2] * p.a[0] + m.getA()[5] * p.a[1] + m.getA()[8] * p.a[2];
     }
 
     public static void makeScalingMatrix(final Matrix33d m, final double xScale, final double yScale, final double zScale) {
         m.identity();
-        m.a[0] = xScale;
-        m.a[4] = yScale;
-        m.a[8] = zScale;
+        m.getA()[0] = xScale;
+        m.getA()[4] = yScale;
+        m.getA()[8] = zScale;
     }
 
     public static void makeScalingMatrix(final Matrix33d m, final Vector3d vScale) {
         m.identity();
-        m.a[0] = vScale.a[0];
-        m.a[4] = vScale.a[1];
-        m.a[8] = vScale.a[2];
+        m.getA()[0] = vScale.a[0];
+        m.getA()[4] = vScale.a[1];
+        m.getA()[8] = vScale.a[2];
     }
 
     public static void makeScalingMatrix(final Matrix44d m, final double xScale, final double yScale, final double zScale) {
         m.identity();
-        m.a[0] = xScale;
-        m.a[5] = yScale;
-        m.a[10] = zScale;
+        m.getA()[0] = xScale;
+        m.getA()[5] = yScale;
+        m.getA()[10] = zScale;
     }
 
     public static void makeScalingMatrix(final Matrix44d m, final Vector3d vScale) {
         m.identity();
-        m.a[0] = vScale.a[0];
-        m.a[5] = vScale.a[1];
-        m.a[10] = vScale.a[2];
+        m.getA()[0] = vScale.a[0];
+        m.getA()[5] = vScale.a[1];
+        m.getA()[10] = vScale.a[2];
     }
 
 //    void m3dRotationMatrix33(M3DMatrix33d m, double angle, double x, double y, double z);
@@ -211,17 +211,17 @@ public final class Mathd {
         zs = z * s;
         one_c = 1.0f - c;
 
-        m.a[index33(0, 0)] = (one_c * xx) + c;
-        m.a[index33(0, 1)] = (one_c * xy) - zs;
-        m.a[index33(0, 2)] = (one_c * zx) + ys;
+        m.getA()[index33(0, 0)] = (one_c * xx) + c;
+        m.getA()[index33(0, 1)] = (one_c * xy) - zs;
+        m.getA()[index33(0, 2)] = (one_c * zx) + ys;
 
-        m.a[index33(1, 0)] = (one_c * xy) + zs;
-        m.a[index33(1, 1)] = (one_c * yy) + c;
-        m.a[index33(1, 2)] = (one_c * yz) - xs;
+        m.getA()[index33(1, 0)] = (one_c * xy) + zs;
+        m.getA()[index33(1, 1)] = (one_c * yy) + c;
+        m.getA()[index33(1, 2)] = (one_c * yz) - xs;
 
-        m.a[index33(2, 0)] = (one_c * zx) - ys;
-        m.a[index33(2, 1)] = (one_c * yz) + xs;
-        m.a[index33(2, 2)] = (one_c * zz) + c;
+        m.getA()[index33(2, 0)] = (one_c * zx) - ys;
+        m.getA()[index33(2, 1)] = (one_c * yz) + xs;
+        m.getA()[index33(2, 2)] = (one_c * zz) + c;
     }
 
     /**
@@ -275,32 +275,32 @@ public final class Mathd {
         zs = z * s;
         one_c = 1.0f - c;
 
-        m.a[index44(0, 0)] = (one_c * xx) + c;
-        m.a[index44(0, 1)] = (one_c * xy) - zs;
-        m.a[index44(0, 2)] = (one_c * zx) + ys;
-        m.a[index44(0, 3)] = 0.0f;
+        m.getA()[index44(0, 0)] = (one_c * xx) + c;
+        m.getA()[index44(0, 1)] = (one_c * xy) - zs;
+        m.getA()[index44(0, 2)] = (one_c * zx) + ys;
+        m.getA()[index44(0, 3)] = 0.0f;
 
-        m.a[index44(1, 0)] = (one_c * xy) + zs;
-        m.a[index44(1, 1)] = (one_c * yy) + c;
-        m.a[index44(1, 2)] = (one_c * yz) - xs;
-        m.a[index44(1, 3)] = 0.0f;
+        m.getA()[index44(1, 0)] = (one_c * xy) + zs;
+        m.getA()[index44(1, 1)] = (one_c * yy) + c;
+        m.getA()[index44(1, 2)] = (one_c * yz) - xs;
+        m.getA()[index44(1, 3)] = 0.0f;
 
-        m.a[index44(2, 0)] = (one_c * zx) - ys;
-        m.a[index44(2, 1)] = (one_c * yz) + xs;
-        m.a[index44(2, 2)] = (one_c * zz) + c;
-        m.a[index44(2, 3)] = 0.0f;
+        m.getA()[index44(2, 0)] = (one_c * zx) - ys;
+        m.getA()[index44(2, 1)] = (one_c * yz) + xs;
+        m.getA()[index44(2, 2)] = (one_c * zz) + c;
+        m.getA()[index44(2, 3)] = 0.0f;
 
-        m.a[index44(3, 0)] = 0.0f;
-        m.a[index44(3, 1)] = 0.0f;
-        m.a[index44(3, 2)] = 0.0f;
-        m.a[index44(3, 3)] = 1.0f;
+        m.getA()[index44(3, 0)] = 0.0f;
+        m.getA()[index44(3, 1)] = 0.0f;
+        m.getA()[index44(3, 2)] = 0.0f;
+        m.getA()[index44(3, 3)] = 1.0f;
     }
 
     public static void makeTranslationMatrix(Matrix44d m, final double x, final double y, final double z) {
         m.identity();
-        m.a[12] = x;
-        m.a[13] = y;
-        m.a[14] = z;
+        m.getA()[12] = x;
+        m.getA()[13] = y;
+        m.getA()[14] = z;
     }
 
     private static double detIJ(final Matrix44d m, final int i, final int j) {
@@ -321,7 +321,7 @@ public final class Mathd {
                 if (jj == j) {
                     continue;
                 }
-                mat[x][y] = m.a[(ii * 4) + jj];
+                mat[x][y] = m.getA()[(ii * 4) + jj];
                 y++;
             }
             x++;
@@ -342,15 +342,15 @@ public final class Mathd {
         // calculate 4x4 determinant
         det = 0.0;
         for (int i = 0; i < 4; i++) {
-            det += (i & 0x1) == 1 ? (-m.a[i] * detIJ(m, 0, i)) : (m.a[i] * detIJ(m, 0, i));
+            det += (i & 0x1) == 1 ? (-m.getA()[i] * detIJ(m, 0, i)) : (m.getA()[i] * detIJ(m, 0, i));
         }
-        det = 1.0 / det;
+        det = (det != 0 ? (1.0 / det) : Double.POSITIVE_INFINITY);
 
         // calculate inverse
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 detij = detIJ(m, j, i);
-                mInverse.a[(i * 4) + j] = ((i + j) & 0x1) == 1 ? (-detij * det) : (detij * det);
+                mInverse.getA()[(i * 4) + j] = ((i + j) & 0x1) == 1 ? (-detij * det) : (detij * det);
             }
         }
     }
@@ -380,11 +380,11 @@ public final class Mathd {
         crossProduct(tmp, v1, v2);
         tmp.normalize();
 
-        planeEq.a[0] = tmp.a[0];
-        planeEq.a[1] = tmp.a[1];
-        planeEq.a[2] = tmp.a[2];
+        planeEq.getA()[0] = tmp.a[0];
+        planeEq.getA()[1] = tmp.a[1];
+        planeEq.getA()[2] = tmp.a[2];
         // Back substitute to get D
-        planeEq.a[3] = -(planeEq.a[0] * p3.a[0] + planeEq.a[1] * p3.a[1] + planeEq.a[2] * p3.a[2]);
+        planeEq.getA()[3] = -(planeEq.getA()[0] * p3.a[0] + planeEq.getA()[1] * p3.a[1] + planeEq.getA()[2] * p3.a[2]);
     }
 
 // Determine if a ray intersects a sphere

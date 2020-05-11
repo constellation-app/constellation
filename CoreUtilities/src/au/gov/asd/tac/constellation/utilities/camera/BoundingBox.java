@@ -343,7 +343,7 @@ public final class BoundingBox implements Serializable {
     @Override
     public String toString() {
         return isEmpty
-                ? String.format("BoundingBox[isEmpty]")
+                ? "BoundingBox[isEmpty]"
                 : String.format("BoundingBox[min=%s max=%s centre0=%s centre1=%s cradius=%f sradius0=%f sradius1=%f]", min, max, getCentre(0), getCentre(1), getCubeRadius(), getSphereRadius(0), getSphereRadius(1));
     }
 }

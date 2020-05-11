@@ -37,6 +37,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.LocalDateStringConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -61,6 +62,8 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final int NUMBER_SPINNER_WIDTH = 55;
         private static final int MILLIS_SPINNER_WIDTH = 60;
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
+        
+        private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
         private CheckBox noValueCheckBox;
@@ -69,7 +72,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
 
-        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
+        protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
         }
 
@@ -93,9 +96,13 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             if (hourSpinner.getValue() == null || minSpinner.getValue() == null || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
+            final String dateString = datePicker.getEditor().getText();
+            //The converter is being used here to try and determine if the entered date is a LocalDate
+            //It will throw an exception and won't convert it if its invalid
             try {
-                final String dateString = datePicker.getEditor().getText();
-                final LocalDate date = datePicker.getConverter().fromString(dateString);
+                if (!StringUtils.isBlank(dateString)) {
+                    datePicker.setValue(datePicker.getConverter().fromString(dateString));
+                }
             } catch (final DateTimeParseException ex) {
                 throw new ControlsInvalidException("Entered value is not a date of format yyyy-mm-dd.");
             }
@@ -153,23 +160,23 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             final HBox timeSpinnerContainer = new HBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             final Label dateLabel = new Label("Date:");
-            dateLabel.setId("label");
+            dateLabel.setId(LABEL_ID);
             dateLabel.setLabelFor(datePicker);
 
             final Label hourSpinnerLabel = new Label("Hour:");
-            hourSpinnerLabel.setId("label");
+            hourSpinnerLabel.setId(LABEL_ID);
             hourSpinnerLabel.setLabelFor(hourSpinner);
 
             final Label minSpinnerLabel = new Label("Minute:");
-            minSpinnerLabel.setId("label");
+            minSpinnerLabel.setId(LABEL_ID);
             minSpinnerLabel.setLabelFor(minSpinner);
 
             final Label secSpinnerLabel = new Label("Second:");
-            secSpinnerLabel.setId("label");
+            secSpinnerLabel.setId(LABEL_ID);
             secSpinnerLabel.setLabelFor(secSpinner);
 
             final Label milliSpinnerLabel = new Label("Millis:");
-            milliSpinnerLabel.setId("label");
+            milliSpinnerLabel.setId(LABEL_ID);
             milliSpinnerLabel.setLabelFor(milliSpinner);
 
             hourSpinner.setPrefWidth(NUMBER_SPINNER_WIDTH);

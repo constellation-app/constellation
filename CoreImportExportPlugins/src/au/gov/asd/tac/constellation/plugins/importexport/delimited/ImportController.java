@@ -76,6 +76,7 @@ public class ImportController {
     private boolean schemaInitialised;
     private boolean showAllSchemaAttributes;
     private PluginParameters currentParameters = null;
+    private String attributeFilter = "";
 
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
@@ -170,7 +171,12 @@ public class ImportController {
     }
 
     public void setDestination(final ImportDestination<?> destination) {
-        this.currentDestination = destination;
+        if (destination != null) {
+            currentDestination = destination;
+        }
+        if (currentDestination == null) {
+            return;
+        }
 
         // Clearing the manually added attributes removes them when loading a template.
         // The destination is set with clearmanuallyAdded true before loading the
@@ -183,7 +189,7 @@ public class ImportController {
         keys.clear();
 
         final boolean showSchemaAttributes = importExportPrefs.getBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
-        loadAllSchemaAttributes(destination, showSchemaAttributes);
+        loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
 
         updateDisplayedAttributes();
     }
@@ -327,9 +333,22 @@ public class ImportController {
     }
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
-        Map<String, Attribute> displayedAttributes = new HashMap<>();
-        displayedAttributes.putAll(manuallyAddedAttributes);
-        displayedAttributes.putAll(autoAddedAttributes);
+        final Map<String, Attribute> displayedAttributes = new HashMap<>();
+        if (attributeFilter != null &&  attributeFilter.length() > 0) {
+            for (final String attributeName : autoAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                    displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
+                }
+            }
+            for (final String attributeName : manuallyAddedAttributes.keySet()) {
+                if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
+                    displayedAttributes.put(attributeName, manuallyAddedAttributes.get(attributeName));
+                }
+            }
+        } else {
+            displayedAttributes.putAll(manuallyAddedAttributes);
+            displayedAttributes.putAll(autoAddedAttributes);
+        }
         return displayedAttributes;
     }
 
@@ -487,6 +506,10 @@ public class ImportController {
         this.showAllSchemaAttributes = showAllSchemaAttributes;
         importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
         // TODO: the tick box could have changed but the menu item isn't updated, fix it
+    }
+
+    public void setAttributeFilter(final String attributeFilter) {
+        this.attributeFilter = attributeFilter;
     }
 
     public String[] getCurrentColumns() {

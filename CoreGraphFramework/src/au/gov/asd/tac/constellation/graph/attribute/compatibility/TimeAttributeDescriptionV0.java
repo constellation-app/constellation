@@ -118,7 +118,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
 
     @Override
     public String acceptsString(String value) {
-        return setString(value) == NULL_VALUE ? "Not a valid time value" : null;
+        return setString(value) == NULL_VALUE ? "Not a valid time value (Expected HH:mm:ss.SSS)" : null;
     }
 
     private static int setString(final String value) {
@@ -324,16 +324,6 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
             }
             return false;
         }
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 8;
     }
 
     @Override

@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisual
  * @param <R>
  * @param <C>
  */
-public abstract class AbstractColorTranslator<R extends AnalyticResult, C> extends GraphVisualisationTranslator<R, ColorVisualisation> {
+public abstract class AbstractColorTranslator<R extends AnalyticResult<?>, C> extends GraphVisualisationTranslator<R, ColorVisualisation<C>> {
 
     protected static class InvalidElementTypeException extends RuntimeException {
 

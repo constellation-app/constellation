@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangement.circle.ArrangeInSphereAction")
 @ActionRegistration(displayName = "#CTL_ArrangeInSphereAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 700),
+    @ActionReference(path = "Menu/Arrange", position = 1100),
     @ActionReference(path = "Shortcuts", name = "C-A-K")
 })
 @Messages("CTL_ArrangeInSphereAction=Sphere")

@@ -37,7 +37,7 @@
               <Component id="uncollide1Button" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
           </Group>
-          <Component id="drawPanel" alignment="0" pref="753" max="32767" attributes="0"/>
+          <Component id="drawPanel" alignment="0" pref="769" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">

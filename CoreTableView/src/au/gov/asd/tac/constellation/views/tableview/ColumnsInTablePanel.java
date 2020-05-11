@@ -206,6 +206,7 @@ public class ColumnsInTablePanel extends javax.swing.JPanel {
         @Override
         public Component getListCellRendererComponent(final JList<? extends Object> list, final Object value, final int index, final boolean isSelected, final boolean cellHasFocus) {
             setOpaque(true);
+            @SuppressWarnings("unchecked") //value will be an attribute checklist item
             final CheckListItem<Attribute> listItem = (CheckListItem<Attribute>) value;
             setSelected(listItem.isSelected);
             setText(listItem.item.getName());

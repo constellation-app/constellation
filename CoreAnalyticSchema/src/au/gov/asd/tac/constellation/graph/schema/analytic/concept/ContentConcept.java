@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.graph.schema.analytic.concept;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -94,7 +94,7 @@ public class ContentConcept extends SchemaConcept {
                 .setDescription("The last author of the content")
                 .build();
         public static final SchemaAttribute LINE_COUNT = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.LineCount")
-                .setDescription("The character count excluding spaces")
+                .setDescription("The line count excluding spaces")
                 .build();
         public static final SchemaAttribute PERMISSION = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.Permission")
                 .setDescription("The permission level for the content")
@@ -167,7 +167,7 @@ public class ContentConcept extends SchemaConcept {
                 .setDescription("The last author of the content")
                 .build();
         public static final SchemaAttribute LINE_COUNT = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.LineCount")
-                .setDescription("The character count excluding spaces")
+                .setDescription("The line count excluding spaces")
                 .build();
         public static final SchemaAttribute PERMISSION = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "Content.Permission")
                 .setDescription("The permission level for the content")

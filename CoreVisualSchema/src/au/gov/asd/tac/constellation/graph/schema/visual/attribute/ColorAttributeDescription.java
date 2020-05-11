@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute;
 import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -48,37 +49,35 @@ public final class ColorAttributeDescription extends AbstractObjectAttributeDesc
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
+    private ConstellationColor fromInt(final Integer integer) {
+        final float red = (integer >>> 24) / 255.0f;
+        final float green = ((integer >>> 16) & 0xFF) / 255.0f;
+        final float blue = ((integer >>> 8) & 0xFF) / 255.0f;
+        final float alpha = (integer & 0xFF) / 255.0f;
+        return ConstellationColor.getColorValue(red, green, blue, alpha);
+    }
+
     @Override
     @SuppressWarnings("unchecked") //Casts are checked manually
     public ConstellationColor convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof Integer) {
-            return fromInt((int) object);
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof ConstellationColor) {
-            return (ConstellationColor) object;
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting '%s' to ColorAttributeDescription", object.getClass()));
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof Integer) {
+                return fromInt((int) object);
+            } else {
+                throw ex;
+            }
         }
     }
 
     @Override
     protected ConstellationColor convertFromString(final String string) {
-        return fromString(string);
-    }
-
-    private ConstellationColor fromInt(Integer integer) {
-        float red = (integer >>> 24) / 255.0f;
-        float green = ((integer >>> 16) & 0xFF) / 255.0f;
-        float blue = ((integer >>> 8) & 0xFF) / 255.0f;
-        float alpha = (integer & 0xFF) / 255.0f;
-        return ConstellationColor.getColorValue(red, green, blue, alpha);
-    }
-
-    private ConstellationColor fromString(String string) {
-        return ConstellationColor.getColorValue(string);
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return ConstellationColor.getColorValue(string);
+        }
     }
 
     @Override

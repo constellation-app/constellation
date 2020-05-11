@@ -42,16 +42,16 @@ public class BooleanObjectIOProvider extends AbstractGraphIOProvider {
 
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final Boolean attrVal = jnode.isNull() ? null : jnode.booleanValue();
-        graph.setObjectValue(attributeId, elementId, attrVal);
+        final Boolean attributeValue = jnode.isNull() ? null : jnode.booleanValue();
+        graph.setObjectValue(attributeId, elementId, attributeValue);
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final Boolean attrVal = graph.getObjectValue(attribute.getId(), elementId);
-            if (attrVal != null) {
-                jsonGenerator.writeBooleanField(attribute.getName(), attrVal);
+            final Boolean attributeValue = graph.getObjectValue(attribute.getId(), elementId);
+            if (attributeValue != null) {
+                jsonGenerator.writeBooleanField(attribute.getName(), attributeValue);
             } else {
                 jsonGenerator.writeNullField(attribute.getName());
             }

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.processing;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,8 +65,8 @@ public class GraphRecordStoreUtilitiesNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         graph = new StoreGraph();
-        graph.addAttribute(GraphElementType.VERTEX, "boolean", "selected", "", false, null);
-        graph.addAttribute(GraphElementType.TRANSACTION, "boolean", "selected", "", false, null);
+        graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
+        graph.addAttribute(GraphElementType.TRANSACTION, BooleanAttributeDescription.ATTRIBUTE_NAME, "selected", "", false, null);
 
         vxs = new int[NUMBER_OF_VERTICES];
         for (int i = 0; i < vxs.length; i++) {

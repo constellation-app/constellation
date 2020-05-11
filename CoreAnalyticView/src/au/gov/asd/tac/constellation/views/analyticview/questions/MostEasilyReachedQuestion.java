@@ -55,7 +55,7 @@ public class MostEasilyReachedQuestion implements AnalyticQuestionDescription<Sc
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 

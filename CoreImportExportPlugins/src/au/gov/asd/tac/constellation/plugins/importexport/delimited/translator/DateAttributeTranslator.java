@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -43,13 +44,12 @@ public class DateAttributeTranslator extends AttributeTranslator {
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DateAttributeTranslator.class, "custom");
 
     private static final Map<String, String> DATE_FORMATS = new LinkedHashMap<>();
-    private static final DateTimeFormatter RESULT_FORMAT = DateAttributeDescription.FORMATTER;
+    private static final DateTimeFormatter RESULT_FORMAT = TemporalFormatting.DATE_FORMATTER;
 
     static {
         DATE_FORMATS.put("yyyy-MM-dd", "yyyy-MM-dd");
         DATE_FORMATS.put("MM/dd/yyyy", "MM/dd/yyyy");
         DATE_FORMATS.put("dd/MM/yyyy", "dd/MM/yyyy");
-        DATE_FORMATS.put("yyyyMMdd", "yyyyMMdd");
         DATE_FORMATS.put("yyyyMMdd", "yyyyMMdd");
         DATE_FORMATS.put("CUSTOM", null);
     }

@@ -15,16 +15,15 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.perspectives;
 
-import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
-import au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveModel.Perspective;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveModel.Perspective;
+import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -101,7 +100,6 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     private void moveToPerspective() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            final GraphNode gnode = GraphNode.getGraphNode(graph);
             final Perspective p = perspectivesList.getSelectedValue();
             PluginExecution.withPlugin(new SimpleEditPlugin("Change Perspective") {
                 @Override
@@ -357,13 +355,16 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     }
 
     void writeProperties(java.util.Properties p) {
+        // required for @ConvertAsProperties
     }
 
     void readProperties(java.util.Properties p) {
+        // required for @ConvertAsProperties
     }
 
     @Override
     public void graphOpened(final Graph graph) {
+        // required for implementation of GraphManagerListener
     }
 
     @Override

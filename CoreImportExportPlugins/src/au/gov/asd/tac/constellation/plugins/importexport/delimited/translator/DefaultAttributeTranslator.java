@@ -43,5 +43,6 @@ public class DefaultAttributeTranslator extends AttributeTranslator {
 
     @Override
     public void setParameterValues(final PluginParameters parameters, final String values) {
+        //Method must be overridden, intentionally left blank
     }
 }

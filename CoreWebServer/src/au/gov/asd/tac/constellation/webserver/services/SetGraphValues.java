@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -27,9 +28,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,6 +49,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class SetGraphValues extends RestService {
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    
+    private static final String COLUMNS = "columns";
 
     @Override
     public String getName() {
@@ -94,14 +97,14 @@ public class SetGraphValues extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
-        if(!json.hasNonNull("columns") || !json.get("columns").isArray()) {
+        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
             throw new RestServiceException("Could not find columns object containing column names");
         }
 
         if (!json.hasNonNull("data") || !json.get("data").isArray()) {
             throw new RestServiceException("Could not find data object containing data rows");
         }
-        final ArrayNode columns = (ArrayNode) json.get("columns");
+        final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final ArrayNode data = (ArrayNode) json.get("data");
 
         // Do we have one and only one row of data?
@@ -129,7 +132,7 @@ public class SetGraphValues extends RestService {
                     final String attributeName = columns.get(i).asText();
                     int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
                     if (attributeId == Graph.NOT_FOUND) {
-                        attributeId = graph.addAttribute(GraphElementType.GRAPH, "string", attributeName, null, null, null);
+                        attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
                     }
                     final String attributeValue = row.get(i).asText();
                     graph.setStringValue(attributeId, 0, attributeValue);

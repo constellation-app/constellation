@@ -61,7 +61,6 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         depths[firstVertex] = 1;
         extendSpanningTree(graph, firstVertex, parents, depths, cycles);
 
-        int cycleCount = 0;
 
         int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
@@ -76,27 +75,22 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
                     }
                     parentChildren[++parentChildren[0]] = vertex;
                 }
-            } else {
-                cycleCount++;
-            }
+            } 
 
             graph.setBooleanValue(selectedAttribute, vertex, cycles[vertex] > 0);
         }
 
-        int cyclePosition = 0;
         float totalRadius = 4;
         for (int position = 0; position < vertexCount; position++) {
             int vertex = graph.getVertex(position);
 
             if (cycles[vertex] > 0) {
                 totalRadius += layout(graph, vertex, children, radii);
-                cyclePosition++;
             }
         }
 
         totalRadius /= Math.PI;
 
-        cyclePosition = 0;
         float angle = 0;
         for (int position = 0; position < vertexCount; position++) {
             int vertex = graph.getVertex(position);
@@ -105,7 +99,6 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
                 angle += radii[vertex] / totalRadius;
                 offset(graph, vertex, children, (float) Math.sin(angle) * totalRadius, (float) Math.cos(angle) * totalRadius, 0);
                 angle += radii[vertex] / totalRadius;
-                cyclePosition++;
             }
         }
     }

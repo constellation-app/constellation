@@ -141,10 +141,12 @@ public class GraphUpdateManager implements GraphChangeListener, GraphManagerList
 
     @Override
     public void graphOpened(Graph graph) {
+        // Require for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // Require for GraphManagerListener, intentionally left blank
     }
 
     @Override

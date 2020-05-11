@@ -28,26 +28,28 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLine
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
-import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import java.awt.Component;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -76,6 +78,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     private InteractionEventHandler handler;
     private DropTargetListener targetListener;
     private DropTarget target;
+    
+    private static final Logger LOGGER = Logger.getLogger(InteractiveGLVisualProcessor.class.getName());
 
     /**
      * Create a new InteractiveGLVisualProcessor.
@@ -139,7 +143,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
         @Override
         public int getPriority() {
-            return ELEVATED_VISUAL_PRIORITY;
+            return VisualPriority.ELEVATED_VISUAL_PRIORITY.getValue();
         }
 
         public GLSetHitTestingOperation(final boolean doHitTesting) {
@@ -206,11 +210,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public Vector3f convertZoomPointToDirection(final Point zoomPoint) {
-        final Component canvas = getCanvas();
         return new Vector3f(
-                (float) (canvas.getWidth() / 2.0 - zoomPoint.x),
-                (float) (zoomPoint.y - canvas.getHeight() / 2.0),
-                (float) (canvas.getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
+                (float) (getCanvas().getWidth() / 2.0 - zoomPoint.x),
+                (float) (zoomPoint.y - getCanvas().getHeight() / 2.0),
+                (float) (getCanvas().getHeight() / (2 * Math.tan(Camera.FIELD_OF_VIEW * Math.PI / 180 / 2))));
     }
 
     @Override
@@ -229,10 +232,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final int canvasWidth = getCanvas().getWidth();
-        final int canvasHeight = getCanvas().getHeight();
-        final float xDist = (canvasWidth / 2.0f - to.x) / (canvasWidth / 2.0f);
-        final float yDist = (canvasHeight / 2.0f - to.y) / (canvasHeight / 2.0f);
+        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
+        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
         final float xDelta = (from.x - to.x) / 2.0f;
         final float yDelta = (from.y - to.y) / 2.0f;
         return yDist * xDelta - xDist * yDelta;
@@ -315,11 +316,26 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
         final int[] viewport = getViewport();
-
         final float leftScale = (((float) left / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
         final float rightScale = (((float) right / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
         final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
+    }
+    
+    @Override
+    public float getDPIScalingFactor(){
+        // HACK_DPI - Get the X Scale value from the GLCanva's transform matrix
+        // This method was derived from the JOGL post found here:
+        // http://forum.jogamp.org/canvas-not-filling-frame-td4040092.html#a4040210
+        try
+        {
+        	return (float)((Graphics2D)getCanvas().getGraphics()).getTransform().getScaleX();
+        }
+        catch (Exception ex)
+        {
+        	LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+        	return 1.0f;	
+        }
     }
 }

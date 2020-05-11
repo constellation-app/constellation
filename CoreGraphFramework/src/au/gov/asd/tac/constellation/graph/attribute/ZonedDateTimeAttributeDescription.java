@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
@@ -25,11 +23,9 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -38,99 +34,38 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = AttributeDescription.class)
-public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDescription {
+public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttributeDescription<ZonedDateTime> {
 
-    private static final Logger LOGGER = Logger.getLogger(ZonedDateTimeAttributeDescription.class.getName());
-    private static final int DESCRIPTION_VERSION = 1;
     public static final String ATTRIBUTE_NAME = "datetime";
-    public static final long NULL_VALUE = Long.MIN_VALUE;
+    public static final int ATTRIBUTE_VERSION = 1;
+    public static final Class<ZonedDateTime> NATIVE_CLASS = ZonedDateTime.class;
+    public static final ZonedDateTime DEFAULT_VALUE = null;
 
-    private ZonedDateTime[] data = new ZonedDateTime[0];
-    private ZonedDateTime defaultValue = null;
-
-    @Override
-    public String getName() {
-        return ATTRIBUTE_NAME;
+    public ZonedDateTimeAttributeDescription() {
+        super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
     @Override
-    public int getCapacity() {
-        return data.length;
+    public int getVersion() {
+        return ATTRIBUTE_VERSION;
     }
-
+    
     @Override
-    public void setCapacity(final int capacity) {
-        final int len = data.length;
-        data = Arrays.copyOf(data, capacity);
-        if (capacity > len) {
-            Arrays.fill(data, len, capacity, defaultValue);
+    public ZonedDateTime convertFromObject(final Object object) {
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof Date) {
+                return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Date) object).getTime()), TimeZoneUtilities.UTC);
+            } else if (object instanceof Calendar) {
+                return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Calendar) object).getTimeInMillis()), ((Calendar) object).getTimeZone().toZoneId());
+            } else if (object instanceof Number) {
+                return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Number) object).longValue()), TimeZoneUtilities.UTC);
+            } else {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting Object '%s' to datetime", object.getClass()));
+            }
         }
-    }
-
-    @Override
-    public void clear(final int id) {
-        data[id] = defaultValue;
-    }
-
-    @Override
-    public void setLong(final int id, final long value) {
-        data[id] = ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
-    }
-
-    private static ZonedDateTime parseObject(final Object value) {
-        if (value == null) {
-            return null;
-        } else if (value instanceof ZonedDateTime) {
-            return (ZonedDateTime) value;
-        } else if (value instanceof Date) {
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Date) value).getTime()), TimeZoneUtilities.UTC);
-        } else if (value instanceof Number) {
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Number) value).longValue()), TimeZoneUtilities.UTC);
-        } else if (value instanceof Calendar) {
-            return ZonedDateTime.ofInstant(Instant.ofEpochMilli(((Calendar) value).getTimeInMillis()), ((Calendar) value).getTimeZone().toZoneId());
-        } else if (value instanceof String) {
-            return parseString((String) value);
-        } else {
-            throw new IllegalArgumentException("Error converting Object to long: " + value.getClass().getName());
-        }
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = parseObject(value);
-    }
-
-    @Override
-    public void setString(final int id, final String value) {
-        data[id] = parseString(value);
-    }
-
-    @Override
-    public long getLong(final int id) {
-        if (data[id] == null) {
-            return NULL_VALUE;
-        }
-        return data[id].toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND;
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public String getString(final int id) {
-
-        return getAsString(data[id]);
-    }
-
-    @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
-        final ZonedDateTimeAttributeDescription attribute = new ZonedDateTimeAttributeDescription();
-        attribute.data = Arrays.copyOf(data, data.length);
-        attribute.defaultValue = this.defaultValue;
-        attribute.graph = graph;
-        return attribute;
     }
 
     /**
@@ -152,122 +87,60 @@ public final class ZonedDateTimeAttributeDescription extends AbstractAttributeDe
      * Note that this method directly reads substrings with static indices, as
      * this is significantly faster than using a ZonedDateTimeFormatter.
      *
-     * @param value A String in CONSTELLATION's date-time format
+     * @param string A String in CONSTELLATION's date-time format
      * (yyyy-MM-ddTHH:mm:ss.SSS[zone]) to be parsed.
      *
      * @return A {@link ZonedDateTime} representing the input datetime.
      */
-    public static ZonedDateTime parseString(final String value) {
-        if (value == null || value.isEmpty()) {
-            return null;
+    @Override
+    public ZonedDateTime convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            try {
+                final int year = Integer.parseInt(string.substring(0, TemporalFormatting.YEAR_FORMAT_LENGTH), 10);
+                final int month = Integer.parseInt(string.substring(TemporalFormatting.MONTH_FOMART_START_POSITION, TemporalFormatting.YEAR_MONTH_FORMAT_LENGTH), 10);
+                final int day = Integer.parseInt(string.substring(TemporalFormatting.DAY_FOMART_START_POSITION, TemporalFormatting.DATE_FORMAT_LENGTH), 10);
+                final int hour = Integer.parseInt(string.substring(TemporalFormatting.HOUR_FOMART_START_POSITION, TemporalFormatting.DATE_HOUR_FORMAT_LENGTH), 10);
+                final int minute = Integer.parseInt(string.substring(TemporalFormatting.DATE_MINUTE_FORMAT_START_POSITION, TemporalFormatting.DATE_HOUR_MINUTE_FORMAT_LENGTH), 10);
+                final int second = Integer.parseInt(string.substring(TemporalFormatting.DATE_SECOND_FORMAT_START_POSITION, TemporalFormatting.DATE_HMS_FORMAT_LENGTH), 10);
+                final int millisecond = Integer.parseInt(string.substring(TemporalFormatting.DATE_MILLISECOND_FORMAT_START_POSITION, TemporalFormatting.DATE_TIME_FORMAT_LENGTH), 10);
+                final String offsetId = string.length() >= TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
+                        ? string.substring(TemporalFormatting.ZONE_OFFSET_FORMAT_START_POSITION, TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH)
+                        : null;
+                final String regionId = string.length() > TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
+                        ? string.substring(TemporalFormatting.ZONE_NAME_FORMAT_START_POSITION, string.length() - 1)
+                        : null;
+                final ZoneId zoneId = regionId == null
+                        ? offsetId == null
+                                ? TimeZoneUtilities.UTC
+                                : ZoneOffset.of(offsetId)
+                        : ZoneId.of(regionId);
+                return ZonedDateTime.of(year, month, day, hour, minute, second, millisecond * TemporalConstants.NANOSECONDS_IN_MILLISECOND, zoneId);
+            } catch (final StringIndexOutOfBoundsException | NumberFormatException | DateTimeException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to datetime (expected yyyy-MM-ddTHH:mm:ss.SSS[zone])", string), ex);
+            }
         }
-
-        try {
-            final int ye = Integer.parseInt(value.substring(0, TemporalFormatting.YEAR_FORMAT_LENGTH), 10);
-            final int mo = Integer.parseInt(value.substring(TemporalFormatting.MONTH_FOMART_START_POSITION, TemporalFormatting.YEAR_MONTH_FORMAT_LENGTH), 10);
-            final int da = Integer.parseInt(value.substring(TemporalFormatting.DAY_FOMART_START_POSITION, TemporalFormatting.DATE_FORMAT_LENGTH), 10);
-            final int ho = Integer.parseInt(value.substring(TemporalFormatting.HOUR_FOMART_START_POSITION, TemporalFormatting.DATE_HOUR_FORMAT_LENGTH), 10);
-            final int mi = Integer.parseInt(value.substring(TemporalFormatting.DATE_MINUTE_FORMAT_START_POSITION, TemporalFormatting.DATE_HOUR_MINUTE_FORMAT_LENGTH), 10);
-            final int se = Integer.parseInt(value.substring(TemporalFormatting.DATE_SECOND_FORMAT_START_POSITION, TemporalFormatting.DATE_HMS_FORMAT_LENGTH), 10);
-            final int ms = Integer.parseInt(value.substring(TemporalFormatting.DATE_MILLISECOND_FORMAT_START_POSITION, TemporalFormatting.DATE_TIME_FORMAT_LENGTH), 10);
-            final String offsetId = value.length() >= TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
-                    ? value.substring(TemporalFormatting.ZONE_OFFSET_FORMAT_START_POSITION, TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH)
-                    : null;
-            final String regionId = value.length() > TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
-                    ? value.substring(TemporalFormatting.ZONE_NAME_FORMAT_START_POSITION, value.length() - 1)
-                    : null;
-            final ZoneId zi = regionId == null
-                    ? offsetId == null
-                            ? TimeZoneUtilities.UTC
-                            : ZoneOffset.of(offsetId)
-                    : ZoneId.of(regionId);
-            return ZonedDateTime.of(ye, mo, da, ho, mi, se, ms * TemporalConstants.NANOSECONDS_IN_MILLISECOND, zi);
-        } catch (StringIndexOutOfBoundsException | NumberFormatException | DateTimeException ex) {
-            LOGGER.log(Level.WARNING, "Can''t parse datetime string ''{0}'': {1}", new Object[]{value, ex.getMessage()});
-        }
-
-        return null;
     }
 
     @Override
-    public String acceptsString(String value) {
-        return value != null && parseString(value) == null ? "Not a valid datetime" : null;
-    }
-
-    /**
-     * Format the given ZonedDateTime object as a String in CONSTELLATION's
-     * date-time format.
-     *
-     * @param value The ZonedDateTime value.
-     *
-     * @return The datetime as a String in CONSTELLATION's date-time format.
-     */
-    public static String getAsString(final ZonedDateTime value) {
-        if (value == null) {
-            return null;
-        }
-
-        return value.format(TemporalFormatting.ZONED_DATE_TIME_FORMATTER);
+    public long getLong(final int id) {
+        return data[id] != null ? ((ZonedDateTime) data[id]).toEpochSecond() * TemporalConstants.MILLISECONDS_IN_SECOND : 0L;
     }
 
     @Override
-    public Class<?> getNativeClass() {
-        return ZonedDateTimeAttributeDescription.class;
+    public void setLong(final int id, final long value) {
+        data[id] = ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
     }
 
     @Override
-    public void setDefault(final Object value) {
-        defaultValue = parseObject(value);
-    }
-
-    @Override
-    public Object getDefault() {
-        return defaultValue;
+    public String getString(final int id) {
+        return data[id] != null ? ((ZonedDateTime) data[id]).format(TemporalFormatting.ZONED_DATE_TIME_FORMATTER) : null;
     }
 
     @Override
     public int hashCode(final int id) {
-        return data[id] == null ? 0 : data[id].toInstant().hashCode();
-    }
-
-    @Override
-    public boolean equals(final int id1, final int id2) {
-        return data[id1] == null ? data[id2] == null : data[id1].toInstant().equals(data[id2].toInstant());
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 6;
-    }
-
-    @Override
-    public boolean isClear(final int id) {
-        return data[id] == null ? defaultValue == null : data[id].equals(defaultValue);
-    }
-
-    @Override
-    public Object saveData() {
-        return Arrays.copyOf(data, data.length);
-    }
-
-    @Override
-    public void restoreData(final Object savedData) {
-        final ZonedDateTime[] sd = (ZonedDateTime[]) savedData;
-        data = Arrays.copyOf(sd, sd.length);
-    }
-
-    @Override
-    public NativeAttributeType getNativeType() {
-        return NativeAttributeType.OBJECT;
-    }
-
-    @Override
-    public int getVersion() {
-        return DESCRIPTION_VERSION;
+        return data[id] == null ? 0 : ((ZonedDateTime) data[id]).toInstant().hashCode();
     }
 }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -23,14 +22,17 @@ import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimpleAction;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.Set;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -71,7 +73,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
         private final GraphWriteMethods graph;
         
-        private final Random r = new Random();
+        private final SecureRandom r = new SecureRandom();
 
         Worker(GraphWriteMethods graph) {
             this.graph = graph;
@@ -83,12 +85,12 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             final GraphTaxonomy tax = treeArranger.getTaxonomy(graph);
 
             if (VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, "icon", "background_icon", "background_icon", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "background_icon", "background_icon", null, null);
             }
             final int bgiconAttr = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
 
             if (VisualConcept.VertexAttribute.COLOR.get(graph) == Graph.NOT_FOUND) {
-                graph.addAttribute(GraphElementType.VERTEX, "color", "color", "color", null, null);
+                graph.addAttribute(GraphElementType.VERTEX, ColorAttributeDescription.ATTRIBUTE_NAME, ColorAttributeDescription.ATTRIBUTE_NAME, ColorAttributeDescription.ATTRIBUTE_NAME, null, null);
             }
             final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
 

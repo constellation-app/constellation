@@ -107,7 +107,7 @@ public class SQLiteImportFileParser extends ImportFileParser {
             }
             @SuppressWarnings("unchecked") //Table Parameter is created as a SingleChoiceParameter in this class on line 62.
             PluginParameter<SingleChoiceParameterValue> tableSC = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TABLE_PARAMETER_ID);
-            SingleChoiceParameterType.setOptions((PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TABLE_PARAMETER_ID), new ArrayList<>(tableChoices));
+            SingleChoiceParameterType.setOptions(tableSC, new ArrayList<>(tableChoices));
 
             if (currentChoice != null && tableChoices.contains(currentChoice)) {
                 parameters.setStringValue(TABLE_PARAMETER_ID, currentChoice);

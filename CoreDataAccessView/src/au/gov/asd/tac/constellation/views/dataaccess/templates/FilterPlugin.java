@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +38,7 @@ public abstract class FilterPlugin extends SimpleEditPlugin {
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter filterType = SingleChoiceParameterType.build(FILTER_TYPE_PARAMETER_ID, FilterTypeParameterValue.class);
+        final PluginParameter<SingleChoiceParameterValue> filterType = SingleChoiceParameterType.build(FILTER_TYPE_PARAMETER_ID, FilterTypeParameterValue.class);
         filterType.setName("Filter Type");
         filterType.setDescription("The name of the filter");
         final List<FilterTypeParameterValue> filterTypes = new ArrayList<>();

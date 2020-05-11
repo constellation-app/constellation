@@ -80,7 +80,7 @@ public class NifiClient extends RestClient {
                     LOGGER.log(Level.INFO, "Failure: response code {0} from node {1}, trying next node...", new Object[]{responseCode, node});
                 }
             } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, "Failure: could not post to node " + node, ex);
+                LOGGER.log(Level.SEVERE, ex, () -> "Failure: could not post to node " + node);
             }
         }
         LOGGER.log(Level.INFO, "Finished posting to nodes");
@@ -95,7 +95,6 @@ public class NifiClient extends RestClient {
     }
 
     public NifiFileSubmitResponse postToNifi(final String filePath, final Map<String, String> flowfileAttributes) throws IOException {
-        final Instant now = Instant.now();
         flowfileAttributes.put("adds.source.system", BrandingUtilities.APPLICATION_NAME);
         LOGGER.log(Level.INFO, "Posting to NiFi: {0}, {1}", new Object[]{filePath, flowfileAttributes});
 

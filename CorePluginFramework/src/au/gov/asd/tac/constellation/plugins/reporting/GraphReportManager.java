@@ -71,6 +71,7 @@ public class GraphReportManager {
 
             @Override
             public void newActiveGraph(Graph graph) {
+                // Method required for GraphManagerListener, intentionally left blank
             }
         });
 

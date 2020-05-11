@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescri
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * AttributeInteraction for attributes described by
+ * {@link au.gov.asd.tac.constellation.graph.attribute.IntegerObjectAttributeDescription}
+ * 
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)

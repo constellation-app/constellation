@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import java.util.List;
+
 /**
  * GraphWriteMethods extends GraphReadMethods and adds methods that allow
  * modification of a graph.
@@ -599,5 +601,12 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(int attribute, GraphIndexType indexType);
+    
+    /**
+     * Sets the queries currently linked to layers on the graph.
+     * 
+     * @param queries the list of String queries to layer a graph by.
+     */
+    public void setLayerQueries(final List<String> queries);
 
 }

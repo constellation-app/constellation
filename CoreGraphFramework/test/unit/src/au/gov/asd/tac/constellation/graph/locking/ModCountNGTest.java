@@ -17,6 +17,11 @@ package au.gov.asd.tac.constellation.graph.locking;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.LongAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertTrue;
@@ -77,7 +82,7 @@ public class ModCountNGTest {
             final String value = "s", defaultValue = "";
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "string", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -128,7 +133,7 @@ public class ModCountNGTest {
             final char value = 1, defaultValue = 0;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -179,7 +184,7 @@ public class ModCountNGTest {
             final double value = 1, defaultValue = 0;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "float", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -227,7 +232,7 @@ public class ModCountNGTest {
             final long value = 1, defaultValue = 0;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "long", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, LongAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -278,7 +283,7 @@ public class ModCountNGTest {
             final short value = 1, defaultValue = 0;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -326,7 +331,7 @@ public class ModCountNGTest {
             final float value = 1f, defaultValue = 0f;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "float", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -374,7 +379,7 @@ public class ModCountNGTest {
             final int value = 1, defaultValue = 0;
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", defaultValue, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -422,7 +427,7 @@ public class ModCountNGTest {
             final Object object = new Object();
             try {
                 vertex = wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "object", "name", "description", null, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, ObjectAttributeDescription.ATTRIBUTE_NAME, "name", "description", null, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -849,7 +854,7 @@ public class ModCountNGTest {
             int attribute;
             try {
                 wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", null, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", null, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -899,7 +904,7 @@ public class ModCountNGTest {
             int attribute;
             try {
                 wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", null, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", null, null);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
                 wg.commit();
@@ -952,7 +957,7 @@ public class ModCountNGTest {
             int attribute;
             try {
                 wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", null, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", null, null);
                 wg.setPrimaryKey(GraphElementType.VERTEX, attribute);
                 modCount = wg.getGlobalModificationCounter();
             } finally {
@@ -1015,7 +1020,7 @@ public class ModCountNGTest {
             try {
                 wg.addVertex();
                 wg.addVertex();
-                attribute = wg.addAttribute(GraphElementType.VERTEX, "integer", "name", "description", null, null);
+                attribute = wg.addAttribute(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "name", "description", null, null);
                 wg.setPrimaryKey(GraphElementType.VERTEX, attribute);
                 wg.validateKey(GraphElementType.VERTEX, true);
                 modCount = wg.getGlobalModificationCounter();

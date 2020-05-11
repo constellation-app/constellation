@@ -147,9 +147,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     void writeProperties(java.util.Properties p) {
+        // Method required for @ConvertAsProperties, intentionally left blank
     }
 
     void readProperties(java.util.Properties p) {
+        // Method required for @ConvertAsProperties, intentionally left blank
     }
 
     @Override
@@ -200,12 +202,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
                     if (currentGlobalModificationCount != oldGlobalModificationCount) {
 
-                        if (currentAttributeModificationCount != oldAttributeModificationCount) {
-                            reset(rg);
-                            return;
-                        }
-
-                        if (currentStructureModificationCount != oldStructureModificationCount) {
+                        if (currentAttributeModificationCount != oldAttributeModificationCount
+                                || currentStructureModificationCount != oldStructureModificationCount) {
                             reset(rg);
                             return;
                         }
@@ -240,27 +238,10 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
                         if (currentHistogramState != oldHistogramState) {
 
-                            if (oldHistogramState == null) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getElementType() != oldHistogramState.getElementType()) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()) {
-                                reset(rg);
-                                return;
-                            }
-
-                            if (currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
+                            if (oldHistogramState == null || currentHistogramState.getElementType() != oldHistogramState.getElementType()
+                                    || currentHistogramState.getAttributeType() != oldHistogramState.getAttributeType()
+                                    || currentHistogramState.getBinFormatter() != oldHistogramState.getBinFormatter()
+                                    || currentHistogramState.getBinFormatterParameters() != oldHistogramState.getBinFormatterParameters()) {
                                 reset(rg);
                                 return;
                             }
@@ -271,16 +252,10 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                                 return;
                             }
 
-                            if (currentFilter == null) {
-                                if (currentHistogramState.getFilter(currentHistogramState.getElementType()) != null) {
-                                    reset(rg);
-                                    return;
-                                }
-                            } else {
-                                if (currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType())) {
-                                    reset(rg);
-                                    return;
-                                }
+                            if ((currentFilter == null && currentHistogramState.getFilter(currentHistogramState.getElementType()) != null)
+                                    || (currentFilter != null && currentFilter != currentHistogramState.getFilter(currentHistogramState.getElementType()))) {
+                                reset(rg);
+                                return;
                             }
 
                             if (currentHistogramState.getBinComparator() != oldHistogramState.getBinComparator() && currentBinCollection != null) {
@@ -628,10 +603,12 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     @Override
     public void graphOpened(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     private class HistogramStateUpdaterPlugin extends SimpleEditPlugin {

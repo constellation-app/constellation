@@ -51,13 +51,13 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ClusterResult.class;
     }
 
     @Override
-    public ColorVisualisation buildControl() {
-        return new ColorVisualisation(this);
+    public ColorVisualisation<ClusterData> buildControl() {
+        return new ColorVisualisation<>(this);
     }
 
     @Override
@@ -99,7 +99,7 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 return;
             }
 
-            final ClusterResult clusterResults = (ClusterResult) result;
+            final ClusterResult clusterResults = result;
 
             if (reset) {
                 for (final ClusterData clusterData : clusterResults.get()) {

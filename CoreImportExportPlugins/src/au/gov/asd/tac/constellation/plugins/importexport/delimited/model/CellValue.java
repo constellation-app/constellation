@@ -23,6 +23,7 @@ public class CellValue implements Comparable<CellValue> {
 
     private final String originalText;
 
+    @SuppressWarnings("rawtypes") //raw type needed as comparable value can be string or integer
     private Comparable comparable;
     private String text;
     private String message;

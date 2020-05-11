@@ -19,25 +19,23 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphIndex;
 import au.gov.asd.tac.constellation.graph.GraphIndexResult;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
-import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
-import java.util.Random;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * a Boolean Object attribute that can be null
+ * A Boolean Object attribute that can be null.
  *
- * @author twilight_sparkle
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanObjectAttributeDescription extends AbstractObjectAttributeDescription<Boolean> {
 
+    private final int trueHash = random.nextInt();
+    private final int falseHash = random.nextInt();
+
     public static final String ATTRIBUTE_NAME = "boolean_or_null";
     public static final Class<Boolean> NATIVE_CLASS = Boolean.class;
     public static final Boolean DEFAULT_VALUE = null;
-    private static final Random RANDOM = new Random();
-    private final int trueHash = RANDOM.nextInt();
-    private final int nullHash = RANDOM.nextInt();
-    private final int falseHash = RANDOM.nextInt();
 
     public BooleanObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
@@ -46,24 +44,22 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
     @Override
     @SuppressWarnings("unchecked") // Casts are manually checked
     protected Boolean convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof Number) {
-            return ((Number) object).longValue() != 0;
-        } else if (object instanceof Boolean) {
-            return (Boolean) object;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof Character) {
-            return ((char) object) != 0;
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting Object '%s' to Boolean", object.getClass()));
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof Number) {
+                return ((Number) object).intValue() != 0;
+            } else if (object instanceof Character) {
+                return ((char) object) != 0;
+            } else {
+                throw ex;
+            }
         }
     }
 
     @Override
     protected Boolean convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
+        if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
             return Boolean.parseBoolean(string);
@@ -77,7 +73,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value != 0;
+        data[id] = value != (byte) 0;
     }
 
     @Override
@@ -87,7 +83,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value != 0;
+        data[id] = value != (short) 0;
     }
 
     @Override
@@ -147,31 +143,22 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value != 0;
+        data[id] = value != (char) 0;
     }
 
     @Override
     public int hashCode(final int id) {
-        return data[id] == null ? nullHash : (Boolean) data[id] ? trueHash : falseHash;
+        return data[id] == null ? nullHash
+                : (Boolean) data[id] ? trueHash : falseHash;
     }
 
     @Override
-    public int ordering() {
-        return 2;
-    }
-
-    @Override
-    public void restore(final int id, final ParameterReadAccess access) {
-        data[id] = (Boolean) access.getUndoObject();
-    }
-
-    @Override
-    public boolean supportsIndexType(GraphIndexType indexType) {
+    public boolean supportsIndexType(final GraphIndexType indexType) {
         return indexType != GraphIndexType.ORDERED;
     }
 
     @Override
-    public GraphIndex createIndex(GraphIndexType indexType) {
+    public GraphIndex createIndex(final GraphIndexType indexType) {
         return indexType == GraphIndexType.ORDERED ? NULL_GRAPH_INDEX : new Index();
     }
 
@@ -183,7 +170,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         int nextFalse = data.length;
 
         @Override
-        public void addElement(int element) {
+        public void addElement(final int element) {
             if (data[element] != null && (Boolean) data[element]) {
                 id2position[element] = nextTrue;
                 position2id[nextTrue++] = element;
@@ -194,7 +181,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         }
 
         @Override
-        public void removeElement(int element) {
+        public void removeElement(final int element) {
             int position = id2position[element];
             if (position < nextTrue) {
                 int lastTrue = position2id[--nextTrue];
@@ -208,13 +195,13 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         }
 
         @Override
-        public void updateElement(int element) {
+        public void updateElement(final int element) {
             removeElement(element);
             addElement(element);
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValue(Object value) {
+        public GraphIndexResult getElementsWithAttributeValue(final Object value) {
             if ((Boolean) value) {
                 return new IndexResult(nextTrue, 0);
             } else {
@@ -223,12 +210,12 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValueRange(Object start, Object end) {
+        public GraphIndexResult getElementsWithAttributeValueRange(final Object start, final Object end) {
             return null;
         }
 
         @Override
-        public void expandCapacity(int newCapacity) {
+        public void expandCapacity(final int newCapacity) {
 
             int[] i2p = new int[newCapacity];
             int[] p2i = new int[newCapacity];
@@ -258,7 +245,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
             private int count;
             private int position;
 
-            public IndexResult(int count, int position) {
+            public IndexResult(final int count, final int position) {
                 this.count = count;
                 this.position = position;
             }

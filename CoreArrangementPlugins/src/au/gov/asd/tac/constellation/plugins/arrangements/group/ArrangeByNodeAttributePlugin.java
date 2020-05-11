@@ -15,11 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.group;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
-import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -28,6 +23,11 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.Connections;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomyArranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
+import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -88,6 +88,7 @@ public class ArrangeByNodeAttributePlugin extends SimpleEditPlugin {
         }
         Collections.sort(attributes);
         if (parameters != null && parameters.getParameters() != null) {
+            @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER always of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> attribute = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
             SingleChoiceParameterType.setOptions(attribute, attributes);
             SingleChoiceParameterType.setChoice(attribute, attributes.get(0));

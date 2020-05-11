@@ -102,7 +102,8 @@ public final class VisualGraphOpener extends GraphOpener {
         if (props != null) {
             final String dtprop = props.getProperty(AutosaveUtilities.DT);
             if (dtprop != null) {
-                final ZonedDateTime zdtAutosave = ZonedDateTimeAttributeDescription.parseString(dtprop);
+                final ZonedDateTimeAttributeDescription datetimeAttributeDescription = new ZonedDateTimeAttributeDescription();
+                final ZonedDateTime zdtAutosave = datetimeAttributeDescription.convertFromString(dtprop);
                 final long dtFile = f.lastModified();
                 if (zdtAutosave.toEpochSecond() * 1000 > dtFile) {
                     final String dtf = new Date(dtFile).toString();
@@ -203,7 +204,7 @@ public final class VisualGraphOpener extends GraphOpener {
 
                 final String name = exName;
                 final ActionListener al = e -> {
-                    final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:\n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                    final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:%n%s", name, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                     DialogDisplayer.getDefault().notify(d);
                 };
 

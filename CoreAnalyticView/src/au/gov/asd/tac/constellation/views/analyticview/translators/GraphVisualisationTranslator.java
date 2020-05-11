@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisual
  * @param <R>
  * @param <V>
  */
-public abstract class GraphVisualisationTranslator<R extends AnalyticResult, V extends GraphVisualisation> extends AnalyticTranslator<R, V> {
+public abstract class GraphVisualisationTranslator<R extends AnalyticResult<?>, V extends GraphVisualisation> extends AnalyticTranslator<R, V> {
 
     public abstract V buildControl();
 }

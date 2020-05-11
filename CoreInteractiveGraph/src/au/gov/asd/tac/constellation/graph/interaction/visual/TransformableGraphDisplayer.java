@@ -50,12 +50,12 @@ public class TransformableGraphDisplayer extends GraphDisplayer {
     }
 
     @Override
-    protected void createShaderLocations(GL3 gl) {
+    protected void createShaderLocations(final GL3 gl) {
         greyscaleShaderLocation = gl.glGetUniformLocation(graphTextureShader, "greyscale");
     }
 
     @Override
-    protected void bindShaderLocations(GL3 gl) {
+    protected void bindShaderLocations(final GL3 gl) {
         gl.glUniform1i(greyscaleShaderLocation, greyscale ? 1 : 0);
     }
 }

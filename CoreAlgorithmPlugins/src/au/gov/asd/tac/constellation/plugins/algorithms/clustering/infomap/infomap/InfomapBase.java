@@ -69,6 +69,13 @@ public abstract class InfomapBase {
     protected StringBuilder bestIntermediateStatistics;
 
     private final ArrayList<NodeBase> nonLeafActiveNetwork;
+    
+    private static final String NINE_FORMAT1 = "%.9f, ";
+    private static final String NINE_FORMAT2 = "%.9f]";
+    private static final String NINE_FORMAT3 = " (sum: %.9f)%n";
+    private static final String FOUR_FORMAT = "%.4f%% ";
+    private static final String MODULES_LABEL = "modules";
+    private static final String DONE_FORMAT = "done!%n";
 
     // Use a custom random number generator so we can compare the results to the C++ code.
     //    protected Random rand;
@@ -151,7 +158,7 @@ public abstract class InfomapBase {
                 double maxCodelength = 0;
                 Logf.printf("Codelengths for %d trials: [", config.getNumTrials());
                 for (final double mdl : codelengths) {
-                    Logf.printf("%.9f, ", mdl);
+                    Logf.printf(NINE_FORMAT1, mdl);
                     averageCodelength += mdl;
                     minCodelength = Math.min(minCodelength, mdl);
                     maxCodelength = Math.max(maxCodelength, mdl);
@@ -244,7 +251,7 @@ public abstract class InfomapBase {
             final double limitCodelength = sumConsolidatedCodelength + leftToImprove;
 
             if (config.getVerbosity() == 0) {
-                Logf.printf("%.4f%% ", ((hierarchicalCodelength - limitCodelength) / hierarchicalCodelength) * 100);
+                Logf.printf(FOUR_FORMAT, ((hierarchicalCodelength - limitCodelength) / hierarchicalCodelength) * 100);
             } else {
                 System.out.printf("done! Codelength: %f + %f (+ %f left to improve) -> limit: %.10f bits.\n",
                         partitionQueue.getIndexCodelength(), partitionQueue.getLeafCodelength(), leftToImprove, limitCodelength);
@@ -322,7 +329,6 @@ public abstract class InfomapBase {
             System.out.printf("%s.tryIndexingIteratively%n", getClass().getSimpleName());
         }
 
-        int numIndexingCompleted = 0;
         final boolean verbose = subLevel == 0;
 
         if (verbose) {
@@ -386,12 +392,10 @@ public abstract class InfomapBase {
             // Collect the super module indices on the leaf nodes.
             final TreeData superTree = superInfomap.treeData;
             final Iterator<NodeBase> superLeafIt = superTree.getLeaves().iterator();
-            int leafIndex = 0;
             for (final NodeBase module : getRoot().getChildren()) {
                 final int superModuleIndex = superLeafIt.next().getParent().getIndex();
                 for (final NodeBase node : module.getChildren()) {
                     moveTo.set(node.getIndex(), superModuleIndex);
-                    leafIndex++;
                 }
             }
 
@@ -401,7 +405,6 @@ public abstract class InfomapBase {
             // Replace the old modular structure with the super structure generated above.
             consolidateModules(replaceExistingModules);
 
-            numIndexingCompleted++;
             tryIndexing = numNonTrivialTopModules > 1 && getNumTopModules() != getNumLeafNodes();
         }
 
@@ -434,7 +437,7 @@ public abstract class InfomapBase {
         int numLevelsCreated = 0;
 
         boolean isLeafLevel = treeData.getFirstLeaf().getParent().equals(getRoot());
-        String nodesLabel = isLeafLevel ? "nodes" : "modules";
+        String nodesLabel = isLeafLevel ? "nodes" : MODULES_LABEL;
 
         // Add index codebooks as long as the code gets shorter
         do {
@@ -501,7 +504,7 @@ public abstract class InfomapBase {
                 queueTopModules(partitionQueue);
             }
 
-            nodesLabel = "modules";
+            nodesLabel = MODULES_LABEL;
             isLeafLevel = false;
             ++numLevelsCreated;
 
@@ -712,7 +715,7 @@ public abstract class InfomapBase {
         double oldCodelength = oneLevelCodelength;
         double compression = (oldCodelength - codelength) / oldCodelength;
         if (verbose && config.getVerbosity() == 0) {
-            System.out.printf("%.4f%% ", compression * 100);
+            System.out.printf(FOUR_FORMAT, compression * 100);
         }
 
         if (!fast && config.getTuneIterationLimit() != 1 && getNumTopModules() != getNumLeafNodes()) {
@@ -730,7 +733,7 @@ public abstract class InfomapBase {
 
                     compression = (oldCodelength - codelength) / oldCodelength;
                     if (verbose && config.getVerbosity() == 0) {
-                        System.out.printf("%.4f%% ", compression * 100);
+                        System.out.printf(FOUR_FORMAT, compression * 100);
                     }
 
                     oldCodelength = codelength;
@@ -743,7 +746,7 @@ public abstract class InfomapBase {
                     }
                     compression = (oldCodelength - codelength) / oldCodelength;
                     if (verbose && config.getVerbosity() == 0) {
-                        System.out.printf("%.4f%% ", compression * 100);
+                        System.out.printf(FOUR_FORMAT, compression * 100);
                     }
 
                     oldCodelength = codelength;
@@ -761,7 +764,8 @@ public abstract class InfomapBase {
         if (verbose) {
             if (config.getVerbosity() == 0) {
                 final String fmt = String.format("%s.%df", "%", config.getVerboseNumberPrecision());
-                System.out.printf("to %d modules with codelength " + fmt + "%n", getNumTopModules(), codelength);
+                final String cl = String.format(fmt, codelength);
+                System.out.printf("to %d modules with codelength %s%n", getNumTopModules(), cl);
             } else {
                 System.out.printf("Two-level codelength: %f + %f = %f%n", indexCodelength, moduleCodelength, codelength);
             }
@@ -858,7 +862,7 @@ public abstract class InfomapBase {
 
         if (verbose) {
             System.out.printf("%s*loops to codelength %.6f in %d modules. (%d non-trivial modules)%n",
-                    isCoarseTune ? "modules" : "nodes", codelength, getNumTopModules(), numNonTrivialTopModules);
+                    isCoarseTune ? MODULES_LABEL : "nodes", codelength, getNumTopModules(), numNonTrivialTopModules);
         }
 
         // Set module indices from a zero-based contiguous set.
@@ -1119,7 +1123,7 @@ public abstract class InfomapBase {
             if (config.getVerbosity() == 0) {
                 Logf.printf(") ");
             } else {
-                System.out.printf("done!%n");
+                System.out.printf(DONE_FORMAT);
             }
         }
 
@@ -1137,7 +1141,7 @@ public abstract class InfomapBase {
             }
 
             if (config.getVerbosity() > 0) {
-                System.out.printf("done!%n");
+                System.out.printf(DONE_FORMAT);
             }
         }
 
@@ -1152,7 +1156,7 @@ public abstract class InfomapBase {
             }
 
             if (config.getVerbosity() > 0) {
-                System.out.printf("done!%n");
+                System.out.printf(DONE_FORMAT);
             }
         }
 
@@ -1171,7 +1175,7 @@ public abstract class InfomapBase {
             if (config.getVerbosity() == 0) {
                 Logf.printf(") ");
             } else {
-                System.out.printf("done!%n");
+                System.out.printf(DONE_FORMAT);
             }
         }
     }
@@ -1263,27 +1267,27 @@ public abstract class InfomapBase {
 
         buf.append("Per level codelength for modules:    [");
         for (int i = 0; i < numLevels - 1; ++i) {
-            buf.append(String.format("%.9f, ", indexLengths.get(i)));
+            buf.append(String.format(NINE_FORMAT1, indexLengths.get(i)));
         }
-        buf.append(String.format("%.9f]", indexLengths.get(numLevels - 1)));
+        buf.append(String.format(NINE_FORMAT2, indexLengths.get(numLevels - 1)));
 
         double sumIndexLengths = 0.0;
         for (int i = 0; i < numLevels; ++i) {
             sumIndexLengths += indexLengths.get(i);
         }
-        buf.append(String.format(" (sum: %.9f)%n", sumIndexLengths));
+        buf.append(String.format(NINE_FORMAT3, sumIndexLengths));
 
         buf.append("Per level codelength for leaf nodes: [");
         for (int i = 0; i < numLevels - 1; ++i) {
-            buf.append(String.format("%.9f, ", leafLengths.get(i)));
+            buf.append(String.format(NINE_FORMAT1, leafLengths.get(i)));
         }
-        buf.append(String.format("%.9f]", leafLengths.get(numLevels - 1)));
+        buf.append(String.format(NINE_FORMAT2, leafLengths.get(numLevels - 1)));
 
         double sumLeafLengths = 0.0;
         for (int i = 0; i < numLevels; ++i) {
             sumLeafLengths += leafLengths.get(i);
         }
-        buf.append(String.format(" (sum: %.9f)%n", sumLeafLengths));
+        buf.append(String.format(NINE_FORMAT3, sumLeafLengths));
 
         final double[] codelengths = new double[leafLengths.size()];
         for (int i = 0; i < codelengths.length; i++) {
@@ -1294,15 +1298,15 @@ public abstract class InfomapBase {
         }
         buf.append("Per level codelength total:          [");
         for (int i = 0; i < numLevels - 1; ++i) {
-            buf.append(String.format("%.9f, ", codelengths[i]));
+            buf.append(String.format(NINE_FORMAT1, codelengths[i]));
         }
-        buf.append(String.format("%.9f]", codelengths[numLevels - 1]));
+        buf.append(String.format(NINE_FORMAT2, codelengths[numLevels - 1]));
 
         double sumCodelengths = 0.0;
         for (int i = 0; i < numLevels; ++i) {
             sumCodelengths += codelengths[i];
         }
-        buf.append(String.format(" (sum: %.9f)%n", sumCodelengths));
+        buf.append(String.format(NINE_FORMAT3, sumCodelengths));
     }
 
     private void aggregatePerLevelCodelength(final ArrayList<Double> indexLengths,
@@ -1332,7 +1336,6 @@ public abstract class InfomapBase {
                 if (module.getFirstChild().isLeaf()) {
                     leafLengths.set(level + 1, leafLengths.get(level + 1) + module.getCodelength());
 
-                    final String f = leafLengths.get(level) == 0 ? "0" : String.format("%.6f", leafLengths.get(level));
                 } else {
                     aggregatePerLevelCodelength(module, indexLengths, leafLengths, level + 1);
                 }

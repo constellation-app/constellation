@@ -68,7 +68,7 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         protected Node createEditorControls() {
-            VBox controls = new VBox();
+            final VBox controls = new VBox();
             controls.setAlignment(Pos.CENTER);
             controls.setFillWidth(true);
 

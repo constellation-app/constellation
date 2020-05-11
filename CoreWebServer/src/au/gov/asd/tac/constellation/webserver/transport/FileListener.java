@@ -60,6 +60,8 @@ public class FileListener implements Runnable {
     private static final String RESPONSE_JSON = "response.json";    // The JSON document containing the response.
     private static final String CONTENT_IN = "content.in";          // The file containing input data (may be JSON / binary / anything).
     private static final String CONTENT_OUT = "content.out";        // The file containing ioutput data (may be JSON / binary / anything).
+    
+    private static final String ENDPOINT = "endpoint";
 
     private final Path restPath;
     private volatile boolean running;
@@ -157,9 +159,9 @@ public class FileListener implements Runnable {
                             // }
                             //
                             // If content (JSON or otherwise) is required, it gets delivered in a separate CONTENT_DATA file.
-                            if (json.hasNonNull("verb") && json.hasNonNull("endpoint") && json.hasNonNull("path")) {
+                            if (json.hasNonNull("verb") && json.hasNonNull(ENDPOINT) && json.hasNonNull("path")) {
                                 final String verb = json.get("verb").textValue();
-                                final String endpoint = json.get("endpoint").textValue();
+                                final String endpoint = json.get(ENDPOINT).textValue();
                                 final String path = json.get("path").textValue();
 
                                 final JsonNode args = json.get("args");
@@ -225,7 +227,7 @@ public class FileListener implements Runnable {
                 throw new RestServiceException(ex);
             }
         } else {
-            unrec("endpoint", endpoint);
+            unrec(ENDPOINT, endpoint);
         }
     }
 
@@ -267,7 +269,10 @@ public class FileListener implements Runnable {
                     in.close();
                 } catch (IOException ex) {
                 }
-                fqp.delete();
+                final boolean fqpIsDeleted = fqp.delete();
+                if (!fqpIsDeleted) {
+                    //TODO: Handle case where file not successfully deleted
+                }
             }
         }
     }

@@ -23,8 +23,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import java.security.SecureRandom;
 import java.util.Arrays;
-import java.util.Random;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,18 +40,53 @@ import org.openide.util.lookup.ServiceProvider;
  * as 0, whilst true is represented as 1. The {@link #getString getString()}
  * method will utilise {@link String#valueOf}.
  *
- * @author sirius
+ * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public final class BooleanAttributeDescription extends AbstractAttributeDescription {
 
-    private static final Random RANDOM = new Random();
-    private static final boolean DEFAULT_VALUE = false;
+    private final SecureRandom random = new SecureRandom();
+    private final int trueHash = random.nextInt();
+    private final int falseHash = random.nextInt();
+
+    public static final String ATTRIBUTE_NAME = "boolean";
+    public static final Class<Boolean> NATIVE_CLASS = boolean.class;
+    public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.BOOLEAN;
+    public static final boolean DEFAULT_VALUE = false;
+
     private boolean[] data = new boolean[0];
     private boolean defaultValue = DEFAULT_VALUE;
-    private final int trueHash = RANDOM.nextInt();
-    private final int falseHash = RANDOM.nextInt();
-    public static final String ATTRIBUTE_NAME = "boolean";
+
+    @SuppressWarnings("unchecked") // Casts are manually checked
+    private boolean convertFromObject(final Object object) throws IllegalArgumentException {
+        if (object == null) {
+            return (boolean) getDefault();
+        } else if (object instanceof Number) {
+            return ((Number) object).intValue() != 0;
+        } else if (object instanceof Boolean) {
+            return (Boolean) object;
+        } else if (object instanceof Character) {
+            return ((Character) object) != 0;
+        } else if (object instanceof String) {
+            return convertFromString((String) object);
+        } else {
+            throw new IllegalArgumentException(String.format(
+                    "Error converting Object '%s' to boolean", object.getClass()));
+        }
+    }
+
+    private boolean convertFromString(final String string) throws IllegalArgumentException {
+        if (StringUtils.isBlank(string)) {
+            return (boolean) getDefault();
+        } else {
+            try {
+                return Boolean.parseBoolean(string);
+            } catch (final NumberFormatException ex) {
+                throw new IllegalArgumentException(String.format(
+                        "Error converting String '%s' to short", string), ex);
+            }
+        }
+    }
 
     @Override
     public String getName() {
@@ -59,7 +95,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public Class<?> getNativeClass() {
-        return boolean.class;
+        return NATIVE_CLASS;
+    }
+
+    @Override
+    public NativeAttributeType getNativeType() {
+        return NATIVE_TYPE;
     }
 
     @Override
@@ -69,15 +110,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setDefault(final Object value) {
-        if (value instanceof Number) {
-            defaultValue = ((Number) value).longValue() != 0;
-        } else if (value instanceof Boolean) {
-            defaultValue = (Boolean) value;
-        } else if (value instanceof String) {
-            defaultValue = Boolean.parseBoolean((String) value);
-        } else {
-            defaultValue = false;
-        }
+        defaultValue = convertFromObject(value);
     }
 
     @Override
@@ -94,30 +127,6 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         }
     }
 
-    private static boolean setObject(final Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).longValue() != 0;
-        } else if (value instanceof Boolean) {
-            return (Boolean) value;
-        } else if (value instanceof String) {
-            return Boolean.parseBoolean((String) value);
-        } else if (value instanceof Character) {
-            return ((char) value) != 0;
-        } else {
-            return DEFAULT_VALUE;
-        }
-    }
-
-    private static boolean setString(String value) {
-        if (value.equalsIgnoreCase("true")) {
-            return true;
-        } else if (value.equalsIgnoreCase("false")) {
-            return false;
-        } else {
-            throw new IllegalArgumentException("Not a valid boolean value");
-        }
-    }
-
     @Override
     public byte getByte(final int id) {
         return data[id] ? (byte) 1 : (byte) 0;
@@ -125,7 +134,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setByte(final int id, final byte value) {
-        data[id] = value != 0;
+        data[id] = value != (byte) 0;
     }
 
     @Override
@@ -135,7 +144,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setShort(final int id, final short value) {
-        data[id] = value != 0;
+        data[id] = value != (short) 0;
     }
 
     @Override
@@ -195,17 +204,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setChar(final int id, final char value) {
-        data[id] = value != 0;
-    }
-
-    @Override
-    public Object getObject(final int id) {
-        return data[id];
-    }
-
-    @Override
-    public void setObject(final int id, final Object value) {
-        data[id] = setObject(value);
+        data[id] = value != (char) 0;
     }
 
     @Override
@@ -215,17 +214,27 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public void setString(final int id, final String value) {
-        data[id] = Boolean.parseBoolean(value);
+        data[id] = convertFromString(value);
     }
 
     @Override
-    public String acceptsString(String value) {
+    public String acceptsString(final String value) {
         try {
-            setString(value);
+            convertFromString(value);
             return null;
-        } catch (Exception ex) {
-            return "Not a valid boolean value";
+        } catch (final IllegalArgumentException ex) {
+            return ex.getMessage();
         }
+    }
+
+    @Override
+    public Object getObject(final int id) {
+        return data[id];
+    }
+
+    @Override
+    public void setObject(final int id, final Object value) {
+        data[id] = convertFromObject(value);
     }
 
     @Override
@@ -239,22 +248,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public AttributeDescription copy(GraphReadMethods graph) {
+    public AttributeDescription copy(final GraphReadMethods graph) {
         final BooleanAttributeDescription attribute = new BooleanAttributeDescription();
         attribute.data = Arrays.copyOf(data, data.length);
         attribute.defaultValue = this.defaultValue;
         attribute.graph = graph;
         return attribute;
-    }
-
-    @Override
-    public NativeAttributeType getNativeType() {
-        return NativeAttributeType.BOOLEAN;
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
     }
 
     @Override
@@ -265,11 +264,6 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     @Override
     public boolean equals(final int id1, final int id2) {
         return data[id1] == data[id2];
-    }
-
-    @Override
-    public int ordering() {
-        return 2;
     }
 
     @Override
@@ -294,12 +288,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public boolean supportsIndexType(GraphIndexType indexType) {
+    public boolean supportsIndexType(final GraphIndexType indexType) {
         return indexType != GraphIndexType.ORDERED;
     }
 
     @Override
-    public GraphIndex createIndex(GraphIndexType indexType) {
+    public GraphIndex createIndex(final GraphIndexType indexType) {
         return indexType == GraphIndexType.ORDERED ? NULL_GRAPH_INDEX : new Index();
     }
 
@@ -311,7 +305,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         int nextFalse = data.length;
 
         @Override
-        public void addElement(int element) {
+        public void addElement(final int element) {
             if (data[element]) {
                 id2position[element] = nextTrue;
                 position2id[nextTrue++] = element;
@@ -322,7 +316,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         }
 
         @Override
-        public void removeElement(int element) {
+        public void removeElement(final int element) {
             int position = id2position[element];
             if (position < nextTrue) {
                 int lastTrue = position2id[--nextTrue];
@@ -336,13 +330,13 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         }
 
         @Override
-        public void updateElement(int element) {
+        public void updateElement(final int element) {
             removeElement(element);
             addElement(element);
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValue(Object value) {
+        public GraphIndexResult getElementsWithAttributeValue(final Object value) {
             if ((Boolean) value) {
                 return new IndexResult(nextTrue, 0);
             } else {
@@ -351,12 +345,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
         }
 
         @Override
-        public GraphIndexResult getElementsWithAttributeValueRange(Object start, Object end) {
+        public GraphIndexResult getElementsWithAttributeValueRange(final Object start, final Object end) {
             return null;
         }
 
         @Override
-        public void expandCapacity(int newCapacity) {
+        public void expandCapacity(final int newCapacity) {
             int[] i2p = new int[newCapacity];
             int[] p2i = new int[newCapacity];
             int nt = 0;
@@ -385,7 +379,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
             private int count;
             private int position;
 
-            public IndexResult(int count, int position) {
+            public IndexResult(final int count, final int position) {
                 this.count = count;
                 this.position = position;
             }
@@ -402,8 +396,6 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
                 }
                 return position2id[position++];
             }
-
         }
     }
-
 }
