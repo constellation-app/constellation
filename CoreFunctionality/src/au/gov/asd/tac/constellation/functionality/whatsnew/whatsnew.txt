@@ -1,5 +1,8 @@
-== 3030-12-31 Getting Started
+i== 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+
+== 2020-05-11 Delimiter importer
+<p> Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.
 
 == 2020-03-24 REST API
 <p>The module that implements the REST API (providing access from Jupyter notebooks, for example) has been
