@@ -225,6 +225,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         // A single choice list with a subtype of String.
         final SingleChoiceParameterValue robotpv = new SingleChoiceParameterValue(StringParameterValue.class);
         robotpv.setGuiInit(control -> {
+            @SuppressWarnings("unchecked") //control will be of type ComboBox<ParameterValue> which extends from Region
             final ComboBox<ParameterValue> field = (ComboBox<ParameterValue>) control;
             final Image img = new Image(ALIEN_ICON);
             field.setCellFactory((ListView<ParameterValue> param) -> {
@@ -258,7 +259,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         buttonParam.setDescription("Update the available robots");
         params.addParameter(buttonParam);
 
-        final PluginParameter planetOptions = MultiChoiceParameterType.build(PLANETS_PARAMETER_ID);
+        final PluginParameter<MultiChoiceParameterValue> planetOptions = MultiChoiceParameterType.build(PLANETS_PARAMETER_ID);
         planetOptions.setName("Planets");
         planetOptions.setDescription("Some planets");
         MultiChoiceParameterType.setOptions(planetOptions, Arrays.asList("Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune", "Coruscant"));
@@ -332,26 +333,32 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
             if (change == ParameterChange.VALUE) {
                 final boolean masterBoolean = master.getBooleanValue();
 
-                final PluginParameter t1 = parameters.get(TEST1_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //TEST1_PARAMETER will always be of type StringParameter
+                final PluginParameter<StringParameterValue> t1 = (PluginParameter<StringParameterValue>) parameters.get(TEST1_PARAMETER_ID);
                 t1.setEnabled(masterBoolean);
 
-                final PluginParameter t2 = parameters.get(TEST2_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //TEST1_PARAMETER will always be of type StringParameter
+                final PluginParameter<StringParameterValue> t2 = (PluginParameter<StringParameterValue>) parameters.get(TEST2_PARAMETER_ID);
                 t2.setEnabled(masterBoolean);
 
-                final PluginParameter p = parameters.get(PLANETS_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //PLANETS_PARAMETER will always be of type MultiChoiceParameter
+                final PluginParameter<MultiChoiceParameterValue> p = (PluginParameter<MultiChoiceParameterValue>) parameters.get(PLANETS_PARAMETER_ID);
                 p.setEnabled(masterBoolean);
 
-                final PluginParameter d = parameters.get(DICE_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //DICE_PARAMETER will always be of type IntegerParameter
+                final PluginParameter<IntegerParameterValue> d = (PluginParameter<IntegerParameterValue>) parameters.get(DICE_PARAMETER_ID);
                 d.setEnabled(masterBoolean);
 
-                final PluginParameter c = parameters.get(COLOR_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //COLOR_PARAMETER will always be of type ColorParameter
+                final PluginParameter<ColorParameterValue> c = (PluginParameter<ColorParameterValue>) parameters.get(COLOR_PARAMETER_ID);
                 c.setVisible(masterBoolean);
             }
         });
 
         params.addController(REFRESH_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
-                final PluginParameter robot = parameters.get(ROBOT_PARAMETER_ID);
+                @SuppressWarnings("unchecked") //ROBOT_PARAMETER will always be of type SingleChoiceParameter
+                final PluginParameter<SingleChoiceParameterValue> robot = (PluginParameter<SingleChoiceParameterValue>) parameters.get(ROBOT_PARAMETER_ID);
                 final int n = (int) (System.currentTimeMillis() % 100);
                 SingleChoiceParameterType.setOptions(robot, Arrays.asList("Kryton " + n, "C-3PO " + n, "R2-D2 " + n));
                 SingleChoiceParameterType.setChoice(robot, "C-3PO " + n);

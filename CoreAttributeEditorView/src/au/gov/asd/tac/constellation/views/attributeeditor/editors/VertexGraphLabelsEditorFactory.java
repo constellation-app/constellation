@@ -91,7 +91,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
 
         @Override
         protected GraphLabels getValueFromControls() throws ControlsInvalidException {
-            List<GraphLabel> data = new ArrayList<>();
+            final List<GraphLabel> data = new ArrayList<>();
             try {
                 labels.forEach(label -> {
                     data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
@@ -105,7 +105,7 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
         @Override
         protected Node createEditorControls() {
             // get all vertex attributes currently in the graph
-            ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
             try {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.VERTEX, i)));
@@ -187,17 +187,17 @@ public class VertexGraphLabelsEditorFactory extends AttributeValueEditorFactory<
                     update();
                 });
 
-                Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
+                final Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
                 upButton.setOnAction(e -> {
                     moveUp();
                     update();
                 });
-                Button downButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_DOWN.buildImage(16)));
+                final Button downButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_DOWN.buildImage(16)));
                 downButton.setOnAction(e -> {
                     moveDown();
                     update();
                 });
-                Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CROSS.buildImage(16)));
+                final Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CROSS.buildImage(16)));
                 removeButton.setOnAction(e -> {
                     remove();
                     update();

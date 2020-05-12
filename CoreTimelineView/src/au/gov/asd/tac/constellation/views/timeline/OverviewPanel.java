@@ -30,7 +30,6 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -61,7 +60,7 @@ public class OverviewPanel extends Pane {
     private static final String LIGHT_THEME = "resources/Style-Overview-Light.css";
     private static final String DARK_THEME = "resources/Style-Overview-Dark.css";
     // OverviewPanel components:
-    private final AreaChart histogram;
+    private final AreaChart<Number, Number> histogram;
     private NumberAxis xAxis;
     private NumberAxis yAxis;
     private final Rectangle pov;
@@ -103,13 +102,7 @@ public class OverviewPanel extends Pane {
 
         this.getStylesheets().add(OverviewPanel.class.getResource(DARK_THEME).toExternalForm());
         this.getChildren().add(innerPane);
-        this.setOnScroll(new EventHandler<ScrollEvent>() {
-
-            @Override
-            public void handle(final ScrollEvent t) {
-                coordinator.zoomFromOverview(t);
-            }
-        });
+        this.setOnScroll(coordinator::zoomFromOverview);
 
     }
 
@@ -135,12 +128,22 @@ public class OverviewPanel extends Pane {
      * @param upperBound The upper time extent that needs to be represented on
      * the POV component.
      */
-    public void setExtentPOV(long lowerBound, long upperBound) {
-        if (lowerBound <= lowestTimeExtent) {
-            lowerBound = (long) lowestTimeExtent;
+    public void setExtentPOV(double lowerBound, double upperBound) {
+        if (lowerBound < lowestTimeExtent) {
+            lowerBound = lowestTimeExtent;
+            
+            final double currentUpperBound = ((pov.getX() + pov.getWidth()) / this.getWidth() * range) + lowestTimeExtent;
+            if (upperBound < currentUpperBound) {
+                upperBound = currentUpperBound;
+            }
         }
-        if (upperBound >= highestTimeExtent) {
-            upperBound = (long) highestTimeExtent;
+        if (upperBound > highestTimeExtent) {
+            upperBound = highestTimeExtent;
+            
+            final double currentLowerBound = (pov.getX() / this.getWidth() * range) + lowestTimeExtent;
+            if (lowerBound > currentLowerBound) {
+                lowerBound = currentLowerBound;
+            }
         }
 
         final double normalLowerBound = lowerBound - lowestTimeExtent;
@@ -265,14 +268,14 @@ public class OverviewPanel extends Pane {
             xAxis.setLowerBound(0);
             xAxis.setUpperBound(intervals);
 
-            setExtentPOV((long) coordinator.getTimelineLowerTimeExtent(),
-                    (long) coordinator.getTimelineUpperTimeExtent());
+            setExtentPOV(coordinator.getTimelineLowerTimeExtent(),
+                    coordinator.getTimelineUpperTimeExtent());
         }
     }
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Histogram Component">
-    private AreaChart createHistogram() {
+    private AreaChart<Number, Number> createHistogram() {
         // Create the axes:
         xAxis = new NumberAxis();
         yAxis = new NumberAxis();
@@ -282,7 +285,7 @@ public class OverviewPanel extends Pane {
         yAxis.setAnimated(false);
 
         // Create the histogram:
-        final AreaChart chart = new AreaChart(xAxis, yAxis);
+        final AreaChart<Number, Number> chart = new AreaChart<>(xAxis, yAxis);
         chart.setPadding(new Insets(0.0, 0.0, 20.0, 0.0));
         chart.setAnimated(true);
 

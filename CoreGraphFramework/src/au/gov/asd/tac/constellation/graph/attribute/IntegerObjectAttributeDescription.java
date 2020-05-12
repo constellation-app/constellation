@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
-import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -30,46 +29,41 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
     public static final String ATTRIBUTE_NAME = "integer_or_null";
     public static final Class<Integer> NATIVE_CLASS = Integer.class;
     public static final Integer DEFAULT_VALUE = null;
-    private final int nullHash = 0x7f800001;
 
     public IntegerObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
 
     @Override
-    @SuppressWarnings("unchecked") //Casts are manually checked
+    @SuppressWarnings("unchecked") // Casts are manually checked
     protected Integer convertFromObject(final Object object) {
-        if (object == null) {
-            return null;
-        } else if (object instanceof Number) {
-            return ((Number) object).intValue();
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1 : 0;
-        } else if (object instanceof Character) {
-            return (int) object;
-        } else {
-            throw new IllegalArgumentException(String.format("Error converting Object '%s' to Integer", object.getClass()));
-        }
-    }
-
-    @Override
-    protected Integer convertFromString(final String string) {
-        if (string == null || string.isEmpty()) {
-            return getDefault();
-        } else {
-            try {
-                return Integer.parseInt(string);
-            } catch (final NumberFormatException ex) {
-                return getDefault();
+        try {
+            return super.convertFromObject(object);
+        } catch (final IllegalArgumentException ex) {
+            if (object instanceof Number) {
+                return ((Number) object).intValue();
+            } else if (object instanceof Boolean) {
+                return ((Boolean) object) ? 1 : 0;
+            } else if (object instanceof Character) {
+                return (int) object;
+            } else {
+                throw ex;
             }
         }
     }
 
     @Override
+    protected Integer convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
+        } else {
+            return Integer.parseInt(string);
+        }
+    }
+
+    @Override
     public byte getByte(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]).byteValue();
+        return data[id] != null ? ((Integer) data[id]).byteValue() : (byte) 0;
     }
 
     @Override
@@ -79,7 +73,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public short getShort(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]).shortValue();
+        return data[id] != null ? ((Integer) data[id]).shortValue() : (short) 0;
     }
 
     @Override
@@ -89,7 +83,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public int getInt(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]);
+        return data[id] != null ? (Integer) data[id] : 0;
     }
 
     @Override
@@ -99,7 +93,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public long getLong(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]).longValue();
+        return data[id] != null ? ((Integer) data[id]).longValue() : 0L;
     }
 
     @Override
@@ -109,7 +103,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public float getFloat(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]).floatValue();
+        return data[id] != null ? ((Integer) data[id]).floatValue() : 0.0f;
     }
 
     @Override
@@ -119,7 +113,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public double getDouble(final int id) {
-        return data[id] == null ? 0 : ((Integer) data[id]).doubleValue();
+        return data[id] != null ? ((Integer) data[id]).doubleValue() : 0.0;
     }
 
     @Override
@@ -139,7 +133,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
 
     @Override
     public char getChar(final int id) {
-        return data[id] == null ? 0 : (char) (int) data[id];
+        return data[id] != null ? (char) (int) data[id] : (char) 0;
     }
 
     @Override
@@ -148,43 +142,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
     }
 
     @Override
-    public String getString(final int id) {
-        return data[id] == null ? null : String.valueOf((Integer) data[id]);
-    }
-
-    @Override
-    public String acceptsString(String value) {
-        try {
-            Integer.parseInt(value);
-            return null;
-        } catch (NumberFormatException ex) {
-            return "Not a valid integer value";
-        }
-    }
-
-    @Override
     public int hashCode(final int id) {
-        return data[id] == null ? nullHash : ((Integer) data[id]);
-    }
-
-    @Override
-    public int ordering() {
-        return 3;
-    }
-
-    @Override
-    public void restore(final int id, final ParameterReadAccess access) {
-        data[id] = (Integer) access.getUndoObject();
-    }
-
-    @Override
-    public Object saveData() {
-        return Arrays.copyOf(data, data.length);
-    }
-
-    @Override
-    public void restoreData(final Object savedData) {
-        final Integer[] sd = (Integer[]) savedData;
-        data = Arrays.copyOf(sd, sd.length);
+        return data[id] == null ? nullHash : (Integer) data[id];
     }
 }

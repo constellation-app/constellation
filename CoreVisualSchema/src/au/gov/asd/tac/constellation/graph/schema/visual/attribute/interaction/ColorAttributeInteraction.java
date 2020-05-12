@@ -40,11 +40,11 @@ public class ColorAttributeInteraction extends AbstractAttributeInteraction<Cons
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
-        ConstellationColor colorValue = (ConstellationColor) attrVal;
+        ConstellationColor colorValue = (ConstellationColor) value;
 
         String strValue = colorValue.getName();
         if (strValue == null || strValue.isEmpty()) {

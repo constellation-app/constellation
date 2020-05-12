@@ -117,6 +117,7 @@ public class SingleChoiceInputPane extends HBox {
 
         parameter.addListener((final PluginParameter<?> parameter1, final ParameterChange change) -> {
             Platform.runLater(() -> {
+                @SuppressWarnings("unchecked") //scParameter1 is SingleChoiceParameter
                 PluginParameter<SingleChoiceParameterValue> scParameter1 = (PluginParameter<SingleChoiceParameterValue>) parameter1;
                 switch (change) {
                     case VALUE:

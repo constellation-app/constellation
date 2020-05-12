@@ -70,6 +70,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -142,6 +144,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private boolean announceNextFlush = false;
     private boolean handleEvents;
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
 
     /**
      * A Functional interface that describes how a single mouse or keyboard
@@ -217,7 +221,21 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     // Continue to loop whilst we see events before the alloted time is up
                     while (handler != null) {
                         long beforeProcessing = System.currentTimeMillis();
-                        final long nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
+                        //HACK_DPI
+                        // TODO: there's a race condition here which is causing access to interactionGraph to raise
+                        // a NullPointerException on the handling of some events.  It appears to happen far more often
+                        // on an old MacBook than in Windows on a moderately powerful PC.  There is no attempt at a fix
+                        // here and this issue needs to be resolved in a future change.
+                        //final long nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
+                        long nextWaitTime = 0;
+                        try
+                        {
+                            nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
+                        }
+                        catch(Exception ex)
+                        {
+                            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+                        }
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
@@ -361,10 +379,12 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void keyReleased(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(final KeyEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -380,6 +400,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     public void mouseDragged(final MouseEvent event) {
         queue.add(wg -> {
             // If a mouse pressed event was never registered (can happen when left clicking off a context menu) we ignore this event.
+            // HACK_DPI - Multiply point by DPI scale factor
+            Point point = event.getPoint();
+            scaleMousePointByDPIFactor(point);
+            
             if (eventState.isMousePressed()) {
                 if (wg != null) {
                     final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
@@ -389,7 +413,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     switch (eventState.getCurrentAction()) {
                         case ROTATING:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                            to = event.getPoint();
+                            to = point;
                             final boolean zAxisRotation = !VisualGraphUtilities.getDisplayModeIs3D(wg) || (event.isControlDown() && event.isShiftDown());
                             if (zAxisRotation) {
                                 CameraUtilities.spin(camera, visualInteraction.convertTranslationToSpin(from, to));
@@ -400,7 +424,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case PANNING:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                            to = event.getPoint();
+                            to = point;
                             final Vector3f panReferencePoint = eventState.hasClosestNode() ? eventState.getClosestNode() : CameraUtilities.getFocusVector(camera);
                             final Vector3f translation = visualInteraction.convertTranslationToPan(from, to, panReferencePoint);
                             CameraUtilities.pan(camera, translation.getX(), translation.getY());
@@ -408,22 +432,23 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case DRAG_NODES:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                            to = event.getPoint();
+                            to = point; 
                             performDrag(wg, camera, from, to);
                             break;
                         case SELECTING:
-                            updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), event.getPoint()));
+                            updateSelectionBoxModel(new SelectionBoxModel(eventState.getPoint(EventState.PRESSED_POINT), point));
                             break;
                         default:
                             break;
                     }
-                    updateCameraAndNewLine(wg, event.getPoint(), cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
+                    updateCameraAndNewLine(wg, point, cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
+                        
                 }
-
-                eventState.storePoint(event.getPoint(), EventState.DRAG_POINT);
+                
+                eventState.storePoint(point, EventState.DRAG_POINT);
             } else if (wg != null) {
                 // In this case, a button is held down but its pressed event was not registered for whatever reason.
-                updateHitTestAndNewLine(wg, event.getPoint());
+                updateHitTestAndNewLine(wg, point);
             }
             return 0;
         });
@@ -434,9 +459,13 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         queue.add(wg -> {
             // If the mouse is currently pressed (meaning this event represents pressing multiple buttons) we ignore this event.
             if (!eventState.isMousePressed()) {
+                // HACK_DPI - Multiply point by DPI scale factor
+                Point point = event.getPoint();
+                scaleMousePointByDPIFactor(point);
+                
                 // In case we are panning, we must take the distance of the scene from the camera into account,
                 // otherwise scenes that are further away will appear to move very slowly.
-                eventState.storePoint(event.getPoint(), EventState.PRESSED_POINT, EventState.REFERENCE_POINT);
+                eventState.storePoint(point, EventState.PRESSED_POINT, EventState.REFERENCE_POINT);
                 eventState.setCurrentButton(event.getButton());
 
                 final Camera camera;
@@ -444,12 +473,12 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     camera = VisualGraphUtilities.getCamera(wg);
 
                     // Order a hit test and wait for it to complete.
-                    orderHitTest(event.getPoint(), HitTestMode.HANDLE_SYNCHRONOUSLY);
+                    orderHitTest(point, HitTestMode.HANDLE_SYNCHRONOUSLY);
 
                     // Now that we have got the results of hit testing we can turn it off until the mouse is released.
                     setHitTestingEnabled(false);
 
-                    eventState.setClosestNode(visualInteraction.closestNodeCameraCoordinates(wg, camera, event.getPoint()));
+                    eventState.setClosestNode(visualInteraction.closestNodeCameraCoordinates(wg, camera, point));
                 } else {
                     camera = null;
                 }
@@ -492,12 +521,15 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     setHitTestingEnabled(true);
 
                     final Camera camera = VisualGraphUtilities.getCamera(wg);
+                    // HACK_DPI - Multiply point by DPI scale factor
+                    Point point = event.getPoint();
+                    scaleMousePointByDPIFactor(point);
                     final Point from;
                     final Point to;
                     switch (eventState.getCurrentAction()) {
                         case SELECTING:
                             if (eventState.isMouseDragged()) {
-                                performBoxSelection(wg, event.getPoint(), eventState.getPoint(EventState.PRESSED_POINT), event.isShiftDown(), event.isControlDown());
+                                performBoxSelection(wg, point, eventState.getPoint(EventState.PRESSED_POINT), event.isShiftDown(), event.isControlDown());
                                 clearSelectionBoxModel();
                             } else {
                                 // If the mouse has clicked on an element (and neither pan nor control are pressed),
@@ -509,7 +541,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case CREATING:
                             switch (eventState.getCurrentCreationMode()) {
                                 case CREATING_VERTEX:
-                                    createVertex(camera, event.getPoint());
+                                    createVertex(camera, point);
                                     eventState.setCurrentCreationMode(CreationMode.NONE);
                                     break;
                                 case FINISHING_TRANSACTION:
@@ -544,7 +576,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         case DRAG_NODES:
                             if (eventState.isMouseDragged()) {
                                 from = eventState.getPoint(EventState.DRAG_POINT);
-                                to = event.getPoint();
+                                to = point;
                                 performDrag(wg, camera, from, to);
                                 eventState.addEventName(DRAG_ACTION_NAME);
                             }
@@ -576,7 +608,10 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     public void mouseMoved(final MouseEvent event) {
         queue.add(wg -> {
             if (wg != null) {
-                updateHitTestAndNewLine(wg, event.getPoint());
+                // HACK_DPI - Multiply point by DPI scale factor
+                Point point = event.getPoint();
+                scaleMousePointByDPIFactor(point);
+                updateHitTestAndNewLine(wg, point);
             }
             return 0;
         });
@@ -588,6 +623,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             if (wg != null) {
                 final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
                 final Point wheelPoint = event.getPoint();
+                // HACK_DPI: Don't need to scale the wheelPoint.
                 eventState.setClosestNode(visualInteraction.closestNodeCameraCoordinates(wg, camera, wheelPoint));
                 if (!eventState.isPoint(EventState.WHEEL_POINT) || !wheelPoint.equals(eventState.getPoint(EventState.WHEEL_POINT))) {
                     eventState.storePoint(wheelPoint, EventState.WHEEL_POINT);
@@ -629,14 +665,17 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     @Override
     public void mouseClicked(MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseEntered(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(final MouseEvent e) {
+        // Method override required, intentionally left blank
     }
 
     /**
@@ -1109,5 +1148,12 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         }
 
         popup.show(manager.getVisualComponent(), screenLocation.x, screenLocation.y);
+    }
+    
+    private void scaleMousePointByDPIFactor(Point pointToScale){
+        // HACK_DPI - Get the DPI scale factor and multiply the point by it
+        final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
+        pointToScale.x *= dpiScalingFactor;
+        pointToScale.y *= dpiScalingFactor;
     }
 }

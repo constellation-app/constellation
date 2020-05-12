@@ -45,9 +45,6 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
     private int destination;
     private boolean directed;
 
-    public CreateTransactionPlugin() {
-    }
-
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();

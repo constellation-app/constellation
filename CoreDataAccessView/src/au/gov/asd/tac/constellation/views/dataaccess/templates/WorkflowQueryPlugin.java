@@ -246,7 +246,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
                 } catch (PluginException ex) {
                     wholeOfWorkflowExceptions.add(ex);
                     error = true;
-                    throw ex;
+                    break;
                 }
             }
 

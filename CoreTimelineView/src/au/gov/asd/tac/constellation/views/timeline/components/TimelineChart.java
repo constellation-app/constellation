@@ -666,13 +666,14 @@ public class TimelineChart extends XYChart<Number, Number> {
 
     @Override
     protected void dataItemChanged(final Data<Number, Number> item) {
-    } // currently not needed.
+        // currently not needed.
+    }
 
     @Override
     protected void seriesAdded(final Series<Number, Number> series, int seriesIndex) {
         // Handle any data already in series:
         for (int j = 0; j < series.getData().size(); j++) {
-            final Data item = series.getData().get(j);
+            final Data<Number, Number> item = series.getData().get(j);
 
             final Node prospective;
             if (item.getExtraValue() instanceof Interaction) {

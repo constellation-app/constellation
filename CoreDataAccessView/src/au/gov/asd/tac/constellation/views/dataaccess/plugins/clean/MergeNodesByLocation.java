@@ -184,7 +184,7 @@ public class MergeNodesByLocation implements MergeNodeType {
         for (Integer vertexOneId : distanceKeys) {
             // ...copy the map of distances between vertex one and all vertex two's...
             if (distanceMap.containsKey(vertexOneId)) {
-                final Map<Integer, Double> vertexOneToVertexTwoDistances = new HashMap(distanceMap.get(vertexOneId));
+                final Map<Integer, Double> vertexOneToVertexTwoDistances = new HashMap<>(distanceMap.get(vertexOneId));
                 if (vertexOneToVertexTwoDistances.size() > 0) {
                     // ...then for each vertex two...
                     final Set<Integer> cluster = new HashSet<>();
@@ -195,7 +195,7 @@ public class MergeNodesByLocation implements MergeNodeType {
                         // ...check that vertex two doesn't have a closer vertex than vertex one...
                         if (vertexOneToVertexTwoDistance <= (threshold / 1000) && distanceMap.containsKey(entry.getKey())) {
                             boolean vertexTwoHasCloserVertex = false;
-                            final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap(distanceMap.get(entry.getKey()));
+                            final Map<Integer, Double> vertexTwoToOtherDistances = new HashMap<>(distanceMap.get(entry.getKey()));
                             if (vertexTwoToOtherDistances.size() > 0) {
                                 for (final Map.Entry<Integer, Double> innerEntry : vertexTwoToOtherDistances.entrySet()) {
                                     final double vertexTwoToOtherDistance = innerEntry.getValue();

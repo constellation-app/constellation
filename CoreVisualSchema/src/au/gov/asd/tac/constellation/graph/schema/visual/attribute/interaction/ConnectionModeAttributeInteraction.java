@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.interaction;
 
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ConnectionModeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ConnectionModeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -33,8 +33,9 @@ public class ConnectionModeAttributeInteraction extends AbstractAttributeInterac
     }
 
     @Override
-    public String getDisplayText(Object attrVal) {
-        return ((Enum<ConnectionMode>) attrVal).name();
+    @SuppressWarnings("unchecked") // value will be Enum of ConnectionMode
+    public String getDisplayText(Object value) {
+        return ((Enum<ConnectionMode>) value).name();
     }
 
     @Override

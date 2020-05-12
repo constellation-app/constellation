@@ -145,6 +145,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             LOGGER.severe("Invalid mode provided. Mode values accepted are " + NODE + " or " + TRANSACTION);
                     }
 
+                    @SuppressWarnings("unchecked") //TYPE_CATEGORY_PARAMETER will always be of type SingleChoiceParameter
                     final PluginParameter<SingleChoiceParameterValue> typeCategoryParamter = (PluginParameter<SingleChoiceParameterValue>) parameters.get(TYPE_CATEGORY_PARAMETER_ID);
                     types.sort(String::compareTo);
                     SingleChoiceParameterType.setOptions(typeCategoryParamter, types);
@@ -180,6 +181,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                             break;
                     }
                     // update the sub level types
+                    @SuppressWarnings("unchecked") //TYPE_PARAMETER will always be of type MultiChoiceParameter
                     final PluginParameter<MultiChoiceParameterValue> typeParamter = (PluginParameter<MultiChoiceParameterValue>) parameters.get(TYPE_PARAMETER_ID);
                     types.sort(String::compareTo);
                     MultiChoiceParameterType.setOptions(typeParamter, types);

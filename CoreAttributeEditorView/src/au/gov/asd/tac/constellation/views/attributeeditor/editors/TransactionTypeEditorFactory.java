@@ -92,7 +92,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
 
         @Override
         protected Node createEditorControls() {
-            GridPane controls = new GridPane();
+            final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
@@ -119,7 +119,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 types.add(SchemaTransactionTypeUtilities.getDefaultType());
             }
 
-            Label nameLabel = new Label("Type Name:");
+            final Label nameLabel = new Label("Type Name:");
             nameText = new TextField();
             final VBox nameBox = new VBox(CONTROLS_DEFAULT_VERTICAL_SPACING);
             nameBox.getChildren().addAll(nameLabel, nameText);
@@ -131,7 +131,7 @@ public class TransactionTypeEditorFactory extends AttributeValueEditorFactory<Sc
                 update();
             });
 
-            Label listLabel = new Label("Schema Types:");
+            final Label listLabel = new Label("Schema Types:");
             Collections.sort(types);
             typeList.getItems().addAll(types);
 

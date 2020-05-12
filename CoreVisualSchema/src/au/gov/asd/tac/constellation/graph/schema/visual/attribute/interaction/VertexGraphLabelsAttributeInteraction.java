@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.graph.schema.visual.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.VertexGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -34,12 +33,12 @@ public class VertexGraphLabelsAttributeInteraction extends AbstractAttributeInte
     }
 
     @Override
-    public String getDisplayText(final Object attrVal) {
-        if (attrVal == null) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
             return null;
         }
 
-        GraphLabels labelsValue = ((GraphLabels) attrVal);
+        GraphLabels labelsValue = ((GraphLabels) value);
         StringBuilder labelsString = new StringBuilder();
         labelsValue.getLabels().forEach(label -> {
             labelsString.append(label.getAttributeName());

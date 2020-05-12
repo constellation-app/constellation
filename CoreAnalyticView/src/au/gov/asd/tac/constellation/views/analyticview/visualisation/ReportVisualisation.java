@@ -67,7 +67,7 @@ public class ReportVisualisation extends InternalVisualisation {
         this.report = new VBox(pluginsReportBox, numberOfResultsReportBox, aggregationMethodReportBox, exceptionsReportBox);
     }
 
-    public void populateReport(final List<AnalyticPlugin> plugins, final int numberOfResults, final String aggregationMethod, final List<Exception> exceptions) {
+    public void populateReport(final List<AnalyticPlugin<?>> plugins, final int numberOfResults, final String aggregationMethod, final List<Exception> exceptions) {
         final StringBuilder pluginsString = new StringBuilder();
         plugins.forEach(plugin -> {
             pluginsString.append(plugin.getName());

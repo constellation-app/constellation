@@ -149,6 +149,7 @@ public class RecentFileAction extends AbstractAction
 
     @Override
     public void popupMenuCanceled(final PopupMenuEvent arg0) {
+        // Required to implement PopupMenuListener
     }
 
     /**

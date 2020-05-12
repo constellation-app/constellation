@@ -33,6 +33,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Rectangle2D;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -47,7 +49,7 @@ import javax.swing.event.MouseInputListener;
  * @author sirius
  * @author antares
  */
-public class HistogramDisplay extends JPanel implements MouseInputListener, KeyListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener,  KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
     public static final Color BAR_COLOR = new Color(0.1176f, 0.5647f, 1.0f);
@@ -102,12 +104,21 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
         this.topComponent = topComponent;
 
+        initializeSettings();
+        initializeListeners();
+    }
+    
+    public final void initializeSettings(){
         setBackground(BACKGROUND_COLOR);
+    }
+    
+    public final void initializeListeners(){
         addMouseListener(this);
         addMouseMotionListener(this);
-
+        addMouseWheelListener(this);
         addComponentListener(this);
     }
+        
 
     @Override
     public Dimension getMinimumSize() {
@@ -529,26 +540,32 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -563,6 +580,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentMoved(ComponentEvent e) {
+        // Override required, intentionally left blank
     }
 
     @Override
@@ -572,5 +590,21 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, KeyL
 
     @Override
     public void componentHidden(ComponentEvent e) {
+        // Override required, intentionally left blank
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        final JViewport scrollpane = (JViewport) getParent();
+        final Point pos = scrollpane.getViewPosition();
+        final int y;
+        final int SCROLL_HEIGHT = 50;
+        if (e.getWheelRotation() < 0){
+             y = pos.y - (e.getScrollAmount() * SCROLL_HEIGHT);
+        } else {
+            y = pos.y + (e.getScrollAmount() * SCROLL_HEIGHT);
+        }
+        
+        scrollpane.setViewPosition(new Point(0, Math.max(0, y)));
     }
 }

@@ -41,7 +41,7 @@ public class TemporalAxisBuilder implements AxisBuilder<Date> {
 
     @Override
     public Date getValue(GraphReadMethods graph, GraphElementType elementType, int attributeId, int elementId) {
-        return graph.getLongValue(attributeId, elementId) == ZonedDateTimeAttributeDescription.NULL_VALUE
+        return graph.getLongValue(attributeId, elementId) == 0L
                 ? Date.from(Instant.EPOCH) : Date.from(Instant.ofEpochMilli(graph.getLongValue(attributeId, elementId)));
 
     }

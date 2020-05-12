@@ -31,10 +31,10 @@ import javafx.scene.control.ToggleButton;
  */
 public class SizeVisualisation<C> extends GraphVisualisation {
 
-    private final AbstractSizeTranslator translator;
+    private final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton sizeButton;
 
-    public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult, C> translator) {
+    public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
         this.sizeButton = new ToggleButton("Size");

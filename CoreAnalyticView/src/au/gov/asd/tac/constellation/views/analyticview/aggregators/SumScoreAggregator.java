@@ -91,7 +91,7 @@ public class SumScoreAggregator implements AnalyticAggregator<ScoreResult> {
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 }

@@ -278,7 +278,7 @@ public final class AttributeCalculatorPane extends GridPane {
         });
 
         createCategories();
-        ObservableList insertItems = FXCollections.observableArrayList(insertCategories);
+        ObservableList<InsertListCategory> insertItems = FXCollections.observableArrayList(insertCategories);
         insertComboBox.setItems(insertItems);
         insertComboBox.getSelectionModel().select(savedScriptsCat);
         calculatorControls.getChildren().add(insertComboBox);

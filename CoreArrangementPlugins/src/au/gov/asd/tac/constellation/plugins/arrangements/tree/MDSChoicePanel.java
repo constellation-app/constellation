@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +66,7 @@ public class MDSChoicePanel extends javax.swing.JPanel {
         return new MDSChoiceParameters(linkWeight, weightAttribute, scale, iterationsPerStageTrial, maxTrialsPerStage, minTrialsPerStage, avoidOverlap, overlapAvoidance);
     }
 
-    private final class LinkWeightsModel implements ComboBoxModel {
+    private final class LinkWeightsModel implements ComboBoxModel<LinkWeight> {
 
         private final ArrayList<LinkWeight> items;
         private int selectedItem;
@@ -102,7 +102,7 @@ public class MDSChoicePanel extends javax.swing.JPanel {
         }
 
         @Override
-        public Object getElementAt(final int index) {
+        public LinkWeight getElementAt(final int index) {
             return items.get(index);
         }
 

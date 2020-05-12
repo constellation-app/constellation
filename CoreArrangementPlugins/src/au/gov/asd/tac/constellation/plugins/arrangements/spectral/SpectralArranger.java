@@ -40,9 +40,6 @@ public class SpectralArranger implements Arranger {
 
     private boolean maintainMean = false;
 
-    public SpectralArranger() {
-    }
-
     @Override
     public void setMaintainMean(final boolean b) {
         maintainMean = b;
@@ -106,10 +103,12 @@ public class SpectralArranger implements Arranger {
 
         @Override
         public void initialise(BitSet currentLinksCopy) {
+            // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override
         public void recordTransactionCluster(int txID, int clusterNum) {
+            // Required for KTrussResultHandler, intentionally left blank
         }
 
         @Override

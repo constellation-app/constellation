@@ -147,8 +147,10 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             }
         }
 
-        MultiChoiceParameterType.setOptionsData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
-        MultiChoiceParameterType.setChoicesData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
+        @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER always of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> transactionTypesParam = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+        MultiChoiceParameterType.setOptionsData(transactionTypesParam, new ArrayList<>(transactionTypes));
+        MultiChoiceParameterType.setChoicesData(transactionTypesParam, new ArrayList<>(transactionTypes));
     }
 
     @Override
@@ -181,9 +183,10 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             // ensure the required analytic attributes exists on the graph
             getAnalyticAttributes(parameters).forEach(schemaAttribute -> schemaAttribute.ensure(graph));
 
-            final PluginParameter transactionTypesParameter = parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER always of type MultiChoiceParameter
+            final PluginParameter<MultiChoiceParameterValue> transactionTypesParameter = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
             final List<ParameterValue> allTransactionTypes = MultiChoiceParameterType.getOptionsData(transactionTypesParameter);
-            final List<ParameterValue> chosenTransactionTypes = MultiChoiceParameterType.getChoicesData(transactionTypesParameter);
+            final List<? extends ParameterValue> chosenTransactionTypes = MultiChoiceParameterType.getChoicesData(transactionTypesParameter);
             if (chosenTransactionTypes.equals(allTransactionTypes)) {
                 // run analytic plugin on the entire graph and compute results
                 PluginExecution.withPlugin(getAnalyticPlugin().getDeclaredConstructor().newInstance())
@@ -219,7 +222,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
     }
 
     @Override
-    public final Class<? extends AnalyticResult> getResultType() {
+    public final Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 

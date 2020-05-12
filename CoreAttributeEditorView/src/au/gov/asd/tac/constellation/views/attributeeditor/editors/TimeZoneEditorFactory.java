@@ -83,7 +83,7 @@ public class TimeZoneEditorFactory extends AttributeValueEditorFactory<ZoneId> {
 
         @Override
         protected Node createEditorControls() {
-            VBox controls = new VBox();
+            final VBox controls = new VBox();
             controls.setSpacing(CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setAlignment(Pos.CENTER);
 

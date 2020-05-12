@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.uncollide.Uncollide3DAction")
 @ActionRegistration(displayName = "#CTL_Uncollide3DAction", surviveFocusChange = true)
 @ActionReferences({
-    @ActionReference(path = "Menu/Arrange", position = 1400)
+    @ActionReference(path = "Menu/Arrange", position = 2400)
 })
 @Messages("CTL_Uncollide3DAction=Uncollide 3D")
 public final class Uncollide3DAction extends AbstractAction {

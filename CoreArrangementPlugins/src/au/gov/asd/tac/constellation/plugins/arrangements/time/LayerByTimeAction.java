@@ -39,7 +39,7 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimeAction")
 @ActionRegistration(displayName = "#CTL_LayerByTimeAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/time/resources/time.png", surviveFocusChange = true)
-@ActionReference(path = "Menu/Arrange", position = 1210)
+@ActionReference(path = "Menu/Arrange", position = 2500)
 @Messages({
     "CTL_LayerByTimeAction=Layer by Time",
     "MSG_NewGraph=This will create a new graph with additional nodes and transactions."

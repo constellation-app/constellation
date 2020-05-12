@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
@@ -233,11 +236,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxY2Attr = VisualConcept.VertexAttribute.Y2.ensure(graph);
         final int vxZ2Attr = VisualConcept.VertexAttribute.Z2.ensure(graph);
 
-        final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "isGood", null, false, null);
+        final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
         final int vxCountry1Attr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
-        final int vxCountry2Attr = graph.addAttribute(GraphElementType.VERTEX, "string", "Geo.Country2", null, null, null);
-        final int vxDecoratorAttr = graph.addAttribute(GraphElementType.VERTEX, "string", "Custom Decorator", null, null, null);
-        final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, "float", "Normalised", null, 0.0f, null);
+        final int vxCountry2Attr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Geo.Country2", null, null, null);
+        final int vxDecoratorAttr = graph.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "Custom Decorator", null, null, null);
+        final int vxNormalisedAttr = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "Normalised", null, 0.0f, null);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int txDirectedAttr = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);

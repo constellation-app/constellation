@@ -174,9 +174,11 @@ public class ConnectionPanelController implements WizardDescriptor.ExtendedAsync
 
     @Override
     public void prepareValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
     public void finishValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 }
