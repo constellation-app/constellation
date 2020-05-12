@@ -39,10 +39,14 @@ public class LayersViewController {
 
     private final LayersViewTopComponent parent;
     private LayersViewPane pane = null;
-    public boolean stateChanged = false;
+    private static boolean stateChanged = false;
 
     public LayersViewController(final LayersViewTopComponent parent) {
         this.parent = parent;
+    }
+    
+    public static void setState(final boolean newState) {
+        stateChanged = newState;
     }
 
     /**
@@ -88,23 +92,21 @@ public class LayersViewController {
     /**
      * Executes the plugin with parameters dependent on if the trigger was an update event.
      */
-    public void updateState(final boolean wasUpdate) {
+    public void updateState(final List<LayerDescription> layers, final boolean wasUpdate) {
         pane = parent.getContent();
         stateChanged = true;
-        PluginExecution.withPlugin(new LayersViewStateUpdater(pane, wasUpdate)).executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new LayersViewStateUpdater(pane, layers, wasUpdate)).executeLater(GraphManager.getDefault().getActiveGraph());
         
     }
 
-
     /**
-     * Executes a plugin to grab current Layers View selections and save them to
+     * Executes a plugin to write the current Layers View selections to
      * the graph's Layers View State Attribute only when it has changed.
      */
-    public void writeState() {
-        pane = parent.getContent();
+    public void writeState(final List<LayerDescription> layers) {
         if(stateChanged){
             stateChanged = false;
-            PluginExecution.withPlugin(new LayersViewStateWriter(pane)).executeLater(GraphManager.getDefault().getActiveGraph());
+            PluginExecution.withPlugin(new LayersViewStateWriter(layers)).executeLater(GraphManager.getDefault().getActiveGraph());
         }
     }
 
@@ -114,10 +116,12 @@ public class LayersViewController {
     private static final class LayersViewStateUpdater extends SimpleEditPlugin {
 
         private LayersViewPane pane = null;
+        private List<LayerDescription> layers = null;
         private boolean isUpdateCall = false;
 
-        public LayersViewStateUpdater(final LayersViewPane pane, final boolean isUpdateCall) {
+        public LayersViewStateUpdater(final LayersViewPane pane, final List<LayerDescription> layers, final boolean isUpdateCall) {
             this.pane = pane;
+            this.layers = layers;
             this.isUpdateCall = isUpdateCall;
         }
 
@@ -127,14 +131,18 @@ public class LayersViewController {
                 return;
             }
             
-            int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             currentState = (currentState == null) ? new LayersViewState() : new LayersViewState(currentState);
             if (isUpdateCall) {
                 // Take a snapshot of the UI and store that state
-                currentState.setLayers(pane.getlayers());
-                pane.getController().writeState();
-            } 
+                currentState.setLayers(layers);
+                LayersViewController.setState(false);
+                LayersViewState newState = graph.getObjectValue(stateAttributeId, 0);
+                newState = newState == null ? new LayersViewState() : new LayersViewState(newState);
+                newState.setLayers(layers);
+                graph.setObjectValue(stateAttributeId, 0, newState);
+            }
             pane.setLayers(currentState.getAllLayers());
         }
 
@@ -154,21 +162,18 @@ public class LayersViewController {
      */
     private static final class LayersViewStateWriter extends SimpleEditPlugin {
 
-        private LayersViewPane pane = null;
+        private List<LayerDescription> layers = null;
 
-        public LayersViewStateWriter(final LayersViewPane pane) {
-            this.pane = pane;
+        public LayersViewStateWriter(final List<LayerDescription> layers) {
+            this.layers = layers;
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            if (pane == null) {
-                return;
-            }
             final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
             LayersViewState newState = graph.getObjectValue(stateAttributeId, 0);
             newState = newState == null ? new LayersViewState() : new LayersViewState(newState);
-            newState.setLayers(pane.getlayers());
+            newState.setLayers(layers);
             graph.setObjectValue(stateAttributeId, 0, newState);
         }
 
@@ -179,7 +184,7 @@ public class LayersViewController {
 
         @Override
         public String getName() {
-            return "Layers View: Update State";
+            return "Layers View: Write State";
         }
     }
 }

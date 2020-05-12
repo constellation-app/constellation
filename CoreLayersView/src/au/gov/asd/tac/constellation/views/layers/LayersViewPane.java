@@ -98,7 +98,7 @@ public class LayersViewPane extends BorderPane {
             if (layersGridPane.getRowCount() <= 32) { // 32 layers plus headings
                 createLayer(++currentIndex, false, "", "");
                 layers.add(new LayerDescription(currentIndex, false, "", ""));
-                controller.updateState(true);
+                controller.updateState(layers, true);
             } else {
                 final NotifyDescriptor nd = new NotifyDescriptor.Message(
                         "You cannot have more than 32 layers", NotifyDescriptor.WARNING_MESSAGE);
@@ -120,7 +120,7 @@ public class LayersViewPane extends BorderPane {
         options.prefWidthProperty().bind(layersViewPane.widthProperty());
 
         this.setCenter(layersViewPane);
-        controller.updateState(false);
+        controller.updateState(layers, false);
     }
     
     public LayersViewController getController() {
@@ -145,7 +145,7 @@ public class LayersViewPane extends BorderPane {
             layer.setCurrentLayerVisibility(!layer.getCurrentLayerVisibility());
             controller.submit();
             controller.execute();
-            controller.updateState(true);
+            controller.updateState(layers, true);
         });
         
         final Node queryTextArea = new TextArea();
@@ -153,9 +153,9 @@ public class LayersViewPane extends BorderPane {
         ((TextArea) queryTextArea).setText(query);
         ((TextArea) queryTextArea).focusedProperty().addListener((observable, oldVal, newVal) -> {
             if(!newVal){
-                LayerDescription layer = layers.get(currentIndex-1);
+                LayerDescription layer = layers.get(currentIndex-1); // index 2 out of bounds for length 2
                 layer.setQueryText(((TextArea) queryTextArea).getText());
-                controller.updateState(true);
+                controller.updateState(layers, true);
             }
         });
         
@@ -166,7 +166,7 @@ public class LayersViewPane extends BorderPane {
             if(!newVal){
                 LayerDescription layer = layers.get(currentIndex-1);
                 layer.setDescriptionText(((TextArea) descriptionTextArea).getText());
-                controller.updateState(true);
+                controller.updateState(layers, true);
             }
         });
 
