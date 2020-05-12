@@ -1,10 +1,12 @@
 # Constellation Changes
 
 ## 2020-05-01 Changes in May 2020 
-* Added feedback for delimiter import
-* Changed ImportController's processImport function to return the list of files it has imported.
-* Fixed a bug effecting the histogram scrolling
+* Added feedback for delimiter import.
+* Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
+* Updated ImportController's processImport function to return the list of files it has imported.
+* Updated parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
+* Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`
 
 ## 2020-04-01 Changes in April 2020
 * Added search feature to Table View Column Selection.

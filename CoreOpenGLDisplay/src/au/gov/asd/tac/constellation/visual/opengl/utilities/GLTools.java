@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Utilities; //pulled in by Windows-DPI-Scaling
 
 /**
  * Tools for OpenGL and JOGL.
@@ -868,5 +869,22 @@ public final class GLTools {
             errtext = "framebuffer unsupported";
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
+    }
+    
+    /**
+     * Windows-DPI-Scaling
+     * 
+     * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.
+     * setSurfaceScale() is not overridden in WindowsJAWTWindow so it is not
+     * possible to scale the the canvas and mouse events at this level.  It 
+     * should be noted that it is overridden in MacOSXJAWTWindow.
+     * Where manual scaling is required the caller will need to scale each GL
+     * viewport and ensure hit tests take that size into account.
+     * 
+     * If JOGL is ever fixed or another solution is found, either change this
+     * function to return false or look for any code that calls it and remove it.
+     */    
+    public static boolean needsManualDPIScaling() {
+        return Utilities.isWindows();
     }
 }
