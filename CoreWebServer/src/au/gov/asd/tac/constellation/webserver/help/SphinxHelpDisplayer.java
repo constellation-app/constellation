@@ -277,7 +277,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         //
         final Map<String, String> helpMap = getHelpMap();
         if(!helpMap.isEmpty()) {
-            final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index";
+            final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index.html";
 
             // Send the user's browser to the correct page, depending on the help source.
             //
