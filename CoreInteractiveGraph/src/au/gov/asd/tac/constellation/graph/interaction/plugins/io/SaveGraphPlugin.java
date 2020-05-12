@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 
-import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -27,9 +27,14 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import org.openide.util.Exceptions;
+import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataFolder;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -41,16 +46,26 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SaveGraphPlugin=Save Graph")
 public class SaveGraphPlugin extends SimplePlugin {
 
+    private static final Logger LOGGER = Logger.getLogger(SaveGraphPlugin.class.getName());
+
     public static final String GRAPH_PARAMETER = PluginParameter.buildId(SaveGraphPlugin.class, "graphId");
+    public static final String FILE_PATH_PARAMETER = PluginParameter.buildId(SaveGraphPlugin.class, "saveFilePathId");
 
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> graphIdParameter = StringParameterType.build(GRAPH_PARAMETER);
+        final PluginParameter<StringParameterValue> filePathParameter = StringParameterType.build(FILE_PATH_PARAMETER);
+
         graphIdParameter.setName("graphId");
         graphIdParameter.setDescription("The Id of the graph");
         parameters.addParameter(graphIdParameter);
+
+        filePathParameter.setName("saveFilePath");
+        filePathParameter.setDescription("Save Graph Plugin File Path");
+        filePathParameter.setStringValue(System.getProperty("user.home"));
+        parameters.addParameter(filePathParameter);
 
         return parameters;
     }
@@ -58,14 +73,29 @@ public class SaveGraphPlugin extends SimplePlugin {
     @Override
     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
         final Graph g = graphs.getAllGraphs().get(parameters.getStringValue(GRAPH_PARAMETER));
+        final String filePath = parameters.getStringValue(FILE_PATH_PARAMETER);
         final GraphNode gn = GraphNode.getGraphNode(g);
-        SwingUtilities.invokeLater(() -> {
-            try {
-                ((VisualGraphTopComponent) gn.getTopComponent()).saveGraph();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+        try {
+            final File fileLocation = new File(filePath);
+            if (fileLocation.exists()) {
+                final DataFolder df = DataFolder.findFolder(FileUtil.createFolder(fileLocation));
+                //Move the GraphNode's data object to the location inputted by the user
+                gn.getDataObject().move(df);
+                SwingUtilities.invokeLater(() -> {
+                    try {
+                        ((VisualGraphTopComponent) gn.getTopComponent()).saveGraph();
+                    } catch (IOException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                    }
+                });
+            } else {
+                JOptionPane.showMessageDialog(null, "Error: Invalid file path parameter");
             }
-        });
+
+        } catch (IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
+
     }
 
 }
