@@ -206,7 +206,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     private static DataFlavor uriListDataFlavor;
 
     DataFlavor getUriListDataFlavor() {
-        if (uriListDataFlavor != null) {
+        if (uriListDataFlavor == null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
             } catch (ClassNotFoundException cnfE) {
