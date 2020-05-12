@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -50,11 +51,11 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    protected SchemaVertexType convertFromString(final String value) {
-        if (value == null) {
-            return defaultValue;
+    protected SchemaVertexType convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            return SchemaVertexTypeUtilities.getTypeOrBuildNew(value);
+            return SchemaVertexTypeUtilities.getTypeOrBuildNew(string);
         }
     }
 
@@ -62,7 +63,7 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
     public void setDefault(final Object value) {
         super.setDefault(value);
 
-        // Ensure that the default is a registered type.
+        // ensure that the default is a registered type.
         if (defaultValue instanceof SchemaVertexType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }

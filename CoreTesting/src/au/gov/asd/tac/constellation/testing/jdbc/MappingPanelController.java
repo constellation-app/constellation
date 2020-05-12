@@ -58,10 +58,12 @@ public class MappingPanelController implements WizardDescriptor.ExtendedAsynchro
 
     @Override
     public void addChangeListener(final ChangeListener l) {
+        // Required for implementation of Panel, intentionally left blank
     }
 
     @Override
     public void removeChangeListener(final ChangeListener l) {
+        // Required for implementation of Panel, intentionally left blank
     }
 
     @Override
@@ -78,14 +80,16 @@ public class MappingPanelController implements WizardDescriptor.ExtendedAsynchro
 
     @Override
     public void prepareValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
     public void validate() throws WizardValidationException {
-
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 
     @Override
     public void finishValidation() {
+        // Required for ExtendedAsynchronousValidatingPanel, intentionally left blank
     }
 }

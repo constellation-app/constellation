@@ -88,6 +88,7 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
 
     @Override
     public void cancel() {
+        // Required for OptionsPanelController, intentionally left blank
     }
 
     @Override

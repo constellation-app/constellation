@@ -327,16 +327,6 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
     }
 
     @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return 8;
-    }
-
-    @Override
     public boolean isClear(final int id) {
         return data[id] == defaultValue;
     }

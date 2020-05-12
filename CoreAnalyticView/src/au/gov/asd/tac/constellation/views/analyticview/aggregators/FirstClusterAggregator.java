@@ -44,7 +44,7 @@ public class FirstClusterAggregator implements AnalyticAggregator<ClusterResult>
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return ClusterResult.class;
     }
 }

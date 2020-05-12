@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.analytics;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
-import au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity.LevenshteinDistancePlugin;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -25,6 +23,8 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.algorithms.sna.similarity.LevenshteinDistancePlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
@@ -102,9 +102,11 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
         updateParameters(parameters);
 
         stringAttributes.sort(String::compareTo);
-        SingleChoiceParameterType.setOptions((PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID), stringAttributes);
+        @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER always of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> attributeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
+        SingleChoiceParameterType.setOptions(attributeParam, stringAttributes);
         if (stringAttributes.contains(VisualConcept.VertexAttribute.IDENTIFIER.getName())) {
-            SingleChoiceParameterType.setChoice((PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID), VisualConcept.VertexAttribute.IDENTIFIER.getName());
+            SingleChoiceParameterType.setChoice(attributeParam, VisualConcept.VertexAttribute.IDENTIFIER.getName());
         }
     }
 }

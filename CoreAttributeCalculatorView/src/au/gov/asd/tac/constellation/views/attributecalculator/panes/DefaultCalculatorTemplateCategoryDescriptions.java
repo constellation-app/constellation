@@ -224,9 +224,6 @@ public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalcu
         TEMPLATE_USAGE_EXAMPLES.put(DATETIME_PROCESSING, DATETIME_PROCESSING_EXAMPLES);
     }
 
-    public DefaultCalculatorTemplateCategoryDescriptions() {
-    }
-
     @Override
     public String[] getUsageExamples(String key) {
         return TEMPLATE_USAGE_EXAMPLES.get(key);

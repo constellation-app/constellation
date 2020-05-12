@@ -255,7 +255,7 @@ public class CopyDataToClipboard implements ActionListener, Action {
         @Override
         public DataFlavor[] getTransferDataFlavors() {
 
-            return (DataFlavor[]) HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
+            return HTML_FLAVORS.toArray(new DataFlavor[HTML_FLAVORS.size()]);
         }
 
         @Override
@@ -480,10 +480,12 @@ public class CopyDataToClipboard implements ActionListener, Action {
 
     @Override
     public void putValue(final String key, final Object value) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void setEnabled(final boolean b) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
@@ -493,10 +495,12 @@ public class CopyDataToClipboard implements ActionListener, Action {
 
     @Override
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     @Override
     public void removePropertyChangeListener(final PropertyChangeListener listener) {
+        // Required for implementation of Action, intentionally left blank
     }
 
     /**

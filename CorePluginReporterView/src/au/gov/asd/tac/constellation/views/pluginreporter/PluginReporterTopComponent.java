@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter;
 
-import au.gov.asd.tac.constellation.views.pluginreporter.panes.PluginReporterPane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
@@ -24,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.pluginreporter.panes.PluginReporterPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javafx.application.Platform;
@@ -137,17 +137,22 @@ public final class PluginReporterTopComponent extends TopComponent implements Gr
     }
 
     void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
+
     }
 
     void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties, intentionally left blank
     }
 
     @Override
     public void graphOpened(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override
     public void graphClosed(Graph graph) {
+        // Required for GraphManagerListener, intentionally left blank
     }
 
     @Override

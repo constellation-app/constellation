@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -131,7 +132,7 @@ public class SetGraphValues extends RestService {
                     final String attributeName = columns.get(i).asText();
                     int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
                     if (attributeId == Graph.NOT_FOUND) {
-                        attributeId = graph.addAttribute(GraphElementType.GRAPH, "string", attributeName, null, null, null);
+                        attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
                     }
                     final String attributeValue = row.get(i).asText();
                     graph.setStringValue(attributeId, 0, attributeValue);

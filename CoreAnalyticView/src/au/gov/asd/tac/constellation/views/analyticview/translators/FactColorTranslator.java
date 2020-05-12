@@ -46,13 +46,13 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
     }
 
     @Override
-    public Class<? extends AnalyticResult> getResultType() {
+    public Class<? extends AnalyticResult<?>> getResultType() {
         return FactResult.class;
     }
 
     @Override
-    public ColorVisualisation buildControl() {
-        return new ColorVisualisation(this);
+    public ColorVisualisation<ElementFact> buildControl() {
+        return new ColorVisualisation<>(this);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 return;
             }
 
-            final FactResult factResults = (FactResult) result;
+            final FactResult factResults = result;
 
             if (reset) {
                 for (final ElementFact factResult : factResults.get()) {

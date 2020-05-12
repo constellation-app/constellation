@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,22 +43,12 @@ public final class IconAttributeDescription extends AbstractObjectAttributeDescr
     }
 
     @Override
-    @SuppressWarnings("unchecked") // All casts are checked
-    protected ConstellationIcon convertFromObject(final Object object) {
-        if (object == null) {
-            return DEFAULT_VALUE;
-        } else if (object instanceof String) {
-            return convertFromString((String) object);
-        } else if (object instanceof ConstellationIcon) {
-            return (ConstellationIcon) object;
+    protected ConstellationIcon convertFromString(final String string) {
+        if (StringUtils.isBlank(string)) {
+            return getDefault();
         } else {
-            throw new IllegalArgumentException(String.format("Error converting '%s' to IconAttributeDescription", object.getClass()));
+            return IconManager.getIcon(string == null ? "" : string);
         }
-    }
-
-    @Override
-    protected ConstellationIcon convertFromString(String string) {
-        return IconManager.getIcon(string == null ? "" : string);
     }
 
     @Override

@@ -211,7 +211,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
                     (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
-            overviewPanel.setExtentPOV((long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent());
+            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
 
@@ -264,7 +264,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             timelinePanel.updateExclusionState(graphNode.getGraph(),
                     (long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent(), state.exclusionState());
-            overviewPanel.setExtentPOV((long) state.getLowerTimeExtent(), (long) state.getUpperTimeExtent());
+            overviewPanel.setExtentPOV(state.getLowerTimeExtent(), state.getUpperTimeExtent());
         }
     }
 

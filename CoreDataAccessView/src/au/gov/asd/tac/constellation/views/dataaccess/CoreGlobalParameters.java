@@ -81,11 +81,13 @@ public class CoreGlobalParameters extends GlobalParameters {
     }
 
     private void updateParameterList(final PluginParameters previous) {
-        final PluginParameter<StringParameterValue> queryNameParameter = CORE_GLOBAL_PARAMETER_IDS.get(QUERY_NAME_PARAMETER_ID_INDEX).getParameter();
+        @SuppressWarnings("unchecked") //QUERY_NAME_PARAMETER will always be of type StringParameter
+        final PluginParameter<StringParameterValue> queryNameParameter = (PluginParameter<StringParameterValue>) CORE_GLOBAL_PARAMETER_IDS.get(QUERY_NAME_PARAMETER_ID_INDEX).getParameter();
         queryNameParameter.setStringValue(String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())));
 
         if (previous != null) {
-            final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = CORE_GLOBAL_PARAMETER_IDS.get(DATETIME_RANGE_PARAMETER_ID_INDEX).getParameter();
+            @SuppressWarnings("unchecked") //DATETIME_RANGE_PARAMETER will always be of type DateTimeRangeParameter
+            final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = (PluginParameter<DateTimeRangeParameterValue>) CORE_GLOBAL_PARAMETER_IDS.get(DATETIME_RANGE_PARAMETER_ID_INDEX).getParameter();
             datetimeRangeParameter.setDateTimeRangeValue(previous.getParameters().get(DATETIME_RANGE_PARAMETER_ID).getDateTimeRangeValue());
         }
     }

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
-import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
@@ -53,13 +52,11 @@ public class IconManagerNGTest {
 
     @Test
     public void testGetIcon_StringPerformancetest() {
-        final IconManager im = new IconManager();
-
         int total = 0;
 
         final long start = System.currentTimeMillis();
         for (int i = 0; i <= 10000; i++) {
-            total += im.getIcon("Server").getExtendedName().length();
+            total += IconManager.getIcon("Server").getExtendedName().length();
         }
         final long end = System.currentTimeMillis();
 
@@ -77,20 +74,18 @@ public class IconManagerNGTest {
      */
     @Test
     public void testGetIconObjects() {
-        Set firstTime = IconManager.getIcons();
-        Set secondTime = IconManager.getIcons();
+        Set<ConstellationIcon> firstTime = IconManager.getIcons();
+        Set<ConstellationIcon> secondTime = IconManager.getIcons();
         assertEquals(firstTime, secondTime);
     }
 
     @Test
     public void testGetIconObjectsPerformanceTest() {
-        final IconManager im = new IconManager();
-
         int total = 0;
 
         final long start = System.currentTimeMillis();
         for (int i = 0; i <= 1000; i++) {
-            total += im.getIcons().size();
+            total += IconManager.getIcons().size();
         }
         final long end = System.currentTimeMillis();
 

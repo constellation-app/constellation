@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,8 +131,10 @@ public final class ConversationViewTopComponent extends TopComponent {
     }
 
     void writeProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 
     void readProperties(java.util.Properties p) {
+        // Required for @ConvertAsProperties
     }
 }

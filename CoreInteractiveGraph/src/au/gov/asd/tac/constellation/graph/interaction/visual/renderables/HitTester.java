@@ -83,7 +83,7 @@ public final class HitTester implements GLRenderable {
 
     @Override
     public int getPriority() {
-        return GLRenderable.HIGH_PRIORITY;
+        return RenderablePriority.HIGH_PRIORITY.getValue();
     }
 
     @Override

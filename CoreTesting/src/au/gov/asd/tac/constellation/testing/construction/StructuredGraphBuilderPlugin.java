@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.testing.construction;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -121,7 +122,7 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
         final int vxYAttr = VisualConcept.VertexAttribute.Y.ensure(graph);
         final int vxZAttr = VisualConcept.VertexAttribute.Z.ensure(graph);
 
-        final int vxInterestingAttr = graph.addAttribute(GraphElementType.VERTEX, "boolean", "interesting", null, false, null);
+        final int vxInterestingAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "interesting", null, false, null);
 
         final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
 

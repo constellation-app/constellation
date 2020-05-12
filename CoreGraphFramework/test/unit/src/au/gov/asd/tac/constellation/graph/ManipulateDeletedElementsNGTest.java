@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import org.testng.annotations.Test;
 
@@ -35,7 +36,7 @@ public class ManipulateDeletedElementsNGTest {
             // Add an indexed boolean attribute, then add a vertex, then delete that vertex.
             final WritableGraph wg = g.getWritableGraph("add attribute, add/remove vertex", true);
             try {
-                attr = wg.addAttribute(GraphElementType.VERTEX, "boolean", "attr", null, false, null);
+                attr = wg.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "attr", null, false, null);
                 wg.setAttributeIndexType(attr, GraphIndexType.UNORDERED);
 
                 v1 = wg.addVertex();

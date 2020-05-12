@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Utilities;
 
 /**
  * A {@link GLRenderable} responsible for the primary component of visualising
@@ -377,20 +379,87 @@ public final class GraphRenderable implements GLRenderable {
             });
         }
     }
+    
+    
+    /**
+     * Make our GL context current.  It may not be as the glyph 
+     * rendering may have switched it.  The JOGL way to do this is
+     * to switch contexts multiple times in the one frame.  Chapter
+     * 2 of 'Pro Java 6 3D Game Development' has a section that explains:
+     * 
+     * "
+     * This coding approach means that the context is current for the
+     * entire duration of the thread's execution. This causes no problems 
+     * on most platforms (e.g. it's fine on Windows), but unfortunately 
+     * there's an issue when using X11. On X11 platforms, a AWT lock is 
+     * created between the GLContext.makeCurrent() and GLContext.release()
+     * calls, stopping mouse and keyboard input from being processed. 
+     * "
+     * 
+     * The JOGL model of the event listener's display being called in response
+     * to input events, as opposed to a continuous render loop, means that
+     * this lock may be responsible for the glyph context being current when
+     * the other batchers are making their draw calls.
+     *
+     * This 'fix' was tested on El Capitan 10.11 and could be breaking on other
+     * versions.  Testing required. 	
+     *
+     * @param gl
+     */
+    private void makeContentCurrent(GL3 gl){
+        GLContext context = gl.getContext();
+        try{
+            while (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT){
+              Thread.sleep(100);
+            }
+        }
+        catch (InterruptedException ex){
+            final String msg
+                    = "Unable to switch GL context.  This code should only be run "
+                    + "on OSX and may need to be restricted to specific versions "
+                    + "where label rendering is broken.  "
+                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+                    + ex.getMessage();
+            Logger.getLogger(GraphRenderable.class
+                    .getName()).log(Level.SEVERE, msg, ex);
+            final InfoTextPanel itp = new InfoTextPanel(msg);
+            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
+            nd.setTitle("Graph Render Error");
+            DialogDisplayer.getDefault().notify(nd);
+        }
+    }
+    
 
     /**
      * Display this batch store to OpenGL.
+     * 
+     * display is called in response to various events such as the move moving or
+     * right clicking.  It isn't a continuous render call one might expect in an
+     * OpenGL application.
      *
-     * @param drawable
+     * @param drawable  From the reference:
+     * A higher-level abstraction than GLDrawable which supplies an event based 
+     * mechanism (GLEventListener) for performing OpenGL rendering. 
+     * A GLAutoDrawable automatically creates a primary rendering context which is
+     * associated with the GLAutoDrawable for the lifetime of the object.
      * @param pMatrix
      */
     @Override
     public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
 
         final GL3 gl = drawable.getGL().getGL3();
-
-        // Bind to the graph displayer, and if a redraw is required, render the graph to the displayer.
+        if (Utilities.isMac())
+        {
+            // With the change in SharedDrawable this line shouldn't be needed as
+            // our context should be the current context. Keeping this code
+            // in in case future changes change the context under us.       
+            // I've commented out the the following call as it is causing a lock
+            // when opening the Data Access View window.
+            // makeContentCurrent(gl);
+            skipRedraw = false;
+        }
         graphDisplayer.bindDisplayer(gl);
+            
         if (!skipRedraw) {
 
             // Direction Indicators.

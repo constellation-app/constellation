@@ -95,14 +95,6 @@ public class DualGraph implements Graph, Serializable {
                     }
                 });
             }
-
-            @Override
-            protected void undoOccurred() {
-            }
-
-            @Override
-            protected void redoOccurred() {
-            }
         };
     }
 

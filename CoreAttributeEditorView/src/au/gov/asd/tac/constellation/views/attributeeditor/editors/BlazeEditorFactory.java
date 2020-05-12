@@ -101,47 +101,46 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         protected Node createEditorControls() {
-
             final GridPane controls = new GridPane();
             controls.setAlignment(Pos.CENTER);
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
             controls.setHgap(CONTROLS_DEFAULT_HORIZONTAL_SPACING);
 
             final Label angleLabel = new Label("Angle:");
-            HBox angleHBox = new HBox();
+            final HBox angleHBox = new HBox();
             angleTextField = new TextField();
             angleTextField.textProperty().addListener((v, o, n) -> {
                 update();
             });
-            Button northButton = new Button("N");
+            final Button northButton = new Button("N");
             northButton.setOnAction(e -> {
                 angleTextField.setText("0");
             });
-            Button northEastButton = new Button("NE");
+            final Button northEastButton = new Button("NE");
             northEastButton.setOnAction(e -> {
                 angleTextField.setText("45");
             });
-            Button eastButton = new Button("E");
+            final Button eastButton = new Button("E");
             eastButton.setOnAction(e -> {
                 angleTextField.setText("90");
             });
-            Button southEastButton = new Button("SE");
+            final Button southEastButton = new Button("SE");
             southEastButton.setOnAction(e -> {
                 angleTextField.setText("135");
             });
-            Button southButton = new Button("S");
+            final Button southButton = new Button("S");
             southButton.setOnAction(e -> {
                 angleTextField.setText("180");
             });
-            Button southWestButton = new Button("SW");
+            final Button southWestButton = new Button("SW");
             southWestButton.setOnAction(e -> {
                 angleTextField.setText("225");
             });
-            Button westButton = new Button("W");
+            final Button westButton = new Button("W");
             westButton.setOnAction(e -> {
                 angleTextField.setText("270");
             });
-            Button northWestButton = new Button("NW");
+            final Button northWestButton = new Button("NW");
             northWestButton.setOnAction(e -> {
                 angleTextField.setText("315");
             });

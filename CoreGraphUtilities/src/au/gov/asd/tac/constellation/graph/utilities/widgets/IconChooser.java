@@ -109,7 +109,8 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
             // If this is the selected icon, remember the details so we can present this icon as the default choice.
             // If the selected icon's name is an alias, then since an alias is just the last part of the dotted path,
             // the path will end with "."+alias.
-            if (selectedIconName != null && (selectedIconName.equals(icon) || icon.getExtendedName().endsWith(SeparatorConstants.PERIOD + selectedIconName))) {
+            if (selectedIconName != null && (icon.getName().equals(selectedIconName) 
+                    || icon.getExtendedName().endsWith(SeparatorConstants.PERIOD + selectedIconName))) {
                 selectedPath = path;
                 selectedFolder = tf;
                 selectedPart = parts[parts.length - 1];
@@ -464,6 +465,7 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void valueForPathChanged(final TreePath path, final Object newValue) {
+        // required for implementation of TreeModel
     }
 
     @Override
@@ -485,10 +487,12 @@ class IconFoldersTreeModel implements TreeModel {
 
     @Override
     public void addTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
     @Override
     public void removeTreeModelListener(final TreeModelListener l) {
+        // required for implementation of TreeModel
     }
 
 }

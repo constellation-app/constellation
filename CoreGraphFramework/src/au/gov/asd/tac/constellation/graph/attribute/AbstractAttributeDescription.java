@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.io.Serializable;
 
 /**
- * abstract class for an attribute description
+ * Abstract class for an attribute description which provides many defaults.
  *
  * @author algol
  */
@@ -53,108 +53,93 @@ public abstract class AbstractAttributeDescription implements AttributeDescripti
     }
 
     @Override
-    public byte getByte(int id) {
+    public byte getByte(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to byte", getName()));
     }
 
     @Override
-    public void setByte(int id, byte value) {
+    public void setByte(final int id, final byte value) {
         throw new IllegalArgumentException(String.format("Error converting byte to %s", getName()));
     }
 
     @Override
-    public short getShort(int id) {
+    public short getShort(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to short", getName()));
     }
 
     @Override
-    public void setShort(int id, short value) {
+    public void setShort(final int id, final short value) {
         throw new IllegalArgumentException(String.format("Error converting short to %s", getName()));
     }
 
     @Override
-    public int getInt(int id) {
+    public int getInt(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to int", getName()));
     }
 
     @Override
-    public void setInt(int id, int value) {
+    public void setInt(final int id, final int value) {
         throw new IllegalArgumentException(String.format("Error converting int to %s", getName()));
     }
 
     @Override
-    public long getLong(int id) {
+    public long getLong(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to long", getName()));
     }
 
     @Override
-    public void setLong(int id, long value) {
+    public void setLong(final int id, final long value) {
         throw new IllegalArgumentException(String.format("Error converting long to %s", getName()));
     }
 
     @Override
-    public float getFloat(int id) {
+    public float getFloat(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to float", getName()));
     }
 
     @Override
-    public void setFloat(int id, float value) {
+    public void setFloat(final int id, final float value) {
         throw new IllegalArgumentException(String.format("Error converting float to %s", getName()));
     }
 
     @Override
-    public double getDouble(int id) {
+    public double getDouble(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to double", getName()));
     }
 
     @Override
-    public void setDouble(int id, double value) {
+    public void setDouble(final int id, final double value) {
         throw new IllegalArgumentException(String.format("Error converting double to %s", getName()));
     }
 
     @Override
-    public boolean getBoolean(int id) {
+    public boolean getBoolean(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to boolean", getName()));
     }
 
     @Override
-    public void setBoolean(int id, boolean value) {
+    public void setBoolean(final int id, final boolean value) {
         throw new IllegalArgumentException(String.format("Error converting boolean to %s", getName()));
     }
 
     @Override
-    public char getChar(int id) {
+    public char getChar(final int id) {
         throw new IllegalArgumentException(String.format("Error converting %s to char", getName()));
     }
 
     @Override
-    public void setChar(int id, char value) {
+    public void setChar(final int id, final char value) {
         throw new IllegalArgumentException(String.format("Error converting char to %s", getName()));
     }
 
     @Override
-    public String getSearchString(int id) {
-        return getString(id);
-    }
-
-    @Override
-    public String acceptsString(String value) {
+    public String acceptsString(final String value) {
         return null;
     }
 
     @Override
-    public Object convertToNativeValue(Object objectValue) {
-        return objectValue;
-    }
-
-    @Override
-    public boolean canBeImported() {
-        return true;
-    }
-
-    @Override
-    public int ordering() {
-        return Integer.MAX_VALUE;
+    public Object convertToNativeValue(final Object object) {
+        return object;
     }
 
     protected static boolean equals(final Object a, final Object b) {
@@ -172,12 +157,12 @@ public abstract class AbstractAttributeDescription implements AttributeDescripti
     }
 
     @Override
-    public boolean supportsIndexType(GraphIndexType indexType) {
+    public boolean supportsIndexType(final GraphIndexType indexType) {
         return indexType == GraphIndexType.NONE;
     }
 
     @Override
-    public GraphIndex createIndex(GraphIndexType indexType) {
+    public GraphIndex createIndex(final GraphIndexType indexType) {
         return AttributeDescription.NULL_GRAPH_INDEX;
     }
 }

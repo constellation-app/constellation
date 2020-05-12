@@ -9,5 +9,5 @@
     <mapID target="au.gov.asd.tac.constellation.graph.visual.selectBackbone" url="select-backbone.html"/>
     <mapID target="au.gov.asd.tac.constellation.graph.visual.selectOneNeighbour" url="select-one-neighbour.html"/>
     <mapID target="au.gov.asd.tac.constellation.graph.visual.selectSingleton" url="select-singleton.html"/>
-    <mzpID target="au.gov.asd.tac.constellation.graph.visual.selectBlazes" url="select-blazes.html"/>
+    <mapID target="au.gov.asd.tac.constellation.graph.visual.selectBlazes" url="select-blazes.html"/>
 </map>

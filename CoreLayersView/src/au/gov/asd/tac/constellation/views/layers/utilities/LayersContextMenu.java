@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import javafx.application.Platform;
@@ -50,7 +51,7 @@ public class LayersContextMenu implements ContextMenuProvider {
         if (elementType == GraphElementType.VERTEX || elementType == GraphElementType.TRANSACTION) {
             return Arrays.asList(ADD_TO_LAYER, REMOVE_FROM_LAYER);
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 

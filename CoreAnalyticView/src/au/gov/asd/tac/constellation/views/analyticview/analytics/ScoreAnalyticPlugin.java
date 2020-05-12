@@ -158,8 +158,10 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
             }
         }
 
-        MultiChoiceParameterType.setOptionsData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
-        MultiChoiceParameterType.setChoicesData((PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID), new ArrayList<>(transactionTypes));
+        @SuppressWarnings("unchecked") //TRANSACTION_TYPES_PARAMETER always of type MultiChoiceParameter
+        final PluginParameter<MultiChoiceParameterValue> transactionTypesParam = (PluginParameter<MultiChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPES_PARAMETER_ID);
+        MultiChoiceParameterType.setOptionsData(transactionTypesParam, new ArrayList<>(transactionTypes));
+        MultiChoiceParameterType.setChoicesData(transactionTypesParam, new ArrayList<>(transactionTypes));
     }
 
     @Override
@@ -232,7 +234,7 @@ public abstract class ScoreAnalyticPlugin extends AnalyticPlugin<ScoreResult> {
     }
 
     @Override
-    public final Class<? extends AnalyticResult> getResultType() {
+    public final Class<? extends AnalyticResult<?>> getResultType() {
         return ScoreResult.class;
     }
 

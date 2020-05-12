@@ -91,7 +91,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
 
         @Override
         protected GraphLabels getValueFromControls() throws ControlsInvalidException {
-            List<GraphLabel> data = new ArrayList<>();
+            final List<GraphLabel> data = new ArrayList<>();
             try {
                 labels.forEach(label -> {
                     data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
@@ -105,7 +105,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         @Override
         protected Node createEditorControls() {
             // get all transaction attributes currently in the graph
-            ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+            final ReadableGraph rg = GraphManager.getDefault().getActiveGraph().getReadableGraph();
             try {
                 for (int i = 0; i < rg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
                     attributeNames.add(rg.getAttributeName(rg.getAttribute(GraphElementType.TRANSACTION, i)));
@@ -167,7 +167,6 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             final Pane visualHost;
 
             LabelEntry(final List<LabelEntry> host, final Pane visualHost, final String attributeName, final ConstellationColor color, final float size) {
-
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
                 attrCombo.getSelectionModel().select(attributeName);
@@ -187,17 +186,17 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                     update();
                 });
 
-                Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
+                final Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
                 upButton.setOnAction(e -> {
                     moveUp();
                     update();
                 });
-                Button downButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_DOWN.buildImage(16)));
+                final Button downButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_DOWN.buildImage(16)));
                 downButton.setOnAction(e -> {
                     moveDown();
                     update();
                 });
-                Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CROSS.buildImage(16)));
+                final Button removeButton = new Button("", new ImageView(UserInterfaceIconProvider.CROSS.buildImage(16)));
                 removeButton.setOnAction(e -> {
                     remove();
                     update();

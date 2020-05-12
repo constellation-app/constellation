@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
@@ -41,6 +42,7 @@ import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +94,7 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         split.setStringValue(null);
         params.addParameter(split);
 
-        final PluginParameter<SingleChoiceParameterType.SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
         transactionType.setName("Transaction Type");
         transactionType.setDescription("Set the type of transaction between nodes");
         params.addParameter(transactionType);
@@ -110,7 +112,8 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
     @Override
     public void updateParameters(Graph graph, PluginParameters parameters) {
         if (parameters != null && parameters.getParameters() != null) {
-            final PluginParameter transactionType = parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
+            @SuppressWarnings("unchecked") //TRANSACTION_TYPE_PARAMETER is always of type SingleChoiceParameter 
+            final PluginParameter<SingleChoiceParameterValue> transactionType = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(TRANSACTION_TYPE_PARAMETER_ID);
             final List<String> types = new ArrayList<>();
             if (graph != null && graph.getSchema() != null) {
                 for (final SchemaTransactionType type : SchemaTransactionTypeUtilities.getTypes(graph.getSchema().getFactory().getRegisteredConcepts())) {
@@ -120,22 +123,22 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
                     types.sort(String::compareTo);
                 }
             }
-            transactionType.suppressEvent(true, new ArrayList());
+            transactionType.suppressEvent(true, new ArrayList<>());
             SingleChoiceParameterType.setOptions(transactionType, types);
 
             if (types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
                 SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
             }
-            transactionType.suppressEvent(false, new ArrayList());
+            transactionType.suppressEvent(false, new ArrayList<>());
         }
     }
 
     private void editResultStore(final RecordStore result, final String left, final String right, final RecordStore query, final String linkType) {
         final HashMap<SchemaVertexType, String> types = new HashMap<>();
         final List<SchemaVertexType> leftVertexTypesMatches = new ArrayList<>(SchemaVertexTypeUtilities.matchVertexTypes(left));
-        leftVertexTypesMatches.sort(VertexDominanceCalculator.getDefault().getComparator());
+        leftVertexTypesMatches.sort((Comparator<? super SchemaVertexType>) VertexDominanceCalculator.getDefault().getComparator());
         final List<SchemaVertexType> rightVertexTypesMatches = new ArrayList<>(SchemaVertexTypeUtilities.matchVertexTypes(right));
-        rightVertexTypesMatches.sort(VertexDominanceCalculator.getDefault().getComparator());
+        rightVertexTypesMatches.sort((Comparator<? super SchemaVertexType>) VertexDominanceCalculator.getDefault().getComparator());
 
         if (leftVertexTypesMatches.size() > 0) {
             types.put(SchemaVertexTypeUtilities.matchVertexTypes(left).get(0), left);

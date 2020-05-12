@@ -242,14 +242,17 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
     @Override
     public void mouseEntered(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
@@ -316,14 +319,17 @@ public class NestedKTrussDisplayPanel extends JPanel implements MouseInputListen
 
     @Override
     public void mousePressed(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        // Override required for MouseInputListener, intentionally left blank
     }
 
     // Used to select the vertices contained in a component represented by a rectangle when the user clicks on that rectangle
