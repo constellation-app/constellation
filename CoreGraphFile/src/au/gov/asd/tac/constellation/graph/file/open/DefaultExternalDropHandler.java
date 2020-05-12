@@ -102,7 +102,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     @Override
     public boolean handleDrop(final DropTargetDropEvent e) {
         Transferable t = e.getTransferable();
-        if (t != null) {
+        if (t == null) {
             return false;
         }
         List<File> fileList = getFileList(t);
