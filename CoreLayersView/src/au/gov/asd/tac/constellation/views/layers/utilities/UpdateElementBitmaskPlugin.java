@@ -47,18 +47,16 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
     private void setVertices(final GraphWriteMethods graph, final int currentBitmask) {
         final int vertexSelectedAttributeId = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         final int vertexBitmaskAttributeId = VisualConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (vertexSelectedAttributeId != Graph.NOT_FOUND) {
-            final int vertexCount = graph.getVertexCount();
-            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                final int vertexId = graph.getVertex(vertexPosition);
-                if (graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
-                    if (layerAction.equals(LayerAction.ADD)) {
-                        graph.setIntValue(vertexBitmaskAttributeId, vertexId, currentBitmask == 1
-                                ? 0b1 : graph.getIntValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask - 1));
-                    } else if (layerAction.equals(LayerAction.REMOVE)) {
-                        graph.setIntValue(vertexBitmaskAttributeId, vertexId, currentBitmask == 1
-                                ? 0b1 : graph.getIntValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask - 1));
-                    }
+        final int vertexCount = graph.getVertexCount();
+        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+            final int vertexId = graph.getVertex(vertexPosition);
+            if (graph.getBooleanValue(vertexSelectedAttributeId, vertexId)) {
+                if (layerAction.equals(LayerAction.ADD)) {
+                    graph.setIntValue(vertexBitmaskAttributeId, vertexId, currentBitmask == 1
+                            ? 0b1 : graph.getIntValue(vertexBitmaskAttributeId, vertexId) | (1 << targetMask - 1));
+                } else if (layerAction.equals(LayerAction.REMOVE)) {
+                    graph.setIntValue(vertexBitmaskAttributeId, vertexId, currentBitmask == 1
+                            ? 0b1 : graph.getIntValue(vertexBitmaskAttributeId, vertexId) & ~(1 << targetMask - 1));
                 }
             }
         }
@@ -67,18 +65,16 @@ public final class UpdateElementBitmaskPlugin extends SimpleEditPlugin {
     private void setTransactions(final GraphWriteMethods graph, final int currentBitmask) {
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
         final int transactionBitmaskAttributeId = VisualConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (transactionSelectedAttributeId != Graph.NOT_FOUND) {
-            final int transactionCount = graph.getTransactionCount();
-            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionId = graph.getTransaction(transactionPosition);
-                if (graph.getBooleanValue(transactionSelectedAttributeId, transactionId)) {
-                    if (layerAction.equals(LayerAction.ADD)) {
-                        graph.setIntValue(transactionBitmaskAttributeId, transactionId, currentBitmask == 1
-                                ? 0b1 : graph.getIntValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask - 1));
-                    } else if (layerAction.equals(LayerAction.REMOVE)) {
-                        graph.setIntValue(transactionBitmaskAttributeId, transactionId, currentBitmask == 1
-                                ? 0b1 : graph.getIntValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask - 1));
-                    }
+        final int transactionCount = graph.getTransactionCount();
+        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+            final int transactionId = graph.getTransaction(transactionPosition);
+            if (graph.getBooleanValue(transactionSelectedAttributeId, transactionId)) {
+                if (layerAction.equals(LayerAction.ADD)) {
+                    graph.setIntValue(transactionBitmaskAttributeId, transactionId, currentBitmask == 1
+                            ? 0b1 : graph.getIntValue(transactionBitmaskAttributeId, transactionId) | (1 << targetMask - 1));
+                } else if (layerAction.equals(LayerAction.REMOVE)) {
+                    graph.setIntValue(transactionBitmaskAttributeId, transactionId, currentBitmask == 1
+                            ? 0b1 : graph.getIntValue(transactionBitmaskAttributeId, transactionId) & ~(1 << targetMask - 1));
                 }
             }
         }
