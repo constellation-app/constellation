@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState.AnalyticViewConcept;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
