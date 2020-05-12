@@ -6,7 +6,7 @@
     <indexitem text="Hierarchical" target="au.gov.asd.tac.constellation.plugins.arrangements.hierarchical"/>
     <indexitem text="Tree" target="au.gov.asd.tac.constellation.plugins.arrangements.tree"/>
     <indexitem text="Circle" target="au.gov.asd.tac.constellation.plugins.arrangements.circle"/>
-    <indexitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter"/>
+    <indexitem text="Scatter 3D" target="au.gov.asd.tac.constellation.plugins.arrangements.scatter3d"/>
     <indexitem text="Sphere" target="au.gov.asd.tac.constellation.plugins.arrangements.sphere"/>
     <indexitem text="Flatten Z Field" target="au.gov.asd.tac.constellation.plugins.arrangements.flattenZField"/>
     <indexitem text="Contract Graph" target="au.gov.asd.tac.constellation.plugins.arrangements.contractGraph"/>

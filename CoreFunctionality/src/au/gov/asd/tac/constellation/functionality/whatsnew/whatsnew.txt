@@ -4,6 +4,9 @@
 == 2020-05-11 Two New Arrangement Options
 <p>Two new arrangement options are available via the Arrange menu and toolbar. These options are horizontal and vertical lines. Selecting these options allow selected (or all) elements to be arranged in either horizontal or vertical lines.</p>
 
+== 2020-05-11 Delimiter importer
+<p>Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.</p>
+
 == 2020-04-20 Data Access View
 <p>You can now remove a previously saved preference in Data Access View under Options -> Load.</p>
 <p>Added support for double attribute types for when high precision is required, as well as byte and short attribute types for when memory efficiency is required.</p>
@@ -15,6 +18,7 @@ Access to the Layers view is achieved through Experimental &gt; Views &gt; Layer
 This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
 <p>For more information on how to use this see the <a href="https://github.com/constellation-app/constellation/issues/223">layers view page</a>.
 Feel free to comment on the issue with your feedback.</p>
+
 
 == 2020-03-24 REST API
 <p>The module that implements the REST API (providing access from Jupyter notebooks, for example) has been
