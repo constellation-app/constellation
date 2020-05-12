@@ -55,8 +55,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=HelpCtx.Displayer.class, position=9999)
+@ServiceProvider(service = HelpCtx.Displayer.class, position = 9999)
 public class SphinxHelpDisplayer implements HelpCtx.Displayer {
+
     private static final Logger LOGGER = Logger.getLogger(SphinxHelpDisplayer.class.getName());
 
     // This system property controls where the help is displayed from.
@@ -91,7 +92,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
 
     // The mapping of helpIds to page paths.
     //
-    private static Map<String, String> helpMap_;
+    private static Map<String, String> helpMap;
 
     /**
      * Read an entry from the zip file HELP_ZIP stored as an internal resource.
@@ -106,12 +107,12 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
      */
     private static void copyFromZipResource(final String filepath, final OutputStream out) throws IOException {
         final InputStream in = SphinxHelpDisplayer.class.getResourceAsStream(HELP_ZIP);
-        if(in!=null) {
+        if (in != null) {
             final ZipInputStream zin = new ZipInputStream(in);
             ZipEntry entry;
-            while((entry = zin.getNextEntry())!=null) {
+            while ((entry = zin.getNextEntry()) != null) {
                 final String name = entry.getName();
-                if(name.equals(filepath)) {
+                if (name.equals(filepath)) {
                     final byte[] buf = zin.readNBytes(BUFSIZ);
                     zin.closeEntry();
                     zin.close();
@@ -122,7 +123,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                 }
             }
 
-            LOGGER.warning(String.format("Could not find entry '%s' in resource %s", HELP_MAP, HELP_ZIP));
+            LOGGER.log(Level.WARNING, "Could not find entry '{0}' in resource {1}", new Object[]{HELP_MAP, HELP_ZIP});
         } else {
             throw new IOException(String.format("Help resource %s not found", HELP_ZIP));
         }
@@ -131,8 +132,8 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     /**
      * Read an entry from a zip file.
      * <p>
-     * The zip file is stored on the filesystem, so maybe this is faster
-     * than copyFromZipResource()?
+     * The zip file is stored on the filesystem, so maybe this is faster than
+     * copyFromZipResource()?
      *
      * @param filepath
      * @param out
@@ -141,11 +142,11 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     private static void copyFromZipFile(final String zipFile, final String filepath, final OutputStream out) throws IOException {
         final Path p = Paths.get(zipFile);
         try {
-            final FileSystem fs = FileSystems.newFileSystem(p, null);
-
-            final Path path = fs.getPath(filepath);
-            Files.copy(path, out);
-        } catch(final FileSystemNotFoundException ex) {
+            try (final FileSystem fs = FileSystems.newFileSystem(p, null)) {
+                final Path path = fs.getPath(filepath);
+                Files.copy(path, out);
+            }
+        } catch (final FileSystemNotFoundException ex) {
             final String msg = String.format("Zip file %s not found", zipFile);
             throw new IOException(ex);
         }
@@ -167,20 +168,19 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         HttpURLConnection connection = null;
         try {
             connection = url.startsWith("https")
-                ? HttpsConnection.withUrl(url).withReadTimeout(10 * 1000).get()
-                : HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).insecureGet();
-            if(connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                final BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(HttpsUtilities.getInputStream(connection), StandardCharsets.UTF_8)
-                );
-                final List<String> lines = reader.lines().collect(Collectors.toList());
-
-                return lines;
+                    ? HttpsConnection.withUrl(url).withReadTimeout(10 * 1000).get()
+                    : HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).insecureGet();
+            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                try (final BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(HttpsUtilities.getInputStream(connection), StandardCharsets.UTF_8)
+                )) {
+                    return reader.lines().collect(Collectors.toList());
+                }
             } else {
                 throw new IOException(String.format("HTTP %s response code: %d", url, connection.getResponseCode()));
             }
         } finally {
-            if(connection!=null) {
+            if (connection != null) {
                 connection.disconnect();
             }
         }
@@ -190,33 +190,29 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
         copyFromZipFile(zipFile, filepath, buf);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
-        final List<String> lines = reader.lines().collect(Collectors.toList());
-
-        return lines;
+        return reader.lines().collect(Collectors.toList());
     }
 
     private static List<String> getResourceZipFile(final String zipResource) throws IOException {
         final ByteArrayOutputStream buf = new ByteArrayOutputStream();
         copyFromZipResource(zipResource, buf);
         final BufferedReader reader = new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buf.toByteArray()), StandardCharsets.UTF_8));
-        final List<String> lines = reader.lines().collect(Collectors.toList());
-
-        return lines;
+        return reader.lines().collect(Collectors.toList());
     }
 
     private static List<String> initHelp() throws IOException {
         helpSource = System.getProperty(CONSTELLATION_HELP);
-        LOGGER.info(String.format("Help source: %s", helpSource));
+        LOGGER.log(Level.INFO, "Help source: {0}", helpSource);
 
-        if(helpSource==null) {
+        if (helpSource == null) {
             LOGGER.info(String.format("help_map file at zip resource %s, %s", HELP_ZIP, HELP_MAP));
             return getResourceZipFile(HELP_MAP);
-        } else if(helpSource.startsWith("http")) {
+        } else if (helpSource.startsWith("http")) {
             final String url = String.format("%s/%s", helpSource, HELP_MAP);
-            LOGGER.info(String.format("help_map file at %s", url));
+            LOGGER.log(Level.INFO, "help_map file at {0}", url);
             return getHttpFile(url);
         } else {
-            LOGGER.info(String.format("help_map file at zip %s, %s", helpSource, HELP_MAP));
+            LOGGER.log(Level.INFO, "help_map file at zip {0}, {1}", new Object[]{helpSource, HELP_MAP});
             return getZipFile(helpSource, HELP_MAP);
         }
     }
@@ -225,41 +221,43 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
      * Return the help map mapping helpIds to documentation page paths.
      * <p>
      * This can be in any one of three places:
-     * * in a zip file in modules/resources/ext
-     * * in a named external zip file
-     * * at a web location
+     * <ul>
+     * <li>in a zip file in modules/resources/ext</li>
+     * <li>in a named external zip file</li>
+     * <li>at a web location</li>
+     * </ul>
      *
      * @return The helpId to documentation path mapping.
      */
     private static synchronized Map<String, String> getHelpMap() {
-        if(helpMap_==null) {
+        if (helpMap == null) {
             try {
                 final List<String> lines = initHelp();
-                helpMap_ = new HashMap<>();
+                helpMap = new HashMap<>();
                 lines.forEach(line -> {
                     final int ix = line.indexOf(',');
                     final String helpId = line.substring(0, ix).strip();
-                    if(!helpId.isEmpty() && !helpId.startsWith("#")) {
-                        final String helpPath = line.substring(ix+1);
-                        helpMap_.put(helpId, helpPath);
+                    if (!helpId.isEmpty() && !helpId.startsWith("#")) {
+                        final String helpPath = line.substring(ix + 1);
+                        helpMap.put(helpId, helpPath);
                     }
                 });
-            } catch(final IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.log(Level.INFO, "Fetching help map:", ex);
 
                 // If we couldn't read the file the first time,
                 // it won't magically work the next time, so stop trying.
                 //
-                helpMap_ = Map.of();
+                helpMap = Map.of();
             }
         }
 
-        return helpMap_;
+        return helpMap;
     }
 
     public static void copy(final String filepath, final OutputStream out) throws IOException {
         final String p = filepath.startsWith("/") ? filepath.substring(1) : filepath;
-        if(helpSource==null) {
+        if (helpSource == null) {
             copyFromZipResource(p, out);
         } else {
             copyFromZipFile(helpSource, p, out);
@@ -269,20 +267,20 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     @Override
     public boolean display(final HelpCtx helpCtx) {
         final String helpId = helpCtx.getHelpID();
-        LOGGER.info(String.format("display '%s' from %s", helpId, helpSource));
+        LOGGER.log(Level.INFO, "display '{0}' from {1}", new Object[]{helpId, helpSource});
 
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         //
         final Map<String, String> helpMap = getHelpMap();
-        if(!helpMap.isEmpty()) {
+        if (!helpMap.isEmpty()) {
             final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index.html";
 
             // Send the user's browser to the correct page, depending on the help source.
             //
             String url;
-            if(helpSource==null || !helpSource.startsWith("http")) {
+            if (helpSource == null || !helpSource.startsWith("http")) {
                 // The help source is an internal zipped resource or an actual zip file,
                 // therefore we need to invoke the internal web server's help servlet,
                 // so insert /help into the path. The servlet will call copy() to get
@@ -297,17 +295,17 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                 url = String.format("%s/html/%s", helpSource, part);
             }
 
-            LOGGER.info(String.format("help url %s", url));
+            LOGGER.log(Level.INFO, "help url {0}", url);
             try {
                 // Technically we should do the desktop checking first, but if it
                 // isn't, we need to show the user an error anyway.
                 //
-    //            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                //            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 Desktop.getDesktop().browse(new URI(url));
 
                 return true;
-    //            }
-            } catch(final URISyntaxException | IOException ex) {
+                //            }
+            } catch (final URISyntaxException | IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
         } else {

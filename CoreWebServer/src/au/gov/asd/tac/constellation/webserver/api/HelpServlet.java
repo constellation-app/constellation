@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet
 import au.gov.asd.tac.constellation.webserver.help.SphinxHelpDisplayer;
 import java.io.IOException;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -29,8 +30,8 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * A servlet that serves help files.
  * <p>
- * The files live in a zip file. Each request opens the zip file and reads
- * the requested resource.
+ * The files live in a zip file. Each request opens the zip file and reads the
+ * requested resource.
  *
  * @author algol
  */
@@ -40,6 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
         description = "HTML help server",
         urlPatterns = {"/help/*"})
 public class HelpServlet extends ConstellationHttpServlet {
+
     private static final Logger LOGGER = Logger.getLogger(HelpServlet.class.getName());
 
     private static final Map<String, String> MIME_TYPES = Map.of(
@@ -52,22 +54,19 @@ public class HelpServlet extends ConstellationHttpServlet {
             ".txt", "text/plain"
     );
 
-    public HelpServlet() {
-    }
-
     @Override
     protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException {
         final String requestPath = request.getPathInfo();
-        LOGGER.info(String.format("GET %s", requestPath));
+        LOGGER.log(Level.INFO, "GET {0}", requestPath);
 
         final int extIx = requestPath.lastIndexOf('.');
-        final String ext = extIx>-1 ? requestPath.substring(extIx) : "";
+        final String ext = extIx > -1 ? requestPath.substring(extIx) : "";
         final String mimeType = MIME_TYPES.containsKey(ext) ? MIME_TYPES.get(ext) : "application/octet-stream";
         response.setContentType(mimeType);
 
         try {
             SphinxHelpDisplayer.copy(requestPath, response.getOutputStream());
-        } catch(final IOException ex) {
+        } catch (final IOException ex) {
             throw new ServletException(ex);
         }
     }

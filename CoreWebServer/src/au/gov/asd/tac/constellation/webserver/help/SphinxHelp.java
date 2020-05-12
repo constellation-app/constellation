@@ -27,7 +27,6 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Help.class, position = 1)
 public class SphinxHelp extends Help {
-//    private static final Logger LOGGER = Logger.getLogger(SphinxHelp.class.getName());
 
     @Override
     public Boolean isValidID(final String id, final boolean force) {
@@ -43,9 +42,11 @@ public class SphinxHelp extends Help {
 
     @Override
     public void addChangeListener(final ChangeListener cl) {
+        // Required for implementation of Help, intentionally left blank
     }
 
     @Override
     public void removeChangeListener(final ChangeListener cl) {
+        // Required for implementation of Help, intentionally left blank
     }
 }
