@@ -192,6 +192,9 @@ public class HashmodPanel extends javax.swing.JPanel {
             final String fname = fc.getSelectedFile().getPath();
             hashmodCSVFile.setText(fname);
             hashmodCSVFileStr = fname;
+            Hashmod thisHashmod = getHashmod();
+            setAttributeNames(thisHashmod.getCSVKey(), thisHashmod.getCSVHeader(1), thisHashmod.getCSVHeader(2));
+
         }
     }//GEN-LAST:event_userDirectoryButtonActionPerformed
 
