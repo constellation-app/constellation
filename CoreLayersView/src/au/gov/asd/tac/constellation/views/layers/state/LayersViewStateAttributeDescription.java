@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewState.LayersViewConcept;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -27,8 +26,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class LayersViewStateAttributeDescription extends ObjectAttributeDescription {
+    
+    public static final String ATTRIBUTE_NAME = "layers_view_state";
 
     public LayersViewStateAttributeDescription() {
-        super(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.getName());
+        super(ATTRIBUTE_NAME);
     }
 }

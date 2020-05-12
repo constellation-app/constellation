@@ -15,17 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.layers.state;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import org.openide.util.lookup.ServiceProvider;
 
 /**
  * Stores all Layer Queries currently active in the Layers View.
@@ -34,80 +26,37 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public class LayersViewState {
 
-    private final List<LayerDescription> layers = new ArrayList<>();
+    private final List<LayerDescription> layers;
 
     public LayersViewState() {
-        layers.add(new LayerDescription(1, true,
-                LayerDescription.DEFAULT_QUERY_STRING,
-                LayerDescription.DEFAULT_QUERY_DESCRIPTION));
-        layers.add(new LayerDescription(2, false, "", ""));
-    }
-
-    public LayersViewState(final List<LayerDescription> layers) {
-        this.layers.addAll(layers);
+        this((List<LayerDescription>) null);
     }
 
     public LayersViewState(final LayersViewState state) {
-        layers.addAll(state.getAllLayers());
+        this(state.getLayers());
     }
 
-    public List<LayerDescription> getAllLayers() {
-        return layers;
+    public LayersViewState(final List<LayerDescription> layers) {
+        this.layers = new ArrayList<>();
+        if (layers != null) {
+            this.layers.addAll(layers);
+        }
     }
 
     public int getLayerCount() {
         return layers.size();
     }
 
+    public List<LayerDescription> getLayers() {
+        return layers;
+    }
+
     public void addLayer(final LayerDescription layer) {
         layers.add(layer);
     }
 
-    public void setLayers(final List<LayerDescription> layersList) {
-        final List<LayerDescription> layersCopy = new ArrayList();
-        layersList.forEach((layer) -> {
-            layersCopy.add(new LayerDescription(layer));
-        });
-        layers.clear();
-        layers.addAll(layersList);
-    }
-
-    /**
-     * Attribute provider for attributes specific to the Layers View.
-     *
-     * @author aldebaran30701
-     */
-    @ServiceProvider(service = SchemaConcept.class)
-    public static class LayersViewConcept extends SchemaConcept {
-
-        @Override
-        public String getName() {
-            return "Layers View";
-        }
-
-        @Override
-        public Set<Class<? extends SchemaConcept>> getParents() {
-            final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
-            parentSet.add(SchemaConcept.ConstellationViewsConcept.class);
-            return Collections.unmodifiableSet(parentSet);
-        }
-
-        public static class MetaAttribute {
-
-            private MetaAttribute() {
-                throw new IllegalStateException("Utility class");
-            }
-
-            public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "layers_view_state", "layers_view_state")
-                    .setDescription("The current state of the layers view with relation to the active graph")
-                    .build();
-        }
-
-        @Override
-        public Collection<SchemaAttribute> getSchemaAttributes() {
-            final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-            schemaAttributes.add(MetaAttribute.LAYERS_VIEW_STATE);
-            return Collections.unmodifiableCollection(schemaAttributes);
-        }
+    public void setLayers(final List<LayerDescription> layers) {
+        this.layers.clear();
+        this.layers.addAll(layers);
     }
 }

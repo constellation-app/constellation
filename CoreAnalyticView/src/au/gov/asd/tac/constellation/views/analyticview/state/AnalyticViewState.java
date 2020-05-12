@@ -112,43 +112,4 @@ public class AnalyticViewState {
             );
         }
     }
-
-    /**
-     * Attribute provider for attributes specific to the Analytic View.
-     *
-     * @author cygnus_x-1
-     */
-    @ServiceProvider(service = SchemaConcept.class)
-    public static class AnalyticViewConcept extends SchemaConcept {
-
-        @Override
-        public String getName() {
-            return "Analytic View";
-        }
-
-        @Override
-        public Set<Class<? extends SchemaConcept>> getParents() {
-            final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
-            parentSet.add(ConstellationViewsConcept.class);
-            return Collections.unmodifiableSet(parentSet);
-        }
-
-        public static class MetaAttribute {
-
-            private MetaAttribute() {
-                throw new IllegalStateException("Utility class");
-            }
-
-            public static final SchemaAttribute ANALYTIC_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "analytic_view_state", "analytic_view_state")
-                    .setDescription("The current state of the analytic view with relation to the active graph")
-                    .build();
-        }
-
-        @Override
-        public Collection<SchemaAttribute> getSchemaAttributes() {
-            final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-            schemaAttributes.add(MetaAttribute.ANALYTIC_VIEW_STATE);
-            return Collections.unmodifiableCollection(schemaAttributes);
-        }
-    }
 }
