@@ -83,7 +83,7 @@ import org.controlsfx.control.table.TableFilter;
 
 /**
  * Table View Pane.
- * 
+ *
  * TODO: some javafx classes no are longer supported, fix it.
  *
  * @author elnath
@@ -97,7 +97,7 @@ public final class TableViewPane extends BorderPane {
 
     private static final String ATTEMPT_PROCESS_JAVAFX = "Attempting to process on the JavaFX Application Thread";
     private static final String ATTEMPT_PROCESS_EDT = "Attempting to process on the EDT";
-    
+
     private static final String ALL_COLUMNS = "Show All Columns";
     private static final String DEFAULT_COLUMNS = "Show Default Columns";
     private static final String KEY_COLUMNS = "Show Key Columns";
@@ -115,7 +115,7 @@ public final class TableViewPane extends BorderPane {
     private static final String EXPORT_CSV_SELECTION = "Export to CSV (Selection)";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_XLSX_SELECTION = "Export to Excel (Selection)";
- 
+
     private static final ImageView COLUMNS_ICON = new ImageView(UserInterfaceIconProvider.COLUMNS.buildImage(16));
     private static final ImageView SELECTED_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()));
     private static final ImageView ALL_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16));
@@ -191,7 +191,7 @@ public final class TableViewPane extends BorderPane {
         selectedProperty.addListener(tableSelectionListener);
     }
 
-    private ToolBar initToolbar() {        
+    private ToolBar initToolbar() {
         this.columnVisibilityButton = new Button();
         columnVisibilityButton.setGraphic(COLUMNS_ICON);
         columnVisibilityButton.setMaxWidth(WIDTH);
@@ -200,7 +200,7 @@ public final class TableViewPane extends BorderPane {
         columnVisibilityButton.setOnAction(e -> {
             final ContextMenu contextMenu = initColumnVisibilityContextMenu();
             contextMenu.show(columnVisibilityButton, Side.RIGHT, 0, 0);
-            e.consume();   
+            e.consume();
         });
 
         this.selectedOnlyButton = new ToggleButton();
@@ -287,14 +287,13 @@ public final class TableViewPane extends BorderPane {
         exportButton.getItems().addAll(exportCsvItem, exportCsvSelectionItem,
                 exportExcelItem, exportExcelSelectionItem);
 
-        
         MenuButton layoutPreferencesButton = new MenuButton();
         layoutPreferencesButton.setGraphic(SETTINGS_ICON);
         layoutPreferencesButton.setMaxWidth(WIDTH);
         layoutPreferencesButton.setPopupSide(Side.RIGHT);
         final MenuItem savePrefsOption = new MenuItem("Save Table Preferences");
         savePrefsOption.setOnAction(e -> {
-            
+
             if ((!table.getColumns().isEmpty()) && (GraphManager.getDefault().getActiveGraph() != null)) {
                 TableViewPreferencesIOUtilities.savePreferences(parent.getCurrentState().getElementType(), table);
             }
@@ -302,13 +301,13 @@ public final class TableViewPane extends BorderPane {
         });
         final MenuItem loadPrefsOption = new MenuItem("Load Table Preferences...");
         loadPrefsOption.setOnAction((ActionEvent e) -> {
-            if(GraphManager.getDefault().getActiveGraph() != null){
+            if (GraphManager.getDefault().getActiveGraph() != null) {
                 loadPreferences();
             }
             e.consume();
         });
         layoutPreferencesButton.getItems().addAll(savePrefsOption, loadPrefsOption);
-        
+
         final ToolBar toolbar = new ToolBar(columnVisibilityButton, selectedOnlyButton,
                 elementTypeButton, new Separator(), copyButton, exportButton, layoutPreferencesButton);
         toolbar.setOrientation(Orientation.VERTICAL);
@@ -320,68 +319,49 @@ public final class TableViewPane extends BorderPane {
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
         final ArrayList<CustomMenuItem> columnCheckboxes = new ArrayList<>();
-        
+
+        final CheckBox columnCheckboxSource = new CheckBox("Filter Source");
+        final CheckBox columnCheckboxDestination = new CheckBox("Filter Destination");
+        final CheckBox columnCheckboxTransaction = new CheckBox("Filter Transaction");
         final Label columnFilterLabel = new Label("Filter:");
-        final TextField columnFilterTextField = new TextField ();
-        final CheckBox columnCheckboxSource = new CheckBox("Filter Source.");
-        final CheckBox columnCheckboxDestination = new CheckBox("Filter Destination.");
-        final CheckBox columnCheckboxTransaction = new CheckBox("Filter Transaction.");
+        final TextField columnFilterTextField = new TextField();
 
         final HBox filterBox = new HBox();
         filterBox.getChildren().addAll(columnFilterLabel, columnFilterTextField);
-        
         final CustomMenuItem columnFilter = new CustomMenuItem(filterBox);
         columnFilter.setHideOnClick(false);
-        
-            
         columnFilterTextField.setOnKeyReleased(event -> {
-            final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
-            
-            columnCheckboxes.forEach(item -> {
-                final String columnName = item.getId().toLowerCase();
-                //item.setVisible((filterTerm.isBlank() || columnName.contains(filterTerm)) && (columnName.contains("source."))); 
-                refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
-            });
+            refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
+            event.consume();
         });
-        //.......................
-        columnCheckboxSource.setSelected(true); 
+
+        columnCheckboxSource.setSelected(true);
         columnCheckboxDestination.setSelected(true);
         columnCheckboxTransaction.setSelected(true);
+
         final CustomMenuItem columnFilterSource = new CustomMenuItem(columnCheckboxSource);
-        columnFilterSource.setHideOnClick(false);        
+        columnFilterSource.setHideOnClick(false);
         columnFilterSource.setOnAction(e -> {
             refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
             e.consume();
         });
-        
+
         final CustomMenuItem columnFilterDestination = new CustomMenuItem(columnCheckboxDestination);
-        columnFilterDestination.setHideOnClick(false);        
+        columnFilterDestination.setHideOnClick(false);
         columnFilterDestination.setOnAction(e -> {
             refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
             e.consume();
         });
-        
+
         final CustomMenuItem columnFilterTransaction = new CustomMenuItem(columnCheckboxTransaction);
-        columnFilterTransaction.setHideOnClick(false);        
+        columnFilterTransaction.setHideOnClick(false);
         columnFilterTransaction.setOnAction(e -> {
             refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
             e.consume();
         });
-        
+
         refreshColumnSelectionMenu(columnCheckboxes, columnFilterTextField, columnCheckboxSource, columnCheckboxDestination, columnCheckboxTransaction);
-        
-//        final CustomMenuItem columnFilter_Dest = new CustomMenuItem(new Label("Filter Dest."));
-//        columnFilter_Dest.setHideOnClick(false);
-//        columnFilter_Dest.setOnAction(e -> {
-//            final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
-//
-//            columnCheckboxes.forEach(item -> {
-//                final String columnName = item.getId().toLowerCase();
-//                item.setVisible((filterTerm.isBlank() || columnName.contains(filterTerm)) && (columnName.contains("destination.")));
-//            });
-//        });
-        
-        //.......................
+
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
         allColumns.setOnAction(e -> {
@@ -461,35 +441,26 @@ public final class TableViewPane extends BorderPane {
     }
 
     private void refreshColumnSelectionMenu(ArrayList<CustomMenuItem> columnCheckboxes, TextField columnFilterTextField, CheckBox columnCheckboxSource,
-            CheckBox columnCheckboxDestination, CheckBox columnCheckboxTransaction)
-    {
+            CheckBox columnCheckboxDestination, CheckBox columnCheckboxTransaction) {
         final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
 
         columnCheckboxes.forEach(item -> {
             final String columnName = item.getId().toLowerCase();
-//            boolean isVisible = ((CheckBox)((CustomMenuItem)e.getSource()).getContent()).isSelected()
-//                    ? (filterTerm.isBlank() || columnName.contains(filterTerm)) && columnName.contains("source.") 
-//                    : (filterTerm.isBlank() || columnName.contains(filterTerm));
-        
+
             boolean isVisible = (filterTerm.isBlank() || columnName.contains(filterTerm));
 
-            if (columnName.startsWith("source.")) 
-            {
-                isVisible =  isVisible && columnCheckboxSource.isSelected();
-            }
-            else if (columnName.startsWith("destination."))
-            {
-                isVisible =  isVisible && columnCheckboxDestination.isSelected();
-            }
-            else if (columnName.startsWith("transaction."))
-            {
-                isVisible =  isVisible && columnCheckboxTransaction.isSelected();
+            if (columnName.startsWith("source.")) {
+                isVisible = isVisible && columnCheckboxSource.isSelected();
+            } else if (columnName.startsWith("destination.")) {
+                isVisible = isVisible && columnCheckboxDestination.isSelected();
+            } else if (columnName.startsWith("transaction.")) {
+                isVisible = isVisible && columnCheckboxTransaction.isSelected();
             }
 
             item.setVisible(isVisible);
         });
     }
-            
+
     private void updateVisibleColumns(final Graph graph, final TableViewState state,
             final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columns, final UpdateMethod updateState) {
         if (graph != null && state != null) {
@@ -566,22 +537,22 @@ public final class TableViewPane extends BorderPane {
 
         return cm;
     }
-    
+
     /**
-     * Save current sort order details, i.e. sort column name and order for future
-     * reference. This required as the bespoke data loading in tables is causing
-     * sort ordering to be removed - ie when users update column order. By storing
-     * this sort information the values can be used to refresh the sort order
-     * within updateSortOrder().
-     * 
+     * Save current sort order details, i.e. sort column name and order for
+     * future reference. This required as the bespoke data loading in tables is
+     * causing sort ordering to be removed - ie when users update column order.
+     * By storing this sort information the values can be used to refresh the
+     * sort order within updateSortOrder().
+     *
      * @param columnName The name of the column sorting is being done on
      * @param sortType Direction of sorting
      */
     private void saveSortDetails(String columnName, TableColumn.SortType sortType) {
-            sortByColumnName = columnName;
-            sortByType = sortType;
+        sortByColumnName = columnName;
+        sortByType = sortType;
     }
-    
+
     /**
      * Extract any current table sort information and save this information. See
      * other saveSortDetails for reason this is done.
@@ -595,15 +566,14 @@ public final class TableViewPane extends BorderPane {
             saveSortDetails("", TableColumn.SortType.ASCENDING);
         }
     }
-    
+
     /**
      * If sort details have been stored, reapply this sorting to the tableview.
-     * 
+     *
      */
     private void updateSortOrder() {
         // Try to find column with name matching saved sort order/type details
-        if (!sortByColumnName.isBlank())
-        {
+        if (!sortByColumnName.isBlank()) {
             for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
                 if (column.getText().equals(sortByColumnName)) {
                     column.setSortType(sortByType);
@@ -843,7 +813,7 @@ public final class TableViewPane extends BorderPane {
                     // add columns to table
                     table.getColumns().clear();
                     table.getColumns().addAll(columnIndex.stream().map(t -> t.getThird()).collect(Collectors.toList()));
-                    
+
                     // sort data if the column ordering changes
                     table.getColumns().addListener((final Change<? extends TableColumn<ObservableList<String>, ?>> change) -> {
                         if (lastChange == null || !lastChange.equals(change)) {
@@ -863,7 +833,7 @@ public final class TableViewPane extends BorderPane {
                                 }
                             }
                             lastChange = change;
-                            }
+                        }
                     });
 
                     selectedProperty.addListener(tableSelectionListener);
@@ -871,7 +841,7 @@ public final class TableViewPane extends BorderPane {
             }
         }
     }
-    
+
     /**
      * Allow user to select saved preferences file and update table view format
      * (displayed column/column order and sort order) to match values found in
@@ -882,14 +852,14 @@ public final class TableViewPane extends BorderPane {
             if (parent.getCurrentState() != null) {
 
                 final List<TableColumn<ObservableList<String>, ?>> newColumnOrder = new ArrayList<>();
-                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs = 
-                        TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
+                final Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> tablePrefs
+                        = TableViewPreferencesIOUtilities.getPreferences(parent.getCurrentState().getElementType());
 
                 // If no columns were found then the user abandoned load as saves cannot occur with 0 columns
                 if (tablePrefs.getFirst().isEmpty()) {
                     return;
                 }
-                        
+
                 for (String columnName : tablePrefs.getFirst()) {
                     // Loop through column names found in prefs and add associated columns to newColumnOrder list all set to visible.
                     for (final TableColumn<ObservableList<String>, ?> column : table.getColumns()) {
@@ -904,17 +874,17 @@ public final class TableViewPane extends BorderPane {
                 // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
-                    = newColumnOrder.stream()
-                        .map(c ->
-                            {
-                                for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
-                                    if (c.getText().equals(col.getThird().getText())) {
-                                        return col;
+                        = newColumnOrder.stream()
+                                .map(c
+                                        -> {
+                                    for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                                        if (c.getText().equals(col.getThird().getText())) {
+                                            return col;
+                                        }
                                     }
-                                }
-                                // THe following can only happen 
-                                return columnIndex.get(newColumnOrder.indexOf(c));
-                            }).collect(Collectors.toList());
+                                    // THe following can only happen 
+                                    return columnIndex.get(newColumnOrder.indexOf(c));
+                                }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
             }
