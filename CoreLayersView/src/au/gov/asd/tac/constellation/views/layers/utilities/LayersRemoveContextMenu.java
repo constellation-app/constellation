@@ -51,7 +51,7 @@ public class LayersRemoveContextMenu implements ContextMenuProvider {
                 final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
                 for (final LayerDescription layer : currentState.getAllLayers()) {
                     if (layer.getLayerIndex() > 1) {
-                        currentLayers.add(String.valueOf(layer.getLayerIndex()));
+                        currentLayers.add(String.valueOf(layer.getLayerIndex()) + " " + layer.getDescription());
                     }
                 }
             } else {
