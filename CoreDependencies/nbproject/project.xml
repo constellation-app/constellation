@@ -1619,6 +1619,7 @@
                 <package>org.locationtech.jts.triangulate</package>
                 <package>org.locationtech.jts.triangulate.quadedge</package>
                 <package>org.locationtech.jts.util</package>
+                <package>org.lwjgl</package>
                 <package>org.opengis.annotation</package>
                 <package>org.opengis.coverage</package>
                 <package>org.opengis.coverage.grid</package>
@@ -2837,6 +2838,10 @@
                 <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/org.eclipse.emf.ecore-2.15.0.jar</binary-origin>
             </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3.jar</binary-origin>
+            </class-path-extension>            
         </data>
     </configuration>
 </project>

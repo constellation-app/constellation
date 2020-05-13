@@ -81,6 +81,10 @@
         <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
+        
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
+        <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3"/>
+        
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
