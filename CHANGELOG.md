@@ -2,6 +2,9 @@
 
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import.
+* Added basic support for MacOS.
+* Fixed a label rendering bug on MacOS.
+* Fixed a DPI scaling bug on MacOS and Windows.
 * Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
 * Updated ImportController's processImport function to return the list of files it has imported.
