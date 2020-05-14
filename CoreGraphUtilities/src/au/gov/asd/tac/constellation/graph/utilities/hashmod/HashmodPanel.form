@@ -19,30 +19,39 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="userDirectoryLabel3" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jTextField3" max="32767" attributes="0"/>
-                  </Group>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="userDirectoryLabel" min="-2" max="-2" attributes="0"/>
+                      <Component id="hashmodLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="hashmodCSVFile" pref="473" max="32767" attributes="0"/>
+                      <Component id="hashmodCSVFile" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="userDirectoryLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="userDirectoryLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="hashmodLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="hashmodLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jTextField1" max="32767" attributes="0"/>
-                          <Component id="jTextField2" max="32767" attributes="0"/>
+                          <Component id="keyAttributeTextField" max="32767" attributes="0"/>
+                          <Component id="value1AttributeTextField" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="hashmodLabel3" min="-2" max="-2" attributes="0"/>
+                          <Component id="hashmodLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="createAllCheckbox" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          </Group>
+                          <Component id="value2AttributeTextField" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="userDirectoryButton" min="-2" max="-2" attributes="0"/>
+              <Component id="hashmodButton" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -52,32 +61,37 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userDirectoryLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="userDirectoryButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="hashmodCSVFile" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userDirectoryLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="keyAttributeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userDirectoryLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel2" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="value1AttributeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="11" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="userDirectoryLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jTextField3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="value2AttributeTextField" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="createAllCheckbox" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="hashmodLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="userDirectoryLabel">
+    <Component class="javax.swing.JLabel" name="hashmodLabel">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.label" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -90,11 +104,8 @@
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.textfield" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hashmodCSVFileActionPerformed"/>
-      </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="userDirectoryButton">
+    <Component class="javax.swing.JButton" name="hashmodButton">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="Hashmod.csv.button" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -104,31 +115,31 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="userDirectoryButtonActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="hashmodButtonActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JLabel" name="userDirectoryLabel1">
+    <Component class="javax.swing.JLabel" name="hashmodLabel1">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.userDirectoryLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel1.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="userDirectoryLabel2">
+    <Component class="javax.swing.JLabel" name="hashmodLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.userDirectoryLabel2.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel2.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="userDirectoryLabel3">
+    <Component class="javax.swing.JLabel" name="hashmodLabel3">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.userDirectoryLabel3.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel3.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField1">
+    <Component class="javax.swing.JTextField" name="keyAttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.keyAttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -136,11 +147,8 @@
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="keyAttributeTextField" noResource="true"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField1ActionPerformed"/>
-      </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField2">
+    <Component class="javax.swing.JTextField" name="value1AttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.value1AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -148,17 +156,28 @@
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="value1AttributeTextField" noResource="true"/>
       </Properties>
-      <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField2ActionPerformed"/>
-      </Events>
     </Component>
-    <Component class="javax.swing.JTextField" name="jTextField3">
+    <Component class="javax.swing.JTextField" name="value2AttributeTextField">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.value2AttributeTextField.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
         <Property name="enabled" type="boolean" value="false"/>
         <Property name="name" type="java.lang.String" value="value2AttributeTextField" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="createAllCheckbox">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.createAllCheckbox.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="hashmodLabel4">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="au/gov/asd/tac/constellation/graph/utilities/hashmod/Bundle.properties" key="HashmodPanel.hashmodLabel4.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
       </Properties>
     </Component>
   </SubComponents>

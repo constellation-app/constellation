@@ -17,11 +17,13 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import static javatests.TestSupport.fail;
 
 /**
- * A text hashmod to be displayed at the top and bottom of the main window.
+ * A text hashmod based on a supplied CSV file.  Will modify attributes
+ * specified in the headers to be values based on the first Key column.
  *
  * @author CrucisGamma
  */
@@ -74,7 +76,7 @@ public class Hashmod {
         return null;
     }
 
-    public String[] getCSVRow(int row) {
+    public String[] getCSVRow(final int row) {
         if (data != null && data.size() > row) {
             return data.get(row);
         }
@@ -91,9 +93,31 @@ public class Hashmod {
         return null;
     }
 
-    public String getCSVHeader(int col) {
+    public HashMap<String, Integer> getCSVKeys() {
+        final HashMap<String, Integer> keys = new HashMap<>();
+        if (data != null && data.size() > 0) {
+            int i;
+            for (i = 1; i < data.size(); i++) {
+                final String[] row = getCSVRow(i);
+                if (row[0] != null) {
+                    keys.put(row[0].toUpperCase(), 0);
+                }
+            }
+        }
+        return keys;
+    }
+
+    public int getNumberCSVColumns() {
         String[] headers = getCSVFileHeaders();
-        if (headers != null && headers.length >= col) {
+        if (headers != null) {
+            return headers.length;
+        }
+        return 0;
+    }
+
+    public String getCSVHeader(final int col) {
+        String[] headers = getCSVFileHeaders();
+        if (headers != null && headers.length > col) {
             return headers[col];
         }
         return null;
@@ -106,7 +130,7 @@ public class Hashmod {
         return null;
     }
 
-    public String getValueFromKey(String key, int value) {
+    public String getValueFromKey(final String key, final int value) {
         if (data != null && data.size() > 0) {
             int i;
             for (i = 1; i < data.size(); i++) {
@@ -122,7 +146,7 @@ public class Hashmod {
         return null;
     }
 
-    public Boolean doesKeyExist(String key) {
+    public Boolean doesKeyExist(final String key) {
         if (key == null) {
             return false;
         }
@@ -136,5 +160,12 @@ public class Hashmod {
             }
         }
         return false;
+    }
+
+    public String getCSVFileName() {
+        if (this.csvFileStr == null) {
+            return "";
+        }
+        return this.csvFileStr;
     }
 }

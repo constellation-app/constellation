@@ -21,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -66,6 +67,10 @@ public class HashmodPanel extends javax.swing.JPanel {
         value2AttributeTextField.setText(attribute2);
     }
 
+    public boolean getCreateVertexes() {
+        return createAllCheckbox.isSelected();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -74,60 +79,51 @@ public class HashmodPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        userDirectoryLabel = new JLabel();
+        hashmodLabel = new JLabel();
         hashmodCSVFile = new JTextField();
-        userDirectoryButton = new JButton();
-        userDirectoryLabel1 = new JLabel();
-        userDirectoryLabel2 = new JLabel();
-        userDirectoryLabel3 = new JLabel();
+        hashmodButton = new JButton();
+        hashmodLabel1 = new JLabel();
+        hashmodLabel2 = new JLabel();
+        hashmodLabel3 = new JLabel();
         keyAttributeTextField = new JTextField();
         value1AttributeTextField = new JTextField();
         value2AttributeTextField = new JTextField();
+        createAllCheckbox = new JCheckBox();
+        hashmodLabel4 = new JLabel();
 
-        Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.label")); // NOI18N
+        Mnemonics.setLocalizedText(hashmodLabel, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.label")); // NOI18N
 
         hashmodCSVFile.setText(NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.textfield")); // NOI18N
-        hashmodCSVFile.addActionListener(new ActionListener() {
+
+        Mnemonics.setLocalizedText(hashmodButton, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.button")); // NOI18N
+        hashmodButton.setMargin(new Insets(2, 0, 2, 0));
+        hashmodButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
-                hashmodCSVFileActionPerformed(evt);
+                hashmodButtonActionPerformed(evt);
             }
         });
 
-        Mnemonics.setLocalizedText(userDirectoryButton, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.button")); // NOI18N
-        userDirectoryButton.setMargin(new Insets(2, 0, 2, 0));
-        userDirectoryButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                userDirectoryButtonActionPerformed(evt);
-            }
-        });
+        Mnemonics.setLocalizedText(hashmodLabel1, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel1.text")); // NOI18N
 
-        Mnemonics.setLocalizedText(userDirectoryLabel1, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.userDirectoryLabel1.text")); // NOI18N
+        Mnemonics.setLocalizedText(hashmodLabel2, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel2.text")); // NOI18N
 
-        Mnemonics.setLocalizedText(userDirectoryLabel2, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.userDirectoryLabel2.text")); // NOI18N
-
-        Mnemonics.setLocalizedText(userDirectoryLabel3, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.userDirectoryLabel3.text")); // NOI18N
+        Mnemonics.setLocalizedText(hashmodLabel3, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel3.text")); // NOI18N
 
         keyAttributeTextField.setText(NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.keyAttributeTextField.text")); // NOI18N
         keyAttributeTextField.setEnabled(false);
         keyAttributeTextField.setName("keyAttributeTextField"); // NOI18N
-        keyAttributeTextField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                keyAttributeTextFieldActionPerformed(evt);
-            }
-        });
 
         value1AttributeTextField.setText(NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.value1AttributeTextField.text")); // NOI18N
         value1AttributeTextField.setEnabled(false);
         value1AttributeTextField.setName("value1AttributeTextField"); // NOI18N
-        value1AttributeTextField.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent evt) {
-                value1AttributeTextFieldActionPerformed(evt);
-            }
-        });
 
         value2AttributeTextField.setText(NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.value2AttributeTextField.text")); // NOI18N
         value2AttributeTextField.setEnabled(false);
         value2AttributeTextField.setName("value2AttributeTextField"); // NOI18N
+
+        Mnemonics.setLocalizedText(createAllCheckbox, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.createAllCheckbox.text")); // NOI18N
+
+        Mnemonics.setLocalizedText(hashmodLabel4, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel4.text")); // NOI18N
 
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
@@ -135,51 +131,61 @@ public class HashmodPanel extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(userDirectoryLabel3)
-                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(value2AttributeTextField))
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(userDirectoryLabel)
+                        .addComponent(hashmodLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(hashmodCSVFile, GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE))
+                        .addComponent(hashmodCSVFile))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(userDirectoryLabel2)
-                            .addComponent(userDirectoryLabel1))
+                            .addComponent(hashmodLabel2)
+                            .addComponent(hashmodLabel1))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(keyAttributeTextField)
-                            .addComponent(value1AttributeTextField))))
+                            .addComponent(value1AttributeTextField)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(hashmodLabel3)
+                            .addComponent(hashmodLabel4))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(createAllCheckbox)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(value2AttributeTextField))))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(userDirectoryButton)
+                .addComponent(hashmodButton)
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(userDirectoryLabel)
-                    .addComponent(userDirectoryButton)
+                    .addComponent(hashmodLabel)
+                    .addComponent(hashmodButton)
                     .addComponent(hashmodCSVFile, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(userDirectoryLabel1)
+                    .addComponent(hashmodLabel1)
                     .addComponent(keyAttributeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(userDirectoryLabel2)
+                    .addComponent(hashmodLabel2)
                     .addComponent(value1AttributeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(userDirectoryLabel3)
+                    .addComponent(hashmodLabel3)
                     .addComponent(value2AttributeTextField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(createAllCheckbox)
+                    .addComponent(hashmodLabel4))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
-    {//GEN-HEADEREND:event_userDirectoryButtonActionPerformed
+    private void hashmodButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hashmodButtonActionPerformed
+    {//GEN-HEADEREND:event_hashmodButtonActionPerformed
         final JFileChooser fc = new JFileChooser(System.getProperty(HASHMOD_CSV_FILE));
         final String hashmodCSV = hashmodCSVFile.getText().trim();
         if (!hashmodCSV.isEmpty()) {
@@ -196,29 +202,19 @@ public class HashmodPanel extends javax.swing.JPanel {
             setAttributeNames(thisHashmod.getCSVKey(), thisHashmod.getCSVHeader(1), thisHashmod.getCSVHeader(2));
 
         }
-    }//GEN-LAST:event_userDirectoryButtonActionPerformed
-
-    private void hashmodCSVFileActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hashmodCSVFileActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_hashmodCSVFileActionPerformed
-
-    private void keyAttributeTextFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_keyAttributeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_keyAttributeTextFieldActionPerformed
-
-    private void value1AttributeTextFieldActionPerformed(ActionEvent evt) {//GEN-FIRST:event_value1AttributeTextFieldActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_value1AttributeTextFieldActionPerformed
+    }//GEN-LAST:event_hashmodButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JTextField hashmodCSVFile;
+    private JCheckBox createAllCheckbox;
     private JTextField keyAttributeTextField;
     private JTextField value1AttributeTextField;
     private JTextField value2AttributeTextField;
-    private JButton userDirectoryButton;
-    private JLabel userDirectoryLabel;
-    private JLabel userDirectoryLabel1;
-    private JLabel userDirectoryLabel2;
-    private JLabel userDirectoryLabel3;
+    private JButton hashmodButton;
+    private JLabel hashmodLabel;
+    private JLabel hashmodLabel1;
+    private JLabel hashmodLabel2;
+    private JLabel hashmodLabel3;
+    private JLabel hashmodLabel4;
     // End of variables declaration//GEN-END:variables
 }

@@ -21,11 +21,13 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.BitSet;
+import java.util.HashMap;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
@@ -64,15 +66,14 @@ public final class HashmodAction implements ActionListener {
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
             if (e.getActionCommand().equals("OK")) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
+                final Boolean createNonMatchingKeysVertexes = hashmodPanel.getCreateVertexes();
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
                 PluginExecution.withPlugin(new SimpleEditPlugin(Bundle.CTL_HashmodAction()) {
                     @Override
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
-                            final int hashmodKeyAttr = wg.addAttribute(GraphElementType.META, Hashmod.ATTRIBUTE_NAME, Hashmod.ATTRIBUTE_NAME, Hashmod.ATTRIBUTE_NAME, null, null);
-                            wg.setObjectValue(hashmodKeyAttr, 0, hashmod1);
-                            HashmodAction.run(wg);
+                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes);
                         }
                     }
                 }).executeLater(graph);
@@ -81,39 +82,41 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg) throws InterruptedException {
-        final Hashmod hashmod;
-        final String key;
-        final String value1;
-        final String value2;
-        final int hashmodAttr;
-        if (wg != null) {
-            hashmodAttr = wg.getAttribute(GraphElementType.META, Hashmod.ATTRIBUTE_NAME);
-            hashmod = wg.getObjectValue(hashmodAttr, 0);
-            if (hashmod != null) {
-                key = hashmod.getCSVKey();
-                value1 = hashmod.getCSVHeader(1);
-                value2 = hashmod.getCSVHeader(2);
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys) throws InterruptedException {
 
-                if (key == null || value1 == null || value2 == null) {
-                    return;
-                }
-            } else {
+        if (wg != null && hashmod != null) {
+            if (hashmod.getNumberCSVColumns() < 2) {
+                interaction.notify(PluginNotificationLevel.ERROR, "CSV file requires at least one key and one value attribute");
                 return;
             }
         } else {
             return;
         }
 
-        final int keyAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, key);
-        final int value1Attribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, value1);
-        final int value2Attribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, value2);
+        int[] attributeValues = new int[hashmod.getNumberCSVColumns() + 1];
+        int[] csvValues = new int[hashmod.getNumberCSVColumns() + 1];
+        String nextAttr;
+        int i = 0;
+        int attrCount = 0;
+        while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
+            int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
+            if (nextAttribute != Graph.NOT_FOUND) {
+                attributeValues[attrCount] = nextAttribute;
+                csvValues[attrCount] = i;
+                attrCount++;
+            }
+            i++;
+        }
 
-        if (keyAttribute == Graph.NOT_FOUND || value1Attribute == Graph.NOT_FOUND || value2Attribute == Graph.NOT_FOUND) {
+        if (attrCount < 2) {
+            interaction.notify(PluginNotificationLevel.ERROR, "Requires at least one key and one value attributes in the header of the CSV file.  Check upper/lower case and for typos");
             return;
         }
 
         final int vxCount = wg.getVertexCount();
+        final HashMap<String, Integer> keys = hashmod.getCSVKeys();
+        String keyValue;
+        int numberSuccessful = 0;
 
         if (vxCount > 0) {
             final BitSet vertices = HashmodUtilities.vertexBits(wg);
@@ -127,29 +130,42 @@ public final class HashmodAction implements ActionListener {
                 vertices.clear(vxId);
             }
 
-            String keyValue;
-            String value1Value;
-            String value2Value;
-
-            for (int i = 0; i < vxPos; i++) {
+            for (int j = 0; j < vxPos; j++) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
-                final int vxId = vxOrder[i];
+                final int vxId = vxOrder[j];
 
-                keyValue = wg.getObjectValue(keyAttribute, vxId);
-                if (hashmod.doesKeyExist(keyValue)) {
-                    value1Value = hashmod.getValueFromKey(keyValue, 1);
-                    value2Value = hashmod.getValueFromKey(keyValue, 2);
-
-                    if (value1Value != null) {
-                        wg.setStringValue(value1Attribute, i, value1Value);
+                keyValue = wg.getObjectValue(attributeValues[0], vxId);
+                if (keys.containsKey(keyValue.toUpperCase())) {
+                    numberSuccessful++;
+                    for (i = 1; i < attrCount; i++) {
+                        wg.setStringValue(attributeValues[i], j, hashmod.getValueFromKey(keyValue, csvValues[i]));
                     }
-                    if (value2Value != null) {
-                        wg.setStringValue(value2Attribute, i, value2Value);
+
+                    if (createAllKeys) {
+                        keys.put(keyValue, 1);
                     }
                 }
             }
+
+            interaction.notify(PluginNotificationLevel.WARNING, "Successfully updated " + numberSuccessful + "/" + vxPos + " nodes");
+        }
+
+        if (createAllKeys) {
+            numberSuccessful = 0;
+            for (String keyVal : keys.keySet()) {
+                if (keys.get(keyVal) == 0) {
+                    int newVertex = wg.addVertex();
+
+                    for (i = 0; i < attrCount; i++) {
+                        wg.setStringValue(attributeValues[i], newVertex, hashmod.getValueFromKey(keyVal, csvValues[i]));
+                    }
+                    numberSuccessful++;
+                }
+            }
+            wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
+            interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
         }
     }
 }
