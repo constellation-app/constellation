@@ -479,9 +479,6 @@ public class OverviewPanel extends Pane {
                 // only drag on 'x' press:
                 performDrag(t);
             }
-
-            // Update the origin as we have had some movement:
-            origin = t.getX();
         }
 
         /**
@@ -515,6 +512,9 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+                    
+                    // Update the origin as we have had some movement:
+                    origin = t.getX();
                 }
             } // Determine if the cursor is currently hovering over the right border:
             else if (isResizingRight) {
@@ -531,6 +531,9 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new time extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+                    
+                    // Update the origin as we have had some movement:
+                    origin = t.getX();
                 }
             }
         }
@@ -560,6 +563,9 @@ public class OverviewPanel extends Pane {
                 final long newLowerTimeExtent = (long) (((newX / histogram.getWidth()) * range) + lowestTimeExtent);
                 final long newUpperTimeExtent = (long) ((((newX + rect.getWidth()) / histogram.getWidth()) * range) + lowestTimeExtent);
                 coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+                
+                // Update the origin as we have had some movement:
+                origin = t.getX();
             }
         }
     }
