@@ -32,7 +32,6 @@ import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -40,8 +39,6 @@ import java.util.logging.Logger;
  * @author aldebaran30701
  */
 public class LayersViewController {
-
-    private static final Logger LOGGER = Logger.getLogger(LayersViewController.class.getName());
 
     private final LayersViewTopComponent parent;
 
@@ -58,7 +55,7 @@ public class LayersViewController {
             return;
         }
         int newBitmask = 0b0;
-        for (final LayerDescription layer : pane.getLayers()) {
+        for (final LayerDescription layer : pane.getlayers()) {
             if (!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)) {
                 newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
             }
@@ -78,7 +75,7 @@ public class LayersViewController {
             return;
         }
         final List<String> layerQueries = new ArrayList<>();
-        for (final LayerDescription layer : pane.getLayers()) {
+        for (final LayerDescription layer : pane.getlayers()) {
             if (!layer.getLayerQuery().equals(LayerDescription.DEFAULT_QUERY_STRING)) {
                 layerQueries.add(layer.getLayerQuery().isEmpty() ? null : layer.getLayerQuery());
             }
@@ -96,15 +93,14 @@ public class LayersViewController {
         if (pane == null) {
             return;
         }
+        
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if(graph == null){
+            return;
+        }
 
         PluginExecution.withPlugin(new LayersViewStateReader(pane))
-                .executeLater(GraphManager.getDefault().getActiveGraph());
-
-        final List<LayerDescription> layers = pane.getLayers();
-        LOGGER.info("LAYERS:" + layers);
-        if (GraphManager.getDefault().getActiveGraph() != null) {
-            LOGGER.info("GRAPH:" + GraphManager.getDefault().getActiveGraph().getId());
-        }
+                .executeLater(graph);
     }
 
     /**
@@ -116,15 +112,14 @@ public class LayersViewController {
         if (pane == null) {
             return;
         }
-
-        final List<LayerDescription> layers = pane.getLayers();
-        LOGGER.info("LAYERS:" + layers);
-        if (GraphManager.getDefault().getActiveGraph() != null) {
-            LOGGER.info("GRAPH:" + GraphManager.getDefault().getActiveGraph().getId());
+        
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if(graph == null){
+            return;
         }
 
-        PluginExecution.withPlugin(new LayersViewStateWriter(layers))
-                .executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new LayersViewStateWriter(pane.getlayers()))
+                .executeLater(graph);
     }
 
     /**
