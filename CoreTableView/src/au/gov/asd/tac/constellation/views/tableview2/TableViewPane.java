@@ -440,7 +440,7 @@ public final class TableViewPane extends BorderPane {
         return cm;
     }
 
-    private void refreshColumnSelectionMenu(ArrayList<CustomMenuItem> columnCheckboxes, TextField columnFilterTextField, CheckBox columnCheckboxSource,
+    private void refreshColumnSelectionMenu(List<CustomMenuItem> columnCheckboxes, TextField columnFilterTextField, CheckBox columnCheckboxSource,
             CheckBox columnCheckboxDestination, CheckBox columnCheckboxTransaction) {
         final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
 
@@ -874,17 +874,15 @@ public final class TableViewPane extends BorderPane {
                 // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
-                        = newColumnOrder.stream()
-                                .map(c
-                                        -> {
-                                    for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
-                                        if (c.getText().equals(col.getThird().getText())) {
-                                            return col;
-                                        }
-                                    }
-                                    // THe following can only happen 
-                                    return columnIndex.get(newColumnOrder.indexOf(c));
-                                }).collect(Collectors.toList());
+                        = newColumnOrder.stream().map(c -> {
+                            for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                                if (c.getText().equals(col.getThird().getText())) {
+                                    return col;
+                                }
+                            }
+                            // THe following can only happen 
+                            return columnIndex.get(newColumnOrder.indexOf(c));
+                        }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
             }
