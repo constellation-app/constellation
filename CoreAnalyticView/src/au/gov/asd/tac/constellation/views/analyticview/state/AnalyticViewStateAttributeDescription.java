@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.analyticview.state;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState.AnalyticViewConcept;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -27,8 +26,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class AnalyticViewStateAttributeDescription extends ObjectAttributeDescription {
+    
+    public static final String ATTRIBUTE_NAME = "analytic_view_state";
 
     public AnalyticViewStateAttributeDescription() {
-        super(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.getName());
+        super(ATTRIBUTE_NAME);
     }
 }

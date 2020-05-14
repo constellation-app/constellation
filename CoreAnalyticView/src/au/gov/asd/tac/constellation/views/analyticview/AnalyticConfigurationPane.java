@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState.AnalyticViewConcept;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;

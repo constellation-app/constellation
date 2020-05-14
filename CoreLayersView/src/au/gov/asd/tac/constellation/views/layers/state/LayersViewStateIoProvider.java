@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewState.LayersViewConcept;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -81,12 +80,12 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
             if (originalState == null) {
                 jsonGenerator.writeNullField(attribute.getName());
             } else {
-                // Make a copy in case the state on the graph is currently being modified.
+                // make a copy in case the state on the graph is currently being modified.
                 final LayersViewState state = new LayersViewState(originalState);
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeArrayFieldStart("layers");
 
-                for (LayerDescription layer : state.getAllLayers()) {
+                for (LayerDescription layer : state.getLayers()) {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {

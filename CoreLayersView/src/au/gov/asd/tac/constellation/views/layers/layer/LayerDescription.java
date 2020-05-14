@@ -37,7 +37,7 @@ public class LayerDescription {
         this.description = description;
     }
     
-    public LayerDescription(LayerDescription copy) {
+    public LayerDescription(final LayerDescription copy) {
         this.layerIndex = copy.layerIndex;
         this.currentVisibility = copy.currentVisibility;
         this.query = copy.query;

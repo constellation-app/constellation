@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.layers.state.LayersViewState.LayersViewConcept;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -65,7 +65,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         initContent();
         
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
-            layersViewController.writeState(); 
+            layersViewController.readState();
         });
     }
 
@@ -81,17 +81,24 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        layersViewController.updateState(false);
+        if (graph != null) {
+            layersViewPane.setDefaultLayers();
+            layersViewController.readState();
+        }
     }
     
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        layersViewController.updateState(false);
+        if (graph != null) {
+            layersViewPane.setDefaultLayers();
+            layersViewController.readState();
+        }
     }
     
     @Override
     protected void handleComponentOpened() {
-        layersViewController.updateState(false);
+        layersViewPane.setDefaultLayers();
+        layersViewController.readState();
     }
     /**
      * This method is called from within the constructor to initialize the form.
