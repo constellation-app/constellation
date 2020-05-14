@@ -64,7 +64,7 @@ public class LayersAddContextMenu implements ContextMenuProvider {
                     }
                 }
             } else {
-                currentLayers.add("2");
+                currentLayers.add("2 - [NO DESCRIPTION]");
             }
             return currentLayers;
         } else {
