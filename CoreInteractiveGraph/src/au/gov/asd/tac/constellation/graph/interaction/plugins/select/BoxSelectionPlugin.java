@@ -58,7 +58,7 @@ public final class BoxSelectionPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
-        final float mix = camera.getMixRatio();
+        final float mix = camera.getMix();
         final float inverseMix = 1.0f - mix;
         final Vector3f centre = new Vector3f(camera.lookAtCentre);
 
