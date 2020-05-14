@@ -1119,21 +1119,29 @@ public final class GraphVisualAccess implements VisualAccess {
         if (transactionVisibility != Graph.NOT_FOUND) {
             switch (connectionElementTypes[connection]) {
                 case LINK:
-                    float linkVisibility = -1;
-                    final int linkId = connectionElementIds[connection];
-                    for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
-                        final int transactionId = accessGraph.getLinkTransaction(linkId, i);
-                        linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId)); // handle case of no layer vis - ie no layer
+                    float linkVisibility = -1;                    
+                    if (transactionLayerVisibility != Graph.NOT_FOUND) {
+                        final int linkId = connectionElementIds[connection];
+                        for (int i = 0; i < accessGraph.getLinkTransactionCount(linkId); i++) {
+                            final int transactionId = accessGraph.getLinkTransaction(linkId, i);
+                            linkVisibility = Math.max(linkVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId)); // handle case of no layer vis - ie no layer
+                        }
+                        return linkVisibility;
+                    } else {
+                        return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
-                    return linkVisibility;
                 case EDGE:
                     float edgeVisibility = -1;
-                    final int edgeId = connectionElementIds[connection];
-                    for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
-                        final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
-                        edgeVisibility = Math.max(edgeVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId));
+                    if (transactionLayerVisibility != Graph.NOT_FOUND) {
+                        final int edgeId = connectionElementIds[connection];
+                        for (int i = 0; i < accessGraph.getEdgeTransactionCount(edgeId); i++) {
+                            final int transactionId = accessGraph.getEdgeTransaction(edgeId, i);
+                            edgeVisibility = Math.max(edgeVisibility, accessGraph.getFloatValue(transactionLayerVisibility, transactionId));
+                        }
+                        return edgeVisibility;
+                    } else {
+                        return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
-                    return edgeVisibility;
                 case TRANSACTION:
                 default:
                     float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;
