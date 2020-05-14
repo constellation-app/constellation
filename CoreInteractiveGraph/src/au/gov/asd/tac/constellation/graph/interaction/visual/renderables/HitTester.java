@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import java.awt.Graphics2D; //Pulled in by Windows-DPI-Scaling fix
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -160,7 +161,18 @@ public final class HitTester implements GLRenderable {
         if (!notificationQueues.isEmpty()) {
             final int x = hitTestRequest.getX();
             final int y = hitTestRequest.getY();
-            final int surfaceHeight = drawable.getSurfaceHeight();
+            
+             
+            //  Windows-DPI-Scaling
+            //
+            // If JOGL is ever fixed or another solution is found, either change
+            // needsManualDPIScaling to return false (so there is effectively no
+            // DPI scaling here) or to remove dpiScaleY below.            
+            float dpiScaleY = 1.0f;
+            if (GLTools.needsManualDPIScaling()){
+                dpiScaleY = parent.getDPIScaleY();
+            }
+            final int surfaceHeight = (int)(drawable.getSurfaceHeight() * dpiScaleY);
 
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
