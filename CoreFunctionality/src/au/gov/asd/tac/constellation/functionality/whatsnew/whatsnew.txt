@@ -1,8 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-05-11 Two New Arrangement Options
+<p>Two new arrangement options are available via the Arrange menu and toolbar. These options are horizontal and vertical lines. Selecting these options allow selected (or all) elements to be arranged in either horizontal or vertical lines.</p>
+
 == 2020-05-11 Delimiter importer
-<p> Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.
+<p>Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.</p>
 
 == 2020-04-20 Data Access View
 <p>You can now remove a previously saved preference in Data Access View under Options &gt; Load.</p>
