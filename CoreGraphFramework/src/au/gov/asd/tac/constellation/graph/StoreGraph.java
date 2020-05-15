@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.visual.*;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -2001,11 +2002,23 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private int recalculateLayerMask(final GraphElementType elementType, final int elementId) {
         int bitmask = 0;
         if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
+            vertexLayerMaskAttribureId = ensureAttribute(vertexLayerMaskAttribureId, 
+                    GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, 
+                    LAYER_MASK_ATTRIBUTE_LABEL, "Bitmask identifying the layers "
+                            + "this vertex belongs to", 1, null);
+            if (vertexLayerMaskAttribureId != Graph.NOT_FOUND) {
+                bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
+            }
         } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
+            transactionFilterBitmaskAttrId = ensureAttribute(transactionFilterBitmaskAttrId, 
+                GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, 
+                LAYER_MASK_ATTRIBUTE_LABEL, "Bitmask identifying the layers "
+                        + "this transaction belongs to", 1, null);
+            if (transactionFilterBitmaskAttrId != Graph.NOT_FOUND) {
+                bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
+            }
         }
-
+        
         synchronized (this) {
             for (int i = 0; i < layerQueries.size(); i++) {
                 // calculate bitmask for dynamic layers that are displayed
@@ -2138,6 +2151,19 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     // update the layer visibility of an element
     private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
         final int bitmask = recalculateLayerMask(elementType, elementId);
+                transactionLayerVisibilityAttributeId = ensureAttribute(transactionLayerVisibilityAttributeId, 
+                GraphElementType.TRANSACTION, 
+                FloatAttributeDescription.ATTRIBUTE_NAME, 
+                LAYER_VISIBILITY_ATTRIBUTE_LABEL,
+                "The visibility of the transaction given "
+                + "the layers it belongs to", 1.0f, null);
+                    
+        vertexLayerVisibilityAttributeId = ensureAttribute(vertexLayerVisibilityAttributeId, 
+                GraphElementType.VERTEX, 
+                FloatAttributeDescription.ATTRIBUTE_NAME, 
+                LAYER_VISIBILITY_ATTRIBUTE_LABEL,
+                "The visibility of the vertex given "
+                + "the layers it belongs to", 1.0f, null);
 
         if (elementType == GraphElementType.VERTEX) {
 
@@ -2266,6 +2292,16 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         final int transactionCount = getTransactionCount();
         for (int i = 0; i < transactionCount; i++) {
             updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
+        }
+    }
+    
+    private int ensureAttribute(final int attributeId, final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId) {
+        if (attributeDescriptions[attributeId] == null) {
+            return this.addAttribute(elementType, attributeType, label, description, 
+                    defaultValue, attributeMergerId);
+        } else {
+            return this.getAttribute(elementType, label);
         }
     }
 
