@@ -42,6 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class LayersAddContextMenu implements ContextMenuProvider {
 
     private static final String LAYER_MENU = "Layers";
+    private static final String NO_LAYER_TEXT = "[NO DESCRIPTION]";
     private static final String ADD_TO_LAYER = "Add Selection to Layer...";
 
     @Override
@@ -59,12 +60,12 @@ public class LayersAddContextMenu implements ContextMenuProvider {
                 for (final LayerDescription layer : currentState.getLayers()) {
                     if (layer.getLayerIndex() > 1) {
                         final String description = StringUtils.isBlank(layer.getLayerDescription())
-                                ? "[NO DESCRIPTION]" : layer.getLayerDescription();
+                                ? NO_LAYER_TEXT : layer.getLayerDescription();
                         currentLayers.add(String.valueOf(layer.getLayerIndex()) + " - " + description);
                     }
                 }
             } else {
-                currentLayers.add("2 - [NO DESCRIPTION]");
+                currentLayers.add("2 - " + NO_LAYER_TEXT);
             }
             return currentLayers;
         } else {

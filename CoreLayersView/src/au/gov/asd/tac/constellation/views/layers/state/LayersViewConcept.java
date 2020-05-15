@@ -49,7 +49,7 @@ public class LayersViewConcept extends SchemaConcept {
     public static class MetaAttribute {
 
         private MetaAttribute() {
-            throw new IllegalStateException("Utility class");
+            throw new IllegalStateException("Concept class");
         }
 
         public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, LayersViewStateAttributeDescription.ATTRIBUTE_NAME, "layers_view_state")

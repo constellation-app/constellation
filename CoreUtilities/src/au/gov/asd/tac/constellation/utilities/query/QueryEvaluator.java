@@ -86,7 +86,7 @@ public class QueryEvaluator {
                 currentString = "";
             } else if (c == '|' && prevChar == '|') {
                 currentString = currentString.substring(0, currentString.lastIndexOf(prevChar));
-                if (!StringUtils.isBlank(currentString)) {
+                if (StringUtils.isNotBlank(currentString)) {
                     currentString = StringUtils.trim(currentString);
                     stringTokens.add(currentString);
                 }
@@ -94,7 +94,7 @@ public class QueryEvaluator {
                 currentString = "";
             } else if (c == '&' && prevChar == '&') {
                 currentString = currentString.substring(0, currentString.lastIndexOf(prevChar));
-                if (!StringUtils.isBlank(currentString)) {
+                if (StringUtils.isNotBlank(currentString)) {
                     currentString = StringUtils.trim(currentString);
                     stringTokens.add(currentString);
                 }
@@ -118,7 +118,7 @@ public class QueryEvaluator {
             }
             prevChar = c;
         }
-        if (!StringUtils.isBlank(currentString)) {
+        if (StringUtils.isNotBlank(currentString)) {
             stringTokens.add(StringUtils.trim(currentString));
         }
 
@@ -166,7 +166,7 @@ public class QueryEvaluator {
                         moreToEscape = trimmedToken.contains("\\") && moreToEscape;
                     }
                 }
-                if (!StringUtils.isBlank(trimmedToken)) {
+                if (StringUtils.isNotBlank(trimmedToken)) {
                     orderedInPostfix.add(trimmedToken);
                 }
             } else if (token.contains("(")) {
@@ -180,7 +180,7 @@ public class QueryEvaluator {
                 }
                 if (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
                     return Collections.emptyList();
-                } else if (!StringUtils.isBlank(operatorStack.peek())) {
+                } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                     orderedInPostfix.add(operatorStack.pop());
                 }
             } else { // operator encountered
@@ -188,7 +188,7 @@ public class QueryEvaluator {
                         <= getPrecedence(operatorStack.peek())) {
                     if (operatorStack.peek().equals("(")) {
                         return Collections.emptyList();
-                    } else if (!StringUtils.isBlank(operatorStack.peek())) {
+                    } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                         orderedInPostfix.add(operatorStack.pop());
                     }
                 }
@@ -200,7 +200,7 @@ public class QueryEvaluator {
         while (!operatorStack.isEmpty()) {
             if (operatorStack.peek().equals("(")) {
                 return Collections.emptyList();
-            } else if (!StringUtils.isBlank(operatorStack.peek())) {
+            } else if (StringUtils.isNotBlank(operatorStack.peek())) {
                 orderedInPostfix.add(operatorStack.pop());
             }
         }
