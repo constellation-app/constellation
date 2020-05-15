@@ -102,8 +102,27 @@ public class LayersViewPane extends BorderPane {
             event.consume();
         });
         HBox.setHgrow(addButton, Priority.ALWAYS);
+        
+        final Button deselectAllButton = new Button("Deselect All Layers");
+        deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
+        deselectAllButton.setOnAction(event -> {
+            for (final LayerDescription layer : layers) {
+                layer.setCurrentLayerVisibility(false);
+            }
+            if (this.layers.isEmpty()) {
+                setDefaultLayers();
+            } else {
+                setLayers(List.copyOf(layers));
+            }
+            controller.submit();
+            controller.execute();
+            
+            event.consume();
+        });
+        HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
 
-        this.options = new HBox(5, addButton);
+
+        this.options = new HBox(5, addButton, deselectAllButton);
         options.setAlignment(Pos.TOP_LEFT);
         options.setPadding(new Insets(0, 0, 0, 10));
 

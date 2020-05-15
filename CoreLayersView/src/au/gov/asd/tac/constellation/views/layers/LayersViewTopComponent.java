@@ -94,6 +94,13 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     }
     
     @Override
+    protected void handleGraphClosed(final Graph graph) {
+        if (graph != null) {
+             preparePane();
+         }
+    }
+    
+    @Override
     protected void handleComponentOpened() {
         preparePane();
     }
