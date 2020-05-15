@@ -87,15 +87,10 @@ public class LayersViewController {
      */
     public void readState() {
         final LayersViewPane pane = parent.getContent();
-        if (pane == null) {
-            return;
-        }
-
         final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if(graph == null){
+        if (pane == null || graph == null) {
             return;
         }
-
         PluginExecution.withPlugin(new LayersViewStateReader(pane))
                 .executeLater(graph);
     }
@@ -106,15 +101,10 @@ public class LayersViewController {
      */
     public void writeState() {
         final LayersViewPane pane = parent.getContent();
-        if (pane == null) {
-            return;
-        }
-
         final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if(graph == null){
+        if (pane == null || graph == null) {
             return;
         }
-
         PluginExecution.withPlugin(new LayersViewStateWriter(pane.getlayers()))
                 .executeLater(graph);
     }
@@ -142,11 +132,7 @@ public class LayersViewController {
             }
 
             final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
-            if (currentState == null) {
-                return;
-            }
-
-            if (pane == null) {
+            if (currentState == null || pane == null) {
                 return;
             }
             pane.setLayers(currentState.getLayers());
