@@ -68,7 +68,7 @@ public class AnalyticViewState {
         if (activeAnalyticQuestions.contains(question)) {
             setCurrentAnalyticQuestionIndex(activeAnalyticQuestions.indexOf(question));
             selectablePlugins.forEach(plugin -> {
-                if(!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)){
+                if (!activeSelectablePlugins.get(currentAnalyticQuestionIndex).contains(plugin)) {
                     activeSelectablePlugins.get(currentAnalyticQuestionIndex).add(plugin);
                 }
             });
@@ -90,16 +90,17 @@ public class AnalyticViewState {
     }
 
     /**
-     * Check the currently selected Question index of plugins for other plugins 
+     * Check the currently selected Question index of plugins for other plugins
      * matching the selected category
+     *
      * @param currentCategory the currently selected plugin category to remove
      * from
      */
     public void removePluginsMatchingCategory(String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
-            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (
-                plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)
-                )
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
+                    -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)
+                            .analyticCategory().equals(currentCategory))
             );
         }
     }

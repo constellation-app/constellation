@@ -15,110 +15,227 @@
  */
 package au.gov.asd.tac.constellation.utilities.query;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Evaluates a query expression made up of a chain of operations of the form (a
  * op1 b op2 c ...).
  * <p>
  * Based on
- * https://www.geeksforgeeks.org/stack-set-4-evaluation-postfix-expression/
+ * https://www.geeksforgeeks.org/operatorStack-set-4-evaluation-postfix-expression/
  *
  * @author aldebaran30701
  */
 public class QueryEvaluator {
-    
-    private static final String SPLIT_REGEX = "(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\)|(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\(";
-    
-    private enum Operator {
-        AND(1),
-        OR(2);
 
-        final int precedence;
-
-        private Operator(final int precedence) {
-            this.precedence = precedence;
-        }
-    }
+    private static final String PARENTHESES_REGEX = "(?<!(?<![^\\\\]\\\\(?:\\\\"
+            + "{2}){0,10})\\\\)\\)|(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\(";
     
-    private static final Map<String, Operator> OPERATORS = Map.ofEntries(Map.entry("&&", Operator.AND),Map.entry("||", Operator.OR));
-
-    private static boolean isHigerPrecedence(final String operator, final String subOperator) {
-        return (OPERATORS.containsKey(subOperator) 
-                && OPERATORS.get(subOperator).precedence >= OPERATORS.get(operator).precedence);
+    private QueryEvaluator() {
     }
 
-    public static List<String> convertToPostfix(final String infix) {
-        if (infix.isBlank()) {
+    /**
+     * Tokeniser takes input from the user and breaks it into terms such as
+     * <ul>
+     * <li>color == #ffffff</li>
+     * <li>selected == true</li>
+     * <li>||</li>
+     * <li>&&</li>
+     * <li>(</li>
+     * <li>)</li>
+     * </ul>
+     * <p>
+     * A backslash can be used to escape one of the terms. eg.
+     * <ul>
+     * <li>color == \(#ffffff\) - Input by user</li>
+     * <li>color == (#ffffff) - Evaluated as</li>
+     * </ul>
+     * <p>
+     * iterate all chars in input - check if moreToEscape if (, add term to list
+     * of tokens if |, and previousChar was | then add || to list of tokens if
+     * &, and previousChar was & then add && to list of tokens if ), add term to
+     * list of tokens else, an escaped character or normal input so add to
+     * currentString
+     * <p>
+     * @param input the query as written by the user to tokenise.
+     * @return List<String> stringTokens is the items within the input string,
+     * stored as a list.
+     */
+    public static List<String> tokeniser(final String input) {
+        final List<String> stringTokens = new ArrayList<>();
+        String currentString = "";
+        char prevChar = Character.UNASSIGNED;
+
+        if (StringUtils.isBlank(input)) {
             return Collections.emptyList();
         }
-        
-        // create a stack
-        final Deque<String> stack = new LinkedList<>();
-        
-        // create list to hold individual queries
-        final List<String> queries = new ArrayList<>();
-        
-        // scan all characters one by one
-        for (final String token : infix.split(SPLIT_REGEX)) { // split on [ or ]
-            // operator adding to stack
-            if (OPERATORS.containsKey(token)) {
-                while (!stack.isEmpty() && isHigerPrecedence(token, stack.peek())) {
-                    queries.add(stack.pop());
+
+        for (final char c : input.toCharArray()) {
+            if (c == '(' && prevChar != '\\') {
+                if (StringUtils.isBlank(currentString)) {
+                    currentString = "(";
                 }
-                stack.push(token);
-            }
-            else{
-                // adds query here
-                // eg. Label:=:Vertex #0<Unknown>
-                boolean escaped = true;
-                String updatedToken = token;
-                
-                while (updatedToken.contains("\\") && escaped){
-                    StringBuilder sb = new StringBuilder(updatedToken);
-                    if(updatedToken.length() >= updatedToken.indexOf("\\")){
-                        sb.deleteCharAt(updatedToken.indexOf("\\"));
-                        updatedToken = sb.toString();
-                        if (updatedToken.contains("\\")){
-                            // when the updatedToken has another \. meaning it was a backslash escaped.
-                            escaped = false;
-                        }
-                    }
+                currentString = StringUtils.trim(currentString);
+                stringTokens.add(currentString);
+                currentString = "";
+            } else if (c == '|' && prevChar == '|') {
+                currentString = currentString.substring(0, currentString.lastIndexOf(prevChar));
+                if (StringUtils.isNotBlank(currentString)) {
+                    currentString = StringUtils.trim(currentString);
+                    stringTokens.add(currentString);
                 }
-                queries.add(token);
+                stringTokens.add("||");
+                currentString = "";
+            } else if (c == '&' && prevChar == '&') {
+                currentString = currentString.substring(0, currentString.lastIndexOf(prevChar));
+                if (StringUtils.isNotBlank(currentString)) {
+                    currentString = StringUtils.trim(currentString);
+                    stringTokens.add(currentString);
+                }
+                stringTokens.add("&&");
+                currentString = "";
+            } else if (c == ')' && prevChar != '\\') {
+                if (StringUtils.isBlank(currentString)) {
+                    currentString = ")";
+                } else {
+                    currentString = StringUtils.trim(currentString);
+                    stringTokens.add(currentString);
+                    currentString = ")";
+                }
+                currentString = StringUtils.trim(currentString);
+                stringTokens.add(currentString);
+                currentString = "";
+            } else {
+                if (c != '\\') {
+                    currentString += c;
+                }
             }
+            prevChar = c;
+        }
+        if (StringUtils.isNotBlank(currentString)) {
+            stringTokens.add(StringUtils.trim(currentString));
         }
 
-        // appending to output string
-        while (!stack.isEmpty()) {
-            queries.add(stack.pop());
-        }
-        
-        return queries;
+        return convertToPostfix(stringTokens);
     }
 
+    /**
+     * Gets the operator precedence - || = 1 - && = 2 - else = 0
+     *
+     * @param operator the String representation of || and &&.
+     * @return 0, 1 or 2 depending on the operator.
+     */
+    private static int getPrecedence(final String operator) {
+        if(operator.equals("||")){
+            return 1;
+        }
+        return operator.equals("&&") ? 2 : 0;
+    }
+
+    /**
+     * takes a query split into a list and converts the ordering into postfix.
+     *
+     * @param queryAsList the query split into a list
+     * @return the query reordered into postfix order.
+     */
+    public static List<String> convertToPostfix(final List<String> queryAsList) {
+        // list of queries to return in postfix order
+        final List<String> orderedInPostfix = new ArrayList<>();
+        // initializing empty Stack to hold operators
+        final Deque<String> operatorStack = new ArrayDeque<>();
+
+        for (final String token : queryAsList) {
+            // If the scanned character is an operand, add it to output. 
+            if (!token.contains("||") && !token.contains("&&")
+                    && !token.matches(PARENTHESES_REGEX)) {
+                boolean moreToEscape = true;
+                String trimmedToken = token;
+
+                while (trimmedToken.contains("\\") && moreToEscape) {
+                    if (trimmedToken.length() >= trimmedToken.indexOf('\\')) {
+                        final StringBuilder sb = new StringBuilder(trimmedToken);
+                        sb.deleteCharAt(trimmedToken.indexOf('\\'));
+                        trimmedToken = sb.toString();
+                        // when the trimmedToken has another \. meaning more to escape
+                        moreToEscape = trimmedToken.contains("\\") && moreToEscape;
+                    }
+                }
+                if (StringUtils.isNotBlank(trimmedToken)) {
+                    orderedInPostfix.add(trimmedToken);
+                }
+            } else if (token.contains("(")) {
+                // If the scanned character is an '(', push it to the operatorStack. 
+                operatorStack.push(token);
+            } else if (token.contains(")")) {
+                // If the scanned character is an ')', pop and output from the operatorStack  
+                while (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
+                    // until an '(' is encountered. 
+                    orderedInPostfix.add(operatorStack.pop());
+                }
+                if (!operatorStack.isEmpty() && !operatorStack.peek().equals("(")) {
+                    return Collections.emptyList();
+                } else if (StringUtils.isNotBlank(operatorStack.peek())) {
+                    orderedInPostfix.add(operatorStack.pop());
+                }
+            } else { // operator encountered
+                while (!operatorStack.isEmpty() && getPrecedence(token)
+                        <= getPrecedence(operatorStack.peek())) {
+                    if (operatorStack.peek().equals("(")) {
+                        return Collections.emptyList();
+                    } else if (StringUtils.isNotBlank(operatorStack.peek())) {
+                        orderedInPostfix.add(operatorStack.pop());
+                    }
+                }
+                operatorStack.push(token);
+            }
+        }
+
+        // pop all the operators from operatorStack 
+        while (!operatorStack.isEmpty()) {
+            if (operatorStack.peek().equals("(")) {
+                return Collections.emptyList();
+            } else if (StringUtils.isNotBlank(operatorStack.peek())) {
+                orderedInPostfix.add(operatorStack.pop());
+            }
+        }
+        // remove unnecessary braces
+        orderedInPostfix.removeIf(query -> query.equals("(") || query.equals(")"));
+        return orderedInPostfix;
+    }
+
+    /**
+     * Accepts a postfix string containing the following operators and operands:
+     * - && - || Operands - true - false
+     *
+     * This evaluates the posfix representation in a way that maintains the
+     * correct evaluation order to achieve the correct boolean result.
+     *
+     * @param postfix the String representation of the postfix query
+     * @return true or false depending on what it evaluated to.
+     */
     public static Boolean evaluatePostfix(final String postfix) {
-        
+
         final String t = String.valueOf(true);
         final String f = String.valueOf(false);
 
-        // create a stack
+        // create a operatorStack
         final Stack<String> stack = new Stack<>();
 
         // scan all characters one by one
         final String[] expressionComponents = postfix.split(" ");
         for (final String expressionComponent : expressionComponents) {
             if (expressionComponent.equals(t) || expressionComponent.equals(f)) {
-                // if the scanned character is T or F, push it to the stack.
+                // if the scanned character is T or F, push it to the operatorStack.
                 stack.push(expressionComponent);
             } else {
-                // if the scanned character is an operator, pop two elements from stack apply the operator
+                // if the scanned character is an operator, pop two elements 
+                // from operatorStack apply the operator
                 if (stack.size() < 2) {
                     return false;
                 }
@@ -128,37 +245,25 @@ public class QueryEvaluator {
                 switch (expressionComponent) {
                     // and case
                     case "&&": {
-                        //System.out.println(val1 + "&&" + val2);
                         if (value1.equals(t) && value2.equals(f)) {
-                            // T && F
                             stack.push(f);
                         } else if (value1.equals(f) && value2.equals(t)) {
-                            // F && T
                             stack.push(f);
                         } else if (value1.equals(f) && value2.equals(f)) {
-                            // F && F
                             stack.push(f);
                         } else {
-                            // T && T
                             stack.push(t);
                         }
                         break;
                     }
-
-                    // or case
                     case "||": {
-                        //System.out.println(val1 + "||" + val2);
                         if (value1.equals(t) && value2.equals(f)) {
-                            // T || F
                             stack.push(t);
                         } else if (value1.equals(f) && value2.equals(t)) {
-                            // F || T
                             stack.push(t);
                         } else if (value1.equals(f) && value2.equals(f)) {
-                            // F || F
                             stack.push(f);
                         } else {
-                            // T || T
                             stack.push(t);
                         }
                         break;
@@ -168,11 +273,9 @@ public class QueryEvaluator {
                 }
             }
         }
-
         if (stack.isEmpty()) {
             return false;
         }
-
         return Boolean.valueOf(stack.pop());
     }
 }

@@ -1130,7 +1130,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     } else {
                         return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
-                    
+
                 case EDGE:
                     float edgeVisibility = -1;
                     if (transactionLayerVisibility != Graph.NOT_FOUND) {
@@ -1143,7 +1143,7 @@ public final class GraphVisualAccess implements VisualAccess {
                     } else {
                         return VisualGraphDefaults.DEFAULT_TRANSACTION_VISIBILITY;
                     }
-                    
+
                 case TRANSACTION:
                 default:
                     float transLayerVisibility = transactionLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(transactionLayerVisibility, connectionElementIds[connection]) : VisualGraphDefaults.DEFAULT_TRANSACTION_FILTER_VISIBILITY;

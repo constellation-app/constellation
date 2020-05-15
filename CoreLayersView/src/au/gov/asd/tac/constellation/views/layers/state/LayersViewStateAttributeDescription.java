@@ -13,23 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.analyticview.state;
+package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Attribute description for the AnalyticViewState object.
+ * Attribute description for the LayersViewState object.
  *
- * @author cygnus_x-1
+ * @author aldebaran30701
  */
 @ServiceProvider(service = AttributeDescription.class)
-public class AnalyticViewStateAttributeDescription extends ObjectAttributeDescription {
+public class LayersViewStateAttributeDescription extends ObjectAttributeDescription {
     
-    public static final String ATTRIBUTE_NAME = "analytic_view_state";
+    public static final String ATTRIBUTE_NAME = "layers_view_state";
 
-    public AnalyticViewStateAttributeDescription() {
+    public LayersViewStateAttributeDescription() {
         super(ATTRIBUTE_NAME);
     }
 }

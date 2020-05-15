@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.tableview2.state;
+package au.gov.asd.tac.constellation.views.layers.state;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,36 +27,40 @@ import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Attribute provider for attributes specific to the Table View.
+ * Attribute provider for attributes specific to the Layers View.
  *
- * @author cygnus_x-1
+ * @author aldebaran30701
  */
 @ServiceProvider(service = SchemaConcept.class)
-public class TableViewConcept extends SchemaConcept {
+public class LayersViewConcept extends SchemaConcept {
 
     @Override
     public String getName() {
-        return "Table View";
+        return "Layers View";
     }
 
     @Override
     public Set<Class<? extends SchemaConcept>> getParents() {
         final Set<Class<? extends SchemaConcept>> parentSet = new HashSet<>();
-        parentSet.add(ConstellationViewsConcept.class);
+        parentSet.add(SchemaConcept.ConstellationViewsConcept.class);
         return Collections.unmodifiableSet(parentSet);
     }
 
     public static class MetaAttribute {
 
-        public static final SchemaAttribute TABLE_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, TableViewStateAttributeDescription.ATTRIBUTE_NAME, "table_view_state")
-                .setDescription("The current state of the table view with relation to the active graph")
+        private MetaAttribute() {
+            throw new IllegalStateException("Concept class");
+        }
+
+        public static final SchemaAttribute LAYERS_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, LayersViewStateAttributeDescription.ATTRIBUTE_NAME, "layers_view_state")
+                .setDescription("The current state of the layers view with relation to the active graph")
                 .build();
     }
 
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
-        final List<SchemaAttribute> graphAttributes = new ArrayList<>();
-        graphAttributes.add(MetaAttribute.TABLE_VIEW_STATE);
-        return Collections.unmodifiableCollection(graphAttributes);
+        final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
+        schemaAttributes.add(MetaAttribute.LAYERS_VIEW_STATE);
+        return Collections.unmodifiableCollection(schemaAttributes);
     }
 }
