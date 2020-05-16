@@ -385,7 +385,7 @@ public class ImportController {
         return configurationPane.createDefinitions();
     }
 
-    public void processImport() throws IOException, InterruptedException, PluginException {
+    public List<File> processImport() throws IOException, InterruptedException, PluginException {
 
         final List<ImportDefinition> definitions = configurationPane.createDefinitions();
 
@@ -431,6 +431,7 @@ public class ImportController {
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                     .executeWriteLater(importGraph);
         }
+        return files;
     }
 
     public void cancelImport() {
