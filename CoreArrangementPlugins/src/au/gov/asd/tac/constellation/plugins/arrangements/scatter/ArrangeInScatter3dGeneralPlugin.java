@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -80,9 +81,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
         final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
 
-        if (xDimensionName == null || xDimensionName.equals("") ||
-            yDimensionName == null || yDimensionName.equals("") ||
-            zDimensionName == null || zDimensionName.equals("")) {
+        if (StringUtils.isBlank(xDimensionName) || StringUtils.isBlank(yDimensionName) || StringUtils.isBlank(zDimensionName)) {
             interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
             return;
         }
