@@ -59,7 +59,8 @@ public final class HashmodAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent ev) {
         final Graph graph = context.getGraph();
-        final Hashmod hashmod = new Hashmod();
+        final Hashmod hashmod;
+        hashmod = new Hashmod();
 
         final HashmodPanel hashmodPanel = new HashmodPanel(hashmod);
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
@@ -92,13 +93,13 @@ public final class HashmodAction implements ActionListener {
             return;
         }
 
-        final int[] attributeValues = new int[hashmod.getNumberCSVColumns() + 1];
-        final int[] csvValues = new int[hashmod.getNumberCSVColumns() + 1];
+        int[] attributeValues = new int[hashmod.getNumberCSVColumns() + 1];
+        int[] csvValues = new int[hashmod.getNumberCSVColumns() + 1];
         String nextAttr;
         int i = 0;
         int attrCount = 0;
         while ((nextAttr = hashmod.getCSVHeader(i)) != null) {
-            final int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
+            int nextAttribute = wg.getSchema().getFactory().ensureAttribute(wg, GraphElementType.VERTEX, nextAttr);
             if (nextAttribute != Graph.NOT_FOUND) {
                 attributeValues[attrCount] = nextAttribute;
                 csvValues[attrCount] = i;

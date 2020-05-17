@@ -19,12 +19,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
+import static javatests.TestSupport.fail;
 
 /**
- * A text hashmod based on a supplied CSV file. Will modify attributes specified
- * in the headers to be values based on the first Key column.
+ * A text hashmod based on a supplied CSV file.  Will modify attributes
+ * specified in the headers to be values based on the first Key column.
  *
  * @author CrucisGamma
  */
@@ -56,7 +55,7 @@ public class Hashmod {
         try {
             data = parser.parse(new HashmodInputSource(new File(csvFileStr)), null);
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            fail("IO Exception : " + ex.getLocalizedMessage());
         }
     }
 
@@ -66,7 +65,7 @@ public class Hashmod {
         try {
             data = parser.parse(new HashmodInputSource(new File(csvFileStr)), null);
         } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            fail("IO Exception : " + ex.getLocalizedMessage());
         }
     }
 
@@ -85,7 +84,7 @@ public class Hashmod {
     }
 
     public String getCSVKey() {
-        final String[] headers = getCSVFileHeaders();
+        String[] headers = getCSVFileHeaders();
         if (headers != null && headers.length > 0) {
             if (headers.length > 0) {
                 return headers[0];
@@ -97,7 +96,8 @@ public class Hashmod {
     public HashMap<String, Integer> getCSVKeys() {
         final HashMap<String, Integer> keys = new HashMap<>();
         if (data != null && data.size() > 0) {
-            for (int i = 1; i < data.size(); i++) {
+            int i;
+            for (i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
                     keys.put(row[0].toUpperCase(), 0);
@@ -108,7 +108,7 @@ public class Hashmod {
     }
 
     public int getNumberCSVColumns() {
-        final String[] headers = getCSVFileHeaders();
+        String[] headers = getCSVFileHeaders();
         if (headers != null) {
             return headers.length;
         }
@@ -116,7 +116,7 @@ public class Hashmod {
     }
 
     public String getCSVHeader(final int col) {
-        final String[] headers = getCSVFileHeaders();
+        String[] headers = getCSVFileHeaders();
         if (headers != null && headers.length > col) {
             return headers[col];
         }
@@ -132,8 +132,9 @@ public class Hashmod {
 
     public String getValueFromKey(final String key, final int value) {
         if (data != null && data.size() > 0) {
-            for (int i = 1; i < data.size(); i++) {
-                final String[] row = getCSVRow(i);
+            int i;
+            for (i = 1; i < data.size(); i++) {
+                String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
 
                     if (row.length > value) {
@@ -150,8 +151,9 @@ public class Hashmod {
             return false;
         }
         if (data != null && data.size() > 0) {
-            for (int i = 1; i < data.size(); i++) {
-                final String[] row = getCSVRow(i);
+            int i;
+            for (i = 1; i < data.size(); i++) {
+                String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
                     return true;
                 }
@@ -161,6 +163,9 @@ public class Hashmod {
     }
 
     public String getCSVFileName() {
-        return this.csvFileStr == null ? "" : this.csvFileStr;
+        if (this.csvFileStr == null) {
+            return "";
+        }
+        return this.csvFileStr;
     }
 }

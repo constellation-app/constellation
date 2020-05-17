@@ -56,15 +56,15 @@ public class HashmodPanel extends javax.swing.JPanel {
     }
 
     public Hashmod getHashmod() {
-        return new Hashmod(hashmodCSVFileStr);
+        final Hashmod hashmod;
+        hashmod = new Hashmod(hashmodCSVFileStr);
+        return hashmod;
     }
 
     public void setAttributeNames(final String key, final String attribute1, final String attribute2) {
         keyAttributeTextField.setText(key);
         value1AttributeTextField.setText(attribute1);
-        if (attribute2 != null) {
-            value2AttributeTextField.setText(attribute2);
-        }
+        value2AttributeTextField.setText(attribute2);
     }
 
     public boolean getCreateVertexes() {
