@@ -61,7 +61,7 @@ public class HashmodCSVImportFileParser {
                     line[i] = record.get(i);
                 }
                 results.add(line);
-                count += 1;
+                count++;
                 if (count >= limit) {
                     return results;
                 }
