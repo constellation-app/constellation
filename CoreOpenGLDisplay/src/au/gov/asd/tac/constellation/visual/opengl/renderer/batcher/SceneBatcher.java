@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;

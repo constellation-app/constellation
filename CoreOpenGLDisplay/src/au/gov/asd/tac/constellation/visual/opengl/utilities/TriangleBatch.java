@@ -18,8 +18,8 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.util.GLBuffers;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
 

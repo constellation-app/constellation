@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
 
 /**
  * An interface for a unit that performs drawing operations on a GLContext.

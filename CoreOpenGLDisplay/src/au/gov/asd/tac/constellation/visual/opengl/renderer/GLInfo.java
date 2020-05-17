@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GL;
+//import com.jogamp.opengl.GL2ES2;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 

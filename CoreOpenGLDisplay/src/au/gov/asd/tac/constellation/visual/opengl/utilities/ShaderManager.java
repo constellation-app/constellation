@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL3;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

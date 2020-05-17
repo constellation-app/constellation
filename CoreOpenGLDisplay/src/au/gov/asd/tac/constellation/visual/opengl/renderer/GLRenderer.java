@@ -20,17 +20,19 @@ import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-import com.jogamp.opengl.DebugGL3;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
+//import com.jogamp.opengl.DebugGL3;
+//import com.jogamp.opengl.GL;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GLEventListener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import static org.lwjgl.opengl.awt.GLData.API.GL;
 
 /**
  * OpenGL renderer for a {@link GLVisualProcessor}.
@@ -60,7 +62,7 @@ import java.util.List;
  *
  * @author algol, twilight_sparkle
  */
-public final class GLRenderer implements GLEventListener {
+public final class GLRenderer implements ComponentListener {
 
     static final float FIELD_OF_VIEW = 35;
     private static final float PERSPECTIVE_NEAR = 1;

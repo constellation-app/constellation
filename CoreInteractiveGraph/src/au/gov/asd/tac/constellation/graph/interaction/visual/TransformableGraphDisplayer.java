@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.visual;
 
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GraphDisplayer;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL3;
 import java.io.IOException;
 
 /**

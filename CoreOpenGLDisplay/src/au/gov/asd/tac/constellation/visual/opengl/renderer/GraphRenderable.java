@@ -33,9 +33,9 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.NodeLabelBatc
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLContext;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GLContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

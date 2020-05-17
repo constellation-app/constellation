@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Graphics2D; //Pulled in by Windows-DPI-Scaling fix
 import java.nio.FloatBuffer;
 import java.util.LinkedList;

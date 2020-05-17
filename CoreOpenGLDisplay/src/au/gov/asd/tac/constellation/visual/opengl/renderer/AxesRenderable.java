@@ -22,11 +22,13 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLAutoDrawable;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.lwjgl.Version;
 
 /**
  * Encapsulate the JOGL code required to implement a set of axes that mirror the
@@ -74,6 +76,9 @@ public class AxesRenderable implements GLRenderable {
         axesBatch = new Batch(GL3.GL_LINES);
         colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
+        
+        String lwjglVersion = org.lwjgl.Version.getVersion();
+        System.out.println(lwjglVersion);
     }
 
     @Override

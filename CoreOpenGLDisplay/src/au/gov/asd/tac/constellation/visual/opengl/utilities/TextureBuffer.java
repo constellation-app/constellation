@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL3;
 import java.nio.Buffer;
 
 /**

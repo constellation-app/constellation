@@ -10,32 +10,6 @@
     </configurations>
 
     <dependencies defaultconf="runtime">
-        <!-- OpenGL - uncomment when JOGL 2.4.0+ is available on Maven -->
-        <!-- <dependency org="org.jogamp.gluegen" name="gluegen-rt" rev="2.4.0" >
-            <artifact name="gluegen-rt" type="jar" ext="jar"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="gluegen-rt" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>
-        <dependency org="org.jogamp.jocl" name="jocl" rev="2.4.0">
-            <artifact name="jocl" type="jar" ext="jar"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jocl" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency>
-        <dependency org="org.jogamp.jogl" name="jogl-all" rev="2.4.0">
-            <artifact name="jogl-all" type="jar" ext="jar"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-linux-i586"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-macosx-universal"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-amd64"/>
-            <artifact name="jogl-all" type="jar" ext="jar" e:classifier="natives-windows-i586"/>
-        </dependency> -->
-
         <!-- Geotools -->
         <!--<dependency org="org.geotools" name="gt-coverage" rev="22.3"/>-->
         <dependency org="org.geotools" name="gt-cql" rev="22.3"/>
@@ -84,8 +58,14 @@
         
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
         <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3"/>
-        
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-opengl -->
+        <dependency org="org.lwjgl" name="lwjgl-opengl" rev="3.2.3"/>
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
+        <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>
+        <!-- https://mvnrepository.com/artifact/org.lwjglx/lwjgl3-awt -->
+        <dependency org="org.lwjglx" name="lwjgl3-awt" rev="0.1.7"/>
 
+              
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>

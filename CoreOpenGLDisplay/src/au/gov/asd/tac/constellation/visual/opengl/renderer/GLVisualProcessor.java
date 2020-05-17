@@ -25,11 +25,16 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import com.jogamp.opengl.GL3;
-import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
+//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GLException;
+//import com.jogamp.opengl.awt.GLCanvas;
+//import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
+//import org.lwjgl.opengl.GL.*;
+
+import org.lwjgl.opengl.GL30.*;
+import org.lwjgl.opengl.awt.PlatformGLCanvas.*;
+//import org.lwjgl.opengl.util.awt.AWTGLReadBufferUtil;
+
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -44,6 +49,9 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.awt.GLData;
+
 
 /**
  * A {@link VisualProcessor} that creates a 3D visualisation using OpenGL. This
@@ -71,7 +79,8 @@ public class GLVisualProcessor extends VisualProcessor {
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
     // The OpenGL canvas
-    protected final GLCanvas canvas;
+    protected ConstellationCanvas canvas;
+    
     // The GLEventListener for the OpenGL canvas. Contains the processing logic to update the canvas throughout the OpenGL life-cycle.
     private final GLRenderer renderer;
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
@@ -83,7 +92,9 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     protected final void destroyCanvas() {
-        canvas.destroy();
+        //TODO_TT: is this needed?
+        System.out.println("GLVisualProcessor.destroyCanvas called");        
+//        canvas.destroy();
     }
 
     /**
@@ -194,7 +205,8 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     public final void performVisualUpdate() {
         updating = true;
-        canvas.display();
+        //canvas.display();
+        canvas.render();
     }
 
     @Override
@@ -202,8 +214,11 @@ public class GLVisualProcessor extends VisualProcessor {
         if (graphRenderable.getGraphDisplayer() == null) {
             graphRenderable.setGraphDisplayer(new GraphDisplayer());
         }
-        canvas.addGLEventListener(renderer);
-        canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
+        //canvas.addGLEventListener(renderer);
+        //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
+        
+        canvas.initGL();
+        
     }
 
     /**
@@ -224,7 +239,8 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     protected void cleanup() {
-        canvas.removeGLEventListener(renderer);
+        //canvas.removeGLEventListener(renderer);
+        canvas.removeComponentListener(renderer);
     }
 
     private final class GLExportToImageOperation implements VisualOperation {
@@ -238,7 +254,7 @@ public class GLVisualProcessor extends VisualProcessor {
         @Override
         public void apply() {
             graphRenderable.addTask(drawable -> {
-                final GL3 gl = drawable.getGL().getGL3();
+                final GL30 gl = drawable.getGL().getGL3();
                 gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, 0);
                 final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
                 BufferedImage img = util.readPixelsToBufferedImage(gl, true);
@@ -291,8 +307,8 @@ public class GLVisualProcessor extends VisualProcessor {
         @Override
         public void apply() {
             graphRenderable.addTask(drawable -> {
-                final GL3 gl = drawable.getGL().getGL3();
-                gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, 0);
+                final GL30 gl = drawable.getGL().getGL3();
+                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
                 final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
                 img1[0] = util.readPixelsToBufferedImage(gl, true);
 
@@ -391,12 +407,10 @@ public class GLVisualProcessor extends VisualProcessor {
         final AxesRenderable axesRenderable = new AxesRenderable(this);
         final FPSRenderable fpsRenderable = new FPSRenderable(this);
         renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);
-        try {
-            canvas = new GLCanvas(SharedDrawable.getGLCapabilities());
-        } catch (GLException ex) {
-            GLInfo.respondToIncompatibleHardwareOrGL(null);
-            throw ex;
-        }
+        GLData glData = new GLData();
+        glData.samples = 4;
+        glData.swapInterval = 0;        
+        canvas = new ConstellationCanvas(glData);
     }
 
     @Override
