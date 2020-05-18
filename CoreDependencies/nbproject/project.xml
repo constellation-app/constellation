@@ -2552,6 +2552,10 @@
                 <runtime-relative-path>ext/lwjgl-3.2.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3.jar</binary-origin>
             </class-path-extension>
+             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
+            </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/guava-28.2-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-28.2-jre.jar</binary-origin>
@@ -2575,6 +2579,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-opengl-3.2.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-opengl-3.2.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-opengl-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-opengl-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-i586.jar</runtime-relative-path>
