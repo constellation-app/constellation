@@ -25,10 +25,11 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -68,7 +69,7 @@ public class BlazeBatcher implements SceneBatcher {
     public BlazeBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL30.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         infoTarget = batch.newIntBuffer(INFO_BUFFER_WIDTH, false);
     }
@@ -79,7 +80,7 @@ public class BlazeBatcher implements SceneBatcher {
     }
 
     @Override
-    public void createShader(GL3 gl) throws IOException {
+    public void createShader(GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getBlazeShader(gl, colorTarget, COLOR_SHADER_NAME, infoTarget, BLAZE_INFO_SHADER_NAME);
@@ -160,12 +161,13 @@ public class BlazeBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
             gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderMorphMix, camera.getMix());
@@ -174,9 +176,9 @@ public class BlazeBatcher implements SceneBatcher {
             gl.glUniform1f(shaderScale, blazeSize);
             gl.glUniform1f(shaderOpacity, blazeOpacity);
 
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL30.GL_DEPTH_TEST);
             batch.draw(gl);
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL30.GL_DEPTH_TEST);
         }
     }
 }

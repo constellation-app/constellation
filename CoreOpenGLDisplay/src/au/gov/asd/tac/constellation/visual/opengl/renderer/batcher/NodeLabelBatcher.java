@@ -26,12 +26,13 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
-//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -94,7 +95,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     public NodeLabelBatcher() {
 
         // Create the batches
-        topBatch = new Batch(GL3.GL_POINTS);
+        topBatch = new Batch(GL30.GL_POINTS);
         labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
         labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
         bottomBatch = new Batch(topBatch);
@@ -125,7 +126,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     }
 
     @Override
-    public void createShader(GL3 gl) throws IOException {
+    public void createShader(GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getNodeLabelShader(gl, labelFloatsTarget, LABEL_FLOATS_SHADER_NAME, labelIntsTarget, LABEL_INTS_SHADER_NAME);
@@ -311,7 +312,7 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (topBatch.isDrawable() || bottomBatch.isDrawable()) {
             gl.glUseProgram(shader);
@@ -321,10 +322,11 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             SharedDrawable.getGlyphTextureController().bind(gl, shaderGlyphInfoTexture, TextureUnits.GLYPH_INFO, shaderGlyphImageTexture, TextureUnits.GLYPHS);
 
             // Uniform variables
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderLabelBottomInfo, 1, false, labelBottomInfo.a, 0);
-            gl.glUniformMatrix4fv(shaderLabelTopInfo, 1, false, labelTopInfo.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderLabelBottomInfo, 1, false, labelBottomInfo.a, 0);
+//            gl.glUniformMatrix4fv(shaderLabelTopInfo, 1, false, labelTopInfo.a, 0);
             gl.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
             gl.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
@@ -332,8 +334,9 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
-            gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
-            gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            // TODO_TT:
+//            gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
+//            gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
 
             if (topBatch.isDrawable()) {
                 topBatch.draw(gl);

@@ -23,16 +23,16 @@ import au.gov.asd.tac.constellation.utilities.graphics.IntArray;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GL;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
-//import com.jogamp.opengl.GL;
-//import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -102,7 +102,7 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     public ConnectionLabelBatcher() {
 
         // Create the batch
-        attributeLabelBatch = new Batch(GL3.GL_POINTS);
+        attributeLabelBatch = new Batch(GL30.GL_POINTS);
         final ConstellationColor summaryColor = VisualGraphDefaults.DEFAULT_LABEL_COLOR;
         summaryLabelInfo.setRow(summaryColor.getRed(), summaryColor.getGreen(), summaryColor.getBlue(), VisualGraphDefaults.DEFAULT_LABEL_SIZE * LabelUtilities.NRADIUS_TO_LABEL_UNITS, 0);
         floatsTarget = attributeLabelBatch.newFloatBuffer(FLOAT_BUFFER_WIDTH, false);
@@ -157,7 +157,7 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     }
 
     @Override
-    public void createShader(GL3 gl) throws IOException {
+    public void createShader(GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getConnectionLabelShader(gl, floatsTarget, LABEL_FLOATS_SHADER_NAME, intsTarget, LABEL_INTS_SHADER_NAME);
@@ -296,7 +296,7 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (attributeLabelBatch.isDrawable() || summaryLabelBatch.isDrawable()) {
             gl.glUseProgram(shader);
@@ -309,11 +309,12 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             final int further_f = 0;
             final int further_u = 1;
             gl.glPolygonOffset(further_f, further_u);
-            gl.glDepthFunc(GL.GL_LEQUAL);
+            gl.glDepthFunc(STUB_GL.GL_LEQUAL);
 
             // Uniform variables
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
             gl.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
@@ -321,16 +322,19 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
-            gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
-            gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            // TODO_TT:
+//            gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
+//            gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
 
             if (attributeLabelBatch.isDrawable()) {
-                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, attributeLabelInfo.a, 0);
+                // TODO_TT:
+//                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, attributeLabelInfo.a, 0);
                 attributeLabelBatch.draw(gl);
             }
 
             if (summaryLabelBatch.isDrawable()) {
-                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, summaryLabelInfo.a, 0);
+                // TODO_TT:
+//                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, summaryLabelInfo.a, 0);
                 summaryLabelBatch.draw(gl);
             }
 

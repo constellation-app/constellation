@@ -21,12 +21,12 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
+import org.lwjgl.opengl.GL30;
 
 /**
  * An interface for classes that coordinate the creation, updating and drawing
@@ -61,7 +61,7 @@ public interface SceneBatcher {
      * @param mvMatrix the model-view matrix.
      * @param pMatrix the projection matrix.
      */
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix);
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix);
 
     /**
      * Create the shader with which to draw this SceneBatcher's {@link Batch}.
@@ -69,7 +69,7 @@ public interface SceneBatcher {
      * @param gl the current OpenGL context.
      * @throws IOException if an IO error occurs.
      */
-    public void createShader(final GL3 gl) throws IOException;
+    public void createShader(final GL30 gl) throws IOException;
 
     /**
      * Create a task to dispose of any held batches from a given GL context.
@@ -114,25 +114,25 @@ public interface SceneBatcher {
     @FunctionalInterface
     public static interface ByteBufferConnection {
 
-        ByteBuffer connect(final GL3 gl);
+        ByteBuffer connect(final GL30 gl);
     }
 
     @FunctionalInterface
     public static interface IntBufferConnection {
 
-        IntBuffer connect(final GL3 gl);
+        IntBuffer connect(final GL30 gl);
     }
 
     @FunctionalInterface
     public static interface FloatBufferConnection {
 
-        FloatBuffer connect(final GL3 gl);
+        FloatBuffer connect(final GL30 gl);
     }
 
     @FunctionalInterface
     public static interface BufferDisconnection {
 
-        void disconnect(final GL3 gl);
+        void disconnect(final GL30 gl);
     }
 
     public static GLRenderableUpdateTask updateIntBufferTask(final VisualChange change, final VisualAccess access, final IntBufferOperation operation, final IntBufferConnection connector, final BufferDisconnection disconnector, final int width) {

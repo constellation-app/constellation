@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -33,9 +34,6 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.NodeLabelBatc
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
-//import com.jogamp.opengl.GLContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +41,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.opengl.GL30;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Utilities;
 
 /**
  * A {@link GLRenderable} responsible for the primary component of visualising
@@ -314,9 +312,9 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable GL drawable.
      */
     @Override
-    public void init(final GLAutoDrawable drawable) {
+    public void init(final STUB_GLAutoDrawable drawable) {
 
-        final GL3 gl = drawable.getGL().getGL3();
+        final GL30 gl = drawable.getGL().getGL3();
 
         // The icon shader draws the node icons.
         // The blaze shader draws visual attachments to the nodes.
@@ -365,8 +363,8 @@ public final class GraphRenderable implements GLRenderable {
     }
 
     @Override
-    public void update(GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void update(STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
         skipRedraw = false;
         if (parent.isUpdating()) {
             final List<GLRenderableUpdateTask> tasks = new ArrayList<>();
@@ -406,27 +404,28 @@ public final class GraphRenderable implements GLRenderable {
      *
      * @param gl
      */
-    private void makeContentCurrent(GL3 gl){
-        GLContext context = gl.getContext();
-        try{
-            while (context.makeCurrent() == GLContext.CONTEXT_NOT_CURRENT){
-              Thread.sleep(100);
-            }
-        }
-        catch (InterruptedException ex){
-            final String msg
-                    = "Unable to switch GL context.  This code should only be run "
-                    + "on OSX and may need to be restricted to specific versions "
-                    + "where label rendering is broken.  "
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
-                    + ex.getMessage();
-            Logger.getLogger(GraphRenderable.class
-                    .getName()).log(Level.SEVERE, msg, ex);
-            final InfoTextPanel itp = new InfoTextPanel(msg);
-            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
-            nd.setTitle("Graph Render Error");
-            DialogDisplayer.getDefault().notify(nd);
-        }
+    private void makeContentCurrent(GL30 gl){
+        // TODO_TT: this whole func
+//        STUB_GLContext context = gl.getContext();
+//        try{
+//            while (context.makeCurrent() == STUB_GLContext.CONTEXT_NOT_CURRENT){
+//              Thread.sleep(100);
+//            }
+//        }
+//        catch (InterruptedException ex){
+//            final String msg
+//                    = "Unable to switch GL context.  This code should only be run "
+//                    + "on OSX and may need to be restricted to specific versions "
+//                    + "where label rendering is broken.  "
+//                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+//                    + ex.getMessage();
+//            Logger.getLogger(GraphRenderable.class
+//                    .getName()).log(Level.SEVERE, msg, ex);
+//            final InfoTextPanel itp = new InfoTextPanel(msg);
+//            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
+//            nd.setTitle("Graph Render Error");
+//            DialogDisplayer.getDefault().notify(nd);
+//        }
     }
     
 
@@ -440,148 +439,148 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable  From the reference:
      * A higher-level abstraction than GLDrawable which supplies an event based 
      * mechanism (GLEventListener) for performing OpenGL rendering. 
-     * A GLAutoDrawable automatically creates a primary rendering context which is
-     * associated with the GLAutoDrawable for the lifetime of the object.
+     * A STUB_GLAutoDrawable automatically creates a primary rendering context which is
+     * associated with the STUB_GLAutoDrawable for the lifetime of the object.
      * @param pMatrix
      */
-    @Override
-    public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
-
-        final GL3 gl = drawable.getGL().getGL3();
-        if (Utilities.isMac())
-        {
-            // With the change in SharedDrawable this line shouldn't be needed as
-            // our context should be the current context. Keeping this code
-            // in in case future changes change the context under us.       
-            // I've commented out the the following call as it is causing a lock
-            // when opening the Data Access View window.
-            // makeContentCurrent(gl);
-            skipRedraw = false;
-        }
-        graphDisplayer.bindDisplayer(gl);
-            
-        if (!skipRedraw) {
-
-            // Direction Indicators.
-            if (motion == -1) {
-                if (DirectionIndicatorsAction.isShowIndicators()) {
-                    initialMotion = System.currentTimeMillis();
-                    motion = 0;
-                }
-            } else if (DirectionIndicatorsAction.isShowIndicators()) {
-                motion = (System.currentTimeMillis() - initialMotion) / 100f;
-            } else {
-                motion = -1;
-            }
-
-            gl.glEnable(GL3.GL_LINE_SMOOTH);
-            gl.glEnable(GL3.GL_POLYGON_OFFSET_FILL);
-            gl.glClearColor(graphBackgroundColor[0], graphBackgroundColor[1], graphBackgroundColor[2], graphBackgroundColor[3]);
-            gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
-
-            // Bind the textures to their texture units.
-            // This only needs to be done once.
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.VERTICES);
-            gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, xyzTexturiser.getTextureName());
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.ICONS);
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, iconTextureArray);
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.VERTEX_FLAGS);
-            gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, vertexFlagsTexturiser.getTextureName());
-
-            // We attempt to use PolygonOffset() to keep the lines behind the icons.
-            // One factor,unit for lines, another factor,unit for points.
-            // For some reason, when you zoom in, lines get drawn over icons; why?
-            // I suspect it's because perspective means that nodes that are further from the eye/centre axis aren't
-            // flat relative to the eye, therefore the lines slope across them.
-            // (I tried playing with DepthRange(), but all lines were behind all nodes even in 3D, which looks really weird.
-            // Maybe a different n,f would work there.
-            final float further_f = 0;
-            final float further_u = 1;
-            final float nearer_f = 0;
-            final float nearer_u = -1;
-
-            gl.glPolygonOffset(further_f, further_u);
-
-            final Matrix44f mvMatrix = parent.getDisplayModelViewMatrix();
-
-            if (drawFlags.drawConnections()) {
-                lineBatcher.setMotion(motion);
-                lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
-
-            gl.glPolygonOffset(nearer_f, nearer_u);
-
-            // Draw node icons
-            if (drawFlags.drawNodes()) {
-                iconBatcher.setPixelDensity(pixelDensity);
-                iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
-
-            // Draw node labels
-            if (drawFlags.drawNodes() && drawFlags.drawNodeLabels()) {
-                nodeLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
-
-            gl.glPolygonOffset(further_f, further_u);
-
-            // Draw connection labels
-            if (drawFlags.drawConnectionLabels() && drawFlags.drawConnections()) {
-                connectionLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
-
-            gl.glPolygonOffset(0, 0);
-
-            // Blazes are only drawn if points are being drawn.
-            // Blazes are drawn last because we want them to be on top of everything else.
-            if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
-                blazeBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-            }
-
-            if (hitTestFboName > 0 && drawHitTest) {
-                // Draw the lines and icons again with unique colors on the hitTest framebuffer.
-                // The lines will be thicker for easier hitting.
-                gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, hitTestFboName);
-
-                // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
-                gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-
-                gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
-                gl.glDisable(GL3.GL_LINE_SMOOTH);
-
-                // Is this the default anyway?
-                final int[] fboBuffers = {
-                    GL3.GL_COLOR_ATTACHMENT0
-                };
-                gl.glDrawBuffers(1, fboBuffers, 0);
-
-                gl.glPolygonOffset(further_f, further_u);
-
-                if (drawFlags.drawConnections()) {
-                    lineBatcher.setNextDrawIsHitTest();
-                    lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                    loopBatcher.setNextDrawIsHitTest();
-                    loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                }
-
-                gl.glPolygonOffset(nearer_f, nearer_u);
-
-                // Draw node icons into hit test buffer
-                if (drawFlags.drawNodes()) {
-                    iconBatcher.setNextDrawIsHitTest();
-                    iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
-                }
-
-                gl.glPolygonOffset(0, 0);
-                gl.glDisable(GL3.GL_POLYGON_OFFSET_FILL);
-
-                gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0);
-                gl.glEnable(GL3.GL_LINE_SMOOTH);
-            }
-        }
-
-        // Get the graph displayer to render its contents to the screen
-        graphDisplayer.display(drawable, pMatrix);
+    @Override    
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
+        // TODO_TT: this whole func
+//        final GL30 gl = drawable.getGL().getGL3();
+//        if (Utilities.isMac())
+//        {
+//            // With the change in SharedDrawable this line shouldn't be needed as
+//            // our context should be the current context. Keeping this code
+//            // in in case future changes change the context under us.       
+//            // I've commented out the the following call as it is causing a lock
+//            // when opening the Data Access View window.
+//            // makeContentCurrent(gl);
+//            skipRedraw = false;
+//        }
+//        graphDisplayer.bindDisplayer(gl);
+//            
+//        if (!skipRedraw) {
+//
+//            // Direction Indicators.
+//            if (motion == -1) {
+//                if (DirectionIndicatorsAction.isShowIndicators()) {
+//                    initialMotion = System.currentTimeMillis();
+//                    motion = 0;
+//                }
+//            } else if (DirectionIndicatorsAction.isShowIndicators()) {
+//                motion = (System.currentTimeMillis() - initialMotion) / 100f;
+//            } else {
+//                motion = -1;
+//            }
+//
+//            gl.glEnable(GL30.GL_LINE_SMOOTH);
+//            gl.glEnable(GL30.GL_POLYGON_OFFSET_FILL);
+//            gl.glClearColor(graphBackgroundColor[0], graphBackgroundColor[1], graphBackgroundColor[2], graphBackgroundColor[3]);
+//            gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+//
+//            // Bind the textures to their texture units.
+//            // This only needs to be done once.
+//            gl.glActiveTexture(GL30.GL_TEXTURE0 + TextureUnits.VERTICES);
+//            gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, xyzTexturiser.getTextureName());
+//            gl.glActiveTexture(GL30.GL_TEXTURE0 + TextureUnits.ICONS);
+//            gl.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, iconTextureArray);
+//            gl.glActiveTexture(GL30.GL_TEXTURE0 + TextureUnits.VERTEX_FLAGS);
+//            gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, vertexFlagsTexturiser.getTextureName());
+//
+//            // We attempt to use PolygonOffset() to keep the lines behind the icons.
+//            // One factor,unit for lines, another factor,unit for points.
+//            // For some reason, when you zoom in, lines get drawn over icons; why?
+//            // I suspect it's because perspective means that nodes that are further from the eye/centre axis aren't
+//            // flat relative to the eye, therefore the lines slope across them.
+//            // (I tried playing with DepthRange(), but all lines were behind all nodes even in 3D, which looks really weird.
+//            // Maybe a different n,f would work there.
+//            final float further_f = 0;
+//            final float further_u = 1;
+//            final float nearer_f = 0;
+//            final float nearer_u = -1;
+//
+//            gl.glPolygonOffset(further_f, further_u);
+//
+//            final Matrix44f mvMatrix = parent.getDisplayModelViewMatrix();
+//
+//            if (drawFlags.drawConnections()) {
+//                lineBatcher.setMotion(motion);
+//                lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//                loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//            }
+//
+//            gl.glPolygonOffset(nearer_f, nearer_u);
+//
+//            // Draw node icons
+//            if (drawFlags.drawNodes()) {
+//                iconBatcher.setPixelDensity(pixelDensity);
+//                iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//            }
+//
+//            // Draw node labels
+//            if (drawFlags.drawNodes() && drawFlags.drawNodeLabels()) {
+//                nodeLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//            }
+//
+//            gl.glPolygonOffset(further_f, further_u);
+//
+//            // Draw connection labels
+//            if (drawFlags.drawConnectionLabels() && drawFlags.drawConnections()) {
+//                connectionLabelBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//            }
+//
+//            gl.glPolygonOffset(0, 0);
+//
+//            // Blazes are only drawn if points are being drawn.
+//            // Blazes are drawn last because we want them to be on top of everything else.
+//            if (drawFlags.drawNodes() && drawFlags.drawBlazes()) {
+//                blazeBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//            }
+//
+//            if (hitTestFboName > 0 && drawHitTest) {
+//                // Draw the lines and icons again with unique colors on the hitTest framebuffer.
+//                // The lines will be thicker for easier hitting.
+//                gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, hitTestFboName);
+//
+//                // Explicitly clear the color to black: we need the default color to be 0 so elements drawn as non-zero are recognised.
+//                gl.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+//
+//                gl.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
+//                gl.glDisable(GL30.GL_LINE_SMOOTH);
+//
+//                // Is this the default anyway?
+//                final int[] fboBuffers = {
+//                    GL30.GL_COLOR_ATTACHMENT0
+//                };
+//                gl.glDrawBuffers(1, fboBuffers, 0);
+//
+//                gl.glPolygonOffset(further_f, further_u);
+//
+//                if (drawFlags.drawConnections()) {
+//                    lineBatcher.setNextDrawIsHitTest();
+//                    lineBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//                    loopBatcher.setNextDrawIsHitTest();
+//                    loopBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//                }
+//
+//                gl.glPolygonOffset(nearer_f, nearer_u);
+//
+//                // Draw node icons into hit test buffer
+//                if (drawFlags.drawNodes()) {
+//                    iconBatcher.setNextDrawIsHitTest();
+//                    iconBatcher.drawBatch(gl, camera, mvMatrix, pMatrix);
+//                }
+//
+//                gl.glPolygonOffset(0, 0);
+//                gl.glDisable(GL30.GL_POLYGON_OFFSET_FILL);
+//
+//                gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+//                gl.glEnable(GL30.GL_LINE_SMOOTH);
+//            }
+//        }
+//
+//        // Get the graph displayer to render its contents to the screen
+//        graphDisplayer.display(drawable, pMatrix);
     }
 
     /**
@@ -593,17 +592,18 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable GL drawable.
      */
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
-        lineBatcher.disposeBatch().run(gl);
-        loopBatcher.disposeBatch().run(gl);
-        blazeBatcher.disposeBatch().run(gl);
-        iconBatcher.disposeBatch().run(gl);
-        nodeLabelBatcher.disposeBatch().run(gl);
-        connectionLabelBatcher.disposeBatch().run(gl);
-        xyzTexturiser.dispose().run(gl);
-        vertexFlagsTexturiser.dispose().run(gl);
-        graphDisplayer.dispose(drawable);
-        parent.rebuild();
+    public void dispose(final STUB_GLAutoDrawable drawable) {
+        // TODO_TT: this whole func
+//        final GL30 gl = drawable.getGL().getGL3();
+//        lineBatcher.disposeBatch().run(gl);
+//        loopBatcher.disposeBatch().run(gl);
+//        blazeBatcher.disposeBatch().run(gl);
+//        iconBatcher.disposeBatch().run(gl);
+//        nodeLabelBatcher.disposeBatch().run(gl);
+//        connectionLabelBatcher.disposeBatch().run(gl);
+//        xyzTexturiser.dispose().run(gl);
+//        vertexFlagsTexturiser.dispose().run(gl);
+//        graphDisplayer.dispose(drawable);
+//        parent.rebuild();
     }
 }

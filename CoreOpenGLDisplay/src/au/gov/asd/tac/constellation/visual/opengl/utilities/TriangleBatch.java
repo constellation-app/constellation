@@ -18,10 +18,9 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Mathf;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.util.GLBuffers;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import org.lwjgl.opengl.GL30;
 
 /**
  * A batch that specializes in triangles.
@@ -60,9 +59,10 @@ public class TriangleBatch {
         vertexArrayBufferObject = new int[1];
     }
 
-    public void dispose(final GL3 gl) {
-        gl.glDeleteBuffers(4, bufferObjects, 0);
-        gl.glDeleteVertexArrays(1, vertexArrayBufferObject, 0);
+    public void dispose(final GL30 gl) {
+        // TODO_TT: glDeleteVertexArrays? or glDeleteRenderbuffers?
+        //gl.glDeleteBuffers(4, bufferObjects, 0);
+        //gl.glDeleteVertexArrays(1, vertexArrayBufferObject, 0);
     }
 
     public int getIndexCount() {
@@ -159,42 +159,48 @@ public class TriangleBatch {
      *
      * @param gl the current OpenGL context.
      */
-    public void end(final GL3 gl) {
+    public void end(final GL30 gl) {
         // Create the master vertex array object.
-        gl.glGenVertexArrays(1, vertexArrayBufferObject, 0);
-        gl.glBindVertexArray(vertexArrayBufferObject[0]);
+        // TODO_TT:
+//        gl.glGenVertexArrays(1, vertexArrayBufferObject, 0);
+//        gl.glBindVertexArray(vertexArrayBufferObject[0]);
 
         // Create the buffer objects.
-        gl.glGenBuffers(4, bufferObjects, 0);
+        // TODO_TT:
+//        gl.glGenBuffers(4, bufferObjects, 0);
 
         // Copy data to video memory.
         FloatBuffer buf;
 
         // Vertex data.
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allVerts));
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[VERTEX_DATA]);
+        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferObjects[VERTEX_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_VERTEX);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL3.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_VERTEX, 3, GL3.GL_FLOAT, false, 0, 0);
+        // TODO_TT:
+        //gl.glBufferData(GL30.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL30.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_VERTEX, 3, GL30.GL_FLOAT, false, 0, 0);
 
         // Normal data.
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allNorms));
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[NORMAL_DATA]);
+        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferObjects[NORMAL_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_NORMAL);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL3.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_NORMAL, 3, GL3.GL_FLOAT, false, 0, 0);
+        // TODO_TT:
+        //gl.glBufferData(GL30.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * 3 * nNumVerts, buf, GL30.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_NORMAL, 3, GL30.GL_FLOAT, false, 0, 0);
 
         // Texture coordinates.
         buf = FloatBuffer.wrap(GLTools.toFloatArray(allTexCoords));
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferObjects[TEXTURE_DATA]);
+        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferObjects[TEXTURE_DATA]);
         gl.glEnableVertexAttribArray(ShaderManager.ATTRIBUTE_TEXTURE0);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * nNumVerts * 2, buf, GL3.GL_STATIC_DRAW);
-        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_TEXTURE0, 2, GL3.GL_FLOAT, false, 0, 0);
+        // TODO_TT: unit test this?
+        //gl.glBufferData(GL30.GL_ARRAY_BUFFER, GLBuffers.SIZEOF_FLOAT * nNumVerts * 2, buf, GL30.GL_STATIC_DRAW);
+        gl.glVertexAttribPointer(ShaderManager.ATTRIBUTE_TEXTURE0, 2, GL30.GL_FLOAT, false, 0, 0);
 
         // Indexes.
         ShortBuffer shortBuf = ShortBuffer.wrap(allIndexes);
-        gl.glBindBuffer(GL3.GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_DATA]);
-        gl.glBufferData(GL3.GL_ELEMENT_ARRAY_BUFFER, GLBuffers.SIZEOF_SHORT * nNumIndexes, shortBuf, GL3.GL_STATIC_DRAW);
+        gl.glBindBuffer(GL30.GL_ELEMENT_ARRAY_BUFFER, bufferObjects[INDEX_DATA]);
+        // TODO_TT:
+        //gl.glBufferData(GL30.GL_ELEMENT_ARRAY_BUFFER, GLBuffers.SIZEOF_SHORT * nNumIndexes, shortBuf, GL30.GL_STATIC_DRAW);
 
         // Done
         gl.glBindVertexArray(0);
@@ -214,10 +220,10 @@ public class TriangleBatch {
      *
      * @param gl the current OpenGL context.
      */
-    public void draw(final GL3 gl) {
+    public void draw(final GL30 gl) {
         gl.glBindVertexArray(vertexArrayBufferObject[0]);
 
-        gl.glDrawElements(GL3.GL_TRIANGLES, nNumIndexes, GL3.GL_UNSIGNED_SHORT, 0);
+        gl.glDrawElements(GL30.GL_TRIANGLES, nNumIndexes, GL30.GL_UNSIGNED_SHORT, 0);
 
         // Unbind to anybody
         // Should this be just plain 0?

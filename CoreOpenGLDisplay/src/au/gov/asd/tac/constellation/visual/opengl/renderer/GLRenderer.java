@@ -15,24 +15,16 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.utilities.VersionUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-//import com.jogamp.opengl.DebugGL3;
-//import com.jogamp.opengl.GL;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
-//import com.jogamp.opengl.GLEventListener;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.event.ComponentListener;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import static org.lwjgl.opengl.awt.GLData.API.GL;
+import org.lwjgl.opengl.GL30;
 
 /**
  * OpenGL renderer for a {@link GLVisualProcessor}.
@@ -62,7 +54,7 @@ import static org.lwjgl.opengl.awt.GLData.API.GL;
  *
  * @author algol, twilight_sparkle
  */
-public final class GLRenderer implements ComponentListener {
+public final class GLRenderer implements STUB_GLEventListener {
 
     static final float FIELD_OF_VIEW = 35;
     private static final float PERSPECTIVE_NEAR = 1;
@@ -118,52 +110,52 @@ public final class GLRenderer implements ComponentListener {
     }
 
     @Override
-    public void init(final GLAutoDrawable drawable) {
-
-        initialised = true;
-        renderables.sort(Comparator.naturalOrder());
-
-        if (debugGl) {
-            drawable.setGL(new DebugGL3(drawable.getGL().getGL3()));
-        }
-        final GL3 gl = drawable.getGL().getGL3();
-
-        //Look for Graphics cards that work with GL3, but not 3.3.
-        //Graphics cards that don't work with GL3 will raise an exception.
-        final String thisversion = gl.glGetString(GL.GL_VERSION);
-
-        if (!VersionUtilities.doesVersionMeetMinimum(thisversion, GLInfo.MINIMUM_OPEN_GL_VERSION)) {
-            GLInfo.respondToIncompatibleHardwareOrGL(drawable);
-        }
-
-        if (printGlCapabilities) {
-            GLInfo.printGLCapabilities(gl);
-        }
-
-        gl.glEnable(GL3.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL3.GL_LEQUAL);
-        gl.glEnable(GL3.GL_BLEND);
-        gl.glBlendFunc(GL3.GL_SRC_ALPHA, GL3.GL_ONE_MINUS_SRC_ALPHA);
-        gl.glEnable(GL3.GL_LINE_SMOOTH);
-        gl.glHint(GL3.GL_LINE_SMOOTH_HINT, GL3.GL_NICEST);
-
-        renderables.forEach(renderable -> {
-            renderable.init(drawable);
-        });
-
-        // Reset to the default framebuffer.
-        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0);
+    public void init(final STUB_GLAutoDrawable drawable) {
+        // TODO_TT: this whole func
+//        initialised = true;
+//        renderables.sort(Comparator.naturalOrder());
+//
+//        if (debugGl) {
+//            drawable.setGL(new DebugGL3(drawable.getGL().getGL3()));
+//        }
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        //Look for Graphics cards that work with GL30, but not 3.3.
+//        //Graphics cards that don't work with GL30 will raise an exception.
+//        final String thisversion = gl.glGetString(GL.GL_VERSION);
+//
+//        if (!VersionUtilities.doesVersionMeetMinimum(thisversion, GLInfo.MINIMUM_OPEN_GL_VERSION)) {
+//            GLInfo.respondToIncompatibleHardwareOrGL(drawable);
+//        }
+//
+//        if (printGlCapabilities) {
+//            GLInfo.printGLCapabilities(gl);
+//        }
+//
+//        gl.glEnable(GL30.GL_DEPTH_TEST);
+//        gl.glDepthFunc(GL30.GL_LEQUAL);
+//        gl.glEnable(GL30.GL_BLEND);
+//        gl.glBlendFunc(GL30.GL_SRC_ALPHA, GL30.GL_ONE_MINUS_SRC_ALPHA);
+//        gl.glEnable(GL30.GL_LINE_SMOOTH);
+//        gl.glHint(GL30.GL_LINE_SMOOTH_HINT, GL30.GL_NICEST);
+//
+//        renderables.forEach(renderable -> {
+//            renderable.init(drawable);
+//        });
+//
+//        // Reset to the default framebuffer.
+//        gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
     }
 
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
+    public void dispose(final STUB_GLAutoDrawable drawable) {
         renderables.forEach(renderable -> {
             renderable.dispose(drawable);
         });
     }
 
     @Override
-    public void display(final GLAutoDrawable drawable) {
+    public void display(final STUB_GLAutoDrawable drawable) {
         renderables.forEach(renderable -> {
             renderable.update(drawable);
         });
@@ -175,8 +167,8 @@ public final class GLRenderer implements ComponentListener {
     }
 
     @Override
-    public void reshape(final GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void reshape(final STUB_GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
+        final GL30 gl = drawable.getGL().getGL3();
 
         //  Windows-DPI-Scaling
         //

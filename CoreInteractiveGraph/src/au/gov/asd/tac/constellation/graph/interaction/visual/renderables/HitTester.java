@@ -20,16 +20,15 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
-import java.awt.Graphics2D; //Pulled in by Windows-DPI-Scaling fix
 import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import org.lwjgl.opengl.GL30;
 
 /**
  * Maintain a hit test buffer.
@@ -64,7 +63,9 @@ public final class HitTester implements GLRenderable {
     // The buffer to read from. This is hardcoded as their seems to be no real reason to change it,
     // but perhaps it should be looked up from the corersponding GraphRenderable. At the moment it simply
     // matches the buffer name used inside the if(doHitTesting) {} block of GraphRenderable's display method.
-    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
+    // TODO_TT: 
+    private final int hitTestBufferName = -1;
+//    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
     private final GLVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
@@ -88,30 +89,33 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void init(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void init(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
         // Hit testing.
         // Create an FBO name and bind a new FBO.
-        gl.glGenFramebuffers(1, hitTestFboName, 0);
-        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
+        // TODO_TT:
+//        gl.glGenFramebuffers(1, hitTestFboName, 0);
+        gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
 
         // Create a depth buffer object and attach it.
-        gl.glGenRenderbuffers(1, hitTestDepthBufferName, 0);
-        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32F, width, height);
+        // TODO_TT:
+//        gl.glGenRenderbuffers(1, hitTestDepthBufferName, 0);
+        gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_DEPTH_COMPONENT32F, width, height);
 
         // Create an RBO and bind it.
-        gl.glGenRenderbuffers(1, hitTestRboName, 0);
-        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+        // TODO_TT:
+//        gl.glGenRenderbuffers(1, hitTestRboName, 0);
+        gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestRboName[0]);
 
         // Allocate memory to back the RBO.
         // Using R32F gives us plenty of unique values (2**22 in the mantissa without
         // worrying about floating point stuff).
-        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+        gl.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_R32F, width, height);
 
         // Attach the render buffers.
-        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+        gl.glFramebufferRenderbuffer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glFramebufferRenderbuffer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, hitTestRboName[0]);
 
         GLTools.checkFramebufferStatus(gl, "ht-check");
         parent.setHitTestFboName(hitTestFboName[0]);
@@ -137,7 +141,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void update(final GLAutoDrawable drawable) {
+    public void update(final STUB_GLAutoDrawable drawable) {
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
@@ -146,16 +150,16 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void display(final GLAutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
+        final GL30 gl = drawable.getGL().getGL3();
         if (needsResize) {
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32, width, height);
+            gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+            gl.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_DEPTH_COMPONENT32, width, height);
 
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
-            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+            gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestRboName[0]);
+            gl.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_R32F, width, height);
 
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, 0);
+            gl.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
             needsResize = false;
         }
         if (!notificationQueues.isEmpty()) {
@@ -177,9 +181,9 @@ public final class HitTester implements GLRenderable {
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
 
-            gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
+            gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
             gl.glReadBuffer(hitTestBufferName);
-            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL3.GL_RGB, GL3.GL_FLOAT, fbuf);
+            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL30.GL_RGB, GL30.GL_FLOAT, fbuf);
 
             // There are enough colors in the buffer that we only need worry about
             // r component for now. That gives us 2**22 distinct values.
@@ -213,10 +217,11 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
-        gl.glDeleteRenderbuffers(1, hitTestRboName, 0);
-        gl.glDeleteRenderbuffers(1, hitTestDepthBufferName, 0);
-        gl.glDeleteFramebuffers(1, hitTestFboName, 0);
+    public void dispose(final STUB_GLAutoDrawable drawable) {
+        // TODO_TT: this whole func
+//        final GL30 gl = drawable.getGL().getGL3();
+//        gl.glDeleteRenderbuffers(1, hitTestRboName, 0);
+//        gl.glDeleteRenderbuffers(1, hitTestDepthBufferName, 0);
+//        gl.glDeleteFramebuffers(1, hitTestFboName, 0);
     }
 }

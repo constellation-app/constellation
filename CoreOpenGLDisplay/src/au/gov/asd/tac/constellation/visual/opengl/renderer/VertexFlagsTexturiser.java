@@ -77,5 +77,4 @@ public class VertexFlagsTexturiser {
         flagsBuffer.put((byte) ((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0)));
         return pos;
     }
-
 }

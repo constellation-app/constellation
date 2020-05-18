@@ -22,13 +22,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.lwjgl.Version;
+import org.lwjgl.opengl.GL30;
 
 /**
  * Encapsulate the JOGL code required to implement a set of axes that mirror the
@@ -73,7 +71,7 @@ public class AxesRenderable implements GLRenderable {
 
     public AxesRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        axesBatch = new Batch(GL3.GL_LINES);
+        axesBatch = new Batch(GL30.GL_LINES);
         colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         
@@ -87,8 +85,8 @@ public class AxesRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void init(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
         String axesVp = null;
         String axesGp = null;
         String axesFp = null;
@@ -219,8 +217,8 @@ public class AxesRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final GLAutoDrawable drawable, final Matrix44f projectionMatrix) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f projectionMatrix) {
+        final GL30 gl = drawable.getGL().getGL3();
 
         // Extract the rotation matrix from the mvp matrix.
         final Matrix44f rotationMatrix = new Matrix44f();
@@ -239,23 +237,24 @@ public class AxesRenderable implements GLRenderable {
         axesMatrix.multiply(translationMatrix, srMatrix);
 
         // Disable depth so the axes are drawn over everything else.
-        gl.glDisable(GL3.GL_DEPTH_TEST);
+        gl.glDisable(GL30.GL_DEPTH_TEST);
         gl.glDepthMask(false);
 
         // Draw.
         gl.glLineWidth(1);
         gl.glUseProgram(axesShader);
-        gl.glUniformMatrix4fv(axesShaderLocMVP, 1, false, axesMatrix.a, 0);
+        // TODO_TT:
+        //gl.glUniformMatrix4fv(axesShaderLocMVP, 1, false, axesMatrix.a, 0);
         axesBatch.draw(gl);
 
         // Reenable depth.
-        gl.glEnable(GL3.GL_DEPTH_TEST);
+        gl.glEnable(GL30.GL_DEPTH_TEST);
         gl.glDepthMask(true);
     }
 
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void dispose(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
         axesBatch.dispose(gl);
     }
 }

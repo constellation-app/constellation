@@ -25,16 +25,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLException;
-//import com.jogamp.opengl.awt.GLCanvas;
-//import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
-//import org.lwjgl.opengl.GL.*;
-
-import org.lwjgl.opengl.GL30.*;
-import org.lwjgl.opengl.awt.PlatformGLCanvas.*;
-//import org.lwjgl.opengl.util.awt.AWTGLReadBufferUtil;
-
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -239,8 +229,8 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     protected void cleanup() {
+        // TODO_TT:
         //canvas.removeGLEventListener(renderer);
-        canvas.removeComponentListener(renderer);
     }
 
     private final class GLExportToImageOperation implements VisualOperation {
@@ -253,18 +243,19 @@ public class GLVisualProcessor extends VisualProcessor {
 
         @Override
         public void apply() {
-            graphRenderable.addTask(drawable -> {
-                final GL30 gl = drawable.getGL().getGL3();
-                gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, 0);
-                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
-                BufferedImage img = util.readPixelsToBufferedImage(gl, true);
-                // Write the image out as a PNG.
-                try {
-                    ImageIO.write(img, "png", file);
-                } catch (IOException ex) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-                }
-            });
+            // TODO_TT: this whole func
+//            graphRenderable.addTask(drawable -> {
+//                final GL30 gl = drawable.getGL().getGL3();
+//                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
+//                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
+//                BufferedImage img = util.readPixelsToBufferedImage(gl, true);
+//                // Write the image out as a PNG.
+//                try {
+//                    ImageIO.write(img, "png", file);
+//                } catch (IOException ex) {
+//                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+//                }
+//            });
         }
 
         @Override
@@ -306,14 +297,15 @@ public class GLVisualProcessor extends VisualProcessor {
 
         @Override
         public void apply() {
-            graphRenderable.addTask(drawable -> {
-                final GL30 gl = drawable.getGL().getGL3();
-                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
-                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
-                img1[0] = util.readPixelsToBufferedImage(gl, true);
-
-                waiter.release();
-            });
+            // TODO_TT: this whole func
+//            graphRenderable.addTask(drawable -> {
+//                final GL30 gl = drawable.getGL().getGL3();
+//                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
+//                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
+//                img1[0] = util.readPixelsToBufferedImage(gl, true);
+//
+//                waiter.release();
+//            });
         }
 
         @Override

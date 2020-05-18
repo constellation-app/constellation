@@ -25,10 +25,10 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -72,7 +72,7 @@ public class IconBatcher implements SceneBatcher {
     public IconBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL30.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
     }
@@ -83,7 +83,7 @@ public class IconBatcher implements SceneBatcher {
     }
 
     @Override
-    public void createShader(GL3 gl) throws IOException {
+    public void createShader(GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getVertexIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
@@ -109,9 +109,10 @@ public class IconBatcher implements SceneBatcher {
         };
     }
 
-    public int updateIconTexture(final GL3 gl) {
+    public int updateIconTexture(final GL30 gl) {
         final int[] v = new int[1];
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        // TODO_TT:
+//        gl.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxTextureLayers = v[0];
         GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
         return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
@@ -222,18 +223,19 @@ public class IconBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Uniform variables
             if (drawForHitTest) {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL30.GL_TRUE);
             } else {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL30.GL_FALSE);
             }
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
             gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderPixelDensity, pixelDensity);
@@ -241,7 +243,8 @@ public class IconBatcher implements SceneBatcher {
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
             gl.glUniform1i(shaderFlagsTexture, TextureUnits.VERTEX_FLAGS);
-            gl.glUniformMatrix4fv(shaderHighlightColor, 1, false, highlightColorMatrix, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderHighlightColor, 1, false, highlightColorMatrix, 0);
             batch.draw(gl);
         }
         drawForHitTest = false;

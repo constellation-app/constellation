@@ -24,11 +24,12 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -67,7 +68,7 @@ public class FpsBatcher implements SceneBatcher {
     public FpsBatcher() {
 
         // Create the batch
-        this.batch = new Batch(GL3.GL_POINTS);
+        this.batch = new Batch(GL30.GL_POINTS);
         this.colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         this.iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
         this.pixelDensity = 0;
@@ -83,7 +84,7 @@ public class FpsBatcher implements SceneBatcher {
     }
 
     @Override
-    public void createShader(final GL3 gl) throws IOException {
+    public void createShader(final GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getSimpleIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
@@ -98,9 +99,10 @@ public class FpsBatcher implements SceneBatcher {
         shaderPScale = gl.glGetUniformLocation(shader, "pScale");
     }
 
-    private int updateIconTexture(final GL3 gl) {
+    private int updateIconTexture(final GL30 gl) {
         final int[] v = new int[1];
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        // TODO_TT:
+//        gl.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxTextureLayers = v[0];
         GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
         return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
@@ -142,13 +144,14 @@ public class FpsBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Uniform variables
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
             gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL30;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.opengl.GL30;
 
 /**
  * This class manages some stock shaders use by the OpenGL SuperBible.
@@ -129,7 +130,7 @@ public class ShaderManager {
         return shaderMap;
     }
 
-    public void dispose(final GL3 gl) {
+    public void dispose(final GL30 gl) {
         if (stockShaders[0] != 0) {
             for (int i = 0; i < stockShaders.length; i++) {
                 gl.glDeleteProgram(stockShaders[i]);
@@ -141,7 +142,7 @@ public class ShaderManager {
         }
     }
 
-    public void initialiseStockShaders(final GL3 gl) {
+    public void initialiseStockShaders(final GL30 gl) {
         stockShaders[SHADER_IDENTITY] = GLTools.loadShaderSourceWithAttributes(gl, "SHADER_IDENTITY",
                 shaderMap.getProperty("SHADER_IDENTITY_VS"),
                 null,
@@ -183,7 +184,7 @@ public class ShaderManager {
      *
      * @return the id of the shader.
      */
-    public int useStockShader(final GL3 gl, final int shaderId, final Object... args) {
+    public int useStockShader(final GL30 gl, final int shaderId, final Object... args) {
         if (shaderId >= SHADER_LAST) {
             throw new RenderException("Invalid shader id.");
         }
@@ -196,48 +197,59 @@ public class ShaderManager {
             // Just the color.
             int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
             float[] color = (float[]) args[0];
-            gl.glUniform4fv(colorLoc, 1, color, 0);
+            // TODO_TT: 
+//            gl.glUniform4fv(colorLoc, 1, color, 0);
         } else if (shaderId == SHADER_FLAT) {
             // The modelview projection matrix and the color.
             int transformLoc = gl.glGetUniformLocation(stockShaders[shaderId], "mvpMatrix");
             Matrix44f mvpMatrix = (Matrix44f) args[0];
-            gl.glUniformMatrix4fv(transformLoc, 1, false, mvpMatrix.a, 0);
+            // TODO_TT: 
+//            gl.glUniformMatrix4fv(transformLoc, 1, false, mvpMatrix.a, 0);
 
             int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
             float[] color = (float[]) args[1];
-            gl.glUniform4fv(colorLoc, 1, color, 0);
+            // TODO_TT: 
+//            gl.glUniform4fv(colorLoc, 1, color, 0);
         } else if (shaderId == SHADER_POINT_LIGHT_DIFF) {
             int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
             Matrix44f mvMatrix = (Matrix44f) args[0];
-            gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
+            // TODO_TT: 
+//            gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
 
             int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
             Matrix44f pMatrix = (Matrix44f) args[1];
-            gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT: 
+//            gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
 
             int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
             Vector3f vLightPos = (Vector3f) args[2];
-            gl.glUniform3fv(light, 1, vLightPos.a, 0);
+            // TODO_TT: 
+//            gl.glUniform3fv(light, 1, vLightPos.a, 0);
 
             int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
             float[] color = (float[]) args[3];
-            gl.glUniform4fv(colorLoc, 1, color, 0);
+            // TODO_TT: 
+//            gl.glUniform4fv(colorLoc, 1, color, 0);
         } else if (shaderId == SHADER_TEXTURE_POINT_LIGHT_DIFF) {
             int modelMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "mvMatrix");
             Matrix44f mvMatrix = (Matrix44f) args[0];
-            gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
+            // TODO_TT: 
+//            gl.glUniformMatrix4fv(modelMatrix, 1, false, mvMatrix.a, 0);
 
             int projMatrix = gl.glGetUniformLocation(stockShaders[shaderId], "pMatrix");
             Matrix44f pMatrix = (Matrix44f) args[1];
-            gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT: 
+//            gl.glUniformMatrix4fv(projMatrix, 1, false, pMatrix.a, 0);
 
             int light = gl.glGetUniformLocation(stockShaders[shaderId], "vLightPos");
             Vector3f lightPos = (Vector3f) args[2];
-            gl.glUniform3fv(light, 1, lightPos.a, 0);
+            // TODO_TT: 
+//            gl.glUniform3fv(light, 1, lightPos.a, 0);
 
             int colorLoc = gl.glGetUniformLocation(stockShaders[shaderId], V_COLOR);
             Vector4f color = (Vector4f) args[3];
-            gl.glUniform4fv(colorLoc, 1, color.a, 0);
+            // TODO_TT: 
+//            gl.glUniform4fv(colorLoc, 1, color.a, 0);
 
             int textureUnit = gl.glGetUniformLocation(stockShaders[shaderId], "textureUnit0");
             int i = (Integer) args[4];

@@ -23,12 +23,12 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneS
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
+import static au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLProfile.GL30;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -39,6 +39,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.opengl.GL30;
 
 /**
  * Implement layer planes.
@@ -64,7 +65,9 @@ public final class PlanesRenderable implements GLRenderable {
     private int textureName;
 
     public PlanesRenderable() {
-        planeBatch = new Batch(GL3.GL_TRIANGLES);
+        // TODO_TT: 
+        planeBatch = new Batch(-1);
+        //planeBatch = new Batch(GL30.GL_TRIANGLES);
         planeInfoTarget = planeBatch.newFloatBuffer(DATA_BUFFER_WIDTH, true);
         vertexTarget = planeBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -75,8 +78,8 @@ public final class PlanesRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void init(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
 
         String vs = null;
         String gs = null;
@@ -100,13 +103,14 @@ public final class PlanesRenderable implements GLRenderable {
         textureName = BUFFER_UNUSED;
     }
 
-    public void createScene(final GLAutoDrawable drawable, final Graph graph) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void createScene(final STUB_GLAutoDrawable drawable, final Graph graph) {
+        final GL30 gl = drawable.getGL().getGL3();
 
         dispose(drawable);
 
         final int[] textures = new int[1];
-        gl.glGenTextures(1, textures, 0);
+        // TODO_TT:
+//        gl.glGenTextures(1, textures, 0);
         textureName = textures[0];
 
         planes = null;
@@ -129,7 +133,8 @@ public final class PlanesRenderable implements GLRenderable {
                             maxh = Math.max(maxh, plane.getImageHeight());
                         }
 
-                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL3.GL_LINEAR, GL3.GL_LINEAR, GL3.GL_CLAMP_TO_EDGE);
+                        // TODO_TT:
+//                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL30.GL_LINEAR, GL30.GL_LINEAR, GL30.GL_CLAMP_TO_EDGE);
 
                         // We want to draw a sequence of disjoint rectangles, so we have to use GL_TRIANGLES, because
                         // the other triangle options require the triangles to be contiguous.
@@ -191,88 +196,90 @@ public final class PlanesRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final GLAutoDrawable drawable, final Matrix44f mvpMatrix) {
-        if (planeBatch.isDrawable()) {
-            final GL3 gl = drawable.getGL().getGL3();
-
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.PLANES);
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName);
-
-            gl.glUseProgram(shader);
-            gl.glUniformMatrix4fv(shaderMVPMatrix, 1, false, mvpMatrix.a, 0);
-            gl.glUniform1i(shaderImages, TextureUnits.PLANES);
-            planeBatch.draw(gl);
-        }
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f mvpMatrix) {
+        // TODO_TT: this whole func
+//        if (planeBatch.isDrawable()) {
+//            final GL30 gl = drawable.getGL().getGL3();
+//
+//            gl.glActiveTexture(GL30.GL_TEXTURE0 + TextureUnits.PLANES);
+//            gl.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
+//
+//            gl.glUseProgram(shader);
+//            gl.glUniformMatrix4fv(shaderMVPMatrix, 1, false, mvpMatrix.a, 0);
+//            gl.glUniform1i(shaderImages, TextureUnits.PLANES);
+//            planeBatch.draw(gl);
+//        }
     }
 
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
-
-        if (textureName != BUFFER_UNUSED) {
-            gl.glDeleteTextures(1, new int[]{textureName}, 0);
-            textureName = BUFFER_UNUSED;
-        }
-
-        planeBatch.dispose(gl);
+    public void dispose(final STUB_GLAutoDrawable drawable) {
+        // TODO_TT: this whole func
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        if (textureName != BUFFER_UNUSED) {
+//            gl.glDeleteTextures(1, new int[]{textureName}, 0);
+//            textureName = BUFFER_UNUSED;
+//        }
+//
+//        planeBatch.dispose(gl);
     }
 
-    public void setVisiblePlanes(final GLAutoDrawable drawable, final BitSet visibleLayers) {
-
-        if (planeBatch.isDrawable()) {
-            final GL3 gl = drawable.getGL().getGL3();
-            // Map the buffer range.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);
-            final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-            // Update the visibility flag for the layers.
-            // See createScene().
-            // Each plane has six data entries; each data entry is four floats;
-            // visibility is in the first entry.
-            final int verticesPerPlane = 24;
-            final int nVertices = fbuf.limit() / verticesPerPlane;
-            for (int i = 0; i < nVertices; i++) {
-                final int base = i * verticesPerPlane;
-
-                fbuf.put(base + 2, visibleLayers.get(i) ? 1f : 0f);
-                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1f : 0f);
-            }
-
-            // Unmap the buffer range.
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
-        }
+    public void setVisiblePlanes(final STUB_GLAutoDrawable drawable, final BitSet visibleLayers) {
+        // TODO_TT: this whole func
+//        if (planeBatch.isDrawable()) {
+//            final GL3 gl = drawable.getGL().getGL3();
+//            // Map the buffer range.
+//            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
+//            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);
+//            final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
+//
+//            // Update the visibility flag for the layers.
+//            // See createScene().
+//            // Each plane has six data entries; each data entry is four floats;
+//            // visibility is in the first entry.
+//            final int verticesPerPlane = 24;
+//            final int nVertices = fbuf.limit() / verticesPerPlane;
+//            for (int i = 0; i < nVertices; i++) {
+//                final int base = i * verticesPerPlane;
+//
+//                fbuf.put(base + 2, visibleLayers.get(i) ? 1f : 0f);
+//                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1f : 0f);
+//            }
+//
+//            // Unmap the buffer range.
+//            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+//            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+//        }
     }
 
-    public BitSet getVisiblePlanes(final GLAutoDrawable drawable) {
-
+    public BitSet getVisiblePlanes(final STUB_GLAutoDrawable drawable) {
+        // TODO_TT: this whole func
         final BitSet visiblePlanes = new BitSet();
-
-        if (planeBatch.isDrawable()) {
-            final GL3 gl = drawable.getGL().getGL3();
-            // Map the buffer range.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_ONLY);
-            final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
-
-            // Get the visibility flag for the planes.
-            // Each plane has six dataA entries, each dataA entry is four floats, making 24 vertices per plane.
-            // We'll just look at the visibility for the first vertex in each plane (offset 2), since each vertex has the same visibility.
-            final int verticesPerPlane = 24;
-            final int nPlanes = fbuf.limit() / verticesPerPlane;
-            for (int i = 0; i < nPlanes; i++) {
-                final int base = i * verticesPerPlane;
-                final float vis = fbuf.get(base + 2);
-                if (vis > 0) {
-                    visiblePlanes.set(i);
-                }
-            }
-
-            // Unmap the buffer range.
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
-        }
+//
+//        if (planeBatch.isDrawable()) {
+//            final GL3 gl = drawable.getGL().getGL3();
+//            // Map the buffer range.
+//            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
+//            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_ONLY);
+//            final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
+//
+//            // Get the visibility flag for the planes.
+//            // Each plane has six dataA entries, each dataA entry is four floats, making 24 vertices per plane.
+//            // We'll just look at the visibility for the first vertex in each plane (offset 2), since each vertex has the same visibility.
+//            final int verticesPerPlane = 24;
+//            final int nPlanes = fbuf.limit() / verticesPerPlane;
+//            for (int i = 0; i < nPlanes; i++) {
+//                final int base = i * verticesPerPlane;
+//                final float vis = fbuf.get(base + 2);
+//                if (vis > 0) {
+//                    visiblePlanes.set(i);
+//                }
+//            }
+//
+//            // Unmap the buffer range.
+//            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+//            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+//        }
 
         return visiblePlanes;
     }

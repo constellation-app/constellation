@@ -25,12 +25,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.FpsBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.lwjgl.opengl.GL30;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
@@ -75,8 +74,8 @@ public class FPSRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void init(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
 
         try {
             fpsBatcher.createShader(gl);
@@ -140,7 +139,7 @@ public class FPSRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
         if (start == 0) {
             start = System.currentTimeMillis();
         }
@@ -154,7 +153,7 @@ public class FPSRenderable implements GLRenderable {
         count_fps++;
 
         if (enabled) {
-            final GL3 gl = drawable.getGL().getGL3();
+            final GL30 gl = drawable.getGL().getGL3();
 
             // extract and scale the rotation matrix from the mvp matrix
 //            final Matrix44f rotationMatrix = new Matrix44f();
@@ -173,7 +172,7 @@ public class FPSRenderable implements GLRenderable {
             fpsMatrix.multiply(translationMatrix, srMatrix);
 
             // disable depth so the fps counter is drawn on top
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL30.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             // draw the fps counter
@@ -188,14 +187,14 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
 
             // re-enable depth
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL30.GL_DEPTH_TEST);
             gl.glDepthMask(true);
         }
     }
 
     @Override
-    public void dispose(final GLAutoDrawable drawable) {
-        final GL3 gl = drawable.getGL().getGL3();
+    public void dispose(final STUB_GLAutoDrawable drawable) {
+        final GL30 gl = drawable.getGL().getGL3();
         fpsBatcher.disposeBatch().run(gl);
     }
 }

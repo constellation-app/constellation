@@ -16,8 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
+import org.lwjgl.opengl.GL30;
 
 /**
  * An interface for a unit that performs drawing operations on a GLContext.
@@ -42,7 +41,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
     @FunctionalInterface
     public static interface GLRenderableUpdateTask {
 
-        public void run(final GL3 gl);
+        public void run(final GL30 gl);
     }
 
     public enum RenderablePriority {
@@ -85,7 +84,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      *
      * @param drawable The drawable to initialise with respect to.
      */
-    public void init(final GLAutoDrawable drawable);
+    public void init(final STUB_GLAutoDrawable drawable);
 
     /**
      * Reshape this renderable.
@@ -103,7 +102,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      *
      * @param drawable The drawable to update with respect to.
      */
-    public default void update(final GLAutoDrawable drawable) {
+    public default void update(final STUB_GLAutoDrawable drawable) {
     }
 
     /**
@@ -112,12 +111,12 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      * @param drawable The drawable to display with respect to.
      * @param pMatrix The projection matrix of the renderer being displayed on.
      */
-    public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix);
+    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix);
 
     /**
      * Dispose this renderable using the specified drawable.
      *
      * @param drawable The drawable to dispose with respect to.
      */
-    public void dispose(final GLAutoDrawable drawable);
+    public void dispose(final STUB_GLAutoDrawable drawable);
 }

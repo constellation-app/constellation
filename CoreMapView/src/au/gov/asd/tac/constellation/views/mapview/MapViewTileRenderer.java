@@ -31,8 +31,6 @@ import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerCache;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import com.jogamp.newt.awt.NewtCanvasAWT;
-import com.jogamp.newt.opengl.GLWindow;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.events.EventDispatcher;
 import de.fhpotsdam.unfolding.events.PanMapEvent;
@@ -299,8 +297,10 @@ public class MapViewTileRenderer extends PApplet {
         surface.startThread();
 
         // case the surface to the correct component type and return it
-        glComponent = new NewtCanvasAWT((GLWindow) surface.getNative());
+        // TODO_TT:
         return glComponent;
+//        glComponent = new NewtCanvasAWT((GLWindow) surface.getNative());
+//        return glComponent;
     }
 
     /**

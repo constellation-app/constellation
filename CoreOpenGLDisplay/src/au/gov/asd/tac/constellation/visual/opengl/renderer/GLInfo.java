@@ -17,12 +17,10 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
-//import com.jogamp.opengl.GL;
-//import com.jogamp.opengl.GL2ES2;
-//import com.jogamp.opengl.GL3;
-//import com.jogamp.opengl.GLAutoDrawable;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.lwjgl.opengl.GL30;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GL;
 
 /**
  * Utility class for debugging and diagnostics relating to OpenGL information.
@@ -41,11 +39,11 @@ public class GLInfo {
      * Generate a user dialogue box to alert the user that the hardware/graphics
      * drivers they are using are incompatible with CONSTELLATION
      *
-     * @param drawable - a GLAutoDrawable object currently being displayed on
+     * @param drawable - a STUB_GLAutoDrawable object currently being displayed on
      * the screen. This may be null in the event of the method being called from
-     * a GLException exception handler.
+     * a STUB_GLException exception handler.
      */
-    public static void respondToIncompatibleHardwareOrGL(final GLAutoDrawable drawable) {
+    public static void respondToIncompatibleHardwareOrGL(final STUB_GLAutoDrawable drawable) {
         final String basicInfo = drawable == null ? "Not available" : (new GLInfo(drawable.getGL())).getBasicInfo();
         final String errorMessage
                 = BrandingUtilities.APPLICATION_NAME + " requires a minimum of "
@@ -61,43 +59,45 @@ public class GLInfo {
         }).start();
     }
 
-    public static void printGLCapabilities(final GL3 gl) {
-        final int[] v = new int[10];
-        gl.glGetIntegerv(GL3.GL_MAX_RENDERBUFFER_SIZE, v, 0);
-        gl.glGetIntegerv(GL3.GL_MAX_VERTEX_ATTRIBS, v, 1);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_SIZE, v, 2);
-        gl.glGetIntegerv(GL3.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
-        gl.glGetIntegerv(GL3.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
-        gl.glGetIntegerv(GL3.GL_MAX_3D_TEXTURE_SIZE, v, 6);
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
-        gl.glGetIntegerv(GL3.GL_MAX_DRAW_BUFFERS, v, 8);
-        gl.glGetIntegerv(GL3.GL_MAX_COLOR_ATTACHMENTS, v, 9);
-        final StringBuilder b = new StringBuilder();
-        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
-        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));
-        b.append(String.format("GL: MAX_TEXTURE_SIZE %d%n", v[2]));
-        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d%n", v[3]));
-        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d%n", v[4]));
-        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d%n", v[5]));
-        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d%n", v[6]));
-        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
-        b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
-        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
-        System.out.printf(b.toString());
+    public static void printGLCapabilities(final GL30 gl) {
+        // TODO_TT: this whole func
+//        final int[] v = new int[10];
+//        gl.glGetIntegerv(GL30.GL_MAX_RENDERBUFFER_SIZE, v, 0);
+//        gl.glGetIntegerv(GL30.GL_MAX_VERTEX_ATTRIBS, v, 1);
+//        gl.glGetIntegerv(GL30.GL_MAX_TEXTURE_SIZE, v, 2);
+//        gl.glGetIntegerv(GL30.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
+//        gl.glGetIntegerv(GL30.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
+//        gl.glGetIntegerv(GL30.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
+//        gl.glGetIntegerv(GL30.GL_MAX_3D_TEXTURE_SIZE, v, 6);
+//        gl.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
+//        gl.glGetIntegerv(GL30.GL_MAX_DRAW_BUFFERS, v, 8);
+//        gl.glGetIntegerv(GL30.GL_MAX_COLOR_ATTACHMENTS, v, 9);
+//        final StringBuilder b = new StringBuilder();
+//        b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
+//        b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));
+//        b.append(String.format("GL: MAX_TEXTURE_SIZE %d%n", v[2]));
+//        b.append(String.format("GL: MAX_RECTANGLE_TEXTURE_SIZE %d%n", v[3]));
+//        b.append(String.format("GL: MAX_TEXTURE_BUFFER_SIZE %d%n", v[4]));
+//        b.append(String.format("GL: MAX_COMBINED_TEXTURE_IMAGE_UNITS %d%n", v[5]));
+//        b.append(String.format("GL: MAX_3D_TEXTURE_SIZE %d%n", v[6]));
+//        b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
+//        b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
+//        b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
+//        System.out.printf(b.toString());
     }
 
-    public GLInfo(final GL gl) {
+    public GLInfo(final STUB_GL gl) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.format("OpenGL version: %s\n", gl.glGetString(GL.GL_VERSION)));
-        sb.append(String.format("Vendor: %s\n", gl.glGetString(GL.GL_VENDOR)));
-        sb.append(String.format("Renderer: %s\n", gl.glGetString(GL.GL_RENDERER)));
-        if (gl instanceof GL2ES2) {
-            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
-        }
+        sb.append(String.format("OpenGL version: %s\n", gl.glGetString(STUB_GL.GL_VERSION)));
+        sb.append(String.format("Vendor: %s\n", gl.glGetString(STUB_GL.GL_VENDOR)));
+        sb.append(String.format("Renderer: %s\n", gl.glGetString(STUB_GL.GL_RENDERER)));
+        // TODO_TT:
+//        if (gl instanceof GL2ES2) {
+//            sb.append(String.format("Shading language version: %s\n", gl.glGetString(GL2ES2.GL_SHADING_LANGUAGE_VERSION)));
+//        }
 
         basicInfo = sb.toString();
-        extensions = gl.glGetString(GL.GL_EXTENSIONS);
+        extensions = gl.glGetString(STUB_GL.GL_EXTENSIONS);
     }
 
     /**

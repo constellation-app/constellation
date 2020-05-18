@@ -25,12 +25,13 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL3;
+//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -66,7 +67,7 @@ public class LoopBatcher implements SceneBatcher {
     public LoopBatcher() {
 
         // create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL30.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         loopInfoTarget = batch.newIntBuffer(LOOP_INFO_BUFFER_WIDTH, false);
     }
@@ -77,7 +78,7 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     @Override
-    public void createShader(GL3 gl) throws IOException {
+    public void createShader(GL30 gl) throws IOException {
 
         // Create the shader
         shader = SharedDrawable.getLoopShader(gl, colorTarget, COLOR_SHADER_NAME, loopInfoTarget, LOOP_INFO_SHADER_NAME);
@@ -184,20 +185,21 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Uniform variables
             if (drawForHitTest) {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL30.GL_TRUE);
                 drawForHitTest = false;
             } else {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL30.GL_FALSE);
             }
-            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            // TODO_TT:
+//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
             gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
             gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
             gl.glUniform1f(shaderMorphMix, camera.getMix());

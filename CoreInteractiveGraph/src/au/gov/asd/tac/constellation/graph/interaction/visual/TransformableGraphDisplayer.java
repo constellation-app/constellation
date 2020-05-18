@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GraphDisplayer;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 //import com.jogamp.opengl.GL3;
 import java.io.IOException;
+import org.lwjgl.opengl.GL30;
 
 /**
  * A {@link GraphDisplayer} that allows the graph to be displayed in greyscale
@@ -50,12 +51,12 @@ public class TransformableGraphDisplayer extends GraphDisplayer {
     }
 
     @Override
-    protected void createShaderLocations(final GL3 gl) {
+    protected void createShaderLocations(final GL30 gl) {
         greyscaleShaderLocation = gl.glGetUniformLocation(graphTextureShader, "greyscale");
     }
 
     @Override
-    protected void bindShaderLocations(final GL3 gl) {
+    protected void bindShaderLocations(final GL30 gl) {
         gl.glUniform1i(greyscaleShaderLocation, greyscale ? 1 : 0);
     }
 }

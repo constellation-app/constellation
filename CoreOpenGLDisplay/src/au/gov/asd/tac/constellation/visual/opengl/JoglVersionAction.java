@@ -17,13 +17,6 @@ package au.gov.asd.tac.constellation.visual.opengl;
 
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-//import com.jogamp.opengl.GL;
-//import com.jogamp.opengl.GL2ES2;
-//import com.jogamp.opengl.GLAutoDrawable;
-//import com.jogamp.opengl.GLCapabilities;
-//import com.jogamp.opengl.GLDrawableFactory;
-//import com.jogamp.opengl.GLProfile;
-//import com.jogamp.opengl.JoglVersion;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -48,7 +41,7 @@ public final class JoglVersionAction implements ActionListener {
 //        final GLProfile glProfile = SharedDrawable.getGLProfile();
 //
 //        // Create GLContext and trigger GLContext object creation and native realization.
-//        final GLAutoDrawable drawable = GLDrawableFactory.getFactory(glProfile).createDummyAutoDrawable(null, true, new GLCapabilities(glProfile), null);
+//        final STUB_GLAutoDrawable drawable = GLDrawableFactory.getFactory(glProfile).createDummyAutoDrawable(null, true, new GLCapabilities(glProfile), null);
 //        drawable.display();
 //        drawable.getContext().makeCurrent();
 //
