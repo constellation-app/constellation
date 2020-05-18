@@ -702,8 +702,13 @@ public class AnalyticConfigurationPane extends VBox {
             // Utilized for Question pane - TODO: when multiple tabs + saving of
             // questions is supported, link this currentquestion variable with 
             // the saved/loaded question
-            analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null :
-                    currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
+            analyticConfigurationPane.lock.lock();
+            try {
+                analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null : 
+                        currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
+            } finally {
+                analyticConfigurationPane.lock.unlock();
+            }
             if (!currentState.getActiveSelectablePlugins().isEmpty()) {
                 for (SelectableAnalyticPlugin selectedPlugin : currentState.getActiveSelectablePlugins().get(currentState.getCurrentAnalyticQuestionIndex())) {
                     if (currentCategory.equals(selectedPlugin.plugin.getClass().getAnnotation(AnalyticInfo.class).analyticCategory())) {
