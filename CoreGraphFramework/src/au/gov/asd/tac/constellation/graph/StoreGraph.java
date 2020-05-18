@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
-import au.gov.asd.tac.constellation.graph.schema.visual.*;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -1991,6 +1990,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
+     * TODO: The definitions outlined within this method can be refactored into a
+     * Concept. The attributes are specific to the layers implementation.
+     * 
      * Loop over all queries, recalculate dynamic ones. Append bit flag to
      * bitmask when it satisfies the query.
      *
