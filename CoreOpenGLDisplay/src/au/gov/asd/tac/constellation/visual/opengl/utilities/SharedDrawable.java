@@ -34,6 +34,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import org.openide.util.Utilities;
 
 /**
  * Set up a shared GLAutoDrawable to share textures across multiple
@@ -212,17 +213,24 @@ public final class SharedDrawable {
      * shared context.
      */
     public static void updateGlyphTextureController(final GL3 glCurrent) {
-        glCurrent.getContext().release();
-        try {
-            final int result = gl.getContext().makeCurrent();
-            if (result == GLContext.CONTEXT_NOT_CURRENT) {
+        if (Utilities.isMac())
+        {
+            glyphTextureController.update(glCurrent);
+        }
+        else
+        {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+                glyphTextureController.update(gl);
+            } finally {
+                gl.getContext().release();
                 glCurrent.getContext().makeCurrent();
-                throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
             }
-            glyphTextureController.update(gl);
-        } finally {
-            gl.getContext().release();
-            glCurrent.getContext().makeCurrent();
         }
     }
 

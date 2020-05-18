@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.utilities.AttributeUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.SetRadiusForArrangement;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -35,6 +36,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -78,6 +80,11 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final String xDimensionName = pp.get(SCATTER_3D_X_ATTRIBUTE).getStringValue();
         final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
         final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
+
+        if (StringUtils.isBlank(xDimensionName) || StringUtils.isBlank(yDimensionName) || StringUtils.isBlank(zDimensionName)) {
+            interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
+            return;
+        }
 
         scatter3dParams.setXDimension(xDimensionName);
         scatter3dParams.setYDimension(yDimensionName);

@@ -15,17 +15,24 @@
  */
 package au.gov.asd.tac.constellation.views.layers;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
 import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
+import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.GridPane;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -35,64 +42,142 @@ import javafx.scene.layout.GridPane;
 public class LayersViewController {
 
     private final LayersViewTopComponent parent;
-    private LayersViewPane pane = null;
 
     public LayersViewController(final LayersViewTopComponent parent) {
         this.parent = parent;
     }
 
     /**
-     * Runs a plugin which updates the bitmask that should be used to show
-     * elements.
+     * Update the bitmask used to determine visibility of elements on the graph.
      */
     public void execute() {
-        // ensure pane is set to the content of the parent view.
-        pane = parent.getContent();
+        final LayersViewPane pane = parent.getContent();
         if (pane == null) {
             return;
         }
-
         int newBitmask = 0b0;
-        Label layerIdText = null;
-        CheckBox visibilityCheckBox = null;
-        for (Node node : pane.getLayers().getChildren()) {
-
-            if (GridPane.getRowIndex(node) > 0) { // skip layer 1
-                layerIdText = GridPane.getColumnIndex(node) == 0 ? (Label) node : layerIdText;
-                visibilityCheckBox = GridPane.getColumnIndex(node) == 1 ? (CheckBox) node : visibilityCheckBox;
-
-                if (GridPane.getColumnIndex(node) == 2) {
-                    // only add layer id to list when it is checked
-                    newBitmask |= visibilityCheckBox.isSelected() ? (1 << Integer.parseInt(layerIdText.getText()) - 1) : 0;
-                }
-            }
+        for (final LayerDescription layer : pane.getlayers()) {
+            newBitmask |= layer.getCurrentLayerVisibility() ? (1 << layer.getLayerIndex() - 1) : 0;
         }
-
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
-        newBitmask = (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
-
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).executeLater(GraphManager.getDefault().getActiveGraph());
+        newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
+        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask))
+                .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     /**
-     * Grab all queries entered into text areas and store them in the qraph's
-     * queries.
+     * Get all layer queries from the Layer View and store them on the qraph.
      */
     public void submit() {
-        // ensure pane is set to the content of the parent view.
-        pane = parent.getContent();
+        final LayersViewPane pane = parent.getContent();
         if (pane == null) {
             return;
         }
-
         final List<String> layerQueries = new ArrayList<>();
-        for (Node node : pane.getLayers().getChildren()) {
-            if (GridPane.getRowIndex(node) > 0 && GridPane.getColumnIndex(node) == 2) {
-                final TextArea queryTextArea = (TextArea) node;
-                layerQueries.add(queryTextArea.getText().isBlank() ? null : queryTextArea.getText());
-            }
+        for (final LayerDescription layer : pane.getlayers()) {
+            layerQueries.add(layer.getLayerQuery().isEmpty() ? null : layer.getLayerQuery());
+        }
+        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries))
+                .executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+
+    /**
+     * Reads the graph's layers_view_state attribute and populates the Layers
+     * View pane.
+     */
+    public void readState() {
+        final LayersViewPane pane = parent.getContent();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (pane == null || graph == null) {
+            return;
+        }
+        PluginExecution.withPlugin(new LayersViewStateReader(pane))
+                .executeLater(graph);
+    }
+
+    /**
+     * Executes a plugin to write the current layers to the graph's
+     * layers_view_state Attribute.
+     */
+    public void writeState() {
+        final LayersViewPane pane = parent.getContent();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (pane == null || graph == null) {
+            return;
+        }
+        PluginExecution.withPlugin(new LayersViewStateWriter(pane.getlayers()))
+                .executeLater(graph);
+    }
+
+    /**
+     * Read the current state from the graph.
+     */
+    private static final class LayersViewStateReader extends SimpleReadPlugin {
+
+        private LayersViewPane pane;
+
+        public LayersViewStateReader(final LayersViewPane pane) {
+            this.pane = pane;
         }
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries)).executeLater(GraphManager.getDefault().getActiveGraph());
+        @Override
+        public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            if (graph == null) {
+                return;
+            }
+
+            final int layersViewStateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.get(graph);
+            if (layersViewStateAttributeId == Graph.NOT_FOUND) {
+                return;
+            }
+
+            final LayersViewState currentState = graph.getObjectValue(layersViewStateAttributeId, 0);
+            if (currentState == null || pane == null) {
+                return;
+            }
+            pane.setLayers(currentState.getLayers());
+        }
+
+        @Override
+        public String getName() {
+            return "Layers View: Read State";
+        }
+    }
+
+    /**
+     * Write the current state to the graph.
+     */
+    private static final class LayersViewStateWriter extends SimpleEditPlugin {
+
+        private List<LayerDescription> layers;
+
+        public LayersViewStateWriter(final List<LayerDescription> layers) {
+            this.layers = layers;
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            if (graph == null) {
+                return;
+            }
+
+            final int stateAttributeId = LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE.ensure(graph);
+            final LayersViewState currentState = graph.getObjectValue(stateAttributeId, 0);
+
+            final LayersViewState newState = currentState == null ? new LayersViewState() : new LayersViewState(currentState);
+            newState.setLayers(layers);
+
+            graph.setObjectValue(stateAttributeId, 0, newState);
+        }
+
+        @Override
+        protected boolean isSignificant() {
+            return false;
+        }
+
+        @Override
+        public String getName() {
+            return "Layers View: Write State";
+        }
     }
 }

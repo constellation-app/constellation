@@ -18,9 +18,11 @@ package au.gov.asd.tac.constellation.views.attributeeditor;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper;
 import au.gov.asd.tac.constellation.graph.visual.dragdrop.GraphDropper.DropInfo;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -30,8 +32,6 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -133,6 +133,9 @@ public class LabelDropper implements GraphDropper {
 
             } catch (final UnsupportedFlavorException | IOException | ClassNotFoundException ex) {
                 Exceptions.printStackTrace(ex);
+            } catch (final ClassCastException ex) {
+                //Do nothing
+                //This exception occurs when dragging a label from Attribute Editor to graph area
             }
         }
 

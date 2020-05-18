@@ -28,7 +28,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Arranging components in a grid of grids.
+ * Arranging components in a grid.
  *
  * @author algol
  */
@@ -55,7 +55,12 @@ public final class ArrangeInGridAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
+                .set(ArrangeInGridGeneralPlugin.GRID_CHOICE_PARAMETER_ID, GridChoice.SQUARE.toString())
+                .set(ArrangeInGridGeneralPlugin.SIZE_GAIN_PARAMETER_ID, 1.25f)
+                .set(ArrangeInGridGeneralPlugin.HORIZONTAL_GAP_PARAMETER_ID, 1)
+                .set(ArrangeInGridGeneralPlugin.VERTICAL_GAP_PARAMETER_ID, 1)
+                .set(ArrangeInGridGeneralPlugin.OFFSET_ROWS_PARAMETER_ID, false)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
     }

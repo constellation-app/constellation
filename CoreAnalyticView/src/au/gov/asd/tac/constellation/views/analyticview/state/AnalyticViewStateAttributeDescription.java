@@ -26,8 +26,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class AnalyticViewStateAttributeDescription extends ObjectAttributeDescription {
+    
+    public static final String ATTRIBUTE_NAME = "analytic_view_state";
 
     public AnalyticViewStateAttributeDescription() {
-        super(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.getName());
+        super(ATTRIBUTE_NAME);
     }
 }

@@ -49,7 +49,7 @@ public class TableViewConcept extends SchemaConcept {
 
     public static class MetaAttribute {
 
-        public static final SchemaAttribute TABLE_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, "table_view_state", "table_view_state")
+        public static final SchemaAttribute TABLE_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.META, TableViewStateAttributeDescription.ATTRIBUTE_NAME, "table_view_state")
                 .setDescription("The current state of the table view with relation to the active graph")
                 .build();
     }
