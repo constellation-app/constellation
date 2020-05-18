@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
+import java.util.logging.Logger;
 
 /**
  * A text hashmod based on a supplied CSV file. Will modify attributes specified
@@ -30,10 +30,13 @@ import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
  */
 public class Hashmod {
 
+    private static final Logger LOGGER = Logger.getLogger(Hashmod.class.getName());
+
     public static final String ATTRIBUTE_NAME = "hashmod";
     private HashmodCSVImportFileParser parser;
     private String csvFileStr;
     private List<String[]> data;
+
 
     public Hashmod() {
         parser = null;
@@ -71,7 +74,7 @@ public class Hashmod {
     }
 
     public String[] getCSVFileHeaders() {
-        if (data != null && data.size() > 0) {
+        if (data != null && !data.isEmpty()) {
             return data.get(0);
         }
         return null;
@@ -96,7 +99,7 @@ public class Hashmod {
 
     public HashMap<String, Integer> getCSVKeys() {
         final HashMap<String, Integer> keys = new HashMap<>();
-        if (data != null && data.size() > 0) {
+        if (data != null && !data.isEmpty()) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
@@ -124,14 +127,14 @@ public class Hashmod {
     }
 
     public List<String[]> getCSVFileData() {
-        if (data != null && data.size() > 0) {
+        if (data != null && !data.isEmpty()) {
             return data;
         }
         return null;
     }
 
     public String getValueFromKey(final String key, final int value) {
-        if (data != null && data.size() > 0) {
+        if (data != null && !data.isEmpty()) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
@@ -149,7 +152,7 @@ public class Hashmod {
         if (key == null) {
             return false;
         }
-        if (data != null && data.size() > 0) {
+        if (data != null && !data.isEmpty()) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0].equalsIgnoreCase(key)) {
