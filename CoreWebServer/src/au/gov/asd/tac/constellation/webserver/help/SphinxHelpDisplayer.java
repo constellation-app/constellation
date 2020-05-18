@@ -123,7 +123,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                 }
             }
 
-            LOGGER.log(Level.WARNING, "Could not find entry '{0}' in resource {1}", new Object[]{HELP_MAP, HELP_ZIP});
+            LOGGER.log(Level.WARNING, "Could not find entry {0} in resource {1}", new Object[]{HELP_MAP, HELP_ZIP});
         } else {
             throw new IOException(String.format("Help resource %s not found", HELP_ZIP));
         }
@@ -147,7 +147,6 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                 Files.copy(path, out);
             }
         } catch (final FileSystemNotFoundException ex) {
-            final String msg = String.format("Zip file %s not found", zipFile);
             throw new IOException(ex);
         }
     }
@@ -205,7 +204,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         LOGGER.log(Level.INFO, "Help source: {0}", helpSource);
 
         if (helpSource == null) {
-            LOGGER.info(String.format("help_map file at zip resource %s, %s", HELP_ZIP, HELP_MAP));
+            LOGGER.log(Level.INFO, "help_map file at zip resource {0}, {1}", new Object[]{HELP_ZIP, HELP_MAP});
             return getResourceZipFile(HELP_MAP);
         } else if (helpSource.startsWith("http")) {
             final String url = String.format("%s/%s", helpSource, HELP_MAP);
@@ -267,15 +266,15 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     @Override
     public boolean display(final HelpCtx helpCtx) {
         final String helpId = helpCtx.getHelpID();
-        LOGGER.log(Level.INFO, "display '{0}' from {1}", new Object[]{helpId, helpSource});
+        LOGGER.log(Level.INFO, "display {0} from {1}", new Object[]{helpId, helpSource});
 
         // Given the helpId, get the corresponding help page path.
         // If it doesn't exist (maybe because someone forgot to put the helpId
         // in their .rst file), go to the root page.
         //
-        final Map<String, String> helpMap = getHelpMap();
-        if (!helpMap.isEmpty()) {
-            final String part = helpMap.containsKey(helpId) ? helpMap.get(helpId) : "index.html";
+        final Map<String, String> helpMapCopy = getHelpMap();
+        if (!helpMapCopy.isEmpty()) {
+            final String part = helpMapCopy.containsKey(helpId) ? helpMapCopy.get(helpId) : "index.html";
 
             // Send the user's browser to the correct page, depending on the help source.
             //
@@ -297,14 +296,10 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
 
             LOGGER.log(Level.INFO, "help url {0}", url);
             try {
-                // Technically we should do the desktop checking first, but if it
-                // isn't, we need to show the user an error anyway.
-                //
-                //            if(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI(url));
-
-                return true;
-                //            }
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    Desktop.getDesktop().browse(new URI(url));
+                    return true;
+                }
             } catch (final URISyntaxException | IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
