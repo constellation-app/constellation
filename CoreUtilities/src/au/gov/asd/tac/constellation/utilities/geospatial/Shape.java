@@ -110,7 +110,7 @@ public class Shape {
     }
 
     private static final int GEOMETRY_PRECISION = 8;
-    
+
     private static final String POLGYGON_SHAPE = "Polygon";
 
     public enum GeometryType {
@@ -150,6 +150,12 @@ public class Shape {
         private final String name;
         private final int srid;
 
+        /**
+         * {@code CRS.decode()} is known to have performance issues so we are
+         * going to cache the output to reduce delays.
+         */
+        private static final Map<Integer, String> cache = new HashMap<>();
+
         private SpatialReference(final String name, final int srid) {
             this.name = name;
             this.srid = srid;
@@ -164,7 +170,11 @@ public class Shape {
         }
 
         public String getSrs() throws FactoryException {
-            return CRS.toSRS(CRS.decode("EPSG:" + srid));
+            if (!cache.containsKey(srid)) {
+                cache.put(srid, CRS.toSRS(CRS.decode("EPSG:" + srid)));
+            }
+
+            return cache.get(srid);
         }
     }
 
@@ -493,11 +503,11 @@ public class Shape {
                     if (attributes != null && attributes.containsKey(entry.getKey())) {
                         attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                             final String compatibleAttributeName = generateSqliteCompatibleHeader(attributeName);
-                            if (schemaAttributes.containsKey(compatibleAttributeName) 
+                            if (schemaAttributes.containsKey(compatibleAttributeName)
                                     && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                 feature.setAttribute(compatibleAttributeName, attributeValue);
                             } else if (schemaAttributes.containsKey(compatibleAttributeName)) {
-                                feature.setAttribute(compatibleAttributeName, attributeValue == null 
+                                feature.setAttribute(compatibleAttributeName, attributeValue == null
                                         ? null : attributeValue.toString());
                             }
                         });
@@ -643,7 +653,7 @@ public class Shape {
                             if (attributes != null && attributes.containsKey(entry.getKey())) {
                                 attributes.get(entry.getKey()).forEach((attributeName, attributeValue) -> {
                                     final String compatibleAttributeName = generateShapefileCompatibleHeader(attributeName);
-                                    if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null 
+                                    if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null
                                             && attributesOfValidType.get(entry.getKey()).contains(compatibleAttributeName)) {
                                         writableFeature.setAttribute(compatibleAttributeName, attributeValue);
                                     } else if (schemaAttributes.containsKey(compatibleAttributeName) && attributeValue != null) {
