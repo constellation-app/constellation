@@ -2590,6 +2590,10 @@
                 <binary-origin>release/modules/ext/lwjgl-opengl-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-glfw-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-glfw-3.2.3-natives-windows.jar</binary-origin>
+            </class-path-extension>            
+            <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-i586.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gluegen-rt-natives-windows-i586.jar</binary-origin>
             </class-path-extension>

@@ -229,8 +229,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Initialise the TopComponent state.
      */
     private void init() {
+        // This call adds the AWTCanvas to the JPanel
         displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
-
+        //displayPanel.setVisible(true);
+        //displayPanel.transferFocus();
+        
         DropTargetAdapter dta = new DropTargetAdapter() {
             @Override
             public void dragEnter(DropTargetDragEvent dtde) {

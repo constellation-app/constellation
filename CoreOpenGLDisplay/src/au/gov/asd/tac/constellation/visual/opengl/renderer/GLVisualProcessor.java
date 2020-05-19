@@ -195,7 +195,6 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     public final void performVisualUpdate() {
         updating = true;
-        //canvas.display();
         canvas.render();
     }
 
@@ -207,7 +206,7 @@ public class GLVisualProcessor extends VisualProcessor {
         //canvas.addGLEventListener(renderer);
         //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
         
-        canvas.initGL();
+        //canvas.initGL();
         
     }
 
@@ -409,7 +408,7 @@ public class GLVisualProcessor extends VisualProcessor {
     protected Component getCanvas() {
         return canvas;
     }
-
+    
     @Override
     public List<VisualChange> getFullRefreshSet(final VisualAccess access) {
         return Arrays.asList(
