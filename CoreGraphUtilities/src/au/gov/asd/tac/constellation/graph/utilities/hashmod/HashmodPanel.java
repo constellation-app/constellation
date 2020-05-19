@@ -24,9 +24,12 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.Mnemonics;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
@@ -45,6 +48,10 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String HASHMOD_CSV_FILE = "user.home";
     private String hashmodCSVFileStr = "";
+    private String hashmodCSVChainStr = "";
+    private Boolean isChainedHashmods = false;
+    private int numChainedHashmods = 0;
+    private Hashmod[] chainedHashmods = new Hashmod[10];
 
     /**
      * Creates new form HashmodPanel.
@@ -55,8 +62,48 @@ public class HashmodPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public Hashmod getHashmod() {
-        return new Hashmod(hashmodCSVFileStr);
+    public final Hashmod getHashmod() {
+        if (!isChainedHashmods()) {
+            return new Hashmod(hashmodCSVFileStr);
+        }
+        if (numChainedHashmods > 0) {
+            return chainedHashmods[0];
+        }
+        return null;
+    }
+
+    public Boolean isChainedHashmods() {
+        return isChainedHashmods;
+    }
+
+    public final Hashmod[] getChainedHashmods() {
+        if (isChainedHashmods()) {
+            return chainedHashmods;
+        }
+        return null;
+    }
+
+    public int numChainedHashmods() {
+        return isChainedHashmods() ? numChainedHashmods : 0;
+    }
+
+    public void setChainedHashmods(final String filesList) {
+        numChainedHashmods = 0;
+        isChainedHashmods = false;
+
+        if (StringUtils.isBlank(filesList)) {
+            return;
+        }
+
+        final String[] fileList = filesList.split(",");
+        for (final String file : fileList) {
+            final Hashmod hashmod = new Hashmod(file);
+            if (numChainedHashmods < 10 && hashmod != null) {
+                chainedHashmods[numChainedHashmods] = hashmod;
+                numChainedHashmods++;
+                isChainedHashmods = true;
+            }
+        }
     }
 
     public void setAttributeNames(final String key, final String attribute1, final String attribute2) {
@@ -90,6 +137,10 @@ public class HashmodPanel extends javax.swing.JPanel {
         value2AttributeTextField = new JTextField();
         createAllCheckbox = new JCheckBox();
         hashmodLabel4 = new JLabel();
+        hashmodLabel5 = new JLabel();
+        jScrollPane1 = new JScrollPane();
+        jCSVFileList = new JTextArea();
+        hashmodButton1 = new JButton();
 
         Mnemonics.setLocalizedText(hashmodLabel, NbBundle.getMessage(HashmodPanel.class, "Hashmod.csv.label")); // NOI18N
 
@@ -125,6 +176,20 @@ public class HashmodPanel extends javax.swing.JPanel {
 
         Mnemonics.setLocalizedText(hashmodLabel4, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel4.text")); // NOI18N
 
+        Mnemonics.setLocalizedText(hashmodLabel5, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodLabel5.text")); // NOI18N
+
+        jCSVFileList.setColumns(20);
+        jCSVFileList.setRows(5);
+        jScrollPane1.setViewportView(jCSVFileList);
+
+        Mnemonics.setLocalizedText(hashmodButton1, NbBundle.getMessage(HashmodPanel.class, "HashmodPanel.hashmodButton1.text")); // NOI18N
+        hashmodButton1.setMargin(new Insets(2, 0, 2, 0));
+        hashmodButton1.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                hashmodButton1ActionPerformed(evt);
+            }
+        });
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -134,7 +199,7 @@ public class HashmodPanel extends javax.swing.JPanel {
                     .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(hashmodLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(hashmodCSVFile))
+                        .addComponent(hashmodCSVFile, GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(hashmodLabel2)
@@ -146,15 +211,19 @@ public class HashmodPanel extends javax.swing.JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(hashmodLabel3)
-                            .addComponent(hashmodLabel4))
+                            .addComponent(hashmodLabel4)
+                            .addComponent(hashmodLabel5))
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(value2AttributeTextField)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(createAllCheckbox)
                                 .addGap(0, 0, Short.MAX_VALUE))
-                            .addComponent(value2AttributeTextField))))
+                            .addComponent(jScrollPane1))))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(hashmodButton)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(hashmodButton, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(hashmodButton1, GroupLayout.Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 52, GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -180,7 +249,15 @@ public class HashmodPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                     .addComponent(createAllCheckbox)
                     .addComponent(hashmodLabel4))
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(hashmodLabel5)
+                            .addComponent(hashmodButton1))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -204,17 +281,35 @@ public class HashmodPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_hashmodButtonActionPerformed
 
+    private void hashmodButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hashmodButton1ActionPerformed
+        final String hashmodCSVList = jCSVFileList.getText().trim();
+        if (!hashmodCSVList.isEmpty()) {
+            setChainedHashmods(hashmodCSVList);
+        }
+
+        if (isChainedHashmods()) {
+            Hashmod firstHashmod = getChainedHashmods()[0];
+            setAttributeNames(firstHashmod.getCSVKey(), firstHashmod.getCSVHeader(1), firstHashmod.getCSVHeader(2));
+            hashmodCSVFile.setText(firstHashmod.getCSVFileName());
+            hashmodCSVFileStr = firstHashmod.getCSVFileName();
+        }
+    }//GEN-LAST:event_hashmodButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JTextField hashmodCSVFile;
     private JCheckBox createAllCheckbox;
-    private JTextField keyAttributeTextField;
-    private JTextField value1AttributeTextField;
-    private JTextField value2AttributeTextField;
     private JButton hashmodButton;
+    private JButton hashmodButton1;
+    private JTextField hashmodCSVFile;
     private JLabel hashmodLabel;
     private JLabel hashmodLabel1;
     private JLabel hashmodLabel2;
     private JLabel hashmodLabel3;
     private JLabel hashmodLabel4;
+    private JLabel hashmodLabel5;
+    private JTextArea jCSVFileList;
+    private JScrollPane jScrollPane1;
+    private JTextField keyAttributeTextField;
+    private JTextField value1AttributeTextField;
+    private JTextField value2AttributeTextField;
     // End of variables declaration//GEN-END:variables
 }

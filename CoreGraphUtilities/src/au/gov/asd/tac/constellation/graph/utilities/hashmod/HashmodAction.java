@@ -35,6 +35,7 @@ import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
+
 /*
  * action to allow the user to set a hashmod for a graph window
  */
@@ -65,6 +66,9 @@ public final class HashmodAction implements ActionListener {
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
             if (e.getActionCommand().equals("OK")) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
+                final Boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
+                final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
+                final int numChainedHashmods = hashmodPanel.numChainedHashmods();
                 final Boolean createNonMatchingKeysVertexes = hashmodPanel.getCreateVertexes();
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
@@ -73,6 +77,11 @@ public final class HashmodAction implements ActionListener {
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
                             HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes);
+                        }
+                        if (isChainedHashmods && numChainedHashmods >= 2) {
+                            for (int i = 1; i < numChainedHashmods; i++) {
+                                HashmodAction.run(wg, interaction, chainedHashmods[i], createNonMatchingKeysVertexes);
+                            }
                         }
                     }
                 }).executeLater(graph);
