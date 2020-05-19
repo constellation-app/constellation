@@ -101,14 +101,14 @@ public abstract class MapLayer {
     }
 
     public void mouseDragged(final MouseEvent event) {
-        if (event.getButton() == PConstants.LEFT) {
+        if (event.getButton() == PConstants.RIGHT) {
             layer = null;
             mouseIsDragging = true;
         }
     }
 
     public void mouseReleased(final MouseEvent event) {
-        if (mouseIsDragging && event.getButton() == PConstants.LEFT) {
+        if (mouseIsDragging && event.getButton() == PConstants.RIGHT) {
             layer = null;
             mouseIsDragging = false;
             mouseIsReleased = true;

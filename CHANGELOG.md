@@ -11,7 +11,14 @@
 * Updated parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
 * Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`
 
+## 2020-04-03 Changes in April 2020
+* Added search feature to Table View Column Selection.
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
+
 ## 2020-04-01 Changes in April 2020
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
 * Added Layers view to the Experimental views tab.
@@ -37,7 +44,6 @@
 * Updated the java source detected by SonarQube to check for Java 11.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
 * Updated `deobfuscate()` in `PasswordDeobfuscator` to now return a String instead of a CharSequence.
-
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

@@ -51,9 +51,7 @@ import processing.event.MouseEvent;
 public class ToolsOverlay extends MapOverlay {
 
     private static final Logger LOGGER = Logger.getLogger(ToolsOverlay.class.getName());
-    
     private static final String DISABLED = "Disabled";
-
     private enum MeasurementSystem {
 
         IMPERIAL("mi", (start, end) -> Distance.Haversine.estimateDistanceInMiles(start.getLat(), start.getLon(), end.getLat(), end.getLon())),
@@ -103,7 +101,7 @@ public class ToolsOverlay extends MapOverlay {
     private int drawOriginY = -1;
     private int drawDeltaX = -1;
     private int drawDeltaY = -1;
-
+    
     public ToolsOverlay() {
         this.enabled = false;
     }
@@ -122,6 +120,14 @@ public class ToolsOverlay extends MapOverlay {
     public float getY() {
         return renderer.getComponent().getY() + 10f;
     }
+    
+     /**
+     * @return the measureActive
+     */
+    public boolean isMeasureActive() {
+        return measureActive;
+    }
+
 
     private Location getMeasureToolStart() {
         if (measureOriginX == -1 && measureOriginY == -1) {
@@ -172,6 +178,7 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
+                this.isInFocus = !this.isInFocus;
                 mouseLeftMeasureToolRegion = false;
             }
         } else {
@@ -383,7 +390,7 @@ public class ToolsOverlay extends MapOverlay {
 
     @Override
     public void mouseClicked(final MouseEvent event) {
-        if (event.getButton() == PConstants.LEFT) {
+        if (event.getButton() == PConstants.LEFT && !renderer.isIgnoreMapInteractions()) {
 
             // draw measure line
             if (mouseLeftMeasureToolRegion && measureActive) {
