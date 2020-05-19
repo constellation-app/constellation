@@ -399,7 +399,7 @@ public final class TableViewPane extends BorderPane {
 
         cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem());
 
-        final Label columnFilterLabelSource = new Label(FILTER);
+        final Label columnFilterLabelSource = new Label(FILTER_CAPTION);
         final TextField columnFilterTextFieldSource = new TextField();
         final HBox filterBoxSource = new HBox();
         filterBoxSource.getChildren().addAll(columnFilterLabelSource, columnFilterTextFieldSource);
