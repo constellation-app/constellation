@@ -124,7 +124,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                     });
                     analyticViewPane.getConfigurationPane().updateSelectablePluginsParameters();
                 }
-                
+
             });
         });
     }
@@ -174,12 +174,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.getConfigurationPane().updateState(false);
         }
     }
-    
+
     @Override
     protected void handleGraphOpened(final Graph graph) {
         analyticViewPane.getConfigurationPane().updateState(false);
     }
-    
+
     @Override
     protected void handleComponentOpened() {
         analyticViewPane.getConfigurationPane().updateState(false);

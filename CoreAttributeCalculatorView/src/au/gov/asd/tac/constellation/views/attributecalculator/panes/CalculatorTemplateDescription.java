@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1713,7 +1713,7 @@ public enum CalculatorTemplateDescription {
     public String[] getNotes() {
         return notes;
     }
-    
+
     public static CalculatorTemplateDescription getInstanceFromName(String name) {
         for (CalculatorTemplateDescription c : CalculatorTemplateDescription.values()) {
             if (c.templateName.equals(name)) {
@@ -1722,8 +1722,9 @@ public enum CalculatorTemplateDescription {
         }
         return null;
     }
-    
+
     private class CalculatorTemplateDescriptionConstants {
+
         //parameters
         private static final String COMPUTATION_ANY = "computation - Any expression.";
         private static final String CONDITION_BOOLEAN = "condition - A boolean expression.";
@@ -1740,7 +1741,7 @@ public enum CalculatorTemplateDescription {
         private static final String X_ANY_ORDERABLE = "x - Any orderable value, e.g., a number.";
         private static final String Y_ANY_NUMERICAL = "y - Any numerical value";
         private static final String Y_ANY_ORDERABLE = "y - Any orderable value, e.g., a number.";
-        
+
         //return type
         private static final String A_RETURN_TYPE = "A value.";
         private static final String BOOLEAN_RETURN_TYPE = "A boolean (True/False).";
@@ -1749,7 +1750,7 @@ public enum CalculatorTemplateDescription {
         private static final String NON_NEGATIVE_INTEGER_RETURN_TYPE = "A non-negative integer.";
         private static final String NUMBER_RETURN_TYPE = "A number.";
         private static final String STRING_RETURN_TYPE = "A string.";
-        
+
         //rules
         private static final String EDGE_EVALUATING_EFFECT = "Evaluating any transaction attributes and properties for an edge results in a list of attribute/property values for all the edge's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'.";
         private static final String LINK_EVALUATING_EFFECT = "Evaluating any transaction attributes and properties for a link results in a list of attribute/property values for all the link's constituent transactions. Hence it is usually necessary to use the python functions 'all' and 'any' around attributes and properties used inside 'condition'.";

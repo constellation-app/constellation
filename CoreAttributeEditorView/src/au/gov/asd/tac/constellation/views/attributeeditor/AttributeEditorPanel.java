@@ -146,7 +146,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String DARK_THEME = "resources/Style-AttributeEditor-Dark.css";
     private static final String NO_VALUE_TEXT = "<No Value>";
-    
+
     private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
     private static final String PRIMARY_KEY_ATTRIBUTE_COLOUR = "#8a1d1d";
     private static final String CUSTOM_ATTRIBUTE_COLOUR = "#1f4f8a";
@@ -870,8 +870,8 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     }
 
     private void updateTimeZoneAction(final AttributeData attr) {
-        final EditOperation editOperation = zoneId -> 
-                PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
+        final EditOperation editOperation = zoneId
+                -> PluginExecution.withPlugin(new UpdateTimeZonePlugin((ZoneId) zoneId, attr)).executeLater(GraphManager.getDefault().getActiveGraph());
         final AbstractEditor<ZoneId> editor = UPDATE_TIME_ZONE_EDITOR_FACTORY.createEditor(editOperation, String.format("Set time-zone for attribute %s", attr.getAttributeName()), TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
         dialog.showDialog();

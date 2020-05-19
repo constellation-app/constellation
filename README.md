@@ -64,21 +64,17 @@ Download Constellation by going to the [release page](https://github.com/constel
 ## Run Constellation
 
 Unzip the constellation.zip bundle and double click the `bin/constellation64.exe` 
-for Windows or run the `bin\constellation` shell script for Linux.
-
-There is currently no support for Mac and the feature request is tracked by 
-[Issue #21](https://github.com/constellation-app/constellation/issues/21).
+for Windows or run the `bin\constellation` shell script for Linux and MacOSX.
 
 ## Build Constellation
-
-* Constellation requires at least Open JDK 11 with JFX 11 support build to be 
-installed and is known to work on Windows 64-bit and Linux 64-bit.
 
 To build Constellation from source code do the following:
 
 * Download Azul's Zulu distribution of JDK 11 with JFX 11, either the 
-[Windows 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip) 
-or [Linux 64 bit build](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
+[Windows 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip),
+[Linux 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
+or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-macosx_x64.tar.gz)
+
 * Download [NetBeans 11.3](https://netbeans.apache.org/download/nb113/nb113.html)
 * Update `netbeans_jdkhome` in netbeans.conf to point to the Azul Zulu JDK you downloaded (e.g. `C:\Program Files\NetBeans-11.3\netbeans\etc`)
 * NetBeans 11 have dropped support for the Java Help system but is still required by Constellation. Until we find a solution to #15 there are 2 jar files that have to be manually copied into the NetBeans installation folder.

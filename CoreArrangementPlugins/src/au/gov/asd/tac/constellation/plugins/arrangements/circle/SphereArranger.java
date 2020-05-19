@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.circle;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
 
 /**
  * Arrange in a sphere.
@@ -37,7 +37,7 @@ public class SphereArranger implements Arranger {
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         final int vxCount = wg.getVertexCount();
-        if(vxCount < 2) {
+        if (vxCount < 2) {
             return;
         }
 
@@ -51,19 +51,19 @@ public class SphereArranger implements Arranger {
         final int z2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
 
         final float rnd = 1f; // Use new Random().nextFloat() * vxCount to add some randomess.
-        final float offset = 2f/vxCount;
-        final float increment = (float)(Math.PI * (3.0 - Math.sqrt(5)));
+        final float offset = 2f / vxCount;
+        final float increment = (float) (Math.PI * (3.0 - Math.sqrt(5)));
 
         // Make the radius dependent on the number of vertices, with a lower limit.
         //
-        final float radius = 8f + (float)(1.0 * Math.sqrt(vxCount));
+        final float radius = 8f + (float) (1.0 * Math.sqrt(vxCount));
 
-        for(int position = 0; position < vxCount; position++) {
-            final float y = ((position*offset)-1) + (offset/2f);
-            final float r = (float)Math.sqrt(1.0 - Math.pow(y, 2.0));
+        for (int position = 0; position < vxCount; position++) {
+            final float y = ((position * offset) - 1) + (offset / 2f);
+            final float r = (float) Math.sqrt(1.0 - Math.pow(y, 2.0));
             final float phi = ((position + rnd) % vxCount) * increment;
-            final float x = (float)Math.cos(phi)*r;
-            final float z = (float)Math.sin(phi)*r;
+            final float x = (float) Math.cos(phi) * r;
+            final float z = (float) Math.sin(phi) * r;
 
             final int vxId = wg.getVertex(position);
 
@@ -78,7 +78,7 @@ public class SphereArranger implements Arranger {
             wg.setFloatValue(zId, vxId, z * radius);
         }
 
-        if(maintainMean) {
+        if (maintainMean) {
             GraphUtilities.moveMean(wg, oldMean);
         }
     }

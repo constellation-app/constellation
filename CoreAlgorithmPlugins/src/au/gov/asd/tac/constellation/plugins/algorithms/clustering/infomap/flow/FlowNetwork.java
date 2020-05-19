@@ -116,7 +116,7 @@ public class FlowNetwork {
                     for (int i = 0; i < numNodes; ++i) {
                         nodeFlow[i] /= sumNodeRank;
                     }
-                    
+
                     // Update link data to represent flow instead of weight.
                     for (final Connection conn : flowConns) {
                         conn.setFlow(conn.getFlow() * (nodeFlowSteadyState[conn.getSource()] / sumLinkOutWeight[conn.getSource()] / sumNodeRank));

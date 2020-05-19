@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,8 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     }
 
     /**
-     * Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
+     * Display the incoming REST request to provide some confidence to the user
+     * and debugging for the developer :-).
      *
      * @param method request.getMethod()
      * @param path request.getServletPath()

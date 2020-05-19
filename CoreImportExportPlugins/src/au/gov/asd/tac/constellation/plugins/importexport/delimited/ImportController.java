@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -334,7 +334,7 @@ public class ImportController {
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
-        if (attributeFilter != null &&  attributeFilter.length() > 0) {
+        if (attributeFilter != null && attributeFilter.length() > 0) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
                 if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
@@ -385,7 +385,7 @@ public class ImportController {
         return configurationPane.createDefinitions();
     }
 
-    public void processImport() throws IOException, InterruptedException, PluginException {
+    public List<File> processImport() throws IOException, InterruptedException, PluginException {
 
         final List<ImportDefinition> definitions = configurationPane.createDefinitions();
 
@@ -431,6 +431,7 @@ public class ImportController {
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                     .executeWriteLater(importGraph);
         }
+        return files;
     }
 
     public void cancelImport() {

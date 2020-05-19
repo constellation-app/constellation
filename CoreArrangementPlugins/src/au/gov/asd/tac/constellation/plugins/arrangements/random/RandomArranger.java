@@ -30,7 +30,7 @@ public class RandomArranger implements Arranger {
 
     private final int dimensions;
     private boolean maintainMean = false;
-    
+
     private final SecureRandom random = new SecureRandom();
 
     public RandomArranger(final int dimensions) {

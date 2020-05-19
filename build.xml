@@ -142,8 +142,8 @@
     </target>
 
     <target name="download-dependencies" 
-                depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
-                description="Download dependent libraries.">
+            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
+            description="Download dependent libraries.">
         <mkdir dir="${ivy.lib.dir}"/>
         <ivy:resolve/>
         <ivy:retrieve/>
@@ -196,7 +196,7 @@
     <!-- Useful Dependency Utilities -->
 
     <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" 
-                description="Generate a detailed dependency report">
+            description="Generate a detailed dependency report">
         <delete dir="${suite.build.dir}/ivy-reports"/>
         <mkdir dir="${suite.build.dir}/ivy-reports" />
 
@@ -205,12 +205,12 @@
     </target>
 
     <target name="dependency-tree" depends="-load-ivy-tasks" 
-                description="Output the dependencies in a tree layout to the console.">
+            description="Output the dependencies in a tree layout to the console.">
         <ivy:dependencytree/>
     </target>
 
     <target name="check-latest-version" depends="-load-ivy-tasks" 
-                description="Check whether there is a new release of a dependency.">
+            description="Check whether there is a new release of a dependency.">
         <ivy:resolve/>
         <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>

@@ -69,7 +69,7 @@ public abstract class InfomapBase {
     protected StringBuilder bestIntermediateStatistics;
 
     private final ArrayList<NodeBase> nonLeafActiveNetwork;
-    
+
     private static final String NINE_FORMAT1 = "%.9f, ";
     private static final String NINE_FORMAT2 = "%.9f]";
     private static final String NINE_FORMAT3 = " (sum: %.9f)%n";

@@ -61,7 +61,6 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
         depths[firstVertex] = 1;
         extendSpanningTree(graph, firstVertex, parents, depths, cycles);
 
-
         int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
             int vertex = graph.getVertex(position);
@@ -75,7 +74,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
                     }
                     parentChildren[++parentChildren[0]] = vertex;
                 }
-            } 
+            }
 
             graph.setBooleanValue(selectedAttribute, vertex, cycles[vertex] > 0);
         }

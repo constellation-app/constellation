@@ -1,41 +1,65 @@
 # Constellation Changes
 
-## 2020-05-01 Changes in May 2020
-* Fixed a bug effecting the histogram scrolling
+## 2020-05-01 Changes in May 2020 
+* Added feedback for delimiter import.
+* Added basic support for MacOS.
+* Fixed a label rendering bug on MacOS.
+* Fixed a DPI scaling bug on MacOS and Windows.
+* Fixed a bug effecting the histogram scrolling.
+* Fixed a bug preventing v1 graphs from being open.
+* Updated ImportController's processImport function to return the list of files it has imported.
+* Updated parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
+* Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`
+
+## 2020-04-03 Changes in April 2020
+* Added search feature to Table View Column Selection.
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
 
 ## 2020-04-01 Changes in April 2020
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
 * Added Layers view to the Experimental views tab.
 * Added `RenderablePriority` enum to `GLRenderable` to house the constants that sat in that class.
 * Added `VisualPriority` enum to `VisualOperation` to house the constants that sat in that class.
-* Added `DoubleAttributeDescription`, `DoubleAttributeInteraction` and `DoubleIOProvider` to support high precision numbers in attributes.
-* Added `DoubleObjectAttributeDescription`, `DoubleObjectAttributeInteraction` and `DoubleObjectIOProvider` as a nullable alternative to the double attribute type.
-* Added `ShortAttributeDescription`, `ShortAttributeInteraction` and `ShortIOProvider` to support numbers with lower memory usage in attributes.
-* Added `ShortObjectAttributeDescription`, `ShortObjectAttributeInteraction` and `ShortObjectIOProvider` as a nullable alternative to the short attribute type.
-* Added `ByteAttributeDescription`, `ByteAttributeInteraction` and `ByteIOProvider` to support numbers with lower memory usage in attributes.
-* Added `ByteObjectAttributeDescription`, `ByteObjectAttributeInteraction` and `ByteObjectIOProvider` as a nullable alternative to the byte attribute type.
+* Added `DoubleAttributeDescription`, `DoubleAttributeInteraction`, `DoubleEditorFactory` and `DoubleIOProvider` to support high precision numbers in attributes.
+* Added `DoubleObjectAttributeDescription`, `DoubleObjectAttributeInteraction`, `DoubleObjectEditorFactory` and `DoubleObjectIOProvider` as a nullable alternative to the double attribute type.
+* Added `ShortAttributeDescription`, `ShortAttributeInteraction`, `ShortEditorFactory` and `ShortIOProvider` to support numbers with lower memory usage in attributes.
+* Added `ShortObjectAttributeDescription`, `ShortObjectAttributeInteraction`, `ShortObjectEditorFactory` and `ShortObjectIOProvider` as a nullable alternative to the short attribute type.
+* Added `ByteAttributeDescription`, `ByteAttributeInteraction`, `ByteEditorFactory` and `ByteIOProvider` to support numbers with lower memory usage in attributes.
+* Added `ByteObjectAttributeDescription`, `ByteObjectAttributeInteraction`, `ByteObjectEditorFactory` and `ByteObjectIOProvider` as a nullable alternative to the byte attribute type.
+* Added `obfuscate()` to `PasswordObfuscator`.
 * Removed the container image to build the NetBeans 8 version of Constellation.
+* Removed `getSearchString()`, canBeImported()` and `ordering()` from `AttributeDescription` and any implementing classes.
+* Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
+* Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from.
 * Renamed `getTags()` in `GraphReport` to `getUTags()` to match field the function was getting.
 * Renamed `getChildReports()` in `PluginReport` to `getUChildReports()` to match field the function was getting.
 * Renamed `equal()` in `NativeAttributeType` to `equalValue()` to avoid confusion with `Object.equals()`.
-* Removed `datetime` parameter from `makeDateTimesEven()` in `ZonedDateTimeAxis` as this was not needed.
-* Removed `boxBlurF()` and `boxBlurFF()` from `GaussianBlur` as their implementation was simple enough to be added straight to where they called from.
+* Renamed `PasswordKey` to `PasswordSecret` and added `getIV()` to the class.
+* Renamed `DefaultPasswordKey` to `DefaultPasswordSecret` to mirror above change.
 * Updated the container used to build Constellation on Travis to `11.3.1` which fixes the issue of no code coverage being reported in SonarQube.
 * Updated the java source detected by SonarQube to check for Java 11.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
-
+* Updated `deobfuscate()` in `PasswordDeobfuscator` to now return a String instead of a CharSequence.
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.
 * Added new module Core Plugin Reporter to separate it from the plugin framework.
 * Added new module Core Named Selections to break it out of Core Functionality.
-* Added new module Core Analytic Calculator to separate it from the Scripting View.
+* Added new module Core Attribute Calculator to separate it from the Scripting View.
+* Added `AnalyticSchemaPluginRegistry` to Core Analytic Schema
+* Added `VisualGraphPluginRegistry` to Core Visual Graph
 * Fixed a logic bug with `GraphRendererDropTarget` preventing graph droppers from every running.
 * Moved `VisualConcept` to the Core Visual Schema module.
 * Moved `BBoxf` and `BBoxd` to the Core Visual Graph module.
 * Moved `SimpleGraphOpener` and `SimpleGraphTopComponent` to the Core Graph Node module.
 * Moved `VisualGraphOpener` and `VisualGraphTopComponent` to the Core Interactive Graph module.
+* Moved `AttributeSelectionPanel` to Core Graph Utilities module.
+* Moved `DragAction` to Core Visual Graph module.
+* Moved a number of plugins out of Core Functionality into other modules to better reflect their purpose.
 * Removed the `build-zip` stage from Travis as it wasn't being used.
 * Removed the Core Visual Support module by merging it with Core Utilities.
 * Renamed base package of Core Visual Schema to `au.gov.asd.tac.constellation.graph.schema.visual`.
@@ -44,9 +68,12 @@
 * Renamed base package of Core Algorithms to `au.gov.asd.tac.constellation.plugins.algorithms`.
 * Renamed base package of Core Arrangements to `au.gov.asd.tac.constellation.plugins.arrangements`.
 * Renamed base package of Core Import Export to `au.gov.asd.tac.constellation.plugins.importexport`.
+* Renamed `InteractivePluginRegsitry` to `InteractiveGraphPluginRegistry`.
+* Renamed `IoProgressHandle` to `HandleIoProgress`.
+* Renamed `Decorators` to `VertexDecorators` and moved to Core Visual Schema module.
 * Updated Core Visual Schema with all attribute classes relevant to it.
 * Updated Core Analytic Schema with all attribute classes relevant to it.
-* Updated the Core Web Server module with a commplete rewrite regarding adding REST services.
+* Updated the Core Web Server module with a complete rewrite regarding adding REST services.
 * Updated the REST API with a major refactor.
 * Updated the `README.MD` instructions to explain the NetBeans 11 installation workaround.
 * Updated the Travis run image to use NetBeans 11.3 and include the workaround for NetBeans 11.

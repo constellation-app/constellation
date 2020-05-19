@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * Entering file names manually or making a selection with the file chooser will
  * update the object value of the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
  *
  * @author ruby_crucis
  */

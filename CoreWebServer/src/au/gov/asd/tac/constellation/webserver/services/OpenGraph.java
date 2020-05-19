@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,13 +40,14 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Open a .star graph file.
  * <p>
- * TODO why does this not work exactly the same as opening manually?
- * Try this, then manually open recent a couple of times, for example.
+ * TODO why does this not work exactly the same as opening manually? Try this,
+ * then manually open recent a couple of times, for example.
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class OpenGraph extends RestService {
+
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
 
@@ -90,7 +91,7 @@ public class OpenGraph extends RestService {
 
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
-        if(name.toLowerCase().endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (name.toLowerCase().endsWith(GraphDataObject.FILE_EXTENSION)) {
             name = name.substring(0, name.length() - GraphDataObject.FILE_EXTENSION.length());
         }
 
@@ -107,8 +108,8 @@ public class OpenGraph extends RestService {
             root.put("name", GraphNode.getGraphNode(graph.getId()).getDisplayName());
             root.put("schema", graph.getSchema().getFactory().getName());
             mapper.writeValue(out, root);
-        } catch(final GraphParseException ex) {
-                throw new RestServiceException(ex);
+        } catch (final GraphParseException ex) {
+            throw new RestServiceException(ex);
         }
     }
 }

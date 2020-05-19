@@ -718,7 +718,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                         graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
                     }
-                } else { 
+                } else {
                     // when keeping all vertices, do not dim, and show all.
                     // assign all nodes to a group/cluster
                     while (group.getMergeStep() <= state.currentStep) {
@@ -727,7 +727,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                     graph.setFloatValue(vertexVisibilityAttribute, vertex, 2.0f);
                     graph.setBooleanValue(vertexDimmedAttribute, vertex, false);
                     graph.setObjectValue(vxOverlayColorAttr, vertex, group.getColor());
-                        
+
                     if (state.clusterSeenBefore[group.getVertex()] < state.redrawCount) {
                         state.clusterSeenBefore[group.getVertex()] = state.redrawCount;
                         state.clusterNumbers[group.getVertex()] = nextCluster++;
@@ -776,7 +776,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                         graph.setObjectValue(txOverlayColorAttr, transaction, highVertexColor);
                         graph.setBooleanValue(transactionDimmedAttribute, transaction, false);
                         graph.setFloatValue(transactionVisibilityAttribute, transaction, 2.0f);
-                    }  
+                    }
                 }
             }
         }

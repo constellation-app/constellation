@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,13 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         final int yAttrId = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttrId = VisualConcept.VertexAttribute.Z.get(graph);
 
+        final int vxLayerAttrId = VisualConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+        final int graphLayerAttrId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+
         final int vxId = graph.addVertex();
+        int layer = graph.getIntValue(graphLayerAttrId, 0);
+        layer = layer == 1 ? 1 : layer | (1 << 0);
+        graph.setIntValue(vxLayerAttrId, vxId, layer);
         graph.setFloatValue(xAttrId, vxId, x);
         graph.setFloatValue(yAttrId, vxId, y);
         graph.setFloatValue(zAttrId, vxId, z);

@@ -913,14 +913,14 @@ public final class TableViewPane extends BorderPane {
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
                         = newColumnOrder.stream().map(c -> {
-                                    for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
-                                        if (c.getText().equals(col.getThird().getText())) {
-                                            return col;
-                                        }
-                                    }
-                                    // THe following can only happen 
-                                    return columnIndex.get(newColumnOrder.indexOf(c));
-                                }).collect(Collectors.toList());
+                            for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                                if (c.getText().equals(col.getThird().getText())) {
+                                    return col;
+                                }
+                            }
+                            // THe following can only happen 
+                            return columnIndex.get(newColumnOrder.indexOf(c));
+                        }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
             }

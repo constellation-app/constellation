@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private final JToggleButton selectedOnlyButton;
     private final JToggleButton vxButton;
     private final JToggleButton txButton;
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public TableViewTopComponent() {

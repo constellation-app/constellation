@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,12 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class SetGraphValues extends RestService {
+
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    
+
     private static final String COLUMNS = "columns";
 
     @Override
@@ -97,7 +98,7 @@ public class SetGraphValues extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
-        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
+        if (!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
             throw new RestServiceException("Could not find columns object containing column names");
         }
 
@@ -108,14 +109,14 @@ public class SetGraphValues extends RestService {
         final ArrayNode data = (ArrayNode) json.get("data");
 
         // Do we have one and only one row of data?
-        if(data.size() != 1) {
+        if (data.size() != 1) {
             throw new RestServiceException("Must have one row of data");
         }
 
         final ArrayNode row = (ArrayNode) data.get(0);
 
         // Do the number of column headers and the number of data elements in the row match?
-        if(columns.size() != row.size()) {
+        if (columns.size() != row.size()) {
             throw new RestServiceException("Column names do not match data row");
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -103,13 +102,7 @@ public class OverviewPanel extends Pane {
 
         this.getStylesheets().add(OverviewPanel.class.getResource(DARK_THEME).toExternalForm());
         this.getChildren().add(innerPane);
-        this.setOnScroll(new EventHandler<ScrollEvent>() {
-
-            @Override
-            public void handle(final ScrollEvent t) {
-                coordinator.zoomFromOverview(t);
-            }
-        });
+        this.setOnScroll(coordinator::zoomFromOverview);
 
     }
 
@@ -135,12 +128,22 @@ public class OverviewPanel extends Pane {
      * @param upperBound The upper time extent that needs to be represented on
      * the POV component.
      */
-    public void setExtentPOV(long lowerBound, long upperBound) {
-        if (lowerBound <= lowestTimeExtent) {
-            lowerBound = (long) lowestTimeExtent;
+    public void setExtentPOV(double lowerBound, double upperBound) {
+        if (lowerBound < lowestTimeExtent) {
+            lowerBound = lowestTimeExtent;
+
+            final double currentUpperBound = ((pov.getX() + pov.getWidth()) / this.getWidth() * range) + lowestTimeExtent;
+            if (upperBound < currentUpperBound) {
+                upperBound = currentUpperBound;
+            }
         }
-        if (upperBound >= highestTimeExtent) {
-            upperBound = (long) highestTimeExtent;
+        if (upperBound > highestTimeExtent) {
+            upperBound = highestTimeExtent;
+
+            final double currentLowerBound = (pov.getX() / this.getWidth() * range) + lowestTimeExtent;
+            if (lowerBound > currentLowerBound) {
+                lowerBound = currentLowerBound;
+            }
         }
 
         final double normalLowerBound = lowerBound - lowestTimeExtent;
@@ -265,8 +268,8 @@ public class OverviewPanel extends Pane {
             xAxis.setLowerBound(0);
             xAxis.setUpperBound(intervals);
 
-            setExtentPOV((long) coordinator.getTimelineLowerTimeExtent(),
-                    (long) coordinator.getTimelineUpperTimeExtent());
+            setExtentPOV(coordinator.getTimelineLowerTimeExtent(),
+                    coordinator.getTimelineUpperTimeExtent());
         }
     }
     // </editor-fold>
@@ -476,9 +479,6 @@ public class OverviewPanel extends Pane {
                 // only drag on 'x' press:
                 performDrag(t);
             }
-
-            // Update the origin as we have had some movement:
-            origin = t.getX();
         }
 
         /**
@@ -512,6 +512,9 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+
+                    // Update the origin as we have had some movement:
+                    origin = t.getX();
                 }
             } // Determine if the cursor is currently hovering over the right border:
             else if (isResizingRight) {
@@ -528,6 +531,9 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new time extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+
+                    // Update the origin as we have had some movement:
+                    origin = t.getX();
                 }
             }
         }
@@ -557,6 +563,9 @@ public class OverviewPanel extends Pane {
                 final long newLowerTimeExtent = (long) (((newX / histogram.getWidth()) * range) + lowestTimeExtent);
                 final long newUpperTimeExtent = (long) ((((newX + rect.getWidth()) / histogram.getWidth()) * range) + lowestTimeExtent);
                 coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
+
+                // Update the origin as we have had some movement:
+                origin = t.getX();
             }
         }
     }

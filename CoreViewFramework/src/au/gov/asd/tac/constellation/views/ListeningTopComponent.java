@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ import org.openide.windows.TopComponent;
 public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> implements GraphManagerListener, GraphChangeListener, PreferenceChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(ListeningTopComponent.class.getName());
-    
+
     private static final String ADDED_MONITOR_COUNT_FORMAT = "Added AttributeValueMonitor, count is {0}";
 
     protected final Map<GlobalMonitor, Consumer<Graph>> globalMonitors;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -134,7 +134,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     final int index = listModel.getMyElementAt(selectedIndices[i]).index;
                     visibleLayers.set(index);
                 }
-                
+
                 PluginExecution.withPlugin(new SimplePlugin("Update plane visibility") {
                     @Override
                     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -153,7 +153,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                         }
                     }
                 }).executeLater(graph);
-                
+
 //                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
             }
         });

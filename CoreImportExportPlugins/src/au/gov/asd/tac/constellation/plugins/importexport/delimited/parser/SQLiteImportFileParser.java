@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ImportFileParser.class)
 public class SQLiteImportFileParser extends ImportFileParser {
-    
+
     private static final Logger LOGGER = Logger.getLogger(SQLiteImportFileParser.class.getName());
 
     private static final String SELECT_QUERY = "SELECT * FROM ?";

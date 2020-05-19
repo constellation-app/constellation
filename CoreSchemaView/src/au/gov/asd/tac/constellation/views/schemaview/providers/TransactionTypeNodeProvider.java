@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -117,7 +117,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
             detailsView.getChildren().clear();
             final Label nameLabel = new Label("No type selected");
             detailsView.getChildren().add(nameLabel);
-            
+
             transactionTypes.clear();
 
             if (graph != null && graph.getSchema() != null && GraphNode.getGraphNode(graph) != null) {

@@ -65,9 +65,9 @@ public class InfomapDirected extends InfomapGreedy {
         final FlowDirectedWithTeleportation nodeToMoveData = (FlowDirectedWithTeleportation) nodeToMove.getData();
         final FlowDirectedWithTeleportation oldModuleFlowData = (FlowDirectedWithTeleportation) moduleFlowData[oldModuleDeltaFlow.getModule()];
         oldModuleDeltaFlow.setDeltaExit(oldModuleDeltaFlow.getDeltaExit() + ((alpha * nodeToMoveData.getTeleportSourceFlow() + beta * nodeToMoveData.getDanglingFlow()) * (oldModuleFlowData.getTeleportWeight() - nodeToMoveData.getTeleportWeight())));
-        oldModuleDeltaFlow.setDeltaEnter(oldModuleDeltaFlow.getDeltaEnter() 
-                + ((alpha * (oldModuleFlowData.getTeleportSourceFlow() - nodeToMoveData.getTeleportSourceFlow()) + beta * (oldModuleFlowData.getDanglingFlow() - nodeToMoveData.getDanglingFlow())) 
-                        * nodeToMoveData.getTeleportWeight()));
+        oldModuleDeltaFlow.setDeltaEnter(oldModuleDeltaFlow.getDeltaEnter()
+                + ((alpha * (oldModuleFlowData.getTeleportSourceFlow() - nodeToMoveData.getTeleportSourceFlow()) + beta * (oldModuleFlowData.getDanglingFlow() - nodeToMoveData.getDanglingFlow()))
+                * nodeToMoveData.getTeleportWeight()));
     }
 
     @Override

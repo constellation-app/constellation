@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -76,7 +77,13 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
         this.destination = parameters.getParameters().get(DESTINATION_PARAMETER_ID).getIntegerValue();
         this.directed = parameters.getParameters().get(DIRECTED_PARAMETER_ID).getBooleanValue();
 
+        final int txLayerAttrId = VisualConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+        final int graphLayerAttrId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+
         final int txId = graph.addTransaction(source, destination, directed);
+        int layer = graph.getIntValue(graphLayerAttrId, 0);
+        layer = layer == 1 ? 1 : layer | (1 << 0);
+        graph.setIntValue(txLayerAttrId, txId, layer);
         graph.getSchema().newTransaction(graph, txId);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -283,8 +283,8 @@ public final class IoUtilities {
      *
      * @return A Calendar with UTC timezone representing the input date.
      *
-     * @throws au.gov.asd.tac.constellation.graph.file.io.GraphParseException If the
-     * date can't be parsed.
+     * @throws au.gov.asd.tac.constellation.graph.file.io.GraphParseException If
+     * the date can't be parsed.
      */
     public static Calendar parseDate(final String s) throws GraphParseException {
         try {

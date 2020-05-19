@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
  * Write a given bitmask to the active graph.
- * 
+ *
  * @author aldebaran30701
  */
 public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {

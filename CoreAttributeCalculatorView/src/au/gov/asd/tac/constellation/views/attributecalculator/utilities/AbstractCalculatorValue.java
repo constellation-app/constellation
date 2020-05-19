@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ public abstract class AbstractCalculatorValue {
     public static void setTheObliterator(PyObject the_obliterator) {
         AbstractCalculatorValue.the_obliterator = the_obliterator;
     }
-    
+
     public static Object convertNullsToObliterator(Object arg) {
         if (AbstractCalculatorUtilities.nullCheck(arg)) {
             return the_obliterator;

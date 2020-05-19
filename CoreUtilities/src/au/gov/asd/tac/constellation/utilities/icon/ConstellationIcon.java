@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,8 @@ public class ConstellationIcon {
      * The default size (ie. height and width) of a ConstellationIcon.
      */
     protected static final int DEFAULT_ICON_SIZE = 256;
-    
-    private static final String BUILDING_ICON_FORMAT =  "Building icon: {0}";
+
+    private static final String BUILDING_ICON_FORMAT = "Building icon: {0}";
 
     /**
      * A cache to store icons

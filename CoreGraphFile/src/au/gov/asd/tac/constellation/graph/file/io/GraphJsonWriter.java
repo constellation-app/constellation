@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ public final class GraphJsonWriter implements Cancellable {
     private volatile boolean isCancelled;
     private final GraphByteWriter byteWriter;
     private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
-    
+
     private static final String DEFAULT_FIELD = "default";
 
     /**

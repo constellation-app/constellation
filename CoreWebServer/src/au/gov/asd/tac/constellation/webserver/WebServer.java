@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@ public class WebServer {
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
                     final boolean restFileIsDeleted = restFile.delete();
-                    if(!restFileIsDeleted) {
+                    if (!restFileIsDeleted) {
                         //TODO: Handle case where file not successfully deleted
                     }
                 }
@@ -175,7 +175,7 @@ public class WebServer {
 
                 // Gather the servlets and add them to the server.
                 //
-                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet ->{
+                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
 //                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
 //                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
@@ -210,7 +210,7 @@ public class WebServer {
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
                         final boolean restFileIsDeleted = restFile.delete();
-                        if(!restFileIsDeleted) {
+                        if (!restFileIsDeleted) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }

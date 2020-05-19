@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,7 +220,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final UpdateController<GraphReadMethods> updateController = new UpdateController<>();
     private final GraphUpdateController graphUpdateController = new GraphUpdateController(updateController);
     private final GraphUpdateManager graphUpdateManager = new GraphUpdateManager(graphUpdateController, 2);
-    
+
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";

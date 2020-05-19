@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -144,7 +144,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
     private boolean announceNextFlush = false;
     private boolean handleEvents;
-    
+
     private static final Logger LOGGER = Logger.getLogger(DefaultInteractionEventHandler.class.getName());
 
     /**
@@ -228,12 +228,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         // here and this issue needs to be resolved in a future change.
                         //final long nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
                         long nextWaitTime = 0;
-                        try
-                        {
+                        try {
                             nextWaitTime = Math.max(0, beforeProcessing + handler.processEvent(interactionGraph) - System.currentTimeMillis());
-                        }
-                        catch(Exception ex)
-                        {
+                        } catch (Exception ex) {
                             LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
                         }
                         // Add any visual operations that need to occur after a graph flush.
@@ -403,7 +400,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             // HACK_DPI - Multiply point by DPI scale factor
             Point point = event.getPoint();
             scaleMousePointByDPIFactor(point);
-            
+
             if (eventState.isMousePressed()) {
                 if (wg != null) {
                     final Camera camera = new Camera(VisualGraphUtilities.getCamera(wg));
@@ -432,7 +429,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                         case DRAG_NODES:
                             from = eventState.getFirstValidPoint(EventState.DRAG_POINT, EventState.REFERENCE_POINT);
-                            to = point; 
+                            to = point;
                             performDrag(wg, camera, from, to);
                             break;
                         case SELECTING:
@@ -442,9 +439,9 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                             break;
                     }
                     updateCameraAndNewLine(wg, point, cameraChange ? camera : VisualGraphUtilities.getCamera(wg), cameraChange);
-                        
+
                 }
-                
+
                 eventState.storePoint(point, EventState.DRAG_POINT);
             } else if (wg != null) {
                 // In this case, a button is held down but its pressed event was not registered for whatever reason.
@@ -462,7 +459,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 // HACK_DPI - Multiply point by DPI scale factor
                 Point point = event.getPoint();
                 scaleMousePointByDPIFactor(point);
-                
+
                 // In case we are panning, we must take the distance of the scene from the camera into account,
                 // otherwise scenes that are further away will appear to move very slowly.
                 eventState.storePoint(point, EventState.PRESSED_POINT, EventState.REFERENCE_POINT);
@@ -959,7 +956,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
             PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(wg);
         } catch (InterruptedException ex) {
             Thread.currentThread().interrupt();
-        } catch (PluginException ex){
+        } catch (PluginException ex) {
         }
         announceNextFlush = true;
     }
@@ -1149,8 +1146,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
 
         popup.show(manager.getVisualComponent(), screenLocation.x, screenLocation.y);
     }
-    
-    private void scaleMousePointByDPIFactor(Point pointToScale){
+
+    private void scaleMousePointByDPIFactor(Point pointToScale) {
         // HACK_DPI - Get the DPI scale factor and multiply the point by it
         final float dpiScalingFactor = this.visualInteraction.getDPIScalingFactor();
         pointToScale.x *= dpiScalingFactor;

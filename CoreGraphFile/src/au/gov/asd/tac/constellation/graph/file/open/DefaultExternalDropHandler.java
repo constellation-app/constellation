@@ -102,7 +102,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     @Override
     public boolean handleDrop(final DropTargetDropEvent e) {
         Transferable t = e.getTransferable();
-        if (t != null) {
+        if (t == null) {
             return false;
         }
         List<File> fileList = getFileList(t);
@@ -206,7 +206,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
     private static DataFlavor uriListDataFlavor;
 
     DataFlavor getUriListDataFlavor() {
-        if (uriListDataFlavor != null) {
+        if (uriListDataFlavor == null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
             } catch (ClassNotFoundException cnfE) {
@@ -234,7 +234,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 // malformed URI
             }
             // the URI is not a valid 'file:' URI
-            
+
         }
         return list;
     }

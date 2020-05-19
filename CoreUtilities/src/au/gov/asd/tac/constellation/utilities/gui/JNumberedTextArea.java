@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import javax.swing.text.Element;
 
 /**
  * A numbered text area for use with Swing.
- * 
+ *
  * @author algol
  */
 public final class JNumberedTextArea extends JTextArea {

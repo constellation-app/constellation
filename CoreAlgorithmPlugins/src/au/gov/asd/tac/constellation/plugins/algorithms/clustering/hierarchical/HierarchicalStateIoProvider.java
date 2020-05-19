@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
-    
+
     private static final String MOD_COUNT = "mod_count";
     private static final String STRUC_MOD_COUNT = "struc_mod_count";
     private static final String INTERACTIVE = "interactive";

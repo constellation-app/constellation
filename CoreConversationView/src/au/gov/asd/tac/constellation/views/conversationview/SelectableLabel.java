@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,13 +43,13 @@ import javafx.scene.control.skin.TextAreaSkin;
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
  * layout behaviour to a Label.
- * 
+ *
  * TODO: {@link TextArea#populateContextMenu) no longer exists, fix it.
  *
  * @author sirius
  */
 public class SelectableLabel extends TextArea {
-    
+
     private static final Logger LOGGER = Logger.getLogger(SelectableLabel.class.getName());
 
     private Node content = null;
