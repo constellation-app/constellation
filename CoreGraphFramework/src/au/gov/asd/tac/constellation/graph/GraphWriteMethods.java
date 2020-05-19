@@ -601,10 +601,10 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(int attribute, GraphIndexType indexType);
-    
+
     /**
      * Sets the queries currently linked to layers on the graph.
-     * 
+     *
      * @param queries the list of String queries to layer a graph by.
      */
     public void setLayerQueries(final List<String> queries);

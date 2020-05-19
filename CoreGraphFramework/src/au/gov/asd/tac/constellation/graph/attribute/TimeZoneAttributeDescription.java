@@ -72,7 +72,7 @@ public final class TimeZoneAttributeDescription extends AbstractObjectAttributeD
             }
         }
     }
-        
+
     @Override
     public String getString(final int id) {
         return data[id] == null ? null : TimeZoneUtilities.getTimeZoneAsString((ZoneId) data[id]);

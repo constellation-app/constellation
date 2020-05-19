@@ -473,11 +473,11 @@ public class TemporalFormatting {
             ZoneId parsedTimeZone = myDateTime.query(TemporalQueries.zoneId());
             ZoneOffset parsedOffset = myDateTime.query(TemporalQueries.offset());
             if ((parsedTimeZone != null) || (parsedOffset != null)) {
-                ZonedDateTime myZonedDateTime  = ZonedDateTime.parse(value, formatter);
+                ZonedDateTime myZonedDateTime = ZonedDateTime.parse(value, formatter);
                 return TemporalFormatting.ZONED_DATE_TIME_FORMATTER.format(myZonedDateTime);
-            } else { 
-               return TemporalFormatting.formatAsZonedDateTime(formatter.parse(value));
-            }    
+            } else {
+                return TemporalFormatting.formatAsZonedDateTime(formatter.parse(value));
+            }
         } catch (DateTimeParseException ex) {
             logger.log(Level.SEVERE, ERROR_PARSING_DATE_MESSAGE, new Object[]{value, ex.getMessage()});
             return value;

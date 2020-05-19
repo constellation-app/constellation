@@ -35,7 +35,7 @@ import java.util.Set;
  * @author algol
  */
 public class LayerArranger implements Arranger {
-    
+
     private static final String VISIBILITY = "visibility";
 
     private int attr = Graph.NOT_FOUND;

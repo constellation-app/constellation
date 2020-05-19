@@ -35,7 +35,7 @@ import java.util.List;
  * @author twilight_sparkle
  */
 public class AttributeFillBuilder extends GraphBuilder {
-    
+
     private static final SecureRandom R = new SecureRandom();
 
     public static AttributeFillBuilder fillAttribute(final GraphWriteMethods graph, final int attrID) {

@@ -283,8 +283,8 @@ public final class IoUtilities {
      *
      * @return A Calendar with UTC timezone representing the input date.
      *
-     * @throws au.gov.asd.tac.constellation.graph.file.io.GraphParseException If the
-     * date can't be parsed.
+     * @throws au.gov.asd.tac.constellation.graph.file.io.GraphParseException If
+     * the date can't be parsed.
      */
     public static Calendar parseDate(final String s) throws GraphParseException {
         try {

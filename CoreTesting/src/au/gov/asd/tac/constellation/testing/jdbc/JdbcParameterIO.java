@@ -132,7 +132,7 @@ class JdbcParameterIO {
         try {
             latch.await();
         } catch (InterruptedException ex) {
-                Thread.currentThread().interrupt();
+            Thread.currentThread().interrupt();
         }
 
 //        final JdbcParameterIoLabelsPanel panel = new JdbcParameterIoLabelsPanel(names);

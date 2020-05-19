@@ -20,12 +20,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A Byte Object attribute that can be null.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescription<Byte> {
-    
+
     public static final String ATTRIBUTE_NAME = "byte_or_null";
     public static final Class<Byte> NATIVE_CLASS = Byte.class;
     public static final Byte DEFAULT_VALUE = null;
@@ -33,7 +33,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
     public ByteObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked") //Casts are manually checked
     protected Byte convertFromObject(final Object object) {
@@ -58,7 +58,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
             return Byte.parseByte(string);
         }
     }
-    
+
     @Override
     public byte getByte(final int id) {
         return data[id] != null ? (Byte) data[id] : (byte) 0;
@@ -68,8 +68,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
     public void setByte(final int id, final byte value) {
         data[id] = value;
     }
-    
-    
+
     @Override
     public short getShort(final int id) {
         return data[id] != null ? ((Byte) data[id]).shortValue() : (short) 0;
@@ -89,7 +88,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
     public void setInt(final int id, final int value) {
         data[id] = (byte) value;
     }
-    
+
     @Override
     public long getLong(final int id) {
         return data[id] != null ? ((Byte) data[id]).longValue() : 0L;
@@ -97,7 +96,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] =(byte) value;
+        data[id] = (byte) value;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
     public void setBoolean(final int id, final boolean value) {
         data[id] = value ? (byte) 1 : (byte) 0;
     }
-    
+
     @Override
     public int hashCode(final int id) {
         return data[id] == null ? nullHash : ((Byte) data[id]).intValue();

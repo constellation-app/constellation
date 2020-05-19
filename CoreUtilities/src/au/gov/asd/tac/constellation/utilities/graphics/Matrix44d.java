@@ -44,7 +44,7 @@ public final class Matrix44d {
     public void setA(double[] a) {
         this.a = a;
     }
-    
+
     public void identity() {
         System.arraycopy(IDENTITY44D, 0, a, 0, LENGTH);
     }

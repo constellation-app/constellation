@@ -485,7 +485,7 @@ public enum NativeAttributeType {
      * @param a the first NativeValue object.
      * @param b the second NativeValue object.
      * @return true if the 2 NativeValue objects are equalValue for this
- NativeValueType.
+     * NativeValueType.
      */
     public abstract boolean equalValue(NativeValue a, NativeValue b);
 
@@ -512,8 +512,8 @@ public enum NativeAttributeType {
      * @param element the element that was modified.
      * @param oldValue the previous value.
      * @return true if the edit needed to be updated. In cases where the current
- value is equalValue to the old value the edit can remain unchanged and false
- is returned.
+     * value is equalValue to the old value the edit can remain unchanged and
+     * false is returned.
      */
     public abstract boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue);
 

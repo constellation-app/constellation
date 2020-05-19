@@ -25,7 +25,8 @@ import au.gov.asd.tac.constellation.graph.attribute.TransactionAttributeNameAttr
 import au.gov.asd.tac.constellation.graph.attribute.VertexAttributeNameAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.BlazeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
@@ -33,16 +34,15 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ConnectionMode
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LineStyleAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.TransactionGraphLabelsAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.VertexGraphLabelsAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.LineStyleAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.preferences.GraphPreferenceKeys;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -315,7 +315,7 @@ public class VisualConcept extends SchemaConcept {
                 .setDescription("The label of the transaction")
                 .create()
                 .build();
-                public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
+        public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this transaction belongs to")
                 .setDefaultValue(1)
                 .create()

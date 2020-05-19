@@ -26,7 +26,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class LayersViewStateAttributeDescription extends ObjectAttributeDescription {
-    
+
     public static final String ATTRIBUTE_NAME = "layers_view_state";
 
     public LayersViewStateAttributeDescription() {

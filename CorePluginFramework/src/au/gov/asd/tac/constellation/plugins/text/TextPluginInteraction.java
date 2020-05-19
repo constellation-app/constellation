@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class TextPluginInteraction implements PluginInteraction {
 
     private static final Logger LOGGER = Logger.getLogger(TextPluginInteraction.class.getName());
-    
+
     private static final String NOT_SUPPORTED = "Not supported yet.";
 
     private String currentMessage;

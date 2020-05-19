@@ -130,7 +130,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String INTERACTION_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "interaction");
     public static final String LEVEL_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "level");
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
-    
+
     //Debug Levels
     private static final String NONE = "None";
     private static final String DEBUG = "Debug";

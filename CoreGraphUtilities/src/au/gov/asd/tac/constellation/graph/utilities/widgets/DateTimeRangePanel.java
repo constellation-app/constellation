@@ -42,7 +42,7 @@ import org.openide.util.NbBundle.Messages;
     "DateTimeFormat=yyyy-MM-dd HH:mm:ss"
 })
 public class DateTimeRangePanel extends javax.swing.JPanel {
-    
+
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
     private final DateTimeListenerInterface parentPanel;

@@ -30,7 +30,7 @@ public class FloatBin extends Bin {
     public float getKey() {
         return key;
     }
-    
+
     @Override
     public int compareTo(Bin o) {
         return Float.compare(key, ((FloatBin) o).key);

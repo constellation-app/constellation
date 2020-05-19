@@ -117,7 +117,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
             detailsView.getChildren().clear();
             final Label nameLabel = new Label("No type selected");
             detailsView.getChildren().add(nameLabel);
-            
+
             transactionTypes.clear();
 
             if (graph != null && graph.getSchema() != null && GraphNode.getGraphNode(graph) != null) {

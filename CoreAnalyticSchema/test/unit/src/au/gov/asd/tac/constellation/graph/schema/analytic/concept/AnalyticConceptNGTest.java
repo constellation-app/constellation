@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 
 /**
  * Unit test for {@link AnalyticConcept}.
- * 
+ *
  * @author cygnus_x-1
  */
 public class AnalyticConceptNGTest {
@@ -91,8 +91,7 @@ public class AnalyticConceptNGTest {
     private static final String IPV4_TEXT_INVALID = "PING google.com (172.217.025.142) 56(84) bytes of data.";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#IPV4}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#IPV4}.
      */
     @Test
     public void testIpv4DetectionRegex() {
@@ -106,8 +105,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#IPV4}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#IPV4}.
      */
     @Test
     public void testIpv4ValidationRegex() {
@@ -127,8 +125,7 @@ public class AnalyticConceptNGTest {
     private static final String IPV6_TEXT_INVALID = "PING ipv6.google.com(b002:g68) 56 data bytes.";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#IPV6}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#IPV6}.
      */
     @Test
     public void testIpv6DetectionRegex() {
@@ -142,8 +139,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#IPV6}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#IPV6}.
      */
     @Test
     public void testIpv6ValidationRegex() {
@@ -199,8 +195,7 @@ public class AnalyticConceptNGTest {
     private static final String HOST_NAME_TEXT_INVALID = "Welcome $US3R to _d0d6y_.c0mp@ny~.biz.";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#HOST_NAME}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#HOST_NAME}.
      */
     @Test
     public void testHostNameDetectionRegex() {
@@ -214,8 +209,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#HOST_NAME}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#HOST_NAME}.
      */
     @Test
     public void testHostNameValidationRegex() {
@@ -235,8 +229,7 @@ public class AnalyticConceptNGTest {
     private static final String URL_TEXT_INVALID = "Browse to ef6cc1.c0mp@ny~.biz?id=1a2b3c4d5e6f to log into your account.";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#URL}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#URL}.
      */
     @Test
     public void testUrlDetectionRegex() {
@@ -250,8 +243,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#URL}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#URL}.
      */
     @Test
     public void testUrlValidationRegex() {
@@ -270,8 +262,7 @@ public class AnalyticConceptNGTest {
     private static final String COUNTRY_TEXT_VALID = "Welcome to Australia, we hope you enjoy your stay...";
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#COUNTRY}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#COUNTRY}.
      */
     @Test
     public void testCountryValidationRegex() {
@@ -290,8 +281,7 @@ public class AnalyticConceptNGTest {
     private static final String GEOHASH_TEXT_VALID = "The location is xq609w9n, i'll see you there.";
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#GEOHASH}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#GEOHASH}.
      */
     @Test
     public void testGeohashValidationRegex() {
@@ -310,8 +300,7 @@ public class AnalyticConceptNGTest {
     private static final String MGRS_TEXT_VALID = "The location is 55SFV9371406274, i'll see you there.";
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#MGRS}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#MGRS}.
      */
     @Test
     public void testMgrsValidationRegex() {
@@ -331,8 +320,7 @@ public class AnalyticConceptNGTest {
     private static final String MD5_TEXT_INVALID = "974724855beee3a55e93d0b47b1eg3d9 *my-dodgy-file.bin";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#MD5}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#MD5}.
      */
     @Test
     public void testMd5DetectionRegex() {
@@ -346,8 +334,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#MD5}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#MD5}.
      */
     @Test
     public void testMd5ValidationRegex() {
@@ -367,8 +354,7 @@ public class AnalyticConceptNGTest {
     private static final String SHA1_TEXT_INVALID = "785bdcg8564701634bbfdb87c2228670297bf713 *my-dodgy-file.bin";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#SHA1}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#SHA1}.
      */
     @Test
     public void testSha1DetectionRegex() {
@@ -382,8 +368,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#SHA1}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#SHA1}.
      */
     @Test
     public void testSha1ValidationRegex() {
@@ -403,8 +388,7 @@ public class AnalyticConceptNGTest {
     private static final String SHA256_TEXT_INVALID = "da48ad09eb2bdce5bf182fb6bba1922448a87g2a8c7fed737743e119e2bd0817 *my-dodgy-file.bin";
 
     /**
-     * Test Detection Regex for
-     * {@link AnalyticConcept.VertexType#SHA256}.
+     * Test Detection Regex for {@link AnalyticConcept.VertexType#SHA256}.
      */
     @Test
     public void testSha256DetectionRegex() {
@@ -418,8 +402,7 @@ public class AnalyticConceptNGTest {
     }
 
     /**
-     * Test Validation Regex for
-     * {@link AnalyticConcept.VertexType#SHA256}.
+     * Test Validation Regex for {@link AnalyticConcept.VertexType#SHA256}.
      */
     @Test
     public void testSha256ValidationRegex() {

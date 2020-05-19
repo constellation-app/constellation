@@ -49,6 +49,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
     public LocalDateTimeAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
+
     @Override
     protected LocalDateTime convertFromObject(final Object object) {
         try {
@@ -99,7 +100,7 @@ public final class LocalDateTimeAttributeDescription extends AbstractObjectAttri
                 final int minute = Integer.parseInt(string.substring(14, 16), 10);
                 final int second = Integer.parseInt(string.substring(17, 19), 10);
                 final int millisecond = Integer.parseInt(string.substring(20, 23), 10);
-                return LocalDateTime.of(year, month, day, hour, minute, second, millisecond 
+                return LocalDateTime.of(year, month, day, hour, minute, second, millisecond
                         * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
             } catch (final StringIndexOutOfBoundsException | NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(

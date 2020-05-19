@@ -27,7 +27,6 @@ import au.gov.asd.tac.constellation.functionality.email.SendToEmailClientPlugin;
  */
 public final class CorePluginRegistry {
 
-    
     public static final String COMPARE_GRAPH = CompareGraphPlugin.class.getName();
     public static final String DEV_OPS_NOTIFICATION = DevOpsNotificationPlugin.class.getName();
     public static final String OPEN_IN_BROWSER = OpenInBrowserPlugin.class.getName();

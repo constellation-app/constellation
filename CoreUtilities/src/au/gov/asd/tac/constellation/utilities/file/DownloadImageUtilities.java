@@ -25,7 +25,7 @@ import org.netbeans.api.annotations.common.StaticResource;
 import org.openide.util.Exceptions;
 
 /**
-  *
+ *
  * @author arcturus
  */
 public class DownloadImageUtilities {

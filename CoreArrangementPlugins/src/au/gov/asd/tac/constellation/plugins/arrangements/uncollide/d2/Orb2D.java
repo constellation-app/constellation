@@ -46,7 +46,7 @@ public final class Orb2D {
     public void setY(float y) {
         this.y = y;
     }
-    
+
 //    public boolean contains(final float x2, final float y2)
 //    {
 //        final double dx = x - x2;

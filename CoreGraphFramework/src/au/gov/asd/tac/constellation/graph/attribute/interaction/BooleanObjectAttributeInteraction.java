@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeInteraction for attributes described by
  * {@link au.gov.asd.tac.constellation.graph.attribute.BooleanObjectAttributeDescription}
- * 
+ *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)

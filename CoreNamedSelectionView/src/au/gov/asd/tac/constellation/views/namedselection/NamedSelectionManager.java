@@ -851,13 +851,13 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         SwingUtilities.invokeLater(() -> {
             final NamedSelectionTopComponent tc
                     = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
-            
+
             if (tc != null) {
                 if (openTopComponent && !tc.isOpened()) {
                     tc.open();
                     tc.requestActive();
                 }
-                
+
                 // If there is no graph, set logical defaults, then disable UI:
                 if (graphNode == null) {
                     tc.updateState(null);

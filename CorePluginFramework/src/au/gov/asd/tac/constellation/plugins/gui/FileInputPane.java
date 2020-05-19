@@ -47,8 +47,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
  * Entering file names manually or making a selection with the file chooser will
  * update the object value of the underlying {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType
  *
  * @author ruby_crucis
  */

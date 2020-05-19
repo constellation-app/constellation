@@ -33,9 +33,8 @@ import javafx.scene.layout.Pane;
  * {@link PluginParameter}. Plugins using this should call
  * {@link au.gov.asd.tac.constellation.plugins.parameters.PluginParameters#addController(String, PluginParameterController) }
  * to the parameter inside
- * {@link au.gov.asd.tac.constellation.plugins.Plugin#createParameters}
- * so that the desired action will be performed after the ParameterChange is
- * fired.
+ * {@link au.gov.asd.tac.constellation.plugins.Plugin#createParameters} so that
+ * the desired action will be performed after the ParameterChange is fired.
  *
  * @see
  * au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType

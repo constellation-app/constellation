@@ -256,13 +256,13 @@ public class BubbleTreeArranger implements Arranger {
             Arrays.sort(index, (lhsIx, rhsIx) -> {
                 final double lhs = realCircleRadius[lhsIx];
                 final double rhs = realCircleRadius[rhsIx];
-                
+
                 if (lhs < rhs) {
                     return 1;
                 } else if (lhs > rhs) {
                     return -1;
                 }
-                
+
                 return 0;
             });
 

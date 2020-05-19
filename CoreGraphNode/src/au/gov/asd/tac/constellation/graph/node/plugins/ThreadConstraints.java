@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 public class ThreadConstraints {
 
     private static final ThreadLocal<ThreadConstraints> THREAD_LOCAL = new ThreadLocal<>();
-    
+
     private PluginReport currentReport;
     private boolean alwaysSilent;
     private int silentCount;

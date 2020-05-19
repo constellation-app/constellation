@@ -41,12 +41,14 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * Create a new graph using the specified schema.
  * <p>
- * If a schema is not specified, the default schema is used. Returns the id, name, and schema of the new graph.
+ * If a schema is not specified, the default schema is used. Returns the id,
+ * name, and schema of the new graph.
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class NewGraph extends RestService {
+
     private static final String NAME = "new_graph";
     private static final String SCHEMA_PARAMETER_ID = "schema_name";
 
@@ -87,14 +89,14 @@ public class NewGraph extends RestService {
         final String schemaParam = parameters.getStringValue(SCHEMA_PARAMETER_ID);
 
         String schemaName = null;
-        for(final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
-            if(schemaFactory.isPrimarySchema() && (schemaParam == null || schemaParam.equals(schemaFactory.getName()))) {
+        for (final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
+            if (schemaFactory.isPrimarySchema() && (schemaParam == null || schemaParam.equals(schemaFactory.getName()))) {
                 schemaName = schemaFactory.getName();
                 break;
             }
         }
 
-        if(schemaName == null) {
+        if (schemaName == null) {
             throw new RestServiceException(String.format("Unknown schema %s", schemaParam));
         }
 

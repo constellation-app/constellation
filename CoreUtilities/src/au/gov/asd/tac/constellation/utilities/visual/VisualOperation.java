@@ -50,13 +50,13 @@ public interface VisualOperation extends Comparable<VisualOperation> {
         SIGNIFY_IDLE_PRIORITY(10),
         ELEVATED_VISUAL_PRIORITY(20),
         DEFAULT_VISUAL_PRIORITY(30);
-        
+
         private final int value;
-        
+
         private VisualPriority(final int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }

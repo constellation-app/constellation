@@ -55,7 +55,7 @@ import org.openide.windows.TopComponent;
 public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> implements GraphManagerListener, GraphChangeListener, PreferenceChangeListener {
 
     private static final Logger LOGGER = Logger.getLogger(ListeningTopComponent.class.getName());
-    
+
     private static final String ADDED_MONITOR_COUNT_FORMAT = "Added AttributeValueMonitor, count is {0}";
 
     protected final Map<GlobalMonitor, Consumer<Graph>> globalMonitors;

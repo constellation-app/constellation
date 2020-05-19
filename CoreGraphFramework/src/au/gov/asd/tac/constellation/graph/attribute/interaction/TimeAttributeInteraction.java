@@ -23,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeInteraction for attributes described by
  * {@link au.gov.asd.tac.constellation.graph.attribute.TimeAttributeDescription}
- * 
+ *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -42,14 +42,14 @@ public class TimeAttributeInteraction extends AbstractAttributeInteraction<Local
         if (value == null) {
             return null;
         }
-        
+
         String representation = ((LocalTime) value).format(TemporalFormatting.TIME_FORMATTER);
 
         // If the milliseconds component is 0, trim it from the string representation
         if (((LocalTime) value).getNano() / 1000000 == 0) {
             representation = representation.substring(0, MILLISECONDS_START_INDEX) + representation.substring(MILLISECONDS_END_INDEX);
         }
-        
+
         return representation;
     }
 

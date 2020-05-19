@@ -70,7 +70,7 @@ public final class DrawFlags {
      * Draw in 2D mode
      */
     public static final int MODE_3D = 3;
-    
+
     private final int drawFlgs;
 
     public DrawFlags(final int drawFlags) {

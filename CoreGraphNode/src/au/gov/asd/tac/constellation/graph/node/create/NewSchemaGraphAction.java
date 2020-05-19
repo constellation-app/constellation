@@ -72,7 +72,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     public static File getTemplateDirectory() {
         return TEMPLATE_DIRECTORY;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         // Override required for ActionListener

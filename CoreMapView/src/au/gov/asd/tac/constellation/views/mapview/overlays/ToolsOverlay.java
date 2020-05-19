@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview.MapViewPluginRegistry;
-import static au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer.LOCK;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationAbstractFeature.ConstellationFeatureType;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationPointFeature;
 import au.gov.asd.tac.constellation.views.mapview.features.ConstellationShapeFeature;
@@ -52,6 +51,7 @@ public class ToolsOverlay extends MapOverlay {
 
     private static final Logger LOGGER = Logger.getLogger(ToolsOverlay.class.getName());
     private static final String DISABLED = "Disabled";
+
     private enum MeasurementSystem {
 
         IMPERIAL("mi", (start, end) -> Distance.Haversine.estimateDistanceInMiles(start.getLat(), start.getLon(), end.getLat(), end.getLon())),
@@ -101,7 +101,7 @@ public class ToolsOverlay extends MapOverlay {
     private int drawOriginY = -1;
     private int drawDeltaX = -1;
     private int drawDeltaY = -1;
-    
+
     public ToolsOverlay() {
         this.enabled = false;
     }
@@ -120,14 +120,13 @@ public class ToolsOverlay extends MapOverlay {
     public float getY() {
         return renderer.getComponent().getY() + 10f;
     }
-    
-     /**
+
+    /**
      * @return the measureActive
      */
     public boolean isMeasureActive() {
         return measureActive;
     }
-
 
     private Location getMeasureToolStart() {
         if (measureOriginX == -1 && measureOriginY == -1) {

@@ -23,9 +23,9 @@ import java.util.Map;
  * @author twilight_sparkle
  */
 public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalculatorTemplateCategoryDescriptions {
-    
+
     private static final String STRUCTURAL_PROPERTIES = "Structural properties of nodes, such as the number of neighbours.";
-    
+
     private static final Map<String, String[]> TEMPLATE_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, String[]> TEMPLATE_USAGE_EXAMPLES = new HashMap<>();
 

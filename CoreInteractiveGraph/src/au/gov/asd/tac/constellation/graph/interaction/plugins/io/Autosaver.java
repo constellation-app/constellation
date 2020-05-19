@@ -113,7 +113,7 @@ public final class Autosaver implements Runnable {
                             PluginExecution.withPlugin(InteractiveGraphPluginRegistry.AUTOSAVE_GRAPH).executeNow(graph);
                         } catch (InterruptedException ex) {
                             Thread.currentThread().interrupt();
-                        } catch (PluginException ex) {                           
+                        } catch (PluginException ex) {
                         }
                     }
                 }

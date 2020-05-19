@@ -56,7 +56,7 @@ public class GLInteractiveVisualManagerFactory extends GraphVisualManagerFactory
         changeDetector.graphChanged(null);
         processor.startVisualising(manager);
         processor.setEventHandler(eventHandler);
-        
+
         return manager;
     }
 }

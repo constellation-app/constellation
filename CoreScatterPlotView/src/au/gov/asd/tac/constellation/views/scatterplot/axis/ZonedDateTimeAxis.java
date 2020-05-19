@@ -36,7 +36,7 @@ import javafx.util.StringConverter;
 /**
  * An axis for representing ZonedDateTime objects, based on the DateAxis class
  * available in the ExtFX library.
- * 
+ *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1
@@ -216,7 +216,6 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
 //                            new KeyValue(currentUpperBound, newUpperBound.toInstant().toEpochMilli())
 //                    )
 //            );
-
         } else {
             currentLowerBound.set(getLowerBound().toInstant().toEpochMilli());
             currentUpperBound.set(getUpperBound().toInstant().toEpochMilli());

@@ -155,10 +155,10 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             lblNoActive.setTextFill(Color.LIGHTGREY);
             BorderPane.setAlignment(lblNoActive, Pos.CENTER);
             noActive.setCenter(lblNoActive);
-            
+
             timelinePanel = new TimelinePanel(thisComponent);
             overviewPanel = new OverviewPanel(thisComponent);
-            
+
             SplitPane.setResizableWithParent(overviewPanel, false);
             SplitPane.setResizableWithParent(timelinePanel, true);
             splitPane = new SplitPane();
@@ -169,21 +169,21 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             splitPane.setMinHeight(height * 0.8);
             splitPane.setVisible(false);
             splitPane.setDisable(true);
-            
+
             root = new StackPane();
             root.getChildren().addAll(noActive, splitPane);
-            
+
             // Create the scene:
             final Scene scene = new Scene(root);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
             scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            
+
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());
-            
+
             // Set the split pane as the javafx scene:
             container.setScene(scene);
-            
+
             // Now that the heights are known, set the position of the splitPane divider:
             splitPane.getDividers().get(0).setPosition(splitPanePosition);
         });
@@ -403,13 +403,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private void hideTimeline(final String message) {
         Platform.runLater(() -> {
             lblNoActive.setText(message);
-            
+
             timelinePanel.setDisable(true);
             //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
             //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
             splitPane.setVisible(false);
             splitPane.setDisable(true);
-            
+
             // Clear charts:
             timelinePanel.clearTimeline();
             overviewPanel.clearHistogram();
@@ -538,7 +538,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
         Platform.runLater(() -> {
             timelinePanel.clearTimeline();
             overviewPanel.clearHistogram();
-            
+
             timelinePanel.setExclusionState(0);
         });
 

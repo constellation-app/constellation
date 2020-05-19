@@ -47,7 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ImportFileParser.class)
 public class SQLiteImportFileParser extends ImportFileParser {
-    
+
     private static final Logger LOGGER = Logger.getLogger(SQLiteImportFileParser.class.getName());
 
     private static final String SELECT_QUERY = "SELECT * FROM ?";

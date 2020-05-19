@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -35,8 +35,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class GetServiceDescription extends RestService {
+
     private static final String NAME = "get_service_description";
     private static final String SERVICE_NAME_PARAMETER_ID = "service_name";
     private static final String METHOD_NAME_PARAMETER_ID = "http_method";
@@ -88,7 +89,7 @@ public class GetServiceDescription extends RestService {
         root.put("description", rs.getDescription());
         root.put("mimetype", rs.getMimeType());
         final ArrayNode tags = root.putArray("tags");
-        for(final String tag : rs.getTags()) {
+        for (final String tag : rs.getTags()) {
             tags.add(tag);
         }
 
@@ -99,7 +100,7 @@ public class GetServiceDescription extends RestService {
             param.put("name", pp.getName());
             param.put("type", pp.getType().getId());
             param.put("description", pp.getDescription());
-            if(pp.getObjectValue()!=null) {
+            if (pp.getObjectValue() != null) {
                 param.put("value", pp.getObjectValue().toString());
             }
         });

@@ -29,7 +29,7 @@ import java.util.Map;
 public class NormalisingGraphEdit implements GraphEdit {
 
     private final GraphEdit graphEdit;
-    
+
     private static final String NOT_SUPPORTED = "Not supported yet.";
 
     public NormalisingGraphEdit(GraphEdit graphEdit) {

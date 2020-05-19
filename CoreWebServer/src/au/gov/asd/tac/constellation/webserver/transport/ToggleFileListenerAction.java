@@ -34,8 +34,8 @@ import org.openide.util.NbBundle.Messages;
  * @author rsabhi modified
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.webserver.transport.ToggleFileListenerAction")
-@ActionRegistration(displayName = "#CTL_StartFileListenerAction", 
-        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/filelistener_off.png", 
+@ActionRegistration(displayName = "#CTL_StartFileListenerAction",
+        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/filelistener_off.png",
         surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
 @Messages({
@@ -53,7 +53,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
     private boolean listenerOn;
     private FileListener fileListener;
     private Thread listenerRunner;
-    
+
     public ToggleFileListenerAction() {
         listenerOn = false;
     }
@@ -82,7 +82,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
                 Thread.currentThread().interrupt();
             }
         }
-        
+
         listenerOn = !listenerOn;
     }
 }

@@ -43,7 +43,7 @@ public final class Matrix33d {
     public void setA(double[] a) {
         this.a = a;
     }
-    
+
     public void identity() {
         System.arraycopy(IDENTITY33D, 0, a, 0, LENGTH);
     }

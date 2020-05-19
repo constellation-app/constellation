@@ -49,7 +49,7 @@ import javax.swing.event.MouseInputListener;
  * @author sirius
  * @author antares
  */
-public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener,  KeyListener, PropertyChangeListener, ComponentListener {
+public class HistogramDisplay extends JPanel implements MouseInputListener, MouseWheelListener, KeyListener, PropertyChangeListener, ComponentListener {
 
     public static final Color BACKGROUND_COLOR = new Color(0x44, 0x44, 0x44);
     public static final Color BAR_COLOR = new Color(0.1176f, 0.5647f, 1.0f);
@@ -107,18 +107,17 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         initializeSettings();
         initializeListeners();
     }
-    
-    public final void initializeSettings(){
+
+    public final void initializeSettings() {
         setBackground(BACKGROUND_COLOR);
     }
-    
-    public final void initializeListeners(){
+
+    public final void initializeListeners() {
         addMouseListener(this);
         addMouseMotionListener(this);
         addMouseWheelListener(this);
         addComponentListener(this);
     }
-        
 
     @Override
     public Dimension getMinimumSize() {
@@ -270,7 +269,7 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
                 final int[] dims = calculateHeightAndBarWidth();
                 preferredHeight = dims[0];
                 barHeight = dims[1];
-                
+
                 iconPadding = (int) (binIconMode.getWidth() * barHeight);
 
                 calculateTextAndBarLength(g2, iconPadding);
@@ -599,12 +598,12 @@ public class HistogramDisplay extends JPanel implements MouseInputListener, Mous
         final Point pos = scrollpane.getViewPosition();
         final int y;
         final int SCROLL_HEIGHT = 50;
-        if (e.getWheelRotation() < 0){
-             y = pos.y - (e.getScrollAmount() * SCROLL_HEIGHT);
+        if (e.getWheelRotation() < 0) {
+            y = pos.y - (e.getScrollAmount() * SCROLL_HEIGHT);
         } else {
             y = pos.y + (e.getScrollAmount() * SCROLL_HEIGHT);
         }
-        
+
         scrollpane.setViewPosition(new Point(0, Math.max(0, y)));
     }
 }

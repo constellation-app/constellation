@@ -43,13 +43,13 @@ import javafx.scene.control.skin.TextAreaSkin;
 /**
  * A SelectableLabel is a TextArea that has been enhanced to provide similar
  * layout behaviour to a Label.
- * 
+ *
  * TODO: {@link TextArea#populateContextMenu) no longer exists, fix it.
  *
  * @author sirius
  */
 public class SelectableLabel extends TextArea {
-    
+
     private static final Logger LOGGER = Logger.getLogger(SelectableLabel.class.getName());
 
     private Node content = null;

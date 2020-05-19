@@ -53,7 +53,7 @@ import org.openide.util.Exceptions;
 public class CopyDataToExcelFile implements ActionListener, Action {
 
     private static final String EXCEL_EXTENSION = ".xlsx";
-    
+
     private final JTable table;
     private final String pluginName;
 

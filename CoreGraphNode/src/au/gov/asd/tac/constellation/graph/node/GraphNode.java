@@ -100,7 +100,7 @@ public class GraphNode extends AbstractNode {
         GraphNode graphNode = GRAPHS.get(id);
         return graphNode == null ? null : graphNode.getGraph();
     }
-    
+
     private final Graph graph;
     private final VisualManager visualManager;
     private GraphDataObject gdo;

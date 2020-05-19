@@ -96,6 +96,6 @@ public interface GraphDropper {
         public boolean isIsTransaction() {
             return isTransaction;
         }
-        
+
     }
 }

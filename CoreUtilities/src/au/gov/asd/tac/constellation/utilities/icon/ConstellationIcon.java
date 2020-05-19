@@ -57,8 +57,8 @@ public class ConstellationIcon {
      * The default size (ie. height and width) of a ConstellationIcon.
      */
     protected static final int DEFAULT_ICON_SIZE = 256;
-    
-    private static final String BUILDING_ICON_FORMAT =  "Building icon: {0}";
+
+    private static final String BUILDING_ICON_FORMAT = "Building icon: {0}";
 
     /**
      * A cache to store icons

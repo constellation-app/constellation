@@ -47,7 +47,7 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
     // point relative to image
     private float POINT_X_OFFSET;
     private float POINT_Y_OFFSET;
-    
+
     private static final String POINT_MARKER_ONE_LOCATION_ONLY = "A point marker can only have one location.";
     private static final String POINT_MARKER_ONE_LOCATION_MUST = "A point marker must have exactly one location.";
 
@@ -108,12 +108,12 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
 
     @Override
     public void setLocations(final List<Location> locations) {
-        if(locations.size() == 1){
+        if (locations.size() == 1) {
             super.setLocations(locations);
         } else {
             throw new IllegalArgumentException(POINT_MARKER_ONE_LOCATION_ONLY);
         }
-        
+
     }
 
     @Override

@@ -211,7 +211,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         executeButton.setOnAction((ActionEvent event) -> {
             boolean pluginSelected = false;
             boolean selectedPluginsValid = true;
-            
+
             // check for activated plugins and their validity.
             for (Tab tab : dataAccessTabPane.getTabs()) {
                 if (tabHasEnabledPlugins(tab) && !validateTabEnabledPlugins(tab)) {
@@ -222,10 +222,10 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 }
             }
             // when no graph present, create new graph
-            if(graphId == null && pluginSelected && selectedPluginsValid){
+            if (graphId == null && pluginSelected && selectedPluginsValid) {
                 NewDefaultSchemaGraphAction graphAction = new NewDefaultSchemaGraphAction();
                 graphAction.actionPerformed(null);
-                while(GraphManager.getDefault().getActiveGraph() == null){
+                while (GraphManager.getDefault().getActiveGraph() == null) {
                     // Wait and do nothing while graph is getting made
                 }
                 graphId = GraphManager.getDefault().getActiveGraph().getId();
@@ -356,13 +356,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 DataAccessPreferenceKeys.setDataAccessResultsDir(null);
             }
         });
-        
+
         final CheckMenuItem deselectPluginsOnExecution = new CheckMenuItem("Deselect Plugins On Go");
         deselectPluginsOnExecution.setSelected(DataAccessPreferenceKeys.isDeselectPluginsOnExecuteEnabled());
         deselectPluginsOnExecution.setOnAction(event -> {
             DataAccessPreferenceKeys.setDeselectPluginsOnExecute(deselectPluginsOnExecution.isSelected());
         });
-        
+
         searchPluginTextField = new TextField();
         searchPluginTextField.setPromptText("Type to search for a plugin");
         searchPluginTextField.textProperty().addListener((ov, oldValue, newValue) -> {
@@ -480,7 +480,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                                 // If plugin overrides another, record which plugin should be removed for later processing.
                                 for (final String overriddenPluginName : plugin.getOverriddenPlugins()) {
                                     pluginOverrides.put(overriddenPluginName, plugin);
-                                }                                
+                                }
                             } else {
                                 // If a plugin type is invalid (that is, not registered as a DataAccessPluginType), ignore the plugin.
                                 LOGGER.log(Level.SEVERE, "Unexpected data access plugin type '{0}' for plugin {1}", new Object[]{type, plugin.getName()});

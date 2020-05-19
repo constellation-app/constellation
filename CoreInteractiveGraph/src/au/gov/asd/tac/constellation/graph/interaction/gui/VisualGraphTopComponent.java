@@ -220,7 +220,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final UpdateController<GraphReadMethods> updateController = new UpdateController<>();
     private final GraphUpdateController graphUpdateController = new GraphUpdateController(updateController);
     private final GraphUpdateManager graphUpdateManager = new GraphUpdateManager(graphUpdateController, 2);
-    
+
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";

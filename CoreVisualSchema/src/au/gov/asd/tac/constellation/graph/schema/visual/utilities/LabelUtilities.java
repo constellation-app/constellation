@@ -26,8 +26,7 @@ import java.util.List;
  * @author twilight_sparkle
  */
 public class LabelUtilities {
-    
-    
+
     /**
      * Return a list of attribute ids corresponding to the attribute names in
      * the given graphs labels object.

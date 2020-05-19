@@ -213,12 +213,9 @@ public final class SharedDrawable {
      * shared context.
      */
     public static void updateGlyphTextureController(final GL3 glCurrent) {
-        if (Utilities.isMac())
-        {
+        if (Utilities.isMac()) {
             glyphTextureController.update(glCurrent);
-        }
-        else
-        {
+        } else {
             glCurrent.getContext().release();
             try {
                 final int result = gl.getContext().makeCurrent();

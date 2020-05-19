@@ -38,9 +38,11 @@ import org.openide.util.Lookup;
  * @author algol
  */
 public class RestServiceRegistry {
+
     private static final Logger LOGGER = Logger.getLogger(RestServiceRegistry.class.getName());
 
     public static class ServiceKey {
+
         public final String name;
         public final HttpMethod httpMethod;
 
@@ -59,17 +61,17 @@ public class RestServiceRegistry {
 
         @Override
         public boolean equals(final Object obj) {
-            if(this==obj) {
+            if (this == obj) {
                 return true;
             }
-            if(obj==null) {
+            if (obj == null) {
                 return false;
             }
-            if(getClass()!=obj.getClass()) {
+            if (getClass() != obj.getClass()) {
                 return false;
             }
             final ServiceKey other = (ServiceKey) obj;
-            return httpMethod==other.httpMethod && name.equals(other.name);
+            return httpMethod == other.httpMethod && name.equals(other.name);
         }
 
         @Override
@@ -81,7 +83,7 @@ public class RestServiceRegistry {
     private static HashMap<ServiceKey, Class<? extends RestService>> servicesMap = null;
 
     private static synchronized void init() {
-        if(servicesMap!=null) {
+        if (servicesMap != null) {
             return;
         }
 
@@ -90,12 +92,12 @@ public class RestServiceRegistry {
         //
         servicesMap = new HashMap<>();
         Lookup.getDefault().lookupAll(RestService.class)
-            .stream()
-            .forEach(rs -> {
-                servicesMap.put(new ServiceKey(rs.getName(), rs.getHttpMethod()), rs.getClass());
-                final String msg = String.format("Discovered REST service %s (%s): %s", rs.getName(), rs.getHttpMethod(), rs.getDescription());
-                LOGGER.info(msg);
-            });
+                .stream()
+                .forEach(rs -> {
+                    servicesMap.put(new ServiceKey(rs.getName(), rs.getHttpMethod()), rs.getClass());
+                    final String msg = String.format("Discovered REST service %s (%s): %s", rs.getName(), rs.getHttpMethod(), rs.getDescription());
+                    LOGGER.info(msg);
+                });
     }
 
     /**
@@ -125,11 +127,11 @@ public class RestServiceRegistry {
         init();
 
         final ServiceKey key = new ServiceKey(name, httpMethod);
-        if(servicesMap.containsKey(key)) {
+        if (servicesMap.containsKey(key)) {
             final Class<? extends RestService> c = servicesMap.get(key);
             try {
                 return c.getDeclaredConstructor().newInstance();
-            } catch(NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
                 LOGGER.log(Level.SEVERE, String.format("When creating REST service %s", key), ex);
                 Exceptions.printStackTrace(ex);
             }
@@ -141,9 +143,11 @@ public class RestServiceRegistry {
     }
 
     /**
-     * Return a set containing all the names and HttpMethods of the available services.
+     * Return a set containing all the names and HttpMethods of the available
+     * services.
      *
-     * @return A set containing all the names and HttpMethods of the available services.
+     * @return A set containing all the names and HttpMethods of the available
+     * services.
      */
     public static Set<ServiceKey> getServices() {
         init();

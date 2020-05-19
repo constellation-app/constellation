@@ -27,9 +27,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationIconProvider.class)
 public class FlagIconProvider implements ConstellationIconProvider {
-    
+
     private static final String CODE_NAME_BASE = "au.gov.asd.tac.constellation.utilities";
-    
+
     private static final String FLAG_CATEGORY = "Flag";
 
     public static final ConstellationIcon AFGHANISTAN = new ConstellationIcon.Builder("Afghanistan", new FileIconData("modules/ext/icons/flags/afghanistan.png", CODE_NAME_BASE))

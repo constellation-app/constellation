@@ -245,7 +245,7 @@ public class ConfigurationPane extends AnchorPane {
         // First create a new RunPane for each ImportDefinition...
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
-        
+
         for (final ImportDefinition impdef : definitions) {
             importController.createNewRun();
         }

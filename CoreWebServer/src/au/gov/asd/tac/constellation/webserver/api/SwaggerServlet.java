@@ -39,23 +39,23 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * A servlet that displays the REST API using swagger-ui.
  * <p>
- * Swagger is obtained from https://github.com/swagger-api/swagger-ui.
- * The swagger packages contain the contents of swagger-ui/dist unzipped as-is
- * with the addition of the constellation.json swagger config file.
- * The index.html file has been modified to link to constellation.json
+ * Swagger is obtained from https://github.com/swagger-api/swagger-ui. The
+ * swagger packages contain the contents of swagger-ui/dist unzipped as-is with
+ * the addition of the constellation.json swagger config file. The index.html
+ * file has been modified to link to constellation.json
  * <p>
- * The JSON returned by the servlet is modified on the fly to contain
- * REST service information, using the information from each service
- * and the PluginParameters instance from each service's createParameters().
+ * The JSON returned by the servlet is modified on the fly to contain REST
+ * service information, using the information from each service and the
+ * PluginParameters instance from each service's createParameters().
  * <p>
- *  Some heuristics are used.
+ * Some heuristics are used.
  * <ul>
- * <li>If the getName() of a parameter contains the
- * string "(body)", that parameter specified to Swagger as a body parameter
- * instead of a query parameter.</li>
+ * <li>If the getName() of a parameter contains the string "(body)", that
+ * parameter specified to Swagger as a body parameter instead of a query
+ * parameter.</li>
  * <li>If the service returns JSON, and the name of the service starts with
- * "list" (case-insensitive), the schema of the returned JSON is specified as
- * a list of object; otherwise, the default schema is object.
+ * "list" (case-insensitive), the schema of the returned JSON is specified as a
+ * list of object; otherwise, the default schema is object.
  * </ul>
  *
  * @author algol
@@ -71,7 +71,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
      * This *must* match the URL pattern for RestServiceServlet.
      */
     private static final String SERVICE_PATH = "/v2/service/%s";
-    
+
     private static final String DESCRIPTION = "description";
     private static final String SCHEMA = "schema";
 
@@ -83,11 +83,11 @@ public class SwaggerServlet extends ConstellationHttpServlet {
         try {
             final InputStream in = SwaggerServlet.class.getResourceAsStream(fileName);
 
-            if(fileName.equals("swagger/constellation.json")) {
+            if (fileName.equals("swagger/constellation.json")) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
                 final ObjectMapper mapper = new ObjectMapper();
-                final ObjectNode root = (ObjectNode)mapper.readTree(in);
+                final ObjectNode root = (ObjectNode) mapper.readTree(in);
 
                 // Get the hostname:port right.
                 final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -97,7 +97,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 server.put("url", String.format("http://localhost:%d", port));
 
                 // Add the REST services.
-                final ObjectNode paths = (ObjectNode)root.get("paths");
+                final ObjectNode paths = (ObjectNode) root.get("paths");
                 RestServiceRegistry.getServices().forEach(serviceKey -> {
                     final ObjectNode path = paths.putObject(String.format(SERVICE_PATH, serviceKey.name));
                     final ObjectNode httpMethod = path.putObject(serviceKey.httpMethod.name().toLowerCase(Locale.US));
@@ -106,9 +106,9 @@ public class SwaggerServlet extends ConstellationHttpServlet {
 
                     httpMethod.put("summary", rs.getDescription());
 
-                    if(rs.getTags().length>0) {
+                    if (rs.getTags().length > 0) {
                         final ArrayNode tags = httpMethod.putArray("tags");
-                        for(final String tag : rs.getTags()) {
+                        for (final String tag : rs.getTags()) {
                             tags.add(tag);
                         }
                     }
@@ -146,16 +146,16 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode content = success.putObject("content");
                     final ObjectNode mime = content.putObject(rs.getMimeType());
                     final ObjectNode schema = mime.putObject(SCHEMA);
-                    if(rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
+                    if (rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
                         schema.put("type", "string");
                         schema.put("format", "binary");
-                    } else if(rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                    } else if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
                         // Make a wild guess about the response.
-                        if(serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
+                        if (serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
                             schema.put("type", "array");
                             final ObjectNode items = schema.putObject("items");
                             items.put("type", "object");
-                        } else{
+                        } else {
                             schema.put("type", "object");
                         }
                     }
@@ -164,12 +164,12 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
-                if(fileName.endsWith(".js")) {
+                if (fileName.endsWith(".js")) {
                     response.setContentType("text/javascript");
                 }
 
                 // This is every other file, just transfer the bytes.
-                try(final OutputStream out = response.getOutputStream()) {
+                try (final OutputStream out = response.getOutputStream()) {
                     final byte[] buf = new byte[8192];
                     while (true) {
                         final int len = in.read(buf);

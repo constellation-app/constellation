@@ -112,7 +112,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final StringProperty upperTimeExtentProperty = new SimpleStringProperty();
     private boolean isSelecting = false;
     private boolean firstaxisUpdate = false;
-    
+
     // <editor-fold defaultstate="collapsed" desc="Timeline Event Handlers">
     private final EventHandler<Event> timelineMouseHandler = new EventHandler<Event>() {
         @Override

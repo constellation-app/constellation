@@ -26,7 +26,7 @@ import javafx.scene.chart.ValueAxis;
 /**
  * An axis for representing numeric data logarithmically, based on the
  * LogarithmicAxis class available in the ExtFX library.
- * 
+ *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1

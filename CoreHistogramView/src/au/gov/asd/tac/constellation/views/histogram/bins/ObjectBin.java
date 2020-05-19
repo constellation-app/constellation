@@ -33,7 +33,7 @@ public class ObjectBin extends Bin {
     };
 
     protected Object key;
-    
+
     @Override
     public int compareTo(Bin o) {
         final ObjectBin bin = (ObjectBin) o;

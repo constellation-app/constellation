@@ -56,13 +56,13 @@ public class TableViewPreferencesIOUtilities {
 
     /**
      * Save details of the currently displayed tables displayed columns and
-     * their order as well as details of any sorting being performed on it.
-     * The user will be prompted for a name to save the configuration file as
-     * which will be appended to a tag indicating the type of content being
-     * displayed in the table.
+     * their order as well as details of any sorting being performed on it. The
+     * user will be prompted for a name to save the configuration file as which
+     * will be appended to a tag indicating the type of content being displayed
+     * in the table.
      *
      * @param tableType Indication of whether the table is displaying in vertex
-     *        of transaction mode.
+     * of transaction mode.
      * @param table the tables content.
      */
     public static void savePreferences(GraphElementType tableType, final TableView<ObservableList<String>> table) {
@@ -82,7 +82,7 @@ public class TableViewPreferencesIOUtilities {
             DialogDisplayer.getDefault().notify(nd);
             return;
         }
-        
+
         // Create the core structure of the JSON object containing nodes for the key characteristics
         // of the graph that are being saved
         final ObjectMapper mapper = new ObjectMapper();
@@ -114,11 +114,10 @@ public class TableViewPreferencesIOUtilities {
      * Load in the preferences from the JSON file and re-order the table
      *
      * @param tableType Indication of whether the table is displaying in vertex
-     *        of transaction mode.
-     * 
-     * @return A Tuple containing: ordered list of table columns (1) and
-     *         second Tuple (2) containing details of sort column (1) and sort
-     *         order (2).
+     * of transaction mode.
+     *
+     * @return A Tuple containing: ordered list of table columns (1) and second
+     * Tuple (2) containing details of sort column (1) and sort order (2).
      */
     public static Tuple<ArrayList<String>, Tuple<String, TableColumn.SortType>> getPreferences(GraphElementType tableType) {
         String filePrefix = (tableType == GraphElementType.VERTEX ? VERTEX_FILE_PREFIX : TRANSACTION_FILE_PREFIX);
@@ -126,7 +125,7 @@ public class TableViewPreferencesIOUtilities {
         final ArrayList<String> colOrder = new ArrayList<>();
         String sortColumn = "";
         TableColumn.SortType sortType = TableColumn.SortType.ASCENDING;
-        
+
         if (root != null) {
             for (final JsonNode step : root) {
                 final JsonNode colOrderArrayNode = step.get(COLUMN_ORDER_NODE);
@@ -136,7 +135,7 @@ public class TableViewPreferencesIOUtilities {
                 for (final JsonNode columnNode : colOrderArrayNode) {
                     colOrder.add(columnNode.textValue());
                 }
-                
+
                 // Extract sort order details
                 sortColumn = colSortNode.fieldNames().next();
                 if (colSortNode.get(sortColumn).asText().equals("DESCENDING")) {

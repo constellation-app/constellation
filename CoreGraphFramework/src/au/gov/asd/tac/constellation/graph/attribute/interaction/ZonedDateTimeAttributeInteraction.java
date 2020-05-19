@@ -23,7 +23,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeInteraction for attributes described by
  * {@link au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription}
- * 
+ *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -39,14 +39,14 @@ public class ZonedDateTimeAttributeInteraction extends AbstractAttributeInteract
         if (value == null) {
             return null;
         }
-        
+
         String representation = ((ZonedDateTime) value).format(TemporalFormatting.ZONED_DATE_TIME_FORMATTER);
 
         // if the milliseconds component is 0, trim it from the string representation
         if (((ZonedDateTime) value).getNano() / 1000000 == 0) {
             representation = representation.substring(0, TemporalFormatting.DATE_HMS_FORMAT_LENGTH) + representation.substring(TemporalFormatting.DATE_TIME_FORMAT_LENGTH);
         }
-        
+
         return representation;
     }
 

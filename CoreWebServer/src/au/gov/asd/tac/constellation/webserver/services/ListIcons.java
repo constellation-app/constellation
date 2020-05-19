@@ -35,8 +35,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class ListIcons extends RestService {
+
     private static final String NAME = "list_icons";
     private static final String EDITABLE_PARAMETER_ID = "editable";
 

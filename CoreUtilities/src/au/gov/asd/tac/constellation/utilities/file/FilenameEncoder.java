@@ -8,6 +8,7 @@ package au.gov.asd.tac.constellation.utilities.file;
 /**
  * Manage the encode/decode of strings into filenames. This essentially ensures
  * the characters in the filename are within a valid set.
+ *
  * @author serpens24
  */
 public class FilenameEncoder {
@@ -18,7 +19,6 @@ public class FilenameEncoder {
     private FilenameEncoder() {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
-    
 
     /**
      * Encode a String so it can be used as a filename. This method will
@@ -50,7 +50,7 @@ public class FilenameEncoder {
      */
     public static String decode(final String s) {
         final StringBuilder b = new StringBuilder();
-        
+
         // Loop through characters in source string. The normal case just adds
         // the next character to the destination string, but if a '_ is found,
         // it is treated asa marker which beigns a 4 character hex code - used

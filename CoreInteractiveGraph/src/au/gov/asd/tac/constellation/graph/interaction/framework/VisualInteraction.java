@@ -140,11 +140,11 @@ public interface VisualInteraction {
      * bottom edges of the rectangle in camera coordinates.
      */
     public float[] windowBoxToCameraBox(final int left, final int right, final int top, final int bottom);
-    
+
     /**
-     * Returns the global DPI Scale factor used to convert mouse coordinates to 
+     * Returns the global DPI Scale factor used to convert mouse coordinates to
      * the correct values.
-     * 
+     *
      * @return A float value describing the scale factor
      */
     public float getDPIScalingFactor();

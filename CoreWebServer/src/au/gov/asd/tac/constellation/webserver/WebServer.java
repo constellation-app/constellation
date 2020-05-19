@@ -140,7 +140,7 @@ public class WebServer {
                 final File restFile = new File(userDir, REST_FILE);
                 if (restFile.exists()) {
                     final boolean restFileIsDeleted = restFile.delete();
-                    if(!restFileIsDeleted) {
+                    if (!restFileIsDeleted) {
                         //TODO: Handle case where file not successfully deleted
                     }
                 }
@@ -175,7 +175,7 @@ public class WebServer {
 
                 // Gather the servlets and add them to the server.
                 //
-                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet ->{
+                Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
 //                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
 //                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
@@ -210,7 +210,7 @@ public class WebServer {
                     } finally {
                         // Play nice and clean up (if Netbeans lets us).
                         final boolean restFileIsDeleted = restFile.delete();
-                        if(!restFileIsDeleted) {
+                        if (!restFileIsDeleted) {
                             //TODO: Handle case where file not successfully deleted
                         }
                     }

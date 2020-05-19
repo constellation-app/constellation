@@ -33,8 +33,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class GetGraph extends RestService {
+
     private static final String NAME = "get_graph";
 
     @Override

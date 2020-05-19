@@ -121,7 +121,7 @@ public class NodeBase {
     public void setCodelength(double codelength) {
         this.codelength = codelength;
     }
-    
+
     public void addChild(final NodeBase child) {
         if (firstChild == null) {
             child.previous = null;

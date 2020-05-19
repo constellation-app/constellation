@@ -71,7 +71,7 @@ public final class ValueStore implements ParameterWriteAccess, Serializable {
     }
 
     private interface Saver extends Serializable {
-        
+
         public void save(final ParameterWriteAccess pwa);
     }
 

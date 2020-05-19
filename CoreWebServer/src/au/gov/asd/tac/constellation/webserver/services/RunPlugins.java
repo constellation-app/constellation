@@ -47,8 +47,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class RunPlugins extends RestService {
+
     private static final String NAME = "run_plugins";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String RUN_IN_PARAMETER_ID = "run_in";
@@ -113,7 +114,7 @@ public class RunPlugins extends RestService {
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
 
         final String runStyle = parameters.getStringValue(RUN_IN_PARAMETER_ID);
-        if(!RUN_STYLE_SERIES.equals(runStyle) && !RUN_STYLE_PARALLEL.equals(runStyle)) {
+        if (!RUN_STYLE_SERIES.equals(runStyle) && !RUN_STYLE_PARALLEL.equals(runStyle)) {
             final String msg = String.format("%s must be '%s' or '%s'", RUN_IN_PARAMETER_ID, RUN_STYLE_SERIES, RUN_STYLE_PARALLEL);
             throw new RestServiceException(msg);
         }
@@ -122,17 +123,17 @@ public class RunPlugins extends RestService {
         //
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
-        if(!json.isArray()) {
+        if (!json.isArray()) {
             final String msg = String.format("Argument for %s must be a list", NAME);
             throw new RestServiceException(msg);
         }
 
         final ConcurrentLinkedQueue<PluginError> errorQueue = new ConcurrentLinkedQueue<>();
 
-        final ArrayNode pluginList = (ArrayNode)json;
+        final ArrayNode pluginList = (ArrayNode) json;
         final List<PluginInstance> pluginInstances = new ArrayList<>();
         pluginList.forEach(pluginItem -> {
-            if(!pluginItem.has(PLUGIN_NAME) || !pluginItem.get(PLUGIN_NAME).isTextual()) {
+            if (!pluginItem.has(PLUGIN_NAME) || !pluginItem.get(PLUGIN_NAME).isTextual()) {
                 final String msg = String.format("Each plugin argument must have %s", PLUGIN_NAME);
                 throw new RestServiceException(msg);
             }
@@ -141,8 +142,8 @@ public class RunPlugins extends RestService {
             final Plugin plugin = PluginRegistry.get(pluginName);
 
             final PluginParameters pluginParameters = plugin.createParameters();
-            if(pluginParameters!=null && pluginItem.has(PLUGIN_ARGS)) {
-                final ObjectNode pluginArgs = (ObjectNode)pluginItem.get(PLUGIN_ARGS);
+            if (pluginParameters != null && pluginItem.has(PLUGIN_ARGS)) {
+                final ObjectNode pluginArgs = (ObjectNode) pluginItem.get(PLUGIN_ARGS);
                 RestServiceUtilities.parametersFromJson(pluginArgs, pluginParameters);
             }
 
@@ -154,7 +155,7 @@ public class RunPlugins extends RestService {
         // If parallel, do the things with threads.
         // Either way, any errors in execution will be caught and written to the error queue.
         //
-        if(runStyle.equals(RUN_STYLE_SERIES)) {
+        if (runStyle.equals(RUN_STYLE_SERIES)) {
             pluginInstances.forEach(PluginInstance::run);
         } else {
             final List<Thread> pluginThreads = new ArrayList<>();
@@ -167,7 +168,7 @@ public class RunPlugins extends RestService {
             pluginThreads.forEach(thread -> {
                 try {
                     thread.join();
-                } catch(final InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     thread.interrupt();
                     errorQueue.add(new PluginError(String.format("Thread %s", thread.getName()), ex));
                 }
@@ -178,11 +179,11 @@ public class RunPlugins extends RestService {
         // didn't work. If there are errors, pass them back.
         //
         final StringBuilder buf = new StringBuilder();
-        while(!errorQueue.isEmpty()) {
+        while (!errorQueue.isEmpty()) {
             buf.append(errorQueue.remove().toString());
         }
 
-        if(buf.length()>0) {
+        if (buf.length() > 0) {
             throw new RestServiceException(buf.toString());
         }
     }
@@ -190,10 +191,11 @@ public class RunPlugins extends RestService {
     /**
      * An instance of a plugin and its parameters.
      * <p>
-     * This instance can be run. Any plugin exceptions will be added to a queue and not thrown,
-     * so the instance can be run in a thread.
+     * This instance can be run. Any plugin exceptions will be added to a queue
+     * and not thrown, so the instance can be run in a thread.
      */
     private static class PluginInstance implements Runnable {
+
         final Graph graph;
         final Plugin plugin;
         final PluginParameters params;
@@ -209,7 +211,7 @@ public class RunPlugins extends RestService {
         @Override
         public void run() {
             try {
-                if(params!=null) {
+                if (params != null) {
                     PluginExecution.withPlugin(plugin).withParameters(params).executeNow(graph);
                 } else {
                     PluginExecution.withPlugin(plugin).executeNow(graph);
@@ -224,6 +226,7 @@ public class RunPlugins extends RestService {
     }
 
     private static class PluginError {
+
         final String pluginName;
         final Exception ex;
 

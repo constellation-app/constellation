@@ -75,7 +75,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
     private String script;
     private final boolean selectedOnly;
     private final boolean completeWithSchema;
-    
+
     private static final String NON_WORD_OR_SCRIPT_START_PATTERN = "(\\A|\\W)(";
 
     private static final Logger LOGGER = Logger.getLogger(AttributeCalculatorPlugin.class.getName());

@@ -16,14 +16,13 @@
 package au.gov.asd.tac.constellation.graph.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import java.net.URI;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
  * AttributeInteraction for attributes described by
  * {@link au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeInteraction}
- * 
+ *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)

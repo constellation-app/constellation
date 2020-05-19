@@ -30,10 +30,11 @@ import java.util.Locale;
 
 /**
  * Various helper functions for REST services.
- * 
+ *
  * @author algol
  */
 public class RestServiceUtilities {
+
     private RestServiceUtilities() {
     }
 
@@ -46,7 +47,8 @@ public class RestServiceUtilities {
         PUT;
 
         /**
-         * A helper to convert a string to an HttpMethod without throwing an exception.
+         * A helper to convert a string to an HttpMethod without throwing an
+         * exception.
          *
          * @param s The String to be converted.
          *
@@ -55,8 +57,7 @@ public class RestServiceUtilities {
         public static HttpMethod getValue(final String s) {
             try {
                 return HttpMethod.valueOf(s.toUpperCase(Locale.US));
-            }
-            catch(final IllegalArgumentException ex) {
+            } catch (final IllegalArgumentException ex) {
                 return null;
             }
         }
@@ -65,7 +66,6 @@ public class RestServiceUtilities {
     /**
      * Constants for common MIME types.
      */
-
     public static final String APPLICATION_JSON = "application/json";
     public static final String IMAGE_PNG = "image/png";
 
@@ -162,8 +162,8 @@ public class RestServiceUtilities {
      * want to put the burden of figuring out when the graph is ready on the
      * caller. Instead we wait for the asynchronous operation to finish by
      * comparing the id of the active graph to that of an existing graph
-     * (possibly null). This could be fooled by the user changing graphs,
-     * but what are you going to do?
+     * (possibly null). This could be fooled by the user changing graphs, but
+     * what are you going to do?
      *
      * @param existingId
      *
@@ -173,19 +173,19 @@ public class RestServiceUtilities {
         // Now we wait for the new graph to become active.
         //
         int waits = 0;
-        while(true) {
+        while (true) {
             // Wait a bit to give the new graph time to become active.
             //
             try {
                 Thread.sleep(1000);
-            } catch(final InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new RestServiceException(ex);
             }
 
             final Graph newGraph = GraphManager.getDefault().getActiveGraph();
             final String newId = newGraph != null ? newGraph.getId() : null;
-            if((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
+            if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
                 // - there was no existing graph, and the new graph is active, or
                 // - there was an existing graph, and the active graph is not the existing graph.
                 // - we assume the user hasn't interfered by manually switching to another graph at the same time.

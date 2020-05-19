@@ -38,7 +38,7 @@ import org.openide.util.Exceptions;
  * @author twilight_sparkle
  */
 public class DefaultScriptLoader extends AbstractScriptLoader {
-    
+
     private static final Logger LOGGER = Logger.getLogger(DefaultScriptLoader.class.getName());
 
     private static final String DESCRIPTION_KEY = "description";

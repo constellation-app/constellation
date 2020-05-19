@@ -63,9 +63,9 @@ import org.openide.util.lookup.ServiceProviders;
 /**
  * A data access plugin that builds a random sphere graph.
  * <p>
- * The sphere graph is not just a random graph, it is meant to exercise
- * renderer functionality: visibility, dimness, color combinations of
- * transactions, many transactions between nodes, etc.
+ * The sphere graph is not just a random graph, it is meant to exercise renderer
+ * functionality: visibility, dimness, color combinations of transactions, many
+ * transactions between nodes, etc.
  *
  * @author canis_majoris
  */
@@ -84,11 +84,11 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String USE_ALL_DISPLAYABLE_CHARS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "use_all_displayable_chars");
     public static final String DRAW_MANY_TX_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_tx");
     public static final String DRAW_MANY_DECORATORS_PARAMETER_ID = PluginParameter.buildId(SphereGraphBuilderPlugin.class, "draw_many_deco");
-   
+
     private static final String NODE = "~Node ";
     private static final String TYPE = "~Type ";
     private static final String BACKGROUND_ROUND_CIRCLE = "Background.Round Circle";
-    
+
     private final SecureRandom random = new SecureRandom();
 
     @Override
@@ -186,7 +186,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
         // Parameter values.
         //
         final Map<String, PluginParameter<?>> params = parameters.getParameters();
-        final int nVx = Math.max(params.get(N_PARAMETER_ID).getIntegerValue()-6, 0);
+        final int nVx = Math.max(params.get(N_PARAMETER_ID).getIntegerValue() - 6, 0);
         final int nTx = params.get(T_PARAMETER_ID).getIntegerValue();
         final String option = params.get(OPTION_PARAMETER_ID).getStringValue();
         final boolean addChars = params.get(ADD_CHARS_PARAMETER_ID).getBooleanValue();
@@ -458,7 +458,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx0 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx0, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], max[BBoxf.Y], max[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx0, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, max[BBoxf.Y]/2, max[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx0, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X] / 2, max[BBoxf.Y] / 2, max[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx0, NODE + vx0 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx0, String.valueOf(vx0));
         graph.setStringValue(vxTypeAttr, vx0, TYPE + vx0);
@@ -474,7 +474,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx1 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx1, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], max[BBoxf.Y], max[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx1, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, max[BBoxf.Y]/2, max[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx1, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X] / 2, max[BBoxf.Y] / 2, max[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx1, NODE + vx1 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx1, String.valueOf(vx1));
         graph.setStringValue(vxTypeAttr, vx1, TYPE + vx1);
@@ -490,7 +490,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx2 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx2, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], min[BBoxf.Y], max[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx2, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, min[BBoxf.Y]/2, max[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx2, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X] / 2, min[BBoxf.Y] / 2, max[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx2, NODE + vx2 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx2, String.valueOf(vx2));
         graph.setStringValue(vxTypeAttr, vx2, TYPE + vx2);
@@ -506,7 +506,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx3 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx3, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], min[BBoxf.Y], min[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx3, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, min[BBoxf.Y]/2, min[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx3, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X] / 2, min[BBoxf.Y] / 2, min[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx3, NODE + vx3 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx3, String.valueOf(vx3));
         graph.setStringValue(vxTypeAttr, vx3, TYPE + vx3);
@@ -522,7 +522,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx4 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx4, vxXAttr, vxYAttr, vxZAttr, min[BBoxf.X], max[BBoxf.Y], min[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx4, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X]/2, max[BBoxf.Y]/2, min[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx4, vxX2Attr, vxY2Attr, vxZ2Attr, min[BBoxf.X] / 2, max[BBoxf.Y] / 2, min[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx4, NODE + vx4 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx4, String.valueOf(vx4));
         graph.setStringValue(vxTypeAttr, vx4, TYPE + vx4);
@@ -538,7 +538,7 @@ public class SphereGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vx5 = graph.addVertex();
         ConstructionUtilities.setxyz(graph, vx5, vxXAttr, vxYAttr, vxZAttr, max[BBoxf.X], max[BBoxf.Y], min[BBoxf.Z]);
-        ConstructionUtilities.setxyz(graph, vx5, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X]/2, max[BBoxf.Y]/2, min[BBoxf.Z]/2);
+        ConstructionUtilities.setxyz(graph, vx5, vxX2Attr, vxY2Attr, vxZ2Attr, max[BBoxf.X] / 2, max[BBoxf.Y] / 2, min[BBoxf.Z] / 2);
         graph.setStringValue(vxLabelAttr, vx5, NODE + vx5 + " " + circleChar++);
         graph.setStringValue(vxIdentifierAttr, vx5, String.valueOf(vx5));
         graph.setStringValue(vxTypeAttr, vx5, TYPE + vx5);

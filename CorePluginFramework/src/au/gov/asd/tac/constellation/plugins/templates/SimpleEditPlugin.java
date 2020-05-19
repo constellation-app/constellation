@@ -53,7 +53,7 @@ import org.openide.util.NbBundle.Messages;
 public abstract class SimpleEditPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
-    
+
     private static final String WAITING_INTERACTION = "Waiting...";
 
     public SimpleEditPlugin() {
@@ -191,8 +191,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
      *
      * @param graph the graph on which to run the plugin.
      * @param interaction a
-     * {@link au.gov.asd.tac.constellation.plugins.PluginExecution} to
-     * allow feedback to the user.
+     * {@link au.gov.asd.tac.constellation.plugins.PluginExecution} to allow
+     * feedback to the user.
      * @param parameters the parameters for this plugin execution.
      *
      * @return An object that describes the changes made when the write lock is

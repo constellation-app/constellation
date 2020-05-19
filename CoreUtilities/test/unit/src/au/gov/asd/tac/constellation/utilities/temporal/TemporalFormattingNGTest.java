@@ -172,8 +172,8 @@ public class TemporalFormattingNGTest {
         final String result = TemporalFormatting.parseAsZonedDateTime(null, formatter, LOGGER);
         assertEquals(result, expResult);
     }
-    
-     /**
+
+    /**
      * Test of parseAsZonedDateTime method, of class TemporalFormatting.
      */
     @Test
@@ -183,8 +183,8 @@ public class TemporalFormattingNGTest {
         final String expResult = "2019-04-23 01:16:42.000 +10.00 [Australia/Sydney]";
         assertEquals(result, expResult);
     }
-    
-     /**
+
+    /**
      * Test of parseAsZonedDateTime method, of class TemporalFormatting.
      */
     @Test
@@ -194,8 +194,8 @@ public class TemporalFormattingNGTest {
         final String expResult = "2019-04-23 01:16:42.000 +10.00";
         assertEquals(result, expResult);
     }
-    
-     /**
+
+    /**
      * Test of parseAsZonedDateTime method, of class TemporalFormatting.
      */
     @Test
@@ -205,5 +205,5 @@ public class TemporalFormattingNGTest {
         final String expResult = "2019-12-25 00:00:00.000 +00.00";
         assertEquals(result, expResult);
     }
-    
+
 }

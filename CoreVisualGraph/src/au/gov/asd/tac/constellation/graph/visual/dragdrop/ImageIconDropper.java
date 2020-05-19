@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class, position = 10000)
 public class ImageIconDropper implements GraphDropper {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ImageIconDropper.class.getName());
 
     private static final DataFlavor IMAGE_FLAVOR;

@@ -38,20 +38,20 @@ import javafx.scene.layout.HBox;
  * @author sirius
  */
 public class ActionPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ActionPane.class.getName());
     private static final String SUCCESS_ICON_PATH = "au/gov/asd/tac/constellation/plugins/importexport/delimited/resources/success.jpg";
 
     private final ImportController importController;
-    
-    private void displayAlert(String title, String header, boolean successful){
+
+    private void displayAlert(String title, String header, boolean successful) {
         final Alert dialog;
-        if(successful){
+        if (successful) {
             dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.OK);
             final ImageView SUCCESS_ICON = new ImageView(SUCCESS_ICON_PATH);
             dialog.setGraphic(SUCCESS_ICON);
-            
-        }else{
+
+        } else {
             dialog = new Alert(Alert.AlertType.ERROR, "", ButtonType.OK);
         }
         dialog.setTitle(title);
@@ -80,7 +80,7 @@ public class ActionPane extends BorderPane {
             @Override
             public void handle(ActionEvent t) {
                 try {
-                    
+
                     final List<File> importedFiles = importController.processImport();
                     final String[] filenames = new String[importedFiles.size()];
                     long noOfRows = 0;
@@ -89,9 +89,9 @@ public class ActionPane extends BorderPane {
                         Path path = importedFiles.get(i).toPath();
                         noOfRows += Files.lines(path).count();
                     }
-                    displayAlert("Success", "Successfully imported "+ noOfRows
-                            +" rows from the following file(s):\n"+String.join("\n", filenames), true);
-                    
+                    displayAlert("Success", "Successfully imported " + noOfRows
+                            + " rows from the following file(s):\n" + String.join("\n", filenames), true);
+
                 } catch (final IOException | PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     displayAlert("Import Failed", ex.getLocalizedMessage(), false);

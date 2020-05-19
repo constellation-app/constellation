@@ -48,12 +48,13 @@ import org.openide.util.NotImplementedException;
  * @author sol
  */
 public class MdsArranger implements Arranger {
+
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5f;
     private static final float EXTENTS_SIZE_INFLATION = 1.2f;
-    
+
     private final MDSChoiceParameters params;
 
     public MdsArranger(final MDSChoiceParameters params) {

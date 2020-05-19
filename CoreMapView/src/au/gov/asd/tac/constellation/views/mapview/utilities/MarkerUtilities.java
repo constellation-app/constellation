@@ -85,20 +85,20 @@ public class MarkerUtilities {
      * @return an integer representing a color
      */
     public static int color(final String html) {
-        if((html.startsWith("#") && html.length() == 7)
-                || (html.startsWith("#") && html.length() == 9)){
+        if ((html.startsWith("#") && html.length() == 7)
+                || (html.startsWith("#") && html.length() == 9)) {
             final int a = html.length() == 7 ? 127
-                : Integer.parseInt(html.substring(1, 3), 16);
+                    : Integer.parseInt(html.substring(1, 3), 16);
             final String rgbHtml = html.length() == 7 ? html.substring(1)
                     : html.substring(3);
             final int r = Integer.parseInt(rgbHtml.substring(0, 2), 16);
             final int g = Integer.parseInt(rgbHtml.substring(2, 4), 16);
             final int b = Integer.parseInt(rgbHtml.substring(4, 6), 16);
             return color(a, r, g, b);
-        } else { 
+        } else {
             throw new IllegalArgumentException("The string provided is not a valid HTML color (Expected #RRGGBB or #aaRRGGBB)");
         }
-        
+
     }
 
     /**

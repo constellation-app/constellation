@@ -73,7 +73,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     private AttributeValueMonitor xAttributeMonitor;
     private AttributeValueMonitor yAttributeMonitor;
     private AttributeValueMonitor selectedAttributeMonitor;
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public ScatterPlotTopComponent() {

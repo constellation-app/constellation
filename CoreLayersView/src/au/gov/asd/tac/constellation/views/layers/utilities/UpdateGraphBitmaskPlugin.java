@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -24,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
  * Write a given bitmask to the active graph.
- * 
+ *
  * @author aldebaran30701
  */
 public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {

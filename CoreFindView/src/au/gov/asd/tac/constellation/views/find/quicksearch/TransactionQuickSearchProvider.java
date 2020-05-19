@@ -69,12 +69,12 @@ public class TransactionQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-                for (FindResult item : results) {
-                    if (item != null) {
-                        // We have a valid result, so report:
-                        response.addResult(new SelectContent(graph, item), item.toString());
-                    }
+            for (FindResult item : results) {
+                if (item != null) {
+                    // We have a valid result, so report:
+                    response.addResult(new SelectContent(graph, item), item.toString());
                 }
+            }
         }
     }
 

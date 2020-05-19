@@ -42,7 +42,7 @@ public class SynchronizerPlugin extends SimpleQueryPlugin {
     private final int queryTime;
     private final int writeTime;
     private final String name;
-    
+
     private final SecureRandom random = new SecureRandom();
 
     public SynchronizerPlugin() {

@@ -63,7 +63,7 @@ public abstract class Response {
      * Body as JSON.
      */
     public final JsonNode json;
-    
+
     private static final String DASH_STRING = "----\n";
 
     private static final Logger LOGGER = Logger.getLogger(Response.class.getName());

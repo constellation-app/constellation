@@ -76,7 +76,7 @@ public final class CreateTransactionPlugin extends SimpleEditPlugin {
         this.source = parameters.getParameters().get(SOURCE_PARAMETER_ID).getIntegerValue();
         this.destination = parameters.getParameters().get(DESTINATION_PARAMETER_ID).getIntegerValue();
         this.directed = parameters.getParameters().get(DIRECTED_PARAMETER_ID).getBooleanValue();
-        
+
         final int txLayerAttrId = VisualConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
         final int graphLayerAttrId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
 

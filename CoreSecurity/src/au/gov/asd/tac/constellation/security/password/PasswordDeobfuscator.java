@@ -18,9 +18,7 @@ package au.gov.asd.tac.constellation.security.password;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.security.AlgorithmParameters;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -67,7 +65,7 @@ public class PasswordDeobfuscator {
             cipher.init(Cipher.DECRYPT_MODE, key, iv);
             final byte[] unencrypted = cipher.doFinal(password.getBytes());
             return new String(unencrypted, 0, unencrypted.length, StandardCharsets.UTF_8);
-        } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException 
+        } catch (final InvalidKeyException | IllegalBlockSizeException | BadPaddingException
                 | NoSuchAlgorithmException | NoSuchPaddingException | InvalidAlgorithmParameterException ex) {
             throw new RuntimeException(ex);
         }

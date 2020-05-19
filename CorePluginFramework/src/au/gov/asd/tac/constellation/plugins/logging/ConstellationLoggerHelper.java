@@ -58,7 +58,7 @@ public class ConstellationLoggerHelper {
     public static final String VALUE_AFTER = "VALUE_AFTER";
     public static final String COUNT = "COUNT";
     public static final String STATUS = "STATUS";
-    
+
     private static final String STRING_NUMBER_FORMAT = "%s %d";
 
     /**
@@ -307,7 +307,7 @@ public class ConstellationLoggerHelper {
         if (!file.exists()) {
             return null;
         }
-        
+
         final MessageDigest sha256Digest = MessageDigest.getInstance("SHA-256");
         sha256Digest.reset();
 

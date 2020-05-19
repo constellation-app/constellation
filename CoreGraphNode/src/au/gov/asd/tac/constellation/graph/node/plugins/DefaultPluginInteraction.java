@@ -51,7 +51,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     private ProgressHandle progress;
     private String currentMessage;
     private Timer timer = null;
-    
+
     private static final String STRING_STRING_FORMAT = "%s: %s";
 
     public DefaultPluginInteraction(final PluginManager pluginManager, PluginReport pluginReport) {

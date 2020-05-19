@@ -21,7 +21,7 @@ import javax.swing.text.Element;
 
 /**
  * A numbered text area for use with Swing.
- * 
+ *
  * @author algol
  */
 public final class JNumberedTextArea extends JTextArea {

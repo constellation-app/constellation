@@ -36,7 +36,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 public class IconManager {
-    
+
     private static List<? extends ConstellationIconProvider> PROVIDERS = null;
     private static CustomIconProvider CUSTOM_PROVIDER = null;
     private static Map<String, ConstellationIcon> CACHE = null;

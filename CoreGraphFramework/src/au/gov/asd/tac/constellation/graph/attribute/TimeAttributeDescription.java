@@ -192,8 +192,8 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public Object getObject(final int id) {
-        return data[id] == DEFAULT_VALUE ? null 
-                : LocalTime.ofNanoOfDay(((long) data[id]) 
+        return data[id] == DEFAULT_VALUE ? null
+                : LocalTime.ofNanoOfDay(((long) data[id])
                         * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
     }
 

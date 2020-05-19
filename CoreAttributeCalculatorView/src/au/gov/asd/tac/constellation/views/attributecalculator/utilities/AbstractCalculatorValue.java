@@ -41,7 +41,7 @@ public abstract class AbstractCalculatorValue {
     public static void setTheObliterator(PyObject the_obliterator) {
         AbstractCalculatorValue.the_obliterator = the_obliterator;
     }
-    
+
     public static Object convertNullsToObliterator(Object arg) {
         if (AbstractCalculatorUtilities.nullCheck(arg)) {
             return the_obliterator;

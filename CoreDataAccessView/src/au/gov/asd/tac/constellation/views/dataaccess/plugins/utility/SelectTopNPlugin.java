@@ -73,7 +73,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     public static final String NODE = "Node";
     public static final String TRANSACTION = "Transaction";
-    
+
     private static final String MISSING_PROPERTY_FORMAT = "%s property is missing";
 
     @Override

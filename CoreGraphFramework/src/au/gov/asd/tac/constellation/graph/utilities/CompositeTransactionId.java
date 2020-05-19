@@ -20,7 +20,7 @@ package au.gov.asd.tac.constellation.graph.utilities;
  * @author twilight_sparkle
  */
 public class CompositeTransactionId {
-    
+
     private static final String COMPOSITE = "composite:";
 
     private String originalSourceNode;
@@ -68,7 +68,7 @@ public class CompositeTransactionId {
     public void setDestContracted(boolean destContracted) {
         this.destContracted = destContracted;
     }
-    
+
     public static CompositeTransactionId fromString(final String id) {
         if (id == null || !id.startsWith(COMPOSITE)) {
             return new CompositeTransactionId(null, null, id, false, false);

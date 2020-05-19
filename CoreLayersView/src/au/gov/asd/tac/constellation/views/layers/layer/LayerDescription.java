@@ -36,7 +36,7 @@ public class LayerDescription {
         this.query = query;
         this.description = description;
     }
-    
+
     public LayerDescription(final LayerDescription copy) {
         this.layerIndex = copy.layerIndex;
         this.currentVisibility = copy.currentVisibility;
@@ -51,7 +51,7 @@ public class LayerDescription {
     public boolean getCurrentLayerVisibility() {
         return currentVisibility;
     }
-    
+
     public void setCurrentLayerVisibility(final boolean value) {
         currentVisibility = value;
     }

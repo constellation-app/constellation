@@ -84,7 +84,7 @@ public class ConversationState {
         }
         if (o instanceof ConversationState) {
             ConversationState cs = (ConversationState) o;
-            return hiddenContributionProviders.equals(cs.hiddenContributionProviders) 
+            return hiddenContributionProviders.equals(cs.hiddenContributionProviders)
                     && senderAttributes.equals(cs.senderAttributes);
         }
         return false;

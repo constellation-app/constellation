@@ -48,7 +48,7 @@ public class ZonedDateTimeAttributeDescriptionNGTest {
     @AfterMethod
     public void tearDownMethod() throws Exception {
     }
-    
+
     @Test
     public void testParseConstellationStringWithZone() {
         final ZonedDateTimeAttributeDescription instance = new ZonedDateTimeAttributeDescription();

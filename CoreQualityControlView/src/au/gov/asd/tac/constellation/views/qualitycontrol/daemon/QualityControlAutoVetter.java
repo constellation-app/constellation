@@ -149,8 +149,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         final List<Integer> vertexList = new ArrayList<>();
         final List<String> identifierList = new ArrayList<>();
         final List<SchemaVertexType> typeList = new ArrayList<>();
-        
-        
+
         if (graph != null) {
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Thread thread = new Thread("Quality Control View: Run Rule") {
@@ -266,7 +265,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * @return singleton instance of QualityControlAutoVetter
      */
     public static synchronized QualityControlAutoVetter getInstance() {
-        if(INSTANCE == null){
+        if (INSTANCE == null) {
             INSTANCE = new QualityControlAutoVetter();
         }
         return INSTANCE;

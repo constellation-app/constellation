@@ -36,8 +36,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class GetTypeDescription extends RestService {
+
     private static final String NAME = "get_type_description";
     private static final String TYPE_PARAMETER_ID = "type_name";
 

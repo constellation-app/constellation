@@ -102,7 +102,7 @@ public class LayersViewPane extends BorderPane {
             event.consume();
         });
         HBox.setHgrow(addButton, Priority.ALWAYS);
-        
+
         final Button deselectAllButton = new Button("Deselect All Layers");
         deselectAllButton.setAlignment(Pos.CENTER_RIGHT);
         deselectAllButton.setOnAction(event -> {
@@ -116,11 +116,10 @@ public class LayersViewPane extends BorderPane {
             }
             controller.submit();
             controller.execute();
-            
+
             event.consume();
         });
         HBox.setHgrow(deselectAllButton, Priority.ALWAYS);
-
 
         this.options = new HBox(5, addButton, deselectAllButton);
         options.setAlignment(Pos.TOP_LEFT);

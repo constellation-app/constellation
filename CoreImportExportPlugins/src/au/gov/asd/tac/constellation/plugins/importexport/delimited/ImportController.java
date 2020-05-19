@@ -334,7 +334,7 @@ public class ImportController {
 
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes, final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
-        if (attributeFilter != null &&  attributeFilter.length() > 0) {
+        if (attributeFilter != null && attributeFilter.length() > 0) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
                 if (attributeName.toLowerCase().contains(attributeFilter.toLowerCase())) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));

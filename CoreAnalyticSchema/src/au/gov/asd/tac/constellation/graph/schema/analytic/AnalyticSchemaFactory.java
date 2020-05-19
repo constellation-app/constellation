@@ -221,13 +221,13 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setStringValue(vertexLabelAttribute, vertexId, label);
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexColorAttribute, vertexId)) && 
-                    !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
+            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexColorAttribute, vertexId))
+                    && !Objects.equals(type.getColor(), graph.getObjectValue(vertexColorAttribute, vertexId))) {
                 graph.setObjectValue(vertexColorAttribute, vertexId, type.getColor());
             }
 
-            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId)) && 
-                    !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
+            if (type != null && (type != SchemaVertexTypeUtilities.getDefaultType() || graph.isDefaultValue(vertexBackgroundIconAttribute, vertexId))
+                    && !Objects.equals(type.getBackgroundIcon(), graph.getObjectValue(vertexBackgroundIconAttribute, vertexId))) {
                 graph.setObjectValue(vertexBackgroundIconAttribute, vertexId, type.getBackgroundIcon().getExtendedName());
             }
 
@@ -337,13 +337,13 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
                 graph.setStringValue(transactionLabelAttribute, transactionId, label);
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId)) && 
-                    !Objects.equals(type.getColor(), graph.getObjectValue(transactionColorAttribute, transactionId))) {
+            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionColorAttribute, transactionId))
+                    && !Objects.equals(type.getColor(), graph.getObjectValue(transactionColorAttribute, transactionId))) {
                 graph.setObjectValue(transactionColorAttribute, transactionId, type.getColor());
             }
 
-            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId)) && 
-                    !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
+            if (type != null && (type != SchemaTransactionTypeUtilities.getDefaultType() || graph.isDefaultValue(transactionStyleAttribute, transactionId))
+                    && !Objects.equals(type.getStyle(), graph.getObjectValue(transactionStyleAttribute, transactionId))) {
                 graph.setObjectValue(transactionStyleAttribute, transactionId, type.getStyle());
             }
 

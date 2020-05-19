@@ -32,7 +32,7 @@ import javax.swing.JPanel;
 public final class CirclePanel extends JPanel {
 
     private static final SecureRandom RAND;
-    
+
     static {
         final byte[] seedBytes = ByteBuffer.allocate(4).putInt(99).array();
         RAND = new SecureRandom(seedBytes);

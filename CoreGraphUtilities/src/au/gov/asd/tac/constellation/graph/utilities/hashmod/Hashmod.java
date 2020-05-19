@@ -37,7 +37,6 @@ public class Hashmod {
     private String csvFileStr;
     private List<String[]> data;
 
-
     public Hashmod() {
         parser = null;
         csvFileStr = "";

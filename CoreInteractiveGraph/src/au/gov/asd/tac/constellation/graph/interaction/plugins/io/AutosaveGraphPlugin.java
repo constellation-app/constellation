@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
@@ -60,7 +59,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
 @Messages("AutosaveGraphPlugin=Autosave Graph")
 public final class AutosaveGraphPlugin extends SimplePlugin {
-    
+
     private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPlugin.class.getName());
 
     @Override

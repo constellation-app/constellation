@@ -20,12 +20,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A Short Object attribute that can be null.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class ShortObjectAttributeDescription extends AbstractObjectAttributeDescription<Short> {
-    
+
     public static final String ATTRIBUTE_NAME = "short_or_null";
     public static final Class<Short> NATIVE_CLASS = Short.class;
     public static final Short DEFAULT_VALUE = null;
@@ -33,7 +33,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
     public ShortObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked") //Casts are manually checked
     protected Short convertFromObject(final Object object) {
@@ -58,7 +58,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
             return Short.parseShort(string);
         }
     }
-    
+
     @Override
     public byte getByte(final int id) {
         return data[id] != null ? ((Short) data[id]).byteValue() : (byte) 0;
@@ -68,8 +68,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
     public void setByte(final int id, final byte value) {
         data[id] = (short) value;
     }
-    
-    
+
     @Override
     public short getShort(final int id) {
         return data[id] != null ? (Short) data[id] : (short) 0;
@@ -89,7 +88,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
     public void setInt(final int id, final int value) {
         data[id] = (short) value;
     }
-    
+
     @Override
     public long getLong(final int id) {
         return data[id] != null ? ((Short) data[id]).longValue() : 0L;
@@ -97,7 +96,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] =(short) value;
+        data[id] = (short) value;
     }
 
     @Override
@@ -129,7 +128,7 @@ public class ShortObjectAttributeDescription extends AbstractObjectAttributeDesc
     public void setBoolean(final int id, final boolean value) {
         data[id] = value ? (short) 1 : (short) 0;
     }
-    
+
     @Override
     public int hashCode(final int id) {
         return data[id] == null ? nullHash : ((Short) data[id]).intValue();

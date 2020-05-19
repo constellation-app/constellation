@@ -44,8 +44,8 @@ import org.openide.windows.TopComponent;
     @ActionReference(path = "Menu/Experimental/Views", position = 600),
     @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
-    displayName = "#CTL_LayersViewAction",
-    preferredID = "LayersViewTopComponent")
+        displayName = "#CTL_LayersViewAction",
+        preferredID = "LayersViewTopComponent")
 @Messages({
     "CTL_LayersViewAction=Layers View",
     "CTL_LayersViewTopComponent=Layers View",
@@ -63,7 +63,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         layersViewController = new LayersViewController(LayersViewTopComponent.this);
         layersViewPane = new LayersViewPane(layersViewController);
         initContent();
-        
+
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
             layersViewController.readState();
         });
@@ -85,30 +85,31 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             preparePane();
         }
     }
-    
+
     @Override
     protected void handleGraphOpened(final Graph graph) {
         if (graph != null) {
             preparePane();
         }
     }
-    
+
     @Override
     protected void handleGraphClosed(final Graph graph) {
         if (graph != null) {
-             preparePane();
-         }
+            preparePane();
+        }
     }
-    
+
     @Override
     protected void handleComponentOpened() {
         preparePane();
     }
-    
+
     private void preparePane() {
         layersViewPane.setDefaultLayers();
         layersViewController.readState();
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

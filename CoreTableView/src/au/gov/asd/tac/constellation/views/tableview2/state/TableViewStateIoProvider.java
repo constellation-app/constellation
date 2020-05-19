@@ -41,7 +41,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class TableViewStateIoProvider extends AbstractGraphIOProvider {
-    
+
     private static final String ATTRIBUTE_ELEMENT_TYPE = "attributeElementType";
     private static final String ATTRIBUTE_NAME = "attributeName";
     private static final String ATTRIBUTE_PREFIX = "attributePrefix";

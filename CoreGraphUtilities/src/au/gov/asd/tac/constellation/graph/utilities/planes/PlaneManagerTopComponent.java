@@ -134,7 +134,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     final int index = listModel.getMyElementAt(selectedIndices[i]).index;
                     visibleLayers.set(index);
                 }
-                
+
                 PluginExecution.withPlugin(new SimplePlugin("Update plane visibility") {
                     @Override
                     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -153,7 +153,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                         }
                     }
                 }).executeLater(graph);
-                
+
 //                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
             }
         });

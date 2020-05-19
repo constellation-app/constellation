@@ -48,11 +48,11 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.structure.Select
 
 /**
  * Visual Graph Plugin Registry.
- * 
+ *
  * @author cygnus_x-1
  */
 public class VisualGraphPluginRegistry {
-    
+
     public static final String ADD_BLAZE = AddBlazePlugin.class.getName();
     public static final String ADD_CUSTOM_BLAZE = AddCustomBlazePlugin.class.getName();
     public static final String CHANGE_SELECTION = ChangeSelectionPlugin.class.getName();

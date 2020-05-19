@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * Write a given set of queries to the active graph.
- * 
+ *
  * @author aldebaran30701
  */
 public final class UpdateGraphQueriesPlugin extends SimpleEditPlugin {

@@ -33,7 +33,7 @@ import javafx.util.StringConverter;
 /**
  * An axis for representing Date objects, based on the DateAxis class available
  * in the ExtFX library.
- * 
+ *
  * TODO: {@link ChartLayoutAnimator} is not longer supported, fix it.
  *
  * @author cygnus_x-1
@@ -220,7 +220,6 @@ public class DateAxis extends Axis<Date> {
 //                            new KeyValue(currentUpperBound, newUpperBound.getTime())
 //                    )
 //            );
-
         } else {
             currentLowerBound.set(getLowerBound().getTime());
             currentUpperBound.set(getUpperBound().getTime());

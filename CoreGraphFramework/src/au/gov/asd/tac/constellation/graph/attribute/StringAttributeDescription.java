@@ -45,10 +45,10 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     public static final Class<String> NATIVE_CLASS = String.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.OBJECT;
     private static final String DEFAULT_VALUE = null;
-    
+
     private String[] data = new String[0];
     private String defaultValue = DEFAULT_VALUE;
-    
+
     @SuppressWarnings("unchecked") // Casts are manually checked
     private String convertFromObject(final Object object) throws IllegalArgumentException {
         if (object == null) {
@@ -111,7 +111,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public byte getByte(final int id) {
-        return data[id] != null && !data[id].isEmpty() ? Byte.parseByte(data[id]): (byte) 0;
+        return data[id] != null && !data[id].isEmpty() ? Byte.parseByte(data[id]) : (byte) 0;
     }
 
     @Override
@@ -198,7 +198,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     public void setString(final int id, final String value) {
         data[id] = value;
     }
-    
+
     @Override
     public Object getObject(final int id) {
         return data[id];
@@ -237,7 +237,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     public boolean equals(final int id1, final int id2) {
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
     }
-    
+
     @Override
     public void save(final int id, final ParameterWriteAccess access) {
         access.setObject(data[id]);

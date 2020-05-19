@@ -21,9 +21,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
+import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -56,7 +56,6 @@ public class PlaneStateIOProvider extends AbstractGraphIOProvider {
             for (Iterator<JsonNode> i = planeList.elements(); i.hasNext();) {
                 final JsonNode element = i.next();
 
-                
                 final Plane p = Plane.readNode(element, graph, byteReader);
                 planes.add(p);
             }

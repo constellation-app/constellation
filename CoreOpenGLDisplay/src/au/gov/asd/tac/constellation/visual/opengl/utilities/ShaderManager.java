@@ -80,7 +80,7 @@ public class ShaderManager {
     private final int[] stockShaders;
     private final ArrayList<ShaderLookupEntry> shaderTable;
     private final Properties shaderMap;
-    
+
     //other constants
     private static final String V_COLOR = "vColor";
     private static final String V_VERTEX = "vVertex";

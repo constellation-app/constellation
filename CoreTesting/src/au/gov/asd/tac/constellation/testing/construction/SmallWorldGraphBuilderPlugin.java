@@ -81,7 +81,7 @@ public class SmallWorldGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(SmallWorldGraphBuilderPlugin.class, "transaction_types");
-    
+
     private static final String CONNECTED = "connected";
 
     private final SecureRandom r = new SecureRandom();

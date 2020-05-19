@@ -44,8 +44,7 @@ import javafx.util.Callback;
  * Picking a colour will set the colour value for the underlying
  * {@link PluginParameter}.
  *
- * @see
- * au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
+ * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
  * @author algol
  */
 public class ColorInputPane extends Pane {

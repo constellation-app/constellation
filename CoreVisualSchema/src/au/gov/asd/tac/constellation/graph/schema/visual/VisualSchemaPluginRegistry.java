@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.plugins.CompleteSchemaPl
 
 /**
  * Visual Schema Plugin Registry.
- * 
+ *
  * @author cygnus_x-1
  */
 public class VisualSchemaPluginRegistry {
-    
+
     public static final String COMPLETE_SCHEMA = CompleteSchemaPlugin.class.getName();
 }

@@ -32,7 +32,7 @@ import org.openide.windows.WindowManager;
 public class Startup implements Runnable {
 
     private static final String SYSTEM_ENVIRONMENT = "constellation.environment";
-    
+
     // DO NOT CHANGE THIS VALUE
     // continous integration scripts use this to update the version dynamically
     private static final String VERSION = "(under development)";

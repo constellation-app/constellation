@@ -36,7 +36,7 @@ public class QueryEvaluator {
 
     private static final String PARENTHESES_REGEX = "(?<!(?<![^\\\\]\\\\(?:\\\\"
             + "{2}){0,10})\\\\)\\)|(?<!(?<![^\\\\]\\\\(?:\\\\{2}){0,10})\\\\)\\(";
-    
+
     private QueryEvaluator() {
     }
 
@@ -132,7 +132,7 @@ public class QueryEvaluator {
      * @return 0, 1 or 2 depending on the operator.
      */
     private static int getPrecedence(final String operator) {
-        if(operator.equals("||")){
+        if (operator.equals("||")) {
             return 1;
         }
         return operator.equals("&&") ? 2 : 0;

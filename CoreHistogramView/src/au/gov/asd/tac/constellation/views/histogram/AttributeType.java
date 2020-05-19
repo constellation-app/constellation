@@ -877,10 +877,11 @@ public enum AttributeType {
     public abstract void addBinCreators(GraphReadMethods graph, GraphElementType elementType, Map<String, BinCreator> binCreators);
 
     public abstract GraphElementType getBinCreatorsGraphElementType();
-    
+
     private class AttributeTypeConstants {
+
         private static final String TRANSACTION_COUNT = "Transaction Count";
-        
+
         private static final String AVERAGE_TRANSACTION_ATTRIBUTE = "Average Transaction Attribute";
         private static final String MAXIMUM_TRANSACTION_ATTRIBUTE = "Maximum Transaction Attribute";
         private static final String MINIMUM_TRANSACTION_ATTRIBUTE = "Minimum Transaction Attribute";

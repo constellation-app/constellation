@@ -153,7 +153,7 @@ public final class Camera implements Serializable {
     public void setMixRatio(int mixRatio) {
         this.mixRatio = mixRatio;
     }
-    
+
     /**
      * Get the mix between primary and alternate coordinates that this camera is
      * viewing the world in.

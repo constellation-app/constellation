@@ -40,7 +40,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
  * @author sirius
  */
 public abstract class SimplePlugin extends AbstractPlugin {
-    
+
     private static final String WAITING_INTERACTION = "Waiting...";
     private static final String FINISHED_INTERACTION = "Finished";
 

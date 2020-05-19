@@ -90,7 +90,7 @@ public class AnalyticConfigurationPane extends VBox {
     private final Tab parametersTab;
     private final Tab documentationTab;
     private WebView documentationView;
-    
+
     private static boolean stateChanged = false;
     private static boolean selectionSuppressed = false;
     private AnalyticQuestionDescription<?> currentQuestion = null;
@@ -98,9 +98,9 @@ public class AnalyticConfigurationPane extends VBox {
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
     private final Lock lock = new ReentrantLock(true);
-    
+
     public AnalyticConfigurationPane() {
-        
+
         // create the parameters needed for all analytic questions
         createGlobalParameters();
 
@@ -408,18 +408,20 @@ public class AnalyticConfigurationPane extends VBox {
             }
         }
     }
-    
+
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
-     * @param pluginWasSelected true if the triggered update was from a plugin being selected
+     *
+     * @param pluginWasSelected true if the triggered update was from a plugin
+     * being selected
      */
     protected void updateState(boolean pluginWasSelected) {
         stateChanged = true;
         PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, pluginWasSelected)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
-    
+
     /**
-     * Saves the state of the graph by fetching all currently selected plugins 
+     * Saves the state of the graph by fetching all currently selected plugins
      * and updating the state only when the state has been changed
      */
     protected void saveState() {
@@ -586,7 +588,7 @@ public class AnalyticConfigurationPane extends VBox {
             plugin.onPrerequisiteAttributeChange(GraphManager.getDefault().getActiveGraph(), parameters);
             this.updatedParameters = parameters.copy();
         }
-        
+
         public final void setParent(final ListCell<SelectableAnalyticPlugin> parent) {
             this.parent = parent;
         }
@@ -659,15 +661,15 @@ public class AnalyticConfigurationPane extends VBox {
             return "Analytic View: Update State";
         }
     }
-    
+
     /**
-     * Update the display by reading and writing to/from the state attribute. 
+     * Update the display by reading and writing to/from the state attribute.
      */
     private static final class AnalyticViewStateUpdater extends SimpleEditPlugin {
 
         private final AnalyticConfigurationPane analyticConfigurationPane;
         private final boolean pluginWasSelected;
-        
+
         public AnalyticViewStateUpdater(final AnalyticConfigurationPane analyticConfigurationPane, final boolean pluginWasSelected) {
             this.analyticConfigurationPane = analyticConfigurationPane;
             this.pluginWasSelected = pluginWasSelected;
@@ -677,11 +679,11 @@ public class AnalyticConfigurationPane extends VBox {
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             String currentCategory = analyticConfigurationPane.categoryList.getSelectionModel().getSelectedItem();
             int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
-            
+
             // Make a copy in case the state on the graph is currently being modified.
             AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0);
             currentState = (currentState == null) ? new AnalyticViewState() : new AnalyticViewState(currentState);
-            
+
             if (pluginWasSelected) {
                 // remove all plugins matching category
                 currentState.removePluginsMatchingCategory(currentCategory);
@@ -698,14 +700,14 @@ public class AnalyticConfigurationPane extends VBox {
                 }
                 analyticConfigurationPane.saveState();
             }
-            
+
             // Utilized for Question pane - TODO: when multiple tabs + saving of
             // questions is supported, link this currentquestion variable with 
             // the saved/loaded question
             analyticConfigurationPane.lock.lock();
             try {
-                analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null : 
-                        currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
+                analyticConfigurationPane.currentQuestion = currentState.getActiveAnalyticQuestions().isEmpty() ? null
+                        : currentState.getActiveAnalyticQuestions().get(currentState.getCurrentAnalyticQuestionIndex());
             } finally {
                 analyticConfigurationPane.lock.unlock();
             }

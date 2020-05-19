@@ -49,7 +49,7 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
     public int getVersion() {
         return ATTRIBUTE_VERSION;
     }
-    
+
     @Override
     public ZonedDateTime convertFromObject(final Object object) {
         try {

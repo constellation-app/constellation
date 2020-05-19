@@ -33,9 +33,8 @@ import java.util.Queue;
 
 /**
  * A PluginParameters represents a collection of parameters that belong to a
- * single plugin. Each
- * {@link au.gov.asd.tac.constellation.plugins.Plugin} has the
- * opportunity to create a PluginParameters objects that holds all the
+ * single plugin. Each {@link au.gov.asd.tac.constellation.plugins.Plugin} has
+ * the opportunity to create a PluginParameters objects that holds all the
  * parameters that are needed to configure the plugin.
  * <p>
  * A PluginParameters object also contains a tree of
@@ -115,7 +114,7 @@ public class PluginParameters implements PluginParameterListener {
         public ParameterLayout getFormatter() {
             return formatter;
         }
-        
+
         /**
          * Resets the formatting of the this plugin parameters node.
          * <p>

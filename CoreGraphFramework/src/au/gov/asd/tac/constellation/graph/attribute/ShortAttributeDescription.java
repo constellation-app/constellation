@@ -28,9 +28,9 @@ import org.openide.util.lookup.ServiceProvider;
  * <p>
  * When setting these attribute values from numeric types, the values are
  * implicitly or explicitly cast as necessary. The
- * {@link #setString setString()} method will utilise
- * {@link Short#parseShort}. The {@link #setBoolean setBoolean()} method will
- * yield 1 for true and 0 for false.
+ * {@link #setString setString()} method will utilise {@link Short#parseShort}.
+ * The {@link #setBoolean setBoolean()} method will yield 1 for true and 0 for
+ * false.
  * <p>
  * When retrieving these attribute values as numeric types the values are
  * implicitly or explicitly cast as necessary. The
@@ -42,12 +42,12 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class ShortAttributeDescription extends AbstractAttributeDescription {
-    
+
     public static final String ATTRIBUTE_NAME = "short";
     public static final Class<Short> NATIVE_CLASS = short.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.SHORT;
     private static final short DEFAULT_VALUE = (short) 0;
-    
+
     private short[] data = new short[0];
     private short defaultValue = DEFAULT_VALUE;
 
@@ -73,13 +73,13 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
         } else {
             try {
                 return Short.parseShort(string);
-            }  catch (final NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
                         "Error converting String '%s' to short", string), ex);
             }
         }
     }
-    
+
     @Override
     public String getName() {
         return ATTRIBUTE_NAME;
@@ -89,7 +89,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     public Class<?> getNativeClass() {
         return NATIVE_CLASS;
     }
-    
+
     @Override
     public NativeAttributeType getNativeType() {
         return NATIVE_TYPE;

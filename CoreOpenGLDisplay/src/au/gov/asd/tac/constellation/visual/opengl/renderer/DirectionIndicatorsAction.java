@@ -47,7 +47,7 @@ public final class DirectionIndicatorsAction extends AbstractAction implements P
     public static boolean isShowIndicators() {
         return showIndicators.get();
     }
-    
+
     @Override
     public void actionPerformed(final ActionEvent e) {
         showIndicators.set(!showIndicators.get());

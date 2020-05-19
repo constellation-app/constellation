@@ -35,7 +35,7 @@ public final class BlazeAttributeDescriptionV0 extends AbstractAttributeDescript
 
     public static final String ATTRIBUTE_NAME = "blaze";
     private static final BlazeV0 DEFAULT_VALUE = null;
-    
+
     private BlazeV0[] data = new BlazeV0[0];
     private BlazeV0 defaultValue = DEFAULT_VALUE;
 

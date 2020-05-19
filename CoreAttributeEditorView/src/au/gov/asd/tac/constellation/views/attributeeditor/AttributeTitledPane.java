@@ -55,7 +55,7 @@ public class AttributeTitledPane extends TitledPane {
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
     private final ContextMenu ctxMenu;
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
-            
+
     public AttributeTitledPane() {
         this(null, null);
     }

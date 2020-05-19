@@ -49,13 +49,13 @@ public interface GLRenderable extends Comparable<GLRenderable> {
         ANNOTATIONS_PRIORITY(20),
         DEFAULT_PRIORITY(10),
         HIGH_PRIORITY(0);
-        
+
         private final int value;
-        
+
         private RenderablePriority(final int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }

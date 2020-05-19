@@ -32,8 +32,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class ReflectJSON extends RestService {
+
     private static final String NAME = "reflect_json";
 
     @Override

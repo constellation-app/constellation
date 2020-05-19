@@ -41,7 +41,7 @@ import javafx.scene.layout.BorderPane;
  * @author sirius
  */
 public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ImportTableColumn.class.getName());
 
     private final String label;
@@ -74,7 +74,7 @@ public class ImportTableColumn extends TableColumn<TableRow, CellValue> {
 
             Class<? extends AttributeDescription> attributeDescriptionClass = AttributeRegistry.getDefault().getAttributes().get(attributeNode.getAttribute().getAttributeType());
             // Handle pseudo-attributes
-            if (attributeDescriptionClass == null && attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {               
+            if (attributeDescriptionClass == null && attributeNode.getAttribute().getName().equals(ImportController.DIRECTED)) {
                 attributeDescriptionClass = BooleanAttributeDescription.class;
             }
             try {

@@ -583,7 +583,7 @@ public class TimelinePanel extends Region {
             if (t.getDeltaY() < 0) {
                 newComboBox.getSelectionModel().selectNext();
             } else if (t.getDeltaY() > 0) {
-                
+
                 newComboBox.getSelectionModel().selectPrevious();
             }
         });

@@ -63,7 +63,7 @@ public final class GraphJsonWriter implements Cancellable {
     private volatile boolean isCancelled;
     private final GraphByteWriter byteWriter;
     private final HashMap<String, AbstractGraphIOProvider> graphIoProviders = new HashMap<>();
-    
+
     private static final String DEFAULT_FIELD = "default";
 
     /**

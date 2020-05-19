@@ -43,7 +43,7 @@ public class SReadableGraph {
 
     protected final SGraph graph;
     protected final ReadableGraph readableGraph;
-    
+
     private static final String FUNC = "__func";
     private static final String FUNC_P1 = "__func(__p1)";
 

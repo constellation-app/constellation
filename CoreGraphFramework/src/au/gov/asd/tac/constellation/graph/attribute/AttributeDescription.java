@@ -509,8 +509,8 @@ public interface AttributeDescription {
      * that can be used to set values of this attribute directly through calls
      * to {@link NativeAttributeType#set}.
      *
-     * @param object an attribute value represented as an Object, ie. a
-     * value obtained from a call to {@link #getObject}
+     * @param object an attribute value represented as an Object, ie. a value
+     * obtained from a call to {@link #getObject}
      * @return An attribute value represented natively.
      */
     public Object convertToNativeValue(final Object object);

@@ -192,7 +192,7 @@ public final class TableViewTopComponent extends TopComponent implements Propert
     private final JToggleButton selectedOnlyButton;
     private final JToggleButton vxButton;
     private final JToggleButton txButton;
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public TableViewTopComponent() {

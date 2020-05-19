@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 
 /**
  * Add, delete selections to layers.
- * 
+ *
  * @author sol695510
  */
 public enum LayerAction {

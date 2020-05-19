@@ -540,7 +540,7 @@ public class QueryServices {
                                 queryResult = advancedFindTime(rule, item);
                                 break;
                             default:
-                            // Ignore
+                                // Ignore
                                 break;
                         }
 

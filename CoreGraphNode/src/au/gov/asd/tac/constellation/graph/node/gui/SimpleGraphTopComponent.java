@@ -107,15 +107,15 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         graphChanged(null);
 
         graphNode = new GraphNode(graph, gdo, this, null);
-        
+
         content = new InstanceContent();
         content.add(getActionMap());
         content.add(graphNode.getDataObject());
         content.add(graph);
         content.add(graphNode);
-        
+
         associateLookup(new AbstractLookup(content));
-        
+
         setActivatedNodes(new Node[]{
             graphNode
         });

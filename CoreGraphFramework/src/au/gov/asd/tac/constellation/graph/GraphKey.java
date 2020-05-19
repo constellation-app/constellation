@@ -106,7 +106,7 @@ public class GraphKey {
             if (destinationKey == null ? key.destinationKey != null : !destinationKey.equals(key.destinationKey)) {
                 return false;
             }
-            
+
             return undirected == key.undirected;
         }
 

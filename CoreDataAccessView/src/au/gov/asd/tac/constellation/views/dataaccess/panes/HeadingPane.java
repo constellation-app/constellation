@@ -79,7 +79,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
             sources.getChildren().add(dataSourcePane);
         }
 
-        expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue) 
+        expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
                 -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
     }
 

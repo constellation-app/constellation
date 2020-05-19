@@ -43,7 +43,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     public static final String FORMAT_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "format");
     public static final String CUSTOM_PARAMETER_ID = PluginParameter.buildId(DatetimeAttributeTranslator.class, "custom");
-    
+
     private static final String CUSTOM = "CUSTOM";
 
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();

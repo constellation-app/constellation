@@ -145,7 +145,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         // Overridden in class DualGraph
     }
 
-
     public void commit(final Object description, final String commitName) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
             throw new IllegalMonitorStateException("commit: attempt to unlock write lock, not locked by current thread");

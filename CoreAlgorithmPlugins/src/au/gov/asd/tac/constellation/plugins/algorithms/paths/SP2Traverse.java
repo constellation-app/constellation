@@ -105,7 +105,7 @@ public class SP2Traverse {
                 if (!specialcase && one > two || (one == two && !check.get(one))) {
                     continue;
                 }
-                
+
                 if (!connectedTo[one].get(two)) {
                     pairCounter++;
                     if (pairCounter == pairsize) {

@@ -37,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
-    
+
     private static final String X_ATTRIBUTE = "xAttribute";
     private static final String Y_ATTRIBUTE = "yAttribute";
 

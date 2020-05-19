@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
  * @author serpens24
  */
 public class FilenameEncoderNGTest {
-   
+
     @Test
     public void testDecode1() {
         final String s = "myname at 2014-08-06 08:49:14 EST";
@@ -52,5 +52,5 @@ public class FilenameEncoderNGTest {
     public void testDecodeBad3() {
         final String result = FilenameEncoder.decode("_123q");
         Assert.assertNull(result);
-    } 
+    }
 }

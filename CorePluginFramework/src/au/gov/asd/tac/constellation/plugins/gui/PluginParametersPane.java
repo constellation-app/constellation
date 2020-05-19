@@ -777,7 +777,7 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                         break;
                     default:
-                    // do nothing
+                        // do nothing
                         break;
                 }
             });
@@ -798,7 +798,7 @@ public final class PluginParametersPane extends GridPane {
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
-                    // do nothing
+                        // do nothing
                         break;
                 }
             });

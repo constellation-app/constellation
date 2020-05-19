@@ -31,7 +31,7 @@ public class StoreGraphRecordStore extends StoreGraph implements RecordStore {
     private int currentSourceVertex = -1;
     private int currentDestinationVertex = -1;
     private int currentTransaction = -1;
-    
+
     private static final String NOT_SUPPORTED = "Not supported yet.";
 
     public StoreGraphRecordStore(Schema schema) {

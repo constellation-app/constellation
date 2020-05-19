@@ -89,8 +89,8 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
      * Get the default line style for transactions of this
      * SchemaTransactionType.
      *
-     * @return A {@link ConstellationLineStyle} representing the default style to use for
-     * transactions of this SchemaTransactionType.
+     * @return A {@link ConstellationLineStyle} representing the default style
+     * to use for transactions of this SchemaTransactionType.
      */
     public final LineStyle getStyle() {
         return style;

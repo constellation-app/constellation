@@ -41,7 +41,7 @@ import org.openide.util.NbBundle;
 final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private final ApplicationOptionsPanelController controller;
-    
+
     private static final String USER_HOME_PROPERTY = "user.home";
 
     public ApplicationOptionsPanel(final ApplicationOptionsPanelController controller) {

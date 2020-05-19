@@ -96,7 +96,7 @@ import java.util.logging.Logger;
 public final class Batch {
 
     private static final Logger LOGGER = Logger.getLogger(Batch.class.getName());
-    
+
     private static final String NOT_FLOATBUFFER = "Specified target is not a FloatBuffer";
 
     // What am I drawing?

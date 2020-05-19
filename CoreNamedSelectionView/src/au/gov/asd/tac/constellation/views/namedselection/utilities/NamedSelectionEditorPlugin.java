@@ -206,7 +206,7 @@ public class NamedSelectionEditorPlugin extends SimpleEditPlugin {
                 saveCustomSelection(graph);
                 break;
             default:
-            // No default case.
+                // No default case.
                 break;
         }
     }

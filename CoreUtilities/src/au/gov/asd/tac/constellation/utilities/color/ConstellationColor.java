@@ -346,16 +346,16 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     /**
      * Convert an RGBA color string "r,g,b,a" or "[r,g,b,a]" to a ColorValue.
      * <p>
-     * Since colors end up as actual Python lists in pandas dataframes,
-     * they get back to here as strings surrounded by brackets, hence we
-     * conveniently look for the brackets and remove them.
+     * Since colors end up as actual Python lists in pandas dataframes, they get
+     * back to here as strings surrounded by brackets, hence we conveniently
+     * look for the brackets and remove them.
      *
      * @param color The RGB color string
      * @return A new ColorValue.
      */
     public static ConstellationColor fromRgbWithCommaColor(final String color) {
         // If the color string has surrounding "[]", remove them.
-        final String fixedColor = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length()-1) : color;
+        final String fixedColor = color.startsWith("[") && color.endsWith("]") ? color.substring(1, color.length() - 1) : color;
         final String[] fields = split(fixedColor, 4, ',');
         final float red = Float.parseFloat(fields[0]);
         final float green = Float.parseFloat(fields[1]);
@@ -402,10 +402,10 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
         } else if (o.name != null) {
             return -1;
         } else {
-             return redColorValue != o.redColorValue ? (int) (redColorValue - o.redColorValue)
-                            : greenColorValue != o.greenColorValue ? (int) (greenColorValue - o.greenColorValue)
-                                    : blueColorValue != o.blueColorValue ? (int) (blueColorValue - o.blueColorValue)
-                                            : (int) (alpha - o.alpha);
+            return redColorValue != o.redColorValue ? (int) (redColorValue - o.redColorValue)
+                    : greenColorValue != o.greenColorValue ? (int) (greenColorValue - o.greenColorValue)
+                            : blueColorValue != o.blueColorValue ? (int) (blueColorValue - o.blueColorValue)
+                                    : (int) (alpha - o.alpha);
         }
     }
 

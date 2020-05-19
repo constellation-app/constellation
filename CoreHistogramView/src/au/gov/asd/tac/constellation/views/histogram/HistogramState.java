@@ -80,7 +80,7 @@ public class HistogramState {
             this.binFormatter.updateParameters(this.binFormatterParameters);
             this.binSelectionMode = original.binSelectionMode;
 
-            this.filters = Arrays.copyOf(original.filters, original.filters.length); 
+            this.filters = Arrays.copyOf(original.filters, original.filters.length);
         }
     }
 

@@ -60,7 +60,7 @@ public class FileListener implements Runnable {
     private static final String RESPONSE_JSON = "response.json";    // The JSON document containing the response.
     private static final String CONTENT_IN = "content.in";          // The file containing input data (may be JSON / binary / anything).
     private static final String CONTENT_OUT = "content.out";        // The file containing ioutput data (may be JSON / binary / anything).
-    
+
     private static final String ENDPOINT = "endpoint";
 
     private final Path restPath;
@@ -219,11 +219,11 @@ public class FileListener implements Runnable {
             // Convert the arguments to PluginParameters.
             //
             final PluginParameters parameters = rs.createParameters();
-            RestServiceUtilities.parametersFromJson((ObjectNode)args, parameters);
+            RestServiceUtilities.parametersFromJson((ObjectNode) args, parameters);
 
-            try(final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
+            try (final InStream ins = new InStream(restPath, CONTENT_IN, true); final OutputStream out = outStream(restPath, CONTENT_OUT)) {
                 rs.callService(parameters, ins.in, out);
-            } catch(final IOException | RuntimeException ex) {
+            } catch (final IOException | RuntimeException ex) {
                 throw new RestServiceException(ex);
             }
         } else {
@@ -237,10 +237,9 @@ public class FileListener implements Runnable {
      * We don't want the input file left lying around after we're finished with
      * it.
      * <p>
-     * Services may or may not require an input file, we don't know.
-     * Therefore the "optional" parameter allows the input file to not exist.
-     * If a service tries to use an InputStream that doesn't exist,
-     * things go bang.
+     * Services may or may not require an input file, we don't know. Therefore
+     * the "optional" parameter allows the input file to not exist. If a service
+     * tries to use an InputStream that doesn't exist, things go bang.
      */
     private static class InStream implements AutoCloseable {
 
@@ -253,9 +252,9 @@ public class FileListener implements Runnable {
 
         InStream(final Path p, final String name, final boolean optional) throws FileNotFoundException {
             fqp = p.resolve(name).toFile();
-            if(fqp.canRead()) {
+            if (fqp.canRead()) {
                 in = new FileInputStream(fqp);
-            } else if(optional) {
+            } else if (optional) {
                 in = null;
             } else {
                 throw new FileNotFoundException(fqp.getAbsolutePath());
@@ -264,7 +263,7 @@ public class FileListener implements Runnable {
 
         @Override
         public void close() {
-            if(in!=null) {
+            if (in != null) {
                 try {
                     in.close();
                 } catch (IOException ex) {

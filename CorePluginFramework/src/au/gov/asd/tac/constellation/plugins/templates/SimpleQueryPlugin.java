@@ -70,7 +70,7 @@ import org.openide.util.NbBundle.Messages;
 public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleQueryPlugin.class.getName());
-    
+
     private static final String READING_INTERACTION = "Reading...";
     private static final String QUERYING_INTERACTION = "Querying...";
     private static final String EDITING_INTERACTION = "Editing...";

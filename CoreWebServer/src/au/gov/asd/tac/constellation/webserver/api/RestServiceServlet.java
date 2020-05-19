@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
+import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
-import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
 import java.io.IOException;
 import java.util.Map;
@@ -34,11 +34,10 @@ import org.openide.util.lookup.ServiceProvider;
  * A web service that allows a client to call CONSTELLATION REST services.
  * <p>
  * All services are accessed in the same way, regardless of the HTTP verb used.
- * The plugin name is in the last part of the URL (request.getPathInfo()).
- * This is used to look up the service in the ServiceRegistry.
- * The service's createParameters() method is called to get a PluginParameters
- * instance, which is then used to parse parameters from the query
- * section of the URL (if any).
+ * The plugin name is in the last part of the URL (request.getPathInfo()). This
+ * is used to look up the service in the ServiceRegistry. The service's
+ * createParameters() method is called to get a PluginParameters instance, which
+ * is then used to parse parameters from the query section of the URL (if any).
  * <p>
  * The service is then called, passing the populated PluginParameters instance,
  * and the HTTP request's input and output streams.
@@ -49,9 +48,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationHttpServlet.class)
 @WebServlet(
-    name = "ServicesAPI",
-    description = "REST API for services",
-    urlPatterns = {"/v2/service/*"})
+        name = "ServicesAPI",
+        description = "REST API for services",
+        urlPatterns = {"/v2/service/*"})
 public class RestServiceServlet extends ConstellationApiServlet {
 
     @Override
@@ -69,7 +68,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
         callService(HttpMethod.PUT, request, response);
     }
 
-    private void callService(final HttpMethod httpMethod, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException{
+    private void callService(final HttpMethod httpMethod, final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
         // Which service is being called?
         //
         final String serviceName = request.getPathInfo().substring(1);
@@ -85,9 +84,9 @@ public class RestServiceServlet extends ConstellationApiServlet {
 
         paramMap.entrySet().forEach(entry -> {
             final String parameterName = entry.getKey();
-            if(parameters.hasParameter(parameterName)) {
+            if (parameters.hasParameter(parameterName)) {
                 final PluginParameter<?> param = parameters.getParameters().get(parameterName);
-                if(entry.getValue().length==1) {
+                if (entry.getValue().length == 1) {
                     param.setStringValue(entry.getValue()[0]);
                 } else {
                     throw new RestServiceException("Service parameters do not accept multiple values");
@@ -103,7 +102,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
             response.setContentType(rs.getMimeType());
             response.setStatus(HttpServletResponse.SC_OK);
             rs.callService(parameters, request.getInputStream(), response.getOutputStream());
-        } catch(final IOException | RuntimeException ex) {
+        } catch (final IOException | RuntimeException ex) {
             throw new ServletException(ex);
         }
     }

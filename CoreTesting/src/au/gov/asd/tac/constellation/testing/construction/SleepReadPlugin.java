@@ -40,6 +40,7 @@ import org.openide.util.lookup.ServiceProviders;
 })
 @Messages("SleepReadPlugin=Sleep Read")
 public class SleepReadPlugin extends SimpleReadPlugin {
+
     public static final String SECONDS_PARAMETER_ID = PluginParameter.buildId(SleepReadPlugin.class, "seconds");
 
     @Override
@@ -64,10 +65,10 @@ public class SleepReadPlugin extends SimpleReadPlugin {
     @Override
     protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
         final int nSecs = parameters.getIntegerValue(SECONDS_PARAMETER_ID);
-        interaction.setProgress(0, 0, String.format("Sleeping (read) for %d second%s...", nSecs, nSecs==1?"":"s"), true);
+        interaction.setProgress(0, 0, String.format("Sleeping (read) for %d second%s...", nSecs, nSecs == 1 ? "" : "s"), true);
 
         Thread.sleep(nSecs * 1000L);
 
-        interaction.setProgress(1, 0, String.format("Slept for %d second%s.", nSecs, nSecs==1?"":"s"), true);
+        interaction.setProgress(1, 0, String.format("Slept for %d second%s.", nSecs, nSecs == 1 ? "" : "s"), true);
     }
 }

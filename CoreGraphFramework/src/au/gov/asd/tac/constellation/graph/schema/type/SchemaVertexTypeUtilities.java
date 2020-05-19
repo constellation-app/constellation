@@ -188,7 +188,7 @@ public class SchemaVertexTypeUtilities {
         if (name.equals(defaultType.getName())) {
             return defaultType;
         }
-        
+
         SchemaVertexType type = SchemaVertexTypeUtilities.getType(name);
         if (type.equals(defaultType)) {
             type = new SchemaVertexType.Builder(defaultType, name)
@@ -196,7 +196,7 @@ public class SchemaVertexTypeUtilities {
                     .build();
             SchemaVertexTypeUtilities.addCustomType(type, false);
         }
-        
+
         return type;
     }
 

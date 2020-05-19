@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.views.histogram.Bin;
 public class BooleanBin extends Bin {
 
     protected boolean key;
-    
+
     @Override
     public int compareTo(Bin o) {
         BooleanBin bin = (BooleanBin) o;

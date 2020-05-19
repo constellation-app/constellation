@@ -33,7 +33,7 @@ public class NewAttribute implements Attribute {
     private final String name;
     private final String description;
     private int id = ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
-    
+
     private static final String CANNOT_SET_VALUES = "You cannot set values on a NewAttribute";
 
     public NewAttribute(final Attribute original) {

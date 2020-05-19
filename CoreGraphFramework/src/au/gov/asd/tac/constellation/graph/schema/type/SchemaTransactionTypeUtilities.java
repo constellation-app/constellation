@@ -182,7 +182,7 @@ public class SchemaTransactionTypeUtilities {
         if (name.equals(defaultType.getName())) {
             return defaultType;
         }
-        
+
         SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(name);
         if (type.equals(defaultType)) {
             type = new SchemaTransactionType.Builder(defaultType, name)
@@ -190,7 +190,7 @@ public class SchemaTransactionTypeUtilities {
                     .build();
             SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
-        
+
         return type;
     }
 

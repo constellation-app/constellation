@@ -30,7 +30,7 @@ public class StringBin extends Bin {
     public String getKey() {
         return key;
     }
-    
+
     @Override
     public int compareTo(Bin o) {
         StringBin bin = (StringBin) o;

@@ -58,7 +58,7 @@ import java.util.ArrayList;
  * @author algol
  */
 public class FR3DArranger implements Arranger {
-    
+
     private static final String ARRANGING_INTERACTION = "Arranging...";
 
     private static final int MAX_PSEUDO_SIZE = 100;
@@ -82,7 +82,7 @@ public class FR3DArranger implements Arranger {
 
     private GraphWriteMethods wg;
     boolean maintainMean = false;
-    
+
     private final SecureRandom r = new SecureRandom();
 
     /**

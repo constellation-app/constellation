@@ -27,9 +27,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationIconProvider.class)
 public class DefaultIconProvider implements ConstellationIconProvider {
-    
+
     private static final String CODE_NAME_BASE = "au.gov.asd.tac.constellation.utilities";
-    
+
     private static final String BACKGROUND_CATEGORY = "Background";
 
     public static final ConstellationIcon HIGHLIGHTED = new ConstellationIcon.Builder("Highlighted", new ImageIconData(getHighlightImage(256, 0.1f, 4)))

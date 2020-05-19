@@ -26,9 +26,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ConstellationIconProvider.class)
 public class CharacterIconProvider implements ConstellationIconProvider {
-    
+
     private static final String CODE_NAME_BASE = "au.gov.asd.tac.constellation.utilities";
-    
+
     private static final String CHARACTER_CATEGORY = "Character";
 
     public static final ConstellationIcon CHAR_0020 = new ConstellationIcon.Builder("Space", new FileIconData("modules/ext/icons/0020.png", CODE_NAME_BASE))

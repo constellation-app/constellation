@@ -28,7 +28,7 @@ public final class DataAccessPreferenceKeys {
     private static final String SAVE_DATA_DIR_PREF = "saveDataDir";
     private static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
     private static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
-    
+
     /**
      * Return whether the save results is enabled or not
      *
@@ -115,7 +115,7 @@ public final class DataAccessPreferenceKeys {
 
         return !s.isEmpty() ? new File(s) : null;
     }
-    
+
     /**
      * Whether the Deselect plugins on go preference is enabled
      *
@@ -125,9 +125,10 @@ public final class DataAccessPreferenceKeys {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         return prefs.getBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, false);
     }
-    
+
     /**
-     * Set the new preference for whether the deselect plugins on go preference is enabled
+     * Set the new preference for whether the deselect plugins on go preference
+     * is enabled
      *
      * @param checkChanged What the preference has been changed to
      *
@@ -136,7 +137,7 @@ public final class DataAccessPreferenceKeys {
         final Preferences prefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
         prefs.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
     }
-    
+
     /**
      * No constructor, all static.
      */

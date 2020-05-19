@@ -60,7 +60,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
-            
+
             // If a Future has been specified, don't do anything until the Future has completed.
             // A typical use-case is an arrangement followed by a camera reset: obviously doing the reset before the
             // vertices have been relocated is not sensible.
@@ -78,26 +78,26 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     }
                 }
             }
-            
+
             final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
             final boolean alwaysSilent = callingConstraints.isAlwaysSilent() || callingConstraints.getSilentCount() > 0;
-            
+
             PluginReport currentReport = null;
             GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
             if (graphReport != null) {
                 currentReport = graphReport.addPluginReport(plugin);
                 callingConstraints.setCurrentReport(currentReport);
             }
-            
+
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (Exception ex) {
             }
-            
+
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
             PluginGraphs graphs = new DefaultPluginGraphs(manager);
             PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
-            
+
             try {
                 if (parameters != null) {
                     plugin.updateParameters(graph, parameters);
@@ -156,13 +156,13 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     callingConstraints.setCurrentReport(null);
                     currentReport.firePluginReportChangedEvent();
                 }
-                
+
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
                 } catch (Exception ex) {
                 }
             }
-            
+
             return null;
         });
     }

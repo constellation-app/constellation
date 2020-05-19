@@ -532,8 +532,9 @@ public enum CalculatorVariable {
     public void init(GraphReadMethods graph) {
         //Intetionally left blank, overridden within this class
     }
-    
+
     private class CalculatorVariableConstants {
+
         private static final String GRAPH_PROPERTIES = "Graph Properties";
         private static final String NODE_PROPERTIES = "Node Properties";
         private static final String SOURCE_NODE_PROPERTIES = "Source Node Properties";

@@ -102,7 +102,8 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     }
 
     /**
-     * Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
+     * Display the incoming REST request to provide some confidence to the user
+     * and debugging for the developer :-).
      *
      * @param method request.getMethod()
      * @param path request.getServletPath()

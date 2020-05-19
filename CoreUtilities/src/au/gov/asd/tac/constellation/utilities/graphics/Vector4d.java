@@ -42,7 +42,7 @@ public final class Vector4d {
     public void setA(double[] a) {
         this.a = a;
     }
-    
+
     public void set(final double x, final double y, final double z, final double w) {
         a[0] = x;
         a[1] = y;

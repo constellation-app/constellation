@@ -109,7 +109,7 @@ public final class AttributeCalculatorPane extends GridPane {
     private boolean helpSideBarHidden = false;
 
     private InsertListCategory savedScriptsCat;
-    
+
     private static final String NEW_ATTRIBUTE_DESCRIPTION = "<new attribute>";
     private static final String TEXT_COLOR = "#0096C9";
     private static final String NODE_ATTRIBUTES = "Node Attributes";
