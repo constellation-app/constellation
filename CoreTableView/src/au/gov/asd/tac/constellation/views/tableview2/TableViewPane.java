@@ -115,7 +115,7 @@ public final class TableViewPane extends BorderPane {
     private static final String EXPORT_CSV_SELECTION = "Export to CSV (Selection)";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_XLSX_SELECTION = "Export to Excel (Selection)";
-    private static final String FILTER = "Filter:";
+    private static final String FILTER_CAPTION = "Filter:";
 
     private static final ImageView COLUMNS_ICON = new ImageView(UserInterfaceIconProvider.COLUMNS.buildImage(16));
     private static final ImageView SELECTED_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()));
@@ -322,9 +322,9 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-        final ArrayList<CustomMenuItem> columnCheckboxesSource = new ArrayList<>();
-        final ArrayList<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
-        final ArrayList<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesSource = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
 
         MenuButton splitSourceButton = new MenuButton("Source");
         splitSourceButton.setGraphic(MENU_ICON_SOURCE);
@@ -416,7 +416,7 @@ public final class TableViewPane extends BorderPane {
         });
         splitSourceButton.getItems().add(columnFilterSource);
 
-        final Label columnFilterLabelDestination = new Label(FILTER);
+        final Label columnFilterLabelDestination = new Label(FILTER_CAPTION);
         final TextField columnFilterTextFieldDestination = new TextField();
         final HBox filterBoxDestination = new HBox();
         filterBoxDestination.getChildren().addAll(columnFilterLabelDestination, columnFilterTextFieldDestination);
@@ -433,7 +433,7 @@ public final class TableViewPane extends BorderPane {
         });
         splitDestinationButton.getItems().add(columnFilterDestination);
 
-        final Label columnFilterLabelTransaction = new Label(FILTER);
+        final Label columnFilterLabelTransaction = new Label(FILTER_CAPTION);
         final TextField columnFilterTextFieldTransaction = new TextField();
         final HBox filterBoxTransaction = new HBox();
         filterBoxTransaction.getChildren().addAll(columnFilterLabelTransaction, columnFilterTextFieldTransaction);
@@ -912,9 +912,7 @@ public final class TableViewPane extends BorderPane {
                 // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
-                        = newColumnOrder.stream()
-                                .map(c
-                                        -> {
+                        = newColumnOrder.stream().map(c -> {
                                     for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
                                         if (c.getText().equals(col.getThird().getText())) {
                                             return col;
