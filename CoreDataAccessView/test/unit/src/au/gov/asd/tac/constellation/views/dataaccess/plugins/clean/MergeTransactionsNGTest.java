@@ -176,7 +176,7 @@ public class MergeTransactionsNGTest {
         MergeTransactionType instance = new MergeTransactionType() {
             @Override
             public String getName() {
-                throw new UnsupportedOperationException("Not s    @Overrideupported yet."); //To change body of generated methods, choose Tools | Templates.
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
