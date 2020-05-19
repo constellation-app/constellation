@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public abstract class MapOverlay {
     protected EventDispatcher eventDispatcher;
     protected boolean enabled;
     protected boolean debug;
-
+    
     // positions and sizes
     protected float x;
     protected float y;
@@ -66,6 +66,8 @@ public abstract class MapOverlay {
     protected final int stepOnColor = 0xFFFFFFFF;
     protected final int valueBoxColor = 0x7F000000;
 
+    protected boolean isInFocus = false;
+    
     public MapOverlay() {
         this.enabled = true;
         this.debug = false;
@@ -232,5 +234,9 @@ public abstract class MapOverlay {
         renderer.noStroke();
         renderer.fill(separatorColor);
         renderer.rect(x + margin, y, width - (margin * 2), 1);
+    }
+    
+    public final boolean isInFocus(){
+        return this.isInFocus;
     }
 }
