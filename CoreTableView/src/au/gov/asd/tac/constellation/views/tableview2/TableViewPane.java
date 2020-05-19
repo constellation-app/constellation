@@ -125,9 +125,9 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
     private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
-    private static final ImageView MENU_ICON = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
-    private static final ImageView MENU_ICON2 = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
-    private static final ImageView MENU_ICON3 = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView MENU_ICON_SOURCE = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView MENU_ICON_DESTINATION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
 
@@ -327,17 +327,17 @@ public final class TableViewPane extends BorderPane {
         final ArrayList<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
 
         MenuButton splitSourceButton = new MenuButton("Source");
-        splitSourceButton.setGraphic(MENU_ICON);
+        splitSourceButton.setGraphic(MENU_ICON_SOURCE);
         splitSourceButton.setMaxWidth(WIDTH);
         splitSourceButton.setPopupSide(Side.RIGHT);
 
         MenuButton splitDestinationButton = new MenuButton("Destination");
-        splitDestinationButton.setGraphic(MENU_ICON2);
+        splitDestinationButton.setGraphic(MENU_ICON_DESTINATION);
         splitDestinationButton.setMaxWidth(WIDTH);
         splitDestinationButton.setPopupSide(Side.RIGHT);
 
         MenuButton splitTransactionButton = new MenuButton("Transaction");
-        splitTransactionButton.setGraphic(MENU_ICON3);
+        splitTransactionButton.setGraphic(MENU_ICON_TRANSACTION);
         splitTransactionButton.setMaxWidth(WIDTH);
         splitTransactionButton.setPopupSide(Side.RIGHT);
 
@@ -419,7 +419,7 @@ public final class TableViewPane extends BorderPane {
         final Label columnFilterLabelDestination = new Label(FILTER);
         final TextField columnFilterTextFieldDestination = new TextField();
         final HBox filterBoxDestination = new HBox();
-        filterBoxDestination.getChildren().addAll(columnFilterLabelDestination, columnFilterTextFieldSource);
+        filterBoxDestination.getChildren().addAll(columnFilterLabelDestination, columnFilterTextFieldDestination);
         final CustomMenuItem columnFilterDestination = new CustomMenuItem(filterBoxDestination);
         columnFilterDestination.setHideOnClick(false);
 
@@ -464,21 +464,21 @@ public final class TableViewPane extends BorderPane {
 
         if (!columnCheckboxesSource.isEmpty()) {
             splitSourceButton.getItems().addAll(columnCheckboxesSource);
-            final CustomMenuItem sourcemenu = new CustomMenuItem(splitSourceButton);
-            sourcemenu.setHideOnClick(false);
-            cm.getItems().add(sourcemenu);
+            final CustomMenuItem sourceMenu = new CustomMenuItem(splitSourceButton);
+            sourceMenu.setHideOnClick(false);
+            cm.getItems().add(sourceMenu);
         }
         if (!columnCheckboxesDestination.isEmpty()) {
             splitDestinationButton.getItems().addAll(columnCheckboxesDestination);
-            final CustomMenuItem destinationmenu = new CustomMenuItem(splitDestinationButton);
-            destinationmenu.setHideOnClick(false);
-            cm.getItems().add(destinationmenu);
+            final CustomMenuItem destinationMenu = new CustomMenuItem(splitDestinationButton);
+            destinationMenu.setHideOnClick(false);
+            cm.getItems().add(destinationMenu);
         }
         if (!columnCheckboxesTransaction.isEmpty()) {
             splitTransactionButton.getItems().addAll(columnCheckboxesTransaction);
-            final CustomMenuItem transactionmenu = new CustomMenuItem(splitTransactionButton);
-            transactionmenu.setHideOnClick(false);
-            cm.getItems().add(transactionmenu);
+            final CustomMenuItem transactionMenu = new CustomMenuItem(splitTransactionButton);
+            transactionMenu.setHideOnClick(false);
+            cm.getItems().add(transactionMenu);
         }
 
         return cm;
