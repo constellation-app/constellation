@@ -64,6 +64,9 @@
         <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>
         <!-- https://mvnrepository.com/artifact/org.lwjglx/lwjgl3-awt -->
         <dependency org="org.lwjglx" name="lwjgl3-awt" rev="0.1.7"/>
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-glfw -->
+        <dependency org="org.lwjgl" name="lwjgl-glfw" rev="3.2.3"/>
+
 
               
         <!-- Exclusions -->

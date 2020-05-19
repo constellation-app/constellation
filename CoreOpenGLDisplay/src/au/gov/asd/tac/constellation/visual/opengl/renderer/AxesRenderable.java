@@ -75,8 +75,8 @@ public class AxesRenderable implements GLRenderable {
         colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         
-        String lwjglVersion = org.lwjgl.Version.getVersion();
-        System.out.println(lwjglVersion);
+//        String lwjglVersion = org.lwjgl.Version.getVersion();
+//        System.out.println(lwjglVersion);
     }
 
     @Override

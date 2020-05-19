@@ -7,7 +7,9 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
+import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.GL;
+import org.lwjgl.glfw.GLFW;
 
 
 /**
@@ -15,6 +17,10 @@ import org.lwjgl.opengl.GL;
  * @author skitz
  */
 public class ConstellationCanvas extends AWTGLCanvas{
+    
+    public GL30 gl;
+    static int frameNo = 0;
+    
     public ConstellationCanvas(GLData glData) {
         super(glData);
     }
@@ -27,11 +33,15 @@ public class ConstellationCanvas extends AWTGLCanvas{
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
+        
         GL.createCapabilities();      
     }
 
     @Override
     public void paintGL() {
         
+        System.out.printf("Frame %d\n", ++frameNo);
+        GL30.glClearColor(0.3f, 0.4f, 0.5f, 1);
+        GL30.glClear(GL30.GL_COLOR_BUFFER_BIT | GL30.GL_DEPTH_BUFFER_BIT);
     }
 }
