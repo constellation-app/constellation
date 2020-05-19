@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,6 +115,7 @@ public final class TableViewPane extends BorderPane {
     private static final String EXPORT_CSV_SELECTION = "Export to CSV (Selection)";
     private static final String EXPORT_XLSX = "Export to Excel";
     private static final String EXPORT_XLSX_SELECTION = "Export to Excel (Selection)";
+    private static final String FILTER_CAPTION = "Filter:";
 
     private static final ImageView COLUMNS_ICON = new ImageView(UserInterfaceIconProvider.COLUMNS.buildImage(16));
     private static final ImageView SELECTED_VISIBLE_ICON = new ImageView(UserInterfaceIconProvider.VISIBLE.buildImage(16, ConstellationColor.CHERRY.getJavaColor()));
@@ -124,6 +125,9 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView COPY_ICON = new ImageView(UserInterfaceIconProvider.COPY.buildImage(16));
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
     private static final ImageView SETTINGS_ICON = new ImageView(UserInterfaceIconProvider.SETTINGS.buildImage(16));
+    private static final ImageView MENU_ICON_SOURCE = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView MENU_ICON_DESTINATION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
+    private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
 
@@ -318,22 +322,24 @@ public final class TableViewPane extends BorderPane {
 
     private ContextMenu initColumnVisibilityContextMenu() {
         final ContextMenu cm = new ContextMenu();
-        final ArrayList<CustomMenuItem> columnCheckboxes = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesSource = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesDestination = new ArrayList<>();
+        final List<CustomMenuItem> columnCheckboxesTransaction = new ArrayList<>();
 
-        final Label columnFilterLabel = new Label("Filter:");
-        final TextField columnFilterTextField = new TextField();
-        final HBox filterBox = new HBox();
-        filterBox.getChildren().addAll(columnFilterLabel, columnFilterTextField);
+        MenuButton splitSourceButton = new MenuButton("Source");
+        splitSourceButton.setGraphic(MENU_ICON_SOURCE);
+        splitSourceButton.setMaxWidth(WIDTH);
+        splitSourceButton.setPopupSide(Side.RIGHT);
 
-        final CustomMenuItem columnFilter = new CustomMenuItem(filterBox);
-        columnFilter.setHideOnClick(false);
-        columnFilterTextField.setOnKeyReleased(event -> {
-            final String filterTerm = columnFilterTextField.getText().toLowerCase().trim();
-            columnCheckboxes.forEach(item -> {
-                final String columnName = item.getId().toLowerCase();
-                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
-            });
-        });
+        MenuButton splitDestinationButton = new MenuButton("Destination");
+        splitDestinationButton.setGraphic(MENU_ICON_DESTINATION);
+        splitDestinationButton.setMaxWidth(WIDTH);
+        splitDestinationButton.setPopupSide(Side.RIGHT);
+
+        MenuButton splitTransactionButton = new MenuButton("Transaction");
+        splitTransactionButton.setGraphic(MENU_ICON_TRANSACTION);
+        splitTransactionButton.setMaxWidth(WIDTH);
+        splitTransactionButton.setPopupSide(Side.RIGHT);
 
         final CustomMenuItem allColumns = new CustomMenuItem(new Label(ALL_COLUMNS));
         allColumns.setHideOnClick(false);
@@ -391,25 +397,106 @@ public final class TableViewPane extends BorderPane {
             e.consume();
         });
 
-        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem(), columnFilter);
+        cm.getItems().addAll(allColumns, defaultColumns, keyColumns, noColumns, new SeparatorMenuItem());
+
+        final Label columnFilterLabelSource = new Label(FILTER_CAPTION);
+        final TextField columnFilterTextFieldSource = new TextField();
+        final HBox filterBoxSource = new HBox();
+        filterBoxSource.getChildren().addAll(columnFilterLabelSource, columnFilterTextFieldSource);
+        final CustomMenuItem columnFilterSource = new CustomMenuItem(filterBoxSource);
+        columnFilterSource.setHideOnClick(false);
+
+        columnFilterTextFieldSource.setOnKeyReleased(event -> {
+            final String filterTerm = columnFilterTextFieldSource.getText().toLowerCase().trim();
+            columnCheckboxesSource.forEach(item -> {
+                final String columnName = item.getId().toLowerCase();
+                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
+            });
+            event.consume();
+        });
+        splitSourceButton.getItems().add(columnFilterSource);
+
+        final Label columnFilterLabelDestination = new Label(FILTER_CAPTION);
+        final TextField columnFilterTextFieldDestination = new TextField();
+        final HBox filterBoxDestination = new HBox();
+        filterBoxDestination.getChildren().addAll(columnFilterLabelDestination, columnFilterTextFieldDestination);
+        final CustomMenuItem columnFilterDestination = new CustomMenuItem(filterBoxDestination);
+        columnFilterDestination.setHideOnClick(false);
+
+        columnFilterTextFieldDestination.setOnKeyReleased(event -> {
+            final String filterTerm = columnFilterTextFieldDestination.getText().toLowerCase().trim();
+            columnCheckboxesDestination.forEach(item -> {
+                final String columnName = item.getId().toLowerCase();
+                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
+            });
+            event.consume();
+        });
+        splitDestinationButton.getItems().add(columnFilterDestination);
+
+        final Label columnFilterLabelTransaction = new Label(FILTER_CAPTION);
+        final TextField columnFilterTextFieldTransaction = new TextField();
+        final HBox filterBoxTransaction = new HBox();
+        filterBoxTransaction.getChildren().addAll(columnFilterLabelTransaction, columnFilterTextFieldTransaction);
+        final CustomMenuItem columnFilterTransaction = new CustomMenuItem(filterBoxTransaction);
+        columnFilterTransaction.setHideOnClick(false);
+
+        columnFilterTextFieldTransaction.setOnKeyReleased(event -> {
+            final String filterTerm = columnFilterTextFieldTransaction.getText().toLowerCase().trim();
+            columnCheckboxesTransaction.forEach(item -> {
+                final String columnName = item.getId().toLowerCase();
+                item.setVisible(filterTerm.isBlank() || columnName.contains(filterTerm));
+            });
+            event.consume();
+        });
+        splitTransactionButton.getItems().add(columnFilterTransaction);
 
         columnIndex.forEach(columnTuple -> {
-            final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
-            columnCheckbox.selectedProperty().bindBidirectional(columnTuple.getThird().visibleProperty());
-            columnCheckbox.setOnAction(e -> {
-                updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), Arrays.asList(columnTuple),
-                        ((CheckBox) e.getSource()).isSelected() ? UpdateMethod.ADD : UpdateMethod.REMOVE);
-                e.consume();
-            });
+            if (columnTuple.getFirst() == "source.") {
+                columnCheckboxesSource.add(getColumnVisibility(columnTuple));
 
-            final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
-            columnVisibility.setHideOnClick(false);
-            columnVisibility.setId(columnTuple.getThird().getText());
-            columnCheckboxes.add(columnVisibility);
-            cm.getItems().add(columnVisibility);
+            } else if (columnTuple.getFirst() == "destination.") {
+                columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
+
+            } else if (columnTuple.getFirst() == "transaction.") {
+                columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
+            }
         });
 
+        if (!columnCheckboxesSource.isEmpty()) {
+            splitSourceButton.getItems().addAll(columnCheckboxesSource);
+            final CustomMenuItem sourceMenu = new CustomMenuItem(splitSourceButton);
+            sourceMenu.setHideOnClick(false);
+            cm.getItems().add(sourceMenu);
+        }
+        if (!columnCheckboxesDestination.isEmpty()) {
+            splitDestinationButton.getItems().addAll(columnCheckboxesDestination);
+            final CustomMenuItem destinationMenu = new CustomMenuItem(splitDestinationButton);
+            destinationMenu.setHideOnClick(false);
+            cm.getItems().add(destinationMenu);
+        }
+        if (!columnCheckboxesTransaction.isEmpty()) {
+            splitTransactionButton.getItems().addAll(columnCheckboxesTransaction);
+            final CustomMenuItem transactionMenu = new CustomMenuItem(splitTransactionButton);
+            transactionMenu.setHideOnClick(false);
+            cm.getItems().add(transactionMenu);
+        }
+
         return cm;
+    }
+
+    private CustomMenuItem getColumnVisibility(ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> columnTuple) {
+        final CheckBox columnCheckbox = new CheckBox(columnTuple.getThird().getText());
+        columnCheckbox.selectedProperty().bindBidirectional(columnTuple.getThird().visibleProperty());
+        columnCheckbox.setOnAction(e -> {
+            updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), Arrays.asList(columnTuple),
+                    ((CheckBox) e.getSource()).isSelected() ? UpdateMethod.ADD : UpdateMethod.REMOVE);
+            e.consume();
+        });
+
+        final CustomMenuItem columnVisibility = new CustomMenuItem(columnCheckbox);
+        columnVisibility.setHideOnClick(false);
+        columnVisibility.setId(columnTuple.getThird().getText());
+        return columnVisibility;
     }
 
     private void updateVisibleColumns(final Graph graph, final TableViewState state,
@@ -825,17 +912,15 @@ public final class TableViewPane extends BorderPane {
                 // Populate orderedColumns with full column ThreeTuples corresponding to entires in newVolumnOrder and call updateVisibleColumns
                 // to update table.
                 final List<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> orderedColumns
-                        = newColumnOrder.stream()
-                                .map(c
-                                        -> {
-                                    for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
-                                        if (c.getText().equals(col.getThird().getText())) {
-                                            return col;
-                                        }
-                                    }
-                                    // THe following can only happen 
-                                    return columnIndex.get(newColumnOrder.indexOf(c));
-                                }).collect(Collectors.toList());
+                        = newColumnOrder.stream().map(c -> {
+                            for (ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>> col : columnIndex) {
+                                if (c.getText().equals(col.getThird().getText())) {
+                                    return col;
+                                }
+                            }
+                            // THe following can only happen 
+                            return columnIndex.get(newColumnOrder.indexOf(c));
+                        }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
                 updateVisibleColumns(parent.getCurrentGraph(), parent.getCurrentState(), orderedColumns, UpdateMethod.REPLACE);
             }
