@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.group;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.utilities.widgets.AttributeSelectionPanel;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Collections;
@@ -33,7 +33,9 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByGroupAction")
-@ActionRegistration(displayName = "#CTL_ArrangeByGroupAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeByGroupAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/group/resources/arrangeByNodes.png",
+        surviveFocusChange = true)
 //@ActionReference(path = "Menu/Arrange", position = 500)
 @Messages("CTL_ArrangeByGroupAction=By Group")
 public final class ArrangeByGroupAction implements ActionListener {

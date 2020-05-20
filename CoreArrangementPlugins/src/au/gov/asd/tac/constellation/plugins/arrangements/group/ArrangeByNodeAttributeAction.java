@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.group;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -32,7 +32,9 @@ import org.openide.util.NbBundle.Messages;
  * @author canis_majoris
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByNodeAttributeAction")
-@ActionRegistration(displayName = "#CTL_ArrangeByNodeAttributeAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeByNodeAttributeAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/group/resources/arrangeByNodes.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/Arrange", position = 500)
 @Messages("CTL_ArrangeByNodeAttributeAction=Arrange by Node Attribute")
 public final class ArrangeByNodeAttributeAction implements ActionListener {
