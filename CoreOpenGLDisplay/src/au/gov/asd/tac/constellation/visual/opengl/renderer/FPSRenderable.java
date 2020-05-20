@@ -172,8 +172,8 @@ public class FPSRenderable implements GLRenderable {
             fpsMatrix.multiply(translationMatrix, srMatrix);
 
             // disable depth so the fps counter is drawn on top
-            gl.glDisable(GL30.GL_DEPTH_TEST);
-            gl.glDepthMask(false);
+            GL30.glDisable(GL30.GL_DEPTH_TEST);
+            GL30.glDepthMask(false);
 
             // draw the fps counter
             int[] fpsDigits = Long.toString(fps).chars().map(c -> c -= '0').toArray();
@@ -187,8 +187,8 @@ public class FPSRenderable implements GLRenderable {
             fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
 
             // re-enable depth
-            gl.glEnable(GL30.GL_DEPTH_TEST);
-            gl.glDepthMask(true);
+            GL30.glEnable(GL30.GL_DEPTH_TEST);
+            GL30.glDepthMask(true);
         }
     }
 

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-//import com.jogamp.opengl.GL30;
 import java.nio.Buffer;
 import org.lwjgl.opengl.GL30;
 
@@ -119,10 +118,10 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
 
     public void uniform(final GL30 gl, final int uniform, final int textureUnit) {
         // Bind the uniform to the texture unit.
-        gl.glUniform1i(uniform, textureUnit);
+        GL30.glUniform1i(uniform, textureUnit);
 
         // Activate the texture unit.
-        gl.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
 
         // Bind the texture to the texture unit.
         // TODO_TT:

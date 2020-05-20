@@ -5,13 +5,13 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import java.util.EventListener;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.awt.AWTGLCanvas;
 import org.lwjgl.opengl.awt.GLData;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 
-import static org.lwjgl.opengl.GL.*;
 import javax.swing.SwingUtilities;
 
 /**
@@ -20,7 +20,6 @@ import javax.swing.SwingUtilities;
  */
 public class ConstellationCanvas extends AWTGLCanvas{
     
-    public GL30 gl;
     static int frameNo = 0;
     protected long handle = 0;
     static float red = 0.0f;
@@ -29,6 +28,10 @@ public class ConstellationCanvas extends AWTGLCanvas{
     
     public ConstellationCanvas(GLData glData) {
         super(glData);
+    }
+    
+    public void addEventListener(EventListener listener) {
+        // TODO_TT: eventify this
     }
     
     @Override
@@ -43,7 +46,7 @@ public class ConstellationCanvas extends AWTGLCanvas{
         // LWJGL detects the context that is current in the current thread,
         // creates the GLCaptabilities instance and makes the OpenGL
         // bindings available for use.    
-        createCapabilities();      
+        GL.createCapabilities();      
     }
     
     @Override

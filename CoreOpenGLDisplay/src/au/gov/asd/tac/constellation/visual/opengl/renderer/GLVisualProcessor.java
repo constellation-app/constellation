@@ -203,11 +203,8 @@ public class GLVisualProcessor extends VisualProcessor {
         if (graphRenderable.getGraphDisplayer() == null) {
             graphRenderable.setGraphDisplayer(new GraphDisplayer());
         }
-        //canvas.addGLEventListener(renderer);
+        canvas.addEventListener(renderer);
         //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
-        
-        //canvas.initGL();
-        
     }
 
     /**

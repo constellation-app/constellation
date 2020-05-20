@@ -23,12 +23,11 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-import com.jogamp.common.nio.Buffers;
-//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -90,13 +89,13 @@ public class FpsBatcher implements SceneBatcher {
         shader = SharedDrawable.getSimpleIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
 
         // Set up uniform locations in the shader
-        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
-        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
-        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
-        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
-        shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
-        shaderPixelDensity = gl.glGetUniformLocation(shader, "pixelDensity");
-        shaderPScale = gl.glGetUniformLocation(shader, "pScale");
+        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
+        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
+        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
+        shaderPixelDensity = GL30.glGetUniformLocation(shader, "pixelDensity");
+        shaderPScale = GL30.glGetUniformLocation(shader, "pScale");
     }
 
     private int updateIconTexture(final GL30 gl) {
@@ -110,11 +109,11 @@ public class FpsBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-        final FloatBuffer colorBuffer = Buffers.newDirectFloatBuffer(COLOR_BUFFER_WIDTH * 2);
+        final FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(COLOR_BUFFER_WIDTH * 2);
         bufferColorInfo(0, colorBuffer, ConstellationColor.WHITE);
         bufferColorInfo(1, colorBuffer, ConstellationColor.WHITE);
         colorBuffer.flip();
-        final IntBuffer iconBuffer = Buffers.newDirectIntBuffer(ICON_BUFFER_WIDTH * 2);
+        final IntBuffer iconBuffer = BufferUtils.createIntBuffer(ICON_BUFFER_WIDTH * 2);
         bufferIconInfo(0, iconBuffer, 0, 0);
         bufferIconInfo(1, iconBuffer, 0, 0);
         iconBuffer.flip();
@@ -146,17 +145,16 @@ public class FpsBatcher implements SceneBatcher {
     @Override
     public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
         if (batch.isDrawable()) {
-            gl.glUseProgram(shader);
+            GL30.glUseProgram(shader);
 
             // Uniform variables
-            // TODO_TT:
-//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-            gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-            gl.glUniform1f(shaderPixelDensity, pixelDensity);
-            gl.glUniform1f(shaderPScale, projectionScale);
+            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
+            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
+            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            GL30.glUniform1f(shaderPixelDensity, pixelDensity);
+            GL30.glUniform1f(shaderPScale, projectionScale);
             batch.draw(gl);
         }
     }
@@ -177,7 +175,7 @@ public class FpsBatcher implements SceneBatcher {
         Arrays.fill(updateMask, true);
         final int maskSize = updateMask.length;
         final int numChanges = digits.length;
-        final IntBuffer updateBuffer = Buffers.newDirectIntBuffer(maskSize * numChanges);
+        final IntBuffer updateBuffer = BufferUtils.createIntBuffer(maskSize * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePosition = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -240,7 +238,7 @@ public class FpsBatcher implements SceneBatcher {
         Arrays.fill(updateMask, true);
         final int maskSize = updateMask.length;
         final int numChanges = 2;
-        final FloatBuffer updateBuffer = Buffers.newDirectFloatBuffer(maskSize * numChanges);
+        final FloatBuffer updateBuffer = BufferUtils.createFloatBuffer(maskSize * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {

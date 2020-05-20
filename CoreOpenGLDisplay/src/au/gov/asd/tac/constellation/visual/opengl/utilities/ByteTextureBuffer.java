@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
-import com.jogamp.common.nio.Buffers;
 import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL30;
 
@@ -32,7 +31,7 @@ public class ByteTextureBuffer extends TextureBuffer<ByteBuffer> {
 
     @Override
     protected int sizeOfType() {
-        return Buffers.SIZEOF_BYTE;
+        return Byte.BYTES;
     }
 
     @Override

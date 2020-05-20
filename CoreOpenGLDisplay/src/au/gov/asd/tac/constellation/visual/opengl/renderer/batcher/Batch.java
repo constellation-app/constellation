@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLException;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import com.jogamp.common.nio.Buffers;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -29,6 +28,7 @@ import java.nio.IntBuffer;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -208,10 +208,10 @@ public final class Batch {
         this.numVertices = numVertices;
         for (int i = 0; i < bufferIsLocal.length; i++) {
             if (bufferIsLocal[i]) {
-                if (bufferIsFloat[i]) {
-                    buffers[i] = Buffers.newDirectFloatBuffer(numVertices * bufferSizePerVertex[i]);
+                if (bufferIsFloat[i]) {                    
+                    buffers[i] = BufferUtils.createFloatBuffer(numVertices * bufferSizePerVertex[i]);
                 } else {
-                    buffers[i] = Buffers.newDirectIntBuffer(numVertices * bufferSizePerVertex[i]);
+                    buffers[i] = BufferUtils.createIntBuffer(numVertices * bufferSizePerVertex[i]);
                 }
             }
         }
@@ -419,15 +419,15 @@ public final class Batch {
         //gl.glBindVertexArray(vertexArrayObjectName[0]);
         for (int target = 0; target < numBuffers; target++) {
             // Set up the vertex array object.
-            gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, getBufferName(target));
+            GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, getBufferName(target));
             if (bufferIsFloat[target]) {
-                gl.glVertexAttribPointer(target, bufferSizePerVertex[target], GL30.GL_FLOAT, false, 0, 0);
+                GL30.glVertexAttribPointer(target, bufferSizePerVertex[target], GL30.GL_FLOAT, false, 0, 0);
             } else {
-                gl.glVertexAttribIPointer(target, bufferSizePerVertex[target], GL30.GL_INT, 0, 0L);
+                GL30.glVertexAttribIPointer(target, bufferSizePerVertex[target], GL30.GL_INT, 0, 0L);
             }
         }
 
-        gl.glBindVertexArray(0);
+        GL30.glBindVertexArray(0);
         finalised = true;
     }
 
@@ -465,8 +465,8 @@ public final class Batch {
         if (!bufferIsFloat[target]) {
             throw new RenderException(NOT_FLOATBUFFER);
         }
-        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferName);
-        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL30.GL_ARRAY_BUFFER, GL30.GL_READ_WRITE);
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferName);
+        final ByteBuffer connectionBbuf = GL30.glMapBuffer(GL30.GL_ARRAY_BUFFER, GL30.GL_READ_WRITE);
         return connectionBbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }
 
@@ -483,8 +483,8 @@ public final class Batch {
         if (bufferIsFloat[target]) {
             throw new RenderException("Specified target is not an IntBuffer");
         }
-        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferName);
-        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL30.GL_ARRAY_BUFFER, GL30.GL_READ_WRITE);
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, bufferName);
+        final ByteBuffer connectionBbuf = GL30.glMapBuffer(GL30.GL_ARRAY_BUFFER, GL30.GL_READ_WRITE);
         return connectionBbuf.order(ByteOrder.nativeOrder()).asIntBuffer();
     }
 
@@ -498,8 +498,8 @@ public final class Batch {
      * @param target The buffer to disconnect.
      */
     public void disconnectBuffer(final GL30 gl, final int target) {
-        gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, getBufferName(target));
-        gl.glUnmapBuffer(GL30.GL_ARRAY_BUFFER);
+        GL30.glBindBuffer(GL30.GL_ARRAY_BUFFER, getBufferName(target));
+        GL30.glUnmapBuffer(GL30.GL_ARRAY_BUFFER);
     }
 
     /**
@@ -518,15 +518,15 @@ public final class Batch {
         // glDrawArrays() throws INVALID_OPERATION on some video cards when using texture buffers.
         // Catch it here to avoid problems in other areas.
         try {
-            gl.glBindVertexArray(vertexArrayObjectName[0]);
+            GL30.glBindVertexArray(vertexArrayObjectName[0]);
 
             enableVertexAttribArrays(gl);
 
-            gl.glDrawArrays(primitiveType, 0, numVertices);
+            GL30.glDrawArrays(primitiveType, 0, numVertices);
 
             disableVertexAttribArrays(gl);
 
-            gl.glBindVertexArray(0);
+            GL30.glBindVertexArray(0);
         } catch (STUB_GLException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
         }
@@ -577,7 +577,7 @@ public final class Batch {
         for (int target = 0; target < numBuffers; target++) {
             try {
                 getBufferName(target);
-                gl.glEnableVertexAttribArray(target);
+                GL30.glEnableVertexAttribArray(target);
             } catch (RenderException ex) {
             }
         }
@@ -594,7 +594,7 @@ public final class Batch {
         for (int target = 0; target < numBuffers; target++) {
             try {
                 getBufferName(target);
-                gl.glDisableVertexAttribArray(target);
+                GL30.glDisableVertexAttribArray(target);
             } catch (RenderException ex) {
             }
         }

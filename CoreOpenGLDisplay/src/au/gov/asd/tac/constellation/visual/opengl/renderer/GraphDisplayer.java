@@ -186,18 +186,18 @@ public class GraphDisplayer implements GLRenderable {
 
         // Draw the graph texture to the screen
         final GL30 gl = drawable.getGL().getGL3();
-        gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-        gl.glActiveTexture(GL30.GL_TEXTURE0);
-        gl.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
-        gl.glActiveTexture(GL30.GL_TEXTURE0 + 1);
-        gl.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
-        gl.glUseProgram(graphTextureShader);
-        gl.glUniform1i(graphColorTextureShaderLocation, 0);
-        gl.glUniform1i(graphDepthTextureShaderLocation, 1);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0);
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
+        GL30.glActiveTexture(GL30.GL_TEXTURE0 + 1);
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
+        GL30.glUseProgram(graphTextureShader);
+        GL30.glUniform1i(graphColorTextureShaderLocation, 0);
+        GL30.glUniform1i(graphDepthTextureShaderLocation, 1);
         bindShaderLocations(gl);
-        gl.glDisable(GL30.GL_DEPTH_TEST);
+        GL30.glDisable(GL30.GL_DEPTH_TEST);
         graphTextureBatch.draw(gl);
-        gl.glEnable(GL30.GL_DEPTH_TEST);
+        GL30.glEnable(GL30.GL_DEPTH_TEST);
     }
 
     @Override
@@ -214,16 +214,16 @@ public class GraphDisplayer implements GLRenderable {
      * @param gl The GL Context on which to bind to this displayer's buffers.
      */
     final void bindDisplayer(final GL30 gl) {
-        gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
+        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
         // TODO_TT:
         //gl.glDrawBuffers(1, graphDrawBuffers, 0);
         if (needsResize) {
-            gl.glActiveTexture(GL30.GL_TEXTURE0);
-            gl.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
+            GL30.glActiveTexture(GL30.GL_TEXTURE0);
+            GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
             // TODO_TT: compiler can't figure out what version to use
             //gl.glTexImage2D(STUB_GL.GL_TEXTURE_2D, 0, STUB_GL.GL_RGB8, width, height, 0, STUB_GL.GL_RGB, STUB_GL.GL_UNSIGNED_BYTE, null);
-            gl.glActiveTexture(GL30.GL_TEXTURE0 + 1);
-            gl.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
+            GL30.glActiveTexture(GL30.GL_TEXTURE0 + 1);
+            GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
             // TODO_TT: compiler can't figure out what version to use
             //gl.glTexImage2D(STUB_GL.GL_TEXTURE_2D, 0, STUB_GL.GL_DEPTH_COMPONENT16, width, height, 0, GL30.GL_DEPTH_COMPONENT, STUB_GL.GL_FLOAT, null);
             needsResize = false;

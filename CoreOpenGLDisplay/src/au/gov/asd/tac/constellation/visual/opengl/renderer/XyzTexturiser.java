@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.FloatTextureBuffer;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
-import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
+import org.lwjgl.BufferUtils;
 
 /**
  *
@@ -51,7 +51,7 @@ public class XyzTexturiser {
     }
 
     public GLRenderableUpdateTask createTexture(final VisualAccess access) {
-        final FloatBuffer xyzBuffer = Buffers.newDirectFloatBuffer(XYZ_BUFFER_WIDTH * access.getVertexCount());
+        final FloatBuffer xyzBuffer = BufferUtils.createFloatBuffer(XYZ_BUFFER_WIDTH * access.getVertexCount());
         for (int i = 0; i < access.getVertexCount(); i++) {
             bufferXyzInfo(i, xyzBuffer, access);
         }

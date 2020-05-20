@@ -497,11 +497,11 @@ public final class GLTools {
 //        final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
 //        final Texture tex = TextureIO.newTexture(data);
 
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, wrapMode);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, wrapMode);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, wrapMode);
 
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
 
         return tex;
     }
@@ -528,12 +528,12 @@ public final class GLTools {
      * @param wrapMode texture wrap mode with TEXTURE_WRAP_S and TEXTURE_WRAP_T.
      */
     public static void loadTextures(final GL30 gl, final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
-        gl.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
+        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
 
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, wrapMode);
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-        gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, wrapMode);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, wrapMode);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
+        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
 
         // Call glTexImage3D() to create the buffer here: we've assumed the internalformat and format.
         // TODO_TT:
@@ -830,7 +830,7 @@ public final class GLTools {
      */
     public static void checkError(final GL30 gl, final String msg) {
         while (true) {
-            final int err = gl.glGetError();
+            final int err = GL30.glGetError();
             if (err == GL30.GL_NO_ERROR || msg == null) {
                 return;
             }
@@ -869,7 +869,7 @@ public final class GLTools {
      * occurred.
      */
     public static void checkFramebufferStatus(final GL30 gl, final String msg) {
-        int fboStatus = gl.glCheckFramebufferStatus(GL30.GL_DRAW_FRAMEBUFFER);
+        int fboStatus = GL30.glCheckFramebufferStatus(GL30.GL_DRAW_FRAMEBUFFER);
         if (fboStatus == GL30.GL_FRAMEBUFFER_COMPLETE) {
             return;
         }

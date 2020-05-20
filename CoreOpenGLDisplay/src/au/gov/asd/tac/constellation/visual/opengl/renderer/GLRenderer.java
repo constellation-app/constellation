@@ -186,7 +186,7 @@ public final class GLRenderer implements STUB_GLEventListener {
         final int dpiScaledWidth = (int)(width * dpiScaleX);
         final int dpiScaledHeight = (int)(height * dpiScaleY);
         
-        gl.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
+        GL30.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
 
         // Create the projection matrix, and load it on the projection matrix stack.
         viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);

@@ -104,36 +104,7 @@
                 <package>com.jhlabs.composite</package>
                 <package>com.jhlabs.image</package>
                 <package>com.jhlabs.math</package>
-                <package>com.jhlabs.vecmath</package>
-                <package>com.jogamp.common</package>
-                <package>com.jogamp.common.jvm</package>
-                <package>com.jogamp.common.net</package>
-                <package>com.jogamp.common.net.asset</package>
-                <package>com.jogamp.common.nio</package>
-                <package>com.jogamp.common.os</package>
-                <package>com.jogamp.common.type</package>
-                <package>com.jogamp.common.util</package>
-                <package>com.jogamp.common.util.awt</package>
-                <package>com.jogamp.common.util.cache</package>
-                <package>com.jogamp.common.util.locks</package>
-                <package>com.jogamp.gluegen.runtime</package>
-                <package>com.jogamp.nativewindow</package>
-                <package>com.jogamp.nativewindow.egl</package>
-                <package>com.jogamp.nativewindow.javafx</package>
-                <package>com.jogamp.nativewindow.swt</package>
-                <package>com.jogamp.nativewindow.util</package>
-                <package>com.jogamp.newt</package>
-                <package>com.jogamp.newt.event</package>
-                <package>com.jogamp.newt.util</package>
-                <package>com.jogamp.newt.util.applet</package>
-                <package>com.jogamp.opencl</package>
-                <package>com.jogamp.opencl.gl</package>
-                <package>com.jogamp.opencl.impl</package>
-                <package>com.jogamp.opencl.llb</package>
-                <package>com.jogamp.opencl.llb.impl</package>
-                <package>com.jogamp.opencl.spi</package>
-                <package>com.jogamp.opencl.util</package>
-                <package>com.jogamp.opencl.util.concurrent</package>
+                <package>com.jhlabs.vecmath</package>                
                 <package>com.kenai.constantine</package>
                 <package>com.kenai.constantine.platform</package>
                 <package>com.kenai.jffi</package>
@@ -576,30 +547,7 @@
                 <package>jnr.netdb</package>
                 <package>jnr.posix</package>
                 <package>jnr.posix.util</package>
-                <package>jnr.posix.windows</package>
-                <package>jogamp.common</package>
-                <package>jogamp.common.jvm</package>
-                <package>jogamp.common.os</package>
-                <package>jogamp.common.os.elf</package>
-                <package>jogamp.common.util</package>
-                <package>jogamp.common.util.locks</package>
-                <package>jogamp.nativetag.common.linux.amd64</package>
-                <package>jogamp.nativetag.common.linux.i586</package>
-                <package>jogamp.nativetag.common.macosx.universal</package>
-                <package>jogamp.nativetag.common.windows.amd64</package>
-                <package>jogamp.nativetag.common.windows.i586</package>
-                <package>jogamp.nativetag.nativewindow.windows.i586</package>
-                <package>jogamp.nativetag.newt.windows.i586</package>
-                <package>jogamp.nativetag.opencl.linux.amd64</package>
-                <package>jogamp.nativetag.opencl.linux.i586</package>
-                <package>jogamp.nativetag.opencl.macosx.universal</package>
-                <package>jogamp.nativetag.opencl.windows.amd64</package>
-                <package>jogamp.nativetag.opencl.windows.i586</package>
-                <package>jogamp.nativewindow</package>
-                <package>jogamp.newt</package>
-                <package>jogamp.newt.driver</package>
-                <package>jogamp.newt.event</package>
-                <package>jogamp.opencl</package>
+                <package>jnr.posix.windows</package>               
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -694,7 +642,6 @@
                 <package>org.apache.commons.io.monitor</package>
                 <package>org.apache.commons.io.output</package>
                 <package>org.apache.commons.io.serialization</package>
-                <package>org.apache.commons.jocl</package>
                 <package>org.apache.commons.jxpath</package>
                 <package>org.apache.commons.jxpath.functions</package>
                 <package>org.apache.commons.jxpath.ri</package>
@@ -2178,10 +2125,6 @@
                 <binary-origin>release/modules/ext/ejml-all-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-macosx-universal.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-macosx-universal.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-amd64.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gluegen-rt-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
@@ -2298,10 +2241,6 @@
                 <binary-origin>release/modules/ext/jetty-server-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/newt-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/gt-coverage-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-coverage-22.3.jar</binary-origin>
             </class-path-extension>
@@ -2350,16 +2289,8 @@
                 <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.fes-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/net.opengis.fes-22.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/newt.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/newt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javafx-web-11.0.2.jar</runtime-relative-path>
@@ -2480,10 +2411,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-text-1.8.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-linux-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-linux-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jt-algebra-1.1.12.jar</runtime-relative-path>
@@ -2610,10 +2537,6 @@
                 <binary-origin>release/modules/ext/jt-nullop-1.1.12.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-windows-i586.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-windows-i586.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/uom-se-1.0.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/uom-se-1.0.8.jar</binary-origin>
             </class-path-extension>
@@ -2652,10 +2575,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jt-lookup-1.1.12.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jt-lookup-1.1.12.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-csv-1.8.jar</runtime-relative-path>
@@ -2736,10 +2655,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gt-cql-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-cql-22.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/jocl-natives-windows-amd64.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/jocl-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0.jar</runtime-relative-path>

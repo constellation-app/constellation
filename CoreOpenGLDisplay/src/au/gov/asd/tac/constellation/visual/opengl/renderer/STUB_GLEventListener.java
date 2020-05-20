@@ -5,11 +5,13 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import java.util.EventListener;
+
 /**
  *
  * @author skitz
  */
-public interface STUB_GLEventListener {
+public interface STUB_GLEventListener extends EventListener{
     public void init(final STUB_GLAutoDrawable drawable);
     public void dispose(final STUB_GLAutoDrawable drawable);
     public void display(final STUB_GLAutoDrawable drawable);

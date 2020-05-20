@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
-import com.jogamp.common.nio.Buffers;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL30;
 
 /**
@@ -144,7 +144,7 @@ public interface SceneBatcher {
     public static GLRenderableUpdateTask updateIntBufferTask(final VisualChange change, final VisualAccess access, final IntBufferOperation operation, final IntBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final IntBuffer updateBuffer = Buffers.newDirectIntBuffer(width * numChanges);
+        final IntBuffer updateBuffer = BufferUtils.createIntBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -181,7 +181,7 @@ public interface SceneBatcher {
     public static GLRenderableUpdateTask updateFloatBufferTask(final VisualChange change, final VisualAccess access, final FloatBufferOperation operation, final FloatBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final FloatBuffer updateBuffer = Buffers.newDirectFloatBuffer(width * numChanges);
+        final FloatBuffer updateBuffer = BufferUtils.createFloatBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -218,7 +218,7 @@ public interface SceneBatcher {
     public static GLRenderableUpdateTask updateByteBufferTask(final VisualChange change, final VisualAccess access, final ByteBufferOperation operation, final ByteBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final ByteBuffer updateBuffer = Buffers.newDirectByteBuffer(width * numChanges);
+        final ByteBuffer updateBuffer = BufferUtils.createByteBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {

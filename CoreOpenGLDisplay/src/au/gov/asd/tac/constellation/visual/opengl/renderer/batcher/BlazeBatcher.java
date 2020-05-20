@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
-//import com.jogamp.opengl.GL30;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -86,15 +85,15 @@ public class BlazeBatcher implements SceneBatcher {
         shader = SharedDrawable.getBlazeShader(gl, colorTarget, COLOR_SHADER_NAME, infoTarget, BLAZE_INFO_SHADER_NAME);
 
         // Set up uniform locations in the shader
-        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
-        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
-        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
-        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
-        shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
-        shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
-        shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
-        shaderScale = gl.glGetUniformLocation(shader, "scale");
-        shaderOpacity = gl.glGetUniformLocation(shader, "opacity");
+        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
+        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
+        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
+        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
+        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
+        shaderScale = GL30.glGetUniformLocation(shader, "scale");
+        shaderOpacity = GL30.glGetUniformLocation(shader, "opacity");
     }
 
     @Override
@@ -164,21 +163,20 @@ public class BlazeBatcher implements SceneBatcher {
     public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (batch.isDrawable()) {
-            gl.glUseProgram(shader);
-            // TODO_TT:
-//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-            gl.glUniform1f(shaderMorphMix, camera.getMix());
-            gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-            gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-            gl.glUniform1f(shaderScale, blazeSize);
-            gl.glUniform1f(shaderOpacity, blazeOpacity);
+            GL30.glUseProgram(shader);
+            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
+            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
+            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            GL30.glUniform1f(shaderMorphMix, camera.getMix());
+            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            GL30.glUniform1f(shaderScale, blazeSize);
+            GL30.glUniform1f(shaderOpacity, blazeOpacity);
 
-            gl.glDisable(GL30.GL_DEPTH_TEST);
+            GL30.glDisable(GL30.GL_DEPTH_TEST);
             batch.draw(gl);
-            gl.glEnable(GL30.GL_DEPTH_TEST);
+            GL30.glEnable(GL30.GL_DEPTH_TEST);
         }
     }
 }

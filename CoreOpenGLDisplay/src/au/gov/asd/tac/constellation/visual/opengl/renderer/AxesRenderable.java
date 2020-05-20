@@ -105,7 +105,7 @@ public class AxesRenderable implements GLRenderable {
                 vertexTarget, "vertex",
                 colorTarget, "color",
                 ShaderManager.FRAG_BASE, "fragColor");
-        axesShaderLocMVP = gl.glGetUniformLocation(axesShader, "mvpMatrix");
+        axesShaderLocMVP = GL30.glGetUniformLocation(axesShader, "mvpMatrix");
 
         axesBatch.initialise(NUMBER_OF_VERTICES);
         // x axis
@@ -237,19 +237,18 @@ public class AxesRenderable implements GLRenderable {
         axesMatrix.multiply(translationMatrix, srMatrix);
 
         // Disable depth so the axes are drawn over everything else.
-        gl.glDisable(GL30.GL_DEPTH_TEST);
-        gl.glDepthMask(false);
+        GL30.glDisable(GL30.GL_DEPTH_TEST);
+        GL30.glDepthMask(false);
 
         // Draw.
-        gl.glLineWidth(1);
-        gl.glUseProgram(axesShader);
-        // TODO_TT:
-        //gl.glUniformMatrix4fv(axesShaderLocMVP, 1, false, axesMatrix.a, 0);
+        GL30.glLineWidth(1);
+        GL30.glUseProgram(axesShader);
+        GL30.glUniformMatrix4fv(axesShaderLocMVP, false, axesMatrix.a);
         axesBatch.draw(gl);
 
         // Reenable depth.
-        gl.glEnable(GL30.GL_DEPTH_TEST);
-        gl.glDepthMask(true);
+        GL30.glEnable(GL30.GL_DEPTH_TEST);
+        GL30.glDepthMask(true);
     }
 
     @Override

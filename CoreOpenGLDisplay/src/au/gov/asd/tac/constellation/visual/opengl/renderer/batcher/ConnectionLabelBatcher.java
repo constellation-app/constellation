@@ -163,20 +163,20 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
         shader = SharedDrawable.getConnectionLabelShader(gl, floatsTarget, LABEL_FLOATS_SHADER_NAME, intsTarget, LABEL_INTS_SHADER_NAME);
 
         // Set up uniform locations in the shader
-        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
-        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
-        shaderLabelInfo = gl.glGetUniformLocation(shader, "labelInfo");
-        shaderLocWidth = gl.glGetUniformLocation(shader, "widthScalingFactor");
-        shaderLocHeight = gl.glGetUniformLocation(shader, "heightScalingFactor");
-        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
-        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
-        shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
-        shaderBackgroundGlyphIndex = gl.glGetUniformLocation(shader, "backgroundGlyphIndex");
-        shaderBackgroundColor = gl.glGetUniformLocation(shader, "backgroundColor");
-        shaderHighlightColor = gl.glGetUniformLocation(shader, "highlightColor");
-        shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
-        shaderGlyphInfoTexture = gl.glGetUniformLocation(shader, "glyphInfoTexture");
-        shaderGlyphImageTexture = gl.glGetUniformLocation(shader, "glyphImageTexture");
+        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
+        shaderLabelInfo = GL30.glGetUniformLocation(shader, "labelInfo");
+        shaderLocWidth = GL30.glGetUniformLocation(shader, "widthScalingFactor");
+        shaderLocHeight = GL30.glGetUniformLocation(shader, "heightScalingFactor");
+        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
+        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
+        shaderBackgroundGlyphIndex = GL30.glGetUniformLocation(shader, "backgroundGlyphIndex");
+        shaderBackgroundColor = GL30.glGetUniformLocation(shader, "backgroundColor");
+        shaderHighlightColor = GL30.glGetUniformLocation(shader, "highlightColor");
+        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
+        shaderGlyphInfoTexture = GL30.glGetUniformLocation(shader, "glyphInfoTexture");
+        shaderGlyphImageTexture = GL30.glGetUniformLocation(shader, "glyphImageTexture");
     }
 
     @Override
@@ -299,7 +299,7 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
     public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
 
         if (attributeLabelBatch.isDrawable() || summaryLabelBatch.isDrawable()) {
-            gl.glUseProgram(shader);
+            GL30.glUseProgram(shader);
 
             // Let the glyph controller bind the glyph info and glyph image textures
             SharedDrawable.updateGlyphTextureController(gl);
@@ -308,33 +308,29 @@ public class ConnectionLabelBatcher implements GlyphManager.GlyphStream, SceneBa
             // This is kind of weird - fix this to actually mean something?
             final int further_f = 0;
             final int further_u = 1;
-            gl.glPolygonOffset(further_f, further_u);
-            gl.glDepthFunc(STUB_GL.GL_LEQUAL);
+            GL30.glPolygonOffset(further_f, further_u);
+            GL30.glDepthFunc(STUB_GL.GL_LEQUAL);
 
             // Uniform variables
-            // TODO_TT:
-//            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
-//            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
-            gl.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
-            gl.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
-            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-            gl.glUniform1f(shaderMorphMix, camera.getMix());
-            gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-            gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
-            // TODO_TT:
-//            gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
-//            gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
+            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
+            GL30.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
+            GL30.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
+            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            GL30.glUniform1f(shaderMorphMix, camera.getMix());
+            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+            GL30.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
+            GL30.glUniform4fv(shaderBackgroundColor, backgroundColor);
+            GL30.glUniform4fv(shaderHighlightColor, highlightColor);
 
             if (attributeLabelBatch.isDrawable()) {
-                // TODO_TT:
-//                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, attributeLabelInfo.a, 0);
+                GL30.glUniformMatrix4fv(shaderLabelInfo, false, attributeLabelInfo.a);
                 attributeLabelBatch.draw(gl);
             }
 
             if (summaryLabelBatch.isDrawable()) {
-                // TODO_TT:
-//                gl.glUniformMatrix4fv(shaderLabelInfo, 1, false, summaryLabelInfo.a, 0);
+                GL30.glUniformMatrix4fv(shaderLabelInfo, false, summaryLabelInfo.a);
                 summaryLabelBatch.draw(gl);
             }
 
