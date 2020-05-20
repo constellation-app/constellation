@@ -76,7 +76,8 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-        
+        int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
+
         // check if the attributes are defined
         if (latitudeAttribute != Graph.NOT_FOUND || longitudeAttribute != Graph.NOT_FOUND) {
             return nodesToMerge;
@@ -115,7 +116,9 @@ public class MergeNodesByLocation implements MergeNodeType {
                         (double) graph.getFloatValue(latitudeAttribute, vertexId)))
                         .collect(Collectors.toList());
                 try {
-                    final int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.ensure(graph);
+                    if (shapeAttribute == Graph.NOT_FOUND) {
+                        shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.ensure(graph);
+                    }
                     graph.setStringValue(shapeAttribute, clusterNode, Shape.generateShape(clusterId, GeometryType.BOX, clusterCoordinates));
                 } catch (IOException ex) {
                     throw new MergeException("Error creating shape for location cluster.", ex);
@@ -134,7 +137,7 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
         final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        
+
         //if no vertices were provided, get all vertices from the graph
         final Set<Integer> vertexIds;
         if (vertices == null) {
