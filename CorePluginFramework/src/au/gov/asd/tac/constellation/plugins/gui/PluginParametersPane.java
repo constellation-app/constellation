@@ -565,6 +565,7 @@ public final class PluginParametersPane extends GridPane {
                     if (label != null) {
                         paramGroupPane.add(label, 0, row);
                         GridPane.setValignment(label, VPos.TOP);
+                        GridPane.setHgrow(label, Priority.ALWAYS);
                         GridPane.setFillHeight(label, false);
 
                         label.bindDescriptionToProperty(descriptionWidth);
@@ -742,11 +743,15 @@ public final class PluginParametersPane extends GridPane {
         public final LabelDescriptionBox buildParameterLabel(final PluginParameter<?> parameter) {
             final Label label = new Label(parameter.getName() + ":");
             final Label description = new Label(parameter.getDescription());
+            label.setMinWidth(120);
+            label.setPrefWidth(200);
+            label.setMaxWidth(400);
             label.setWrapText(true);
-            label.setMaxWidth(100);
             description.setStyle("-fx-font-size: 80%;");
             description.getStyleClass().add("description-label");
-            description.setPrefWidth(100);
+            description.setMinWidth(120);
+            description.setPrefWidth(200);
+            description.setMaxWidth(400);
             description.setWrapText(true);
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setStyle("-fx-padding: " + PADDING);
