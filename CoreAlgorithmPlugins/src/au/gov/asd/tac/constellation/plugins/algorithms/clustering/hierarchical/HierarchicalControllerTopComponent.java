@@ -274,7 +274,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             }
         });
 
-        shortestPathsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/dsd/tac/constellation/plugins/algorithms/paths/shortestpaths.png"))); // NOI18N
+        shortestPathsButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/au/gov/asd/tac/constellation/plugins/algorithms/paths/shortestpaths.png")));
         org.openide.awt.Mnemonics.setLocalizedText(shortestPathsButton, org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.shortestPathsButton.text")); // NOI18N
         shortestPathsButton.setToolTipText(org.openide.util.NbBundle.getMessage(HierarchicalControllerTopComponent.class, "HierarchicalControllerTopComponent.shortestPathsButton.toolTipText")); // NOI18N
         shortestPathsButton.addActionListener(new java.awt.event.ActionListener() {
