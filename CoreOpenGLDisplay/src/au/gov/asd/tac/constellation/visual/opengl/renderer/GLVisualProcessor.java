@@ -42,6 +42,7 @@ import javax.imageio.ImageIO;
 import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.awt.GLData;
 
+import java.awt.event.ComponentAdapter; // test events resize canvas
 
 /**
  * A {@link VisualProcessor} that creates a 3D visualisation using OpenGL. This
@@ -204,6 +205,11 @@ public class GLVisualProcessor extends VisualProcessor {
             graphRenderable.setGraphDisplayer(new GraphDisplayer());
         }
         canvas.addEventListener(renderer);
+        canvas.addComponentListener(new ComponentAdapter() {
+			public void componentResized(java.awt.event.ComponentEvent e) {
+				canvas.repaint();
+			};
+		});
         //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
     }
 
