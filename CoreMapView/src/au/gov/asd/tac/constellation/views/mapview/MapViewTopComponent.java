@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -369,13 +369,14 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // top component resize listener
         addComponentListener(new ComponentAdapter() {
-            ScheduledExecutorService scheduledExecutorService =
-                Executors.newScheduledThreadPool(1);
+            ScheduledExecutorService scheduledExecutorService
+                    = Executors.newScheduledThreadPool(1);
             ScheduledFuture scheduledFuture;
+
             @Override
             //Cancels the previous resize (future) and then performs the latest one every half second 
             public void componentResized(ComponentEvent event) {
-                if(scheduledFuture != null) {
+                if (scheduledFuture != null) {
                     scheduledFuture.cancel(true);
                 }
                 scheduledFuture = scheduledExecutorService.schedule(() -> {

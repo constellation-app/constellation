@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -851,13 +851,13 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         SwingUtilities.invokeLater(() -> {
             final NamedSelectionTopComponent tc
                     = (NamedSelectionTopComponent) WindowManager.getDefault().findTopComponent(NamedSelectionTopComponent.class.getSimpleName());
-            
+
             if (tc != null) {
                 if (openTopComponent && !tc.isOpened()) {
                     tc.open();
                     tc.requestActive();
                 }
-                
+
                 // If there is no graph, set logical defaults, then disable UI:
                 if (graphNode == null) {
                     tc.updateState(null);

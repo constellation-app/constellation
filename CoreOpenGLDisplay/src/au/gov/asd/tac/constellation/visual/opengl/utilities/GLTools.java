@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -870,20 +870,21 @@ public final class GLTools {
         }
         LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }
-    
+
     /**
      * Windows-DPI-Scaling
-     * 
+     *
      * JOGL version 2.3.2 on Windows doesn't correctly support DPI scaling.
      * setSurfaceScale() is not overridden in WindowsJAWTWindow so it is not
-     * possible to scale the the canvas and mouse events at this level.  It 
-     * should be noted that it is overridden in MacOSXJAWTWindow.
-     * Where manual scaling is required the caller will need to scale each GL
-     * viewport and ensure hit tests take that size into account.
-     * 
+     * possible to scale the the canvas and mouse events at this level. It
+     * should be noted that it is overridden in MacOSXJAWTWindow. Where manual
+     * scaling is required the caller will need to scale each GL viewport and
+     * ensure hit tests take that size into account.
+     *
      * If JOGL is ever fixed or another solution is found, either change this
-     * function to return false or look for any code that calls it and remove it.
-     */    
+     * function to return false or look for any code that calls it and remove
+     * it.
+     */
     public static boolean needsManualDPIScaling() {
         return Utilities.isWindows();
     }

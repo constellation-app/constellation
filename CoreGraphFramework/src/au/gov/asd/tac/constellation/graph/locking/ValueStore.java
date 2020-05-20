@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public final class ValueStore implements ParameterWriteAccess, Serializable {
     }
 
     private interface Saver extends Serializable {
-        
+
         public void save(final ParameterWriteAccess pwa);
     }
 

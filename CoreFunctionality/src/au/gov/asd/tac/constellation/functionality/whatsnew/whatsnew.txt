@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
 
+== 2020-05-18 Map Controls
+<p>We have updated the Map View mouse controls to be consistent with the graph view.</p>
+
 == 2020-05-11 Two New Arrangement Options
 <p>Two new arrangement options are available via the Arrange menu and toolbar. These options are horizontal and vertical lines. Selecting these options allow selected (or all) elements to be arranged in either horizontal or vertical lines.</p>
 

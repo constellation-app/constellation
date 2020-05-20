@@ -58,7 +58,7 @@ class PQTree {
     public void setRoot(PQNode root) {
         this.root = root;
     }
-    
+
     private Deque<PQNode> bubble() {
         final Deque<PQNode> nodesToProcess = new LinkedList<>();
         final Deque<PQNode> nodesToBubble = new LinkedList<>();
@@ -106,7 +106,7 @@ class PQTree {
             node = nodesToProcess.removeFirst();
             if (node.getPertinentLeafCount() < numPertinentLeaves) {
                 // node is not the root of the pertinent subtree
-                node.getParent().setPertinentLeafCount(node.getParent().getPertinentLeafCount() 
+                node.getParent().setPertinentLeafCount(node.getParent().getPertinentLeafCount()
                         + node.getPertinentLeafCount());
                 node.getParent().setPertinentChildCount(node.getParent().getPertinentChildCount() - 1);
                 if (node.getParent().getPertinentChildCount() == 0) {

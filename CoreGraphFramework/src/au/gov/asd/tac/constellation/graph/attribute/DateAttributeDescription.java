@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -127,7 +127,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public Object getDefault() {
-        return defaultValue == DEFAULT_VALUE ? 0L 
+        return defaultValue == DEFAULT_VALUE ? 0L
                 : LocalDate.ofEpochDay(defaultValue);
     }
 
@@ -162,7 +162,7 @@ public final class DateAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public String getString(final int id) {
-        return data[id] == defaultValue ? null 
+        return data[id] == defaultValue ? null
                 : LocalDate.ofEpochDay(data[id]).format(TemporalFormatting.DATE_FORMATTER);
     }
 

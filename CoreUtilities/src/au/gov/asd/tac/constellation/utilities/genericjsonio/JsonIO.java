@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.openide.util.NbPreferences;
  * @author serpens24
  */
 public class JsonIO {
+
     private static final Logger LOGGER = Logger.getLogger(JsonIO.class.getName());
     private static final String FILE_EXT = ".json";
     private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
@@ -58,7 +59,7 @@ public class JsonIO {
     private JsonIO() {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
- 
+
     /**
      * Save the supplied JSON data in a file, within an allocated subdirectory
      * of the users configuration directory. The filename can optionally be
@@ -224,7 +225,7 @@ public class JsonIO {
                 if (!filePrefix.isEmpty()) {
                     names[i] = names[i].substring(filePrefix.length());
                 }
-            } 
+            }
         }
 
         // Allow user to select a filename from the crafted list using the dialog.
@@ -268,7 +269,7 @@ public class JsonIO {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
         final File prefDir = new File(userDir, currentDir);
-       
+
         if (filenameToDelete != null) {
             final String encodedFilename = FilenameEncoder.encode(currentPrefix.concat(filenameToDelete)) + FILE_EXT;
 

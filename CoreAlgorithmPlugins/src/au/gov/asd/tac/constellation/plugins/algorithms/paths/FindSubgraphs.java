@@ -24,7 +24,7 @@ import java.util.BitSet;
  * @author canis_majoris
  */
 public class FindSubgraphs {
-    
+
     private static final SecureRandom RAND = new SecureRandom();
 
     /**

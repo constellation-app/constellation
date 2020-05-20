@@ -234,7 +234,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 // malformed URI
             }
             // the URI is not a valid 'file:' URI
-            
+
         }
         return list;
     }

@@ -254,9 +254,9 @@ public class GridArranger implements Arranger {
 //                {
 //                    y += rowHeights[row]/2 - radius;
 //                }
-                
+
                 // Offset even columns vertically so side-by-side labels don't overlap.
-                if (params.hasRowOffsets() && col % 2 == 0) {                  
+                if (params.hasRowOffsets() && col % 2 == 0) {
                     y += rowHeights[row] / 2;
                 }
 

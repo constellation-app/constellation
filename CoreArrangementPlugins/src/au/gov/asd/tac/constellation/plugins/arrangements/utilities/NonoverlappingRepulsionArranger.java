@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.utilities;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -76,7 +76,7 @@ public final class NonoverlappingRepulsionArranger implements Arranger {
         final Comparator<Blob> sorter = (o1, o2) -> {
             final float d1 = o1.distanceFrom(centreX, centreY);
             final float d2 = o2.distanceFrom(centreX, centreY);
-            
+
             return (int) Math.signum(d1 - d2);
         };
 

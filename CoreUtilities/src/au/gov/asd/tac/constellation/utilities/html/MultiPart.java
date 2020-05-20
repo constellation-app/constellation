@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class MultiPart {
     private static final String DASH_DASH = "--";
     private static final String EOL = "\r\n";
     private static final String C_D = "Content-Disposition: form-data";
-    
+
     private static final String NOT_AFTER_END_CALL = "Not allowed after calling end().";
     private static final String THREE_STRING_FORMAT = "%s%s%s";
 

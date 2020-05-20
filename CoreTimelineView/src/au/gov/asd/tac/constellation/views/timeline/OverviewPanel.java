@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ public class OverviewPanel extends Pane {
     public void setExtentPOV(double lowerBound, double upperBound) {
         if (lowerBound < lowestTimeExtent) {
             lowerBound = lowestTimeExtent;
-            
+
             final double currentUpperBound = ((pov.getX() + pov.getWidth()) / this.getWidth() * range) + lowestTimeExtent;
             if (upperBound < currentUpperBound) {
                 upperBound = currentUpperBound;
@@ -139,7 +139,7 @@ public class OverviewPanel extends Pane {
         }
         if (upperBound > highestTimeExtent) {
             upperBound = highestTimeExtent;
-            
+
             final double currentLowerBound = (pov.getX() / this.getWidth() * range) + lowestTimeExtent;
             if (lowerBound > currentLowerBound) {
                 lowerBound = currentLowerBound;
@@ -512,7 +512,7 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
-                    
+
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
@@ -531,7 +531,7 @@ public class OverviewPanel extends Pane {
 
                     // Update the timeline with the new time extents:
                     coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
-                    
+
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
@@ -563,7 +563,7 @@ public class OverviewPanel extends Pane {
                 final long newLowerTimeExtent = (long) (((newX / histogram.getWidth()) * range) + lowestTimeExtent);
                 final long newUpperTimeExtent = (long) ((((newX + rect.getWidth()) / histogram.getWidth()) * range) + lowestTimeExtent);
                 coordinator.setExtents(newLowerTimeExtent, newUpperTimeExtent);
-                
+
                 // Update the origin as we have had some movement:
                 origin = t.getX();
             }

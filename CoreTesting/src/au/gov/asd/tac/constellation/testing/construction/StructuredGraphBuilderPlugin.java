@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,9 @@ public class StructuredGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String BACKBONE_SIZE_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_size");
     public static final String BACKBONE_DENSITY_PARAMETER_ID = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "backbone_density");
     public static final String RADIUS = PluginParameter.buildId(StructuredGraphBuilderPlugin.class, "radius");
-    
+
     private static final String NODE = "~Node ";
-    
+
     private final SecureRandom r = new SecureRandom();
 
     @Override

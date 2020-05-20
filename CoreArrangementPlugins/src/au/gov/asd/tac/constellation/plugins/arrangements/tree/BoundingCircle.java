@@ -61,7 +61,7 @@ public class BoundingCircle {
     public void setRadius(double radius) {
         this.radius = radius;
     }
-    
+
     public static BoundingCircle enclosingCircle(final List<BoundingCircle> circles) {
         final BBoxf box = new BBoxf();
         for (final BoundingCircle c : circles) {

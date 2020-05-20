@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.StartJupyterNotebookAction")
-@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase="au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
+@ActionRegistration(displayName = "#CTL_StartJupyterNotebookAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/jupyter.png")
 @ActionReference(path = "Menu/Tools", position = 1700)
 @NbBundle.Messages("CTL_StartJupyterNotebookAction=Start Jupyter Notebook")
 public class StartJupyterNotebookAction implements ActionListener {

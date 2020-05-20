@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
 public class TextPluginInteraction implements PluginInteraction {
 
     private static final Logger LOGGER = Logger.getLogger(TextPluginInteraction.class.getName());
-    
+
     private static final String NOT_SUPPORTED = "Not supported yet.";
 
     private String currentMessage;

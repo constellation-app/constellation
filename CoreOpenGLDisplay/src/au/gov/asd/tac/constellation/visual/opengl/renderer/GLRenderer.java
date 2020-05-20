@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -183,15 +183,15 @@ public final class GLRenderer implements GLEventListener {
         // DPI scaling here) or remove the scaled height and width below.         
         float dpiScaleX = 1.0f;
         float dpiScaleY = 1.0f;
-        if (GLTools.needsManualDPIScaling()){
-            dpiScaleX = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleX();
-            dpiScaleY = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleY();
+        if (GLTools.needsManualDPIScaling()) {
+            dpiScaleX = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleX();
+            dpiScaleY = (float) ((Graphics2D) (parent.canvas).getGraphics()).getTransform().getScaleY();
         }
-        
+
         // These need to be final as they are used in the lambda function below
-        final int dpiScaledWidth = (int)(width * dpiScaleX);
-        final int dpiScaledHeight = (int)(height * dpiScaleY);
-        
+        final int dpiScaledWidth = (int) (width * dpiScaleX);
+        final int dpiScaledHeight = (int) (height * dpiScaleY);
+
         gl.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
 
         // Create the projection matrix, and load it on the projection matrix stack.

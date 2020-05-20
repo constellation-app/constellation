@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
 import java.util.HashSet;
 import java.util.Set;
@@ -477,7 +477,8 @@ public class ExtractWordsFromTextPluginNGTest {
     }
 
     /**
-     * Test of class ExtractFromContentPlugin with regexOnly + lower-case true parameters.
+     * Test of class ExtractFromContentPlugin with regexOnly + lower-case true
+     * parameters.
      *
      * @throws java.lang.Exception
      */
@@ -512,7 +513,8 @@ public class ExtractWordsFromTextPluginNGTest {
     }
 
     /**
-     * Test of class ExtractFromContentPlugin with regexOnly + lower-case false parameters.
+     * Test of class ExtractFromContentPlugin with regexOnly + lower-case false
+     * parameters.
      *
      * @throws java.lang.Exception
      */

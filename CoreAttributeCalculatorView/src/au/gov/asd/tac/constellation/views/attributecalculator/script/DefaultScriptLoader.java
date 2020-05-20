@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import org.openide.util.Exceptions;
  * @author twilight_sparkle
  */
 public class DefaultScriptLoader extends AbstractScriptLoader {
-    
+
     private static final Logger LOGGER = Logger.getLogger(DefaultScriptLoader.class.getName());
 
     private static final String DESCRIPTION_KEY = "description";

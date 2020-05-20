@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,9 +18,9 @@ package au.gov.asd.tac.constellation.security.password;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * The default implementation of a {@link PasswordSecret}. It is highly recommended
- * to override this with your own implementation in your module. This only
- * exists as a fall back.
+ * The default implementation of a {@link PasswordSecret}. It is highly
+ * recommended to override this with your own implementation in your module.
+ * This only exists as a fall back.
  * <p>
  * Note that storing obfuscated passwords in source code or configuration files
  * is strongly discouraged. This is NOT a good security practice and might make
@@ -40,7 +40,7 @@ public class DefaultPasswordSecret implements PasswordSecret {
             (byte) 0x08, (byte) 0x09, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15
         };
     }
-    
+
     @Override
     public byte[] getKey() {
         return new byte[]{

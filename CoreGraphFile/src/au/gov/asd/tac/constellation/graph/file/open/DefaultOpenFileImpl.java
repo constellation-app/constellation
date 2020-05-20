@@ -217,9 +217,9 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
             * actually open. But since the document was successfully open,
             * the editor should be opened quite quickly and no problem
             * should occur.
-            */
+             */
             editorCookie.open();
-            
+
             if (line >= 0) {
                 openDocAtLine(editorCookie, doc, line);
             }
@@ -328,7 +328,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         public void propertyChange(final PropertyChangeEvent e) {
             LOGGER.finer("SetCursorTask: propertyChange()");               //NOI18N
 
-            if(!PROP_OPENED_PANES.equals(e.getPropertyName())) {
+            if (!PROP_OPENED_PANES.equals(e.getPropertyName())) {
                 throw new IllegalArgumentException();
             } else {
                 observable.removePropertyChangeListener(this);
@@ -481,7 +481,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      */
     private boolean openDataObjectByCookie(final DataObject dataObject,
             final int line) {
-        if(dataObject.getCookie(OpenCookie.class) != null) {
+        if (dataObject.getCookie(OpenCookie.class) != null) {
             return openByCookie(dataObject.getCookie(OpenCookie.class), OpenCookie.class, line);
         } else if (dataObject.getCookie(EditCookie.class) != null) {
             return openByCookie(dataObject.getCookie(EditCookie.class), EditCookie.class, line);
@@ -546,8 +546,8 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         /* Look for an EditorCookie indicating a text file */
         if ((line != -1) && dataObject.getCookie(EditorCookie.Observable.class) != null) {
             return openByCookie(dataObject.getCookie(EditorCookie.Observable.class), EditorCookie.Observable.class, line);
-        } 
-        
+        }
+
         if (dataObject.getCookie(EditorCookie.class) != null) {
             return openByCookie(dataObject.getCookie(EditorCookie.class), EditorCookie.class, line);
         }

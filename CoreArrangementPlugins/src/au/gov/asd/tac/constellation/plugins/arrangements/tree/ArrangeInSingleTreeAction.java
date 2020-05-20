@@ -72,7 +72,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
     private static class Worker {
 
         private final GraphWriteMethods graph;
-        
+
         private final SecureRandom r = new SecureRandom();
 
         Worker(GraphWriteMethods graph) {

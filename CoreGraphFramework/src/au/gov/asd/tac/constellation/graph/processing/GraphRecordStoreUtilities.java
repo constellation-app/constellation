@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public class GraphRecordStoreUtilities {
     public static final String DIRECTED_KEY = "[directed]<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
     private static final String FALSE = "false";
     private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";

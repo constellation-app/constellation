@@ -55,7 +55,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private static final int MILLIS_SPINNER_WIDTH = 60;
 
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-        
+
         private static final String LABEL = "label";
 
         private CheckBox noValueCheckBox;
@@ -84,11 +84,11 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             if (noValueCheckBox.isSelected()) {
                 return null;
             }
-            if (hourSpinner.getValue() == null || minSpinner.getValue() == null || 
-                    secSpinner.getValue() == null || milliSpinner.getValue() == null) {
+            if (hourSpinner.getValue() == null || minSpinner.getValue() == null
+                    || secSpinner.getValue() == null || milliSpinner.getValue() == null) {
                 throw new ControlsInvalidException("Time spinners must have numeric values");
             }
-            return LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(), 
+            return LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(),
                     secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND);
         }
 

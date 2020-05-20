@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,16 +52,16 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.util.converter.IntegerStringConverter;
 import javafx.util.StringConverter;
+import javafx.util.converter.IntegerStringConverter;
 
 /**
  * A pane that allows the entry of a relative or absolute date-time range, along
@@ -79,7 +79,7 @@ import javafx.util.StringConverter;
  * @author algol
  */
 public final class DateTimeRangeInputPane extends Pane {
-    
+
     private static final String HIGHLIGHTED_CLASS = "titled-pane-datetime";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangeInputPane.class.getName());
@@ -596,8 +596,8 @@ public final class DateTimeRangeInputPane extends Pane {
                 final ParsePosition parsePosition = new ParsePosition(0);
                 // NumberFormat evaluates the beginning of the text
                 format.parse(c.getControlNewText(), parsePosition);
-                if (parsePosition.getIndex() == 0 || c.getControlNewText().length() > 2 ||
-                        parsePosition.getIndex() < c.getControlNewText().length()) {
+                if (parsePosition.getIndex() == 0 || c.getControlNewText().length() > 2
+                        || parsePosition.getIndex() < c.getControlNewText().length()) {
                     // reject parsing the complete text failed
                     return null;
                 }
@@ -610,7 +610,7 @@ public final class DateTimeRangeInputPane extends Pane {
         spinner.setEditable(true);
         final TextFormatter<Integer> timeFormatter = new TextFormatter<>(new IntegerStringConverter(), 0, filter);
         spinner.getEditor().setTextFormatter(timeFormatter);
-        
+
         final Label spinnerLabel = new Label(label);
         spinnerLabel.setLabelFor(spinner);
         spinnerLabel.setStyle(small);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -601,10 +601,10 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(int attribute, GraphIndexType indexType);
-    
+
     /**
      * Sets the queries currently linked to layers on the graph.
-     * 
+     *
      * @param queries the list of String queries to layer a graph by.
      */
     public void setLayerQueries(final List<String> queries);

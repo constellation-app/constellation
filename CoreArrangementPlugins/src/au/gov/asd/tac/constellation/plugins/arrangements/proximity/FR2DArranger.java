@@ -55,7 +55,7 @@ class FR2DArranger implements Arranger {
     private boolean maintainMean;
 
     private final PluginInteraction interaction;
-    
+
     private final SecureRandom r = new SecureRandom();
 
     /**

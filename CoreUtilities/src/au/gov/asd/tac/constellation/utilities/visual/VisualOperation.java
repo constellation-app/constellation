@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,13 +50,13 @@ public interface VisualOperation extends Comparable<VisualOperation> {
         SIGNIFY_IDLE_PRIORITY(10),
         ELEVATED_VISUAL_PRIORITY(20),
         DEFAULT_VISUAL_PRIORITY(30);
-        
+
         private final int value;
-        
+
         private VisualPriority(final int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }

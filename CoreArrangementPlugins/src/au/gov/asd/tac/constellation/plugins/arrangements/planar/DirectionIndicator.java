@@ -39,5 +39,5 @@ class DirectionIndicator {
 
     public int getNumber() {
         return number;
-    }   
+    }
 }
