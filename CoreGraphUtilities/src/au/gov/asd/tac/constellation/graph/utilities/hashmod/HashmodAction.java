@@ -76,11 +76,11 @@ public final class HashmodAction implements ActionListener {
                     @Override
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
-                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes);
+                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, true);
                         }
                         if (isChainedHashmods && numChainedHashmods >= 2) {
                             for (int i = 1; i < numChainedHashmods; i++) {
-                                HashmodAction.run(wg, interaction, chainedHashmods[i], createNonMatchingKeysVertexes);
+                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false);
                             }
                         }
                     }
@@ -90,7 +90,7 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean setPrimary) throws InterruptedException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVColumns() < 2) {
@@ -172,7 +172,10 @@ public final class HashmodAction implements ActionListener {
                     numberSuccessful++;
                 }
             }
-            wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
+
+            if (setPrimary) {
+                wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
+            }
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
         }
     }
