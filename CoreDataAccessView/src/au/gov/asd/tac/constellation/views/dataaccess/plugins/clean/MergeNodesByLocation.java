@@ -79,7 +79,7 @@ public class MergeNodesByLocation implements MergeNodeType {
         int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
 
         // check if the attributes are defined
-        if (latitudeAttribute != Graph.NOT_FOUND || longitudeAttribute != Graph.NOT_FOUND) {
+        if (latitudeAttribute == Graph.NOT_FOUND || longitudeAttribute == Graph.NOT_FOUND) {
             return nodesToMerge;
         }
 
