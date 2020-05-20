@@ -122,12 +122,12 @@ public class MergeNodesByLocation implements MergeNodeType {
         return nodesToMerge;
     }
 
-    private Map<Integer, Map<Integer, Double>> calculateDistances(final GraphReadMethods graph, final Set<Integer> vertices, final boolean selectedOnly) {
+    private Map<Integer, Map<Integer, Double>> calculateDistances(final GraphWriteMethods graph, final Set<Integer> vertices, final boolean selectedOnly) {
         final Map<Integer, Map<Integer, Double>> distances = new HashMap<>();
 
-        final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-        final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
+        final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
+        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
 
         //if no vertices were provided, get all vertices from the graph
         final Set<Integer> vertexIds;
