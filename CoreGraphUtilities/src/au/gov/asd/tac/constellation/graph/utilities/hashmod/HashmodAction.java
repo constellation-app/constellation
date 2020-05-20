@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.BitSet;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
@@ -67,6 +68,7 @@ public final class HashmodAction implements ActionListener {
             if (e.getActionCommand().equals("OK")) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
                 final Boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
+                final boolean createAttributes = hashmodPanel.getCreateAttributes();
                 final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
                 final int numChainedHashmods = hashmodPanel.numChainedHashmods();
                 final Boolean createNonMatchingKeysVertexes = hashmodPanel.getCreateVertexes();
@@ -76,11 +78,11 @@ public final class HashmodAction implements ActionListener {
                     @Override
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
-                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, true);
+                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, true, createAttributes);
                         }
                         if (isChainedHashmods && numChainedHashmods >= 2) {
                             for (int i = 1; i < numChainedHashmods; i++) {
-                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false);
+                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, createAttributes);
                             }
                         }
                     }
@@ -90,7 +92,7 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean setPrimary) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean setPrimary, final Boolean createAttributes) throws InterruptedException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVColumns() < 2) {
@@ -112,6 +114,13 @@ public final class HashmodAction implements ActionListener {
                 attributeValues[attrCount] = nextAttribute;
                 csvValues[attrCount] = i;
                 attrCount++;
+            } else if (createAttributes && !StringUtils.isBlank(nextAttr)) {
+                final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, "string", nextAttr, nextAttr, "", null);
+                if (newAttribute != Graph.NOT_FOUND) {
+                    attributeValues[attrCount] = newAttribute;
+                    csvValues[attrCount] = i;
+                    attrCount++;
+                }
             }
             i++;
         }
