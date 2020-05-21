@@ -66,10 +66,7 @@ public class HashmodPanel extends javax.swing.JPanel {
         if (!isChainedHashmods()) {
             return new Hashmod(hashmodCSVFileStr);
         }
-        if (numChainedHashmods > 0) {
-            return chainedHashmods[0];
-        }
-        return null;
+        return numChainedHashmods > 0 ? chainedHashmods[0] : null;
     }
 
     public Boolean isChainedHashmods() {
@@ -77,10 +74,7 @@ public class HashmodPanel extends javax.swing.JPanel {
     }
 
     public final Hashmod[] getChainedHashmods() {
-        if (isChainedHashmods()) {
-            return chainedHashmods;
-        }
-        return null;
+        return isChainedHashmods() ? chainedHashmods : null;
     }
 
     public int numChainedHashmods() {

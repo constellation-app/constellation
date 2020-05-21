@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -114,8 +116,17 @@ public final class HashmodAction implements ActionListener {
                 attributeValues[attrCount] = nextAttribute;
                 csvValues[attrCount] = i;
                 attrCount++;
-            } else if (createAttributes && !StringUtils.isBlank(nextAttr)) {
-                final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, "string", nextAttr, nextAttr, "", null);
+            } else if (createAttributes && StringUtils.isNotBlank(nextAttr)) {
+                final String[] attributeName = nextAttr.split("\\.");
+                String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
+
+                if (attributeName.length >= 2) {
+                    if (AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+                        newAttributeType = attributeName[attributeName.length - 1];
+                    }
+                }
+
+                final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
                 if (newAttribute != Graph.NOT_FOUND) {
                     attributeValues[attrCount] = newAttribute;
                     csvValues[attrCount] = i;
