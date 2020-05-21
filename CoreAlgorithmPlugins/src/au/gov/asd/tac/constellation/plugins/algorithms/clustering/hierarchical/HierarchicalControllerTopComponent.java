@@ -88,6 +88,8 @@ import org.openide.windows.TopComponent;
 public final class HierarchicalControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
     private static final String INFO_STRING = "%s clusters";
+    private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
+    private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -442,6 +444,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     private void updateInteractivity() {
         state.interactive = !state.interactive;
         if (!state.interactive) {
+            interactiveButton.setText(INTERACTIVE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
             nestedDiagramScrollPane.repaint();
             if (state.colored) {
@@ -449,6 +452,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
         } else {
+            interactiveButton.setText(INTERACTIVE_ENABLED);
             nestedDiagramScrollPane.setViewportView(dp);
             nestedDiagramScrollPane.repaint();
             if (state.colored) {
@@ -549,6 +553,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 revalidateParents(dp);
             }
             if (state != null && doUpdate) {
+                interactiveButton.setText(INTERACTIVE_DISABLED);
                 updateGraph();
             }
         }
@@ -629,12 +634,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
                 if (rg.getSchema() != null && !(rg.getSchema().getFactory() instanceof VisualSchemaFactory)) {
                     interactiveButton.setSelected(false);
+                    interactiveButton.setText(INTERACTIVE_ENABLED);
                     interactivityPermitted = false;
                 } else if (state != null) {
+                    interactiveButton.setText(state.interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
                     interactiveButton.setSelected(state.interactive);
                     colorClustersCheckBox.setSelected(state.colored);
                     interactivityPermitted = true;
                 } else {
+                    interactiveButton.setText(INTERACTIVE_DISABLED);
                     interactiveButton.setSelected(true);
                     colorClustersCheckBox.setSelected(true);
                     interactivityPermitted = true;
