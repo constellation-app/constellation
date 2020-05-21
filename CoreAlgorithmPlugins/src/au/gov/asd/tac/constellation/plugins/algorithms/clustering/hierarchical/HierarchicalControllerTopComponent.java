@@ -560,11 +560,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             if (state != null && doUpdate) {
                 updateGraph();
             }
-            if(state != null && state.interactive) {
-                interactiveButton.setText(INTERACTIVE_ENABLED);
-            } else {
-                interactiveButton.setText(INTERACTIVE_DISABLED);
-            }
+            interactiveButton.setText((state != null && state.interactive) ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
         }
         interactiveButton.setEnabled(state != null);
         interactiveButton.setSelected(false);
