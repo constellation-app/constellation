@@ -416,6 +416,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 Set<Integer> verticesToPath = new HashSet<>();
                 for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                     Group group = state.groups[pos];
+                    if (group == null) {
+                        continue;
+                    }
                     while (group.getMergeStep() <= state.currentStep) {
                         group = group.getParent();
                     }
@@ -546,6 +549,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             }
             if (state == null) {
                 reclusterButton.setEnabled(true);
+                interactiveButton.setEnabled(false);
+                interactiveButton.setText(INTERACTIVE_DISABLED);
             }
 
             if (dp != null) {
@@ -553,10 +558,12 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 revalidateParents(dp);
             }
             if (state != null && doUpdate) {
-                interactiveButton.setText(INTERACTIVE_DISABLED);
                 updateGraph();
             }
+            interactiveButton.setText(state != null ? state.interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED : INTERACTIVE_DISABLED);
         }
+        interactiveButton.setEnabled(state != null);
+        interactiveButton.setSelected(false);
     }
 
     private void updateGraph() {
@@ -610,7 +617,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             state.modificationCounter = mc;
             reclusterButton.setEnabled(smc != state.strucModificationCount);
         }
-
+        // Interactive button should only be available if state is available
+        interactiveButton.setEnabled(state != null);
     }
 
     /**
@@ -716,6 +724,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             for (int pos = 0; pos < vertexCount; pos++) {
                 int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
+                if (group == null) {
+                    continue;
+                }
                 // When excluding single vertices
                 if (state.excludeSingleVertices && group.getSingleStep() > state.currentStep) {
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);
