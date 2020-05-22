@@ -17,9 +17,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipUtilities;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -91,7 +89,7 @@ public class SelectableLabel extends TextArea {
     protected double computePrefWidth(double height) {
         if (cachedHeight != height) {
             if (skin == null) {
-                stopScrolling();
+                initSkin();
             }
             cachedPrefWidth = content.prefWidth(height);
             cachedHeight = height;
@@ -104,7 +102,7 @@ public class SelectableLabel extends TextArea {
     protected double computePrefHeight(double width) {
         if (cachedWidth != width) {
             if (skin == null) {
-                stopScrolling();
+                initSkin();
             }
             cachedPrefHeight = content.prefHeight(width);
             cachedWidth = width;
@@ -150,45 +148,14 @@ public class SelectableLabel extends TextArea {
         this.contextMenuItems = contextMenuItems;
     }
 
-    private void stopScrolling() {
-        try {
-            content = lookup(".content");
-            skin = (TextAreaSkin) getSkin();
-
-            Field scrollPaneField = skin.getClass().getSuperclass().getDeclaredField("scrollPane");
-            scrollPaneField.setAccessible(true);
-            final ScrollPane scrollPane = (ScrollPane) scrollPaneField.get(skin);
-
-            scrollPane.setPadding(Insets.EMPTY);
-
-            Field hbarPolicyField = scrollPane.getClass().getDeclaredField("hbarPolicy");
-            hbarPolicyField.setAccessible(true);
-            hbarPolicyField.set(scrollPane, new NeverScrollBarPolicyProperty(scrollPane, HBAR_POLICY));
-
-            Field vbarPolicyField = scrollPane.getClass().getDeclaredField("vbarPolicy");
-            vbarPolicyField.setAccessible(true);
-            vbarPolicyField.set(scrollPane, new NeverScrollBarPolicyProperty(scrollPane, VBAR_POLICY));
-
-            Field hvalueField = scrollPane.getClass().getDeclaredField("hvalue");
-            hvalueField.setAccessible(true);
-            hvalueField.set(scrollPane, new ZeroDoubleProperty(scrollPane, "hvalue"));
-
-            Field vvalueField = scrollPane.getClass().getDeclaredField("vvalue");
-            vvalueField.setAccessible(true);
-            vvalueField.set(scrollPane, new ZeroDoubleProperty(scrollPane, "vvalue"));
-
-            Field viewportBoundsField = scrollPane.getClass().getDeclaredField("viewportBounds");
-            viewportBoundsField.setAccessible(true);
-            viewportBoundsField.set(scrollPane, new EmptyBoundingBoxProperty(scrollPane, "viewportBounds"));
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+    private void initSkin() {
+        content = lookup(".content");
+        skin = (TextAreaSkin) getSkin();
     }
 
     private static final CssMetaData<ScrollPane, ScrollBarPolicy> HBAR_POLICY
             = new CssMetaData<ScrollPane, ScrollBarPolicy>("-fx-hbar-policy",
                     new EnumConverter<>(ScrollBarPolicy.class), ScrollBarPolicy.NEVER) {
-
         @Override
         public boolean isSettable(ScrollPane n) {
             return true;
