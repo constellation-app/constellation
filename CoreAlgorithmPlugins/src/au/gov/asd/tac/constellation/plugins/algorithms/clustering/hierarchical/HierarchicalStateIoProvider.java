@@ -176,7 +176,6 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                 for (final FastNewman.Group group : state.groups) {
                     if (group != null) {
                         jsonGenerator.writeStartObject();
-                        graph.getVertexPosition(state.steps);
                         jsonGenerator.writeNumberField("vertex", group.getVertex());
                         jsonGenerator.writeNumberField("merge_step", group.getMergeStep());
                         jsonGenerator.writeNumberField("single_step", group.getSingleStep());

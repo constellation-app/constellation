@@ -88,6 +88,8 @@ import org.openide.windows.TopComponent;
 public final class HierarchicalControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
     private static final String INFO_STRING = "%s clusters";
+    private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
+    private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -414,6 +416,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 Set<Integer> verticesToPath = new HashSet<>();
                 for (int pos = 0; pos < graph.getVertexCount(); pos++) {
                     Group group = state.groups[pos];
+                    if (group == null) {
+                        continue;
+                    }
                     while (group.getMergeStep() <= state.currentStep) {
                         group = group.getParent();
                     }
@@ -442,6 +447,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
     private void updateInteractivity() {
         state.interactive = !state.interactive;
         if (!state.interactive) {
+            interactiveButton.setText(INTERACTIVE_DISABLED);
             nestedDiagramScrollPane.setViewportView(null);
             nestedDiagramScrollPane.repaint();
             if (state.colored) {
@@ -449,6 +455,7 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
         } else {
+            interactiveButton.setText(INTERACTIVE_ENABLED);
             nestedDiagramScrollPane.setViewportView(dp);
             nestedDiagramScrollPane.repaint();
             if (state.colored) {
@@ -542,6 +549,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             }
             if (state == null) {
                 reclusterButton.setEnabled(true);
+                interactiveButton.setEnabled(false);
+                interactiveButton.setText(INTERACTIVE_DISABLED);
             }
 
             if (dp != null) {
@@ -551,7 +560,10 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             if (state != null && doUpdate) {
                 updateGraph();
             }
+            interactiveButton.setText((state != null && state.interactive) ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
         }
+        interactiveButton.setEnabled(state != null);
+        interactiveButton.setSelected(false);
     }
 
     private void updateGraph() {
@@ -605,7 +617,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             state.modificationCounter = mc;
             reclusterButton.setEnabled(smc != state.strucModificationCount);
         }
-
+        // Interactive button should only be available if state is available
+        interactiveButton.setEnabled(state != null);
     }
 
     /**
@@ -629,12 +642,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
                 state = stateAttr != Graph.NOT_FOUND ? (HierarchicalState) rg.getObjectValue(stateAttr, 0) : null;
                 if (rg.getSchema() != null && !(rg.getSchema().getFactory() instanceof VisualSchemaFactory)) {
                     interactiveButton.setSelected(false);
+                    interactiveButton.setText(INTERACTIVE_ENABLED);
                     interactivityPermitted = false;
                 } else if (state != null) {
+                    interactiveButton.setText(state.interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
                     interactiveButton.setSelected(state.interactive);
                     colorClustersCheckBox.setSelected(state.colored);
                     interactivityPermitted = true;
                 } else {
+                    interactiveButton.setText(INTERACTIVE_DISABLED);
                     interactiveButton.setSelected(true);
                     colorClustersCheckBox.setSelected(true);
                     interactivityPermitted = true;
@@ -708,6 +724,9 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
             for (int pos = 0; pos < vertexCount; pos++) {
                 int vertex = graph.getVertex(pos);
                 Group group = state.groups[pos];
+                if (group == null) {
+                    continue;
+                }
                 // When excluding single vertices
                 if (state.excludeSingleVertices && group.getSingleStep() > state.currentStep) {
                     graph.setIntValue(vertexClusterAttribute, vertex, -1);

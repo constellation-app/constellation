@@ -85,6 +85,9 @@ import org.openide.windows.TopComponent;
 })
 public final class KTrussControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener, ComponentListener {
 
+    private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
+    private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
+    
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
@@ -367,6 +370,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     private void updateInteractivity() {
         state.setInteractive(!state.getInteractive());
         if (!state.getInteractive()) {
+            interactiveButton.setText(INTERACTIVE_DISABLED);
             if (state.getNestedTrussesVisible()) {
                 hideNestedTrussesPanel();
             }
@@ -375,6 +379,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
         } else {
+            interactiveButton.setText(INTERACTIVE_ENABLED);
             if (state.getNestedTrussesVisible()) {
                 showNestedTrussesPanel();
             }
@@ -556,8 +561,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 if (state != null) {
                     colorNestedTrussesCheckBox.setSelected(state.getNestedTrussesColored());
                     interactiveButton.setSelected(state.getInteractive());
+                    interactiveButton.setText(state.getInteractive() ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
                 } else {
                     interactiveButton.setSelected(false);
+                    interactiveButton.setText(INTERACTIVE_DISABLED);
                     colorNestedTrussesCheckBox.setSelected(false);
                 }
             } finally {
@@ -701,11 +708,15 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                     c.setEnabled(false);
                 }
             }
-            if (state == null) {
+            if (state != null) {
+                // Interactive button should only be available if state is available
+                interactiveButton.setEnabled(true);
+                interactiveButton.setText(INTERACTIVE_ENABLED);
+            } else {
                 reclusterButton.setEnabled(true);
+                interactiveButton.setEnabled(false);
+                interactiveButton.setText(INTERACTIVE_DISABLED);
             }
-            // Interactive button should only be available if state is available
-            interactiveButton.setEnabled(state != null);
         }
 
         if ((state != null) && doUpdate) {
@@ -722,6 +733,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         // This is used to revert the graph display when the component is closed and was previously
         // set to interactive.
         boolean interactive = state.getInteractive();
+        interactiveButton.setText(interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
         if (!interactive) {
             final RemoveOverlayColors removeColors = new RemoveOverlayColors();
             PluginExecution.withPlugin(removeColors).interactively(true).executeLater(graph);
