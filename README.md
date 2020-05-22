@@ -55,7 +55,7 @@ networks, network infrastructure, chemical composition, etc.
 currently no support for Mac and the feature request is tracked by 
 [Issue #21](https://github.com/constellation-app/constellation/issues/21).
 * The OpenGL graph display works with NVIDIA and ATI graphics cards that support
-OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
+OpenGL 3.3 or later. It is known to not work with older Intel on-board graphics cards.
 
 ## Download Constellation
 
