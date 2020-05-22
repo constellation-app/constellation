@@ -30,16 +30,16 @@ public class ElementSet {
     private long[] elements = EMPTY_ARRAY;
     private final GraphElementType type;
 
-    public ElementSet(GraphElementType type) {
+    public ElementSet(final GraphElementType type) {
         this.type = type;
     }
 
-    public ElementSet(ElementSet original) {
+    public ElementSet(final ElementSet original) {
         this.elements = Arrays.copyOf(original.elements, original.elements.length);
         this.type = original.type;
     }
 
-    public ElementSet(String encoded) {
+    public ElementSet(final String encoded) {
         int typeEnd = encoded.indexOf(':');
         type = GraphElementType.getValue(encoded.substring(0, typeEnd));
 
@@ -54,7 +54,7 @@ public class ElementSet {
         }
     }
 
-    public void add(GraphReadMethods graph, int element) {
+    public void add(final GraphReadMethods graph, final int element) {
 
         if (element >= elements.length) {
             elements = Arrays.copyOf(elements, type.getElementCapacity(graph));
@@ -63,13 +63,13 @@ public class ElementSet {
         elements[element] = type.getUID(graph, element);
     }
 
-    public void remove(int element) {
+    public void remove(final int element) {
         if (element < elements.length) {
             elements[element] = 0;
         }
     }
 
-    public boolean contains(GraphReadMethods graph, int element) {
+    public boolean contains(final GraphReadMethods graph, final int element) {
         return element < elements.length && elements[element] == type.getUID(graph, element);
     }
 

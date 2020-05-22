@@ -110,28 +110,6 @@ public class DateTimeRange {
     }
 
     /**
-     * The start and end datetime.
-     * <p>
-     * If the range is absolute, start and end are returned as-is.
-     * <p>
-     * If the range is relative, end is "now" and start is the relative datetime
-     * prior to start.
-     * <p>
-     * This is deprecated: use getZonedStartEnd() with the new Java8 datetime
-     * stuff.
-     *
-     * @return A Date[2] containing the start,end of the range.
-     */
-    @Deprecated
-    public Date[] getStartEnd() {
-        final ZonedDateTime[] z = getZonedStartEnd();
-        final Date d0 = Date.from(z[0].toInstant());
-        final Date d1 = Date.from(z[1].toInstant());
-
-        return new Date[]{d0, d1};
-    }
-
-    /**
      * If the range is absolute, start and end are returned as-is.
      * <p>
      * If the range is relative, end is "now" and start is the relative datetime

@@ -28,12 +28,12 @@ public class StructureMonitor extends GlobalMonitor {
     public StructureMonitor() {
     }
 
-    public StructureMonitor(GraphReadMethods graph) {
+    public StructureMonitor(final GraphReadMethods graph) {
         update(graph);
     }
 
     @Override
-    protected long readModificationCounter(GraphReadMethods graph) {
+    protected long readModificationCounter(final GraphReadMethods graph) {
         return graph.getStructureModificationCounter();
     }
 

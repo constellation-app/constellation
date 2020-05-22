@@ -35,7 +35,7 @@ public class ZonedDateTimeAttributeInteraction extends AbstractAttributeInteract
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         if (value == null) {
             return null;
         }

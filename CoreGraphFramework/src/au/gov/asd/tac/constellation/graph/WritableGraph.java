@@ -42,7 +42,7 @@ public interface WritableGraph extends GraphWriteMethods {
      * @param description the description object that will be passed to all
      * GraphChangeListeners that are listening to this graph.
      */
-    public void commit(Object description);
+    public void commit(final Object description);
 
     /**
      * Causes the changes made on this writable graph to be committed so that
@@ -54,7 +54,7 @@ public interface WritableGraph extends GraphWriteMethods {
      * @param commitName A new name from the commit to override that given when
      * this WritableGraph was first acquired.
      */
-    public void commit(Object description, final String commitName);
+    public void commit(final Object description, final String commitName);
 
     /**
      * Causes the changes made on this writable graph to be committed so that
@@ -84,11 +84,11 @@ public interface WritableGraph extends GraphWriteMethods {
      * occurred.
      * @return a new WritableGraph for any further writing.
      */
-    public WritableGraph flush(Object description, final boolean announce);
+    public WritableGraph flush(final Object description, final boolean announce);
 
     /**
      * Causes all changes made on this WritableGraph to be discarded. This
      * WritableGraph is now considered closed and should not be used again.
      */
     public void rollBack();
-}
+ }

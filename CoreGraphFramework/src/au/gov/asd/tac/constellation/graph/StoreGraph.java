@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
+import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -167,7 +169,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setGraphEdit(GraphEdit graphEdit) {
+    public void setGraphEdit(final GraphEdit graphEdit) {
         this.graphEdit = graphEdit;
     }
 
@@ -891,7 +893,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public int addTransaction(int sourceVertex, int destinationVertex, final boolean directed) {
+    public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
         return addTransaction(-1, sourceVertex, destinationVertex, directed);
     }
 
@@ -1165,7 +1167,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionSourceVertex(int transaction, int newSourceVertex) {
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
 
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
@@ -1203,7 +1205,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionDestinationVertex(int transaction, int newDestinationVertex) {
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
 
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {

@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.undo;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
-import au.gov.asd.tac.constellation.graph.GraphOperation;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.undo.access.AttributeValueUpdater2;
 import au.gov.asd.tac.constellation.graph.undo.access.AttributeValueUpdater3;
@@ -40,17 +40,17 @@ public enum UndoGraphEditOperation {
     SET_PRIMARY_KEY("setPrimaryKeyOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setPrimaryKey(GraphElementType.values()[state.getCurrentAttribute()], (int[]) state.getObjectStack()[state.getCurrentObject()]);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setPrimaryKey(GraphElementType.values()[state.getCurrentAttribute()], (int[]) state.getObjectStack()[state.getCurrentId()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater2.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 2);
@@ -59,14 +59,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 2));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 4));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 4));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 2));
             AttributeValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -75,75 +75,75 @@ public enum UndoGraphEditOperation {
     ADD_VERTEX("addVertexOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addVertex();
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeVertex(state.getCurrentId());
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             state.addInstruction((short) instruction);
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
     },
     REMOVE_VERTEX("removeVertexOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeVertex(state.getCurrentId());
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addVertex();
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             state.addInstruction((short) instruction);
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
     },
     ADD_DIRECTED_TRANSACTION("addDirectedTransactionOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addTransaction(state.getCurrentObject(), state.getCurrentInt(), true);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeTransaction(state.getCurrentId());
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -152,14 +152,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -168,17 +168,17 @@ public enum UndoGraphEditOperation {
     ADD_UNDIRECTED_TRANSACTION("addUndirectedTransactionOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addTransaction(state.getCurrentObject(), state.getCurrentInt(), false);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeTransaction(state.getCurrentId());
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -187,14 +187,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -203,17 +203,17 @@ public enum UndoGraphEditOperation {
     REMOVE_DIRECTED_TRANSACTION("removeDirectedTransactionOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeTransaction(state.getCurrentId());
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addTransaction(state.getCurrentObject(), state.getCurrentInt(), true);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -222,14 +222,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -238,17 +238,17 @@ public enum UndoGraphEditOperation {
     REMOVE_UNDIRECTED_TRANSACTION("removeUndirectedTransactionOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeTransaction(state.getCurrentId());
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.addTransaction(state.getCurrentObject(), state.getCurrentInt(), false);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -257,14 +257,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -273,12 +273,12 @@ public enum UndoGraphEditOperation {
     SET_TRANSACTION_SOURCE_VERTEX("setTransactionSourceVertex") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setTransactionSourceVertex(state.getCurrentId() & 0x7FFFFFFF, state.getCurrentInt() ^ graph.getTransactionSourceVertex(state.getCurrentId()));
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             // If the high bit of the current id has been set then the transaction source and destination vertices will have been swapped during the execute phase
             // to keep the source vertex <= the destination vertex. This means that the undo step must operate on the destination vertex instead of the source vertex.
             if (state.getCurrentId() >= 0) {
@@ -289,7 +289,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 2);
@@ -297,13 +297,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 2));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 2));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -311,12 +311,12 @@ public enum UndoGraphEditOperation {
     SET_TRANSACTION_DESTINATION_VERTEX("setTransactionDestinationVertex") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setTransactionDestinationVertex(state.getCurrentId() & 0x7FFFFFFF, state.getCurrentInt() ^ graph.getTransactionDestinationVertex(state.getCurrentId()));
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             // If the high bit of the current id has been set then the transaction source and destination vertices will have been swapped during the execute phase
             // to keep the source vertex <= the destination vertex. This means that the undo step must operate on the source vertex instead of the source vertex.
             if (state.getCurrentId() >= 0) {
@@ -327,7 +327,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 2);
@@ -335,13 +335,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 2));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 2));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -349,18 +349,18 @@ public enum UndoGraphEditOperation {
     ADD_ATTRIBUTE("addAttributeOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             Object[] params = (Object[]) state.getObjectStack()[state.getCurrentObject()];
             graph.addAttribute((GraphElementType) params[0], (String) params[1], (String) params[2], (String) params[3], params[4], (String) params[5]);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeAttribute(state.getCurrentAttribute());
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= ObjectValueUpdater2.INSTANCE.store(state, o) << (OPERATION_SHIFT + 3);
@@ -368,13 +368,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -382,18 +382,18 @@ public enum UndoGraphEditOperation {
     REMOVE_ATTRIBUTE("removeAttributeOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.removeAttribute(state.getCurrentAttribute());
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             Object[] params = (Object[]) state.getObjectStack()[state.getCurrentObject()];
             graph.addAttribute((GraphElementType) params[0], (String) params[1], (String) params[2], (String) params[3], params[4], (String) params[5]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= ObjectValueUpdater2.INSTANCE.store(state, o) << (OPERATION_SHIFT + 3);
@@ -401,13 +401,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -415,17 +415,17 @@ public enum UndoGraphEditOperation {
     UPDATE_ATTRIBUTE_NAME("updateAttributeNameOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeName(state.getCurrentAttribute(), (String) state.getObjectStack()[state.getCurrentObject()]);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeName(state.getCurrentAttribute(), (String) state.getObjectStack()[state.getCurrentInt()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -434,14 +434,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -450,17 +450,17 @@ public enum UndoGraphEditOperation {
     UPDATE_ATTRIBUTE_DESCRIPTION("updateAttributeDescriptionOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeDescription(state.getCurrentAttribute(), (String) state.getObjectStack()[state.getCurrentObject()]);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeDescription(state.getCurrentAttribute(), (String) state.getObjectStack()[state.getCurrentInt()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -469,14 +469,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -485,17 +485,17 @@ public enum UndoGraphEditOperation {
     UPDATE_ATTRIBUTE_DEFAULT_VALUE("updateAttributeDefaultValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeDefaultValue(state.getCurrentAttribute(), state.getObjectStack()[state.getCurrentObject()]);
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.updateAttributeDefaultValue(state.getCurrentAttribute(), state.getObjectStack()[state.getCurrentInt()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IntValueUpdater2.INSTANCE.store(state, i) << (OPERATION_SHIFT + 3);
@@ -504,14 +504,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -520,7 +520,7 @@ public enum UndoGraphEditOperation {
     SET_BYTE_VALUE("setByteValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setByteValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (byte) (graph.getByteValue(state.getCurrentAttribute(), state.getCurrentId()) ^ (byte) state.getCurrentInt()) + ")");
             }
@@ -528,12 +528,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setByteValue(state.getCurrentAttribute(), state.getCurrentId(), (byte) (graph.getByteValue(state.getCurrentAttribute(), state.getCurrentId()) ^ (byte) state.getCurrentInt()));
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -542,14 +542,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -558,7 +558,7 @@ public enum UndoGraphEditOperation {
     SET_SHORT_VALUE("setShortValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setShortValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (short) (graph.getShortValue(state.getCurrentAttribute(), state.getCurrentId()) ^ (short) state.getCurrentInt()) + ")");
             }
@@ -566,12 +566,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setShortValue(state.getCurrentAttribute(), state.getCurrentId(), (short) (graph.getShortValue(state.getCurrentAttribute(), state.getCurrentId()) ^ (short) state.getCurrentInt()));
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -580,14 +580,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -596,7 +596,7 @@ public enum UndoGraphEditOperation {
     SET_INT_VALUE("setIntValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setIntValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (graph.getIntValue(state.getCurrentAttribute(), state.getCurrentId()) + state.getCurrentInt()) + ")");
             }
@@ -604,7 +604,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("undoIntValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (graph.getIntValue(state.getCurrentAttribute(), state.getCurrentId()) - state.getCurrentInt()) + ")");
             }
@@ -612,7 +612,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -621,14 +621,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -638,7 +638,7 @@ public enum UndoGraphEditOperation {
     SET_LONG_VALUE("setLongValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setLongValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (graph.getLongValue(state.getCurrentAttribute(), state.getCurrentId()) ^ state.getCurrentLong()) + ")");
             }
@@ -646,12 +646,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setLongValue(state.getCurrentAttribute(), state.getCurrentId(), graph.getLongValue(state.getCurrentAttribute(), state.getCurrentId()) - state.getCurrentLong());
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -660,14 +660,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             LongValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             LongValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -676,7 +676,7 @@ public enum UndoGraphEditOperation {
     SET_FLOAT_VALUE("setFloatValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setFloatValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + Float.intBitsToFloat(Float.floatToRawIntBits(graph.getFloatValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentFloat()) + ")");
             }
@@ -684,12 +684,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setFloatValue(state.getCurrentAttribute(), state.getCurrentId(), Float.intBitsToFloat(Float.floatToRawIntBits(graph.getFloatValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentFloat()));
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -698,14 +698,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             FloatValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 6));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             FloatValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 6));
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -714,7 +714,7 @@ public enum UndoGraphEditOperation {
     SET_DOUBLE_VALUE("setDoubleValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setDoubleValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())) + ")");
             }
@@ -722,12 +722,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setDoubleValue(state.getCurrentAttribute(), state.getCurrentId(), Double.longBitsToDouble((long) (Double.doubleToRawLongBits(graph.getDoubleValue(state.getCurrentAttribute(), state.getCurrentId())) ^ state.getCurrentDouble())));
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -736,14 +736,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             DoubleValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             DoubleValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -752,7 +752,7 @@ public enum UndoGraphEditOperation {
     SET_BOOLEAN_VALUE_TRUE("setBooleanValueTrueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setBooleanValueTrueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + true + ")");
             }
@@ -760,12 +760,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setBooleanValue(state.getCurrentAttribute(), state.getCurrentId(), false);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -773,13 +773,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -787,7 +787,7 @@ public enum UndoGraphEditOperation {
     SET_BOOLEAN_VALUE_FALSE("setBooleanValueFalseOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setBooleanValueFalseOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + false + ")");
             }
@@ -795,12 +795,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setBooleanValue(state.getCurrentAttribute(), state.getCurrentId(), true);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater3.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -808,13 +808,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater3.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IdValueUpdater3.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
@@ -822,7 +822,7 @@ public enum UndoGraphEditOperation {
     SET_CHAR_VALUE("setCharValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setCharValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + (char) (graph.getCharValue(state.getCurrentAttribute(), state.getCurrentId()) ^ state.getCurrentInt()) + ")");
             }
@@ -830,12 +830,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setCharValue(state.getCurrentAttribute(), state.getCurrentId(), (char) (graph.getCharValue(state.getCurrentAttribute(), state.getCurrentId()) ^ state.getCurrentInt()));
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -844,14 +844,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -860,7 +860,7 @@ public enum UndoGraphEditOperation {
     SET_OBJECT_VALUE("setObjectValueOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setObjectValueOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + state.getObjectStack()[state.getCurrentObject()] + ")");
             }
@@ -868,12 +868,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setObjectValue(state.getCurrentAttribute(), state.getCurrentId(), state.getObjectStack()[state.getCurrentInt()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -883,7 +883,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
@@ -891,7 +891,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 7));
             IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
@@ -901,7 +901,7 @@ public enum UndoGraphEditOperation {
     SET_OBJECT_VALUE_FROM_NULL("setObjectValueFromNullOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setObjectValueFromNullOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", " + state.getObjectStack()[state.getCurrentObject()] + ")");
             }
@@ -909,12 +909,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setObjectValue(state.getCurrentAttribute(), state.getCurrentId(), null);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -923,14 +923,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater4.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater4.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -939,7 +939,7 @@ public enum UndoGraphEditOperation {
     SET_OBJECT_VALUE_TO_NULL("setObjectValueToNullOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setObjectValueToNullOperation.execute(" + state.getCurrentAttribute() + ", " + state.getCurrentId() + ", null)");
             }
@@ -947,12 +947,12 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             graph.setObjectValue(state.getCurrentAttribute(), state.getCurrentId(), state.getObjectStack()[state.getCurrentObject()]);
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 3);
@@ -961,14 +961,14 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 3));
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 5));
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 5));
             IdValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 3));
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
@@ -977,7 +977,7 @@ public enum UndoGraphEditOperation {
     EXECUTE_CHILD("executeChildOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("executeChildOperation.execute(" + state.getCurrentObject() + ")");
             }
@@ -985,7 +985,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("undoChildOperation.execute(" + state.getCurrentObject() + ")");
             }
@@ -993,26 +993,26 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= ObjectValueUpdater2.INSTANCE.store(state, o) << OPERATION_SHIFT;
             state.addInstruction((short) instruction);
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
     },
     SET_ATTRIBUTE_INDEX_TYPE("setAttributeIndexTypeOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setAttributeIndexTypeOperation.execute(" + state.getCurrentObject() + ")");
             }
@@ -1020,7 +1020,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("setAttributeIndexTypeOperation.undo(" + state.getCurrentObject() + ")");
             }
@@ -1028,7 +1028,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= AttributeValueUpdater3.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
             instruction |= ObjectValueUpdater5.INSTANCE.store(state, o) << OPERATION_SHIFT + 3;
@@ -1036,13 +1036,13 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
             ObjectValueUpdater5.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT + 3);
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             AttributeValueUpdater3.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
             ObjectValueUpdater5.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT + 3);
         }
@@ -1050,7 +1050,7 @@ public enum UndoGraphEditOperation {
     EXECUTE_GRAPH_OPERATION("executeGraphOperation") {
 
         @Override
-        public void execute(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void execute(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("executeGraphOperation.execute(" + state.getCurrentObject() + ")");
             }
@@ -1058,7 +1058,7 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        public void undo(UndoGraphEditState state, GraphWriteMethods graph) {
+        public void undo(final UndoGraphEditState state, final GraphWriteMethods graph) {
             if (VERBOSE) {
                 System.out.println("executeGraphOperation.undo(" + state.getCurrentObject() + ")");
             }
@@ -1066,19 +1066,19 @@ public enum UndoGraphEditOperation {
         }
 
         @Override
-        void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+        void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
             int instruction = ordinal();
             instruction |= ObjectValueUpdater2.INSTANCE.store(state, o) << OPERATION_SHIFT;
             state.addInstruction((short) instruction);
         }
 
         @Override
-        public void updateExecute(UndoGraphEditState state, int instruction) {
+        public void updateExecute(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
         }
 
         @Override
-        public void updateUndo(UndoGraphEditState state, int instruction) {
+        public void updateUndo(final UndoGraphEditState state, final int instruction) {
             ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
         }
     };
@@ -1089,7 +1089,7 @@ public enum UndoGraphEditOperation {
 
     private final String name;
 
-    private UndoGraphEditOperation(String name) {
+    private UndoGraphEditOperation(final String name) {
         this.name = name;
     }
 
@@ -1102,7 +1102,7 @@ public enum UndoGraphEditOperation {
         return name;
     }
 
-    void addOperation(UndoGraphEditState state, int attribute, int id, int i, long l, int o) {
+    void addOperation(final UndoGraphEditState state, final int attribute, final int id, final int i, final long l, final int o) {
         int instruction = ordinal();
         instruction |= AttributeValueUpdater2.INSTANCE.store(state, attribute) << OPERATION_SHIFT;
         instruction |= IdValueUpdater2.INSTANCE.store(state, id) << (OPERATION_SHIFT + 2);
@@ -1112,7 +1112,7 @@ public enum UndoGraphEditOperation {
         state.addInstruction((short) instruction);
     }
 
-    public void updateExecute(UndoGraphEditState state, int instruction) {
+    public void updateExecute(final UndoGraphEditState state, final int instruction) {
         AttributeValueUpdater2.INSTANCE.updateExecute(state, instruction >>> OPERATION_SHIFT);
         IdValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 2));
         IntValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 4));
@@ -1120,7 +1120,7 @@ public enum UndoGraphEditOperation {
         ObjectValueUpdater2.INSTANCE.updateExecute(state, instruction >>> (OPERATION_SHIFT + 8));
     }
 
-    public void updateUndo(UndoGraphEditState state, int instruction) {
+    public void updateUndo(final UndoGraphEditState state, final int instruction) {
         ObjectValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 8));
         LongValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 6));
         IntValueUpdater2.INSTANCE.updateUndo(state, instruction >>> (OPERATION_SHIFT + 4));
@@ -1128,7 +1128,7 @@ public enum UndoGraphEditOperation {
         AttributeValueUpdater2.INSTANCE.updateUndo(state, instruction >>> OPERATION_SHIFT);
     }
 
-    public abstract void execute(UndoGraphEditState state, GraphWriteMethods graph);
+    public abstract void execute(final UndoGraphEditState state, final GraphWriteMethods graph);
 
-    public abstract void undo(UndoGraphEditState state, GraphWriteMethods graph);
+    public abstract void undo(final UndoGraphEditState state, final GraphWriteMethods graph);
 }

@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 public class IgnoreMergedGraphElementMerger implements GraphElementMerger {
 
     @Override
-    public boolean mergeElement(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement) {
+    public boolean mergeElement(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement) {
 
         if (elementType == GraphElementType.VERTEX) {
             int transactionCount = graph.getVertexTransactionCount(mergedElement);

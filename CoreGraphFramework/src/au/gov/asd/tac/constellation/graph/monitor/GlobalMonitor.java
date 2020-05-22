@@ -28,7 +28,7 @@ public class GlobalMonitor extends Monitor {
     public GlobalMonitor() {
     }
 
-    public GlobalMonitor(GraphReadMethods graph) {
+    public GlobalMonitor(final GraphReadMethods graph) {
         update(graph);
     }
 
@@ -40,7 +40,7 @@ public class GlobalMonitor extends Monitor {
      * occurred between now and when update was last called.
      */
     @Override
-    public final MonitorTransition update(GraphReadMethods graph) {
+    public final MonitorTransition update(final GraphReadMethods graph) {
         if (graph == null) {
             reset();
         } else if (graph.getId().equals(currentGraphId)) {
@@ -58,7 +58,7 @@ public class GlobalMonitor extends Monitor {
         return transition;
     }
 
-    protected long readModificationCounter(GraphReadMethods graph) {
+    protected long readModificationCounter(final GraphReadMethods graph) {
         return graph.getGlobalModificationCounter();
     }
 

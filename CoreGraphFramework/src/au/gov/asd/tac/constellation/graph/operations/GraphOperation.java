@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph;
+package au.gov.asd.tac.constellation.graph.operations;
+
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 
 /**
  * A GraphOperation is an alternative way to edit a graph. Instead of a plugin
@@ -32,14 +34,14 @@ public abstract class GraphOperation {
      *
      * @param graph the operation will be executed on this graph.
      */
-    public abstract void execute(GraphWriteMethods graph);
+    public abstract void execute(final GraphWriteMethods graph);
 
     /**
      * Undo the operation on the specified graph.
      *
      * @param graph the operation will be undone on this graph.
      */
-    public abstract void undo(GraphWriteMethods graph);
+    public abstract void undo(final GraphWriteMethods graph);
 
     /**
      * Is this operation more efficient than simply recording all graph

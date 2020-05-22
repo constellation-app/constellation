@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.undo;
 
-import au.gov.asd.tac.constellation.graph.GraphOperation;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
