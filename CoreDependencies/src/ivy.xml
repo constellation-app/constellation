@@ -57,18 +57,34 @@
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
         
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
-        <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3"/>
+        <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3">
+            <artifact name="lwjgl" type="jar" ext="jar"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-linux"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-macos"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows"/>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-opengl -->
-        <dependency org="org.lwjgl" name="lwjgl-opengl" rev="3.2.3"/>
+        <dependency org="org.lwjgl" name="lwjgl-opengl" rev="3.2.3">
+            <artifact name="lwjgl-opengl" type="jar" ext="jar"/>
+            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-linux"/>
+            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-macos"/>
+            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
+            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-windows"/>
+        </dependency>       
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-opengl -->
+        <dependency org="org.lwjgl" name="lwjgl-vulkan" rev="3.2.3">
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-linux"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-macos"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows"/>
+        </dependency>                 
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
         <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>
-        <!-- https://mvnrepository.com/artifact/org.lwjglx/lwjgl3-awt -->
-        <dependency org="org.lwjglx" name="lwjgl3-awt" rev="0.1.7"/>
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-glfw -->
-        <dependency org="org.lwjgl" name="lwjgl-glfw" rev="3.2.3"/>
-
-
-              
+        <dependency org="org.lwjgl" name="lwjgl-glfw" rev="3.2.3"/>          
+        
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>

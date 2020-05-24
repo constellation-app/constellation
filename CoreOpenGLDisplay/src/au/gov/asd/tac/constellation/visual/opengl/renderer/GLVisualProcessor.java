@@ -30,19 +30,15 @@ import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import org.lwjgl.opengl.GL30;
 import org.lwjgl.opengl.awt.GLData;
 
 import java.awt.event.ComponentAdapter; // test events resize canvas
+import org.lwjgl.vulkan.awt.VKData;
 
 /**
  * A {@link VisualProcessor} that creates a 3D visualisation using OpenGL. This
@@ -196,7 +192,9 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     public final void performVisualUpdate() {
         updating = true;
-        canvas.render();
+        //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the canvas maybe,
+        // though why then pass that back in...
+        canvas.paint(null);
     }
 
     @Override
@@ -401,10 +399,8 @@ public class GLVisualProcessor extends VisualProcessor {
         final AxesRenderable axesRenderable = new AxesRenderable(this);
         final FPSRenderable fpsRenderable = new FPSRenderable(this);
         renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);
-        GLData glData = new GLData();
-        glData.samples = 4;
-        glData.swapInterval = 0;        
-        canvas = new ConstellationCanvas(glData);
+        VKData vkData = new VKData();    
+        canvas = new ConstellationCanvas(vkData);
     }
 
     @Override

@@ -104,7 +104,7 @@
                 <package>com.jhlabs.composite</package>
                 <package>com.jhlabs.image</package>
                 <package>com.jhlabs.math</package>
-                <package>com.jhlabs.vecmath</package>                
+                <package>com.jhlabs.vecmath</package>
                 <package>com.kenai.constantine</package>
                 <package>com.kenai.constantine.platform</package>
                 <package>com.kenai.jffi</package>
@@ -547,7 +547,7 @@
                 <package>jnr.netdb</package>
                 <package>jnr.posix</package>
                 <package>jnr.posix.util</package>
-                <package>jnr.posix.windows</package>               
+                <package>jnr.posix.windows</package>
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -1044,6 +1044,27 @@
                 <package>org.eclipse.jetty.util.statistic</package>
                 <package>org.eclipse.jetty.util.thread</package>
                 <package>org.eclipse.jetty.util.thread.strategy</package>
+                <package>org.eclipse.swt</package>
+                <package>org.eclipse.swt.accessibility</package>
+                <package>org.eclipse.swt.awt</package>
+                <package>org.eclipse.swt.browser</package>
+                <package>org.eclipse.swt.custom</package>
+                <package>org.eclipse.swt.dnd</package>
+                <package>org.eclipse.swt.events</package>
+                <package>org.eclipse.swt.graphics</package>
+                <package>org.eclipse.swt.internal</package>
+                <package>org.eclipse.swt.internal.gdip</package>
+                <package>org.eclipse.swt.internal.image</package>
+                <package>org.eclipse.swt.internal.ole.win32</package>
+                <package>org.eclipse.swt.internal.opengl.win32</package>
+                <package>org.eclipse.swt.internal.webkit</package>
+                <package>org.eclipse.swt.internal.win32</package>
+                <package>org.eclipse.swt.layout</package>
+                <package>org.eclipse.swt.ole.win32</package>
+                <package>org.eclipse.swt.opengl</package>
+                <package>org.eclipse.swt.printing</package>
+                <package>org.eclipse.swt.program</package>
+                <package>org.eclipse.swt.widgets</package>
                 <package>org.eclipse.xsd</package>
                 <package>org.eclipse.xsd.ecore</package>
                 <package>org.eclipse.xsd.impl</package>
@@ -2041,10 +2062,6 @@
                 <binary-origin>release/modules/ext/lwjgl-jawt-3.2.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-glfw-3.2.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-glfw-3.2.3.jar</binary-origin>
-            </class-path-extension>            
-            <class-path-extension>
                 <runtime-relative-path>ext/picocontainer-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/picocontainer-1.2.jar</binary-origin>
             </class-path-extension>
@@ -2087,6 +2104,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-fsparse-0.39.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-fsparse-0.39.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/org.eclipse.swt-3.114.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org.eclipse.swt-3.114.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
@@ -2205,6 +2226,10 @@
                 <binary-origin>release/modules/ext/core.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/json-20190722.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-20190722.jar</binary-origin>
             </class-path-extension>
@@ -2241,6 +2266,10 @@
                 <binary-origin>release/modules/ext/jetty-server-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/org.eclipse.swt.win32.win32.x86_64-3.114.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/org.eclipse.swt.win32.win32.x86_64-3.114.0.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-coverage-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-coverage-22.3.jar</binary-origin>
             </class-path-extension>
@@ -2255,6 +2284,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/rsyntaxtextarea-3.1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/rsyntaxtextarea-3.1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-glfw-3.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-glfw-3.2.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.jar</runtime-relative-path>
@@ -2484,10 +2517,6 @@
                 <runtime-relative-path>ext/lwjgl-3.2.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3.jar</binary-origin>
             </class-path-extension>
-             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-3.2.3-natives-windows.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
-            </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/guava-28.2-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-28.2-jre.jar</binary-origin>
@@ -2512,14 +2541,6 @@
                 <runtime-relative-path>ext/lwjgl-opengl-3.2.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-opengl-3.2.3.jar</binary-origin>
             </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-opengl-3.2.3-natives-windows.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-opengl-3.2.3-natives-windows.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-glfw-3.2.3-natives-windows.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-glfw-3.2.3-natives-windows.jar</binary-origin>
-            </class-path-extension>            
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-i586.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gluegen-rt-natives-windows-i586.jar</binary-origin>
