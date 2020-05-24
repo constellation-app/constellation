@@ -346,18 +346,6 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    @Override
-//    public void firePropertyChange(int firerId, int attrId) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//    @Override
-//    public void firePropertyChange(int attrId) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//    @Override
-//    public void firePropertyChange(int attrId, Object newValue) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
     private class Vertex {
 
         private int id;
