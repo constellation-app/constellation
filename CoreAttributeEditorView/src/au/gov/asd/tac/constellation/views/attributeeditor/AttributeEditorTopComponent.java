@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.views.*;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -248,40 +247,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     @Override
-    protected void handlePreferenceChange(final PreferenceChangeEvent event) {
-        if (event.getKey().equals(ApplicationPreferenceKeys.OUTPUT2_FONT_SIZE)) {
-            attributePanel.setFontSize();
-        } else {
-            if (AttributePreferenceKey.ATTRIBUTE_COLOR_PREFS.contains(event.getKey())) {
-                attributePanel.rebuildColourMenu();
-            }
-            queue.add(event);
-            if (refreshThread == null || !refreshThread.isAlive()) {
-                refreshThread = new Thread(() -> {
-                    try {
-                        ArrayList<Object> devNull = new ArrayList<>();
-                        while (queue.drainTo(devNull) > 0) {
-                            Thread.sleep(50);
-                        }
-                        if (reader != null) {
-                            AttributeState state = reader.refreshAttributes(true);
-                            attributePanel.updateEditorPanel(state);
-                        }
-
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-
-                });
-                refreshThread.setName(ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME);
-                refreshThread.start();
-            }
-        }
-    }
-
-    @Override
     protected String createStyle() {
-        return "resources/Style-Overview-Dark.css";
+        return "resources/Style-AttributeEditor-Dark.css";
     }
 
     @Override

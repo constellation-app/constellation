@@ -141,7 +141,6 @@ public class AttributeEditorPanel extends BorderPane {
     private static final String[] HEADING_TITLES = {"Graph  (%d attributes%s)", "Node  (%d attributes%s)", "Transaction  (%d attributes%s)"};
     private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
-    private static final String DARK_THEME = "resources/Style-AttributeEditor-Dark.css";
     private static final String NO_VALUE_TEXT = "<No Value>";
 
     private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
@@ -212,8 +211,6 @@ public class AttributeEditorPanel extends BorderPane {
         Platform.setImplicitExit(false);
         Platform.runLater(() -> {
             root = new StackPane();
-            root.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            root.getStylesheets().add(AttributeEditorPanel.class.getResource(DARK_THEME).toExternalForm());
 
             for (int i = 0; i < valueTitledPaneContainers.size(); i++) {
                 headingTitleProperties[i] = new SimpleStringProperty();
