@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
