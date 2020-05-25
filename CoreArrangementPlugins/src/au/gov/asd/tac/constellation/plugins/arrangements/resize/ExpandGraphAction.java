@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.resize;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -27,12 +27,14 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * execute the
+ * execute the expand graph plugin to expand the elements in a graph
  *
  * @author altair
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.resize.ExpandGraphAction")
-@ActionRegistration(displayName = "#CTL_ExpandGraphAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resize/resources/expand.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExpandGraphAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/resize/resources/expandGraph.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 2200),
     @ActionReference(path = "Toolbars/Arrange", position = 500)

@@ -33,7 +33,7 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByNodeAttributeAction")
 @ActionRegistration(displayName = "#CTL_ArrangeByNodeAttributeAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/group/resources/arrangeByNodes.png",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/group/resources/arrangeByNode.png",
         surviveFocusChange = true)
 @ActionReference(path = "Menu/Arrange", position = 500)
 @Messages("CTL_ArrangeByNodeAttributeAction=Arrange by Node Attribute")
