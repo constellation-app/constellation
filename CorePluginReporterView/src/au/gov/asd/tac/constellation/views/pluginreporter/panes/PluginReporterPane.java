@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,6 +91,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private static final int MAXIMUM_REPORT_PANES = 300;
 
     public PluginReporterPane() {
+        
+        this.setStyle((String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize())));
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
