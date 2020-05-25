@@ -91,8 +91,6 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private static final int MAXIMUM_REPORT_PANES = 300;
 
     public PluginReporterPane() {
-        
-        this.setStyle((String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize())));
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
