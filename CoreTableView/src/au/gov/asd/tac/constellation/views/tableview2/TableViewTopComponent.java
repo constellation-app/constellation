@@ -78,6 +78,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
 
     private static final String UPDATE_DATA = "Table View: Update Data";
     private static final String UPDATE_SELECTION = "Table View: Update Selection";
+    private static final String UPDATE_TABLE = "Table View: Update Table";
 
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());
@@ -173,7 +174,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
-            pane.updateTable(graph, currentState);
+            final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
+                @Override
+                public void run() {
+                    pane.updateTable(graph, currentState);
+                }
+            };
+            tableUpdateThread.start();
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
                 columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -360,7 +367,22 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
-        pane.updateTable(graph, currentState);
+        final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
+        for (Thread t : currentThreads) {
+            if (t.getName().equals(UPDATE_TABLE)) {
+                t.interrupt();
+            }
+        }
+        final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
+            @Override
+            public void run() {
+                if (this.isInterrupted()) {
+                    return;
+                }
+                pane.updateTable(graph, currentState);
+            }
+        };
+        tableUpdateThread.start();
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
             columnAttributeChanges.getSecond().forEach(attributeTuple -> {
