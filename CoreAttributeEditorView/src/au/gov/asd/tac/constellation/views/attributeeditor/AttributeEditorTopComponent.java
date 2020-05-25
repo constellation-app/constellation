@@ -23,12 +23,12 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.views.*;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
-import javax.swing.BoxLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -102,11 +102,11 @@ import org.openide.windows.TopComponent;
     "CTL_AttributeEditorTopComponent=Attribute Editor",
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
-public final class AttributeEditorTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
+public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
     private static final String ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME = "Attribute Editor Preference Changed Updater";
-    private final AttributeEditorPanel attributePanel = new AttributeEditorPanel(this);
+    private final AttributeEditorPanel attributePanel;
     private final Runnable refreshRunnable;
     private Graph activeGraph;
     private AttributeReader reader;
@@ -116,12 +116,10 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     private Thread refreshThread;
 
     public AttributeEditorTopComponent() {
+        attributePanel = new AttributeEditorPanel(this);
         initComponents();
         setName(Bundle.CTL_AttributeEditorTopComponent());
         setToolTipText(Bundle.HINT_AttributeEditorTopComponent());
-        final BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-        setLayout(layout);
-        add(attributePanel);
 
         refreshRunnable = () -> {
             try {
@@ -140,9 +138,10 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
 
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
+        initContent();
     }
 
-    public Object[] getMoreData(AttributeData attribute) {
+    public Object[] getMoreData(final AttributeData attribute) {
         Object[] result = new Object[0];
         if (reader != null) {
             result = reader.loadMoreDataFor(attribute);
@@ -173,7 +172,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
     @Override
-    public void componentOpened() {
+    protected void handleComponentOpened() {
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
@@ -182,7 +181,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     }
 
     @Override
-    public void componentClosed() {
+    protected void handleComponentClosed() {
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
 
@@ -199,17 +198,12 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     }
 
     @Override
-    public void graphOpened(Graph graph) {
-        // This method is required for implementation of GraphManagerListener
-    }
-
-    @Override
-    public void graphClosed(Graph graph) {
+    protected void handleGraphClosed(final Graph graph) {
         attributePanel.resetPanel();
     }
 
     @Override
-    public void newActiveGraph(Graph graph) {
+    protected void handleNewGraph(final Graph graph) {
         if (activeGraph != graph) {
             if (activeGraph != null) {
                 activeGraph.removeGraphChangeListener(this);
@@ -226,8 +220,14 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     }
 
     @Override
-    public void graphChanged(GraphChangeEvent event) {
+    protected void handleGraphChange(GraphChangeEvent event) {
+        if (event == null) { // can be null at this point in time
+            return;
+        }
         event = event.getLatest();
+        if (event == null) { // latest event may be null - defensive check
+            return;
+        }
         if (event.getId() > latestGraphChangeID) {
             latestGraphChangeID = event.getId();
             if (activeGraph != null && reader != null) {
@@ -248,7 +248,7 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
     }
 
     @Override
-    public void preferenceChange(PreferenceChangeEvent event) {
+    protected void handlePreferenceChange(final PreferenceChangeEvent event) {
         if (event.getKey().equals(ApplicationPreferenceKeys.OUTPUT2_FONT_SIZE)) {
             attributePanel.setFontSize();
         } else {
@@ -277,5 +277,15 @@ public final class AttributeEditorTopComponent extends TopComponent implements G
                 refreshThread.start();
             }
         }
+    }
+
+    @Override
+    protected String createStyle() {
+        return "resources/Style-Overview-Dark.css";
+    }
+
+    @Override
+    protected AttributeEditorPanel createContent() {
+        return attributePanel;
     }
 }

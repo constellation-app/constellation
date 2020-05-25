@@ -86,7 +86,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
@@ -123,7 +122,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javax.swing.BoxLayout;
 import org.openide.util.NbPreferences;
 
 /**
@@ -133,7 +131,7 @@ import org.openide.util.NbPreferences;
  * @see AttributeEditorTopComponent
  * @author twinkle2_little
  */
-public class AttributeEditorPanel extends javax.swing.JPanel {
+public class AttributeEditorPanel extends BorderPane {
 
     public static final String MIMETYPE = "application/x-constellation-attributenametype";
     public static final DataFormat ATTRIBUTE_NAME_DATA_FORMAT = new DataFormat(MIMETYPE);
@@ -152,7 +150,6 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private static final String CUSTOM_ATTRIBUTE_COLOUR = "#1f4f8a";
     private static final String HIDDEN_ATTRIBUTE_COLOUR = "#999999";
 
-    private JFXPanel container = new JFXPanel();
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
     private VBox titledPaneHeadingsContainer;
@@ -167,7 +164,6 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     private int currentFontSize;
 
     private enum HeadingType {
-
         GRAPH, NODE, TRANSACTION;
     }
 
@@ -212,21 +208,13 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         }
 
         scrollPane.setContent(titledPaneHeadingsContainer);
-        BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
-        setLayout(layout);
-        add(container);
         scrollPane.setFitToWidth(true);
-
-        final int height = this.getPreferredSize().height;
 
         Platform.setImplicitExit(false);
         Platform.runLater(() -> {
             root = new StackPane();
-
-            final Scene scene = new Scene(root, 0, height);
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add(AttributeEditorPanel.class.getResource(DARK_THEME).toExternalForm());
+            root.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            root.getStylesheets().add(AttributeEditorPanel.class.getResource(DARK_THEME).toExternalForm());
 
             for (int i = 0; i < valueTitledPaneContainers.size(); i++) {
                 headingTitleProperties[i] = new SimpleStringProperty();
@@ -246,17 +234,14 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
             optionsBar.getMenus().add(optionsMenu);
 
             borderPane.setTop(optionsBar);
-
             borderPane.setCenter(scrollPane);
 
             root.getChildren().add(borderPane);
             root.getChildren().add(tooltipPane);
-
-            container.setScene(scene);
+            this.setCenter(root);
         });
 
         updateEditorPanel(null);
-
         setFontSize();
     }
 
@@ -317,7 +302,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         return coloursMenu;
     }
 
-    private TitledPane createHeaderTitledPane(HeadingType headingType, StringProperty title, VBox container) {
+    private TitledPane createHeaderTitledPane(final HeadingType headingType, final StringProperty title, final VBox container) {
         final TitledPane result = new TitledPane();
         result.setContent(container);
         final BorderPane headerGraphic = new BorderPane();
@@ -481,7 +466,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
         private final SchemaAttribute attribute;
 
-        public AddAttributePlugin(SchemaAttribute attribute) {
+        public AddAttributePlugin(final SchemaAttribute attribute) {
             this.attribute = attribute;
         }
 
@@ -505,7 +490,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
      * @param hidden is the pane currently hidden.
      * @return a new TitledPane.
      */
-    public TitledPane createAttributeTitlePane(AttributeData attribute, Object[] values, double longestTitledWidth, boolean hidden) {
+    public TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         String attributeTitle = attribute.getAttributeName();
         final int spacing = 5;
         final int buttonSize = 45;
@@ -666,7 +651,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
      * @param attributePane
      * @param values
      */
-    private void createMultiValuePane(AttributeData attribute, TitledPane attributePane, Object[] values) {
+    private void createMultiValuePane(final AttributeData attribute, final TitledPane attributePane, final Object[] values) {
         final VBox dataAndMoreButtonBox = new VBox(5); // 5 = spacing
 
         final ScrollPane multiValuePane = new ScrollPane();
@@ -721,7 +706,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         return loadMoreButton;
     }
 
-    private ListView<Object> createListView(final AttributeData attribute, ObservableList<Object> listData) {
+    private ListView<Object> createListView(final AttributeData attribute, final ObservableList<Object> listData) {
 
         final ListView<Object> newList = new ListView<>(listData);
         newList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -764,7 +749,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
      * @param longestTitleWidth used for layout calculations...(dodgy javafx
      * workaround)
      */
-    private void populateContentContainer(AttributeState state, GraphElementType type, double longestTitleWidth) {
+    private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         int elementTypeIndex;
         boolean hidden = false;
 //make into enum?
@@ -825,7 +810,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
 
     }
 
-    private void deleteAttributeAction(GraphElementType elementType, String attributeName) {
+    private void deleteAttributeAction(final GraphElementType elementType, final String attributeName) {
         SimpleEditPlugin deleteAttributePlugin = new SimpleEditPlugin() {
 
             @Override
@@ -841,7 +826,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         PluginExecution.withPlugin(deleteAttributePlugin).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    private void createAttributeAction(GraphElementType elementType) {
+    private void createAttributeAction(final GraphElementType elementType) {
         final EditOperation editOperation = new CreateAttributeEditOperation();
         final List<String> extantAttributeNames = currentAttributeNames.get(elementType);
         final ValueValidator<AttributePrototype> validator = v -> {
@@ -877,7 +862,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         dialog.showDialog();
     }
 
-    private void editKeysAction(GraphElementType elementType) {
+    private void editKeysAction(final GraphElementType elementType) {
         final List<String> currentKeyAttributes = new ArrayList<>();
         final List<String> allAttributes = new ArrayList<>();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -926,7 +911,7 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         return t.getLayoutBounds().getWidth() * (currentFontSize / 10.0);
     }
 
-    private double calcLongestTitle(ArrayList<AttributeData> attributeData) {
+    private double calcLongestTitle(final ArrayList<AttributeData> attributeData) {
         double maxWidth = 0;
         double currWidth = 0;
         if (attributeData != null) {
@@ -948,17 +933,6 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
-        );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
@@ -1066,5 +1040,4 @@ public class AttributeEditorPanel extends javax.swing.JPanel {
         return new Text(attributeTitle + ":");
 //        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
     }
-
 }
