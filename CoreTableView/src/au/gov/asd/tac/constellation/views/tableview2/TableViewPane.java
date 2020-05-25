@@ -632,6 +632,9 @@ public final class TableViewPane extends BorderPane {
         final Thread thread = new Thread("Table View: Update Table") {
             @Override
             public void run() {
+                if (this.isInterrupted()) {
+                    return;
+                }
                 updateToolbar(state);
                 if (graph != null) {
                     updateColumns(graph, state);
@@ -1054,7 +1057,7 @@ public final class TableViewPane extends BorderPane {
                 try {
                     updateDataLatch.await();
                 } catch (InterruptedException ex) {
-                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data", ex);
+                    LOGGER.log(Level.WARNING, "InterruptedException encountered while updating table data");
                     Thread.currentThread().interrupt();
                 }
             }
