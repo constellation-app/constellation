@@ -629,12 +629,12 @@ public final class TableViewPane extends BorderPane {
      * @param state the current table view state.
      */
     public void updateTable(final Graph graph, final TableViewState state) {
-        final Thread thread = new Thread("Table View: Update Table") {
-            @Override
-            public void run() {
-                if (this.isInterrupted()) {
-                    return;
-                }
+        //final Thread thread = new Thread("Table View: Update Table") {
+            //@Override
+            //public void run() {
+                //if (this.isInterrupted()) {
+                    //return;
+                //}
                 updateToolbar(state);
                 if (graph != null) {
                     updateColumns(graph, state);
@@ -648,9 +648,9 @@ public final class TableViewPane extends BorderPane {
                         table.getColumns().clear();
                     });
                 }
-            }
-        };
-        thread.start();
+            //}
+        //};
+        //thread.start();
     }
 
     /**
