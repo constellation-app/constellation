@@ -5,7 +5,7 @@ cache:
     - ${HOME}/.ivy2/cache
 
 env:
-  - runner_image="constellationapplication/netbeans-runner:11.3.1"
+  - RUNNER_IMAGE="constellationapplication/netbeans-runner:11.3"
 
 # Disable shallow clone for SCM SonarCloud analysis
 git:
@@ -13,15 +13,14 @@ git:
 
 jobs:
   include:
-
-  - stage: Run Build and Testing
+  - stage: Build and Test
     dist: trusty
     language: java
     services:
       - docker
     script:
-      - docker pull "${runner_image}"
-      - docker run -v "${TRAVIS_BUILD_DIR}:${TRAVIS_BUILD_DIR}" -v "${HOME}"/.ivy2/cache:/root/.ivy2/cache --workdir "${TRAVIS_BUILD_DIR}" "${runner_image}" .travis/run-tests.sh
+      - docker pull "${RUNNER_IMAGE}"
+      - docker run --mount "type=bind,source=${TRAVIS_BUILD_DIR},target=${TRAVIS_BUILD_DIR}" --mount "type=bind,source=${HOME}/.ivy2/cache,target=/root/.ivy2/cache" --workdir "${TRAVIS_BUILD_DIR}" "${RUNNER_IMAGE}" .travis/run-tests.sh
       - .travis/sonar.sh
     addons:
       sonarcloud:
