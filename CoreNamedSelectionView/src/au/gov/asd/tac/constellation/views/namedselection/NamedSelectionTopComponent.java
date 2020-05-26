@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection;
 
-import au.gov.asd.tac.constellation.views.*;
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
