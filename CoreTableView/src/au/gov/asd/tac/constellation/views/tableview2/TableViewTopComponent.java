@@ -101,6 +101,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
+            final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
+            for (Thread t : currentThreads) {
+                if (t.getName().equals(UPDATE_TABLE)) {
+                    t.interrupt();
+                }
+            }
             final Thread thread = new Thread(UPDATE_TABLE) {
                 @Override
                 public void run() {
@@ -177,6 +183,12 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
+            final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
+            for (Thread t : currentThreads) {
+                if (t.getName().equals(UPDATE_TABLE)) {
+                    t.interrupt();
+                }
+            }
             final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
                 @Override
                 public void run() {
