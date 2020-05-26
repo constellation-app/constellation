@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -33,7 +33,9 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInGridAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/grid.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInGridAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/arrangeInGrid.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 0),
     @ActionReference(path = "Toolbars/Arrange", position = 0),
