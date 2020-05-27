@@ -81,7 +81,7 @@ public class TutorialViewPane extends BorderPane {
     /**
      * Required date format
      */
-    private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public TutorialViewPane() {
         tutorialViewPane = new BorderPane();
@@ -197,7 +197,7 @@ public class TutorialViewPane extends BorderPane {
                     headerDone = true;
                 }
 
-                final Date whatsNewDate = DATE_FORMATTER.parse(wne.date);
+                final Date whatsNewDate = dateFormatter.parse(wne.date);
                 if (whatsNewDate.after(twoWeeksOld) && whatsNewDate.before(now)) {
                     // display date, header, recent badge and section.
                     dt = String.format("%s <strong>%s</strong> <span class=\"badge badge-recent\">Recent</span> <span class=\"section badge badge-section\">%s</span>", wne.date, wne.header, wne.section);
