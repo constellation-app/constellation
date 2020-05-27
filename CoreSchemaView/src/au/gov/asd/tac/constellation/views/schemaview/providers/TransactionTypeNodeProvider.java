@@ -31,9 +31,13 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -59,11 +63,14 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     public static final String MIMETYPE = "application/x-constellation-transactiontype";
     public static final DataFormat TRANSACTION_TYPE = new DataFormat(MIMETYPE);
     private static final int ICON_IMAGE_SIZE = 16;
+    private static final String HIGHLIGHT_BLUE_STYLE = "-fx-background-color: rgb(30,144,255); -fx-padding: 2 5 2 5;";
 
     private final Label schemaLabel;
     private final TreeView<SchemaTransactionType> treeView;
     private final ArrayList<SchemaTransactionType> transactionTypes;
     private final HBox detailsView;
+    private final RadioButton startsWithRb;
+    private final TextField filterText;
 
     public TransactionTypeNodeProvider() {
         schemaLabel = new Label(SeparatorConstants.HYPHEN);
@@ -72,7 +79,13 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         transactionTypes = new ArrayList<>();
         detailsView = new HBox();
         detailsView.setPadding(new Insets(5));
+        startsWithRb = new RadioButton("Starts with");
+        filterText = new TextField();
 
+        setCellFactory();
+    }
+
+    private void setCellFactory() {
         // A shiny cell factory so the tree nodes show the correct text and graphic.
         treeView.setCellFactory(p -> new TreeCell<SchemaTransactionType>() {
             @Override
@@ -130,15 +143,98 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
             } else {
                 schemaLabel.setText("No schema available");
             }
-
-            final TreeItem<SchemaTransactionType> root = createNode(null);
-            treeView.setRoot(root);
+            populateTree();
         });
+    }
+
+    private VBox addFilter() {
+        filterText.setPromptText("Filter transaction types");
+        final ToggleGroup tg = new ToggleGroup();
+        startsWithRb.setToggleGroup(tg);
+        startsWithRb.setPadding(new Insets(0, 0, 0, 5));
+        startsWithRb.setSelected(true);
+        final RadioButton containsRb = new RadioButton("Contains");
+        containsRb.setToggleGroup(tg);
+        containsRb.setPadding(new Insets(0, 0, 0, 5));
+
+        tg.selectedToggleProperty().addListener((ov, oldValue, newValue) -> {
+            populateTree();
+        });
+
+        filterText.textProperty().addListener((ov, oldValue, newValue) -> {
+            populateTree();
+        });
+
+        final HBox headerBox = new HBox(new Label("Filter: "), filterText, startsWithRb, containsRb);
+        headerBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.setPadding(new Insets(5));
+
+        final VBox box = new VBox(schemaLabel, headerBox, treeView);
+        VBox.setVgrow(treeView, Priority.ALWAYS);
+        return box;
+    }
+
+    private void populateTree() {
+        final TreeItem<SchemaTransactionType> root = createNode(null);
+        treeView.setRoot(root);
+    }
+
+    private boolean isFilterMatchCurrentNode(SchemaTransactionType treeItem) {
+        boolean found = isFilterMatchText(treeItem.getName());
+        if (!found) {
+            found = isFilterMatchAnyProperty(treeItem);
+        }
+        return found;
+    }
+
+    private boolean isFilterMatchAnyProperty(SchemaTransactionType treeItem) {
+        boolean found = false;
+        final String name = treeItem.getName();
+        found = isFilterMatchText(name);
+        if (!found) {
+            final String description = treeItem.getDescription();
+            found = isFilterMatchText(description);
+        }
+        if (!found) {
+            final String color = treeItem.getColor().toString();
+            found = isFilterMatchText(color);
+        }
+        if (!found) {
+            final String style = treeItem.getStyle().toString();
+            found = isFilterMatchText(style);
+        }
+        if (!found) {
+            final String directedLabel = treeItem.isDirected().toString();
+            found = isFilterMatchText(directedLabel);
+        }
+        if (!found) {
+            final String hierachy = treeItem.getHierachy();
+            found = isFilterMatchText(hierachy);
+        }
+        if (!found) {
+            for (String property : treeItem.getProperties().keySet()) {
+                final Object propertyValue = treeItem.getProperty(property);
+                if (propertyValue != null) {
+                    found = isFilterMatchText(propertyValue.toString());
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+        }
+        return found;
+    }
+
+    private boolean isFilterMatchText(final String propertyValue) {
+        final String filterInputText = filterText.getText().toLowerCase();
+        return filterInputText.isEmpty() ? false : startsWithRb.isSelected()
+                ? propertyValue.toLowerCase().startsWith(filterInputText) : propertyValue.toLowerCase().contains(filterInputText);
     }
 
     @Override
     public void setContent(final Tab tab) {
         GraphManager.getDefault().addGraphManagerListener(this);
+        final VBox filterBox = addFilter();
 
         treeView.setShowRoot(false);
         treeView.getSelectionModel().selectedItemProperty().addListener(event -> {
@@ -200,12 +296,20 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                         grid.add(propertyLabel, 1, gridPosition);
                     }
                 }
-
+                for (Node child : grid.getChildren()) {
+                    Integer column = GridPane.getColumnIndex(child);
+                    Integer row = GridPane.getRowIndex(child);
+                    if (column > 0 && row != null && child instanceof Label) {
+                        if (isFilterMatchText(((Label) child).getText())) {
+                            child.setStyle(HIGHLIGHT_BLUE_STYLE);
+                        }
+                    }
+                }
                 detailsView.getChildren().addAll(colorRectangle, grid);
             }
         });
 
-        final VBox contentBox = new VBox(schemaLabel, treeView, detailsView);
+        final VBox contentBox = new VBox(schemaLabel, filterBox, treeView, detailsView);
         VBox.setVgrow(treeView, Priority.ALWAYS);
         detailsView.prefHeightProperty().bind(contentBox.heightProperty().multiply(0.4));
         final StackPane contentNode = new StackPane(contentBox);
@@ -291,15 +395,19 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                     // Any vertextype that points to itself is in the root layer.
                     for (final SchemaTransactionType tt : transactionTypes) {
                         if (tt.getSuperType() == tt) {
+                            if (isFilterMatchCurrentNode(tt) || filterText.getText().toLowerCase().isEmpty()) {
                             children.add(createNode(tt));
                         }
+                    }
                     }
                 } else {
                     for (final SchemaTransactionType tt : transactionTypes) {
                         if (tt.getSuperType() == value && tt != value) {
+                            if (isFilterMatchCurrentNode(tt) || filterText.getText().toLowerCase().isEmpty()) {
                             children.add(createNode(tt));
                         }
                     }
+                }
                 }
 
                 return children;
