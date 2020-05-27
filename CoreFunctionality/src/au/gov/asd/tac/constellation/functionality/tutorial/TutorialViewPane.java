@@ -81,7 +81,7 @@ public class TutorialViewPane extends BorderPane {
     /**
      * Required date format
      */
-    private SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
     public TutorialViewPane() {
         tutorialViewPane = new BorderPane();
