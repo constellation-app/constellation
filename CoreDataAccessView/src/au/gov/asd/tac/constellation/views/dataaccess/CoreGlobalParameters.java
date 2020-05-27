@@ -16,16 +16,20 @@
 package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,7 +55,29 @@ public class CoreGlobalParameters extends GlobalParameters {
      */
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
-
+    
+    // Map of string types, datetime types, etc.
+    private static final Map<String,PluginParameter> SINGLETON_MAP = new HashMap<>();
+    
+    //private static PluginParameter<StringParameterValue> QUERY_NAME_SINGLETON = null;
+    private static PluginParameter<DateTimeRangeParameterValue> DATETIME_SINGLETON = null;
+    
+    public static <T extends ParameterValue> PluginParameter getStringParameterType(final String PARAMETER_ID, final PluginParameterType<T> TYPE ) {
+        if (SINGLETON_MAP.get(PARAMETER_ID) == null) {
+            SINGLETON_MAP.put(PARAMETER_ID, TYPE.build(PARAMETER_ID));
+        }
+        
+        return SINGLETON_MAP.get(PARAMETER_ID);
+    }
+    
+    public static PluginParameter getDateTimeRangeParameterType(final String PARAMETER_ID) {
+        if (DATETIME_SINGLETON == null) {
+            DATETIME_SINGLETON = DateTimeRangeParameterType.build(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+        }
+        
+        return DATETIME_SINGLETON;
+    }
+    
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
         if (CORE_GLOBAL_PARAMETER_IDS == null) {
