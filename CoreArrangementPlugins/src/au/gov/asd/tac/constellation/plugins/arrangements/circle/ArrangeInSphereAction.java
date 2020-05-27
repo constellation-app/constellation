@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.circle;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -33,7 +33,9 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.arrangement.circle.ArrangeInSphereAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInSphereAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInSphereAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/circle/resources/circle3D.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1100),
     @ActionReference(path = "Shortcuts", name = "C-A-K")
