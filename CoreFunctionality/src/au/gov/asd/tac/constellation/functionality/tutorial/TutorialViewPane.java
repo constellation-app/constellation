@@ -60,7 +60,7 @@ import org.w3c.dom.events.EventTarget;
  */
 public class TutorialViewPane extends BorderPane {
 
-    private final BorderPane layersViewPane;
+    private final BorderPane tutorialViewPane;
 
     public static final String MOUSE_IMAGE = "resources/mouse3.png";
     public static final String MENU_IMAGE = "resources/sidebar.png";
@@ -81,41 +81,39 @@ public class TutorialViewPane extends BorderPane {
     /**
      * Required date format
      */
-    private final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
     public TutorialViewPane() {
-        layersViewPane = new BorderPane();
+        tutorialViewPane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
-            layersViewPane.setCenter(splitPane);
+            tutorialViewPane.setCenter(splitPane);
 
             //Create left VBox to handle "help" images of menu and mouse
-            VBox left_vbox = new VBox(10);
-            splitPane.getItems().add(left_vbox);
-            left_vbox.setPadding(new Insets(10, 10, 10, 10));
-            left_vbox.setAlignment(Pos.TOP_CENTER);
+            VBox leftVBox = new VBox(10);
+            splitPane.getItems().add(leftVBox);
+            leftVBox.setPadding(new Insets(10, 10, 10, 10));
+            leftVBox.setAlignment(Pos.TOP_CENTER);
 
             //Create images for Left VBox
-            ImageView menu_image = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
-            menu_image.setFitWidth(300);
-            menu_image.setPreserveRatio(true);
-            left_vbox.getChildren().add(menu_image);
-            ImageView mouse_image = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
-            mouse_image.setFitWidth(300);
-            mouse_image.setPreserveRatio(true);
-            left_vbox.getChildren().add(mouse_image);
+            ImageView menuImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MENU_IMAGE)));
+            menuImage.setFitWidth(300);
+            menuImage.setPreserveRatio(true);
+            leftVBox.getChildren().add(menuImage);
+            ImageView mouseImage = new ImageView(new Image(TutorialTopComponent.class.getResourceAsStream(MOUSE_IMAGE)));
+            mouseImage.setFitWidth(300);
+            mouseImage.setPreserveRatio(true);
+            leftVBox.getChildren().add(mouseImage);
 
             //Create Right VBox to handle Browser and controls,
             //or error messages
-            VBox right_vbox = new VBox();
-            splitPane.getItems().add(right_vbox);
+            VBox rightVBox = new VBox();
+            splitPane.getItems().add(rightVBox);
 
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
-//            HBox.setHgrow(right_vbox, Priority.ALWAYS);
-//            VBox.setVgrow(right_vbox, Priority.ALWAYS);
 
             final WebView whatsNewView = new WebView();
             VBox.setVgrow(whatsNewView, Priority.ALWAYS);
@@ -159,10 +157,10 @@ public class TutorialViewPane extends BorderPane {
             } catch (ParseException ex) {
                 Exceptions.printStackTrace(ex);
             }
-            right_vbox.getChildren().add(whatsNewView);
+            rightVBox.getChildren().add(whatsNewView);
 
-            //Finally, insert the layersViewPane object into the BorderPane
-            this.setCenter(layersViewPane);
+            //Finally, insert the tutorialViewPane object into the BorderPane
+            this.setCenter(tutorialViewPane);
         });
     }
 
@@ -223,16 +221,6 @@ public class TutorialViewPane extends BorderPane {
         }
 
         buf.append("</body></html>");
-
-        // validate the html
-//        try {
-//            File createTempFile = File.createTempFile("whatsnew", ".html");
-//            FileWriter fileWriter = new FileWriter(createTempFile);
-//            fileWriter.write(buf.toString());
-//            fileWriter.close();
-//        } catch (IOException ex) {
-//            Exceptions.printStackTrace(ex);
-//        }
         return buf.toString();
     }
 }
