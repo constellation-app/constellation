@@ -59,25 +59,19 @@
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl -->
         <dependency org="org.lwjgl" name="lwjgl" rev="3.2.3">
             <artifact name="lwjgl" type="jar" ext="jar"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl" type="jar" ext="jar" e:classifier="sources"/>
             <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-linux"/>
             <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-macos"/>
             <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
             <artifact name="lwjgl" type="jar" ext="jar" e:classifier="natives-windows"/>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-opengl -->
-        <dependency org="org.lwjgl" name="lwjgl-opengl" rev="3.2.3">
-            <artifact name="lwjgl-opengl" type="jar" ext="jar"/>
-            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-linux"/>
-            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-macos"/>
-            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
-            <artifact name="lwjgl-opengl" type="jar" ext="jar" e:classifier="natives-windows"/>
-        </dependency>       
-        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-opengl -->
+        </dependency>             
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-vulkan -->
         <dependency org="org.lwjgl" name="lwjgl-vulkan" rev="3.2.3">
             <artifact name="lwjgl-vulkan" type="jar" ext="jar"/>
-            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-linux"/>
-            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-macos"/>
-            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows-x86"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="sources"/>            
+            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-macos"/>          
             <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows"/>
         </dependency>                 
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->

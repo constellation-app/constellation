@@ -7,7 +7,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public interface STUB_GLAutoDrawable {
     public STUB_GL getGL();   

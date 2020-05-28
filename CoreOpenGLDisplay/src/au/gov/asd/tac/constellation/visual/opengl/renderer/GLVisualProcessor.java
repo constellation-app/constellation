@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import au.gov.asd.tac.constellation.visual.vulkan.VKRenderer;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -35,9 +36,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-import org.lwjgl.opengl.awt.GLData;
-
 import java.awt.event.ComponentAdapter; // test events resize canvas
+import java.util.logging.Logger;
 import org.lwjgl.vulkan.awt.VKData;
 
 /**
@@ -62,6 +62,7 @@ import org.lwjgl.vulkan.awt.VKData;
  */
 public class GLVisualProcessor extends VisualProcessor {
 
+    private static final Logger LOGGER = Logger.getLogger(GLVisualProcessor.class.getName());
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
@@ -69,10 +70,11 @@ public class GLVisualProcessor extends VisualProcessor {
     protected ConstellationCanvas canvas;
     
     // The GLEventListener for the OpenGL canvas. Contains the processing logic to update the canvas throughout the OpenGL life-cycle.
-    private final GLRenderer renderer;
+    private GLRenderer renderer;
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
-    private final GraphRenderable graphRenderable;
+    private GraphRenderable graphRenderable;
     private final Matrix44f modelViewMatrix = new Matrix44f();
+    private VKRenderer vkRenderer;
 
     private Camera camera;
     private boolean updating = false;
@@ -199,15 +201,16 @@ public class GLVisualProcessor extends VisualProcessor {
 
     @Override
     protected void initialise() {
-        if (graphRenderable.getGraphDisplayer() == null) {
-            graphRenderable.setGraphDisplayer(new GraphDisplayer());
-        }
-        canvas.addEventListener(renderer);
-        canvas.addComponentListener(new ComponentAdapter() {
-			public void componentResized(java.awt.event.ComponentEvent e) {
-				canvas.repaint();
-			};
-		});
+        //TODO_TT
+//        if (graphRenderable.getGraphDisplayer() == null) {
+//            graphRenderable.setGraphDisplayer(new GraphDisplayer());
+//        }
+//        canvas.addEventListener(renderer);
+//        canvas.addComponentListener(new ComponentAdapter() {
+//			public void componentResized(java.awt.event.ComponentEvent e) {
+//				canvas.repaint();
+//			};
+//		});
         //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
     }
 
@@ -223,7 +226,8 @@ public class GLVisualProcessor extends VisualProcessor {
      */
     protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
         if (!isInitialised) {
-            graphRenderable.setGraphDisplayer(graphDisplayer);
+            //TODO_TT
+            //graphRenderable.setGraphDisplayer(graphDisplayer);
         }
     }
 
@@ -357,7 +361,8 @@ public class GLVisualProcessor extends VisualProcessor {
      */
     protected final void addRenderable(final GLRenderable renderable) {
         if (!isInitialised) {
-            renderer.addRenderable(renderable);
+            //TODO_TT
+            //renderer.addRenderable(renderable);
         }
     }
 
@@ -384,6 +389,24 @@ public class GLVisualProcessor extends VisualProcessor {
     public GLVisualProcessor() {
         this(false, false);
     }
+    
+    /**
+     * Notifies us that our canvas's parent component has been added to its parent.
+     * <p>
+     * Our canvas belongs to a JPanel which in turn belongs to a tabbed control.
+     * When we are constructed as part of the VisualGraphOpener call chain that
+     * panel hasn't yet been added to it's parent.  In that state we cannot lock
+     * the canvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
+     * the surface we cannot initialise all the Vulkan resources we need.   
+     */
+    @Override 
+    protected void notifyParentAdded() {
+        // At this point VisualGraphTopCOmponent)
+        canvas.InitSurface();
+        
+        // The canvas surface is needed to finish initialising VKRenderer
+        vkRenderer.InitVKRenderer(canvas.surface);        
+    }
 
     /**
      * Construct a new GLVisualProcessor with a {@link GraphRenderable} and an
@@ -395,12 +418,28 @@ public class GLVisualProcessor extends VisualProcessor {
      * capabilities upon initialisation.
      */
     public GLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
-        graphRenderable = new GraphRenderable(this);
-        final AxesRenderable axesRenderable = new AxesRenderable(this);
-        final FPSRenderable fpsRenderable = new FPSRenderable(this);
-        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);
-        VKData vkData = new VKData();    
-        canvas = new ConstellationCanvas(vkData);
+        try {            
+            // VkInstance is setup in the constructor
+            vkRenderer = new VKRenderer();
+        } catch (Exception e) {
+            LOGGER.severe(e.toString());
+        }
+        
+        // LWJGL structure needed to create AWTVKCanvas
+        VKData vkData = new VKData();
+        vkData.instance = vkRenderer.GetVkInstance();
+        canvas = new ConstellationCanvas(vkData);       
+        //canvas.InitSurface();
+        
+        // The canvas surface is needed to finish initialising VKRenderer
+        //vkRenderer.InitVKRenderer(canvas.surface);
+        //vkRenderer.CreateSwapChain(canvas.surface);
+        
+//        graphRenderable = new GraphRenderable(this);
+//        final AxesRenderable axesRenderable = new AxesRenderable(this);
+//        final FPSRenderable fpsRenderable = new FPSRenderable(this);
+//        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
+        //canvas = new ConstellationCanvas(vkData);
     }
 
     @Override

@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import org.lwjgl.opengl.GL30;
+
 
 /**
  * An interface for a unit that performs drawing operations on a GLContext.
@@ -41,7 +41,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
     @FunctionalInterface
     public static interface GLRenderableUpdateTask {
 
-        public void run(final GL30 gl);
+        public void run(/*final GL30 gl*/);
     }
 
     public enum RenderablePriority {

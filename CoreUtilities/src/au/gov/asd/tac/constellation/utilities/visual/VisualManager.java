@@ -239,6 +239,10 @@ public final class VisualManager {
     public void refreshVisualProcessor() {
         addOperation(REFRESH_PROCESSOR_OPERATION);
     }
+    
+    public void notifyParentAdded() {
+        processor.notifyParentAdded();
+    }
 
     /**
      * Informs the {@link VisualProcessor} that the {@link VisualAccess} has

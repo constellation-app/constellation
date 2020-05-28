@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import java.nio.Buffer;
-import org.lwjgl.opengl.GL30;
 
 /**
  * Encapsulates texture buffers of various types.
@@ -36,7 +35,7 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * @param gl the current OpenGL context.
      * @param buffer A Buffer to be wrapped in a texture.
      */
-    public TextureBuffer(final GL30 gl, final BufferType buffer) {
+    public TextureBuffer(/*final GL30 gl, */final BufferType buffer) {
         final int nItems = buffer.limit();
 
         // Generate a buffer object name.
@@ -93,9 +92,9 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         return textureName[0];
     }
 
-    public abstract BufferType connectBuffer(final GL30 gl);
+    public abstract BufferType connectBuffer(/*final GL30 gl*/);
 
-    public void disconnectBuffer(final GL30 gl) {
+    public void disconnectBuffer(/*final GL30 gl*/) {
         // TODO_TT:
 //        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, bufferName[0]);
 //        gl.glUnmapBuffer(GL30.GL_TEXTURE_BUFFER);
@@ -109,26 +108,26 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * update range from.
      * @param size The size (number of [type] values) of the range to update.
      */
-    public void update(final GL30 gl, final int offset, final int size) {
+    public void update(/*final GL30 gl, */final int offset, final int size) {
         buffer.position(sizeOfType() * offset);
         // TODO_TT:
 //        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, bufferName[0]);
 //        gl.glBufferSubData(GL30.GL_TEXTURE_BUFFER, sizeOfType() * offset, sizeOfType() * size, buffer);
     }
 
-    public void uniform(final GL30 gl, final int uniform, final int textureUnit) {
+    public void uniform(/*final GL30 gl, */final int uniform, final int textureUnit) {
         // Bind the uniform to the texture unit.
-        GL30.glUniform1i(uniform, textureUnit);
-
-        // Activate the texture unit.
-        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
+//        GL30.glUniform1i(uniform, textureUnit);
+//
+//        // Activate the texture unit.
+//        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
 
         // Bind the texture to the texture unit.
         // TODO_TT:
 //        gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, textureName[0]);
     }
 
-    public void dispose(final GL30 gl) {
+    public void dispose(/*final GL30 gl, */) {
         // TODO_TT:
 //        gl.glDeleteTextures(1, textureName, 0);
 //        gl.glDeleteBuffers(1, bufferName, 0);

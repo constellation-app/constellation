@@ -50,12 +50,13 @@ public class VertexFlagsTexturiser {
     }
 
     public GLRenderableUpdateTask dispose() {
-        return gl -> {
-            if (vertexFlagsTexture != null) {
-                vertexFlagsTexture.dispose(gl);
-                vertexFlagsTexture = null;
-            }
-        };
+//        return gl -> {
+//            if (vertexFlagsTexture != null) {
+//                vertexFlagsTexture.dispose(gl);
+//                vertexFlagsTexture = null;
+//            }
+//        };
+        return null;
     }
 
     public GLRenderableUpdateTask createTexture(final VisualAccess access) {
@@ -64,7 +65,8 @@ public class VertexFlagsTexturiser {
             bufferFlagsInfo(i, flagsBuffer, access);
         }
         flagsBuffer.flip();
-        return gl -> vertexFlagsTexture = new ByteTextureBuffer(gl, flagsBuffer);
+        //return gl -> vertexFlagsTexture = new ByteTextureBuffer(gl, flagsBuffer);
+        return null;
     }
 
     public GLRenderableUpdateTask updateFlags(final VisualAccess access, final VisualChange change) {

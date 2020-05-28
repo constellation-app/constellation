@@ -33,7 +33,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.opengl.GL30;
+
 
 /**
  * Draw a selection rectangle.
@@ -74,31 +74,31 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        String vs = null;
-        String gs = null;
-        String fs = null;
-
-        try {
-            vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
-            gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruTriangle.gs");
-            fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(SelectionBoxRenderable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru selection", vs, gs, fs,
-                vertexTarget, "vertex",
-                colorTarget, "color",
-                ShaderManager.FRAG_BASE, "fragColor");
-        shaderMvp = gl.glGetUniformLocation(shader, "mvpMatrix");
-
-        batch.initialise(NUMBER_OF_VERTICES);
-        for (int i = 0; i < NUMBER_OF_VERTICES; i++) {
-            batch.stage(vertexTarget, ZERO_3F);
-            batch.stage(colorTarget, SELECTION_COLOR);
-        }
-        batch.finalise(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//        String vs = null;
+//        String gs = null;
+//        String fs = null;
+//
+//        try {
+//            vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
+//            gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruTriangle.gs");
+//            fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
+//        } catch (IOException ex) {
+//            Logger.getLogger(SelectionBoxRenderable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru selection", vs, gs, fs,
+//                vertexTarget, "vertex",
+//                colorTarget, "color",
+//                ShaderManager.FRAG_BASE, "fragColor");
+//        shaderMvp = gl.glGetUniformLocation(shader, "mvpMatrix");
+//
+//        batch.initialise(NUMBER_OF_VERTICES);
+//        for (int i = 0; i < NUMBER_OF_VERTICES; i++) {
+//            batch.stage(vertexTarget, ZERO_3F);
+//            batch.stage(colorTarget, SELECTION_COLOR);
+//        }
+//        batch.finalise(gl);
     }
 
     public void setSelectionBoxModel(final SelectionBoxModel selectionBoxModel) {
@@ -180,7 +180,7 @@ public class SelectionBoxRenderable implements GLRenderable {
 
     @Override
     public void dispose(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        batch.dispose(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//        batch.dispose(gl);
     }
 }

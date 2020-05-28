@@ -316,4 +316,5 @@ public abstract class VisualProcessor {
         return masterChangeMap;
     }
 
+    protected abstract void notifyParentAdded();
 }

@@ -29,8 +29,6 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import org.lwjgl.opengl.GL30;
-import org.lwjgl.opengl.GLCapabilities;
 import org.openide.util.Utilities;
 
 /**
@@ -51,7 +49,7 @@ import org.openide.util.Utilities;
 public final class SharedDrawable {
 
     private static STUB_GLAutoDrawable sharedDrawable = null;
-    private static GL30 gl;
+    //private static GL30 gl;
     private static int iconTextureName;
 
     private static boolean isInitialised = false;
@@ -173,11 +171,11 @@ public final class SharedDrawable {
      *
      * @return the capabilities required by the application.
      */
-    public static GLCapabilities getGLCapabilities() {
-        // TODO_TT:
-        return (GLCapabilities)null;
-        //return new GLCapabilities(getGLProfile());
-    }
+//    public static GLCapabilities getGLCapabilities() {
+//        // TODO_TT:
+//        return (GLCapabilities)null;
+//        //return new GLCapabilities(getGLProfile());
+//    }
 
     public static STUB_GLAutoDrawable getSharedAutoDrawable() {
         if (sharedDrawable == null) {
@@ -212,7 +210,7 @@ public final class SharedDrawable {
      * @param glCurrent The GL context to switch back to after updating the
      * shared context.
      */
-    public static void updateGlyphTextureController(final GL30 glCurrent) {
+    public static void updateGlyphTextureController(/*final GL30 glCurrent*/) {
         // TODO_TT: this whole func
 //        if (Utilities.isMac())
 //        {
@@ -246,7 +244,7 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getSimpleIconShader(final GL30 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+    public static int getSimpleIconShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (simpleIconShader == 0) {
 //            glCurrent.getContext().release();
@@ -284,7 +282,7 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getVertexIconShader(final GL30 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+    public static int getVertexIconShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (vertexIconShader == 0) {
 //            glCurrent.getContext().release();
@@ -322,7 +320,7 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineShader(final GL30 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+    public static int getLineShader(/*final GL30 glCurrent, */final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
             // TODO_TT: this whole func
 //        if (lineShader == 0) {
 //            glCurrent.getContext().release();
@@ -361,7 +359,7 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineLineShader(final GL30 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+    public static int getLineLineShader(/*final GL30 glCurrent, */final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
             // TODO_TT: this whole func
 //        if (lineLineShader == 0) {
 //            glCurrent.getContext().release();
@@ -399,7 +397,7 @@ public final class SharedDrawable {
      * @return the id of the loop shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLoopShader(final GL30 glCurrent, final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
+    public static int getLoopShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (loopShader == 0) {
 //            glCurrent.getContext().release();
@@ -437,7 +435,7 @@ public final class SharedDrawable {
      * @return the id of the shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getNodeLabelShader(final GL30 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+    public static int getNodeLabelShader(/*final GL30 glCurrent, */final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (nodeLabelShader == 0) {
 //            glCurrent.getContext().release();
@@ -477,7 +475,7 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getConnectionLabelShader(final GL30 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+    public static int getConnectionLabelShader(/*final GL30 glCurrent, */final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (connectionLabelShader == 0) {
 //            glCurrent.getContext().release();
@@ -516,7 +514,7 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getBlazeShader(final GL30 glCurrent, final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
+    public static int getBlazeShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
         // TODO_TT: this whole func
 //        if (blazeShader == 0) {
 //            glCurrent.getContext().release();

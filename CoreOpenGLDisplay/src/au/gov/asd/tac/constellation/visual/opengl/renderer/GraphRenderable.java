@@ -41,7 +41,6 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.opengl.GL30;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -110,11 +109,11 @@ public final class GraphRenderable implements GLRenderable {
     }
 
     private void addTaskIfReady(final GLRenderableUpdateTask task, final SceneBatcher batcher) {
-        addTask(gl -> {
-            if (batcher.batchReady()) {
-                task.run(gl);
-            }
-        });
+//        addTask(gl -> {
+//            if (batcher.batchReady()) {
+//                task.run(gl);
+//            }
+//        });
     }
 
     void addTask(final GLRenderableUpdateTask task) {
@@ -160,13 +159,13 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(nodeLabelBatcher.createBatch(access));
                     addTask(blazeBatcher.disposeBatch());
                     addTask(blazeBatcher.createBatch(access));
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
-                    final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+//                    addTask(gl -> {
+//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
+//                    });
+//                    final DrawFlags updatedDrawFlags = access.getDrawFlags();
+//                    addTask(gl -> {
+//                        drawFlags = updatedDrawFlags;
+//                    });
                 };
             case CONNECTIONS_REBUILD:
                 return (change, access) -> {
@@ -182,9 +181,9 @@ public final class GraphRenderable implements GLRenderable {
             case BACKGROUND_COLOR:
                 return (change, access) -> {
                     final ConstellationColor backgroundColor = access.getBackgroundColor();
-                    addTask(gl -> {
-                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
-                    });
+//                    addTask(gl -> {
+//                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
+//                    });
                     addTask(connectionLabelBatcher.setBackgroundColor(access));
                     addTask(nodeLabelBatcher.setBackgroundColor(access));
                 };
@@ -198,9 +197,9 @@ public final class GraphRenderable implements GLRenderable {
             case DRAW_FLAGS:
                 return (change, access) -> {
                     final DrawFlags updatedDrawFlags = access.getDrawFlags();
-                    addTask(gl -> {
-                        drawFlags = updatedDrawFlags;
-                    });
+//                    addTask(gl -> {
+//                        drawFlags = updatedDrawFlags;
+//                    });
                 };
             case BLAZE_SIZE:
                 return (change, access) -> {
@@ -224,11 +223,11 @@ public final class GraphRenderable implements GLRenderable {
             case CAMERA:
                 return (change, access) -> {
                     final Camera updatedCamera = access.getCamera();
-                    addTask(gl -> {
-                        camera = updatedCamera;
-                        parent.setDisplayCamera(camera);
-                        Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, parent.getDisplayModelViewMatrix());
-                    });
+//                    addTask(gl -> {
+//                        camera = updatedCamera;
+//                        parent.setDisplayCamera(camera);
+//                        Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, parent.getDisplayModelViewMatrix());
+//                    });
                 };
             case CONNECTION_LABEL_COLOR:
                 return (change, access) -> {
@@ -274,9 +273,9 @@ public final class GraphRenderable implements GLRenderable {
             case VERTEX_FOREGROUND_ICON:
                 return (change, access) -> {
                     addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
-                    addTask(gl -> {
-                        iconTextureArray = iconBatcher.updateIconTexture(gl);
-                    });
+//                    addTask(gl -> {
+//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
+//                    });
                 };
             case VERTEX_SELECTED:
                 return (change, access) -> {
@@ -314,44 +313,44 @@ public final class GraphRenderable implements GLRenderable {
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
 
-        final GL30 gl = drawable.getGL().getGL3();
-
-        // The icon shader draws the node icons.
-        // The blaze shader draws visual attachments to the nodes.
-        // There are two line shaders. Lines close to the camera are drawn as triangles to
-        // provide perspective. Lines further away don't look good as triangles (too many artifacts),
-        // so distant lines are drawn as lines.
-        // Loops for each node are drawn individually.
-        // Each character is drawn individually.
-        try {
-            blazeBatcher.createShader(gl);
-            lineBatcher.createShader(gl);
-            loopBatcher.createShader(gl);
-            nodeLabelBatcher.createShader(gl);
-            connectionLabelBatcher.createShader(gl);
-            iconBatcher.createShader(gl);
-        } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production; 
-            // our shaders are static and read from built-in resource files (it happens a lot in 
-            // development when we edit a shader, but that's OK). Since at least one shader is null, 
-            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that. 
-            // Without shaders, we're dead in the water anyway.
-            final String msg
-                    = "This error may have occurred because your video card and/or driver is\n"
-                    + "incompatible with CONSTELLATION.\n\n"
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
-                    + ex.getMessage();
-            Logger.getLogger(GraphRenderable.class
-                    .getName()).log(Level.SEVERE, msg, ex);
-            final InfoTextPanel itp = new InfoTextPanel(msg);
-            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
-            nd.setTitle("Shader Error");
-            DialogDisplayer.getDefault().notify(nd);
-        }
-
-        graphDisplayer.init(drawable);
-
-        GLTools.checkFramebufferStatus(gl, "gr-check");
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        // The icon shader draws the node icons.
+//        // The blaze shader draws visual attachments to the nodes.
+//        // There are two line shaders. Lines close to the camera are drawn as triangles to
+//        // provide perspective. Lines further away don't look good as triangles (too many artifacts),
+//        // so distant lines are drawn as lines.
+//        // Loops for each node are drawn individually.
+//        // Each character is drawn individually.
+//        try {
+//            blazeBatcher.createShader(gl);
+//            lineBatcher.createShader(gl);
+//            loopBatcher.createShader(gl);
+//            nodeLabelBatcher.createShader(gl);
+//            connectionLabelBatcher.createShader(gl);
+//            iconBatcher.createShader(gl);
+//        } catch (final IOException | RenderException ex) {
+//            // If we get here, a shader didn't compile. This obviously shouldn't happen in production; 
+//            // our shaders are static and read from built-in resource files (it happens a lot in 
+//            // development when we edit a shader, but that's OK). Since at least one shader is null, 
+//            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that. 
+//            // Without shaders, we're dead in the water anyway.
+//            final String msg
+//                    = "This error may have occurred because your video card and/or driver is\n"
+//                    + "incompatible with CONSTELLATION.\n\n"
+//                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+//                    + ex.getMessage();
+//            Logger.getLogger(GraphRenderable.class
+//                    .getName()).log(Level.SEVERE, msg, ex);
+//            final InfoTextPanel itp = new InfoTextPanel(msg);
+//            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp, NotifyDescriptor.ERROR_MESSAGE);
+//            nd.setTitle("Shader Error");
+//            DialogDisplayer.getDefault().notify(nd);
+//        }
+//
+//        graphDisplayer.init(drawable);
+//
+//        GLTools.checkFramebufferStatus(gl, "gr-check");
 
     }
 
@@ -364,18 +363,18 @@ public final class GraphRenderable implements GLRenderable {
 
     @Override
     public void update(STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        skipRedraw = false;
-        if (parent.isUpdating()) {
-            final List<GLRenderableUpdateTask> tasks = new ArrayList<>();
-            if (taskQueue.isEmpty()) {
-                skipRedraw = true;
-            }
-            taskQueue.drainTo(tasks);
-            tasks.forEach(task -> {
-                task.run(gl);
-            });
-        }
+//        final GL30 gl = drawable.getGL().getGL3();
+//        skipRedraw = false;
+//        if (parent.isUpdating()) {
+//            final List<GLRenderableUpdateTask> tasks = new ArrayList<>();
+//            if (taskQueue.isEmpty()) {
+//                skipRedraw = true;
+//            }
+//            taskQueue.drainTo(tasks);
+//            tasks.forEach(task -> {
+//                task.run(gl);
+//            });
+//        }
     }
     
     
@@ -404,7 +403,7 @@ public final class GraphRenderable implements GLRenderable {
      *
      * @param gl
      */
-    private void makeContentCurrent(GL30 gl){
+    private void makeContentCurrent(/*GL30 gl*/){
         // TODO_TT: this whole func
 //        STUB_GLContext context = gl.getContext();
 //        try{

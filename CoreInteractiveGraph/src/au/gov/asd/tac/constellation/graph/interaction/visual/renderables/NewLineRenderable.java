@@ -35,7 +35,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.opengl.GL30;
+
 
 /**
  * Encapsulates the JOGL code required to draw a new line over the main scene
@@ -94,36 +94,36 @@ public class NewLineRenderable implements GLRenderable {
      */
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        String newLineVp = null;
-        String newLineGp = null;
-        String newLineFp = null;
-
-        try {
-            newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
-            newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
-            newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,
-                vertexTarget, "vertex",
-                colorTarget, "color",
-                ShaderManager.FRAG_BASE, "fragColor");
-
-        shaderMVP = gl.glGetUniformLocation(shader, "mvpMatrix");
-
-        // The batch we create here has dummy values for vertices.
-        // They'll be updated later when the user drags a line.
-        batch.initialise(NUMBER_OF_VERTICES);
-        batch.stage(colorTarget, NEW_LINE_COLOR);
-        batch.stage(vertexTarget, ZERO_3F);
-        batch.stage(colorTarget, NEW_LINE_COLOR);
-        batch.stage(vertexTarget, ZERO_3F);
-
-        batch.finalise(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        String newLineVp = null;
+//        String newLineGp = null;
+//        String newLineFp = null;
+//
+//        try {
+//            newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
+//            newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
+//            newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
+//        } catch (IOException ex) {
+//            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,
+//                vertexTarget, "vertex",
+//                colorTarget, "color",
+//                ShaderManager.FRAG_BASE, "fragColor");
+//
+//        shaderMVP = gl.glGetUniformLocation(shader, "mvpMatrix");
+//
+//        // The batch we create here has dummy values for vertices.
+//        // They'll be updated later when the user drags a line.
+//        batch.initialise(NUMBER_OF_VERTICES);
+//        batch.stage(colorTarget, NEW_LINE_COLOR);
+//        batch.stage(vertexTarget, ZERO_3F);
+//        batch.stage(colorTarget, NEW_LINE_COLOR);
+//        batch.stage(vertexTarget, ZERO_3F);
+//
+//        batch.finalise(gl);
     }
 
     private NewLineModel model;
@@ -210,6 +210,6 @@ public class NewLineRenderable implements GLRenderable {
      */
     @Override
     public void dispose(final STUB_GLAutoDrawable drawable) {
-        batch.dispose(drawable.getGL().getGL3());
+//        batch.dispose(drawable.getGL().getGL3());
     }
 }

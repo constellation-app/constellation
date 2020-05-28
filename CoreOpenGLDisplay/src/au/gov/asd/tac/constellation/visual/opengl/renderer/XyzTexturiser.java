@@ -42,12 +42,13 @@ public class XyzTexturiser {
     }
 
     public GLRenderableUpdateTask dispose() {
-        return gl -> {
-            if (xyzTexture != null) {
-                xyzTexture.dispose(gl);
-                xyzTexture = null;
-            }
-        };
+//        return gl -> {
+//            if (xyzTexture != null) {
+//                xyzTexture.dispose(gl);
+//                xyzTexture = null;
+//            }
+//        };
+        return null;
     }
 
     public GLRenderableUpdateTask createTexture(final VisualAccess access) {
@@ -56,7 +57,7 @@ public class XyzTexturiser {
             bufferXyzInfo(i, xyzBuffer, access);
         }
         xyzBuffer.flip();
-        return gl -> xyzTexture = new FloatTextureBuffer(gl, xyzBuffer);
+        return null;//gl -> xyzTexture = new FloatTextureBuffer(gl, xyzBuffer);
     }
 
     public GLRenderableUpdateTask updateXyzs(final VisualAccess access, final VisualChange change) {

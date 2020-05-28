@@ -24,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL30;
 
 /**
  * OpenGL renderer for a {@link GLVisualProcessor}.
@@ -168,43 +167,43 @@ public final class GLRenderer implements STUB_GLEventListener {
 
     @Override
     public void reshape(final STUB_GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        //  Windows-DPI-Scaling
-        //
-        // If JOGL is ever fixed or another solution is found, either change
-        // needsManualDPIScaling to return false (so there is effectively no
-        // DPI scaling here) or remove the scaled height and width below.         
-        float dpiScaleX = 1.0f;
-        float dpiScaleY = 1.0f;
-        if (GLTools.needsManualDPIScaling()){
-            dpiScaleX = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleX();
-            dpiScaleY = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleY();
-        }
-        
-        // These need to be final as they are used in the lambda function below
-        final int dpiScaledWidth = (int)(width * dpiScaleX);
-        final int dpiScaledHeight = (int)(height * dpiScaleY);
-        
-        GL30.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
-
-        // Create the projection matrix, and load it on the projection matrix stack.
-        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
-
-        projectionMatrix.set(viewFrustum.getProjectionMatrix());
-
-        // A GLCanvas sets its minimum size to the preferred size when its redrawn. This means it will get bigger,
-        // but never get smaller. Explicitly set the minimum size to get around this.
-        ((Component) drawable).setMinimumSize(new Dimension(0, 0));
-
-        renderables.forEach(renderable -> {
-            renderable.reshape(x, y, dpiScaledWidth, dpiScaledHeight);
-        });
-
-        viewport[0] = x;
-        viewport[1] = y;
-        viewport[2] = dpiScaledWidth;
-        viewport[3] = dpiScaledHeight;
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        //  Windows-DPI-Scaling
+//        //
+//        // If JOGL is ever fixed or another solution is found, either change
+//        // needsManualDPIScaling to return false (so there is effectively no
+//        // DPI scaling here) or remove the scaled height and width below.         
+//        float dpiScaleX = 1.0f;
+//        float dpiScaleY = 1.0f;
+//        if (GLTools.needsManualDPIScaling()){
+//            dpiScaleX = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleX();
+//            dpiScaleY = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleY();
+//        }
+//        
+//        // These need to be final as they are used in the lambda function below
+//        final int dpiScaledWidth = (int)(width * dpiScaleX);
+//        final int dpiScaledHeight = (int)(height * dpiScaleY);
+//        
+//        GL30.glViewport(0, 0, dpiScaledWidth, dpiScaledHeight);
+//
+//        // Create the projection matrix, and load it on the projection matrix stack.
+//        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+//
+//        projectionMatrix.set(viewFrustum.getProjectionMatrix());
+//
+//        // A GLCanvas sets its minimum size to the preferred size when its redrawn. This means it will get bigger,
+//        // but never get smaller. Explicitly set the minimum size to get around this.
+//        ((Component) drawable).setMinimumSize(new Dimension(0, 0));
+//
+//        renderables.forEach(renderable -> {
+//            renderable.reshape(x, y, dpiScaledWidth, dpiScaledHeight);
+//        });
+//
+//        viewport[0] = x;
+//        viewport[1] = y;
+//        viewport[2] = dpiScaledWidth;
+//        viewport[3] = dpiScaledHeight;
     }
 
     /**

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import java.nio.ByteBuffer;
-import org.lwjgl.opengl.GL30;
 
 /**
  * Encapsulate an integer buffer.
@@ -25,8 +24,8 @@ import org.lwjgl.opengl.GL30;
  */
 public class ByteTextureBuffer extends TextureBuffer<ByteBuffer> {
 
-    public ByteTextureBuffer(final GL30 gl, final ByteBuffer buffer) {
-        super(gl, buffer);
+    public ByteTextureBuffer(/*final GL30 gl, */final ByteBuffer buffer) {
+        super(/*gl, */buffer);
     }
 
     @Override
@@ -36,11 +35,11 @@ public class ByteTextureBuffer extends TextureBuffer<ByteBuffer> {
 
     @Override
     protected int internalFormat() {
-        return GL30.GL_R8I;
+        return 0;//GL30.GL_R8I;
     }
 
     @Override
-    public ByteBuffer connectBuffer(GL30 gl) {
+    public ByteBuffer connectBuffer(/*GL30 gl*/) {
         // TODO_TT:
         return null;
 //        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, getBufferName());

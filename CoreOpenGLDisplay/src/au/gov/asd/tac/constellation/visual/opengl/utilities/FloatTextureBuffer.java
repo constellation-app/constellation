@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
-import org.lwjgl.opengl.GL30;
 
 /**
  * Encapsulate a float buffer.
@@ -27,8 +26,8 @@ import org.lwjgl.opengl.GL30;
  */
 public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
 
-    public FloatTextureBuffer(final GL30 gl, final FloatBuffer buffer) {
-        super(gl, buffer);
+    public FloatTextureBuffer(/*final GL30 gl, */final FloatBuffer buffer) {
+        super(/*gl, */buffer);
     }
 
     @Override
@@ -38,11 +37,11 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
 
     @Override
     protected int internalFormat() {
-        return GL30.GL_RGBA32F;
+        return 0;//return GL30.GL_RGBA32F;
     }
 
     @Override
-    public FloatBuffer connectBuffer(GL30 gl) {
+    public FloatBuffer connectBuffer(/*GL30 gl*/) {
         // TODO_TT:
         return null;
 //        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, getBufferName());

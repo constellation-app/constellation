@@ -26,8 +26,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.lwjgl.opengl.GL30;
-
 /**
  * Encapsulate the JOGL code required to implement a set of axes that mirror the
  * rotation of the main scene.
@@ -60,20 +58,20 @@ public class AxesRenderable implements GLRenderable {
     private static final int VERTEX_BUFFER_WIDTH = 3;
 
     private final GLVisualProcessor parent;
-    private final Batch axesBatch;
+    //private final Batch axesBatch;
     private Vector3f topRightCorner;
     private float pScale;
 
     private int axesShader;
     private int axesShaderLocMVP;
-    private final int colorTarget;
-    private final int vertexTarget;
+//    private final int colorTarget;
+//    private final int vertexTarget;
 
     public AxesRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        axesBatch = new Batch(GL30.GL_LINES);
-        colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
-        vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
+//        axesBatch = new Batch(GL30.GL_LINES);
+//        colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
+//        vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         
 //        String lwjglVersion = org.lwjgl.Version.getVersion();
 //        System.out.println(lwjglVersion);
@@ -86,109 +84,109 @@ public class AxesRenderable implements GLRenderable {
 
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        String axesVp = null;
-        String axesGp = null;
-        String axesFp = null;
-
-        try {
-            axesVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
-            axesGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
-            axesFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(AxesRenderable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        topRightCorner = new Vector3f();
-
-        axesShader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru axes", axesVp, axesGp, axesFp,
-                vertexTarget, "vertex",
-                colorTarget, "color",
-                ShaderManager.FRAG_BASE, "fragColor");
-        axesShaderLocMVP = GL30.glGetUniformLocation(axesShader, "mvpMatrix");
-
-        axesBatch.initialise(NUMBER_OF_VERTICES);
-        // x axis
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, ZERO_3F);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN, 0, 0);
-        // arrow
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN - HEAD, HEAD, 0);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN, 0, 0);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN, 0, 0);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN - HEAD, -HEAD, 0);
-        // X
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, HEAD);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, -HEAD);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, -HEAD);
-        axesBatch.stage(colorTarget, XCOLOR);
-        axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, HEAD);
-
-        // y axis
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, ZERO_3F);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN, 0);
-        // arrow
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN - HEAD, HEAD);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN, 0);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN, 0);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN - HEAD, -HEAD);
-        // Y
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, -HEAD, LEN + HEAD, -HEAD);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, HEAD, LEN + HEAD, -HEAD);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
-        axesBatch.stage(colorTarget, YCOLOR);
-        axesBatch.stage(vertexTarget, 0, LEN + HEAD, HEAD);
-
-        // z axis
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, ZERO_3F);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, 0, 0, LEN);
-        // arrow
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, -HEAD, 0, LEN - HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, 0, 0, LEN);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, 0, 0, LEN);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, HEAD, 0, LEN - HEAD);
-        // Z
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, -HEAD, HEAD, LEN + HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
-        axesBatch.stage(colorTarget, ZCOLOR);
-        axesBatch.stage(vertexTarget, HEAD, -HEAD, LEN + HEAD);
-
-        axesBatch.finalise(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//        String axesVp = null;
+//        String axesGp = null;
+//        String axesFp = null;
+//
+//        try {
+//            axesVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
+//            axesGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
+//            axesFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
+//        } catch (IOException ex) {
+//            Logger.getLogger(AxesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        topRightCorner = new Vector3f();
+//
+//        axesShader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru axes", axesVp, axesGp, axesFp,
+//                vertexTarget, "vertex",
+//                colorTarget, "color",
+//                ShaderManager.FRAG_BASE, "fragColor");
+//        axesShaderLocMVP = GL30.glGetUniformLocation(axesShader, "mvpMatrix");
+//
+//        axesBatch.initialise(NUMBER_OF_VERTICES);
+//        // x axis
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, ZERO_3F);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN, 0, 0);
+//        // arrow
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN - HEAD, HEAD, 0);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN, 0, 0);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN, 0, 0);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN - HEAD, -HEAD, 0);
+//        // X
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, HEAD);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, -HEAD);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN + HEAD, HEAD, -HEAD);
+//        axesBatch.stage(colorTarget, XCOLOR);
+//        axesBatch.stage(vertexTarget, LEN + HEAD, -HEAD, HEAD);
+//
+//        // y axis
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, ZERO_3F);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN, 0);
+//        // arrow
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN - HEAD, HEAD);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN, 0);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN, 0);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN - HEAD, -HEAD);
+//        // Y
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, -HEAD, LEN + HEAD, -HEAD);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, HEAD, LEN + HEAD, -HEAD);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN + HEAD, 0);
+//        axesBatch.stage(colorTarget, YCOLOR);
+//        axesBatch.stage(vertexTarget, 0, LEN + HEAD, HEAD);
+//
+//        // z axis
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, ZERO_3F);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, 0, 0, LEN);
+//        // arrow
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, -HEAD, 0, LEN - HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, 0, 0, LEN);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, 0, 0, LEN);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, HEAD, 0, LEN - HEAD);
+//        // Z
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, -HEAD, HEAD, LEN + HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, HEAD, HEAD, LEN + HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, -HEAD, -HEAD, LEN + HEAD);
+//        axesBatch.stage(colorTarget, ZCOLOR);
+//        axesBatch.stage(vertexTarget, HEAD, -HEAD, LEN + HEAD);
+//
+//        axesBatch.finalise(gl);
     }
 
     private float calcProjectionScale(final int[] viewport) {
@@ -218,42 +216,42 @@ public class AxesRenderable implements GLRenderable {
 
     @Override
     public void display(final STUB_GLAutoDrawable drawable, final Matrix44f projectionMatrix) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        // Extract the rotation matrix from the mvp matrix.
-        final Matrix44f rotationMatrix = new Matrix44f();
-        parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
-
-        // Scale down to size.
-        final Matrix44f scalingMatrix = new Matrix44f();
-        scalingMatrix.makeScalingMatrix(pScale, pScale, 0);
-        final Matrix44f srMatrix = new Matrix44f();
-        srMatrix.multiply(scalingMatrix, rotationMatrix);
-
-        // Translate to the top right corner.
-        final Matrix44f translationMatrix = new Matrix44f();
-        translationMatrix.makeTranslationMatrix(topRightCorner.getX(), topRightCorner.getY(), topRightCorner.getZ());
-        final Matrix44f axesMatrix = new Matrix44f();
-        axesMatrix.multiply(translationMatrix, srMatrix);
-
-        // Disable depth so the axes are drawn over everything else.
-        GL30.glDisable(GL30.GL_DEPTH_TEST);
-        GL30.glDepthMask(false);
-
-        // Draw.
-        GL30.glLineWidth(1);
-        GL30.glUseProgram(axesShader);
-        GL30.glUniformMatrix4fv(axesShaderLocMVP, false, axesMatrix.a);
-        axesBatch.draw(gl);
-
-        // Reenable depth.
-        GL30.glEnable(GL30.GL_DEPTH_TEST);
-        GL30.glDepthMask(true);
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        // Extract the rotation matrix from the mvp matrix.
+//        final Matrix44f rotationMatrix = new Matrix44f();
+//        parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
+//
+//        // Scale down to size.
+//        final Matrix44f scalingMatrix = new Matrix44f();
+//        scalingMatrix.makeScalingMatrix(pScale, pScale, 0);
+//        final Matrix44f srMatrix = new Matrix44f();
+//        srMatrix.multiply(scalingMatrix, rotationMatrix);
+//
+//        // Translate to the top right corner.
+//        final Matrix44f translationMatrix = new Matrix44f();
+//        translationMatrix.makeTranslationMatrix(topRightCorner.getX(), topRightCorner.getY(), topRightCorner.getZ());
+//        final Matrix44f axesMatrix = new Matrix44f();
+//        axesMatrix.multiply(translationMatrix, srMatrix);
+//
+//        // Disable depth so the axes are drawn over everything else.
+//        GL30.glDisable(GL30.GL_DEPTH_TEST);
+//        GL30.glDepthMask(false);
+//
+//        // Draw.
+//        GL30.glLineWidth(1);
+//        GL30.glUseProgram(axesShader);
+//        GL30.glUniformMatrix4fv(axesShaderLocMVP, false, axesMatrix.a);
+//        axesBatch.draw(gl);
+//
+//        // Reenable depth.
+//        GL30.glEnable(GL30.GL_DEPTH_TEST);
+//        GL30.glDepthMask(true);
     }
 
     @Override
     public void dispose(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        axesBatch.dispose(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//        axesBatch.dispose(gl);
     }
 }

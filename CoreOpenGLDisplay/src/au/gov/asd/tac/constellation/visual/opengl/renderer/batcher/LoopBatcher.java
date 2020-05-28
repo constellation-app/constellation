@@ -30,7 +30,6 @@ import java.nio.IntBuffer;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -42,7 +41,7 @@ public class LoopBatcher implements SceneBatcher {
     private static final String COLOR_SHADER_NAME = "vColor";
     private static final String LOOP_INFO_SHADER_NAME = "data";
 
-    private final Batch batch;
+    //private final Batch batch;
     private int shader;
 
     private boolean drawForHitTest = false;
@@ -57,8 +56,8 @@ public class LoopBatcher implements SceneBatcher {
     private int shaderXyzTexture;
     private int shaderImagesTexture;
 
-    private final int colorTarget;
-    private final int loopInfoTarget;
+//    private final int colorTarget;
+//    private final int loopInfoTarget;
 
     private static final int COLOR_BUFFER_WIDTH = 4;
     private static final int LOOP_INFO_BUFFER_WIDTH = 4;
@@ -66,39 +65,40 @@ public class LoopBatcher implements SceneBatcher {
     public LoopBatcher() {
 
         // create the batch
-        batch = new Batch(GL30.GL_POINTS);
-        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
-        loopInfoTarget = batch.newIntBuffer(LOOP_INFO_BUFFER_WIDTH, false);
+//        batch = new Batch(GL30.GL_POINTS);
+//        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
+//        loopInfoTarget = batch.newIntBuffer(LOOP_INFO_BUFFER_WIDTH, false);
     }
 
     @Override
     public boolean batchReady() {
-        return batch.isDrawable();
+        return false;//return batch.isDrawable();
     }
 
     @Override
-    public void createShader(GL30 gl) throws IOException {
+    public void createShader(/*GL30 gl*/) throws IOException {
 
-        // Create the shader
-        shader = SharedDrawable.getLoopShader(gl, colorTarget, COLOR_SHADER_NAME, loopInfoTarget, LOOP_INFO_SHADER_NAME);
-
-        // Set up uniform locations in the shader
-        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
-        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
-        shaderLocDrawHitTest = GL30.glGetUniformLocation(shader, "drawHitTest");
-        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
-        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
-        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
-        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
-        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
+//        // Create the shader
+//        shader = SharedDrawable.getLoopShader(gl, colorTarget, COLOR_SHADER_NAME, loopInfoTarget, LOOP_INFO_SHADER_NAME);
+//
+//        // Set up uniform locations in the shader
+//        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
+//        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
+//        shaderLocDrawHitTest = GL30.glGetUniformLocation(shader, "drawHitTest");
+//        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
+//        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
+//        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
+//        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
+//        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         loopPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+//        return gl -> {
+//            batch.dispose(gl);
+//        };
+return null;
     }
 
     private final SortedMap<Integer, Integer> loopPosToBufferPos = new TreeMap<>();
@@ -124,14 +124,15 @@ public class LoopBatcher implements SceneBatcher {
         colorBuffer.flip();
         dataBuffer.flip();
 
-        return gl -> {
-            if (numLoops > 0) {
-                batch.initialise(numLoops);
-                batch.buffer(gl, colorTarget, colorBuffer);
-                batch.buffer(gl, loopInfoTarget, dataBuffer);
-                batch.finalise(gl);
-            }
-        };
+//        return gl -> {
+//            if (numLoops > 0) {
+//                batch.initialise(numLoops);
+//                batch.buffer(gl, colorTarget, colorBuffer);
+//                batch.buffer(gl, loopInfoTarget, dataBuffer);
+//                batch.finalise(gl);
+//            }
+//        };
+return null;
     }
 
     private int bufferLoopInfo(final int pos, final IntBuffer dataBuffer, final VisualAccess access) {
@@ -164,19 +165,21 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> {
-            return batch.connectIntBuffer(gl, loopInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, loopInfoTarget);
-        }, LOOP_INFO_BUFFER_WIDTH);
+//        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> {
+//            return batch.connectIntBuffer(gl, loopInfoTarget);
+//        }, gl -> {
+//            batch.disconnectBuffer(gl, loopInfoTarget);
+//        }, LOOP_INFO_BUFFER_WIDTH);
+return null;
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH);
+//        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
+//            return batch.connectFloatBuffer(gl, colorTarget);
+//        }, gl -> {
+//            batch.disconnectBuffer(gl, colorTarget);
+//        }, COLOR_BUFFER_WIDTH);
+return null;
     }
 
     public void setNextDrawIsHitTest() {
@@ -184,26 +187,26 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-
-        if (batch.isDrawable()) {
-            GL30.glUseProgram(shader);
-
-            // Uniform variables
-            if (drawForHitTest) {
-                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_TRUE);
-                drawForHitTest = false;
-            } else {
-                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_FALSE);
-            }
-            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
-            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
-            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-            GL30.glUniform1f(shaderMorphMix, camera.getMix());
-            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-            batch.draw(gl);
-        }
+    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+//
+//        if (batch.isDrawable()) {
+//            GL30.glUseProgram(shader);
+//
+//            // Uniform variables
+//            if (drawForHitTest) {
+//                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_TRUE);
+//                drawForHitTest = false;
+//            } else {
+//                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_FALSE);
+//            }
+//            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
+//            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
+//            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+//            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+//            GL30.glUniform1f(shaderMorphMix, camera.getMix());
+//            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+//            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+//            batch.draw(gl);
+//        }
     }
 }

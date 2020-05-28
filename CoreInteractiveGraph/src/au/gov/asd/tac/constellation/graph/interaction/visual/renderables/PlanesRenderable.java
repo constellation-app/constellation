@@ -39,7 +39,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.lwjgl.opengl.GL30;
+
 
 /**
  * Implement layer planes.
@@ -79,116 +79,116 @@ public final class PlanesRenderable implements GLRenderable {
 
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        String vs = null;
-        String gs = null;
-        String fs = null;
-
-        try {
-            vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.vs");
-            gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.gs");
-            fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(PlanesRenderable.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        shader = GLTools.loadShaderSourceWithAttributes(gl, "Plane", vs, gs, fs,
-                ShaderManager.ATTRIBUTE_DATAA, "data",
-                ShaderManager.ATTRIBUTE_VERTEX, "vertex",
-                ShaderManager.FRAG_BASE, "fragColor");
-        shaderMVPMatrix = gl.glGetUniformLocation(shader, "mvpMatrix");
-        shaderImages = gl.glGetUniformLocation(shader, "images");
-
-        textureName = BUFFER_UNUSED;
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        String vs = null;
+//        String gs = null;
+//        String fs = null;
+//
+//        try {
+//            vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.vs");
+//            gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.gs");
+//            fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.fs");
+//        } catch (IOException ex) {
+//            Logger.getLogger(PlanesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//
+//        shader = GLTools.loadShaderSourceWithAttributes(gl, "Plane", vs, gs, fs,
+//                ShaderManager.ATTRIBUTE_DATAA, "data",
+//                ShaderManager.ATTRIBUTE_VERTEX, "vertex",
+//                ShaderManager.FRAG_BASE, "fragColor");
+//        shaderMVPMatrix = gl.glGetUniformLocation(shader, "mvpMatrix");
+//        shaderImages = gl.glGetUniformLocation(shader, "images");
+//
+//        textureName = BUFFER_UNUSED;
     }
 
     public void createScene(final STUB_GLAutoDrawable drawable, final Graph graph) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        dispose(drawable);
-
-        final int[] textures = new int[1];
-        // TODO_TT:
-//        gl.glGenTextures(1, textures, 0);
-        textureName = textures[0];
-
-        planes = null;
-
-        ReadableGraph rg = graph.getReadableGraph();
-        try {
-            final int planesAttr = rg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
-            if (planesAttr != Graph.NOT_FOUND) {
-                final PlaneState state = (PlaneState) rg.getObjectValue(planesAttr, 0);
-                if (state != null) {
-                    planes = state.getPlanes();
-
-                    if (planes.size() > 0) {
-                        final ArrayList<BufferedImage> planeBytes = new ArrayList<>();
-                        int maxw = 0;
-                        int maxh = 0;
-                        for (final Plane plane : planes) {
-                            planeBytes.add(plane.getImage());
-                            maxw = Math.max(maxw, plane.getImageWidth());
-                            maxh = Math.max(maxh, plane.getImageHeight());
-                        }
-
-                        // TODO_TT:
-//                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL30.GL_LINEAR, GL30.GL_LINEAR, GL30.GL_CLAMP_TO_EDGE);
-
-                        // We want to draw a sequence of disjoint rectangles, so we have to use GL_TRIANGLES, because
-                        // the other triangle options require the triangles to be contiguous.
-                        // This means that it takes six vertices to draw a rectangle rather than four, but since there
-                        // will only be a few (roughly 10?), this doesn't seem to be a big deal (yet).
-                        if (planeBatch.isDrawable()) {
-                            planeBatch.dispose(gl);
-                        }
-                        planeBatch.initialise(planes.size() * 6);
-
-                        // The color buffer is used to hold texture data.
-                        // [0], [1]: the texture coordinates used by the fragment shader to get pixels from a texture.
-                        // [2]: boolean: should this layer be visible?
-                        // [3]: the texture to be used for this triangle.
-                        for (int ix = 0; ix < planeBytes.size(); ix++) {
-                            final Plane plane = planes.get(ix);
-                            final float x = plane.getX();
-                            final float y = plane.getY();
-                            final float z = plane.getZ();
-                            final float w = plane.getWidth();
-                            final float h = plane.getHeight();
-
-                            // The texture array area is as big as the largest width and height.
-                            // We have to tell the shaders what propertion of the texture area is used by each image.
-                            final float wfrac = maxw != 0 ? plane.getImageWidth() / (float) maxw : plane.getImageWidth();
-                            final float hfrac = maxh != 0 ? plane.getImageHeight() / (float) maxh : plane.getImageHeight();
-
-                            // A plane is visible if it has a visibility>0.
-                            // Maybe this should match with the visibility of the graph?
-                            // We include the visibility with each triangle.
-                            final float isVisible = plane.isVisible() ? 1 : 0;
-
-                            planeBatch.stage(planeInfoTarget, 0, 1, isVisible, ix);
-                            planeBatch.stage(vertexTarget, x, y, z);
-                            planeBatch.stage(planeInfoTarget, 0, 0, wfrac, Graph.NOT_FOUND);
-                            planeBatch.stage(vertexTarget, x, y + h, z);
-                            planeBatch.stage(planeInfoTarget, 1, 1, hfrac, Graph.NOT_FOUND);
-                            planeBatch.stage(vertexTarget, x + w, y, z);
-
-                            planeBatch.stage(planeInfoTarget, 1, 1, isVisible, ix);
-                            planeBatch.stage(vertexTarget, x + w, y, z);
-                            planeBatch.stage(planeInfoTarget, 0, 0, wfrac, Graph.NOT_FOUND);
-                            planeBatch.stage(vertexTarget, x, y + h, z);
-                            planeBatch.stage(planeInfoTarget, 1, 0, hfrac, Graph.NOT_FOUND);
-                            planeBatch.stage(vertexTarget, x + w, y + h, z);
-                        }
-
-                        planeBatch.finalise(gl);
-                    }
-                }
-            }
-        } finally {
-            rg.release();
-        }
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        dispose(drawable);
+//
+//        final int[] textures = new int[1];
+//        // TODO_TT:
+////        gl.glGenTextures(1, textures, 0);
+//        textureName = textures[0];
+//
+//        planes = null;
+//
+//        ReadableGraph rg = graph.getReadableGraph();
+//        try {
+//            final int planesAttr = rg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+//            if (planesAttr != Graph.NOT_FOUND) {
+//                final PlaneState state = (PlaneState) rg.getObjectValue(planesAttr, 0);
+//                if (state != null) {
+//                    planes = state.getPlanes();
+//
+//                    if (planes.size() > 0) {
+//                        final ArrayList<BufferedImage> planeBytes = new ArrayList<>();
+//                        int maxw = 0;
+//                        int maxh = 0;
+//                        for (final Plane plane : planes) {
+//                            planeBytes.add(plane.getImage());
+//                            maxw = Math.max(maxw, plane.getImageWidth());
+//                            maxh = Math.max(maxh, plane.getImageHeight());
+//                        }
+//
+//                        // TODO_TT:
+////                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL30.GL_LINEAR, GL30.GL_LINEAR, GL30.GL_CLAMP_TO_EDGE);
+//
+//                        // We want to draw a sequence of disjoint rectangles, so we have to use GL_TRIANGLES, because
+//                        // the other triangle options require the triangles to be contiguous.
+//                        // This means that it takes six vertices to draw a rectangle rather than four, but since there
+//                        // will only be a few (roughly 10?), this doesn't seem to be a big deal (yet).
+//                        if (planeBatch.isDrawable()) {
+//                            planeBatch.dispose(gl);
+//                        }
+//                        planeBatch.initialise(planes.size() * 6);
+//
+//                        // The color buffer is used to hold texture data.
+//                        // [0], [1]: the texture coordinates used by the fragment shader to get pixels from a texture.
+//                        // [2]: boolean: should this layer be visible?
+//                        // [3]: the texture to be used for this triangle.
+//                        for (int ix = 0; ix < planeBytes.size(); ix++) {
+//                            final Plane plane = planes.get(ix);
+//                            final float x = plane.getX();
+//                            final float y = plane.getY();
+//                            final float z = plane.getZ();
+//                            final float w = plane.getWidth();
+//                            final float h = plane.getHeight();
+//
+//                            // The texture array area is as big as the largest width and height.
+//                            // We have to tell the shaders what propertion of the texture area is used by each image.
+//                            final float wfrac = maxw != 0 ? plane.getImageWidth() / (float) maxw : plane.getImageWidth();
+//                            final float hfrac = maxh != 0 ? plane.getImageHeight() / (float) maxh : plane.getImageHeight();
+//
+//                            // A plane is visible if it has a visibility>0.
+//                            // Maybe this should match with the visibility of the graph?
+//                            // We include the visibility with each triangle.
+//                            final float isVisible = plane.isVisible() ? 1 : 0;
+//
+//                            planeBatch.stage(planeInfoTarget, 0, 1, isVisible, ix);
+//                            planeBatch.stage(vertexTarget, x, y, z);
+//                            planeBatch.stage(planeInfoTarget, 0, 0, wfrac, Graph.NOT_FOUND);
+//                            planeBatch.stage(vertexTarget, x, y + h, z);
+//                            planeBatch.stage(planeInfoTarget, 1, 1, hfrac, Graph.NOT_FOUND);
+//                            planeBatch.stage(vertexTarget, x + w, y, z);
+//
+//                            planeBatch.stage(planeInfoTarget, 1, 1, isVisible, ix);
+//                            planeBatch.stage(vertexTarget, x + w, y, z);
+//                            planeBatch.stage(planeInfoTarget, 0, 0, wfrac, Graph.NOT_FOUND);
+//                            planeBatch.stage(vertexTarget, x, y + h, z);
+//                            planeBatch.stage(planeInfoTarget, 1, 0, hfrac, Graph.NOT_FOUND);
+//                            planeBatch.stage(vertexTarget, x + w, y + h, z);
+//                        }
+//
+//                        planeBatch.finalise(gl);
+//                    }
+//                }
+//            }
+//        } finally {
+//            rg.release();
+//        }
     }
 
     List<Plane> getPlanes() {

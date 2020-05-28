@@ -19,7 +19,6 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import org.lwjgl.opengl.GL30;
 
 /**
  * The GlyphManagerOpenGLController manages the OpenGL buffers necessary to
@@ -29,8 +28,8 @@ import org.lwjgl.opengl.GL30;
  */
 public class GlyphManagerOpenGLController {
 
-    private static final int EXTERNAL_FORMAT = GL30.GL_RED;
-    private static final int INTERNAL_FORMAT = GL30.GL_R8;
+//    private static final int EXTERNAL_FORMAT = GL30.GL_RED;
+//    private static final int INTERNAL_FORMAT = GL30.GL_R8;
 
     private static final int FLOATS_PER_GLYPH = 4;
     private static final int BYTES_PER_FLOAT = Float.BYTES;
@@ -60,22 +59,22 @@ public class GlyphManagerOpenGLController {
         return glyphManager;
     }
 
-    public void init(GL30 gl) {
-        initCoordinates(gl);
-        initGlyphs(gl);
+    public void init(/*final GL30 gl*/) {
+//        initCoordinates(gl);
+//        initGlyphs(gl);
     }
 
-    public void update(GL30 gl) {
-        updateCoordinates(gl);
-        updateGlyphs(gl);
+    public void update(/*final GL30 gl*/) {
+//        updateCoordinates(gl);
+//        updateGlyphs(gl);
     }
 
-    public void bind(GL30 gl, int coordinatesUniformLocation, int coordinatesTextureUnit, int glyphsUniformLocation, int glyphsTexureUnit) {
-        bindCoordinates(gl, coordinatesUniformLocation, coordinatesTextureUnit);
-        bindGlyphs(gl, glyphsUniformLocation, glyphsTexureUnit);
+    public void bind(/*final GL30 gl*/int coordinatesUniformLocation, int coordinatesTextureUnit, int glyphsUniformLocation, int glyphsTexureUnit) {
+//        bindCoordinates(gl, coordinatesUniformLocation, coordinatesTextureUnit);
+//        bindGlyphs(gl, glyphsUniformLocation, glyphsTexureUnit);
     }
 
-    private void initCoordinates(GL30 gl) {
+    private void initCoordinates(/*final GL30 gl*/) {
         // TODO_TT: this whole func
 //        gl.glGenBuffers(1, coordinatesBufferName, 0);
 //
@@ -89,7 +88,7 @@ public class GlyphManagerOpenGLController {
 //        gl.glTexBuffer(GL30.GL_TEXTURE_BUFFER, GL30.GL_RGBA32F, coordinatesBufferName[0]);
     }
 
-    private void updateCoordinates(GL30 gl) {
+    private void updateCoordinates(/*final GL30 gl*/) {
         // TODO_TT: this whole func
 //        final int newTextureCoordinatesBufferSize = glyphManager.getGlyphTextureCoordinates().length * BYTES_PER_FLOAT;
 //        if (newTextureCoordinatesBufferSize > coordinatesBufferSize) {
@@ -109,24 +108,24 @@ public class GlyphManagerOpenGLController {
 //        }
     }
 
-    private void bindCoordinates(GL30 gl, int uniformLocation, int textureUnit) {
-        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
-        // TODO_TT:
-//        gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
-        GL30.glUniform1i(uniformLocation, textureUnit);
+    private void bindCoordinates(/*final GL30 gl*/int uniformLocation, int textureUnit) {
+//        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
+//        // TODO_TT:
+////        gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
+//        GL30.glUniform1i(uniformLocation, textureUnit);
     }
 
-    private void initGlyphs(GL30 gl) {
+    private void initGlyphs(/*final GL30 gl*/) {
 
         // TODO_TT:
 //        gl.glGenTextures(1, glyphsTextureName, 0);
 
-        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
-
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
+//        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+//
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
 
         final int width = glyphManager.getTextureWidth();
         final int height = glyphManager.getTextureHeight();
@@ -136,7 +135,7 @@ public class GlyphManagerOpenGLController {
         glyphsPageCapacity = pageCount;
     }
 
-    private void updateGlyphs(GL30 gl) {
+    private void updateGlyphs(/*final GL30 gl*/) {
 
         final int width = glyphManager.getTextureWidth();
         final int height = glyphManager.getTextureHeight();
@@ -154,7 +153,7 @@ public class GlyphManagerOpenGLController {
         glyphsGlyphsBuffered = glyphCount;
 
         if (pageCount > glyphsPageCapacity) {
-            GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+//            GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
             // TODO_TT:
 //            gl.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, INTERNAL_FORMAT, width, height, pageCount, 0, EXTERNAL_FORMAT, GL30.GL_UNSIGNED_BYTE, null);
             glyphsPageCapacity = pageCount;
@@ -174,16 +173,16 @@ public class GlyphManagerOpenGLController {
                 pixelBuffer.flip();
             }
 
-            GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
-            GL30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, glyphsPagesBuffered, width, height, 1, EXTERNAL_FORMAT, GL30.GL_UNSIGNED_BYTE, pixelBuffer);
+//            GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+//            GL30.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, 0, 0, glyphsPagesBuffered, width, height, 1, EXTERNAL_FORMAT, GL30.GL_UNSIGNED_BYTE, pixelBuffer);
 
             glyphsPagesBuffered++;
         }
     }
 
-    private void bindGlyphs(GL30 gl, int uniformLocation, int textureUnit) {
-        GL30.glUniform1i(uniformLocation, textureUnit);
-        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
-        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+    private void bindGlyphs(/*final GL30 gl*/int uniformLocation, int textureUnit) {
+//        GL30.glUniform1i(uniformLocation, textureUnit);
+//        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
+//        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
     }
 }

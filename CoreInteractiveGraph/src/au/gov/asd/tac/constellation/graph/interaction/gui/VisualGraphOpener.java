@@ -222,6 +222,7 @@ public final class VisualGraphOpener extends GraphOpener {
                 final VisualGraphTopComponent vtc = new VisualGraphTopComponent(gdo, graph);
                 vtc.open();
                 vtc.requestActive();
+                vtc.notifyParentAdded();
 
                 if (doAfter != null) {
                     doAfter.run();

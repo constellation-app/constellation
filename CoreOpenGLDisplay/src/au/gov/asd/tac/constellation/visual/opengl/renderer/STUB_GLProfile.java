@@ -7,7 +7,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public class STUB_GLProfile {
     public static final String GL30 = "TODO_TT: NOT IMPLEMENTED"; 

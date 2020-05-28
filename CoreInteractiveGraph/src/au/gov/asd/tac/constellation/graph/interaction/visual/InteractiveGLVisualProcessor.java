@@ -69,8 +69,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();
-    private final HitTester hitTester;
-    private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
+    private HitTester hitTester;
+    private SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
     private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
     private final PlanesRenderable planesRenderable = new PlanesRenderable();
     private final TransformableGraphDisplayer graphDisplayer = new TransformableGraphDisplayer();
@@ -91,12 +91,13 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
      */
     public InteractiveGLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         super(debugGl, printGlCapabilities);
-        setGraphDisplayer(graphDisplayer);
-        addRenderable(newLineRenderable);
-        addRenderable(selectionBoxRenderable);
-        addRenderable(planesRenderable);
-        hitTester = new HitTester(this);
-        addRenderable(hitTester);
+        //TODO_TT
+//        setGraphDisplayer(graphDisplayer);
+//        addRenderable(newLineRenderable);
+//        addRenderable(selectionBoxRenderable);
+//        addRenderable(planesRenderable);
+//        hitTester = new HitTester(this);
+//        addRenderable(hitTester);
     }
 
     /**

@@ -7,7 +7,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public class STUB_Texture {
     

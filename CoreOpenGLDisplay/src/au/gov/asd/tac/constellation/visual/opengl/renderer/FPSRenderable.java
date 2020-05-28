@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.lwjgl.opengl.GL30;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
@@ -75,30 +74,30 @@ public class FPSRenderable implements GLRenderable {
 
     @Override
     public void init(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-
-        try {
-            fpsBatcher.createShader(gl);
-            fpsBatcher.createBatch(null).run(gl);
-        } catch (final IOException | RenderException ex) {
-            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
-            // our shaders are static and read from built-in resource files (it happens a lot in
-            // development when we edit a shader, but that's OK). Since at least one shader is null,
-            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
-            // Without shaders, we're dead in the water anyway.
-            final String msg
-                    = "This error may have occurred because your video card and/or driver is\n"
-                    + "incompatible with CONSTELLATION.\n\n"
-                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
-                    + ex.getMessage();
-            Logger.getLogger(GraphRenderable.class
-                    .getName()).log(Level.SEVERE, msg, ex);
-            final InfoTextPanel itp = new InfoTextPanel(msg);
-            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp,
-                    NotifyDescriptor.ERROR_MESSAGE);
-            nd.setTitle("Shader Error");
-            DialogDisplayer.getDefault().notify(nd);
-        }
+//        final GL30 gl = drawable.getGL().getGL3();
+//
+//        try {
+//            fpsBatcher.createShader(gl);
+//            fpsBatcher.createBatch(null).run(gl);
+//        } catch (final IOException | RenderException ex) {
+//            // If we get here, a shader didn't compile. This obviously shouldn't happen in production;
+//            // our shaders are static and read from built-in resource files (it happens a lot in
+//            // development when we edit a shader, but that's OK). Since at least one shader is null,
+//            // there will be subsequent NullPointerExceptions, but there's nothing we can do about that.
+//            // Without shaders, we're dead in the water anyway.
+//            final String msg
+//                    = "This error may have occurred because your video card and/or driver is\n"
+//                    + "incompatible with CONSTELLATION.\n\n"
+//                    + "Please inform CONSTELLATION support, including the text of this message.\n\n"
+//                    + ex.getMessage();
+//            Logger.getLogger(GraphRenderable.class
+//                    .getName()).log(Level.SEVERE, msg, ex);
+//            final InfoTextPanel itp = new InfoTextPanel(msg);
+//            final NotifyDescriptor.Message nd = new NotifyDescriptor.Message(itp,
+//                    NotifyDescriptor.ERROR_MESSAGE);
+//            nd.setTitle("Shader Error");
+//            DialogDisplayer.getDefault().notify(nd);
+//        }
     }
 
     private float calculateXProjectionScale(final int[] viewport) {
@@ -152,49 +151,49 @@ public class FPSRenderable implements GLRenderable {
 
         count_fps++;
 
-        if (enabled) {
-            final GL30 gl = drawable.getGL().getGL3();
-
-            // extract and scale the rotation matrix from the mvp matrix
-//            final Matrix44f rotationMatrix = new Matrix44f();
-//            parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
-            final Matrix44f scalingMatrix = new Matrix44f();
-            scalingMatrix.makeScalingMatrix(pxScale, pyScale, 0);
-            final Matrix44f srMatrix = new Matrix44f();
-            srMatrix.multiply(scalingMatrix, IDENTITY_44F);
-//            srMatrix.multiply(scalingMatrix, rotationMatrix);
-
-            // build the fps matrix by translating the sr matrix
-            final Matrix44f translationMatrix = new Matrix44f();
-            translationMatrix.makeTranslationMatrix(bottomRightCorner.getX(),
-                    bottomRightCorner.getY(), bottomRightCorner.getZ());
-            final Matrix44f fpsMatrix = new Matrix44f();
-            fpsMatrix.multiply(translationMatrix, srMatrix);
-
-            // disable depth so the fps counter is drawn on top
-            GL30.glDisable(GL30.GL_DEPTH_TEST);
-            GL30.glDepthMask(false);
-
-            // draw the fps counter
-            int[] fpsDigits = Long.toString(fps).chars().map(c -> c -= '0').toArray();
-            if (fpsDigits.length < 2) {
-                fpsDigits = new int[]{0, fpsDigits[0]};
-            }
-            fpsBatcher.setPixelDensity(pixelDensity);
-            fpsBatcher.setProjectionScale(pyScale);
-            fpsBatcher.updateColors(ConstellationColor.YELLOW).run(gl);
-            fpsBatcher.updateIcons(fpsDigits).run(gl);
-            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
-
-            // re-enable depth
-            GL30.glEnable(GL30.GL_DEPTH_TEST);
-            GL30.glDepthMask(true);
-        }
+//        if (enabled) {
+//            final GL30 gl = drawable.getGL().getGL3();
+//
+//            // extract and scale the rotation matrix from the mvp matrix
+////            final Matrix44f rotationMatrix = new Matrix44f();
+////            parent.getDisplayModelViewProjectionMatrix().getRotationMatrix(rotationMatrix);
+//            final Matrix44f scalingMatrix = new Matrix44f();
+//            scalingMatrix.makeScalingMatrix(pxScale, pyScale, 0);
+//            final Matrix44f srMatrix = new Matrix44f();
+//            srMatrix.multiply(scalingMatrix, IDENTITY_44F);
+////            srMatrix.multiply(scalingMatrix, rotationMatrix);
+//
+//            // build the fps matrix by translating the sr matrix
+//            final Matrix44f translationMatrix = new Matrix44f();
+//            translationMatrix.makeTranslationMatrix(bottomRightCorner.getX(),
+//                    bottomRightCorner.getY(), bottomRightCorner.getZ());
+//            final Matrix44f fpsMatrix = new Matrix44f();
+//            fpsMatrix.multiply(translationMatrix, srMatrix);
+//
+//            // disable depth so the fps counter is drawn on top
+//            GL30.glDisable(GL30.GL_DEPTH_TEST);
+//            GL30.glDepthMask(false);
+//
+//            // draw the fps counter
+//            int[] fpsDigits = Long.toString(fps).chars().map(c -> c -= '0').toArray();
+//            if (fpsDigits.length < 2) {
+//                fpsDigits = new int[]{0, fpsDigits[0]};
+//            }
+//            fpsBatcher.setPixelDensity(pixelDensity);
+//            fpsBatcher.setProjectionScale(pyScale);
+//            fpsBatcher.updateColors(ConstellationColor.YELLOW).run(gl);
+//            fpsBatcher.updateIcons(fpsDigits).run(gl);
+//            fpsBatcher.drawBatch(gl, CAMERA, fpsMatrix, pMatrix);
+//
+//            // re-enable depth
+//            GL30.glEnable(GL30.GL_DEPTH_TEST);
+//            GL30.glDepthMask(true);
+//        }
     }
 
     @Override
     public void dispose(final STUB_GLAutoDrawable drawable) {
-        final GL30 gl = drawable.getGL().getGL3();
-        fpsBatcher.disposeBatch().run(gl);
+//        final GL30 gl = drawable.getGL().getGL3();
+//        fpsBatcher.disposeBatch().run(gl);
     }
 }

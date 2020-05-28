@@ -37,8 +37,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.Utilities; //pulled in by Windows-DPI-Scaling
-import org.lwjgl.opengl.GL30;
-import static org.lwjgl.opengl.awt.GLData.API.GL;
+
 
 /**
  * Tools for OpenGL and JOGL.
@@ -72,7 +71,7 @@ public final class GLTools {
      * @param version An int[2] to receive the version: version[0] contains
      * GL_MAJOR_VERSION, version[1] contains GL_MINOR_VERSION.
      */
-    public static void getOpenGLVersion(final GL30 gl, int[] version) {
+    public static void getOpenGLVersion(/*final GL30 gl, */int[] version) {
         // TODO_TT: this whole func
 //        gl.glGetIntegerv(GL30.GL_MAJOR_VERSION, version, 0);
 //        gl.glGetIntegerv(GL30.GL_MINOR_VERSION, version, 1);
@@ -130,14 +129,14 @@ public final class GLTools {
         return buf.toString();
     }
 
-    public static void loadShaderSource(final GL30 gl, final String shaderSrc, final int shader) {
+    public static void loadShaderSource(/*final GL30 gl, */final String shaderSrc, final int shader) {
         final String[] shaderParam = {shaderSrc};
 
         // TODO_TT:
 //        gl.glShaderSource(shader, 1, shaderParam, null, 0);
     }
 
-    public static String getShaderLog(final GL30 gl, final int shader) {
+    public static String getShaderLog(/*final GL30 gl, */final int shader) {
         final int[] maxLength = new int[1];
         // TODO_TT:
 //        gl.glGetShaderiv(shader, GL30.GL_INFO_LOG_LENGTH, maxLength, 0);
@@ -154,7 +153,7 @@ public final class GLTools {
         return log.trim();
     }
 
-    public static String getProgramLog(final GL30 gl, final int shader) {
+    public static String getProgramLog(/*final GL30 gl, */final int shader) {
         final int[] maxLength = new int[1];
         // TODO_TT:
 //        gl.glGetProgramiv(shader, GL30.GL_INFO_LOG_LENGTH, maxLength, 0);
@@ -171,7 +170,7 @@ public final class GLTools {
         return log.trim();
     }
 
-    public static int loadShaderSourceWithAttributes(final GL30 gl, final String label, final String vertexSrc, final String geometrySrc, final String fragmentSrc, final Object... args) {
+    public static int loadShaderSourceWithAttributes(/*final GL30 gl, */final String label, final String vertexSrc, final String geometrySrc, final String fragmentSrc, final Object... args) {
         // TODO_TT: this whole func
         int progid = -1;
         // Temporary shader objects.
@@ -283,7 +282,7 @@ public final class GLTools {
      * @param iSlices the number of slices in the sphere.
      * @param iStacks the number of stacks in the sphere.
      */
-    public static void makeSphere(final GL30 gl, final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
+    public static void makeSphere(/*final GL30 gl, */final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
         float drho = (float) Math.PI / (float) iStacks;
         float dtheta = 2.0f * (float) Math.PI / (float) iSlices;
         float ds = 1.0f / (float) iSlices;
@@ -385,7 +384,7 @@ public final class GLTools {
 
             t -= dt;
         }
-        sphereBatch.end(gl);
+//        sphereBatch.end(gl);
     }
 
     /**
@@ -398,7 +397,7 @@ public final class GLTools {
      * @param numMajor the number of slices around the major radius.
      * @param numMinor the number of slices around the minor radius.
      */
-    public static void makeTorus(final GL30 gl, final TriangleBatch torusBatch, final float majorRadius, final float minorRadius, final int numMajor, final int numMinor) {
+    public static void makeTorus(/*final GL30 gl, */final TriangleBatch torusBatch, final float majorRadius, final float minorRadius, final int numMajor, final int numMinor) {
         final double majorStep = 2.0f * Math.PI / numMajor;
         final double minorStep = 2.0f * Math.PI / numMinor;
 
@@ -485,11 +484,11 @@ public final class GLTools {
                 torusBatch.addTriangle(vVertex, vNormal, vTexture);
             }
         }
-        torusBatch.end(gl);
+        //torusBatch.end(gl);
     }
 
     // Load a TGA as a 2D Texture. Completely initialize the state
-    public static STUB_Texture loadTexture(final GL30 gl, final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
+    public static STUB_Texture loadTexture(/*final GL30 gl, */final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
 //         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, ext);
         // TODO_TT:
@@ -497,11 +496,11 @@ public final class GLTools {
 //        final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
 //        final Texture tex = TextureIO.newTexture(data);
 
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, wrapMode);
-
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, wrapMode);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, wrapMode);
+//
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
 
         return tex;
     }
@@ -527,13 +526,13 @@ public final class GLTools {
      * @param magFilter Texture selection with TEXTURE_MAG_FILTER.
      * @param wrapMode texture wrap mode with TEXTURE_WRAP_S and TEXTURE_WRAP_T.
      */
-    public static void loadTextures(final GL30 gl, final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
-        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
-
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, wrapMode);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+    public static void loadTextures(/*final GL30 gl, */final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
+//        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
+//
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, wrapMode);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, wrapMode);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
+//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
 
         // Call glTexImage3D() to create the buffer here: we've assumed the internalformat and format.
         // TODO_TT:
@@ -592,7 +591,7 @@ public final class GLTools {
      *
      * @return the id of the texture buffer.
      */
-    public static int loadSharedIconTextures(final GL30 glCurrent, final List<ConstellationIcon> icons, final int width, final int height) {
+    public static int loadSharedIconTextures(/*final GL30 glCurrent, */final List<ConstellationIcon> icons, final int width, final int height) {
         return -1;
                 // TODO_TT: this whole func
 //        final int[] v = new int[1];
@@ -784,7 +783,7 @@ public final class GLTools {
      *
      * @return the id of the texture buffer.
      */
-    public static int loadSharedIconTextures(final GL30 glCurrent, final int width, final int height) {
+    public static int loadSharedIconTextures(/*final GL30 glCurrent, */final int width, final int height) {
         // Do we have new icons to be loaded?
         // If so, reload the lot.
         if (LOADED_ICON_HELPER.requiresReload) {
@@ -808,12 +807,13 @@ public final class GLTools {
 
             LOADED_ICON_HELPER.requiresReload = false;
 
-            final long t0 = System.currentTimeMillis();
-            final int iconTextureArray = loadSharedIconTextures(glCurrent, iconList, width, height);
-            final long t1 = System.currentTimeMillis();
-            LOGGER.log(Level.FINE, "Time to load icon textures: {0} msec\n", (t1 - t0));
-
-            return iconTextureArray;
+//            final long t0 = System.currentTimeMillis();
+//            final int iconTextureArray = loadSharedIconTextures(glCurrent, iconList, width, height);
+//            final long t1 = System.currentTimeMillis();
+//            LOGGER.log(Level.FINE, "Time to load icon textures: {0} msec\n", (t1 - t0));
+//
+//            return iconTextureArray;
+return 0;
         }
 
         return SharedDrawable.getIconTextureName();
@@ -828,35 +828,35 @@ public final class GLTools {
      * @param gl the current OpenGL context.
      * @param msg the message that will be printed out if an error has occurred.
      */
-    public static void checkError(final GL30 gl, final String msg) {
-        while (true) {
-            final int err = GL30.glGetError();
-            if (err == GL30.GL_NO_ERROR || msg == null) {
-                return;
-            }
-            String errtext;
-            switch (err) {
-                case GL30.GL_INVALID_ENUM:
-                    errtext = "invalid enum";
-                    break;
-                case GL30.GL_INVALID_VALUE:
-                    errtext = "invalid value";
-                    break;
-                case GL30.GL_INVALID_OPERATION:
-                    errtext = "invalid operation";
-                    break;
-                case GL30.GL_OUT_OF_MEMORY:
-                    errtext = "out of memory";
-                    break;
-                case GL30.GL_INVALID_FRAMEBUFFER_OPERATION:
-                    errtext = "invalid framebuffer operation";
-                    break;
-                default:
-                    errtext = Integer.toString(err);
-                    break;
-            }
-            LOGGER.log(Level.SEVERE, "OpenGL error {0}: {1} ({2})", new Object[]{msg, errtext, err});
-        }
+    public static void checkError(/*final GL30 gl, */final String msg) {
+//        while (true) {
+//            final int err = GL30.glGetError();
+//            if (err == GL30.GL_NO_ERROR || msg == null) {
+//                return;
+//            }
+//            String errtext;
+//            switch (err) {
+//                case GL30.GL_INVALID_ENUM:
+//                    errtext = "invalid enum";
+//                    break;
+//                case GL30.GL_INVALID_VALUE:
+//                    errtext = "invalid value";
+//                    break;
+//                case GL30.GL_INVALID_OPERATION:
+//                    errtext = "invalid operation";
+//                    break;
+//                case GL30.GL_OUT_OF_MEMORY:
+//                    errtext = "out of memory";
+//                    break;
+//                case GL30.GL_INVALID_FRAMEBUFFER_OPERATION:
+//                    errtext = "invalid framebuffer operation";
+//                    break;
+//                default:
+//                    errtext = Integer.toString(err);
+//                    break;
+//            }
+//            LOGGER.log(Level.SEVERE, "OpenGL error {0}: {1} ({2})", new Object[]{msg, errtext, err});
+//        }
     }
 
     /**
@@ -868,19 +868,19 @@ public final class GLTools {
      * @param msg msg the message that will be printed out if an error has
      * occurred.
      */
-    public static void checkFramebufferStatus(final GL30 gl, final String msg) {
-        int fboStatus = GL30.glCheckFramebufferStatus(GL30.GL_DRAW_FRAMEBUFFER);
-        if (fboStatus == GL30.GL_FRAMEBUFFER_COMPLETE) {
-            return;
-        }
-
-        String errtext = "";
-        if (fboStatus == GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-            errtext = "framebuffer incomplete missing attachment";
-        } else if (fboStatus == GL30.GL_FRAMEBUFFER_UNSUPPORTED) {
-            errtext = "framebuffer unsupported";
-        }
-        LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
+    public static void checkFramebufferStatus(/*final GL30 gl, */final String msg) {
+//        int fboStatus = GL30.glCheckFramebufferStatus(GL30.GL_DRAW_FRAMEBUFFER);
+//        if (fboStatus == GL30.GL_FRAMEBUFFER_COMPLETE) {
+//            return;
+//        }
+//
+//        String errtext = "";
+//        if (fboStatus == GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
+//            errtext = "framebuffer incomplete missing attachment";
+//        } else if (fboStatus == GL30.GL_FRAMEBUFFER_UNSUPPORTED) {
+//            errtext = "framebuffer unsupported";
+//        }
+//        LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }
     
     /**

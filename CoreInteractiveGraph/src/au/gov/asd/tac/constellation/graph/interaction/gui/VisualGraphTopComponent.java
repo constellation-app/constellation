@@ -450,6 +450,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         super.requestActive();
         visualManager.getVisualComponent().requestFocusInWindow();
     }
+    
+    public void notifyParentAdded() {
+        visualManager.notifyParentAdded();
+    }
 
     /**
      * This is required to display the name of the DataObject in the "Save?"
@@ -473,6 +477,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public GraphNode getGraphNode() {
         return graphNode;
     }
+
 
     /**
      * This method is called from within the constructor to initialize the form.

@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -49,7 +48,7 @@ public class LineBatcher implements SceneBatcher {
     private static final String COLOR_SHADER_NAME = "vColor";
     private static final String CONNECTION_INFO_SHADER_NAME = "data";
 
-    private final Batch batch;
+//    private final Batch batch;
     private int lineShader;
     private int lineLineShader;
 
@@ -78,8 +77,8 @@ public class LineBatcher implements SceneBatcher {
     private int lineLineShaderHighlightColor;
     private int lineLineShaderDirectionMotion;
 
-    private final int colorTarget;
-    private final int connectionInfoTarget;
+//    private final int colorTarget;
+//    private final int connectionInfoTarget;
 
     private static final int COLOR_BUFFER_WIDTH = 4;
     private static final int CONNECTION_INFO_BUFFER_WIDTH = 4;
@@ -87,53 +86,54 @@ public class LineBatcher implements SceneBatcher {
     public LineBatcher() {
 
         // Create the batch
-        batch = new Batch(GL30.GL_LINES);
-        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
-        connectionInfoTarget = batch.newIntBuffer(CONNECTION_INFO_BUFFER_WIDTH, false);
+//        batch = new Batch(GL30.GL_LINES);
+//        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
+//        connectionInfoTarget = batch.newIntBuffer(CONNECTION_INFO_BUFFER_WIDTH, false);
     }
 
     @Override
     public boolean batchReady() {
-        return batch.isDrawable();
+        return false;//return batch.isDrawable();
     }
 
     @Override
-    public void createShader(GL30 gl) throws IOException {
+    public void createShader(/*GL30 gl*/) throws IOException {
 
         // Create the shader
-        lineShader = SharedDrawable.getLineShader(gl, colorTarget, COLOR_SHADER_NAME, connectionInfoTarget, CONNECTION_INFO_SHADER_NAME);
-        lineLineShader = SharedDrawable.getLineLineShader(gl, colorTarget, COLOR_SHADER_NAME, connectionInfoTarget, CONNECTION_INFO_SHADER_NAME);
-
-        lineShaderMVMatrix = GL30.glGetUniformLocation(lineShader, "mvMatrix");
-        lineShaderPMatrix = GL30.glGetUniformLocation(lineShader, "pMatrix");
-        lineShaderLocDrawHitTest = GL30.glGetUniformLocation(lineShader, "drawHitTest");
-        lineShaderVisibilityLow = GL30.glGetUniformLocation(lineShader, "visibilityLow");
-        lineShaderVisibilityHigh = GL30.glGetUniformLocation(lineShader, "visibilityHigh");
-        lineShaderMorphMix = GL30.glGetUniformLocation(lineShader, "morphMix");
-        lineShaderXyzTexture = GL30.glGetUniformLocation(lineShader, "xyzTexture");
-        lineShaderAlpha = GL30.glGetUniformLocation(lineShader, "alpha");
-        lineShaderHighlightColor = GL30.glGetUniformLocation(lineShader, "highlightColor");
-        lineShaderDirectionMotion = GL30.glGetUniformLocation(lineShader, "directionMotion");
-
-        lineLineShaderMVMatrix = GL30.glGetUniformLocation(lineLineShader, "mvMatrix");
-        lineLineShaderPMatrix = GL30.glGetUniformLocation(lineLineShader, "pMatrix");
-        lineLineShaderLocDrawHitTest = GL30.glGetUniformLocation(lineLineShader, "drawHitTest");
-        lineLineShaderVisibilityLow = GL30.glGetUniformLocation(lineLineShader, "visibilityLow");
-        lineLineShaderVisibilityHigh = GL30.glGetUniformLocation(lineLineShader, "visibilityHigh");
-        lineLineShaderMorphMix = GL30.glGetUniformLocation(lineLineShader, "morphMix");
-        lineLineShaderXyzTexture = GL30.glGetUniformLocation(lineLineShader, "xyzTexture");
-        lineLineShaderAlpha = GL30.glGetUniformLocation(lineLineShader, "alpha");
-        lineLineShaderHighlightColor = GL30.glGetUniformLocation(lineLineShader, "highlightColor");
-        lineLineShaderDirectionMotion = GL30.glGetUniformLocation(lineLineShader, "directionMotion");
+//        lineShader = SharedDrawable.getLineShader(gl, colorTarget, COLOR_SHADER_NAME, connectionInfoTarget, CONNECTION_INFO_SHADER_NAME);
+//        lineLineShader = SharedDrawable.getLineLineShader(gl, colorTarget, COLOR_SHADER_NAME, connectionInfoTarget, CONNECTION_INFO_SHADER_NAME);
+//
+//        lineShaderMVMatrix = GL30.glGetUniformLocation(lineShader, "mvMatrix");
+//        lineShaderPMatrix = GL30.glGetUniformLocation(lineShader, "pMatrix");
+//        lineShaderLocDrawHitTest = GL30.glGetUniformLocation(lineShader, "drawHitTest");
+//        lineShaderVisibilityLow = GL30.glGetUniformLocation(lineShader, "visibilityLow");
+//        lineShaderVisibilityHigh = GL30.glGetUniformLocation(lineShader, "visibilityHigh");
+//        lineShaderMorphMix = GL30.glGetUniformLocation(lineShader, "morphMix");
+//        lineShaderXyzTexture = GL30.glGetUniformLocation(lineShader, "xyzTexture");
+//        lineShaderAlpha = GL30.glGetUniformLocation(lineShader, "alpha");
+//        lineShaderHighlightColor = GL30.glGetUniformLocation(lineShader, "highlightColor");
+//        lineShaderDirectionMotion = GL30.glGetUniformLocation(lineShader, "directionMotion");
+//
+//        lineLineShaderMVMatrix = GL30.glGetUniformLocation(lineLineShader, "mvMatrix");
+//        lineLineShaderPMatrix = GL30.glGetUniformLocation(lineLineShader, "pMatrix");
+//        lineLineShaderLocDrawHitTest = GL30.glGetUniformLocation(lineLineShader, "drawHitTest");
+//        lineLineShaderVisibilityLow = GL30.glGetUniformLocation(lineLineShader, "visibilityLow");
+//        lineLineShaderVisibilityHigh = GL30.glGetUniformLocation(lineLineShader, "visibilityHigh");
+//        lineLineShaderMorphMix = GL30.glGetUniformLocation(lineLineShader, "morphMix");
+//        lineLineShaderXyzTexture = GL30.glGetUniformLocation(lineLineShader, "xyzTexture");
+//        lineLineShaderAlpha = GL30.glGetUniformLocation(lineLineShader, "alpha");
+//        lineLineShaderHighlightColor = GL30.glGetUniformLocation(lineLineShader, "highlightColor");
+//        lineLineShaderDirectionMotion = GL30.glGetUniformLocation(lineLineShader, "directionMotion");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         connections.clear();
         connectionPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+//        return gl -> {
+//            batch.dispose(gl);
+//        };
+        return null;
     }
 
     private final SortedMap<Integer, Integer> connectionPosToBufferPos = new TreeMap<>();
@@ -169,14 +169,15 @@ public class LineBatcher implements SceneBatcher {
         colorBuffer.flip();
         dataBuffer.flip();
 
-        return gl -> {
-            if (numLines > 0) {
-                batch.initialise(numLines * 2);
-                batch.buffer(gl, colorTarget, colorBuffer);
-                batch.buffer(gl, connectionInfoTarget, dataBuffer);
-                batch.finalise(gl);
-            }
-        };
+//        return gl -> {
+//            if (numLines > 0) {
+//                batch.initialise(numLines * 2);
+//                batch.buffer(gl, colorTarget, colorBuffer);
+//                batch.buffer(gl, connectionInfoTarget, dataBuffer);
+//                batch.finalise(gl);
+//            }
+//        };
+        return null;
     }
 
     private float leftOffset;
@@ -266,26 +267,29 @@ public class LineBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> {
-            return batch.connectIntBuffer(gl, connectionInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, connectionInfoTarget);
-        }, new boolean[]{true, true, true, false, true, true, true, true});
+//        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> {
+//            return batch.connectIntBuffer(gl, connectionInfoTarget);
+//        }, gl -> {
+//            batch.disconnectBuffer(gl, connectionInfoTarget);
+//        }, new boolean[]{true, true, true, false, true, true, true, true});
+return null;
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH * 2);
+//        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
+//            return batch.connectFloatBuffer(gl, colorTarget);
+//        }, gl -> {
+//            batch.disconnectBuffer(gl, colorTarget);
+//        }, COLOR_BUFFER_WIDTH * 2);
+return null;
     }
 
     public GLRenderableUpdateTask updateOpacity(final VisualAccess access) {
-        final float updatedOpacity = access.getConnectionOpacity();
-        return gl -> {
-            opacity = updatedOpacity;
-        };
+//        final float updatedOpacity = access.getConnectionOpacity();
+//        return gl -> {
+//            opacity = updatedOpacity;
+//        };
+return null;
     }
 
     public void setNextDrawIsHitTest() {
@@ -302,53 +306,54 @@ public class LineBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+//        return gl -> {
+//            this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
+//        };
+return null;
     }
 
     @Override
-    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-
-        if (batch.isDrawable()) {
-            // Uniform variables
-            GL30.glUseProgram(lineShader);
-            if (drawForHitTest) {
-                GL30.glUniform1i(lineShaderLocDrawHitTest, GL30.GL_TRUE);
-                GL30.glUniform1f(lineShaderDirectionMotion, -1);
-            } else {
-                GL30.glUniform1i(lineShaderLocDrawHitTest, GL30.GL_FALSE);
-                GL30.glUniform1f(lineShaderDirectionMotion, motion);
-            }
-            GL30.glUniformMatrix4fv(lineShaderMVMatrix, false, mvMatrix.a);
-            GL30.glUniformMatrix4fv(lineShaderPMatrix, false, pMatrix.a);
-            GL30.glUniform1f(lineShaderVisibilityLow, camera.getVisibilityLow());
-            GL30.glUniform1f(lineShaderVisibilityHigh, camera.getVisibilityHigh());
-            GL30.glUniform1f(lineShaderMorphMix, camera.getMix());
-            GL30.glUniform1i(lineShaderXyzTexture, TextureUnits.VERTICES);
-            GL30.glUniform1f(lineShaderAlpha, opacity);
-            GL30.glUniform4fv(lineShaderHighlightColor, highlightColor);
-            batch.draw(gl);
-
-            GL30.glUseProgram(lineLineShader);
-            if (drawForHitTest) {
-                GL30.glUniform1i(lineLineShaderLocDrawHitTest, GL30.GL_TRUE);
-                GL30.glUniform1f(lineLineShaderDirectionMotion, -1);
-            } else {
-                GL30.glUniform1i(lineLineShaderLocDrawHitTest, GL30.GL_FALSE);
-                GL30.glUniform1f(lineLineShaderDirectionMotion, motion);
-            }
-
-            GL30.glUniformMatrix4fv(lineLineShaderMVMatrix, false, mvMatrix.a);
-            GL30.glUniformMatrix4fv(lineLineShaderPMatrix, false, pMatrix.a);
-            GL30.glUniform1f(lineLineShaderVisibilityLow, camera.getVisibilityLow());
-            GL30.glUniform1f(lineLineShaderVisibilityHigh, camera.getVisibilityHigh());
-            GL30.glUniform1f(lineLineShaderMorphMix, camera.getMix());
-            GL30.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
-            GL30.glUniform1f(lineLineShaderAlpha, opacity);
-            GL30.glUniform4fv(lineLineShaderHighlightColor, highlightColor);
-            batch.draw(gl);
-        }
+    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+//
+//        if (batch.isDrawable()) {
+//            // Uniform variables
+//            GL30.glUseProgram(lineShader);
+//            if (drawForHitTest) {
+//                GL30.glUniform1i(lineShaderLocDrawHitTest, GL30.GL_TRUE);
+//                GL30.glUniform1f(lineShaderDirectionMotion, -1);
+//            } else {
+//                GL30.glUniform1i(lineShaderLocDrawHitTest, GL30.GL_FALSE);
+//                GL30.glUniform1f(lineShaderDirectionMotion, motion);
+//            }
+//            GL30.glUniformMatrix4fv(lineShaderMVMatrix, false, mvMatrix.a);
+//            GL30.glUniformMatrix4fv(lineShaderPMatrix, false, pMatrix.a);
+//            GL30.glUniform1f(lineShaderVisibilityLow, camera.getVisibilityLow());
+//            GL30.glUniform1f(lineShaderVisibilityHigh, camera.getVisibilityHigh());
+//            GL30.glUniform1f(lineShaderMorphMix, camera.getMix());
+//            GL30.glUniform1i(lineShaderXyzTexture, TextureUnits.VERTICES);
+//            GL30.glUniform1f(lineShaderAlpha, opacity);
+//            GL30.glUniform4fv(lineShaderHighlightColor, highlightColor);
+//            batch.draw(gl);
+//
+//            GL30.glUseProgram(lineLineShader);
+//            if (drawForHitTest) {
+//                GL30.glUniform1i(lineLineShaderLocDrawHitTest, GL30.GL_TRUE);
+//                GL30.glUniform1f(lineLineShaderDirectionMotion, -1);
+//            } else {
+//                GL30.glUniform1i(lineLineShaderLocDrawHitTest, GL30.GL_FALSE);
+//                GL30.glUniform1f(lineLineShaderDirectionMotion, motion);
+//            }
+//
+//            GL30.glUniformMatrix4fv(lineLineShaderMVMatrix, false, mvMatrix.a);
+//            GL30.glUniformMatrix4fv(lineLineShaderPMatrix, false, pMatrix.a);
+//            GL30.glUniform1f(lineLineShaderVisibilityLow, camera.getVisibilityLow());
+//            GL30.glUniform1f(lineLineShaderVisibilityHigh, camera.getVisibilityHigh());
+//            GL30.glUniform1f(lineLineShaderMorphMix, camera.getMix());
+//            GL30.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
+//            GL30.glUniform1f(lineLineShaderAlpha, opacity);
+//            GL30.glUniform4fv(lineLineShaderHighlightColor, highlightColor);
+//            batch.draw(gl);
+//        }
         drawForHitTest = false;
     }
 }

@@ -31,7 +31,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
-import org.lwjgl.opengl.GL30;
 
 /**
  *
@@ -44,8 +43,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     private static final String LABEL_INTS_SHADER_NAME = "graphLocationData";
 
     // Batch and shader
-    private final Batch topBatch;
-    private final Batch bottomBatch;
+//    private final Batch topBatch;
+//    private final Batch bottomBatch;
     private FloatArray topLabelFloats;
     private IntArray topLabelInts;
     private FloatArray bottomLabelFloats;
@@ -85,8 +84,8 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     private int shaderGlyphInfoTexture;
     private int shaderGlyphImageTexture;
 
-    private final int labelFloatsTarget;
-    private final int labelIntsTarget;
+//    private final int labelFloatsTarget;
+//    private final int labelIntsTarget;
 
     private static final int FLOAT_BUFFERS_WIDTH = 4;
     private static final int INT_BUFFERS_WIDTH = 4;
@@ -94,10 +93,10 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
     public NodeLabelBatcher() {
 
         // Create the batches
-        topBatch = new Batch(GL30.GL_POINTS);
-        labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
-        labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
-        bottomBatch = new Batch(topBatch);
+//        topBatch = new Batch(GL30.GL_POINTS);
+//        labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
+//        labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
+//        bottomBatch = new Batch(topBatch);
     }
 
     private void setCurrentContext(final int nodeId, final int totalScale, final float visibility, final int labelNumber) {
@@ -121,31 +120,31 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
 
     @Override
     public boolean batchReady() {
-        return topBatch.isDrawable() && bottomBatch.isDrawable();
+        return false;//return topBatch.isDrawable() && bottomBatch.isDrawable();
     }
 
     @Override
-    public void createShader(GL30 gl) throws IOException {
+    public void createShader(/*GL30 gl*/) throws IOException {
 
-        // Create the shader
-        shader = SharedDrawable.getNodeLabelShader(gl, labelFloatsTarget, LABEL_FLOATS_SHADER_NAME, labelIntsTarget, LABEL_INTS_SHADER_NAME);
-
-        // Set up uniform locations in the shader
-        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
-        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
-        shaderLabelBottomInfo = GL30.glGetUniformLocation(shader, "labelBottomInfo");
-        shaderLabelTopInfo = GL30.glGetUniformLocation(shader, "labelTopInfo");
-        shaderLocWidth = GL30.glGetUniformLocation(shader, "widthScalingFactor");
-        shaderLocHeight = GL30.glGetUniformLocation(shader, "heightScalingFactor");
-        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
-        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
-        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
-        shaderBackgroundGlyphIndex = GL30.glGetUniformLocation(shader, "backgroundGlyphIndex");
-        shaderBackgroundColor = GL30.glGetUniformLocation(shader, "backgroundColor");
-        shaderHighlightColor = GL30.glGetUniformLocation(shader, "highlightColor");
-        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
-        shaderGlyphInfoTexture = GL30.glGetUniformLocation(shader, "glyphInfoTexture");
-        shaderGlyphImageTexture = GL30.glGetUniformLocation(shader, "glyphImageTexture");
+//        // Create the shader
+//        shader = SharedDrawable.getNodeLabelShader(gl, labelFloatsTarget, LABEL_FLOATS_SHADER_NAME, labelIntsTarget, LABEL_INTS_SHADER_NAME);
+//
+//        // Set up uniform locations in the shader
+//        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
+//        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
+//        shaderLabelBottomInfo = GL30.glGetUniformLocation(shader, "labelBottomInfo");
+//        shaderLabelTopInfo = GL30.glGetUniformLocation(shader, "labelTopInfo");
+//        shaderLocWidth = GL30.glGetUniformLocation(shader, "widthScalingFactor");
+//        shaderLocHeight = GL30.glGetUniformLocation(shader, "heightScalingFactor");
+//        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
+//        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
+//        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
+//        shaderBackgroundGlyphIndex = GL30.glGetUniformLocation(shader, "backgroundGlyphIndex");
+//        shaderBackgroundColor = GL30.glGetUniformLocation(shader, "backgroundColor");
+//        shaderHighlightColor = GL30.glGetUniformLocation(shader, "highlightColor");
+//        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
+//        shaderGlyphInfoTexture = GL30.glGetUniformLocation(shader, "glyphInfoTexture");
+//        shaderGlyphImageTexture = GL30.glGetUniformLocation(shader, "glyphImageTexture");
     }
 
     @Override
@@ -157,16 +156,17 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         fillTopLabels(access);
         fillBottomLabels(access);
 
-        return gl -> {
-            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
-            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
-            topBatch.finalise(gl);
-            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
-            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
-            bottomBatch.finalise(gl);
-        };
+//        return gl -> {
+//            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
+//            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
+//            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
+//            topBatch.finalise(gl);
+//            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
+//            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
+//            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
+//            bottomBatch.finalise(gl);
+//        };
+        return null;
     }
 
     public GLRenderableUpdateTask updateTopLabels(final VisualAccess access) {
@@ -174,13 +174,14 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         topLabelFloats.clear();
         topLabelInts.clear();
         fillTopLabels(access);
-        return gl -> {
-            topBatch.dispose(gl);
-            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
-            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
-            topBatch.finalise(gl);
-        };
+//        return gl -> {
+//            topBatch.dispose(gl);
+//            topBatch.initialise(topLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
+//            topBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(topLabelFloats.rawArray()));
+//            topBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(topLabelInts.rawArray()));
+//            topBatch.finalise(gl);
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask updateBottomLabels(final VisualAccess access) {
@@ -188,13 +189,14 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         bottomLabelFloats.clear();
         bottomLabelInts.clear();
         fillBottomLabels(access);
-        return gl -> {
-            bottomBatch.dispose(gl);
-            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
-            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
-            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
-            bottomBatch.finalise(gl);
-        };
+//        return gl -> {
+//            bottomBatch.dispose(gl);
+//            bottomBatch.initialise(bottomLabelFloats.size() / FLOAT_BUFFERS_WIDTH);
+//            bottomBatch.buffer(gl, labelFloatsTarget, FloatBuffer.wrap(bottomLabelFloats.rawArray()));
+//            bottomBatch.buffer(gl, labelIntsTarget, IntBuffer.wrap(bottomLabelInts.rawArray()));
+//            bottomBatch.finalise(gl);
+//        };
+return null;
     }
 
     private void fillTopLabels(final VisualAccess access) {
@@ -251,9 +253,10 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         for (int i = 0; i < numBottomLabels; i++) {
             labelBottomInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getBottomLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+//        return gl -> {
+//            labelBottomInfo.set(labelBottomInfoReference);
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask setBottomLabelColors(final VisualAccess access) {
@@ -262,9 +265,10 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             final ConstellationColor labelColor = access.getBottomLabelColor(i);
             labelBottomInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelBottomInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+//        return gl -> {
+//            labelBottomInfo.set(labelBottomInfoReference);
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask setTopLabelSizes(final VisualAccess access) {
@@ -272,9 +276,10 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
         for (int i = 0; i < numTopLabels; i++) {
             labelTopInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getTopLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+//        return gl -> {
+//            labelTopInfo.set(labelTopInfoReference);
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask setTopLabelColors(final VisualAccess access) {
@@ -283,64 +288,68 @@ public class NodeLabelBatcher implements GlyphManager.GlyphStream, SceneBatcher 
             final ConstellationColor labelColor = access.getTopLabelColor(i);
             labelTopInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelTopInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+//        return gl -> {
+//            labelTopInfo.set(labelTopInfoReference);
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+//        return gl -> {
+//            highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
+//        };
+return null;
     }
 
     public GLRenderableUpdateTask setBackgroundColor(final VisualAccess access) {
         final ConstellationColor color = access.getBackgroundColor();
-        return gl -> {
-            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
-        };
+//        return gl -> {
+//            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
+//        };
+return null;
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            topBatch.dispose(gl);
-            bottomBatch.dispose(gl);
-        };
+//        return gl -> {
+//            topBatch.dispose(gl);
+//            bottomBatch.dispose(gl);
+//        };
+return null;
     }
 
     @Override
-    public void drawBatch(final GL30 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-
-        if (topBatch.isDrawable() || bottomBatch.isDrawable()) {
-            GL30.glUseProgram(shader);
-
-            // Let the glyph controller bind the glyph info and glyph image textures
-            SharedDrawable.updateGlyphTextureController(gl);
-            SharedDrawable.getGlyphTextureController().bind(gl, shaderGlyphInfoTexture, TextureUnits.GLYPH_INFO, shaderGlyphImageTexture, TextureUnits.GLYPHS);
-
-            // Uniform variables
-            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
-            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
-            GL30.glUniformMatrix4fv(shaderLabelBottomInfo, false, labelBottomInfo.a);
-            GL30.glUniformMatrix4fv(shaderLabelTopInfo, false, labelTopInfo.a);
-            GL30.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
-            GL30.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
-            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-            GL30.glUniform1f(shaderMorphMix, camera.getMix());
-            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-            GL30.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
-            GL30.glUniform4fv(shaderBackgroundColor, backgroundColor);
-            GL30.glUniform4fv(shaderHighlightColor, highlightColor);
-
-            if (topBatch.isDrawable()) {
-                topBatch.draw(gl);
-            }
-            if (bottomBatch.isDrawable()) {
-                bottomBatch.draw(gl);
-            }
-        }
+    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+//
+//        if (topBatch.isDrawable() || bottomBatch.isDrawable()) {
+//            GL30.glUseProgram(shader);
+//
+//            // Let the glyph controller bind the glyph info and glyph image textures
+//            SharedDrawable.updateGlyphTextureController(gl);
+//            SharedDrawable.getGlyphTextureController().bind(gl, shaderGlyphInfoTexture, TextureUnits.GLYPH_INFO, shaderGlyphImageTexture, TextureUnits.GLYPHS);
+//
+//            // Uniform variables
+//            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
+//            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
+//            GL30.glUniformMatrix4fv(shaderLabelBottomInfo, false, labelBottomInfo.a);
+//            GL30.glUniformMatrix4fv(shaderLabelTopInfo, false, labelTopInfo.a);
+//            GL30.glUniform1f(shaderLocWidth, SharedDrawable.getGlyphManager().getWidthScalingFactor());
+//            GL30.glUniform1f(shaderLocHeight, SharedDrawable.getGlyphManager().getHeightScalingFactor());
+//            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+//            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+//            GL30.glUniform1f(shaderMorphMix, camera.getMix());
+//            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+//            GL30.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
+//            GL30.glUniform4fv(shaderBackgroundColor, backgroundColor);
+//            GL30.glUniform4fv(shaderHighlightColor, highlightColor);
+//
+//            if (topBatch.isDrawable()) {
+//                topBatch.draw(gl);
+//            }
+//            if (bottomBatch.isDrawable()) {
+//                bottomBatch.draw(gl);
+//            }
+//        }
     }
 }

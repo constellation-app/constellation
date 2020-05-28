@@ -9,7 +9,7 @@ import java.util.EventListener;
 
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public interface STUB_GLEventListener extends EventListener{
     public void init(final STUB_GLAutoDrawable drawable);

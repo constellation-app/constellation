@@ -7,7 +7,7 @@ package au.gov.asd.tac.constellation.visual.opengl;
 
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public class LWJGLVersionAction {
     

@@ -5,11 +5,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import org.lwjgl.opengl.GL30;
-
 /**
  *
- * @author skitz
+ * @author TheTimurid
  */
 public class STUB_GL {
     public static final int GL_VERSION = -1;
@@ -25,9 +23,9 @@ public class STUB_GL {
     public static final int GL_FLOAT = -1;
     public static final int GL_LEQUAL = -1;
     
-    public GL30 getGL3() {
-        return (GL30)null;
-    }
+//    public GL30 getGL3() {
+//        return (GL30)null;
+//    }
     
     public String glGetString(int i) {
         return "TODO_TT: NOT IMPLEMENTED";

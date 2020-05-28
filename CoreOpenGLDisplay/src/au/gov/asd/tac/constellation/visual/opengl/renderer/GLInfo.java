@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.lwjgl.opengl.GL30;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GL;
 
 /**
@@ -59,7 +58,7 @@ public class GLInfo {
         }).start();
     }
 
-    public static void printGLCapabilities(final GL30 gl) {
+    public static void printGLCapabilities(/*final GL30 gl*/) {
         // TODO_TT: this whole func
 //        final int[] v = new int[10];
 //        gl.glGetIntegerv(GL30.GL_MAX_RENDERBUFFER_SIZE, v, 0);
