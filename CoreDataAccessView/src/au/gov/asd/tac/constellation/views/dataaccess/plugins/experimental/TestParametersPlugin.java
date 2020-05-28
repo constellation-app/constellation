@@ -178,11 +178,9 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         selected.setDescription("Only use selected elements");
         params.addParameter(selected);
 
-        //final PluginParameter<StringParameterValue> queryName = StringParameterType.build(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
         final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.getStringParameterType(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
         params.addParameter(queryName);
 
-        //final PluginParameter<DateTimeRangeParameterValue> dt = DateTimeRangeParameterType.build(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
         final PluginParameter<DateTimeRangeParameterValue> dt = CoreGlobalParameters.getDateTimeRangeParameterType(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
         params.addParameter(dt);
 
