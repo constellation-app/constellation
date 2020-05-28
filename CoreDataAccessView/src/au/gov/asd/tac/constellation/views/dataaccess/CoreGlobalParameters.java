@@ -59,23 +59,20 @@ public class CoreGlobalParameters extends GlobalParameters {
     // Map of string types, datetime types, etc.
     private static final Map<String,PluginParameter> SINGLETON_MAP = new HashMap<>();
     
-    //private static PluginParameter<StringParameterValue> QUERY_NAME_SINGLETON = null;
-    private static PluginParameter<DateTimeRangeParameterValue> DATETIME_SINGLETON = null;
-    
-    public static <T extends ParameterValue> PluginParameter getStringParameterType(final String PARAMETER_ID, final PluginParameterType<T> TYPE ) {
+    public static PluginParameter getStringParameterType(final String PARAMETER_ID) {
         if (SINGLETON_MAP.get(PARAMETER_ID) == null) {
-            SINGLETON_MAP.put(PARAMETER_ID, TYPE.build(PARAMETER_ID));
+            SINGLETON_MAP.put(PARAMETER_ID, StringParameterType.build(PARAMETER_ID));
         }
         
         return SINGLETON_MAP.get(PARAMETER_ID);
     }
     
     public static PluginParameter getDateTimeRangeParameterType(final String PARAMETER_ID) {
-        if (DATETIME_SINGLETON == null) {
-            DATETIME_SINGLETON = DateTimeRangeParameterType.build(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+        if (SINGLETON_MAP.get(PARAMETER_ID) == null) {
+            SINGLETON_MAP.put(PARAMETER_ID, DateTimeRangeParameterType.build(PARAMETER_ID));
         }
         
-        return DATETIME_SINGLETON;
+        return SINGLETON_MAP.get(PARAMETER_ID);
     }
     
     @Override
