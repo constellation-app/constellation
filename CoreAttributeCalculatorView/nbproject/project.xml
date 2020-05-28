@@ -136,7 +136,11 @@
                     </run-dependency>
                 </dependency>
             </module-dependencies>
-            <public-packages/>
+            <public-packages>
+                <package>au.gov.asd.tac.constellation.views.attributecalculator.panes</package>
+                <package>au.gov.asd.tac.constellation.views.attributecalculator.script</package>
+                <package>au.gov.asd.tac.constellation.views.attributecalculator.tutorial</package>
+            </public-packages>
         </data>
     </configuration>
 </project>

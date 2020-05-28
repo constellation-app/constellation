@@ -204,9 +204,11 @@
                 </test-type>
             </test-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.plugins.importexport.text</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport</package>
+                <package>au.gov.asd.tac.constellation.plugins.importexport.delimited</package>
+                <package>au.gov.asd.tac.constellation.plugins.importexport.delimited.parser</package>
                 <package>au.gov.asd.tac.constellation.plugins.importexport.geospatial</package>
+                <package>au.gov.asd.tac.constellation.plugins.importexport.text</package>
             </public-packages>
         </data>
     </configuration>
