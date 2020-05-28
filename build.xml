@@ -4,177 +4,24 @@
 
     <import file="nbproject/build-impl.xml"/>
 
-    <!-- ivy -->
-    <property name="ivy.install.version" value="2.5.0"/>
-    <property name="ivy.jar.dir" value="${user.home}/.ivy2"/>
-    <property name="ivy.cache.dir" value="${ivy.jar.dir}/cache"/>
-    <property name="ivy.jar.file" value="${ivy.jar.dir}/${ivy.install.version}.jar"/>
-    <property name="ivy.dep.file" value="${basedir}/CoreDependencies/src/ivy.xml"/>
-    <property name="ivy.settings.file" value="${basedir}/CoreDependencies/src/ivysettings.xml"/>
-    <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
-
-    <target name="update-dependencies-clean-build" description="Download dependencies and build all modules in the suite.">
+    <target name="update-dependencies-clean-build" 
+            description="Download dependencies and build all modules in the suite.">
         <ant target="clean"/>
-        <ant target="clean-dependencies"/>
-        <ant target="download-dependencies"/>
         <ant target="build">
             <property name="update.dependencies" value="true"/>
+            <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
         </ant>
     </target>
 
     <target name="update-dependencies-clean-build-no-debug" 
             description="Download dependencies and build all modules in the suite and exclude debugging.">
         <ant target="clean"/>
-        <ant target="clean-dependencies"/>
-        <ant target="download-dependencies"/>
         <ant target="build">
             <property name="update.dependencies" value="true"/>
             <property name="build.compiler.debug" value="false"/>
+            <property name="ivy.lib.dir" value="${basedir}/CoreDependencies/release/modules/ext"/>
         </ant>
     </target>
-
-    <target name="-check-ivy">
-        <available file="${ivy.jar.file}" property="ivy.skip.download"/>
-    </target>
-
-    <target name="-download-ivy" unless="ivy.skip.download" depends="-check-ivy">
-        <mkdir dir="${ivy.jar.dir}"/>
-        <echo message="installing ivy..."/>
-        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
-             dest="${ivy.jar.file}" usetimestamp="true"/>
-    </target>
-
-    <target name="-load-ivy-tasks" depends="-download-ivy">
-        <path id="ivy.lib.path">
-            <pathelement location="${ivy.jar.file}"/>
-        </path>
-        <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
-    </target>
-
-    <target name="-download-unfolding-maps">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing unfolding-maps..."/>
-        <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/unfolding-master-20171010.jar"
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-    </target>
-    
-    <target name="-download-gluegen">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing gluegen..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-linux-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-linux-i586.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-macosx-universal.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-windows-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/gluegen-rt-natives-windows-i586.jar"/>
-        </get>
-    </target>
-    
-    <target name="-download-jocl">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing jocl..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-linux-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-linux-i586.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-macosx-universal.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-windows-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jocl-natives-windows-i586.jar"/>
-        </get>
-    </target>
-    
-    <target name="-download-jogl">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing jogl..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-linux-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-linux-i586.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-macosx-universal.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-windows-amd64.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/jogl-all-natives-windows-i586.jar"/>
-        </get>
-    </target>
-    
-    <target name="-download-newt">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing newt..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/newt.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/newt-natives-windows-i586.jar"/>
-        </get>
-    </target>
-    
-    <target name="-download-mainwindow">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing mainwindow..."/>
-        <get dest="${ivy.lib.dir}" usetimestamp="true">
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow-natives-windows-i586.jar"/>
-            <url url="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/JOGL%202.4.0/nativewindow.jar"/>
-        </get>
-    </target>
-    
-    <target name="-download-processing">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <echo message="installing processing..."/>
-        <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/Processing%204.0/core.jar"
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-    </target>
-    
-    <target name="-download-javahelp">
-        <echo message="installing netbeans javahelp module..."/>
-        <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/NetBeans%20Help/org-netbeans-modules-javahelp.jar" 
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-        <condition property="javahelp.isupdated" value="true">
-            <filesmatch file1="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" 
-                        file2="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar"/>
-        </condition>
-        <delete file="${nbplatform.default.netbeans.dest.dir}/platform/modules/org-netbeans-modules-javahelp.jar" unless:true="${javahelp.isupdated}"/>
-        <copy file="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar" todir="${nbplatform.default.netbeans.dest.dir}/platform/modules/" unless:true="${javahelp.isupdated}"/>
-        <delete file="${ivy.lib.dir}/org-netbeans-modules-javahelp.jar"/>
-        
-        <get src="https://raw.githubusercontent.com/constellation-app/third-party-dependencies/master/NetBeans%20Help/jhall-2.0_05.jar" 
-             dest="${ivy.lib.dir}" usetimestamp="true"/>
-        <available file="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/jhall-2.0_05.jar" property="jhall.isupdated"/>
-        <copy file="${ivy.lib.dir}/jhall-2.0_05.jar" todir="${nbplatform.default.netbeans.dest.dir}/platform/modules/ext/" unless:true="${jhall.isupdated}"/>
-        <delete file="${ivy.lib.dir}/jhall-2.0_05.jar"/>
-    </target>
-
-    <target name="download-dependencies" 
-            depends="-load-ivy-tasks,-download-unfolding-maps,-download-gluegen,-download-jocl,-download-jogl,-download-newt,-download-mainwindow,-download-processing,-download-javahelp"
-            description="Download dependent libraries.">
-        <mkdir dir="${ivy.lib.dir}"/>
-        <ivy:resolve/>
-        <ivy:retrieve/>
-
-        <pathconvert property="ivy.classpath.computed" dirsep="/" pathsep=":">
-            <path>
-                <fileset dir="${ivy.lib.dir}" includes="*.jar"/>
-            </path>
-            <map from="${basedir}${file.separator}" to=""/>
-        </pathconvert>
-
-        <propertyfile file="${basedir}/nbproject/project.properties">
-            <entry operation="=" key="ivy.classpath" value="${ivy.classpath.computed}"/>
-        </propertyfile>
-    </target>
-
-    <target name="clean-dependencies" description="Clean downloaded libraries.">
-        <delete dir="${ivy.lib.dir}"/>
-    </target>
-
-    <target name="clean-ivy" depends="clean-dependencies" description="Clean ivy.">
-        <delete dir="${ivy.jar.dir}"/>
-        <ivy:cleancache/>
-        <propertyfile file="${basedir}/nbproject/project.properties">
-            <entry operation="=" key="ivy.classpath" value=""/>
-        </propertyfile>
-    </target>
-
-    <target name="-pre-compile" depends="download-dependencies"/>
-
-    <target name="-pre-compile-single" depends="download-dependencies"/>
 
     <!-- Override build to add branding update: algol -->
     <!-- Commented out because propertyfile writes a timestamp to the properties file, which is a problem for source control. -->
@@ -191,27 +38,5 @@
             <entry key="CTL_MainWindow_Title" value="${app.title} ${app.version}" />
             <entry key="CTL_MainWindow_Title_No_Project" value="${app.title} ${app.version}" />
         </propertyfile>
-    </target>
-    
-    <!-- Useful Dependency Utilities -->
-
-    <target name="dependency-report-html" depends="-load-ivy-tasks,-init-build-dir" 
-            description="Generate a detailed dependency report">
-        <delete dir="${suite.build.dir}/ivy-reports"/>
-        <mkdir dir="${suite.build.dir}/ivy-reports" />
-
-        <ivy:resolve type="${ivy.resolve.types}"/>
-        <ivy:report todir="${suite.build.dir}/ivy-reports" graph="false" xml="false"/>
-    </target>
-
-    <target name="dependency-tree" depends="-load-ivy-tasks" 
-            description="Output the dependencies in a tree layout to the console.">
-        <ivy:dependencytree/>
-    </target>
-
-    <target name="check-latest-version" depends="-load-ivy-tasks" 
-            description="Check whether there is a new release of a dependency.">
-        <ivy:resolve/>
-        <ivy:checkdepsupdate showTransitive="false" revisionToCheck="latest.release"/>
     </target>
 </project>

@@ -3,6 +3,7 @@
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import.
 * Added basic support for MacOS.
+* Added `ProjectUpdater` which will manage adding dependencies to the `project.xml` file.
 * Fixed a label rendering bug on MacOS.
 * Fixed a DPI scaling bug on MacOS and Windows.
 * Fixed a bug effecting the histogram scrolling.
