@@ -107,16 +107,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                     t.interrupt();
                 }
             }
-            final Thread thread = new Thread(UPDATE_TABLE) {
+            /*final Thread thread = new Thread(UPDATE_TABLE) {
                 @Override
                 public void run() {
                     if (this.isInterrupted()) {
                         return;
-                    }
+                    }*/
                     pane.updateTable(graph, currentState);
-                }
+                /*}
             };
-            thread.start();
+            thread.start();*/
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -189,16 +189,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                     t.interrupt();
                 }
             }
-            final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
+            /*final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
                 @Override
                 public void run() {
                     if (this.isInterrupted()) {
                         return;
-                    }
+                    }*/
                     pane.updateTable(graph, currentState);
-                }
+                /*}
             };
-            tableUpdateThread.start();
+            tableUpdateThread.start();*/
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
                 columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -391,16 +391,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 t.interrupt();
             }
         }
-        final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
+        /*final Thread tableUpdateThread = new Thread(UPDATE_TABLE) {
             @Override
             public void run() {
                 if (this.isInterrupted()) {
                     return;
-                }
+                }*/
                 pane.updateTable(graph, currentState);
-            }
+            /*}
         };
-        tableUpdateThread.start();
+        tableUpdateThread.start();*/
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
             columnAttributeChanges.getSecond().forEach(attributeTuple -> {

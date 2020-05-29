@@ -629,28 +629,45 @@ public final class TableViewPane extends BorderPane {
      * @param state the current table view state.
      */
     public void updateTable(final Graph graph, final TableViewState state) {
-        //final Thread thread = new Thread("Table View: Update Table") {
-            //@Override
-            //public void run() {
-                //if (this.isInterrupted()) {
-                    //return;
-                //}
+        final Thread thread = new Thread("Table View: Update Table") {
+            @Override
+            public void run() {
+                if (this.isInterrupted()) {
+                    return;
+                }
                 updateToolbar(state);
                 if (graph != null) {
-                    updateColumns(graph, state);
-                    updateData(graph, state);
-                    updateSelection(graph, state);
-                    Platform.runLater(() -> {
-                        updateSortOrder();
-                    });
-                } else {
+                    int i = 0;
+                    while (!this.isInterrupted() && i < 4) {
+                        switch (i) {
+                            case 0:
+                                updateColumns(graph, state);
+                                break;
+                            case 1:
+                                updateData(graph, state);
+                                break;
+                            case 2:
+                                updateSelection(graph, state);
+                                break;
+                            case 3:
+                                Platform.runLater(() -> {
+                                    updateSortOrder();
+                                });
+                                break;
+                            default:
+                                LOGGER.log(Level.SEVERE, "Unexpected execution of default switch case!");
+                                break;
+                        } 
+                        i++;
+                    }
+                } else if (!this.isInterrupted()) {
                     Platform.runLater(() -> {
                         table.getColumns().clear();
                     });
                 }
-            //}
-        //};
-        //thread.start();
+            }
+        };
+        thread.start();
     }
 
     /**
