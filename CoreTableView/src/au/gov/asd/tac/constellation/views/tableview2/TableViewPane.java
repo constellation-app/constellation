@@ -637,8 +637,10 @@ public final class TableViewPane extends BorderPane {
                 }
                 updateToolbar(state);
                 if (graph != null) {
-                    int i = 0;
-                    while (!this.isInterrupted() && i < 4) {
+                    for (int i = 0; i < 4; i++) {
+                        if (this.isInterrupted()) {
+                            break;
+                        }
                         switch (i) {
                             case 0:
                                 updateColumns(graph, state);
@@ -657,8 +659,7 @@ public final class TableViewPane extends BorderPane {
                             default:
                                 LOGGER.log(Level.SEVERE, "Unexpected execution of default switch case!");
                                 break;
-                        } 
-                        i++;
+                        }
                     }
                 } else if (!this.isInterrupted()) {
                     Platform.runLater(() -> {
