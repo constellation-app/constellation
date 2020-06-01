@@ -189,7 +189,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         refreshListeners();
-        Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();        
+        Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
             SaveAsCapable saveAs = inst.iterator().next();
             File newFile = getNewFileName();
