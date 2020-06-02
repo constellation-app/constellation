@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
@@ -77,7 +78,6 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     public static final DataFormat VERTEX_DATA_FORMAT = new DataFormat(MIMETYPE);
     private static final int SMALL_ICON_IMAGE_SIZE = 16;
     private static final int LARGE_ICON_IMAGE_SIZE = 64;
-    private static final String HIGHLIGHT_BLUE_STYLE = "-fx-background-color: rgb(30,144,255); -fx-padding: 2 5 2 5;";
 
     private final Label schemaLabel;
     private final TreeView<SchemaVertexType> treeView;
@@ -193,23 +193,23 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
 
     private VBox addFilter() {
         filterText.setPromptText("Filter Node types");
-        final ToggleGroup tg = new ToggleGroup();
-        startsWithRb.setToggleGroup(tg);
+        final ToggleGroup toggleGroup = new ToggleGroup();
+        startsWithRb.setToggleGroup(toggleGroup);
         startsWithRb.setPadding(new Insets(0, 0, 0, 5));
         startsWithRb.setSelected(true);
-        final RadioButton containsRb = new RadioButton("Contains");
-        containsRb.setToggleGroup(tg);
-        containsRb.setPadding(new Insets(0, 0, 0, 5));
+        final RadioButton containsRadioButton = new RadioButton("Contains");
+        containsRadioButton.setToggleGroup(toggleGroup);
+        containsRadioButton.setPadding(new Insets(0, 0, 0, 5));
 
-        tg.selectedToggleProperty().addListener((ov, oldValue, newValue) -> {
+        toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             populateTree();
         });
 
-        filterText.textProperty().addListener((ov, oldValue, newValue) -> {
+        filterText.textProperty().addListener((observable, oldValue, newValue) -> {
             populateTree();
         });
 
-        final HBox headerBox = new HBox(new Label("Filter: "), filterText, startsWithRb, containsRb);
+        final HBox headerBox = new HBox(new Label("Filter: "), filterText, startsWithRb, containsRadioButton);
         headerBox.setAlignment(Pos.CENTER_LEFT);
         headerBox.setPadding(new Insets(5));
 
@@ -223,23 +223,18 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         treeView.setRoot(root);
     }
 
-    private boolean isFilterMatchTextCurrentNodeOrAnyChildren(SchemaVertexType treeItem) {
-        boolean found = isFilterMatchText(treeItem.getName());
-        if (!found) {
-            found = isFilterMatchTextAnyProperty(treeItem);
-        }
-        if (!found) {
-            found = isFilterMatchTextAnyChildNodes(treeItem);
-        }
-        return found;
+    private boolean isFilterMatchCurrentNodeOrAnyChildren(SchemaVertexType treeItem) {
+        return filterText.getText().toLowerCase().isEmpty() ? false
+                : isFilterMatchText(treeItem.getName()) || isFilterMatchAnyProperty(treeItem) || isFilterMatchAnyChildNodes(treeItem);
     }
 
-    private boolean isFilterMatchTextAnyChildNodes(SchemaVertexType treeItem) {
+    private boolean isFilterMatchAnyChildNodes(SchemaVertexType treeItem) {
         boolean found = false;
-        final List<SchemaVertexType> children = vertexTypes.stream().filter(vt -> vt.getSuperType() == treeItem && vt != treeItem).collect(Collectors.toList());
+        final List<SchemaVertexType> children = vertexTypes.stream().filter(vt
+                -> vt.getSuperType() == treeItem && vt != treeItem).collect(Collectors.toList());
 
         for (SchemaVertexType child : children) {
-            found = isFilterMatchTextCurrentNodeOrAnyChildren(child);
+            found = isFilterMatchCurrentNodeOrAnyChildren(child);
             if (found) {
                 break;
             }
@@ -247,55 +242,22 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         return found;
     }
 
-    private boolean isFilterMatchTextAnyProperty(SchemaVertexType treeItem) {
-        boolean found = false;
-        final String name = treeItem.getName();
-        found = isFilterMatchText(name);
-        if (!found) {
-            final String description = treeItem.getDescription();
-            found = isFilterMatchText(description);
-        }
-        if (!found) {
-            final String color = treeItem.getColor().toString();
-            found = isFilterMatchText(color);
-        }
-        if (!found) {
-            final String foregroundIconLabel = treeItem.getForegroundIcon().getName();
-            found = isFilterMatchText(foregroundIconLabel);
-        }
-        if (!found) {
-            if (treeItem.getValidationRegex() != null) {
-                final String validationLabel = treeItem.getValidationRegex().toString();
-                found = isFilterMatchText(validationLabel);
-            }
-        }
-        if (!found) {
-            if (treeItem.getDetectionRegex() != null) {
-                final String detectionLabel = treeItem.getDetectionRegex().toString();
-                found = isFilterMatchText(detectionLabel);
-            }
-        }
-        if (!found) {
-            final String hierachy = treeItem.getHierachy();
-            found = isFilterMatchText(hierachy);
-        }
-        if (!found) {
-            for (String property : treeItem.getProperties().keySet()) {
-                final Object propertyValue = treeItem.getProperty(property);
-                if (propertyValue != null) {
-                    found = isFilterMatchText(propertyValue.toString());
-                    if (found) {
-                        break;
-                    }
-                }
-            }
-        }
-        return found;
+    private boolean isFilterMatchAnyProperty(SchemaVertexType treeItem) {
+        return isFilterMatchText(treeItem.getName())
+                || isFilterMatchText(treeItem.getDescription())
+                || isFilterMatchText(treeItem.getColor().getName())
+                || isFilterMatchText(treeItem.getForegroundIcon().getName())
+                || isFilterMatchText(Objects.toString(treeItem.getValidationRegex(), ""))
+                || isFilterMatchText(Objects.toString(treeItem.getDetectionRegex(), ""))
+                || isFilterMatchText(treeItem.getHierachy())
+                || !(treeItem.getProperties().keySet().isEmpty()) && treeItem.getProperties().keySet().stream().anyMatch(property
+                -> property != null && isFilterMatchText(property.toString())
+        );
     }
 
     private boolean isFilterMatchText(final String propertyValue) {
         final String filterInputText = filterText.getText().toLowerCase();
-        return filterInputText.isEmpty() ? false : startsWithRb.isSelected()
+        return (filterInputText.isEmpty() || propertyValue.isEmpty()) ? false : startsWithRb.isSelected()
                 ? propertyValue.toLowerCase().startsWith(filterInputText) : propertyValue.toLowerCase().contains(filterInputText);
     }
 
@@ -420,12 +382,12 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                         grid.add(propertyLabel, 1, gridPosition);
                     }
                 }
-                for (Node child : grid.getChildren()) {
-                    Integer column = GridPane.getColumnIndex(child);
-                    Integer row = GridPane.getRowIndex(child);
+                for (final Node child : grid.getChildren()) {
+                    final Integer column = GridPane.getColumnIndex(child);
+                    final Integer row = GridPane.getRowIndex(child);
                     if (column > 0 && row != null && child instanceof Label) {
                         if (isFilterMatchText(((Label) child).getText())) {
-                            child.setStyle(HIGHLIGHT_BLUE_STYLE);
+                            child.getStyleClass().add("schemaview-highlight-blue");
                         }
                     }
                 }
@@ -520,19 +482,19 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                     // Any vertextype that points to itself is in the root layer.
                     for (final SchemaVertexType vt : vertexTypes) {
                         if (vt.getSuperType() == vt) {
-                            if (isFilterMatchTextCurrentNodeOrAnyChildren(vt) || filterText.getText().toLowerCase().isEmpty()) {
-                            children.add(createNode(vt));
+                            if (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty()) {
+                                children.add(createNode(vt));
+                            }
                         }
-                    }
                     }
                 } else {
                     for (final SchemaVertexType vt : vertexTypes) {
                         if (vt.getSuperType() == value && vt != value) {
-                            if (isFilterMatchTextCurrentNodeOrAnyChildren(vt) || filterText.getText().toLowerCase().isEmpty()) {
-                            children.add(createNode(vt));
+                            if (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty()) {
+                                children.add(createNode(vt));
+                            }
                         }
                     }
-                }
                 }
                 return children;
             }
