@@ -62,7 +62,7 @@ public class ElementList {
      *
      * @param original the other ElementList.
      */
-    public ElementList(ElementList original) {
+    public ElementList(final ElementList original) {
         this.capacity = original.capacity;
         this.size = original.size;
         this.first = original.first;
@@ -78,7 +78,7 @@ public class ElementList {
      *
      * @param elementStore the ElementStore.
      */
-    public ElementList(ElementStore elementStore) {
+    public ElementList(final ElementStore elementStore) {
         this(elementStore.getCapacity());
         int elementCount = elementStore.getCount();
         for (int i = 0; i < elementCount; i++) {
@@ -92,7 +92,7 @@ public class ElementList {
      *
      * @param newCapacity the new capacity.
      */
-    public void ensureCapacity(int newCapacity) {
+    public void ensureCapacity(final int newCapacity) {
         if (newCapacity > capacity) {
             this.prev = Arrays.copyOf(prev, newCapacity);
             this.next = Arrays.copyOf(next, newCapacity);
@@ -113,7 +113,7 @@ public class ElementList {
      * @param element the element to be added.
      * @return true if the element was added (not already in the list)
      */
-    public boolean addToFront(int element) {
+    public boolean addToFront(final int element) {
 
         // If the element is not currently in the list...
         if (prev[element] == Graph.NOT_FOUND) {
@@ -157,7 +157,7 @@ public class ElementList {
      * @param element the element to be added.
      * @return true if the element was added (not already in the list)
      */
-    public boolean addToBack(int element) {
+    public boolean addToBack(final int element) {
 
         // If the element is not currently in the list...
         if (prev[element] == Graph.NOT_FOUND) {
@@ -197,7 +197,7 @@ public class ElementList {
      * @param element the element.
      * @return true if the element is currently in the list.
      */
-    public boolean contains(int element) {
+    public boolean contains(final int element) {
         return prev[element] != Graph.NOT_FOUND;
     }
 
@@ -238,7 +238,7 @@ public class ElementList {
      * @param element the element.
      * @return true if the element was removed (was previously in the list).
      */
-    public boolean remove(int element) {
+    public boolean remove(final int element) {
         if (prev[element] == Graph.NOT_FOUND) {
             return false;
         }

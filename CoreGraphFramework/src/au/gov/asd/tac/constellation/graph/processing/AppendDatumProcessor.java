@@ -42,13 +42,13 @@ public abstract class AppendDatumProcessor<T, U> implements DatumProcessor<T, U>
      * a single output record which will be appended to each record produced by
      * the lead processor.
      */
-    public AppendDatumProcessor(DatumProcessor<T, U> leadProcessor, DatumProcessor<T, U> appendProcessor) {
+    public AppendDatumProcessor(final DatumProcessor<T, U> leadProcessor, final DatumProcessor<T, U> appendProcessor) {
         this.leadProcessor = leadProcessor;
         this.appendProcessor = appendProcessor;
     }
 
     @Override
-    public void process(U parameters, T input, RecordStore output) throws ProcessingException {
+    public void process(final U parameters, final T input, final RecordStore output) throws ProcessingException {
         HookRecordStore hookOutput = new HookRecordStore(output, (RecordStore recordStore) -> {
             try {
                 appendProcessor.process(parameters, input, recordStore);

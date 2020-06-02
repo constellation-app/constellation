@@ -15,15 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import java.io.Closeable;
-
 /**
  * A ReadableGraph extends GraphReadMethods and provides a release() method
  * allowing the caller to release the read lock on the graph.
  *
  * @author sirius
  */
-public interface ReadableGraph extends GraphReadMethods, Closeable {
+public interface ReadableGraph extends GraphReadMethods, AutoCloseable {
 
     /**
      * Releases the read lock on the graph. After this is called, this
@@ -31,4 +29,9 @@ public interface ReadableGraph extends GraphReadMethods, Closeable {
      * point on.
      */
     public void release();
+    
+    @Override
+    public default void close() {
+        release();
+    }
 }

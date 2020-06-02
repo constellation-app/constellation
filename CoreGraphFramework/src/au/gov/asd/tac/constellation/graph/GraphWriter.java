@@ -22,6 +22,6 @@ package au.gov.asd.tac.constellation.graph;
  */
 public interface GraphWriter<V> {
 
-    public V write(GraphWriteMethods graph) throws InterruptedException;
+    public V write(final GraphWriteMethods graph) throws InterruptedException;
 
 }

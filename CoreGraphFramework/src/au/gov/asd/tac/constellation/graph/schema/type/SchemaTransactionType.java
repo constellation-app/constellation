@@ -175,7 +175,7 @@ public final class SchemaTransactionType extends SchemaElementType<SchemaTransac
     }
 
     @Override
-    public SchemaTransactionType rename(String name) {
+    public SchemaTransactionType rename(final String name) {
         return new SchemaTransactionType.Builder(this, name)
                 .build();
     }

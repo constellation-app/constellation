@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
+import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -167,7 +169,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setGraphEdit(GraphEdit graphEdit) {
+    public void setGraphEdit(final GraphEdit graphEdit) {
         this.graphEdit = graphEdit;
     }
 
@@ -523,33 +525,27 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             while (removed.getSize() > 0) {
 
                 // Get the next element to be added back into the index
-                int element = removed.getFirst();
+                final int element = removed.getFirst();
 
                 // Attempt to add the element to the index
-                int existingElement = index.add(element);
+                final int existingElement = index.add(element);
 
                 // If there was no clash in the index...
                 if (existingElement < 0) {
-
                     removed.remove(element);
 
-                    // If the element was not unique then attempt a merge
+                // If the element was not unique then attempt a merge
                 } else {
-
                     if (allowMerging && graphElementMerger != null) {
-                        try {
-                            if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
-                                continue;
-                            }
-                        } catch (final Exception ex) {
-                            // TODO: throw exception or log error?
+                        if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
+                            continue;
                         }
                     }
 
                     final StringBuilder elementValues = new StringBuilder("New[" + element + "]: ");
                     final StringBuilder existingElementValues = new StringBuilder("Existing[" + existingElement + "]: ");
                     String separator = "";
-                    for (int attribute : primaryKeys[elementType.ordinal()]) {
+                    for (final int attribute : primaryKeys[elementType.ordinal()]) {
 
                         elementValues.append(separator);
                         existingElementValues.append(separator);
@@ -891,7 +887,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public int addTransaction(int sourceVertex, int destinationVertex, final boolean directed) {
+    public int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed) {
         return addTransaction(-1, sourceVertex, destinationVertex, directed);
     }
 
@@ -1165,7 +1161,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionSourceVertex(int transaction, int newSourceVertex) {
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex) {
 
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {
@@ -1203,7 +1199,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void setTransactionDestinationVertex(int transaction, int newDestinationVertex) {
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex) {
 
         // Ensure that the transaction exists
         if (!tStore.elementExists(transaction)) {

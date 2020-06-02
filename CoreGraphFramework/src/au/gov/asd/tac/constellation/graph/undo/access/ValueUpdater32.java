@@ -23,10 +23,10 @@ import au.gov.asd.tac.constellation.graph.undo.UndoGraphEditState;
  */
 public interface ValueUpdater32 {
 
-    public int store(UndoGraphEditState state, int value);
+    public int store(final UndoGraphEditState state, final int value);
 
-    public void updateExecute(UndoGraphEditState state, int parameters);
+    public void updateExecute(final UndoGraphEditState state, final int parameters);
 
-    public void updateUndo(UndoGraphEditState state, int parameters);
+    public void updateUndo(final UndoGraphEditState state, final int parameters);
 
 }

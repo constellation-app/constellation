@@ -7,6 +7,10 @@
 * Fixed a DPI scaling bug on MacOS and Windows.
 * Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
+* Moved `ImmutableObjectCache`, `IntHashSet` and `Timer` from the Graph Framework module to the Utilities module.
+* Removed deprecated methods from the graph API - `Graph#getWritableGraphOnEDT`, `Graph#undo`, `Graph#redo` and `GraphWriteMethods#addAttribute`.
+* Removed `GraphUtilites` from the Graph Framework module as it was unused.
+* Updated ReadableGraph to allow use with the try-with-resources pattern.
 * Updated ImportController's processImport function to return the list of files it has imported.
 * Updated parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
 * Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`

@@ -26,7 +26,7 @@ public class DoubleValueUpdater2 implements ValueUpdater64 {
     public static final DoubleValueUpdater2 INSTANCE = new DoubleValueUpdater2();
 
     @Override
-    public int store(UndoGraphEditState state, long d) {
+    public int store(final UndoGraphEditState state, long d) {
         if (d != state.getCurrentDouble()) {
             long delta = d - state.getCurrentDouble();
             state.setCurrentDouble(d);
@@ -45,64 +45,64 @@ public class DoubleValueUpdater2 implements ValueUpdater64 {
     }
 
     @Override
-    public void updateExecute(UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, int parameters) {
         DOUBLE_GETTERS[parameters & 3].getExecute(state);
     }
 
     @Override
-    public void updateUndo(UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, int parameters) {
         DOUBLE_GETTERS[parameters & 3].getUndo(state);
     }
 
     private static final ValueGetter[] DOUBLE_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState state) {
+            public void getExecute(final UndoGraphEditState state) {
                 // Default case when the position of the value getter is equal to 0
                 // It has been intentionally left blank
             }
 
             @Override
-            public void getUndo(UndoGraphEditState state) {
+            public void getUndo(final UndoGraphEditState state) {
                 // Default case when the position of the value getter is equal to 0
                 // It has been intentionally left blank
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState state) {
+            public void getExecute(final UndoGraphEditState state) {
                 state.setCurrentDouble(state.getCurrentDouble() + state.getShortStack()[state.getShortPointer()]);
                 state.setShortPointer(state.getShortPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState state) {
+            public void getUndo(final UndoGraphEditState state) {
                 state.setShortPointer(state.getShortPointer() - 1);
                 state.setCurrentDouble(state.getCurrentDouble() - state.getShortStack()[state.getShortPointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState state) {
+            public void getExecute(final UndoGraphEditState state) {
                 state.setCurrentDouble(state.getCurrentDouble() + state.getIntStack()[state.getIntPointer()]);
                 state.setIntPointer(state.getIntPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState state) {
+            public void getUndo(final UndoGraphEditState state) {
                 state.setIntPointer(state.getIntPointer() - 1);
                 state.setCurrentDouble(state.getCurrentDouble() - state.getIntStack()[state.getIntPointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState state) {
+            public void getExecute(final UndoGraphEditState state) {
                 state.setCurrentDouble(state.getCurrentDouble() + state.getLongStack()[state.getLongPointer()]);
                 state.setLongPointer(state.getLongPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState state) {
+            public void getUndo(final UndoGraphEditState state) {
                 state.setLongPointer(state.getLongPointer() - 1);
                 state.setCurrentDouble(state.getCurrentDouble() - state.getLongStack()[state.getLongPointer()]);
             }
