@@ -33,7 +33,7 @@ public class StringAttributeInteraction extends AbstractAttributeInteraction<Str
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         return (String) value;
     }
 

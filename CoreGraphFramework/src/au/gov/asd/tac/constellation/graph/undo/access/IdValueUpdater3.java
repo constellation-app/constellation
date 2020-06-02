@@ -28,7 +28,7 @@ public class IdValueUpdater3 implements ValueUpdater32 {
     public static final IdValueUpdater3 INSTANCE = new IdValueUpdater3();
 
     @Override
-    public int store(UndoGraphEditState state, int id) {
+    public int store(final UndoGraphEditState state, int id) {
         int delta = id - state.getCurrentId();
         state.setCurrentId(id);
         switch (delta) {
@@ -57,106 +57,106 @@ public class IdValueUpdater3 implements ValueUpdater32 {
     }
 
     @Override
-    public void updateExecute(UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, int parameters) {
         ID_GETTERS[parameters & 7].getExecute(state);
     }
 
     @Override
-    public void updateUndo(UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, int parameters) {
         ID_GETTERS[parameters & 7].getUndo(state);
     }
 
     private static final ValueGetter[] ID_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() - 2);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + 2);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() - 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + 1);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 // This method has been left intentionally blank
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 // This method has been left intentionally blank
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() - 1);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + 2);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() - 2);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + edit.getByteStack()[edit.getBytePointer()]);
                 edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setBytePointer(edit.getBytePointer() - 1);
                 edit.setCurrentId(edit.getCurrentId() - edit.getByteStack()[edit.getBytePointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + edit.getShortStack()[edit.getShortPointer()]);
                 edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setShortPointer(edit.getShortPointer() - 1);
                 edit.setCurrentId(edit.getCurrentId() - edit.getShortStack()[edit.getShortPointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentId(edit.getCurrentId() + edit.getIntStack()[edit.getIntPointer()]);
                 edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setIntPointer(edit.getIntPointer() - 1);
                 edit.setCurrentId(edit.getCurrentId() - edit.getIntStack()[edit.getIntPointer()]);
             }

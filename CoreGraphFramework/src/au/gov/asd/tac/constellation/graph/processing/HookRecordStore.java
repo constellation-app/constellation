@@ -38,7 +38,7 @@ public class HookRecordStore implements RecordStore {
      * @param callback A {@link HookRecordStoreCallback} to facilitate extra
      * operations when adding data to the specified {@link RecordStore}.
      */
-    public HookRecordStore(RecordStore recordStore, HookRecordStoreCallback callback) {
+    public HookRecordStore(final RecordStore recordStore, final HookRecordStoreCallback callback) {
         this.recordStore = recordStore;
         this.callback = callback;
     }
@@ -51,7 +51,7 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public void add(RecordStore recordStore) {
+    public void add(final RecordStore recordStore) {
         throw new UnsupportedOperationException("You cannot add a RecordStore to a HookRecordStore.");
     }
 
@@ -61,17 +61,17 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public String get(int record, String key) {
+    public String get(final int record, final String key) {
         return recordStore.get(record, key);
     }
 
     @Override
-    public List<String> getAll(String key) {
+    public List<String> getAll(final String key) {
         return recordStore.getAll(key);
     }
 
     @Override
-    public boolean hasValue(int record, String key) {
+    public boolean hasValue(final int record, final String key) {
         return recordStore.hasValue(record, key);
     }
 
@@ -86,7 +86,7 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public void set(int record, String key, String value) {
+    public void set(final int record, final String key, final String value) {
         recordStore.set(record, key, value);
     }
 
@@ -101,17 +101,17 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public List<String> values(int record) {
+    public List<String> values(final int record) {
         return recordStore.values(record);
     }
 
     @Override
-    public String get(String key) {
+    public String get(final String key) {
         return recordStore.get(key);
     }
 
     @Override
-    public boolean hasValue(String key) {
+    public boolean hasValue(final String key) {
         return recordStore.hasValue(key);
     }
 
@@ -121,7 +121,7 @@ public class HookRecordStore implements RecordStore {
     }
 
     @Override
-    public void set(String key, String value) {
+    public void set(final String key, final String value) {
         recordStore.set(key, value);
     }
 

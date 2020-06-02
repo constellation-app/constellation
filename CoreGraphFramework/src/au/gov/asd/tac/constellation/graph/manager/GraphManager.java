@@ -51,7 +51,7 @@ public abstract class GraphManager {
      * @param listener the new listener.
      * @see GraphManagerListener
      */
-    public abstract void addGraphManagerListener(GraphManagerListener listener);
+    public abstract void addGraphManagerListener(final GraphManagerListener listener);
 
     /**
      * Removes a listener from this GraphManager.
@@ -59,7 +59,7 @@ public abstract class GraphManager {
      * @param listener the listener to remove.
      * @see GraphManagerListener
      */
-    public abstract void removeGraphManagerListener(GraphManagerListener listener);
+    public abstract void removeGraphManagerListener(final GraphManagerListener listener);
 
     /**
      * Returns a map of all graphs currently open in the application, keyed by

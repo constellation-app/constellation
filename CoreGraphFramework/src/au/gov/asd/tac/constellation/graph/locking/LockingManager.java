@@ -184,11 +184,11 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         private long modificationCounter;
 
-        public void setModificationCounter(long modificationCounter) {
+        public void setModificationCounter(final long modificationCounter) {
             this.modificationCounter = modificationCounter;
         }
 
-        public boolean hasChanged(long modificationCounter) {
+        public boolean hasChanged(final long modificationCounter) {
             return this.modificationCounter != modificationCounter;
         }
 

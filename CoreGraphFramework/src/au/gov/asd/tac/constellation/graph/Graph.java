@@ -93,14 +93,14 @@ public interface Graph extends GraphConstants {
      *
      * @param listener The PropertyChangeListener to add to the graph.
      */
-    void addGraphChangeListener(GraphChangeListener listener);
+    void addGraphChangeListener(final GraphChangeListener listener);
 
     /**
      * Remove a PropertyChangeListener from the graph.
      *
      * @param listener The PropertyChangeListener to remove from the graph.
      */
-    void removeGraphChangeListener(GraphChangeListener listener);
+    void removeGraphChangeListener(final GraphChangeListener listener);
 
     public ReadableGraph getReadableGraph();
 
@@ -115,7 +115,7 @@ public interface Graph extends GraphConstants {
      * @throws InterruptedException if the specified GraphReader throws an
      * InterruptedException.
      */
-    public default <V> V readFromGraph(GraphReader<V> reader) throws InterruptedException {
+    public default <V> V readFromGraph(final GraphReader<V> reader) throws InterruptedException {
         final ReadableGraph rg = getReadableGraph();
         try {
             return reader.read(rg);
@@ -147,7 +147,7 @@ public interface Graph extends GraphConstants {
      * @throws IllegalStateException if this method is called on the event
      * dispatch thread.
      */
-    public WritableGraph getWritableGraph(String name, boolean significant) throws InterruptedException;
+    public WritableGraph getWritableGraph(final String name, final boolean significant) throws InterruptedException;
 
     /**
      * A convenience method that allows simple graph write operations to be
@@ -167,17 +167,17 @@ public interface Graph extends GraphConstants {
      * @throws InterruptedException if the specified Writer throws an
      * InterruptedException.
      */
-    public default <V> V writeToGraph(String name, boolean significant, GraphWriter<V> writer) throws InterruptedException {
-        WritableGraph wg = getWritableGraph(name, significant);
+    public default <V> V writeToGraph(final String name, final boolean significant, final GraphWriter<V> writer) throws InterruptedException {
+        final WritableGraph wg = getWritableGraph(name, significant);
         boolean error = false;
         try {
             return writer.write(wg);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             error = true;
             throw ex;
-        } catch (Exception e) {
+        } catch (final Exception ex) {
             error = true;
-            throw new RuntimeException(e);
+            throw new RuntimeException(ex);
         } finally {
             if (error) {
                 wg.rollBack();
@@ -214,7 +214,7 @@ public interface Graph extends GraphConstants {
      * @throws IllegalStateException if this method is called on the event
      * dispatch thread.
      */
-    public WritableGraph getWritableGraph(String name, boolean significant, Object editor) throws InterruptedException;
+    public WritableGraph getWritableGraph(final String name, final boolean significant, final Object editor) throws InterruptedException;
 
     /**
      * Gets a write lock on the graph and returns a WritableGraph that provides
@@ -237,7 +237,7 @@ public interface Graph extends GraphConstants {
      * @throws IllegalStateException if this method is called on the event
      * dispatch thread.
      */
-    public WritableGraph getWritableGraphNow(String name, boolean significant);
+    public WritableGraph getWritableGraphNow(final String name, final boolean significant);
 
     /**
      * Gets a write lock on the graph and returns a WritableGraph that provides
@@ -264,7 +264,7 @@ public interface Graph extends GraphConstants {
      * @throws IllegalStateException if this method is called on the event
      * dispatch thread.
      */
-    public WritableGraph getWritableGraphNow(String name, boolean significant, Object editor);
+    public WritableGraph getWritableGraphNow(final String name, final boolean significant, final Object editor);
 
     /**
      * Sets the UndoManager for this graph. The undo manager is responsible for
@@ -273,43 +273,5 @@ public interface Graph extends GraphConstants {
      *
      * @param undoManager the new UndoManager.
      */
-    public void setUndoManager(UndoManager undoManager);
-
-    /**
-     * Identical to {@link Graph#getWritableGraph(java.lang.String, boolean) }
-     * but is allowed to be called from the event dispatch thread.
-     *
-     * @param name The name of the edit used to modify the graph. This name will
-     * be displayed to the user and used to identify the edit in situations such
-     * as undo/redo.
-     * @param significant True if this is a significant edit. Significant edits
-     * appear as a distinct step in the undo/redo stack.
-     *
-     * @return a WritableGraph that provides methods to modify the graph.
-     *
-     * @throws InterruptedException if the thread is interrupted while waiting
-     * for the write lock.
-     * @deprecated because of the risk of deadlock.
-     * @see Graph#getWritableGraph(java.lang.String, boolean)
-     */
-    @Deprecated
-    public WritableGraph getWritableGraphOnEDT(String name, boolean significant) throws InterruptedException;
-
-//    /**
-//     * Causes the current undo manager to perform a single undo step on the
-//     * graph. Note that this should be run on the EDT, as updates to an
-//     * UndoManager occur on the EDT.
-//     *
-//     * @see UndoManager
-//     */
-//    public void undo();
-//
-//    /**
-//     * Causes the current undo manager to perform a single redo step on the
-//     * graph. Note that this should be run on the EDT, as updates to an
-//     * UndoManager occur on the EDT.
-//     *
-//     * @see UndoManager
-//     */
-//    public void redo();
+    public void setUndoManager(final UndoManager undoManager);
 }
