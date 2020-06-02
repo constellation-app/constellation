@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.awt.Dimension;
 import java.util.BitSet;
 
@@ -108,7 +108,7 @@ public class GridArranger implements Arranger {
 
         final int vxCount = wg.getVertexCount();
         if (vxCount > 0) {
-            final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+            final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
             final Dimension gridDimensions = getGridSize(params.getGridChoice());
             final int nRows = gridDimensions.height;
@@ -140,7 +140,7 @@ public class GridArranger implements Arranger {
             // columns, so for every left-side vertex we need to simultaneously
             // arrange a right-side vertex, which removes the right-side
             // vertex from being arranged later.
-            final BitSet vertices = GraphUtilities.vertexBits(wg);
+            final BitSet vertices = ArrangementUtilities.vertexBits(wg);
             int vxPos = 0;
             final int[] vxOrder = new int[vxCount];
             for (int vxId = vertices.nextSetBit(0); vxId >= 0; vxId = vertices.nextSetBit(vxId + 1)) {
@@ -266,7 +266,7 @@ public class GridArranger implements Arranger {
             }
 
             if (maintainMean) {
-                GraphUtilities.moveMean(wg, oldMean);
+                ArrangementUtilities.moveMean(wg, oldMean);
             }
         }
     }

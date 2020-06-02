@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.arrangements;
+package au.gov.asd.tac.constellation.plugins.arrangements.utilities;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.arrangements.GraphTaxonomy;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -37,7 +38,7 @@ import java.util.Set;
  *
  * @author algol
  */
-public final class GraphUtilities {
+public final class ArrangementUtilities {
 
     public static final int FUNDAMENTAL_SIZE = 2; //20;
 
@@ -177,7 +178,7 @@ public final class GraphUtilities {
      * @param oldMean the old mean that will be updated.
      */
     public static void moveMean(final GraphWriteMethods wg, final float[] oldMean) {
-        final float[] newMean = GraphUtilities.getXyzMean(wg);
+        final float[] newMean = ArrangementUtilities.getXyzMean(wg);
         final int xAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zAttr = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());

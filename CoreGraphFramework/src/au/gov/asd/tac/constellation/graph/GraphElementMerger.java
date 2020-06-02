@@ -40,5 +40,5 @@ public interface GraphElementMerger {
      * @param mergedElement the element that should be removed during the merge.
      * @return true if the 2 elements were able to be merged successfully.
      */
-    public boolean mergeElement(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement);
+    public boolean mergeElement(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement);
 }

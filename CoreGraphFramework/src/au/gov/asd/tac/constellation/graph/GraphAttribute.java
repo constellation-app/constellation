@@ -104,7 +104,7 @@ public class GraphAttribute implements Attribute, Serializable {
      * @param graph
      * @param attribute The attribute id
      */
-    public GraphAttribute(final GraphReadMethods graph, int attribute) {
+    public GraphAttribute(final GraphReadMethods graph, final int attribute) {
         this.id = attribute;
         this.elementType = graph.getAttributeElementType(attribute);
         this.attributeType = graph.getAttributeType(attribute);
@@ -214,7 +214,7 @@ public class GraphAttribute implements Attribute, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }

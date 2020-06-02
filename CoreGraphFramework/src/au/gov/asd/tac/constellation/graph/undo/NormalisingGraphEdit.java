@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.undo;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
-import au.gov.asd.tac.constellation.graph.GraphOperation;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,37 +32,37 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     private static final String NOT_SUPPORTED = "Not supported yet.";
 
-    public NormalisingGraphEdit(GraphEdit graphEdit) {
+    public NormalisingGraphEdit(final GraphEdit graphEdit) {
         this.graphEdit = graphEdit;
     }
 
     @Override
-    public void execute(GraphWriteMethods graph) {
+    public void execute(final GraphWriteMethods graph) {
         graphEdit.execute(graph);
     }
 
     @Override
-    public void undo(GraphWriteMethods graph) {
+    public void undo(final GraphWriteMethods graph) {
         graphEdit.undo(graph);
     }
 
     @Override
-    public void addChild(GraphEdit childEdit) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void addChild(final GraphEdit childEdit) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public void finish() {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setPrimaryKey(GraphElementType elementType, int[] oldKeys, int[] newKeys) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setPrimaryKey(final GraphElementType elementType, final int[] oldKeys, final int[] newKeys) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void addVertex(int vertex) {
+    public void addVertex(final int vertex) {
         Vertex newVertex = new Vertex(vertex);
         Vertex currentVertex = vertices.put(vertex, newVertex);
         if (currentVertex != null) {
@@ -72,7 +72,7 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void removeVertex(int vertex) {
+    public void removeVertex(final int vertex) {
         Vertex currentVertex = vertices.get(vertex);
         if (currentVertex == null) {
             currentVertex = new Vertex(vertex);
@@ -82,7 +82,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void addTransaction(int sourceVertex, int destinationVertex, boolean directed, int transaction) {
+    public void addTransaction(final int sourceVertex, 
+            final int destinationVertex, final boolean directed, final int transaction) {
 
         Vertex currentSource = vertices.get(sourceVertex);
         if (currentSource == null) {
@@ -109,7 +110,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void removeTransaction(int sourceVertex, int destinationVertex, boolean directed, int transaction) {
+    public void removeTransaction(final int sourceVertex, 
+            final int destinationVertex, final boolean directed, final int transaction) {
         Transaction currentTransaction = transactions.get(transaction);
         if (currentTransaction == null) {
 
@@ -137,7 +139,8 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionSourceVertex(int transaction, int oldSourceVertex, int newSourceVertex, boolean reverseTransaction) {
+    public void setTransactionSourceVertex(final int transaction, 
+            final int oldSourceVertex, final int newSourceVertex, final boolean reverseTransaction) {
 
         Vertex newSource = vertices.get(newSourceVertex);
         if (newSource == null) {
@@ -155,88 +158,91 @@ public class NormalisingGraphEdit implements GraphEdit {
     }
 
     @Override
-    public void setTransactionDestinationVertex(int transaction, int oldDestinationVertex, int newDestinationVertex, boolean reverseTransaction) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setTransactionDestinationVertex(final int transaction, 
+            final int oldDestinationVertex, final int newDestinationVertex,final boolean reverseTransaction) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void addAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue, String attributeMergerId, int attribute) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void removeAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue, String attributeMergerId, int attribute) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId, final int attribute) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void updateAttributeName(int attribute, String oldName, String newName) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void updateAttributeName(final int attribute, final String oldName, final String newName) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
     public void updateAttributeDescription(int attribute, String oldDescription, String newDescription) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void updateAttributeDefaultValue(int attribute, Object oldObject, Object newObject) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void updateAttributeDefaultValue(final int attribute, final Object oldObject, final Object newObject) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setByteValue(int attribute, int id, byte oldValue, byte newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setByteValue(final int attribute, final int id, final byte oldValue, final byte newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setShortValue(int attribute, int id, short oldValue, short newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setShortValue(final int attribute, final int id, final short oldValue, final short newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setIntValue(int attribute, int id, int oldValue, int newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setIntValue(final int attribute, final int id, final int oldValue, final int newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setLongValue(int attribute, int id, long oldValue, long newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setLongValue(final int attribute, final int id, final long oldValue, final long newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setFloatValue(int attribute, int id, float oldValue, float newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setFloatValue(final int attribute, final int id, final float oldValue, final float newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setDoubleValue(int attribute, int id, double oldValue, double newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setDoubleValue(final int attribute, final int id, final double oldValue, final double newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setBooleanValue(int attribute, int id, boolean oldValue, boolean newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setBooleanValue(final int attribute, final int id, final boolean oldValue, final boolean newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setCharValue(int attribute, int id, char oldValue, char newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setCharValue(final int attribute, final int id, final char oldValue, final char newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setObjectValue(int attribute, int id, Object oldValue, Object newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setObjectValue(final int attribute, final int id, final Object oldValue, final Object newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void executeGraphOperation(GraphOperation operation) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void executeGraphOperation(final GraphOperation operation) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     @Override
-    public void setAttributeIndexType(int attribute, GraphIndexType oldValue, GraphIndexType newValue) {
-        throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
+    public void setAttributeIndexType(final int attribute, final GraphIndexType oldValue, final GraphIndexType newValue) {
+        throw new UnsupportedOperationException(NOT_SUPPORTED);
     }
 
     private class Element<E> {
@@ -254,7 +260,7 @@ public class NormalisingGraphEdit implements GraphEdit {
             return deleted;
         }
 
-        public void setDeleted(boolean deleted) {
+        public void setDeleted(final boolean deleted) {
             this.deleted = deleted;
         }
 
@@ -262,7 +268,7 @@ public class NormalisingGraphEdit implements GraphEdit {
             return version;
         }
 
-        public void setVersion(int version) {
+        public void setVersion(final int version) {
             this.version = version;
         }
 
@@ -270,7 +276,7 @@ public class NormalisingGraphEdit implements GraphEdit {
             return previous;
         }
 
-        public void setPrevious(E previous) {
+        public void setPrevious(final E previous) {
             this.previous = previous;
         }
     }
@@ -286,7 +292,7 @@ public class NormalisingGraphEdit implements GraphEdit {
 
     private class Transaction extends Element<Transaction> {
 
-        //TODO: Determine whether unused fields are needed
+        // TODO: Determine whether unused fields are needed
         private Vertex newSource;
         private Vertex oldSource;
         private Vertex newDestination;

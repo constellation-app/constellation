@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities;
+package au.gov.asd.tac.constellation.utilities.timer;
 
 /**
  * A utility class to allow easy timing of sections of code.

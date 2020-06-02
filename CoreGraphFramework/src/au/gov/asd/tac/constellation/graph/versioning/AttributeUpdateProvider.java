@@ -38,7 +38,7 @@ public abstract class AttributeUpdateProvider implements UpdateProvider {
     public final class AttributeUpdateItem extends UpdateItem {
 
         @Override
-        public boolean appliesToGraph(StoreGraph graph) {
+        public boolean appliesToGraph(final StoreGraph graph) {
             return true;
         }
 

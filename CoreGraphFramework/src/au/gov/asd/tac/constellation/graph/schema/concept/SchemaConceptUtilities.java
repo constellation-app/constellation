@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.graph.schema.concept;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +79,7 @@ public class SchemaConceptUtilities {
      * get children.
      * @return a set of {@link SchemaConcept} objects.
      */
-    public static final Set<SchemaConcept> getChildConcepts(Class<? extends SchemaConcept> schemaConceptClass) {
+    public static final Set<SchemaConcept> getChildConcepts(final Class<? extends SchemaConcept> schemaConceptClass) {
         final Set<SchemaConcept> childConcepts = new HashSet<>();
 
         getConcepts().forEach(concept -> {
@@ -102,7 +100,7 @@ public class SchemaConceptUtilities {
      * which to get children.
      * @return a set of {@link SchemaConcept} objects.
      */
-    public static final Set<SchemaConcept> getChildConcepts(Set<Class<? extends SchemaConcept>> schemaConceptClasses) {
+    public static final Set<SchemaConcept> getChildConcepts(final Set<Class<? extends SchemaConcept>> schemaConceptClasses) {
         final Set<SchemaConcept> childConcepts = new HashSet<>();
         if (schemaConceptClasses != null) {
             schemaConceptClasses.forEach(schemaConceptClass -> {

@@ -136,8 +136,6 @@ public abstract class AbstractPathsLayer extends MapLayer {
                     }).collect(Collectors.toSet());
 
             onScreenMarkerCount = onScreenMarkers.size();
-        } catch (final IOException ex) {
-            return null;
         }
 
         if (onScreenMarkers.isEmpty()) {
