@@ -78,7 +78,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
 
     private static final String UPDATE_DATA = "Table View: Update Data";
     private static final String UPDATE_SELECTION = "Table View: Update Selection";
-    private static final String UPDATE_TABLE = "Table View: Update Table";
 
     public TableViewTopComponent() {
         setName(Bundle.CTL_TableView2TopComponent());

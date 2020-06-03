@@ -159,8 +159,8 @@ public final class TableViewPane extends BorderPane {
     private String sortByColumnName = "";
     private TableColumn.SortType sortByType = TableColumn.SortType.ASCENDING;
     
-    private ScheduledExecutorService scheduledExecutorService;
-    private ScheduledFuture scheduledFuture;
+    private final ScheduledExecutorService scheduledExecutorService;
+    private ScheduledFuture<?> scheduledFuture;
 
     private enum UpdateMethod {
         ADD,
