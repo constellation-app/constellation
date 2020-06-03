@@ -52,6 +52,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -180,8 +181,8 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
     }
 
     private boolean isFilterMatchCurrentNode(SchemaTransactionType treeItem) {
-        return filterText.getText().toLowerCase().isEmpty() ? false
-                : isFilterMatchText(treeItem.getName()) || isFilterMatchAnyProperty(treeItem);
+        return StringUtils.isNotBlank(filterText.getText())
+                && (isFilterMatchText(treeItem.getName()) || isFilterMatchAnyProperty(treeItem));
     }
 
     private boolean isFilterMatchAnyProperty(SchemaTransactionType treeItem) {
@@ -191,15 +192,19 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 || isFilterMatchText(Objects.toString(treeItem.getStyle().toString(), ""))
                 || isFilterMatchText(Objects.toString(treeItem.isDirected().toString(), ""))
                 || isFilterMatchText(treeItem.getHierachy())
-                || !(treeItem.getProperties().keySet().isEmpty()) && treeItem.getProperties().keySet().stream().anyMatch(property
+                || !(treeItem.getProperties().keySet().isEmpty())
+                && treeItem.getProperties().keySet().stream().anyMatch(property
                 -> property != null && isFilterMatchText(property.toString())
         );
     }
 
     private boolean isFilterMatchText(final String propertyValue) {
         final String filterInputText = filterText.getText().toLowerCase();
-        return (filterInputText.isEmpty() || propertyValue.isEmpty()) ? false : startsWithRb.isSelected()
-                ? propertyValue.toLowerCase().startsWith(filterInputText) : propertyValue.toLowerCase().contains(filterInputText);
+        return (StringUtils.isNotBlank(filterText.getText())
+                && StringUtils.isNotBlank(propertyValue))
+                && (startsWithRb.isSelected()
+                ? propertyValue.toLowerCase().startsWith(filterInputText)
+                : propertyValue.toLowerCase().contains(filterInputText));
     }
 
     @Override
@@ -270,12 +275,10 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 for (final Node child : grid.getChildren()) {
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
-                    if (column > 0 && row != null && child instanceof Label) {
-                        if (isFilterMatchText(((Label) child).getText())) {
+                    if ((column > 0 && row != null && child instanceof Label) && isFilterMatchText(((Label) child).getText())) {
                             child.getStyleClass().add("schemaview-highlight-blue");
                         }
                     }
-                }
                 detailsView.getChildren().addAll(colorRectangle, grid);
             }
         });
@@ -365,22 +368,17 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                     // Null is a special marker for the single root node.
                     // Any vertextype that points to itself is in the root layer.
                     for (final SchemaTransactionType tt : transactionTypes) {
-                        if (tt.getSuperType() == tt) {
-                            if (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty()) {
+                        if ((tt.getSuperType() == tt) && (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty())) {
                                 children.add(createNode(tt));
                             }
                         }
-                    }
                 } else {
                     for (final SchemaTransactionType tt : transactionTypes) {
-                        if (tt.getSuperType() == value && tt != value) {
-                            if (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty()) {
+                        if ((tt.getSuperType() == value && tt != value) && (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty())) {
                                 children.add(createNode(tt));
                             }
                         }
                     }
-                }
-
                 return children;
             }
         };

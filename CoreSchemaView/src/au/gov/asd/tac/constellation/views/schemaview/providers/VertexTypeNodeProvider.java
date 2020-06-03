@@ -65,6 +65,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -224,8 +225,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
     }
 
     private boolean isFilterMatchCurrentNodeOrAnyChildren(SchemaVertexType treeItem) {
-        return filterText.getText().toLowerCase().isEmpty() ? false
-                : isFilterMatchText(treeItem.getName()) || isFilterMatchAnyProperty(treeItem) || isFilterMatchAnyChildNodes(treeItem);
+        return StringUtils.isNotBlank(filterText.getText()) && (isFilterMatchText(treeItem.getName())
+                || isFilterMatchAnyProperty(treeItem) || isFilterMatchAnyChildNodes(treeItem));
     }
 
     private boolean isFilterMatchAnyChildNodes(SchemaVertexType treeItem) {
@@ -250,15 +251,18 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 || isFilterMatchText(Objects.toString(treeItem.getValidationRegex(), ""))
                 || isFilterMatchText(Objects.toString(treeItem.getDetectionRegex(), ""))
                 || isFilterMatchText(treeItem.getHierachy())
-                || !(treeItem.getProperties().keySet().isEmpty()) && treeItem.getProperties().keySet().stream().anyMatch(property
+                || !(treeItem.getProperties().keySet().isEmpty())
+                && treeItem.getProperties().keySet().stream().anyMatch(property
                 -> property != null && isFilterMatchText(property.toString())
         );
     }
 
     private boolean isFilterMatchText(final String propertyValue) {
         final String filterInputText = filterText.getText().toLowerCase();
-        return (filterInputText.isEmpty() || propertyValue.isEmpty()) ? false : startsWithRb.isSelected()
-                ? propertyValue.toLowerCase().startsWith(filterInputText) : propertyValue.toLowerCase().contains(filterInputText);
+        return (StringUtils.isNotBlank(filterText.getText()) && StringUtils.isNotBlank(propertyValue))
+                && (startsWithRb.isSelected() ? propertyValue.toLowerCase().startsWith(filterInputText)
+                : propertyValue.toLowerCase().contains(filterInputText));
+
     }
 
     @Override
@@ -385,12 +389,10 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 for (final Node child : grid.getChildren()) {
                     final Integer column = GridPane.getColumnIndex(child);
                     final Integer row = GridPane.getRowIndex(child);
-                    if (column > 0 && row != null && child instanceof Label) {
-                        if (isFilterMatchText(((Label) child).getText())) {
+                    if ((column > 0 && row != null && child instanceof Label) && (isFilterMatchText(((Label) child).getText()))) {
                             child.getStyleClass().add("schemaview-highlight-blue");
                         }
                     }
-                }
                 detailsView.getChildren().addAll(iconGroup, grid);
             }
         });
@@ -481,21 +483,17 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                     // Null is a special marker for the single root node.
                     // Any vertextype that points to itself is in the root layer.
                     for (final SchemaVertexType vt : vertexTypes) {
-                        if (vt.getSuperType() == vt) {
-                            if (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty()) {
+                        if ((vt.getSuperType() == vt) && (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty())) {
                                 children.add(createNode(vt));
                             }
                         }
-                    }
                 } else {
                     for (final SchemaVertexType vt : vertexTypes) {
-                        if (vt.getSuperType() == value && vt != value) {
-                            if (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty()) {
+                        if ((vt.getSuperType() == value && vt != value) && (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty())) {
                                 children.add(createNode(vt));
                             }
                         }
                     }
-                }
                 return children;
             }
         };
