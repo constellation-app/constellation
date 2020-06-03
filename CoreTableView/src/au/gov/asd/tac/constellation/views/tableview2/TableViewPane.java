@@ -42,6 +42,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -154,6 +158,9 @@ public final class TableViewPane extends BorderPane {
     // preference loading - these are used to reinstate the sorting after data update 
     private String sortByColumnName = "";
     private TableColumn.SortType sortByType = TableColumn.SortType.ASCENDING;
+    
+    private ScheduledExecutorService scheduledExecutorService;
+    private ScheduledFuture scheduledFuture;
 
     private enum UpdateMethod {
         ADD,
@@ -193,6 +200,8 @@ public final class TableViewPane extends BorderPane {
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
+        
+        this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
 
     private ToolBar initToolbar() {
@@ -632,40 +641,25 @@ public final class TableViewPane extends BorderPane {
         final Thread thread = new Thread("Table View: Update Table") {
             @Override
             public void run() {
-                if (this.isInterrupted()) {
-                    return;
+                if (scheduledFuture != null) {
+                    scheduledFuture.cancel(true);
                 }
-                updateToolbar(state);
-                if (graph != null) {
-                    for (int i = 0; i < 4; i++) {
-                        if (this.isInterrupted()) {
-                            break;
-                        }
-                        switch (i) {
-                            case 0:
-                                updateColumns(graph, state);
-                                break;
-                            case 1:
-                                updateData(graph, state);
-                                break;
-                            case 2:
-                                updateSelection(graph, state);
-                                break;
-                            case 3:
-                                Platform.runLater(() -> {
-                                    updateSortOrder();
-                                });
-                                break;
-                            default:
-                                LOGGER.log(Level.SEVERE, "Unexpected execution of default switch case!");
-                                break;
-                        }
+
+                scheduledFuture = scheduledExecutorService.schedule(() -> {
+                    updateToolbar(state);
+                    if (graph != null) {
+                        updateColumns(graph, state);
+                        updateData(graph, state);
+                        updateSelection(graph, state);
+                        Platform.runLater(() -> {
+                            updateSortOrder();
+                        });
+                    } else {
+                        Platform.runLater(() -> {
+                            table.getColumns().clear();
+                        });
                     }
-                } else if (!this.isInterrupted()) {
-                    Platform.runLater(() -> {
-                        table.getColumns().clear();
-                    });
-                }
+                }, 0, TimeUnit.MILLISECONDS);
             }
         };
         thread.start();

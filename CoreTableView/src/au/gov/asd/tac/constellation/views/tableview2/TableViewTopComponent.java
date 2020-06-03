@@ -101,12 +101,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
-            for (Thread t : currentThreads) {
-                if (t.getName().equals(UPDATE_TABLE)) {
-                    t.interrupt();
-                }
-            }
             pane.updateTable(graph, currentState);
         });
 
@@ -174,12 +168,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
-            final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
-            for (Thread t : currentThreads) {
-                if (t.getName().equals(UPDATE_TABLE)) {
-                    t.interrupt();
-                }
-            }
             pane.updateTable(graph, currentState);
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
@@ -367,12 +355,6 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
-        final Set<Thread> currentThreads = Thread.getAllStackTraces().keySet();
-        for (Thread t : currentThreads) {
-            if (t.getName().equals(UPDATE_TABLE)) {
-                t.interrupt();
-            }
-        }
         pane.updateTable(graph, currentState);
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
