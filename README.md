@@ -83,7 +83,7 @@ or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-fx-jre11.0.7-ma
 * Clone this repository
 * Open the Constellation module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
-`Update dependencies and clean build`. This can take around 20 minutes to download the first time so go get a :coffee: and come back later.
+`Update dependencies and clean build`. This can take around 20 minutes to download the first time depending on your internet connection so feel free to get a :coffee: and come back later.
 * Start Constellation by right clicking on `Constellation` > `Run`
 
 ## Package Constellation
