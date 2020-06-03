@@ -141,8 +141,6 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         } else {
             updateQualityControlState(null);
         }
-
-        listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
     }
 
     /**
@@ -155,7 +153,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      */
     public static void updateQualityControlState(final GraphReadMethods graph) {
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-        Future f = PluginExecution.withPlugin(new QualityControlViewStateUpdater())
+        Future f = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
             .executeLater(currentGraph);
         try {
             f.get();
@@ -164,6 +162,8 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
+        
+        
     }
 
     private static List<QualityControlRule> getRules() {
@@ -186,6 +186,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     
     public void setQualityControlState(final QualityControlState state) {
         this.state = state;
+        listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
     }
 
     /**
@@ -233,23 +234,23 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
     
     private static final class QualityControlViewStateUpdater extends SimpleReadPlugin {
-
-        public QualityControlViewStateUpdater() {
+        final GraphReadMethods readableGraph;
+        
+        public QualityControlViewStateUpdater(final GraphReadMethods graph) {
+            this.readableGraph = graph;
         }
 
         @Override
         public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             assert !SwingUtilities.isEventDispatchThread();
-            if (graph == null) {
-                return;
-            }
+           
 
             final List<QualityControlRule> registeredRules = new ArrayList<>();
             final List<Integer> vertexList = new ArrayList<>();
             final List<String> identifierList = new ArrayList<>();
             final List<SchemaVertexType> typeList = new ArrayList<>();
 
-            if (graph != null) {
+            if (readableGraph != null) {
 
                 
                 //final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -285,7 +286,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                                         registeredRules.add(rule);
                                     }
                                 });
-                                t.run();
+                                t.start();
 //                                rule.clearResults();
 //                                rule.executeRule(graph, vertexList);
 //                                registeredRules.add(rule);
