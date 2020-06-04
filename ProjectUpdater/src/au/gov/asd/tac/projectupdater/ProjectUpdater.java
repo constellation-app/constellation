@@ -47,7 +47,10 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
+ * Rewrite the project.xml file with the latest dependencies
+ *
  * @author sirius
+ * @author arcturus
  */
 public class ProjectUpdater extends Task {
 
@@ -60,39 +63,38 @@ public class ProjectUpdater extends Task {
     @Override
     public void execute() throws BuildException {
         try {
-
             logMessage("Updating wrapped jars for " + projectDirectory);
 
-            File projectFile = new File(projectDirectory, "nbproject/project.xml");
-            File oldProjectFile = new File(projectDirectory, "nbproject/project_old.xml");
-            File jarDirectory = new File(projectDirectory, "release/modules/ext");
-            File publicPackagesFile = new File(projectDirectory, "/src/public.xml");
+            final File projectFile = new File(projectDirectory, "nbproject/project.xml");
+            final File oldProjectFile = new File(projectDirectory, "nbproject/project_old.xml");
+            final File jarDirectory = new File(projectDirectory, "release/modules/ext");
+            final File publicPackagesFile = new File(projectDirectory, "/src/public.xml");
 
             // Create a document to work on
-            Document document = readXMLFile(projectFile);
+            final Document document = readXMLFile(projectFile);
 
             // Find the data element and ensure there is only one
-            NodeList dataNodes = document.getElementsByTagName("data");
+            final NodeList dataNodes = document.getElementsByTagName("data");
             if (dataNodes.getLength() != 1) {
                 throw new IllegalStateException("Not a valid project.xml file");
             }
-            Node dataNode = dataNodes.item(0);
+            final Node dataNode = dataNodes.item(0);
 
-            List<String> packages = new ArrayList<>();
-            Set<String> publicPackages = new TreeSet<>();
+            final List<String> packages = new ArrayList<>();
+            final Set<String> publicPackages = new TreeSet<>();
             Node publicPackagesNode = null;
             if (publicPackagesFile.exists()) {
-                NodeList publicPackagesNodes = document.getElementsByTagName("public-packages");
+                final NodeList publicPackagesNodes = document.getElementsByTagName("public-packages");
                 if (publicPackagesNodes.getLength() != 1) {
                     throw new IllegalStateException("Not a valid project.xml file");
                 }
                 publicPackagesNode = publicPackagesNodes.item(0);
 
-                NodeList children = publicPackagesNode.getChildNodes();
+                final NodeList children = publicPackagesNode.getChildNodes();
                 while (children.getLength() > 0) {
-                    Node child = children.item(0);
+                    final Node child = children.item(0);
                     if (child instanceof Element) {
-                        Element childElement = (Element) child;
+                        final Element childElement = (Element) child;
                         if (childElement.getTagName().equals("package")) {
                             publicPackages.add(childElement.getTextContent());
                         }
@@ -100,8 +102,8 @@ public class ProjectUpdater extends Task {
                     publicPackagesNode.removeChild(child);
                 }
 
-                Document publicXMLFile = readXMLFile(publicPackagesFile);
-                NodeList packageNodes = publicXMLFile.getElementsByTagName("package");
+                final Document publicXMLFile = readXMLFile(publicPackagesFile);
+                final NodeList packageNodes = publicXMLFile.getElementsByTagName("package");
                 for (int i = 0; i < packageNodes.getLength(); i++) {
                     packages.add(packageNodes.item(i).getTextContent());
                 }
@@ -110,9 +112,9 @@ public class ProjectUpdater extends Task {
             // Remove all the class-path-extension elements
             // Ensure that each is a child of the data element
             // Remore all white space around the elements
-            NodeList classPathExtensionNodes = document.getElementsByTagName("class-path-extension");
+            final NodeList classPathExtensionNodes = document.getElementsByTagName("class-path-extension");
             while (classPathExtensionNodes.getLength() > 0) {
-                Node classPathExtensionNode = classPathExtensionNodes.item(0);
+                final Node classPathExtensionNode = classPathExtensionNodes.item(0);
                 if (classPathExtensionNode.getParentNode() == dataNode) {
                     Node nextNode = classPathExtensionNode.getNextSibling();
                     while (nextNode instanceof Text) {
@@ -139,28 +141,28 @@ public class ProjectUpdater extends Task {
             if (jarDirectory.exists()) {
                 for (File jarFile : jarDirectory.listFiles()) {
                     if (jarFile.getName().endsWith(".jar")) {
-
                         logMessage("\tIncluding jar file: " + jarFile.getName());
-
                         addClassPathExtension(document, jarFile, dataNode);
 
                         if (publicPackagesFile.exists()) {
                             extractMatchingPackages(jarFile, packages, publicPackages);
                         }
-
                     } else {
                         throw new IllegalStateException("Not a JAR file: " + jarFile.getAbsolutePath());
                     }
                 }
+
                 dataNode.appendChild(document.createTextNode("\n        "));
             }
 
             if (publicPackagesFile.exists()) {
                 for (String publicPackage : publicPackages) {
-                    Element publicPackageElement = document.createElement("package");
-                    publicPackageElement.setTextContent(publicPackage);
-                    publicPackagesNode.appendChild(document.createTextNode("\n                "));
-                    publicPackagesNode.appendChild(publicPackageElement);
+                    if (!publicPackage.startsWith("META-INF")) {
+                        Element publicPackageElement = document.createElement("package");
+                        publicPackageElement.setTextContent(publicPackage);
+                        publicPackagesNode.appendChild(document.createTextNode("\n                "));
+                        publicPackagesNode.appendChild(publicPackageElement);
+                    }
                 }
             }
             if (publicPackagesNode != null) {
@@ -173,28 +175,23 @@ public class ProjectUpdater extends Task {
 
             // Save the edited document to project.xml
             saveXMLFile(document, projectFile);
-
         } catch (Exception ex) {
             logMessage("Exception during update: " + ex.getClass() + " " + ex.getMessage() + " " + ex.getStackTrace()[0]);
         }
     }
 
     private static void addClassPathExtension(Document document, File jarFile, Node parentNode) {
-
-        Element classPathExtensionElement = document.createElement("class-path-extension");
-
+        final Element classPathExtensionElement = document.createElement("class-path-extension");
         classPathExtensionElement.appendChild(document.createTextNode("\n                "));
 
-        Element runtimeRelativePathElement = document.createElement("runtime-relative-path");
+        final Element runtimeRelativePathElement = document.createElement("runtime-relative-path");
         runtimeRelativePathElement.setTextContent("ext/" + jarFile.getName());
         classPathExtensionElement.appendChild(runtimeRelativePathElement);
-
         classPathExtensionElement.appendChild(document.createTextNode("\n                "));
 
-        Element binaryOriginElement = document.createElement("binary-origin");
+        final Element binaryOriginElement = document.createElement("binary-origin");
         binaryOriginElement.setTextContent("release/modules/ext/" + jarFile.getName());
         classPathExtensionElement.appendChild(binaryOriginElement);
-
         classPathExtensionElement.appendChild(document.createTextNode("\n            "));
 
         parentNode.appendChild(document.createTextNode("\n            "));
@@ -202,15 +199,14 @@ public class ProjectUpdater extends Task {
     }
 
     private static Document readXMLFile(File xmlFile) throws Exception {
-
-        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        final Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
         // Create a document to work on
-        Document document = builder.newDocument();
+        final Document document = builder.newDocument();
 
-        try ( // Read in the existing project.xml into the document
-                FileInputStream in = new FileInputStream(xmlFile)) {
+        // Read in the existing project.xml into the document
+        try (FileInputStream in = new FileInputStream(xmlFile)) {
             Source loadSource = new StreamSource(in);
             Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
@@ -220,8 +216,7 @@ public class ProjectUpdater extends Task {
     }
 
     private static void saveXMLFile(Document document, File xmlFile) throws Exception {
-
-        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        final Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
         try (FileOutputStream out = new FileOutputStream(xmlFile)) {
             Source saveSource = new DOMSource(document);
@@ -231,14 +226,14 @@ public class ProjectUpdater extends Task {
     }
 
     private void extractMatchingPackages(File jarFile, List<String> expressions, Set<String> publicPackages) throws Exception {
-        ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile));
+        final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry = zip.getNextEntry();
         while (entry != null) {
-            String path = entry.getName();
+            final String path = entry.getName();
             int lastDivider = path.lastIndexOf('/');
             if (lastDivider >= 0) {
-                String folder = path.substring(0, lastDivider);
-                String name = folder.replace('/', '.');
+                final String folder = path.substring(0, lastDivider);
+                final String name = folder.replace('/', '.');
                 if (path.endsWith(".class")) {
                     publicPackages.remove(name);
                     for (String expression : expressions) {
@@ -269,9 +264,4 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    public static void main(String[] args) {
-        ProjectUpdater p = new ProjectUpdater();
-        p.setProjectdirectory(new File("d:/home/code/CONSTELLATION/Wrapper"));
-        p.execute();
-    }
 }
