@@ -3,17 +3,9 @@
     <type>org.netbeans.modules.apisupport.project</type>
     <configuration>
         <data xmlns="http://www.netbeans.org/ns/nb-module-project/3">
-            <code-name-base>au.gov.asd.tac.constellation.visual.vulkan</code-name-base>
+            <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
             <suite-component/>
             <module-dependencies>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.dependencies</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
                 <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
                     <build-prerequisite/>
@@ -23,16 +15,13 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
+                    <code-name-base>org.netbeans.libs.osgi</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
                 </dependency>
             </module-dependencies>
             <public-packages>
-                <package>au.gov.asd.tac.constellation.visual.vulkan</package>
+                <package>au.gov.asd.tac.constellation.visual</package>
             </public-packages>
         </data>
     </configuration>

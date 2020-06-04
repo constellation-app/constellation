@@ -17,14 +17,13 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
-import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.BlazeBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.ConnectionLabelBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.IconBatcher;
@@ -32,17 +31,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.LineBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.LoopBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.NodeLabelBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 
 /**
  * A {@link GLRenderable} responsible for the primary component of visualising
@@ -311,7 +301,7 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable GL drawable.
      */
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 
 //        final GL30 gl = drawable.getGL().getGL3();
 //
@@ -362,7 +352,7 @@ public final class GraphRenderable implements GLRenderable {
     }
 
     @Override
-    public void update(STUB_GLAutoDrawable drawable) {
+    public void update(AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        skipRedraw = false;
 //        if (parent.isUpdating()) {
@@ -438,12 +428,12 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable  From the reference:
      * A higher-level abstraction than GLDrawable which supplies an event based 
      * mechanism (GLEventListener) for performing OpenGL rendering. 
-     * A STUB_GLAutoDrawable automatically creates a primary rendering context which is
-     * associated with the STUB_GLAutoDrawable for the lifetime of the object.
+     * A GLAutoDrawable automatically creates a primary rendering context which is
+     * associated with the GLAutoDrawable for the lifetime of the object.
      * @param pMatrix
      */
     @Override    
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
         // TODO_TT: this whole func
 //        final GL30 gl = drawable.getGL().getGL3();
 //        if (Utilities.isMac())
@@ -591,7 +581,7 @@ public final class GraphRenderable implements GLRenderable {
      * @param drawable GL drawable.
      */
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
         // TODO_TT: this whole func
 //        final GL30 gl = drawable.getGL().getGL3();
 //        lineBatcher.disposeBatch().run(gl);

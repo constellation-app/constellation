@@ -5,10 +5,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-/**
- *
- * @author TheTimurid
- */
+
 public abstract class STUB_GLContext {
     public static final int CONTEXT_NOT_CURRENT = 0;
     

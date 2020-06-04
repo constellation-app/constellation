@@ -16,11 +16,9 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -119,7 +117,7 @@ public class GraphDisplayer implements GLRenderable {
     }
 
     @Override
-    public void init(STUB_GLAutoDrawable drawable) {
+    public void init(AutoDrawable drawable) {
         // TODO_TT: this whole func
 //        final GL30 gl = drawable.getGL().getGL3();
 //
@@ -181,7 +179,7 @@ public class GraphDisplayer implements GLRenderable {
     }
 
     @Override
-    public void display(STUB_GLAutoDrawable drawable, Matrix44f pMatrix) {
+    public void display(AutoDrawable drawable, Matrix44f pMatrix) {
 
         // Draw the graph texture to the screen
 //        final GL30 gl = drawable.getGL().getGL3();
@@ -200,7 +198,7 @@ public class GraphDisplayer implements GLRenderable {
     }
 
     @Override
-    public void dispose(STUB_GLAutoDrawable drawable) {
+    public void dispose(AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        graphTextureBatch.dispose(gl);
     }

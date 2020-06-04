@@ -72,7 +72,7 @@
             <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="javadoc"/>
             <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="sources"/>            
             <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-macos"/>          
-            <artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows"/>
+            <!--<artifact name="lwjgl-vulkan" type="jar" ext="jar" e:classifier="natives-windows"/>-->
         </dependency>                 
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
         <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>

@@ -5,11 +5,10 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-/**
- *
- * @author TheTimurid
- */
-public interface STUB_GLAutoDrawable {
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
+
+
+public interface STUB_GLAutoDrawable extends AutoDrawable{
     public STUB_GL getGL();   
     public int getSurfaceHeight();
 }

@@ -5,10 +5,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl;
 
-/**
- *
- * @author TheTimurid
- */
+
 public class LWJGLVersionAction {
     
 }

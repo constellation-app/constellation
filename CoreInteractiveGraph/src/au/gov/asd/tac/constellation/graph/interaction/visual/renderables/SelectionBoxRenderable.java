@@ -18,21 +18,11 @@ package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
-import static au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLProfile.GL30;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import java.awt.Point;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -73,7 +63,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        String vs = null;
 //        String gs = null;
@@ -119,7 +109,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     }
 
     @Override
-    public void update(final STUB_GLAutoDrawable drawable) {
+    public void update(final AutoDrawable drawable) {
         if (modelQueue != null && !modelQueue.isEmpty()) {
             selectionBoxModel = modelQueue.getLast();
             modelQueue.clear();
@@ -127,7 +117,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
         // TODO_TT: this whole func
 //        if (selectionBoxModel != null && selectionBoxModel.isClear()) {
 //            final Point begin = selectionBoxModel.getStartPoint();
@@ -179,7 +169,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     }
 
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        batch.dispose(gl);
     }

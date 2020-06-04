@@ -15,13 +15,18 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+/**
+ *
+ * The order of these enums and any explicit values assigned to them matches the
+ * Vulkan API.  Do not reorder them, do not add entries unless at the tail, do not
+ * remove entries and do not change explicit values.
+ */
 public class VKMISSINGENUMS {
 
     /**
      *
      */
     public enum VkColorSpaceKHR {
-        VK_ERROR_UNKNOWN(-1),
         VK_COLOR_SPACE_SRGB_NONLINEAR_KHR(0),
         VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT(1000104001),
         VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT(1000104002),
@@ -38,8 +43,10 @@ public class VKMISSINGENUMS {
         VK_COLOR_SPACE_PASS_THROUGH_EXT(1000104013),
         VK_COLOR_SPACE_EXTENDED_SRGB_NONLINEAR_EXT(1000104014),
         VK_COLOR_SPACE_DISPLAY_NATIVE_AMD(1000213000),
-        VK_COLORSPACE_SRGB_NONLINEAR_KHR(0),
-        VK_COLOR_SPACE_DCI_P3_LINEAR_EXT(1000104003);
+        VK_COLOR_SPACE_DCI_P3_LINEAR_EXT(1000104003),
+        
+        // Added sentinal value
+        VK_COLOR_SPACE_NONE(-1);
 
         private final int val;
         private VkColorSpaceKHR(int v) { val = v; }
@@ -49,8 +56,9 @@ public class VKMISSINGENUMS {
                     return e;
                 }
             }
-            return VK_ERROR_UNKNOWN;
+            return VK_COLOR_SPACE_NONE;
         }
+        public int GetValue() { return val; }
     }
     
     /**
@@ -242,13 +250,19 @@ public class VKMISSINGENUMS {
         VK_FORMAT_ASTC_12x10_UNORM_BLOCK,
         VK_FORMAT_ASTC_12x10_SRGB_BLOCK,
         VK_FORMAT_ASTC_12x12_UNORM_BLOCK,
-        VK_FORMAT_ASTC_12x12_SRGB_BLOCK 
+        VK_FORMAT_ASTC_12x12_SRGB_BLOCK,
+        
+        // Added sentinal value
+        VK_FORMAT_NONE
     }  
     
     public enum VkPresentModeKHR  {
         VK_PRESENT_MODE_IMMEDIATE_KHR,
         VK_PRESENT_MODE_MAILBOX_KHR,
         VK_PRESENT_MODE_FIFO_KHR,
-        VK_PRESENT_MODE_FIFO_RELAXED_KHR;
+        VK_PRESENT_MODE_FIFO_RELAXED_KHR,
+        
+        // Added sentinal value
+        VK_PRESENT_MODE_NONE;
     }
 }

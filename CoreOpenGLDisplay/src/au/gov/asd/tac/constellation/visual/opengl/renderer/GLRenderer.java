@@ -17,11 +17,9 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
+import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +57,7 @@ public final class GLRenderer implements STUB_GLEventListener {
     private static final float PERSPECTIVE_NEAR = 1;
     private static final float PERSPECTIVE_FAR = 500000;
 
-    private final List<GLRenderable> renderables;
+    private final List<Comparable<Renderable>> renderables;
 
     private boolean initialised = false;
 
@@ -86,7 +84,7 @@ public final class GLRenderer implements STUB_GLEventListener {
      * @param printGlCapabilities Whether or not to print out a list of GL
      * capabilities upon initialisation.
      */
-    public GLRenderer(final GLVisualProcessor parent, final List<GLRenderable> renderables, final boolean debugGl, final boolean printGlCapabilities) {
+    public GLRenderer(final GLVisualProcessor parent, final List<Comparable<Renderable>> renderables, final boolean debugGl, final boolean printGlCapabilities) {
         this.parent = parent;
         this.renderables = new ArrayList<>(renderables);
         this.debugGl = debugGl;
@@ -101,7 +99,7 @@ public final class GLRenderer implements STUB_GLEventListener {
      *
      * @param renderable The {@link GLRenderable} to add.
      */
-    final void addRenderable(final GLRenderable renderable) {
+    final void addRenderable(final Comparable<Renderable> renderable) {
         if (initialised) {
             throw new RenderException("Cant add a renderable after renderer is initialised");
         }
@@ -149,18 +147,21 @@ public final class GLRenderer implements STUB_GLEventListener {
     @Override
     public void dispose(final STUB_GLAutoDrawable drawable) {
         renderables.forEach(renderable -> {
-            renderable.dispose(drawable);
+            AutoDrawable a =(AutoDrawable)drawable;
+            Renderable r = (Renderable)renderable;
+            r.dispose(a);
+//            renderable.dispose(drawable);
         });
     }
 
     @Override
     public void display(final STUB_GLAutoDrawable drawable) {
         renderables.forEach(renderable -> {
-            renderable.update(drawable);
+//            renderable.update(drawable);
         });
         parent.signalUpdateComplete();
         renderables.forEach(renderable -> {
-            renderable.display(drawable, projectionMatrix);
+//            renderable.display(drawable, projectionMatrix);
         });
         parent.signalProcessorIdle();
     }

@@ -19,12 +19,7 @@ import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 
 /**
  * Encapsulate the JOGL code required to implement a set of axes that mirror the
@@ -83,7 +78,7 @@ public class AxesRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        String axesVp = null;
 //        String axesGp = null;
@@ -215,7 +210,7 @@ public class AxesRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f projectionMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f projectionMatrix) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //
 //        // Extract the rotation matrix from the mvp matrix.
@@ -250,7 +245,7 @@ public class AxesRenderable implements GLRenderable {
     }
 
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        axesBatch.dispose(gl);
     }

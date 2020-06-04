@@ -16,29 +16,13 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Plane;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.PlaneState;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
-import static au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLProfile.GL30;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -78,7 +62,7 @@ public final class PlanesRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //
 //        String vs = null;
@@ -103,7 +87,7 @@ public final class PlanesRenderable implements GLRenderable {
 //        textureName = BUFFER_UNUSED;
     }
 
-    public void createScene(final STUB_GLAutoDrawable drawable, final Graph graph) {
+    public void createScene(final AutoDrawable drawable, final Graph graph) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //
 //        dispose(drawable);
@@ -196,7 +180,7 @@ public final class PlanesRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f mvpMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f mvpMatrix) {
         // TODO_TT: this whole func
 //        if (planeBatch.isDrawable()) {
 //            final GL30 gl = drawable.getGL().getGL3();
@@ -212,7 +196,7 @@ public final class PlanesRenderable implements GLRenderable {
     }
 
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
         // TODO_TT: this whole func
 //        final GL30 gl = drawable.getGL().getGL3();
 //
@@ -224,7 +208,7 @@ public final class PlanesRenderable implements GLRenderable {
 //        planeBatch.dispose(gl);
     }
 
-    public void setVisiblePlanes(final STUB_GLAutoDrawable drawable, final BitSet visibleLayers) {
+    public void setVisiblePlanes(final AutoDrawable drawable, final BitSet visibleLayers) {
         // TODO_TT: this whole func
 //        if (planeBatch.isDrawable()) {
 //            final GL3 gl = drawable.getGL().getGL3();
@@ -252,7 +236,7 @@ public final class PlanesRenderable implements GLRenderable {
 //        }
     }
 
-    public BitSet getVisiblePlanes(final STUB_GLAutoDrawable drawable) {
+    public BitSet getVisiblePlanes(final AutoDrawable drawable) {
         // TODO_TT: this whole func
         final BitSet visiblePlanes = new BitSet();
 //

@@ -16,44 +16,87 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import static au.gov.asd.tac.constellation.visual.vulkan.VKUtils.checkVKret;
+import com.google.common.primitives.Ints;
+import java.awt.Rectangle;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.io.File;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.LongBuffer;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.FileHandler;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import org.lwjgl.system.Platform;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_EXT_DEBUG_UTILS_EXTENSION_NAME;
+import static org.lwjgl.vulkan.EXTDebugUtils.VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
+import static org.lwjgl.vulkan.EXTDebugUtils.vkCreateDebugUtilsMessengerEXT;
 import static org.lwjgl.vulkan.EXTMetalSurface.VK_EXT_METAL_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.KHRSurface.*;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkCreateSwapchainKHR;
+import static org.lwjgl.vulkan.KHRSwapchain.vkGetSwapchainImagesKHR;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkApplicationInfo;
+import org.lwjgl.vulkan.VkAttachmentDescription;
+import org.lwjgl.vulkan.VkAttachmentReference;
+import org.lwjgl.vulkan.VkClearValue;
+import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
+import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
+import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
+import org.lwjgl.vulkan.VkDebugUtilsMessengerCallbackDataEXT;
+import org.lwjgl.vulkan.VkDebugUtilsMessengerCreateInfoEXT;
 import org.lwjgl.vulkan.VkDevice;
 import org.lwjgl.vulkan.VkDeviceCreateInfo;
 import org.lwjgl.vulkan.VkDeviceQueueCreateInfo;
 import org.lwjgl.vulkan.VkExtensionProperties;
+import org.lwjgl.vulkan.VkExtent2D;
+import org.lwjgl.vulkan.VkFramebufferCreateInfo;
+import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkInstanceCreateInfo;
 import org.lwjgl.vulkan.VkLayerProperties;
+import org.lwjgl.vulkan.VkOffset2D;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
+import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkRenderPassBeginInfo;
+import org.lwjgl.vulkan.VkRenderPassCreateInfo;
+import org.lwjgl.vulkan.VkSubpassDependency;
+import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
+import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 
-public class VKRenderer {
+public class VKRenderer implements ComponentListener{
 
+    // Constants
+    private static final int UINT32_MAX = 0xFFFFFFFF;
+    
     private static final Logger LOGGER = Logger.getLogger(VKRenderer.class.getName());
     protected VkInstance vkInstance = null;
     protected VkQueue vkQueue = null;
@@ -63,10 +106,37 @@ public class VKRenderer {
     protected VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;
     protected VkSurfaceCapabilitiesKHR vkSurfaceCapablities = null;
     protected VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
+    protected VKMISSINGENUMS.VkFormat selectedFormat = VKMISSINGENUMS.VkFormat.VK_FORMAT_NONE;
+    protected VKMISSINGENUMS.VkColorSpaceKHR selectedColorSpace = VKMISSINGENUMS.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
+    protected VKMISSINGENUMS.VkPresentModeKHR selectedPresentationMode = VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_NONE;
+    protected VkExtent2D currentExtent = null;
     protected IntBuffer presentationModes = null;
     protected int queueFamilyIndex = -1;
-    protected long surfaceHandle = 0;
+    protected long debugMessengerHandle = VK_NULL_HANDLE;
+    protected long surfaceHandle = VK_NULL_HANDLE;
+    protected long renderPassHandle = VK_NULL_HANDLE;
+    protected long commandPoolHandle = VK_NULL_HANDLE;
+    protected List<VkCommandBuffer> commandBuffers = null;
+    protected List<Long> swapChainImageHandles = null;
+    protected List<Long> swapChainImageViewHandles = null;
+    protected List<Long> swapChainFramebufferHandles = null;
+    protected boolean swapChainNeedsRecreation = true;
     protected static boolean debugging = true;
+    private final VKVisualProcessor parent;
+    
+    
+    private static class MinimalLogFormatter extends Formatter {
+        @Override
+        public String format(LogRecord record) {
+            StringBuilder sb = new StringBuilder();
+            //sb.append("Prefixn");
+            String msg = formatMessage(record);
+            sb.append(msg);
+            //sb.append("Suffixn");
+            sb.append(System.getProperty("line.separator"));
+            return sb.toString();
+        }         
+    }
     
     static {
         if (debugging) {
@@ -86,18 +156,41 @@ public class VKRenderer {
                 }  
                 
                 FileHandler fileHandler = new FileHandler(logName);
-                SimpleFormatter simpleFormatter = new SimpleFormatter();
-                fileHandler.setFormatter(simpleFormatter);
+                fileHandler.setFormatter(new MinimalLogFormatter());
                 LOGGER.addHandler(fileHandler);              
                 
-                StreamHandler streamHanlder = new StreamHandler(System.out, simpleFormatter);
+                StreamHandler streamHanlder = new StreamHandler(System.out, new MinimalLogFormatter());
                 LOGGER.addHandler(streamHanlder);
             } catch (Exception exception) {
                 LOGGER.log(Level.SEVERE, "Exception initialising logger: {0}", exception.toString());
             }
         }
     }
-        
+    
+    private static void StartLogSection(String msg) {
+        LOGGER.log(Level.INFO, "{0}---- START {1} ----",
+                   new Object[]{System.getProperty("line.separator"), msg});
+    }
+    private static void EndLogSection(String msg) {
+        LOGGER.log(Level.INFO, "---- END {1} ----{0}",
+                   new Object[]{System.getProperty("line.separator"), msg});
+    }
+    
+    /**
+     *
+     * API specifies this function MUST return VK_FALSE
+     * 
+     * @param messageSeverity
+     * @param messageType
+     * @param pCallbackData
+     * @param pUserData
+     * @return
+     */
+    public static int DebugCallback(int messageSeverity, int messageType, long pCallbackData, long pUserData) {
+        VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData);
+        LOGGER.log(Level.INFO, "Validation layer: {0}", callbackData.pMessageString());
+        return VK_FALSE;
+    }                 
 
     private boolean LayerPresent(VkLayerProperties.Buffer layers, String layer) {
         for (int i = 0; i < layers.limit(); ++i) {
@@ -123,7 +216,8 @@ public class VKRenderer {
      * @return PointerBuffer of extensions allocated on the provided stack
      */
     private PointerBuffer GetRequiredVKPhysicalDeviceExtensions(MemoryStack stack) {
-        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);
+        ByteBuffer VK_EXT_DEBUG_UTILS_EXTENSION = stack.UTF8(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        ByteBuffer VK_KHR_SURFACE_EXTENSION = stack.UTF8(VK_KHR_SURFACE_EXTENSION_NAME);        
         ByteBuffer VK_KHR_OS_SURFACE_EXTENSION;
 
         switch (Platform.get()) {
@@ -141,7 +235,8 @@ public class VKRenderer {
                 throw new RuntimeException("Unknown platform trying it initialise Vulkan");
         }
 
-        PointerBuffer pbEnabledExtensionNames = stack.mallocPointer(2);
+        PointerBuffer pbEnabledExtensionNames = stack.mallocPointer(3);
+        pbEnabledExtensionNames.put(VK_EXT_DEBUG_UTILS_EXTENSION);
         pbEnabledExtensionNames.put(VK_KHR_SURFACE_EXTENSION);
         pbEnabledExtensionNames.put(VK_KHR_OS_SURFACE_EXTENSION);
 
@@ -248,7 +343,7 @@ public class VKRenderer {
                 .applicationVersion(VK_MAKE_VERSION(1, 0, 0))
                 .pEngineName(stack.UTF8("NONE"))
                 .apiVersion(VK_API_VERSION_1_0);  //Highest version of Vulkan supported by Constellation
-
+        
         // Create the CreateInfo struct
         VkInstanceCreateInfo pCreateInfo = VkInstanceCreateInfo.mallocStack()
                 .sType(VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO)
@@ -256,6 +351,14 @@ public class VKRenderer {
                 .pApplicationInfo(appInfo)
                 .ppEnabledExtensionNames(pbExtensions)
                 .ppEnabledLayerNames(pbValidationLayers);
+        
+        // Debug create struct if needed
+        VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo = null;
+        if (debugging) {
+            debugCreateInfo = VkDebugUtilsMessengerCreateInfoEXT.callocStack(stack);
+            InitVKDebuggingCreateInfo(debugCreateInfo);
+            pCreateInfo.pNext(debugCreateInfo.address());
+        }        
 
         // Create the native VkInstance and return a pointer to it's handle in pInstance
         PointerBuffer pInstance = stack.pointers(1);
@@ -263,7 +366,26 @@ public class VKRenderer {
         long instance = pInstance.get(0);
 
         vkInstance = new VkInstance(instance, pCreateInfo);
+    }   
+    
+    protected void InitVKDebuggingCreateInfo(VkDebugUtilsMessengerCreateInfoEXT createInfo) {
+        createInfo.sType(VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT);
+        createInfo.messageSeverity(VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_WARNING_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT);
+        createInfo.messageType(VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT);
+        createInfo.pfnUserCallback(VKRenderer::DebugCallback);
     }
+    
+    protected void InitVKDebugging(MemoryStack stack) {
+        VkDebugUtilsMessengerCreateInfoEXT createInfo = VkDebugUtilsMessengerCreateInfoEXT.callocStack(stack);
+        InitVKDebuggingCreateInfo(createInfo);
+                
+        if (vkGetInstanceProcAddr(vkInstance, "vkCreateDebugUtilsMessengerEXT") != NULL) {
+            LongBuffer pDebugMessenger = stack.longs(VK_NULL_HANDLE);
+            checkVKret(vkCreateDebugUtilsMessengerEXT(vkInstance, createInfo, null, pDebugMessenger));
+            debugMessengerHandle = pDebugMessenger.get(0);
+        }                                      
+    }
+    
 
     /**
      * Enumerates physical devices and selects the first to support swap chains
@@ -383,6 +505,26 @@ public class VKRenderer {
             // Device caps for our surface
             vkSurfaceCapablities = VkSurfaceCapabilitiesKHR.malloc();
             checkVKret(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, surfaceHandle, vkSurfaceCapablities));
+            
+            // The current size of the surface will either be explicit, which we use, or 
+            // set to a value indicating it will use whatever is set in the swap chain.
+            currentExtent = VkExtent2D.malloc().set(vkSurfaceCapablities.currentExtent());
+            if (currentExtent.width() == UINT32_MAX) {
+                //TODO_TT: find out how big our surface is somehow
+                currentExtent.set(800, 600);
+            }
+            
+            currentExtent.set(Ints.constrainToRange(currentExtent.width(), 
+                                                    vkSurfaceCapablities.minImageExtent().width(), 
+                                                    vkSurfaceCapablities.maxImageExtent().width()),
+                              Ints.constrainToRange(currentExtent.height(), 
+                                                    vkSurfaceCapablities.minImageExtent().height(), 
+                                                    vkSurfaceCapablities.maxImageExtent().height()));
+            LOGGER.log(Level.INFO, "Surface will be {0}x{1}", 
+                    new Object[]{currentExtent.width(),
+                                 currentExtent.height()});
+             
+            
 
             // Surface formats our device can use
             pInt.put(0, 0);
@@ -392,16 +534,35 @@ public class VKRenderer {
                 vkSurfaceFormats = VkSurfaceFormatKHR.malloc(numFormats);
                 checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, surfaceHandle, pInt, vkSurfaceFormats));
                 
-                if (debugging) {
-                    LOGGER.info("Available surface formats:");
-                    for (int i = 0; i < numFormats; ++i) {
-                        VkSurfaceFormatKHR surfaceFormat = vkSurfaceFormats.get(i);
-                        VKMISSINGENUMS.VkColorSpaceKHR colorSpace = VKMISSINGENUMS.VkColorSpaceKHR.GetByValue(surfaceFormat.colorSpace());
-                        VKMISSINGENUMS.VkFormat format = VKMISSINGENUMS.VkFormat.values()[surfaceFormat.format()];
-                        String strColorSpace = colorSpace.name();
-                        LOGGER.log(Level.INFO, "    {0}:{1}", new Object[]{format.name(), colorSpace.name()});                        
+                LOGGER.info("Available surface formats:");
+                for (int i = 0; i < numFormats; ++i) {
+                    VkSurfaceFormatKHR surfaceFormat = vkSurfaceFormats.get(i);
+                    VKMISSINGENUMS.VkColorSpaceKHR colorSpace = VKMISSINGENUMS.VkColorSpaceKHR.GetByValue(surfaceFormat.colorSpace());
+                    VKMISSINGENUMS.VkFormat format = VKMISSINGENUMS.VkFormat.values()[surfaceFormat.format()];
+                    
+                    // We want to use VK_FORMAT_B8G8R8A8_SRGB for the surface format.  That's a byte for each
+                    // of RGBA so it's easy to work with but where the value is nonlinearly mapped to 
+                    // intensity.  Check out sRGB, but in short given the nature of human vision and the
+                    // display characteristics of most displays we are better off concentrating granularity
+                    // around intensities we can differentiate rather than just using a linear mapping.
+                    if (format == VKMISSINGENUMS.VkFormat.VK_FORMAT_B8G8R8A8_SRGB) {
+                        selectedFormat = format;
                     }
+                    
+                    // For the reason above we want the sRGB colour space
+                    if (colorSpace == VKMISSINGENUMS.VkColorSpaceKHR.VK_COLOR_SPACE_SRGB_NONLINEAR_KHR) {
+                        selectedColorSpace = colorSpace;
+                    }
+                    
+                    LOGGER.log(Level.INFO, "    {0}:{1}", new Object[]{format.name(), colorSpace.name()});                        
                 }
+            }
+            
+            if (selectedFormat == VKMISSINGENUMS.VkFormat.VK_FORMAT_NONE) {
+                throw new RuntimeException("Required surface format unsupported (VK_FORMAT_B8G8R8A8_SRGB)");
+            }
+            if (selectedColorSpace == VKMISSINGENUMS.VkColorSpaceKHR.VK_COLOR_SPACE_NONE) {
+                throw new RuntimeException("Required color space unsupported (VK_COLOR_SPACE_SRGB_NONLINEAR_KHR)");
             }
 
             // Presentation modes our device can use for our surface
@@ -412,14 +573,36 @@ public class VKRenderer {
                 presentationModes = stack.mallocInt(numPresentationModes);
                 vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, surfaceHandle, pInt, presentationModes);
                 
-                if (debugging) {
-                    LOGGER.info("Supported presentation modes:");
-                    for (int i = 0; i < numPresentationModes; ++i) {                
-                        VKMISSINGENUMS.VkPresentModeKHR presentationMode = VKMISSINGENUMS.VkPresentModeKHR.values()[presentationModes.get(i)];
-                        LOGGER.log(Level.INFO, "   {0}", presentationMode.name());
+                LOGGER.info("Supported presentation modes:");
+                for (int i = 0; i < numPresentationModes; ++i) {                
+                    VKMISSINGENUMS.VkPresentModeKHR presentationMode = VKMISSINGENUMS.VkPresentModeKHR.values()[presentationModes.get(i)];
+                    // Mailbox is our first choice
+                    if (presentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR) {
+                        selectedPresentationMode = presentationMode;
                     }
-                }
+                    // Second preference is VK_PRESENT_MODE_FIFO_KHR, selected unless we already have mailbox
+                    else if (presentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR 
+                     && selectedPresentationMode != VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR) {
+                        selectedPresentationMode = presentationMode;
+                    }
+                    // Third preference is VK_PRESENT_MODE_FIFO_RELAXED_KHR
+                    else if (presentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_FIFO_RELAXED_KHR 
+                     && selectedPresentationMode != VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_MAILBOX_KHR
+                     && selectedPresentationMode != VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_FIFO_KHR) {
+                        selectedPresentationMode = presentationMode;
+                    }           
+                    // Last choice
+                    else if (presentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_IMMEDIATE_KHR
+                     && selectedPresentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_NONE) {
+                        selectedPresentationMode = presentationMode;
+                    }
+                    LOGGER.log(Level.INFO, "   {0}", presentationMode.name());
+                }                              
             }
+            
+            if (selectedPresentationMode == VKMISSINGENUMS.VkPresentModeKHR.VK_PRESENT_MODE_NONE) {
+                throw new RuntimeException("No presentation mode supported");
+            }            
         } else {
             // Sad face
             throw new RuntimeException("Vulkan: No suitable physical device found.");
@@ -512,76 +695,43 @@ public class VKRenderer {
      * reference</a>
      */
     protected void InitVKSwapChain(MemoryStack stack) {
-
-        /*
+        // Double buffering is preferred
+        IntBuffer imageCount = stack.ints(vkSurfaceCapablities.minImageCount() + 1);
+        if (vkSurfaceCapablities.maxImageCount() > 0 && imageCount.get(0) > vkSurfaceCapablities.maxImageCount()) {
+            imageCount.put(0, vkSurfaceCapablities.maxImageCount());
+        }
+        //TODO_TT: check imagecount isn't 0
         
-        
-        
-        
-                SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, stack);
+        //TODO_TT: this needs a lot of commenting
+        VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.callocStack(stack);
+        createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
+        createInfo.surface(surfaceHandle);
+        createInfo.minImageCount(imageCount.get(0));
+        createInfo.imageFormat(selectedFormat.ordinal());
+        createInfo.imageColorSpace(selectedColorSpace.GetValue());
+        createInfo.imageExtent(currentExtent);
+        createInfo.imageArrayLayers(1);
+        createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
+        createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);        
+        createInfo.preTransform(vkSurfaceCapablities.currentTransform());
+        createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
+        createInfo.presentMode(selectedPresentationMode.ordinal());
+        createInfo.clipped(true);
+        createInfo.oldSwapchain(VK_NULL_HANDLE);
 
-                VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
-                int presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-                VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
+        LongBuffer pSwapChainHandles = stack.longs(VK_NULL_HANDLE);
+        checkVKret(vkCreateSwapchainKHR(vkDevice, createInfo, null, pSwapChainHandles));
+        long swapChainHandle = pSwapChainHandles.get(0);
 
-                IntBuffer imageCount = stack.ints(swapChainSupport.capabilities.minImageCount() + 1);
+        checkVKret(vkGetSwapchainImagesKHR(vkDevice, swapChainHandle, imageCount, null));
 
-                if(swapChainSupport.capabilities.maxImageCount() > 0 && imageCount.get(0) > swapChainSupport.capabilities.maxImageCount()) {
-                    imageCount.put(0, swapChainSupport.capabilities.maxImageCount());
-                }
+        LongBuffer pSwapchainImageHandles = stack.mallocLong(imageCount.get(0));
+        checkVKret(vkGetSwapchainImagesKHR(vkDevice, swapChainHandle, imageCount, pSwapchainImageHandles));
 
-                VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.callocStack(stack);
-
-                createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
-                createInfo.surface(surface);
-
-                // Image settings
-                createInfo.minImageCount(imageCount.get(0));
-                createInfo.imageFormat(surfaceFormat.format());
-                createInfo.imageColorSpace(surfaceFormat.colorSpace());
-                createInfo.imageExtent(extent);
-                createInfo.imageArrayLayers(1);
-                createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
-
-                QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
-
-                if(!indices.graphicsFamily.equals(indices.presentFamily)) {
-                    createInfo.imageSharingMode(VK_SHARING_MODE_CONCURRENT);
-                    createInfo.pQueueFamilyIndices(stack.ints(indices.graphicsFamily, indices.presentFamily));
-                } else {
-                    createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);
-                }
-
-                createInfo.preTransform(swapChainSupport.capabilities.currentTransform());
-                createInfo.compositeAlpha(VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR);
-                createInfo.presentMode(presentMode);
-                createInfo.clipped(true);
-
-                createInfo.oldSwapchain(VK_NULL_HANDLE);
-
-                LongBuffer pSwapChain = stack.longs(VK_NULL_HANDLE);
-
-                if(vkCreateSwapchainKHR(device, createInfo, null, pSwapChain) != VK_SUCCESS) {
-                    throw new RuntimeException("Failed to create swap chain");
-                }
-
-                swapChain = pSwapChain.get(0);
-
-                vkGetSwapchainImagesKHR(device, swapChain, imageCount, null);
-
-                LongBuffer pSwapchainImages = stack.mallocLong(imageCount.get(0));
-
-                vkGetSwapchainImagesKHR(device, swapChain, imageCount, pSwapchainImages);
-
-                swapChainImages = new ArrayList<>(imageCount.get(0));
-
-                for(int i = 0;i < pSwapchainImages.capacity();i++) {
-                    swapChainImages.add(pSwapchainImages.get(i));
-                }
-
-                swapChainImageFormat = surfaceFormat.format();
-                swapChainExtent = VkExtent2D.create().set(extent);
-         */
+        swapChainImageHandles = new ArrayList<>(imageCount.get(0));
+        for(int i = 0;i < pSwapchainImageHandles.capacity();i++) {
+            swapChainImageHandles.add(pSwapchainImageHandles.get(i));
+        }
     }
 
     /**
@@ -598,9 +748,164 @@ public class VKRenderer {
      *
      * @param stack
      */
-    protected void InitVKImages(MemoryStack stack) {
+    protected void InitVKImageViews(MemoryStack stack) {
+        LongBuffer pImageView = stack.mallocLong(1);
+        for (long swapChainImageHandle : swapChainImageHandles) {
+            VkImageViewCreateInfo createInfo = VkImageViewCreateInfo.callocStack(stack);
 
+            createInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
+            createInfo.image(swapChainImageHandle);
+            createInfo.viewType(VK_IMAGE_VIEW_TYPE_2D);
+            createInfo.format(selectedFormat.ordinal());
+
+            createInfo.components().r(VK_COMPONENT_SWIZZLE_IDENTITY);
+            createInfo.components().g(VK_COMPONENT_SWIZZLE_IDENTITY);
+            createInfo.components().b(VK_COMPONENT_SWIZZLE_IDENTITY);
+            createInfo.components().a(VK_COMPONENT_SWIZZLE_IDENTITY);
+
+            createInfo.subresourceRange().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
+            createInfo.subresourceRange().baseMipLevel(0);
+            createInfo.subresourceRange().levelCount(1);
+            createInfo.subresourceRange().baseArrayLayer(0);
+            createInfo.subresourceRange().layerCount(1);
+
+            checkVKret(vkCreateImageView(vkDevice, createInfo, null, pImageView));
+            swapChainImageViewHandles = new ArrayList<>();
+            swapChainImageViewHandles.add(pImageView.get(0));
+        }
     }
+    
+    /**
+     * Vulkan has explicit objects that represent render passes.  It describes the
+     * frame buffer attachments such as the images in our swapchain, other depth,
+     * colour or stencil buffers.  Subpasses read and write to these attachments.
+     * A render pass will be instanced for use in a command buffer.
+     * 
+     * @param stack
+     */
+    protected void InitVKRenderPass(MemoryStack stack) {
+        VkAttachmentDescription.Buffer colorAttachment = VkAttachmentDescription.callocStack(1, stack);
+        colorAttachment.format(selectedFormat.ordinal());
+        colorAttachment.samples(VK_SAMPLE_COUNT_1_BIT);
+        colorAttachment.loadOp(VK_ATTACHMENT_LOAD_OP_CLEAR);
+        colorAttachment.storeOp(VK_ATTACHMENT_STORE_OP_STORE);
+        colorAttachment.stencilLoadOp(VK_ATTACHMENT_LOAD_OP_DONT_CARE);
+        colorAttachment.stencilStoreOp(VK_ATTACHMENT_STORE_OP_DONT_CARE);
+        
+        // These are the states of our display images at the start and end of this pass
+        colorAttachment.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
+        colorAttachment.finalLayout(VK_IMAGE_LAYOUT_PRESENT_SRC_KHR);
+
+        VkAttachmentReference.Buffer colorAttachmentRef = VkAttachmentReference.callocStack(1, stack);
+        colorAttachmentRef.attachment(0);
+        colorAttachmentRef.layout(VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL);
+
+        VkSubpassDescription.Buffer subpass = VkSubpassDescription.callocStack(1, stack);
+        subpass.pipelineBindPoint(VK_PIPELINE_BIND_POINT_GRAPHICS);
+        subpass.colorAttachmentCount(1);
+        subpass.pColorAttachments(colorAttachmentRef);
+
+        VkSubpassDependency.Buffer dependency = VkSubpassDependency.callocStack(1, stack);
+        dependency.srcSubpass(VK_SUBPASS_EXTERNAL);
+        dependency.dstSubpass(0);
+        dependency.srcStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+        dependency.srcAccessMask(0);
+        dependency.dstStageMask(VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT);
+        dependency.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+
+        VkRenderPassCreateInfo renderPassInfo = VkRenderPassCreateInfo.callocStack(stack);
+        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO);
+        renderPassInfo.pAttachments(colorAttachment);
+        renderPassInfo.pSubpasses(subpass);
+        renderPassInfo.pDependencies(dependency);
+
+        LongBuffer pRenderPass = stack.mallocLong(1);
+
+        checkVKret(vkCreateRenderPass(vkDevice, renderPassInfo, null, pRenderPass));
+        renderPassHandle = pRenderPass.get(0);        
+    }
+    
+    
+    protected void InitVKFrameBuffer(MemoryStack stack) {
+        LongBuffer attachments = stack.mallocLong(1);
+        LongBuffer pFramebuffer = stack.mallocLong(1);
+
+        VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.callocStack(stack);
+        framebufferInfo.sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO);
+        framebufferInfo.renderPass(renderPassHandle);
+        framebufferInfo.width(currentExtent.width());
+        framebufferInfo.height(currentExtent.height());
+        framebufferInfo.layers(1);
+        
+        swapChainFramebufferHandles = new ArrayList<>(swapChainImageViewHandles.size());
+
+        for (long imageView : swapChainImageViewHandles) {
+            attachments.put(0, imageView);
+            framebufferInfo.pAttachments(attachments);
+            checkVKret(vkCreateFramebuffer(vkDevice, framebufferInfo, null, pFramebuffer));
+            swapChainFramebufferHandles.add(pFramebuffer.get(0));
+        }
+    }
+    
+    
+    protected void InitVKCommandPool(MemoryStack stack) {
+        VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.callocStack(stack);
+        poolInfo.sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO);
+        poolInfo.queueFamilyIndex(queueFamilyIndex);
+        LongBuffer pCommandPool = stack.mallocLong(1);
+        checkVKret(vkCreateCommandPool(vkDevice, poolInfo, null, pCommandPool));
+        commandPoolHandle = pCommandPool.get(0);        
+    }
+    
+    
+    protected void InitVKCommandBuffers(MemoryStack stack) {
+        final int commandBuffersCount = swapChainFramebufferHandles.size();
+        commandBuffers = new ArrayList<>(commandBuffersCount);
+
+        VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
+        allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
+        allocInfo.commandPool(commandPoolHandle);
+        allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        allocInfo.commandBufferCount(commandBuffersCount);
+
+        PointerBuffer pCommandBuffers = stack.mallocPointer(commandBuffersCount);
+        checkVKret(vkAllocateCommandBuffers(vkDevice, allocInfo, pCommandBuffers));
+
+        for (int i = 0; i < commandBuffersCount; ++i) {
+            commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), vkDevice));
+        }
+
+        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+
+        VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+        renderPassInfo.renderPass(renderPassHandle);
+
+        VkRect2D renderArea = VkRect2D.callocStack(stack);
+        renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+        renderArea.extent(currentExtent);
+        renderPassInfo.renderArea(renderArea);
+
+        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+        clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
+        renderPassInfo.pClearValues(clearValues);
+
+        for (int i = 0; i < commandBuffersCount; ++i) {
+            VkCommandBuffer commandBuffer = commandBuffers.get(i);
+
+            checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
+            renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
+            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+            {
+//                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+//                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            }
+            vkCmdEndRenderPass(commandBuffer);
+            checkVKret(vkEndCommandBuffer(commandBuffer));
+        }        
+    }
+    
 
     /**
      *
@@ -611,16 +916,36 @@ public class VKRenderer {
      * <a href="https://renderdoc.org/vulkan-in-30-minutes.html">https://renderdoc.org/vulkan-in-30-minutes.html</a>      *
      */
     public void InitVKRenderer(long surfaceHandle) {
+        StartLogSection("Initialising VKRenderer");
         this.surfaceHandle = surfaceHandle;
         try (MemoryStack stack = stackPush()) {
             InitVKPhysicalDevice(stack);
             InitVKLogicalDevice(stack);
-            InitVKQueue(stack);
+            InitVKQueue(stack);            
+        }
+        EndLogSection("Initialising VKRenderer");
+    }
+    
+    
+    public void RecreateSwapChain() {
+        
+        try (MemoryStack stack = stackPush()) {
+            
+            // Check the surface is non-zero sized.  If it is then the JPanel
+            // it lives in probably hasn't finished its initialisation.  Bail
+            // at this point but don't reset swapChainNeedsRecreation so we keep
+            // trying to create the swap chain on successive calls to Display().
+            Rectangle bounds = parent.getCanvasBounds();
+            if (bounds.width == 0 || bounds.height == 0) {                
+                return;
+            }
+            
+            StartLogSection("VKRenderer Recreate SwapChain");
+            
             InitVKSwapChain(stack);
-            InitVKImages(stack);
-//            InitVKImageViews(stack);
-//            InitVKRenderPass(stack);
-//            InitVKFrameBuffer(stack);
+            InitVKImageViews(stack);
+            InitVKRenderPass(stack);
+            InitVKFrameBuffer(stack);
 //            InitVKDescriptorSetLayout(stack);
 //            InitVKPipelineLayout(stack);
 //            InitVKShaderModules(stack);
@@ -628,8 +953,8 @@ public class VKRenderer {
 //            InitVKDescriptorPool(stack);
 //            InitVKDescriptorSet(stack);
 //            InitVKUniformBuffers(stack);
-//            InitVKCommandPool(stack);
-//            InitVKCommandBuffers(stack);
+            InitVKCommandPool(stack);
+            InitVKCommandBuffers(stack);
             /*
  
             RenderPass
@@ -645,15 +970,20 @@ public class VKRenderer {
             CommandBuffers
             
             RenderLoop
-             */
+             */   
+            swapChainNeedsRecreation = false;
         }
+        EndLogSection("VKRenderer Recreate SwapChain");
     }
 
     /**
      *
+     * @param parent
      * @throws Exception
      */
-    public VKRenderer() throws Exception {
+    public VKRenderer(VKVisualProcessor parent) throws Exception {
+        StartLogSection("VKRenderer ctor");
+        this.parent = parent;
         try (MemoryStack stack = stackPush()) {
             PointerBuffer pbValidationLayers = null;
             PointerBuffer pbExtensions = GetRequiredVKPhysicalDeviceExtensions(stack);
@@ -661,7 +991,11 @@ public class VKRenderer {
                 pbValidationLayers = InitVKValidationLayers(stack);
             }
             InitVKInstance(stack, pbExtensions, pbValidationLayers);
+            if (debugging) {
+                InitVKDebugging(stack);
+            }            
         }
+        EndLogSection("VKRenderer ctor");
     }
 
     @Override
@@ -669,11 +1003,37 @@ public class VKRenderer {
         vkDestroyInstance(vkInstance, null);
     }
 
-    public void CreateSwapChain(long surface) {
-
-    }
-
     public VkInstance GetVkInstance() {
         return vkInstance;
     }
+
+    public void Display() {
+        if (swapChainNeedsRecreation) {
+            RecreateSwapChain();
+        }
+        
+        // Update everything that needs updating - drawables
+        parent.signalUpdateComplete();
+        if (!swapChainNeedsRecreation) {
+            // Display all the drawables/renderables
+        }
+        parent.signalProcessorIdle();
+    }
+
+    int[] getViewport() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void componentResized(ComponentEvent e) {
+        swapChainNeedsRecreation = true;
+    }
+    public void componentHidden(ComponentEvent e) {
+        LOGGER.info("Canvas hidden");
+    }
+    public void componentMoved(ComponentEvent e) {
+        LOGGER.info("Canvas moved");     
+    }
+    public void componentShown(ComponentEvent e) {
+        LOGGER.info("Canvas shown");
+    }    
 }

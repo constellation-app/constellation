@@ -18,19 +18,12 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.FpsBatcher;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 import org.openide.util.NbPreferences;
 
 /**
@@ -73,7 +66,7 @@ public class FPSRenderable implements GLRenderable {
     }
 
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //
 //        try {
@@ -138,7 +131,7 @@ public class FPSRenderable implements GLRenderable {
     }
 
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
         if (start == 0) {
             start = System.currentTimeMillis();
         }
@@ -192,7 +185,7 @@ public class FPSRenderable implements GLRenderable {
     }
 
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        fpsBatcher.disposeBatch().run(gl);
     }

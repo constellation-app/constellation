@@ -15,26 +15,16 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
-import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_COLOR;
-import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_WIDTH;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
-import static au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLProfile.GL30;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -61,7 +51,7 @@ public class NewLineRenderable implements GLRenderable {
     // The batch of OpenGL primitives representing the new line
     private final Batch batch;
 
-    private final GLVisualProcessor parent;
+    private final VKVisualProcessor parent;
 
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final int NUMBER_OF_VERTICES = 2;
@@ -73,7 +63,7 @@ public class NewLineRenderable implements GLRenderable {
 
     private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();
 
-    public NewLineRenderable(final GLVisualProcessor parent) {        
+    public NewLineRenderable(final VKVisualProcessor parent) {        
         this.parent = parent;
         // TODO_TT:
         batch = new Batch(-1);
@@ -93,7 +83,7 @@ public class NewLineRenderable implements GLRenderable {
      * @param drawable The OpenGL rendering target
      */
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //
 //        String newLineVp = null;
@@ -133,7 +123,7 @@ public class NewLineRenderable implements GLRenderable {
     }
 
     @Override
-    public void update(final STUB_GLAutoDrawable drawable) {
+    public void update(final AutoDrawable drawable) {
         final Camera camera = parent.getDisplayCamera();
         NewLineModel updatedModel = modelQueue.peek();
         while (updatedModel != null && updatedModel.getCamera() != camera) {
@@ -159,7 +149,7 @@ public class NewLineRenderable implements GLRenderable {
      * @param pMatrix The model view projection matrix.
      */
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
         // TODO_TT: this whole func
 //        final Matrix44f mvpMatrix = parent.getDisplayModelViewProjectionMatrix();
 //
@@ -209,7 +199,7 @@ public class NewLineRenderable implements GLRenderable {
      * @param drawable The OpenGL rendering target.
      */
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
 //        batch.dispose(drawable.getGL().getGL3());
     }
 }

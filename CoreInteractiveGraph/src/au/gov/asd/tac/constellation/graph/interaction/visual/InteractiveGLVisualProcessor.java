@@ -38,7 +38,10 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
+import au.gov.asd.tac.constellation.visual.Renderable;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -62,7 +65,7 @@ import java.util.logging.Level;
  *
  * @author twilight_sparkle
  */
-public class InteractiveGLVisualProcessor extends GLVisualProcessor implements VisualInteraction, VisualAnnotator {
+public class InteractiveGLVisualProcessor extends VKVisualProcessor implements VisualInteraction, VisualAnnotator {
 
     private final long selectionBoxUpdateId = VisualChangeBuilder.generateNewId();
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();
@@ -96,8 +99,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 //        addRenderable(newLineRenderable);
 //        addRenderable(selectionBoxRenderable);
 //        addRenderable(planesRenderable);
-//        hitTester = new HitTester(this);
-//        addRenderable(hitTester);
+        hitTester = new HitTester(this);
+        addRenderable(hitTester);
     }
 
     /**
@@ -169,6 +172,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
+        assert(hitTester != null);
+        //TODO_TT
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
             if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                 getCanvas().setCursor(DEFAULT_CURSOR);

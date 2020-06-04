@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl.renderer;
+package au.gov.asd.tac.constellation.visual.vulkan;
 
-import au.gov.asd.tac.constellation.visual.vulkan.ConstellationCanvas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -27,10 +26,10 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.vulkan.VKRenderer;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Arrays;
@@ -39,40 +38,20 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Logger;
+import org.lwjgl.vulkan.awt.VKData;
 
-/**
- * A {@link VisualProcessor} that creates a 3D visualisation using OpenGL. This
- * is the primary visual processor for CONSTELLATION.
- * <p>
- * This visual processor creates a {@link GLCanvas}, and an instance of a
- * {@link GLRenderer} to update the canvas throughout the OpenGL life-cycle.
- * This renderer coordinates the work of actually sending data to the GL Context
- * which is done by a number of {@link GLRenderable} objects. The
- * {@link GraphRenderable} is the main such object which does the bulk of the
- * work. Subclasses of this processor may add other renderables to the renderer
- * using {@link #addRenderable}, but only before the processor is initialised
- * (usually adding them in the constructor is the best option). The only
- * additional renderable we add here is an {@link AxesRenderable} to display
- * coordinate axes in the top right corner of the canvas and a
- * {@link FPSRenderable} to display a frames-per-second counter in the bottom
- * right corner of the canvas (although this will be hidden by default).
- *
- * @author twilight_sparkle
- * @author antares
- */
-public class GLVisualProcessor extends VisualProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(GLVisualProcessor.class.getName());
+public class VKVisualProcessor extends VisualProcessor {
+
+    private static final Logger LOGGER = Logger.getLogger(VKVisualProcessor.class.getName());
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
     // The OpenGL canvas
     protected ConstellationCanvas canvas;
     
-    // The GLEventListener for the OpenGL canvas. Contains the processing logic to update the canvas throughout the OpenGL life-cycle.
-    private GLRenderer renderer;
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
-    private GraphRenderable graphRenderable;
+    //private GraphRenderable graphRenderable;
     private final Matrix44f modelViewMatrix = new Matrix44f();
     private VKRenderer vkRenderer;
 
@@ -104,7 +83,7 @@ public class GLVisualProcessor extends VisualProcessor {
      * @param drawHitTest
      */
     protected final void setDrawHitTest(final boolean drawHitTest) {
-        graphRenderable.setDrawHitTest(drawHitTest);
+        //graphRenderable.setDrawHitTest(drawHitTest);
     }
 
     @Override
@@ -127,7 +106,8 @@ public class GLVisualProcessor extends VisualProcessor {
      */
     public final Matrix44f getDisplayModelViewProjectionMatrix() {
         final Matrix44f mvpMatrix = new Matrix44f();
-        mvpMatrix.multiply(renderer.getProjectionMatrix(), modelViewMatrix);
+        // TODO_TT
+        //mvpMatrix.multiply(renderer.getProjectionMatrix(), modelViewMatrix);
         return mvpMatrix;
     }
 
@@ -177,7 +157,8 @@ public class GLVisualProcessor extends VisualProcessor {
     protected Matrix44f getCameraModelViewProjectionMatrix(final Camera camera) {
         final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
         final Matrix44f mvpMatrix = new Matrix44f();
-        mvpMatrix.multiply(renderer.getProjectionMatrix(), mvMatrix);
+        // TODO_TT
+//        mvpMatrix.multiply(renderer.getProjectionMatrix(), mvMatrix);
         return mvpMatrix;
     }
 
@@ -188,7 +169,7 @@ public class GLVisualProcessor extends VisualProcessor {
      * @return The viewport from the {@link GLRenderer}.
      */
     protected final int[] getViewport() {
-        return renderer.viewport;
+        return vkRenderer.getViewport();
     }
 
     @Override
@@ -196,7 +177,13 @@ public class GLVisualProcessor extends VisualProcessor {
         updating = true;
         //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the canvas maybe,
         // though why then pass that back in...
-        canvas.paint(null);
+        
+        // performVisualUpdate maybe called before the JPanel is added to its
+        // parent.  We can't get a renderable surface until the parent chain is
+        // intact.
+        if (canvas.surface != 0) {
+            canvas.paint(null);
+        }
     }
 
     @Override
@@ -224,12 +211,12 @@ public class GLVisualProcessor extends VisualProcessor {
      * @param graphDisplayer The {@link GraphDisplayer} to use in the
      * {@link GraphRenderable}.
      */
-    protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
-        if (!isInitialised) {
-            //TODO_TT
-            //graphRenderable.setGraphDisplayer(graphDisplayer);
-        }
-    }
+//    protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
+//        if (!isInitialised) {
+//            //TODO_TT
+//            //graphRenderable.setGraphDisplayer(graphDisplayer);
+//        }
+//    }
 
     @Override
     protected void cleanup() {
@@ -362,7 +349,7 @@ public class GLVisualProcessor extends VisualProcessor {
     protected final void addRenderable(final Comparable<Renderable> renderable) {
         if (!isInitialised) {
             //TODO_TT
-            renderer.addRenderable(renderable);
+            //renderer.addRenderable(renderable);
         }
     }
 
@@ -377,7 +364,8 @@ public class GLVisualProcessor extends VisualProcessor {
      * @param hitTestBufferName The GL name of the hit test buffer.
      */
     public void setHitTestFboName(final int hitTestBufferName) {
-        graphRenderable.setHitTestFboName(hitTestBufferName);
+        //TODO_TT
+//        graphRenderable.setHitTestFboName(hitTestBufferName);
     }
 
     /**
@@ -386,7 +374,7 @@ public class GLVisualProcessor extends VisualProcessor {
      * <p>
      * This processor will not use debugging or print GL capabilities.
      */
-    public GLVisualProcessor() {
+    public VKVisualProcessor() {
         this(false, false);
     }
     
@@ -399,11 +387,11 @@ public class GLVisualProcessor extends VisualProcessor {
      * the canvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
      * the surface we cannot initialise all the Vulkan resources we need.   
      */
-//    @Override 
-//    protected void notifyParentAdded() {
-//        // At this point VisualGraphTopCOmponent
-//        canvas.InitSurface();
-//        
+    @Override 
+    protected void notifyParentAdded() {
+        // At this point VisualGraphTopCOmponent
+        canvas.InitSurface();
+        
 //        // We currently have a zero sized canvas, a Vulkan swapchain requires
 //        // a non zero sized canvas so we must defer the initialisation of Vulkan
 //        // objects until later.
@@ -411,8 +399,8 @@ public class GLVisualProcessor extends VisualProcessor {
 //        System.out.print(bounds);
 //        
 //        // The canvas surface is needed to finish initialising VKRenderer
-//        //vkRenderer.InitVKRenderer(canvas.surface);        
-//    }
+//        vkRenderer.InitVKRenderer(canvas.surface);        
+    }
 
     /**
      * Construct a new GLVisualProcessor with a {@link GraphRenderable} and an
@@ -423,21 +411,21 @@ public class GLVisualProcessor extends VisualProcessor {
      * @param printGlCapabilities Whether or not to print out a list of GL
      * capabilities upon initialisation.
      */
-    public GLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
-//        try {            
-//            // VkInstance is setup in the constructor
-//            vkRenderer = new VKRenderer();
-//        } catch (Exception e) {
-//            LOGGER.severe(e.toString());
-//        }
-//        
-//        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
-//        // in a VKData object and makes it private.  The result is we need to create it
-//        // here rather than have a ConstellationCanvas constructor that just takes the
-//        // renderer and pulls the instance from there.
-//        VKData vkData = new VKData();
-//        vkData.instance = vkRenderer.GetVkInstance();
-//        canvas = new ConstellationCanvas(vkData, vkRenderer);    
+    public VKVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
+        try {            
+            // VkInstance is setup in the constructor
+            vkRenderer = new VKRenderer(this);
+        } catch (Exception e) {
+            LOGGER.severe(e.toString());
+        }
+        
+        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
+        // in a VKData object and makes it private.  The result is we need to create it
+        // here rather than have a ConstellationCanvas constructor that just takes the
+        // renderer and pulls the instance from there.
+        VKData vkData = new VKData();
+        vkData.instance = vkRenderer.GetVkInstance();
+        canvas = new ConstellationCanvas(vkData, vkRenderer);    
         //canvas.addEventListener(vkRenderer);
         //canvas.InitSurface();
         
@@ -455,6 +443,10 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     protected Component getCanvas() {
         return canvas;
+    }
+    
+    public Rectangle getCanvasBounds() {
+        return canvas.getBounds();
     }
     
     @Override
@@ -576,7 +568,8 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
-        return graphRenderable.getChangeProcessor(property);
+        //return graphRenderable.getChangeProcessor(property);
+        return null;
     }
     
     /**
@@ -589,7 +582,5 @@ public class GLVisualProcessor extends VisualProcessor {
     public float getDPIScaleY() {
         return (float)((Graphics2D)(canvas).getGraphics()).getTransform().getScaleY();
     }
-    
-    @Override
-    public void notifyParentAdded() {}
+            
 }

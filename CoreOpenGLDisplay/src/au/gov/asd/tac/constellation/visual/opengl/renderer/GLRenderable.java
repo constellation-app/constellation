@@ -15,8 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 
 /**
  * An interface for a unit that performs drawing operations on a GLContext.
@@ -31,11 +32,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
  *
  * @author twilight_sparkle
  */
-public interface GLRenderable extends Comparable<GLRenderable> {
-
+public interface GLRenderable extends Renderable {
+    
     /**
      * A convenient functional interface for specifying operations which usually
-     * involve transfering data to the specified openGL context as part of a
+     * involve transferring data to the specified openGL context as part of a
      * call to {@link #update}.
      */
     @FunctionalInterface
@@ -61,7 +62,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
     }
 
     @Override
-    public default int compareTo(final GLRenderable o) {
+    public default int compareTo(final Renderable o) {
         return Integer.compare(getPriority(), o.getPriority());
     }
 
@@ -84,7 +85,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      *
      * @param drawable The drawable to initialise with respect to.
      */
-    public void init(final STUB_GLAutoDrawable drawable);
+    public void init(final AutoDrawable drawable);
 
     /**
      * Reshape this renderable.
@@ -102,7 +103,7 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      *
      * @param drawable The drawable to update with respect to.
      */
-    public default void update(final STUB_GLAutoDrawable drawable) {
+    public default void update(final AutoDrawable drawable) {
     }
 
     /**
@@ -111,12 +112,12 @@ public interface GLRenderable extends Comparable<GLRenderable> {
      * @param drawable The drawable to display with respect to.
      * @param pMatrix The projection matrix of the renderer being displayed on.
      */
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f pMatrix);
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix);
 
     /**
      * Dispose this renderable using the specified drawable.
      *
      * @param drawable The drawable to dispose with respect to.
      */
-    public void dispose(final STUB_GLAutoDrawable drawable);
+    public void dispose(final AutoDrawable drawable);
 }

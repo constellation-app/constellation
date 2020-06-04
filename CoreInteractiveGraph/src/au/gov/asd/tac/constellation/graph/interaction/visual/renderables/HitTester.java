@@ -16,18 +16,14 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
-import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
-import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
-import java.nio.FloatBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-import org.lwjgl.BufferUtils;
 
 /**
  * Maintain a hit test buffer.
@@ -65,7 +61,7 @@ public final class HitTester implements GLRenderable {
     // TODO_TT: 
     private final int hitTestBufferName = -1;
 //    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
-    private final GLVisualProcessor parent;
+    private final VKVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
     private final BlockingDeque<HitTestRequest> requestQueue = new LinkedBlockingDeque<>();
@@ -75,7 +71,7 @@ public final class HitTester implements GLRenderable {
      *
      * @param parent
      */
-    public HitTester(final GLVisualProcessor parent) {
+    public HitTester(final VKVisualProcessor parent) {
         this.parent = parent;
         hitTestFboName = new int[1];
         hitTestDepthBufferName = new int[1];
@@ -88,7 +84,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void init(final STUB_GLAutoDrawable drawable) {
+    public void init(final AutoDrawable drawable) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        // Hit testing.
 //        // Create an FBO name and bind a new FBO.
@@ -140,7 +136,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void update(final STUB_GLAutoDrawable drawable) {
+    public void update(final AutoDrawable drawable) {
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
@@ -149,7 +145,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void display(final STUB_GLAutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
+    public void display(final AutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
 //        final GL30 gl = drawable.getGL().getGL3();
 //        if (needsResize) {
 //            GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
@@ -216,7 +212,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void dispose(final STUB_GLAutoDrawable drawable) {
+    public void dispose(final AutoDrawable drawable) {
         // TODO_TT: this whole func
 //        final GL30 gl = drawable.getGL().getGL3();
 //        gl.glDeleteRenderbuffers(1, hitTestRboName, 0);

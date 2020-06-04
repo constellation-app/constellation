@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GL;
 
 /**
  * Utility class for debugging and diagnostics relating to OpenGL information.
