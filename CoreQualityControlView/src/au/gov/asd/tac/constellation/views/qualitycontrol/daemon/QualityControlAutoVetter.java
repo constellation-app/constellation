@@ -151,13 +151,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      */
     public static void updateQualityControlState(final GraphReadMethods graph) {
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-        Future stateFuture = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
+        Future<?> stateFuture = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
                 .executeLater(currentGraph);
 
         try {
             stateFuture.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
+            Thread.currentThread().interrupt();
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
