@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss.KTrussResultHandler;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.GridArranger;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -139,7 +139,7 @@ public class SpectralArranger implements Arranger {
         if (vxCount == 0) {
             return;
         }
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         // Compute the trusses in the graph.
         final GetTrussResultHandler handler = new GetTrussResultHandler();
@@ -231,7 +231,7 @@ public class SpectralArranger implements Arranger {
         disperseVertices(wg);
 
         if (maintainMean) {
-            GraphUtilities.moveMean(wg, oldMean);
+            ArrangementUtilities.moveMean(wg, oldMean);
         }
     }
 

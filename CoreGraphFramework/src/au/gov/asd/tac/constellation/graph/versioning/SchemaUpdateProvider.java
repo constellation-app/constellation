@@ -43,7 +43,7 @@ public abstract class SchemaUpdateProvider implements UpdateProvider {
         }
 
         @Override
-        public boolean appliesToGraph(StoreGraph graph) {
+        public boolean appliesToGraph(final StoreGraph graph) {
             return getSchema().getClass().isAssignableFrom(graph.getSchema().getFactory().getClass());
         }
 

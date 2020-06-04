@@ -57,7 +57,7 @@ public enum GraphOperationMode {
      * @param modificationIncrement the direction that the graph modification
      * counters should be adjusted when operations are performed in this mode.
      */
-    private GraphOperationMode(long modificationIncrement) {
+    private GraphOperationMode(final long modificationIncrement) {
         this.modificationIncrement = modificationIncrement;
     }
 

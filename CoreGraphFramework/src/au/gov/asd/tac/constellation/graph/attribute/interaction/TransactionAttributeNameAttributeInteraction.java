@@ -33,7 +33,7 @@ public class TransactionAttributeNameAttributeInteraction extends AbstractAttrib
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         return (String) value;
     }
 

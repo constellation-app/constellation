@@ -28,12 +28,12 @@ public class AttributeCountMonitor extends GlobalMonitor {
     public AttributeCountMonitor() {
     }
 
-    public AttributeCountMonitor(GraphReadMethods graph) {
+    public AttributeCountMonitor(final GraphReadMethods graph) {
         update(graph);
     }
 
     @Override
-    protected long readModificationCounter(GraphReadMethods graph) {
+    protected long readModificationCounter(final GraphReadMethods graph) {
         return graph.getAttributeModificationCounter();
     }
 

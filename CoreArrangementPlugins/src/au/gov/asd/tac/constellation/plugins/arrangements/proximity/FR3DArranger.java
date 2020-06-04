@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.Point3D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -102,7 +102,7 @@ public class FR3DArranger implements Arranger {
 
         interaction.setProgress(0, MAX_ITERATIONS, ARRANGING_INTERACTION, true);
 
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         final int vxCount = wg.getVertexCount();
 
@@ -115,7 +115,7 @@ public class FR3DArranger implements Arranger {
         }
 
         if (maintainMean) {
-            GraphUtilities.moveMean(wg, oldMean);
+            ArrangementUtilities.moveMean(wg, oldMean);
         }
     }
 

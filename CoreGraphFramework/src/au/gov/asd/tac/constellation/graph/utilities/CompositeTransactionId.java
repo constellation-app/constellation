@@ -41,7 +41,7 @@ public class CompositeTransactionId {
         return originalSourceNode;
     }
 
-    public void setOriginalSourceNode(String originalSourceNode) {
+    public void setOriginalSourceNode(final String originalSourceNode) {
         this.originalSourceNode = originalSourceNode;
     }
 
@@ -49,7 +49,7 @@ public class CompositeTransactionId {
         return originalDestinationNode;
     }
 
-    public void setOriginalDestinationNode(String originalDestinationNode) {
+    public void setOriginalDestinationNode(final String originalDestinationNode) {
         this.originalDestinationNode = originalDestinationNode;
     }
 
@@ -57,7 +57,7 @@ public class CompositeTransactionId {
         return sourceContracted;
     }
 
-    public void setSourceContracted(boolean sourceContracted) {
+    public void setSourceContracted(final boolean sourceContracted) {
         this.sourceContracted = sourceContracted;
     }
 
@@ -65,7 +65,7 @@ public class CompositeTransactionId {
         return destContracted;
     }
 
-    public void setDestContracted(boolean destContracted) {
+    public void setDestContracted(final boolean destContracted) {
         this.destContracted = destContracted;
     }
 

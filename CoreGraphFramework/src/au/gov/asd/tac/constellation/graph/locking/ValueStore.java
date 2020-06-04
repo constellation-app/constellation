@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.locking;
 import java.io.Serializable;
 
 /**
- * data model for storing the attributes of a graph
+ * The data model for storing the attributes of a graph.
  *
  * @author sirius
  */

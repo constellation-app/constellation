@@ -71,9 +71,9 @@ for Windows or run the `bin\constellation` shell script for Linux and MacOSX.
 To build Constellation from source code do the following:
 
 * Download Azul's Zulu distribution of JDK 11 with JFX 11, either the 
-[Windows 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-win_x64.zip),
-[Linux 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-linux_x64.tar.gz)
-or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-macosx_x64.tar.gz)
+[Windows 64 bit](https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-fx-jre11.0.7-win_x64.zip),
+[Linux 64 bit](https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-fx-jre11.0.7-linux_x64.tar.gz)
+or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-fx-jre11.0.7-macosx_x64.tar.gz)
 
 * Download [NetBeans 11.3](https://netbeans.apache.org/download/nb113/nb113.html)
 * Update `netbeans_jdkhome` in netbeans.conf to point to the Azul Zulu JDK you downloaded (e.g. `C:\Program Files\NetBeans-11.3\netbeans\etc`)
@@ -83,7 +83,7 @@ or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.37.19-ca-fx-jdk11.0.6-ma
 * Clone this repository
 * Open the Constellation module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
-`Update dependencies and clean build`. This can take around 20 minutes to download the first time so go get a :coffee: and come back later.
+`Update dependencies and clean build`. This can take around 20 minutes to download the first time depending on your internet connection so feel free to get a :coffee: and come back later.
 * Start Constellation by right clicking on `Constellation` > `Run`
 
 ## Package Constellation

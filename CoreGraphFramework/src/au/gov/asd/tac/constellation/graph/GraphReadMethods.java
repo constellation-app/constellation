@@ -264,7 +264,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param attribute the attribute.
      * @return the modification counter for the specified attribute.
      */
-    long getValueModificationCounter(int attribute);
+    long getValueModificationCounter(final int attribute);
 
     /**
      * Creates a complete deep copy of the graph that has the same id as this
@@ -288,7 +288,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return a complete copy of the graph.
      */
-    public GraphReadMethods copy(String id);
+    public GraphReadMethods copy(final String id);
 
     /**
      * Returns the number of edges that this graph can hold at this time. In
@@ -338,7 +338,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the edge at the specified position in the graph.
      */
-    int getEdge(int position);
+    int getEdge(final int position);
 
     /**
      * Returns the position of the specified edge in the graph.
@@ -346,7 +346,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edge the id of the edge.
      * @return the position of the specified edge in the graph.
      */
-    int getEdgePosition(int edge);
+    int getEdgePosition(final int edge);
 
     /**
      * Returns a UID for this edge that will be unique in this graph for all
@@ -357,7 +357,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the UID of the edge.
      */
-    long getEdgeUID(int edge);
+    long getEdgeUID(final int edge);
 
     /**
      * Returns the direction of the specified edge. This will always be either
@@ -374,7 +374,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edge the id of the edge.
      * @return the direction of the specified edge.
      */
-    int getEdgeDirection(int edge);
+    int getEdgeDirection(final int edge);
 
     /**
      * Returns the vertex from which the specified edge originates. For
@@ -383,7 +383,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edge the ID of the edge.
      * @return the ID of the vertex from which the specified edge originates.
      */
-    int getEdgeSourceVertex(int edge);
+    int getEdgeSourceVertex(final int edge);
 
     /**
      * Returns the vertex at which the specified edge terminates. For undirected
@@ -392,7 +392,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edge the ID of the edge.
      * @return the ID of the vertex at which the specified edge terminates.
      */
-    int getEdgeDestinationVertex(int edge);
+    int getEdgeDestinationVertex(final int edge);
 
     /**
      * Returns the ID of the link that represents the specified edge.
@@ -400,7 +400,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edge the ID of the edge.
      * @return the ID of the link that holds the specified edge.
      */
-    int getEdgeLink(int edge);
+    int getEdgeLink(final int edge);
 
     /**
      * Returns the number of transactions that are represented by the specified
@@ -423,7 +423,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the number of transactions that are represented by the specified
      * edge.
      */
-    int getEdgeTransactionCount(int edgeId);
+    int getEdgeTransactionCount(final int edgeId);
 
     /**
      * Returns the transaction represented by the specified edge that occupies
@@ -449,7 +449,7 @@ public interface GraphReadMethods extends GraphConstants {
      * the specified position in the list of transactions represented by the
      * edge.
      */
-    int getEdgeTransaction(int edgeId, int position);
+    int getEdgeTransaction(final int edgeId, final int position);
 
     /**
      * Tests if the specified edge id is currently in use to reference an edge
@@ -459,7 +459,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param edgeId the id of the edge.
      * @return true if the specified edge id is currently in use.
      */
-    boolean edgeExists(int edgeId);
+    boolean edgeExists(final int edgeId);
 
     /**
      * Returns the id of the link in the graph that occupies the specified
@@ -480,7 +480,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the link in the graph that occupies the specified
      * position in the graph.
      */
-    int getLink(int position);
+    int getLink(final int position);
 
     /**
      * Returns the position of the specified link in the global list of links in
@@ -494,7 +494,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the position of the specified link in the global list of links in
      * the graph.
      */
-    int getLinkPosition(int link);
+    int getLinkPosition(final int link);
 
     /**
      * Returns a UID for this link that will be unique in this graph for all
@@ -505,7 +505,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param link the link id.
      * @return the link UID.
      */
-    long getLinkUID(int link);
+    long getLinkUID(final int link);
 
     /**
      * Returns the number of links that the graph is capable of holding at this
@@ -550,7 +550,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the vertex that is attached to this link with the lower
      * id.
      */
-    int getLinkLowVertex(int link);
+    int getLinkLowVertex(final int link);
 
     /**
      * Returns the id of the vertex that is attached to this link with the
@@ -564,7 +564,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the vertex that is attached to this link with the
      * higher id.
      */
-    int getLinkHighVertex(int link);
+    int getLinkHighVertex(final int link);
 
     /**
      * Returns a count of the number of edges represented by the specified link.
@@ -590,7 +590,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param link the id of the link.
      * @return a count of the number of edges represented by the specified link.
      */
-    int getLinkEdgeCount(int link);
+    int getLinkEdgeCount(final int link);
 
     /**
      * Returns the edge that occupies the specified position in the list of
@@ -613,7 +613,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the edge that occupies the specified position in the list of
      * edges represented by this link.
      */
-    int getLinkEdge(int link, int position);
+    int getLinkEdge(final int link, final int position);
 
     /**
      * Returns a count of the number of edges attached to the specified edge in
@@ -640,7 +640,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param direction the direction of the edge.
      * @return a count of the number of edges attached to the specified edge.
      */
-    int getLinkEdgeCount(int link, int direction);
+    int getLinkEdgeCount(final int link, final int direction);
 
     /**
      * Returns the edge attached to the specified link that occupies the
@@ -670,7 +670,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the edge attached to the specified link that occupies the
      * specified position in the list of edges of a particular direction.
      */
-    int getLinkEdge(int link, int direction, int position);
+    int getLinkEdge(final int link, final int direction, final int position);
 
     /**
      * Returns the transaction that occupies the specified position in the list
@@ -694,7 +694,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the transaction that occupies the specified position in the list
      * of transactions represented by the specified link.
      */
-    int getLinkTransaction(int link, int position);
+    int getLinkTransaction(final int link, final int position);
 
     /**
      * Returns the transaction that occupies the specified position in the list
@@ -722,7 +722,7 @@ public interface GraphReadMethods extends GraphConstants {
      * of transactions of the specified direction attached to the specified
      * link.
      */
-    int getLinkTransaction(int link, int direction, int position);
+    int getLinkTransaction(final int link, final int direction, final int position);
 
     /**
      * Returns a count of the number of transactions attached to the specified
@@ -745,7 +745,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a count of the number of transactions attached to the specified
      * link.
      */
-    int getLinkTransactionCount(int link);
+    int getLinkTransactionCount(final int link);
 
     /**
      * Returns a count of the number of transactions of the specified direction
@@ -770,7 +770,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a count of the number of transactions of the specified direction
      * that are represented by the specified link.
      */
-    int getLinkTransactionCount(int link, int direction);
+    int getLinkTransactionCount(final int link, final int direction);
 
     /**
      * Returns the transaction that occupies the specified position in the
@@ -791,7 +791,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the transaction that occupies the specified position in the
      * global list of transactions in the graph.
      */
-    int getTransaction(int position);
+    int getTransaction(final int position);
 
     /**
      * Returns the position of the specified transaction in the global list of
@@ -806,7 +806,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the position of the specified transaction in the global list of
      * transactions in the graph.
      */
-    int getTransactionPosition(int transaction);
+    int getTransactionPosition(final int transaction);
 
     /**
      * Returns a UID for this transaction that will be unique in this graph for
@@ -817,7 +817,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the transaction id.
      * @return the UID for this transaction.
      */
-    long getTransactionUID(int transaction);
+    long getTransactionUID(final int transaction);
 
     /**
      * Returns the number of transactions that the graph is capable of holding.
@@ -864,7 +864,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return the direction of the specified transaction.
      */
-    int getTransactionDirection(int transaction);
+    int getTransactionDirection(final int transaction);
 
     /**
      * Returns the id of the link that holds the specified transaction.
@@ -872,7 +872,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return the id of the link that holds the specified transaction.
      */
-    int getTransactionLink(int transaction);
+    int getTransactionLink(final int transaction);
 
     /**
      * Returns the id of the edge that holds the specified transaction.
@@ -880,7 +880,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return the id of the edge that holds the specified transaction.
      */
-    int getTransactionEdge(int transaction);
+    int getTransactionEdge(final int transaction);
 
     /**
      * Returns the id of the vertex that occupies the specified position in the
@@ -905,7 +905,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the vertex that occupies the specified position in the
      * global list of graph vertices.
      */
-    int getVertex(int position);
+    int getVertex(final int position);
 
     /**
      * Returns the number of vertices that the graph is capable of holding. In
@@ -956,7 +956,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the link that occupies the specified position in the
      * list of links attached to the specified vertex.
      */
-    int getVertexLink(int vertex, int position);
+    int getVertexLink(final int vertex, final int position);
 
     /**
      * Returns a count of the number of links adjacent to the specified vertex.
@@ -976,7 +976,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param vertex the id of the vertex.
      * @return a count of the number of links adjacent to the specified vertex.
      */
-    int getVertexLinkCount(int vertex);
+    int getVertexLinkCount(final int vertex);
 
     /**
      * Returns a count of the number of neighbors of this vertex. Each neighbor
@@ -998,7 +998,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param vertex the id of the vertex.
      * @return a count of the number of neighbors of this vertex.
      */
-    int getVertexNeighbourCount(int vertex);
+    int getVertexNeighbourCount(final int vertex);
 
     /**
      * Returns a count of the number of edges attached to the specified vertex.
@@ -1018,7 +1018,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param vertex the id of the vertex.
      * @return a count of the number of edges adjacent to the specified vertex.
      */
-    int getVertexEdgeCount(int vertex);
+    int getVertexEdgeCount(final int vertex);
 
     /**
      * Returns the edge that occupies the specified position in the list of
@@ -1041,7 +1041,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the edge that occupies the specified position in the list of
      * edges adjacent to the specified vertex.
      */
-    int getVertexEdge(int vertex, int position);
+    int getVertexEdge(final int vertex, final int position);
 
     /**
      * Returns a count of the number of edges of the specified direction that
@@ -1053,7 +1053,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a count of the number of edges of the specified direction that
      * are attached to the specified vertex.
      */
-    int getVertexEdgeCount(int vertex, int direction);
+    int getVertexEdgeCount(final int vertex, final int direction);
 
     /**
      * Returns the edge that occupies the specified position in the list of
@@ -1067,7 +1067,7 @@ public interface GraphReadMethods extends GraphConstants {
      * edges of the specified direction that are attached to the specified
      * vertex.
      */
-    int getVertexEdge(int vertex, int direction, int position);
+    int getVertexEdge(final int vertex, final int direction, final int position);
 
     /**
      * Returns the vertex id of the neighbouring vertex that occupies the
@@ -1091,7 +1091,7 @@ public interface GraphReadMethods extends GraphConstants {
      * specified position in the list of all vertices that are neighbours of the
      * specified vertex.
      */
-    int getVertexNeighbour(int vertex, int position);
+    int getVertexNeighbour(final int vertex, final int position);
 
     /**
      * Returns the id of the transaction that occupies the specified position in
@@ -1117,7 +1117,7 @@ public interface GraphReadMethods extends GraphConstants {
      * the list of transactions adjacent to the specified vertex (in any
      * direction)
      */
-    int getVertexTransaction(int vertex, int position);
+    int getVertexTransaction(final int vertex, final int position);
 
     /**
      * Returns the id of the transaction at occupies the specified position in
@@ -1136,7 +1136,7 @@ public interface GraphReadMethods extends GraphConstants {
      * the list of transactions adjacent to the specified vertex in the
      * specified direction.
      */
-    int getVertexTransaction(int vertex, int direction, int position);
+    int getVertexTransaction(final int vertex, final int direction, final int position);
 
     /**
      * Return the count of all transactions adjacent to the specified vertex.
@@ -1157,7 +1157,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the count of all transactions adjacent to the specified vertex.
      */
-    int getVertexTransactionCount(int vertex);
+    int getVertexTransactionCount(final int vertex);
 
     /**
      * Returns the number of transactions adjacent to the specified vertex that
@@ -1172,7 +1172,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the number of transactions adjacent to the specified vertex that
      * have the specified direction relative to that vertex.
      */
-    int getVertexTransactionCount(int vertex, int direction);
+    int getVertexTransactionCount(final int vertex, final int direction);
 
     /**
      * Returns the position the specified vertex occupies in the list of all
@@ -1182,7 +1182,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the position the specified vertex occupies in the list of all
      * vertices in the graph.
      */
-    int getVertexPosition(int vertex);
+    int getVertexPosition(final int vertex);
 
     /**
      * Returns a UID for this vertex that will be unique in this graph for all
@@ -1193,7 +1193,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param vertex the vertex id.
      * @return the vertex UID.
      */
-    long getVertexUID(int vertex);
+    long getVertexUID(final int vertex);
 
     /**
      * Returns the link between 2 specified vertices or Graph.NOT_FOUND if no
@@ -1205,7 +1205,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the link between 2 specified vertices or Graph.NOT_FOUND if no
      * such link exists in the graph.
      */
-    int getLink(int vertex1, int vertex2);
+    int getLink(final int vertex1, final int vertex2);
 
     /**
      * Returns the source vertex of this transaction. If the transaction is
@@ -1216,7 +1216,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return the source vertex of this transaction.
      */
-    int getTransactionSourceVertex(int transaction);
+    int getTransactionSourceVertex(final int transaction);
 
     /**
      * Returns the destination vertex of this transaction. If the transaction is
@@ -1227,7 +1227,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return the destination vertex of this transaction.
      */
-    int getTransactionDestinationVertex(int transaction);
+    int getTransactionDestinationVertex(final int transaction);
 
     /**
      * Returns true if a link with the specified id exists in the graph. If this
@@ -1242,7 +1242,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param link the id of the link.
      * @return true if a link with the specified id exists in the graph.
      */
-    boolean linkExists(int link);
+    boolean linkExists(final int link);
 
     /**
      * Returns true if a transaction with the specified id exists in the graph.
@@ -1258,7 +1258,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param transaction the id of the transaction.
      * @return true if a transaction with the specified id exists in the graph.
      */
-    boolean transactionExists(int transaction);
+    boolean transactionExists(final int transaction);
 
     /**
      * Returns true if a vertex with the specified id exists in the graph. If
@@ -1273,7 +1273,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param vertex the id of the vertex.
      * @return true if a vertex with the specified id exists in the graph.
      */
-    boolean vertexExists(int vertex);
+    boolean vertexExists(final int vertex);
 
     /**
      * Returns a count of the number of attributes that exist in the graph for
@@ -1285,7 +1285,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a count of the number of attributes that exist in the graph for
      * the specified element type.
      */
-    int getAttributeCount(GraphElementType elementType);
+    int getAttributeCount(final GraphElementType elementType);
 
     /**
      * Returns the number of attributes this graph is currently capable of
@@ -1308,7 +1308,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the attribute that occupies the specified position in
      * the list of all attributes for the specified element type.
      */
-    int getAttribute(GraphElementType elementType, int position);
+    int getAttribute(final GraphElementType elementType, final int position);
 
     /**
      * Returns the id of the attribute of the specified element type with the
@@ -1319,7 +1319,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the id of the attribute of the specified element type with the
      * specified name.
      */
-    int getAttribute(GraphElementType elementType, String name);
+    int getAttribute(final GraphElementType elementType, final String name);
 
     /**
      * Returns the {@link NativeAttributeType} of the attribute with the
@@ -1330,7 +1330,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the {@link NativeAttributeType} of the attribute with the
      * specified id.
      */
-    NativeAttributeType getNativeAttributeType(int attribute);
+    NativeAttributeType getNativeAttributeType(final int attribute);
 
     /**
      * Return the name of the attribute. This name will be unique for all
@@ -1342,7 +1342,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the name of the attribute.
      */
-    public String getAttributeName(int attribute);
+    public String getAttributeName(final int attribute);
 
     /**
      * The type of this attribute.
@@ -1355,7 +1355,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return The type of this attribute.
      */
-    public String getAttributeType(int attribute);
+    public String getAttributeType(final int attribute);
 
     /**
      * Returns the description of an attribute. The description provides more
@@ -1366,7 +1366,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the description of an attribute.
      */
-    public String getAttributeDescription(int attribute);
+    public String getAttributeDescription(final int attribute);
 
     /**
      * Returns the element type that this attribute is associated with.
@@ -1375,7 +1375,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the element type that this attribute is associated with.
      */
-    public GraphElementType getAttributeElementType(int attribute);
+    public GraphElementType getAttributeElementType(final int attribute);
 
     /**
      * Returns the class of the attribute description that defines this
@@ -1386,7 +1386,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the class of the attribute description that defines this
      * attribute.
      */
-    public Class<? extends AttributeDescription> getAttributeDataType(int attribute);
+    public Class<? extends AttributeDescription> getAttributeDataType(final int attribute);
 
     /**
      * Returns the attribute merger for the specified attribute.
@@ -1395,7 +1395,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the attribute merger for the specified attribute.
      */
-    public GraphAttributeMerger getAttributeMerger(int attribute);
+    public GraphAttributeMerger getAttributeMerger(final int attribute);
 
     /**
      * Returns the current default value for this attribute. This is the value
@@ -1405,7 +1405,7 @@ public interface GraphReadMethods extends GraphConstants {
      *
      * @return the current default value for this attribute.
      */
-    public Object getAttributeDefaultValue(int attribute);
+    public Object getAttributeDefaultValue(final int attribute);
 
     /**
      * Returns a UID for this attribute that will be unique in this graph for
@@ -1416,7 +1416,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @param attribute the attribute id.
      * @return the attribute UID.
      */
-    long getAttributeUID(int attribute);
+    long getAttributeUID(final int attribute);
 
     /**
      * Returns true if the value of this attribute for the specified element is
@@ -1428,7 +1428,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return true if the value of this attribute for the specified element is
      * equal to the default value for that attribute.
      */
-    abstract boolean isDefaultValue(int attribute, int id);
+    abstract boolean isDefaultValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1445,7 +1445,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a byte.
      */
-    abstract byte getByteValue(int attribute, int id);
+    abstract byte getByteValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1462,7 +1462,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a short.
      */
-    abstract short getShortValue(int attribute, int id);
+    abstract short getShortValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1479,7 +1479,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a int.
      */
-    abstract int getIntValue(int attribute, int id);
+    abstract int getIntValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1496,7 +1496,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a long.
      */
-    abstract long getLongValue(int attribute, int id);
+    abstract long getLongValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1513,7 +1513,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a float.
      */
-    abstract float getFloatValue(int attribute, int id);
+    abstract float getFloatValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1530,7 +1530,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a double.
      */
-    abstract double getDoubleValue(int attribute, int id);
+    abstract double getDoubleValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1547,7 +1547,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a boolean.
      */
-    abstract boolean getBooleanValue(int attribute, int id);
+    abstract boolean getBooleanValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1564,7 +1564,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as a char.
      */
-    abstract char getCharValue(int attribute, int id);
+    abstract char getCharValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1595,7 +1595,7 @@ public interface GraphReadMethods extends GraphConstants {
      * a primitive byte value.
      *
      */
-    abstract String getStringValue(int attribute, int id);
+    abstract String getStringValue(final int attribute, final int id);
 
     /**
      * Returns the value of the specified attribute for the specified element as
@@ -1613,7 +1613,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @throws IllegalArgumentException if the attribute is unable to represent
      * its values as an Object.
      */
-    abstract <T> T getObjectValue(int attribute, int id);
+    abstract <T> T getObjectValue(final int attribute, final int id);
 
     /**
      * Returns true if the specified attribute is part of the primary key for
@@ -1624,7 +1624,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return true if the specified attribute is part of the primary key for
      * its element type.
      */
-    abstract boolean isPrimaryKey(int attribute);
+    abstract boolean isPrimaryKey(final int attribute);
 
     /**
      * Returns true if the specified attribute will accept the specified string
@@ -1648,7 +1648,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return true if the specified attribute will accept the specified string
      * as an input value to the setString() method.
      */
-    abstract String acceptsStringValue(int attribute, String value);
+    abstract String acceptsStringValue(final int attribute, final String value);
 
     /**
      * Returns an object that holds all the information necessary to restore the
@@ -1659,7 +1659,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return an object that holds all the information necessary to restore the
      * attribute values for this attribute.
      */
-    public Object copyAttribute(int attribute);
+    public Object copyAttribute(final int attribute);
 
     /**
      * Returns a GraphKey object that represent the key value attributes for the
@@ -1670,7 +1670,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a GraphKey object that represent the key value attributes for the
      * specified element. The returned GraphKey object.
      */
-    public GraphKey getPrimaryKeyValue(GraphElementType elementType, int id);
+    public GraphKey getPrimaryKeyValue(final GraphElementType elementType, final int id);
 
     /**
      * Returns the attribute ids for the attributes in the primary key for the
@@ -1690,7 +1690,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return the attribute ids for the attributes in the primary key for the
      * specified element type.
      */
-    public int[] getPrimaryKey(GraphElementType elementType);
+    public int[] getPrimaryKey(final GraphElementType elementType);
 
     /**
      * Returns true if the specified attribute supports the specified index
@@ -1701,7 +1701,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return true if the specified attribute supports the specified index
      * type.
      */
-    public boolean attributeSupportsIndexType(int attribute, GraphIndexType indexType);
+    public boolean attributeSupportsIndexType(final int attribute, final GraphIndexType indexType);
 
     /**
      * Returns the type of index that is currently operating on the specified
@@ -1721,7 +1721,7 @@ public interface GraphReadMethods extends GraphConstants {
      * attribute.
      * @see GraphIndexType
      */
-    public GraphIndexType getAttributeIndexType(int attribute);
+    public GraphIndexType getAttributeIndexType(final int attribute);
 
     /**
      * Returns a GraphIndexResult containing all elements that have a value for
@@ -1740,7 +1740,7 @@ public interface GraphReadMethods extends GraphConstants {
      * @return a GraphIndexResult containing all elements that have a value for
      * the specified attribute that is an exact match to the specified value.
      */
-    public GraphIndexResult getElementsWithAttributeValue(int attribute, Object value);
+    public GraphIndexResult getElementsWithAttributeValue(final int attribute, final Object value);
 
     /**
      * Returns a GraphIndexResult containing all elements that have a value for
@@ -1761,7 +1761,7 @@ public interface GraphReadMethods extends GraphConstants {
      * the specified attribute that is within the range defined by the specified
      * start and end values, inclusively.
      */
-    public GraphIndexResult getElementsWithAttributeValueRange(int attribute, Object start, Object end);
+    public GraphIndexResult getElementsWithAttributeValueRange(final int attribute, final Object start, final Object end);
 
     /**
      * Returns a stream containing all vertices in the graph.

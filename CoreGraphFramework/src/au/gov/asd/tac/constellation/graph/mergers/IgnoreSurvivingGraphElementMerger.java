@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 public class IgnoreSurvivingGraphElementMerger implements GraphElementMerger {
 
     @Override
-    public boolean mergeElement(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement) {
+    public boolean mergeElement(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement) {
 
         int elementAttributeCount = graph.getAttributeCount(elementType);
         for (int elementAttributePosition = 0; elementAttributePosition < elementAttributeCount; elementAttributePosition++) {

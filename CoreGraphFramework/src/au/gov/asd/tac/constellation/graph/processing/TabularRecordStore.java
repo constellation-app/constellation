@@ -57,7 +57,7 @@ public class TabularRecordStore implements RecordStore {
      * @param cacheStrings A flag indicating whether or not to create a cache
      * for {@link String} values to make lookup faster.
      */
-    public TabularRecordStore(boolean cacheStrings) {
+    public TabularRecordStore(final boolean cacheStrings) {
         if (cacheStrings) {
             cache = new HashMap<>();
         }
@@ -72,7 +72,7 @@ public class TabularRecordStore implements RecordStore {
      * from this TabularRecordStore. This data structure is such that arrays are
      * minimally created, effectively conserving memory.
      */
-    protected Object[][] getColumn(String key) {
+    protected Object[][] getColumn(final String key) {
         Object[][] values = records.get(key);
         if (values == null) {
             values = records.get(key);
@@ -89,7 +89,7 @@ public class TabularRecordStore implements RecordStore {
      * values from this TabularRecordStore. This data structure is such that
      * arrays are minimally created, effectively conserving memory.
      */
-    protected void createColumn(String key, Object[][] values) {
+    protected void createColumn(final String key, final Object[][] values) {
         records.put(key, values);
     }
 
@@ -104,7 +104,7 @@ public class TabularRecordStore implements RecordStore {
      * to retrieve a value for.
      * @return True is the requested value exists, otherwise false.
      */
-    protected static boolean hasValue(Object[][] values, int record) {
+    protected static boolean hasValue(final Object[][] values, final int record) {
         if (values == null || values.length <= record >>> BATCH_BITS) {
             return false;
         }
@@ -126,7 +126,7 @@ public class TabularRecordStore implements RecordStore {
      * to retrieve a value for.
      * @return A {@link String} object representing the requested value.
      */
-    protected static String getValue(Object[][] values, int record) {
+    protected static String getValue(final Object[][] values, final int record) {
         if (values == null || values.length <= record >>> BATCH_BITS) {
             return null;
         }
@@ -145,7 +145,7 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public void add(RecordStore recordStore) {
+    public void add(final RecordStore recordStore) {
         for (int record = 0; record < recordStore.size(); record++) {
             final int newRecord = add();
             for (final String key : recordStore.keys()) {
@@ -182,32 +182,32 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public boolean hasValue(String key) {
+    public boolean hasValue(final String key) {
         return hasValue(currentRecord, key);
     }
 
     @Override
-    public boolean hasValue(int record, String key) {
+    public boolean hasValue(final int record, final String key) {
         return TabularRecordStore.hasValue(getColumn(key), record);
     }
 
     @Override
-    public String get(String key) {
+    public String get(final String key) {
         return get(currentRecord, key);
     }
 
     @Override
-    public String get(int record, String key) {
+    public String get(final int record, final String key) {
         return TabularRecordStore.getValue(getColumn(key), record);
     }
 
     @Override
-    public void set(String key, String value) {
+    public void set(final String key, final String value) {
         set(currentRecord, key, value);
     }
 
     @Override
-    public void set(int record, String key, String value) {
+    public void set(final int record, String key, String value) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null.");
         }
@@ -259,7 +259,7 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public List<String> values(int record) {
+    public List<String> values(final int record) {
         final List<String> values = new ArrayList<>(records.size());
         for (Object[][] v : records.values()) {
             values.add(TabularRecordStore.getValue(v, record));
@@ -273,7 +273,7 @@ public class TabularRecordStore implements RecordStore {
     }
 
     @Override
-    public List<String> getAll(String key) {
+    public List<String> getAll(final String key) {
         final Object[][] values = getColumn(key);
         final List<String> result = new ArrayList<>(size);
         for (int record = 0; record < size; record++) {
@@ -287,62 +287,6 @@ public class TabularRecordStore implements RecordStore {
         return size;
     }
 
-//    @Override
-//    public int hashCode() {
-//        int hash = 3;
-//        hash = 73 * hash + Objects.hashCode(this.cache);
-//        hash = 73 * hash + Objects.hashCode(this.records);
-//        hash = 73 * hash + this.size;
-//        hash = 73 * hash + this.capacity;
-//        hash = 73 * hash + this.currentRecord;
-//        return hash;
-//    }
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == null) {
-//            return false;
-//        }
-//        if (getClass() != obj.getClass()) {
-//            return false;
-//        }
-//        final TabularRecordStore other = (TabularRecordStore) obj;
-//        if (!Objects.equals(this.cache, other.cache)) {
-//            return false;
-//        }
-//        if (!Objects.equals(this.records, other.records)) {
-//            return false;
-//        }
-//        if (this.size != other.size) {
-//            return false;
-//        }
-//        if (this.capacity != other.capacity) {
-//            return false;
-//        }
-//
-////                if (this.typedRecords.size() != other.typedRecords.size()) {
-////            return false;
-////        }
-////
-////        // now that the size is the same, it will mean that looping through the keys will not miss anything
-////        for (final Map.Entry<String, Object[][]> entry : this.typedRecords.entrySet()) {
-////            if (!other.typedRecords.containsKey(entry.getKey())) {
-////                return false;
-////            }
-////
-////            for (int record = 0; record < size; record++) {
-////                for (final Map.Entry<String, Object[][]> e : this.typedRecords.entrySet()) {
-////                    if (!(TabularRecordStore.hasValue(e.getValue(), record) && TabularRecordStore.hasValue(other.typedRecords.get(e.getKey()), record))) {
-////                        return false;
-////                    }
-////
-////                    if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
-////                        return false;
-////                    }
-////                }
-////            }
-////        }
-//        return true;
-//    }
     @Override
     public String toString() {
         return "Record Store with " + size + " rows and " + records.size() + " columns.";

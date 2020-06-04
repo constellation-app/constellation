@@ -25,7 +25,7 @@ import java.io.Serializable;
  */
 public abstract class Operation<T> implements Serializable {
 
-    public abstract void execute(T target, ParameterReadAccess access);
+    public abstract void execute(final T target, final ParameterReadAccess access);
 
-    public abstract void undo(T target, ParameterReadAccess access);
+    public abstract void undo(final T target, final ParameterReadAccess access);
 }

@@ -186,5 +186,4 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
 
         return Float.compare(size, o.size);
     }
-
 }

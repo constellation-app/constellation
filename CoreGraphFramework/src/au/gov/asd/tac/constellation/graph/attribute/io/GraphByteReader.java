@@ -42,7 +42,7 @@ public class GraphByteReader {
         this.zf = zf;
     }
 
-    public GraphByteReader(InputStream in) throws IOException {
+    public GraphByteReader(final InputStream in) throws IOException {
         ZipInputStream zin = new ZipInputStream(in);
         ZipEntry entry = zin.getNextEntry();
         while (entry != null) {

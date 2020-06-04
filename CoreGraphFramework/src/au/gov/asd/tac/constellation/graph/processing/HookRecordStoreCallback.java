@@ -31,5 +31,5 @@ public interface HookRecordStoreCallback {
      * @param recordStore A {@link RecordStore} on which to perform this
      * operation.
      */
-    public void onAdd(RecordStore recordStore);
+    public void onAdd(final RecordStore recordStore);
 }
