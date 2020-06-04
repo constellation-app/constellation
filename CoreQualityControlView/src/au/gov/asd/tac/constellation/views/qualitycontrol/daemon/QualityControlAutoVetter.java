@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javax.swing.SwingUtilities;
 import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
@@ -149,21 +148,19 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      *
      * @param graph The graph to vet for quality control, may be null if there
      * is no current graph.
-     * @return the current quality control state on the given graph.
      */
     public static void updateQualityControlState(final GraphReadMethods graph) {
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-        Future f = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
-            .executeLater(currentGraph);
+        Future stateFuture = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
+                .executeLater(currentGraph);
+
         try {
-            f.get();
+            stateFuture.get();
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
-        
-        
     }
 
     private static List<QualityControlRule> getRules() {
@@ -183,7 +180,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     public QualityControlState getQualityControlState() {
         return state;
     }
-    
+
     public void setQualityControlState(final QualityControlState state) {
         this.state = state;
         listeners.stream().forEach(listener -> listener.qualityControlChanged(state));
@@ -232,85 +229,61 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         }
         return INSTANCE;
     }
-    
+
     private static final class QualityControlViewStateUpdater extends SimpleReadPlugin {
-        final GraphReadMethods readableGraph;
-        
+
+        private final GraphReadMethods readableGraph;
+
         public QualityControlViewStateUpdater(final GraphReadMethods graph) {
             this.readableGraph = graph;
         }
 
         @Override
         public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            assert !SwingUtilities.isEventDispatchThread();
-           
-
             final List<QualityControlRule> registeredRules = new ArrayList<>();
             final List<Integer> vertexList = new ArrayList<>();
             final List<String> identifierList = new ArrayList<>();
             final List<SchemaVertexType> typeList = new ArrayList<>();
 
             if (readableGraph != null) {
+                final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
+                final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
 
-                
-                //final CountDownLatch countDownLatch = new CountDownLatch(1);
-                //final Thread thread = new Thread("Quality Control View: Run Rule") {
-                   // @Override
-                   // public void run() {
-                        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                        final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-                        final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-                        if (selectedAttribute != Graph.NOT_FOUND && identifierAttribute != Graph.NOT_FOUND && typeAttribute != Graph.NOT_FOUND) {
-                            final int vxCount = graph.getVertexCount();
-                            for (int position = 0; position < vxCount; position++) {
-                                final int vertex = graph.getVertex(position);
-                                final String identifier = graph.getStringValue(identifierAttribute, vertex);
-                                final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertex);
+                if (selectedAttribute != Graph.NOT_FOUND && identifierAttribute
+                        != Graph.NOT_FOUND && typeAttribute != Graph.NOT_FOUND) {
+                    final int vxCount = graph.getVertexCount();
+                    for (int position = 0; position < vxCount; position++) {
+                        final int vertex = graph.getVertex(position);
+                        final String identifier = graph.getStringValue(identifierAttribute, vertex);
+                        final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertex);
+                        final boolean selected = graph.getBooleanValue(selectedAttribute, vertex);
 
-                                final boolean selected = graph.getBooleanValue(selectedAttribute, vertex);
-                                if (selected) {
-                                    vertexList.add(vertex);
-                                    identifierList.add(identifier);
-                                    typeList.add(type);
-                                }
-                            }
+                        if (selected) {
+                            vertexList.add(vertex);
+                            identifierList.add(identifier);
+                            typeList.add(type);
                         }
+                    }
+                }
 
-                        // Set up and run each rule.
-                        if (!vertexList.isEmpty()) {
-                            for (final QualityControlRule rule : getRules()) {
-                                final Thread t = new Thread(new Runnable() {
-                                    public void run() { 
-                                        rule.clearResults();
-                                        rule.executeRule(graph, vertexList);
-                                        registeredRules.add(rule);
-                                    }
-                                });
-                                t.start();
-//                                rule.clearResults();
-//                                rule.executeRule(graph, vertexList);
-//                                registeredRules.add(rule);
+                // Set up and run each rule.
+                if (!vertexList.isEmpty()) {
+                    for (final QualityControlRule rule : getRules()) {
+                        final Thread t = new Thread(new Runnable() {
+                            public void run() {
+                                rule.clearResults();
+                                rule.executeRule(graph, vertexList);
+                                registeredRules.add(rule);
                             }
-                        }
-
-                       //countDownLatch.countDown();
-                    //}
-               // //};
-                //Future f = 
-                       // thread.start();
-//
-//                try {
-//                    countDownLatch.await();
-//                } catch (InterruptedException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                    Thread.currentThread().interrupt();
-//                }
-                
-
+                        });
+                        t.start();
+                    }
+                }
             }
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
             PluginExecution.withPlugin(new QualityControlViewStateSaver(vertexList, identifierList, typeList, registeredRules))
-            .executeLater(currentGraph);
+                    .executeLater(currentGraph);
         }
 
         @Override
@@ -318,13 +291,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
             return "Quality Control View: Run Rule";
         }
     }
-    
+
     private static final class QualityControlViewStateSaver extends SimpleEditPlugin {
-        List<Integer> vertexList;
-        List<String> identifierList;
-        List<SchemaVertexType> typeList;
-        List<QualityControlRule> registeredRules;
-        
+
+        private final List<Integer> vertexList;
+        private final List<String> identifierList;
+        private final List<SchemaVertexType> typeList;
+        private final List<QualityControlRule> registeredRules;
+
         public QualityControlViewStateSaver(final List<Integer> vertexList, final List<String> identifierList, final List<SchemaVertexType> typeList, final List<QualityControlRule> registeredRules) {
             this.vertexList = vertexList;
             this.identifierList = identifierList;
@@ -334,26 +308,22 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            if (graph == null) {
-                return;
+            // Build quality control events based on results of rules.
+            // Sort by descending risk.
+            final List<QualityControlEvent> qualityControlEvents = new ArrayList<>();
+            for (int i = 0; i < vertexList.size(); i++) {
+                final QualityControlEvent qualityControlEvent
+                        = new QualityControlEvent(vertexList.get(i),
+                                identifierList.get(i), typeList.get(i),
+                                Collections.unmodifiableList(registeredRules));
+                qualityControlEvents.add(qualityControlEvent);
             }
-            
-                // Build quality control events based on results of rules.
-                // Sort by descending risk.
-                final List<QualityControlEvent> qualityControlEvents = new ArrayList<>();
-                for (int i = 0; i < vertexList.size(); i++) {
-                    final QualityControlEvent qualityControlEvent = 
-                            new QualityControlEvent(vertexList.get(i), 
-                                    identifierList.get(i), typeList.get(i), 
-                                    Collections.unmodifiableList(registeredRules));
-                    qualityControlEvents.add(qualityControlEvent);
-                }
-                Collections.sort(qualityControlEvents, Collections.reverseOrder());
+            Collections.sort(qualityControlEvents, Collections.reverseOrder());
 
-                final String graphId = graph == null ? null : graph.getId();
-                QualityControlAutoVetter.getInstance().setQualityControlState(
-                        new QualityControlState(graphId, qualityControlEvents, 
-                                registeredRules));
+            final String graphId = graph == null ? null : graph.getId();
+            QualityControlAutoVetter.getInstance().setQualityControlState(
+                    new QualityControlState(graphId, qualityControlEvents,
+                            registeredRules));
         }
 
         @Override
