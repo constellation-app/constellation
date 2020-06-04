@@ -353,7 +353,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
 
                     isLeaf = false;
                     if (getValue() != null) {
-                        final boolean foundChild = transactionTypes.stream().anyMatch(tt -> tt.getSuperType() == getValue() && tt != getValue());
+                        final boolean foundChild = transactionTypes.stream().anyMatch(transactionType -> transactionType.getSuperType() == getValue() && transactionType != getValue());
                         isLeaf = !foundChild;
                     }
                 }
@@ -367,15 +367,15 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
                 if (value == null) {
                     // Null is a special marker for the single root node.
                     // Any vertextype that points to itself is in the root layer.
-                    for (final SchemaTransactionType tt : transactionTypes) {
-                        if ((tt.getSuperType() == tt) && (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty())) {
-                                children.add(createNode(tt));
+                    for (final SchemaTransactionType transactionType : transactionTypes) {
+                        if ((transactionType.getSuperType() == transactionType) && (isFilterMatchCurrentNode(transactionType) || filterText.getText().isEmpty())) {
+                            children.add(createNode(transactionType));
                             }
                         }
                 } else {
-                    for (final SchemaTransactionType tt : transactionTypes) {
-                        if ((tt.getSuperType() == value && tt != value) && (isFilterMatchCurrentNode(tt) || filterText.getText().isEmpty())) {
-                                children.add(createNode(tt));
+                    for (final SchemaTransactionType transactionType : transactionTypes) {
+                        if ((transactionType.getSuperType() == value && transactionType != value) && (isFilterMatchCurrentNode(transactionType) || filterText.getText().isEmpty())) {
+                            children.add(createNode(transactionType));
                             }
                         }
                     }

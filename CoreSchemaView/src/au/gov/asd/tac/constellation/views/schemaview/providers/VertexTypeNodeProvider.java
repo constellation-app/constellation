@@ -231,8 +231,8 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
 
     private boolean isFilterMatchAnyChildNodes(SchemaVertexType treeItem) {
         boolean found = false;
-        final List<SchemaVertexType> children = vertexTypes.stream().filter(vt
-                -> vt.getSuperType() == treeItem && vt != treeItem).collect(Collectors.toList());
+        final List<SchemaVertexType> children = vertexTypes.stream().filter(vertexType
+                -> vertexType.getSuperType() == treeItem && vertexType != treeItem).collect(Collectors.toList());
 
         for (SchemaVertexType child : children) {
             found = isFilterMatchCurrentNodeOrAnyChildren(child);
@@ -468,7 +468,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                     isLeaf = false;
                     if (getValue() != null) {
                         final boolean foundChild = vertexTypes.stream()
-                                .anyMatch(vt -> vt.getSuperType() == getValue() && vt != getValue());
+                                .anyMatch(vertexType -> vertexType.getSuperType() == getValue() && vertexType != getValue());
                         isLeaf = !foundChild;
                     }
                 }
@@ -482,15 +482,15 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
                 if (value == null) {
                     // Null is a special marker for the single root node.
                     // Any vertextype that points to itself is in the root layer.
-                    for (final SchemaVertexType vt : vertexTypes) {
-                        if ((vt.getSuperType() == vt) && (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty())) {
-                                children.add(createNode(vt));
+                    for (final SchemaVertexType vertexType : vertexTypes) {
+                        if ((vertexType.getSuperType() == vertexType) && (isFilterMatchCurrentNodeOrAnyChildren(vertexType) || filterText.getText().isEmpty())) {
+                            children.add(createNode(vertexType));
                             }
                         }
                 } else {
-                    for (final SchemaVertexType vt : vertexTypes) {
-                        if ((vt.getSuperType() == value && vt != value) && (isFilterMatchCurrentNodeOrAnyChildren(vt) || filterText.getText().isEmpty())) {
-                                children.add(createNode(vt));
+                    for (final SchemaVertexType vertexType : vertexTypes) {
+                        if ((vertexType.getSuperType() == value && vertexType != value) && (isFilterMatchCurrentNodeOrAnyChildren(vertexType) || filterText.getText().isEmpty())) {
+                            children.add(createNode(vertexType));
                             }
                         }
                     }
