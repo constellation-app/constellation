@@ -17,7 +17,6 @@ package au.gov.asd.tac.projectupdater;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
@@ -225,7 +223,7 @@ public class ProjectUpdater extends Task {
         parentNode.appendChild(classPathExtensionElement);
     }
 
-    private static Document readXMLFile(final File xmlFile) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, FileNotFoundException, IOException {
+    private static Document readXMLFile(final File xmlFile) throws ParserConfigurationException, TransformerException, IOException {
         final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
         builderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         builderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -233,6 +231,7 @@ public class ProjectUpdater extends Task {
 
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        // Ant's build.xml can not use this
 //        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
@@ -249,10 +248,11 @@ public class ProjectUpdater extends Task {
         return document;
     }
 
-    private static void saveXMLFile(final Document document, final File xmlFile) throws TransformerConfigurationException, FileNotFoundException, IOException, TransformerException {
+    private static void saveXMLFile(final Document document, final File xmlFile) throws IOException, TransformerException {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        // Ant's build.xml can not use this
+//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
         final Transformer transformer = transformerFactory.newTransformer();
 
         try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
@@ -262,11 +262,17 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws FileNotFoundException, IOException {
+    private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws IOException {
         try (final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
             ZipEntry entry = zip.getNextEntry();
             while (entry != null) {
                 final String path = entry.getName();
+
+                // security check
+                if (path.contains("..") || path.startsWith(File.separator)) {
+                    throw new IOException("Entry is trying to leave the parent dirctory: " + path);
+                }
+
                 final int lastDivider = path.lastIndexOf('/');
                 if (lastDivider >= 0) {
                     final String folder = path.substring(0, lastDivider);
