@@ -36,7 +36,6 @@
                 <package>Lib.xml.parsers</package>
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
-                <package>META-INF.versions.9.javax.xml.bind</package>
                 <package>au.com.objectix.jgridshift</package>
                 <package>au.com.objectix.jgridshift.jca</package>
                 <package>com.fasterxml.jackson.annotation</package>
