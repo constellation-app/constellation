@@ -15,14 +15,11 @@
  */
 package au.gov.asd.tac.projectupdater;
 
-// IMPORTANT! You need to compile this class against ant.jar.
-// The easiest way to do this is to add ${ant.core.lib} to your project's classpath.
-// For example, for a plain Java project with no other dependencies, set in project.properties:
-// javac.classpath=${ant.core.lib}
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -47,7 +44,10 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
- * Rewrite the project.xml file with the latest dependencies
+ * Rewrite the project.xml file with the latest dependencies.
+ * <p>
+ * This project will be automatically built during the
+ * update-dependencies-clean-build ant target.
  *
  * @author sirius
  * @author arcturus
@@ -56,7 +56,7 @@ public class ProjectUpdater extends Task {
 
     private File projectDirectory = null;
 
-    public void setProjectdirectory(File projectDirectory) {
+    public void setProjectdirectory(final File projectDirectory) {
         this.projectDirectory = projectDirectory;
     }
 
@@ -139,7 +139,13 @@ public class ProjectUpdater extends Task {
             // Ensure each file is a JAR file
             // Add white space to make it look the same as the Netbeans version
             if (jarDirectory.exists()) {
-                for (File jarFile : jarDirectory.listFiles()) {
+                final File[] jarFiles = jarDirectory.listFiles();
+
+                // Sort them so that the project.xml is generated consistently and avoids merge conflicts
+                Arrays.sort(jarFiles);
+
+                // Add the class path to project.xml
+                for (final File jarFile : jarFiles) {
                     if (jarFile.getName().endsWith(".jar")) {
                         logMessage("\tIncluding jar file: " + jarFile.getName());
                         addClassPathExtension(document, jarFile, dataNode);
@@ -156,9 +162,9 @@ public class ProjectUpdater extends Task {
             }
 
             if (publicPackagesFile.exists()) {
-                for (String publicPackage : publicPackages) {
+                for (final String publicPackage : publicPackages) {
                     if (!publicPackage.startsWith("META-INF")) {
-                        Element publicPackageElement = document.createElement("package");
+                        final Element publicPackageElement = document.createElement("package");
                         publicPackageElement.setTextContent(publicPackage);
                         publicPackagesNode.appendChild(document.createTextNode("\n                "));
                         publicPackagesNode.appendChild(publicPackageElement);
@@ -180,7 +186,7 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    private static void addClassPathExtension(Document document, File jarFile, Node parentNode) {
+    private static void addClassPathExtension(final Document document, final File jarFile, final Node parentNode) {
         final Element classPathExtensionElement = document.createElement("class-path-extension");
         classPathExtensionElement.appendChild(document.createTextNode("\n                "));
 
@@ -198,7 +204,7 @@ public class ProjectUpdater extends Task {
         parentNode.appendChild(classPathExtensionElement);
     }
 
-    private static Document readXMLFile(File xmlFile) throws Exception {
+    private static Document readXMLFile(final File xmlFile) throws Exception {
         final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
@@ -206,37 +212,37 @@ public class ProjectUpdater extends Task {
         final Document document = builder.newDocument();
 
         // Read in the existing project.xml into the document
-        try (FileInputStream in = new FileInputStream(xmlFile)) {
-            Source loadSource = new StreamSource(in);
-            Result loadResult = new DOMResult(document);
+        try ( FileInputStream in = new FileInputStream(xmlFile)) {
+            final Source loadSource = new StreamSource(in);
+            final Result loadResult = new DOMResult(document);
             transformer.transform(loadSource, loadResult);
         }
 
         return document;
     }
 
-    private static void saveXMLFile(Document document, File xmlFile) throws Exception {
+    private static void saveXMLFile(final Document document, final File xmlFile) throws Exception {
         final Transformer transformer = TransformerFactory.newInstance().newTransformer();
 
-        try (FileOutputStream out = new FileOutputStream(xmlFile)) {
-            Source saveSource = new DOMSource(document);
-            Result saveResult = new StreamResult(out);
+        try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
+            final Source saveSource = new DOMSource(document);
+            final Result saveResult = new StreamResult(out);
             transformer.transform(saveSource, saveResult);
         }
     }
 
-    private void extractMatchingPackages(File jarFile, List<String> expressions, Set<String> publicPackages) throws Exception {
+    private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws Exception {
         final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile));
         ZipEntry entry = zip.getNextEntry();
         while (entry != null) {
             final String path = entry.getName();
-            int lastDivider = path.lastIndexOf('/');
+            final int lastDivider = path.lastIndexOf('/');
             if (lastDivider >= 0) {
                 final String folder = path.substring(0, lastDivider);
                 final String name = folder.replace('/', '.');
                 if (path.endsWith(".class")) {
                     publicPackages.remove(name);
-                    for (String expression : expressions) {
+                    for (final String expression : expressions) {
                         if (expression.endsWith("*")) {
                             if (name.startsWith(expression.substring(0, expression.length() - 1))) {
                                 publicPackages.add(name);

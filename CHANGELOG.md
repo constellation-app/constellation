@@ -4,6 +4,8 @@
 * Added feedback for delimiter import.
 * Added basic support for MacOS.
 * Added `ProjectUpdater` which will manage adding dependencies to the `project.xml` file.
+    * The `ivy.xml` file is now located at `CoreDependencies/src/ivy.xml`.
+    * The `ivysettings.xml` file is now located at `ProjectUpdater/src/ivysettings.xml`.
 * Fixed a label rendering bug on MacOS.
 * Fixed a DPI scaling bug on MacOS and Windows.
 * Fixed a bug effecting the histogram scrolling.
