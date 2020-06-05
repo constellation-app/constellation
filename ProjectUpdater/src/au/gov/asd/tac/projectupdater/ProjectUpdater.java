@@ -17,19 +17,26 @@ package au.gov.asd.tac.projectupdater;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
@@ -37,6 +44,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,6 +61,13 @@ import org.w3c.dom.Text;
  * @author arcturus
  */
 public class ProjectUpdater extends Task {
+
+    private static final Logger LOGGER = Logger.getLogger(ProjectUpdater.class.getName());
+    private static final String NOT_A_VALID_PROJECTXML_FILE_MESSAGE = "Not a valid project.xml file";
+    private static final String PACKAGE_TAG = "package";
+    private static final String PADDING_LEVEL1 = "\n        ";
+    private static final String PADDING_LEVEL2 = "\n            ";
+    private static final String PADDING_LEVEL3 = "\n                ";
 
     private File projectDirectory = null;
 
@@ -76,7 +91,7 @@ public class ProjectUpdater extends Task {
             // Find the data element and ensure there is only one
             final NodeList dataNodes = document.getElementsByTagName("data");
             if (dataNodes.getLength() != 1) {
-                throw new IllegalStateException("Not a valid project.xml file");
+                throw new IllegalStateException(NOT_A_VALID_PROJECTXML_FILE_MESSAGE);
             }
             final Node dataNode = dataNodes.item(0);
 
@@ -86,7 +101,7 @@ public class ProjectUpdater extends Task {
             if (publicPackagesFile.exists()) {
                 final NodeList publicPackagesNodes = document.getElementsByTagName("public-packages");
                 if (publicPackagesNodes.getLength() != 1) {
-                    throw new IllegalStateException("Not a valid project.xml file");
+                    throw new IllegalStateException(NOT_A_VALID_PROJECTXML_FILE_MESSAGE);
                 }
                 publicPackagesNode = publicPackagesNodes.item(0);
 
@@ -95,7 +110,7 @@ public class ProjectUpdater extends Task {
                     final Node child = children.item(0);
                     if (child instanceof Element) {
                         final Element childElement = (Element) child;
-                        if (childElement.getTagName().equals("package")) {
+                        if (childElement.getTagName().equals(PACKAGE_TAG)) {
                             publicPackages.add(childElement.getTextContent());
                         }
                     }
@@ -103,7 +118,7 @@ public class ProjectUpdater extends Task {
                 }
 
                 final Document publicXMLFile = readXMLFile(publicPackagesFile);
-                final NodeList packageNodes = publicXMLFile.getElementsByTagName("package");
+                final NodeList packageNodes = publicXMLFile.getElementsByTagName(PACKAGE_TAG);
                 for (int i = 0; i < packageNodes.getLength(); i++) {
                     packages.add(packageNodes.item(i).getTextContent());
                 }
@@ -130,7 +145,7 @@ public class ProjectUpdater extends Task {
                     }
                     dataNode.removeChild(classPathExtensionNode);
                 } else {
-                    throw new IllegalStateException("Not a valid project.xml file");
+                    throw new IllegalStateException(NOT_A_VALID_PROJECTXML_FILE_MESSAGE);
                 }
             }
 
@@ -158,55 +173,68 @@ public class ProjectUpdater extends Task {
                     }
                 }
 
-                dataNode.appendChild(document.createTextNode("\n        "));
+                dataNode.appendChild(document.createTextNode(PADDING_LEVEL1));
             }
 
             if (publicPackagesFile.exists()) {
                 for (final String publicPackage : publicPackages) {
                     if (!publicPackage.startsWith("META-INF")) {
-                        final Element publicPackageElement = document.createElement("package");
+                        final Element publicPackageElement = document.createElement(PACKAGE_TAG);
                         publicPackageElement.setTextContent(publicPackage);
-                        publicPackagesNode.appendChild(document.createTextNode("\n                "));
+                        publicPackagesNode.appendChild(document.createTextNode(PADDING_LEVEL3));
                         publicPackagesNode.appendChild(publicPackageElement);
                     }
                 }
             }
             if (publicPackagesNode != null) {
-                publicPackagesNode.appendChild(document.createTextNode("\n            "));
+                publicPackagesNode.appendChild(document.createTextNode(PADDING_LEVEL2));
             }
 
             // Delete the existing old file and replace it with a copy of the current project.xml
-            oldProjectFile.delete();
-            projectFile.renameTo(oldProjectFile);
+            final boolean oldProjectFileDeleted = oldProjectFile.delete();
+            if (!oldProjectFileDeleted) {
+                logMessage("ERROR: The old project.xml file could not be deleted.");
+            }
+            final boolean projectFileRenamed = projectFile.renameTo(oldProjectFile);
+            if (!projectFileRenamed) {
+                logMessage("ERROR: project.xml could not be renamed.");
+            }
 
             // Save the edited document to project.xml
             saveXMLFile(document, projectFile);
-        } catch (Exception ex) {
+        } catch (IOException | IllegalStateException | ParserConfigurationException | TransformerException | DOMException ex) {
             logMessage("Exception during update: " + ex.getClass() + " " + ex.getMessage() + " " + ex.getStackTrace()[0]);
         }
     }
 
     private static void addClassPathExtension(final Document document, final File jarFile, final Node parentNode) {
         final Element classPathExtensionElement = document.createElement("class-path-extension");
-        classPathExtensionElement.appendChild(document.createTextNode("\n                "));
+        classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL3));
 
         final Element runtimeRelativePathElement = document.createElement("runtime-relative-path");
         runtimeRelativePathElement.setTextContent("ext/" + jarFile.getName());
         classPathExtensionElement.appendChild(runtimeRelativePathElement);
-        classPathExtensionElement.appendChild(document.createTextNode("\n                "));
+        classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL3));
 
         final Element binaryOriginElement = document.createElement("binary-origin");
         binaryOriginElement.setTextContent("release/modules/ext/" + jarFile.getName());
         classPathExtensionElement.appendChild(binaryOriginElement);
-        classPathExtensionElement.appendChild(document.createTextNode("\n            "));
+        classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL2));
 
-        parentNode.appendChild(document.createTextNode("\n            "));
+        parentNode.appendChild(document.createTextNode(PADDING_LEVEL2));
         parentNode.appendChild(classPathExtensionElement);
     }
 
-    private static Document readXMLFile(final File xmlFile) throws Exception {
-        final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    private static Document readXMLFile(final File xmlFile) throws ParserConfigurationException, TransformerConfigurationException, TransformerException, FileNotFoundException, IOException {
+        final DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
+        builderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+        builderFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        final DocumentBuilder builder = builderFactory.newDocumentBuilder();
+
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        final Transformer transformer = transformerFactory.newTransformer();
 
         // Create a document to work on
         final Document document = builder.newDocument();
@@ -221,8 +249,11 @@ public class ProjectUpdater extends Task {
         return document;
     }
 
-    private static void saveXMLFile(final Document document, final File xmlFile) throws Exception {
-        final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+    private static void saveXMLFile(final Document document, final File xmlFile) throws TransformerConfigurationException, FileNotFoundException, IOException, TransformerException {
+        final TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+        final Transformer transformer = transformerFactory.newTransformer();
 
         try ( FileOutputStream out = new FileOutputStream(xmlFile)) {
             final Source saveSource = new DOMSource(document);
@@ -231,34 +262,35 @@ public class ProjectUpdater extends Task {
         }
     }
 
-    private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws Exception {
-        final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile));
-        ZipEntry entry = zip.getNextEntry();
-        while (entry != null) {
-            final String path = entry.getName();
-            final int lastDivider = path.lastIndexOf('/');
-            if (lastDivider >= 0) {
-                final String folder = path.substring(0, lastDivider);
-                final String name = folder.replace('/', '.');
-                if (path.endsWith(".class")) {
-                    publicPackages.remove(name);
-                    for (final String expression : expressions) {
-                        if (expression.endsWith("*")) {
-                            if (name.startsWith(expression.substring(0, expression.length() - 1))) {
-                                publicPackages.add(name);
-                                break;
-                            }
-                        } else {
-                            if (name.equals(expression)) {
-                                publicPackages.add(name);
-                                break;
+    private void extractMatchingPackages(final File jarFile, final List<String> expressions, final Set<String> publicPackages) throws FileNotFoundException, IOException {
+        try (final ZipInputStream zip = new ZipInputStream(new FileInputStream(jarFile))) {
+            ZipEntry entry = zip.getNextEntry();
+            while (entry != null) {
+                final String path = entry.getName();
+                final int lastDivider = path.lastIndexOf('/');
+                if (lastDivider >= 0) {
+                    final String folder = path.substring(0, lastDivider);
+                    final String name = folder.replace('/', '.');
+                    if (path.endsWith(".class")) {
+                        publicPackages.remove(name);
+                        for (final String expression : expressions) {
+                            if (expression.endsWith("*")) {
+                                if (name.startsWith(expression.substring(0, expression.length() - 1))) {
+                                    publicPackages.add(name);
+                                    break;
+                                }
+                            } else {
+                                if (name.equals(expression)) {
+                                    publicPackages.add(name);
+                                    break;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            entry = zip.getNextEntry();
+                entry = zip.getNextEntry();
+            }
         }
     }
 
@@ -266,7 +298,7 @@ public class ProjectUpdater extends Task {
         if (getProject() != null) {
             getProject().log(message);
         } else {
-            System.out.println(message);
+            LOGGER.info(message);
         }
     }
 
