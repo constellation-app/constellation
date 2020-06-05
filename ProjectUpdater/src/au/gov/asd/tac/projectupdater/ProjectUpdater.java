@@ -118,13 +118,13 @@ public class ProjectUpdater extends Task {
                 if (classPathExtensionNode.getParentNode() == dataNode) {
                     Node nextNode = classPathExtensionNode.getNextSibling();
                     while (nextNode instanceof Text) {
-                        Node textNode = nextNode;
+                        final Node textNode = nextNode;
                         nextNode = nextNode.getNextSibling();
                         dataNode.removeChild(textNode);
                     }
                     Node prevNode = classPathExtensionNode.getPreviousSibling();
                     while (prevNode instanceof Text) {
-                        Node textNode = prevNode;
+                        final Node textNode = prevNode;
                         prevNode = prevNode.getPreviousSibling();
                         dataNode.removeChild(textNode);
                     }
