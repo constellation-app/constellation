@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.vulkan.ConstellationCanvas;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKCanvas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.vulkan.VKRenderer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -67,14 +67,14 @@ public class GLVisualProcessor extends VisualProcessor {
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
     // The OpenGL canvas
-    protected ConstellationCanvas canvas;
+    protected CVKCanvas canvas;
     
     // The GLEventListener for the OpenGL canvas. Contains the processing logic to update the canvas throughout the OpenGL life-cycle.
     private GLRenderer renderer;
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
     private GraphRenderable graphRenderable;
     private final Matrix44f modelViewMatrix = new Matrix44f();
-    private VKRenderer vkRenderer;
+    private CVKRenderer vkRenderer;
 
     private Camera camera;
     private boolean updating = false;
@@ -410,7 +410,7 @@ public class GLVisualProcessor extends VisualProcessor {
 //        Rectangle bounds = canvas.getBounds();
 //        System.out.print(bounds);
 //        
-//        // The canvas surface is needed to finish initialising VKRenderer
+//        // The canvas surface is needed to finish initialising CVKRenderer
 //        //vkRenderer.InitVKRenderer(canvas.surface);        
 //    }
 
@@ -426,22 +426,22 @@ public class GLVisualProcessor extends VisualProcessor {
     public GLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
 //        try {            
 //            // VkInstance is setup in the constructor
-//            vkRenderer = new VKRenderer();
+//            vkRenderer = new CVKRenderer();
 //        } catch (Exception e) {
 //            LOGGER.severe(e.toString());
 //        }
 //        
 //        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
 //        // in a VKData object and makes it private.  The result is we need to create it
-//        // here rather than have a ConstellationCanvas constructor that just takes the
+//        // here rather than have a CVKCanvas constructor that just takes the
 //        // renderer and pulls the instance from there.
 //        VKData vkData = new VKData();
 //        vkData.instance = vkRenderer.GetVkInstance();
-//        canvas = new ConstellationCanvas(vkData, vkRenderer);    
+//        canvas = new CVKCanvas(vkData, vkRenderer);    
         //canvas.addEventListener(vkRenderer);
         //canvas.InitSurface();
         
-        // The canvas surface is needed to finish initialising VKRenderer
+        // The canvas surface is needed to finish initialising CVKRenderer
         //vkRenderer.InitVKRenderer(canvas.surface);
         //vkRenderer.CreateSwapChain(canvas.surface);
         
@@ -449,7 +449,7 @@ public class GLVisualProcessor extends VisualProcessor {
 //        final AxesRenderable axesRenderable = new AxesRenderable(this);
 //        final FPSRenderable fpsRenderable = new FPSRenderable(this);
 //        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
-        //canvas = new ConstellationCanvas(vkData);
+        //canvas = new CVKCanvas(vkData);
     }
 
     @Override

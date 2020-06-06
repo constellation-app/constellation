@@ -41,19 +41,19 @@ import java.util.logging.Logger;
 import org.lwjgl.vulkan.awt.VKData;
 
 
-public class VKVisualProcessor extends VisualProcessor {
+public class CVKVisualProcessor extends VisualProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(VKVisualProcessor.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CVKVisualProcessor.class.getName());
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
-    // The OpenGL canvas
-    protected ConstellationCanvas canvas;
+    protected CVKCanvas canvas;
+    private CVKRenderer vkRenderer;
     
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
     //private GraphRenderable graphRenderable;
     private final Matrix44f modelViewMatrix = new Matrix44f();
-    private VKRenderer vkRenderer;
+    
 
     private Camera camera;
     private boolean updating = false;
@@ -374,7 +374,7 @@ public class VKVisualProcessor extends VisualProcessor {
      * <p>
      * This processor will not use debugging or print GL capabilities.
      */
-    public VKVisualProcessor() {
+    public CVKVisualProcessor() {
         this(false, false);
     }
     
@@ -398,8 +398,8 @@ public class VKVisualProcessor extends VisualProcessor {
 //        Rectangle bounds = canvas.getBounds();
 //        System.out.print(bounds);
 //        
-//        // The canvas surface is needed to finish initialising VKRenderer
-//        vkRenderer.InitVKRenderer(canvas.surface);        
+//        // The canvas surface is needed to finish initialising CVKRenderer
+//        vkRenderer.Init(canvas.surface);        
     }
 
     /**
@@ -411,33 +411,33 @@ public class VKVisualProcessor extends VisualProcessor {
      * @param printGlCapabilities Whether or not to print out a list of GL
      * capabilities upon initialisation.
      */
-    public VKVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
+    public CVKVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         try {            
             // VkInstance is setup in the constructor
-            vkRenderer = new VKRenderer(this);
+            vkRenderer = new CVKRenderer(this);
         } catch (Exception e) {
             LOGGER.severe(e.toString());
         }
         
         // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
         // in a VKData object and makes it private.  The result is we need to create it
-        // here rather than have a ConstellationCanvas constructor that just takes the
+        // here rather than have a CVKCanvas constructor that just takes the
         // renderer and pulls the instance from there.
         VKData vkData = new VKData();
         vkData.instance = vkRenderer.GetVkInstance();
-        canvas = new ConstellationCanvas(vkData, vkRenderer);    
+        canvas = new CVKCanvas(vkData, vkRenderer);    
         //canvas.addEventListener(vkRenderer);
         //canvas.InitSurface();
         
-        // The canvas surface is needed to finish initialising VKRenderer
-        //vkRenderer.InitVKRenderer(canvas.surface);
+        // The canvas surface is needed to finish initialising CVKRenderer
+        //vkRenderer.Init(canvas.surface);
         //vkRenderer.CreateSwapChain(canvas.surface);
         
 //        graphRenderable = new GraphRenderable(this);
 //        final AxesRenderable axesRenderable = new AxesRenderable(this);
 //        final FPSRenderable fpsRenderable = new FPSRenderable(this);
 //        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
-        //canvas = new ConstellationCanvas(vkData);
+        //canvas = new CVKCanvas(vkData);
     }
 
     @Override
@@ -447,6 +447,15 @@ public class VKVisualProcessor extends VisualProcessor {
     
     public Rectangle getCanvasBounds() {
         return canvas.getBounds();
+    }
+    
+    /**
+     * All the double negatives
+     * 
+     * @return
+     */
+    public boolean surfaceReady() {
+        return (canvas != null) ? !canvas.getBounds().isEmpty() : false;
     }
     
     @Override

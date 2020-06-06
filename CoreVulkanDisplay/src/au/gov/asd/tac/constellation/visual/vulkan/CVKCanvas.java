@@ -16,7 +16,7 @@ import org.lwjgl.vulkan.awt.VKData;
 
 
 
-public class ConstellationCanvas extends AWTVKCanvas{
+public class CVKCanvas extends AWTVKCanvas{
     private static final Logger LOGGER = Logger.getLogger("VKRenderer");
     private boolean parentAdded = false;
     static int frameNo = 0;
@@ -25,10 +25,10 @@ public class ConstellationCanvas extends AWTVKCanvas{
     static float green = 0.5f;
     static float blue = 1.0f;
     
-    protected final VKRenderer vkRenderer;
+    protected final CVKRenderer vkRenderer;
     protected ArrayList<EventListener> eventListeners = new ArrayList<>();
     
-    public ConstellationCanvas(VKData vkData, VKRenderer vkRenderer) {
+    public CVKCanvas(VKData vkData, CVKRenderer vkRenderer) {
         super(vkData);
         this.vkRenderer = vkRenderer;
         this.addComponentListener(vkRenderer);
@@ -70,13 +70,13 @@ public class ConstellationCanvas extends AWTVKCanvas{
     
     @Override
     public void initVK() {
-        vkRenderer.InitVKRenderer(this.surface);
+        vkRenderer.Init(this.surface);
     }
     
     @Override
     public void paintVK() {
         // This will be called by AWTVKCanvas during initialisation but before
-        // VKRenderer is ready to use.  platformCanvas is private in our parent 
+        // CVKRenderer is ready to use.  platformCanvas is private in our parent 
         // so this is the only way to complete the surface initialisation.  
         System.out.printf("Frame %d\n", ++frameNo);       
         vkRenderer.Display();

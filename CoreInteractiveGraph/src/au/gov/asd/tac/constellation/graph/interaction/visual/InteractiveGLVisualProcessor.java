@@ -41,7 +41,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
@@ -65,7 +65,7 @@ import java.util.logging.Level;
  *
  * @author twilight_sparkle
  */
-public class InteractiveGLVisualProcessor extends VKVisualProcessor implements VisualInteraction, VisualAnnotator {
+public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements VisualInteraction, VisualAnnotator {
 
     private final long selectionBoxUpdateId = VisualChangeBuilder.generateNewId();
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();

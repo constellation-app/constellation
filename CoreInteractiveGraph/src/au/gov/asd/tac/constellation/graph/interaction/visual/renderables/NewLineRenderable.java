@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -51,7 +51,7 @@ public class NewLineRenderable implements GLRenderable {
     // The batch of OpenGL primitives representing the new line
     private final Batch batch;
 
-    private final VKVisualProcessor parent;
+    private final CVKVisualProcessor parent;
 
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final int NUMBER_OF_VERTICES = 2;
@@ -63,7 +63,7 @@ public class NewLineRenderable implements GLRenderable {
 
     private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();
 
-    public NewLineRenderable(final VKVisualProcessor parent) {        
+    public NewLineRenderable(final CVKVisualProcessor parent) {        
         this.parent = parent;
         // TODO_TT:
         batch = new Batch(-1);

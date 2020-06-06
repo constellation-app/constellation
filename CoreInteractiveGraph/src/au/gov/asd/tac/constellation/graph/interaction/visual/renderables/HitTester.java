@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.vulkan.VKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
@@ -61,7 +61,7 @@ public final class HitTester implements GLRenderable {
     // TODO_TT: 
     private final int hitTestBufferName = -1;
 //    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
-    private final VKVisualProcessor parent;
+    private final CVKVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
     private final BlockingDeque<HitTestRequest> requestQueue = new LinkedBlockingDeque<>();
@@ -71,7 +71,7 @@ public final class HitTester implements GLRenderable {
      *
      * @param parent
      */
-    public HitTester(final VKVisualProcessor parent) {
+    public HitTester(final CVKVisualProcessor parent) {
         this.parent = parent;
         hitTestFboName = new int[1];
         hitTestDepthBufferName = new int[1];

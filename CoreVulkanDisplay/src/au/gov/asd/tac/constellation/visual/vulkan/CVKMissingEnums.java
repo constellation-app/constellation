@@ -15,18 +15,35 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+
+
 /**
- *
+ * This class contains enums that represent enums in the C Vulkan API that
+ * are either missing in LWJGL or are represented by multiple static finals.
+ * By mirroring these 'missing' enums we can utilise enums string reprentation
+ * in Java.  In some instances they also make the code easier to follow.
+ * 
+ * - HERE BE DRAGONS -
  * The order of these enums and any explicit values assigned to them matches the
  * Vulkan API.  Do not reorder them, do not add entries unless at the tail, do not
  * remove entries and do not change explicit values.
+ * 
  */
-public class VKMISSINGENUMS {
-
+public class CVKMissingEnums {    
+    /*
+    * Some enums are are sequential, some are assigned explicit values, this
+    * method ensures we always get a value that is compatible with the native
+    * Vulkan API
+    */
+    private interface IntValue {
+        public abstract int Value();
+    }
+    
+    
     /**
      *
      */
-    public enum VkColorSpaceKHR {
+    public enum VkColorSpaceKHR implements IntValue {
         VK_COLOR_SPACE_SRGB_NONLINEAR_KHR(0),
         VK_COLOR_SPACE_DISPLAY_P3_NONLINEAR_EXT(1000104001),
         VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT(1000104002),
@@ -58,14 +75,15 @@ public class VKMISSINGENUMS {
             }
             return VK_COLOR_SPACE_NONE;
         }
-        public int GetValue() { return val; }
+        @Override
+        public int Value() { return val; }
     }
     
     /**
      * This is a list of constant ints in VK10.java but having it as enum simplifies
      * translating values to string in Java.
      */
-    public enum VkFormat {
+    public enum VkFormat implements IntValue {
         VK_FORMAT_UNDEFINED,
         VK_FORMAT_R4G4_UNORM_PACK8,
         VK_FORMAT_R4G4B4A4_UNORM_PACK16,
@@ -253,10 +271,13 @@ public class VKMISSINGENUMS {
         VK_FORMAT_ASTC_12x12_SRGB_BLOCK,
         
         // Added sentinal value
-        VK_FORMAT_NONE
+        VK_FORMAT_NONE;
+        
+        @Override
+        public int Value() { return ordinal(); }
     }  
     
-    public enum VkPresentModeKHR  {
+    public enum VkPresentModeKHR implements IntValue {
         VK_PRESENT_MODE_IMMEDIATE_KHR,
         VK_PRESENT_MODE_MAILBOX_KHR,
         VK_PRESENT_MODE_FIFO_KHR,
@@ -264,5 +285,8 @@ public class VKMISSINGENUMS {
         
         // Added sentinal value
         VK_PRESENT_MODE_NONE;
+        
+        @Override
+        public int Value() { return ordinal(); }        
     }
 }
