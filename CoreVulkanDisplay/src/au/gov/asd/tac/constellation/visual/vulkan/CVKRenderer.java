@@ -266,6 +266,11 @@ public class CVKRenderer implements ComponentListener{
                 LOGGER.log(Level.INFO, "Frame {0}", frameNumber++);
             }
         }
+        
+        // hack for constant render loop
+        if (debugging) {
+            parent.rebuild();
+        } 
         parent.signalProcessorIdle();
     }
 
