@@ -14,7 +14,7 @@ git:
 jobs:
   include:
   - stage: Build and Test
-    dist: trusty
+    dist: bionic
     language: java
     services:
       - docker
