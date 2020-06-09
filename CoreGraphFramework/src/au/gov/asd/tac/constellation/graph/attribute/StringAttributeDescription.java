@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import java.util.Arrays;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -68,11 +67,13 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     }
 
     private String convertFromString(final String string) {
-        if (StringUtils.isBlank(string)) {
+        if (string == null) {
             return (String) getDefault();
         } else {
             return string;
         }
+        
+//        value == null ? null : String.valueOf(value);
     }
 
     @Override
