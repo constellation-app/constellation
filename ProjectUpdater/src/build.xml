@@ -67,7 +67,7 @@
         
         <!-- Update the project.xml file to include the downloaded jars -->
         <property name="ProjectUpdater.jar" value="${suite.dir}/../constellation/ProjectUpdater/dist/ProjectUpdater.jar" />
-        <taskdef name="buildProjectXML" classname="au.gov.asd.tac.projectupdater.ProjectUpdater" classpath="${ProjectUpdater.jar}" />
+        <taskdef name="buildProjectXML" classname="au.gov.asd.tac.constellation.projectupdater.ProjectUpdater" classpath="${ProjectUpdater.jar}" />
         <buildProjectXML projectdirectory="." />        
     </target>
     
