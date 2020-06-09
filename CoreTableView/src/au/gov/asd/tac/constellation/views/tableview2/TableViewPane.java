@@ -60,6 +60,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Side;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
@@ -67,6 +68,7 @@ import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Separator;
@@ -134,6 +136,7 @@ public final class TableViewPane extends BorderPane {
     private static final ImageView MENU_ICON_TRANSACTION = new ImageView(UserInterfaceIconProvider.MENU.buildImage(16));
 
     private static final int WIDTH = 120;
+    private static final int MAX_ROWS_PER_PAGE = 500;
 
     private final TableViewTopComponent parent;
     private final CopyOnWriteArrayList<ThreeTuple<String, Attribute, TableColumn<ObservableList<String>, String>>> columnIndex;
@@ -181,8 +184,8 @@ public final class TableViewPane extends BorderPane {
         this.table = new TableView<>();
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        table.setPadding(new Insets(5));
-        setCenter(table);
+        table.setPadding(new Insets(5));      
+        paginate(null);
 
         // TODO: experiment with caching
         table.setCache(false);
@@ -941,6 +944,25 @@ public final class TableViewPane extends BorderPane {
             }
         }
     }
+    
+    private Node createPage(final int pageIndex, final List<ObservableList<String>> rows) {
+        if (rows != null) {
+            final int fromIndex = pageIndex * MAX_ROWS_PER_PAGE;
+            final int toIndex = Math.min(fromIndex + MAX_ROWS_PER_PAGE, rows.size());
+
+            table.setItems(FXCollections.observableArrayList(rows.subList(fromIndex, toIndex)));
+        }
+        
+        return new BorderPane(table);
+    }
+    
+    private void paginate(final List<ObservableList<String>> rows) {
+        final Pagination pagination = new Pagination(table.getItems().size() / MAX_ROWS_PER_PAGE + 1);
+        pagination.setPageFactory((index) -> createPage(index, rows));
+        Platform.runLater(() -> {
+            setCenter(pagination);
+        });
+    }
 
     /**
      * Update the data in the table using the graph and state.
@@ -1048,8 +1070,8 @@ public final class TableViewPane extends BorderPane {
                     selectedProperty.removeListener(tableSelectionListener);
 
                     // add table data to table
-                    table.setItems(FXCollections.observableArrayList(rows));
-                    setCenter(table);
+                    table.setItems(FXCollections.observableArrayList(rows));                   
+                    paginate(rows);
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
