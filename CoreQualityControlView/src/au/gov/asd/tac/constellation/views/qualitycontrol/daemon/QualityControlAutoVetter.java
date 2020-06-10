@@ -227,11 +227,11 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     }
 
     public void addObserver(final QualityControlButtonListener buttonListener) {
-        this.buttonListeners.add(buttonListener);
+        buttonListeners.add(buttonListener);
     }
 
     public void removeObserver(final QualityControlButtonListener buttonListener) {
-        this.buttonListeners.remove(buttonListener);
+        buttonListeners.remove(buttonListener);
     }
 
     /**
@@ -286,12 +286,10 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
                 // Set up and run each rule.
                 if (!vertexList.isEmpty()) {
                     for (final QualityControlRule rule : getRules()) {
-                        final Thread t = new Thread(new Runnable() {
-                            public void run() {
-                                rule.clearResults();
-                                rule.executeRule(graph, vertexList);
-                                registeredRules.add(rule);
-                            }
+                        final Thread t = new Thread(() -> {
+                            rule.clearResults();
+                            rule.executeRule(graph, vertexList);
+                            registeredRules.add(rule);
                         });
                         t.start();
                     }
