@@ -54,6 +54,8 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     private static QualityControlAutoVetter INSTANCE = null;
 
+    private static final List<QualityControlButtonListener> buttonListeners = new ArrayList<>();
+
     private QualityControlState state;
 
     private Graph currentGraph;
@@ -150,6 +152,9 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * is no current graph.
      */
     public static void updateQualityControlState(final GraphReadMethods graph) {
+        // notify listeners that rules are running
+        buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(false));
+
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         Future<?> stateFuture = PluginExecution.withPlugin(new QualityControlViewStateUpdater(graph))
                 .executeLater(currentGraph);
@@ -162,6 +167,8 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         } catch (ExecutionException ex) {
             Exceptions.printStackTrace(ex);
         }
+        // notify listeners that rules have finished
+        buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(true));
     }
 
     private static List<QualityControlRule> getRules() {
@@ -217,6 +224,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      */
     public void removeListener(final QualityControlListener listener) {
         listeners.remove(listener);
+    }
+
+    public void addObserver(final QualityControlButtonListener buttonListener) {
+        this.buttonListeners.add(buttonListener);
+    }
+
+    public void removeObserver(final QualityControlButtonListener buttonListener) {
+        this.buttonListeners.remove(buttonListener);
     }
 
     /**

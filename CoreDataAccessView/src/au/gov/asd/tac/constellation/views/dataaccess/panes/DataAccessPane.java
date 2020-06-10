@@ -42,6 +42,8 @@ import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlButtonListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ import org.openide.util.NbPreferences;
  * @author arcturus
  * @author antares
  */
-public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener {
+public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener, QualityControlButtonListener {
 
     // Insets with 0 top and bottom so the title doesn't change size vertically.
     static final Insets HELP_INSETS = new Insets(0, 8, 0, 8);
@@ -406,6 +408,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setTopAnchor(options, 5.0);
         AnchorPane.setRightAnchor(options, 5.0);
         getChildren().add(options);
+        QualityControlAutoVetter.getInstance().addObserver(this);
     }
 
     /**
@@ -1031,6 +1034,23 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         dataAccessTabPane.getTabs().stream().filter(this::tabHasEnabledPlugins).forEachOrdered(tab -> {
             getQueryPhasePane(tab).getDataAccessPanes().forEach(dataAccessPane -> dataAccessPane.validityChanged(false));
         });
+    }
+
+    @Override
+    public void qualityControlRuleChanged(final boolean canRun) {
+        if (canRun) {
+            Platform.runLater(() -> {
+                executeButton.setDisable(canRun);
+                executeButton.setText(EXECUTE_GO);
+                executeButton.setStyle(GO_STYLE);
+            });
+        } else {
+            Platform.runLater(() -> {
+                executeButton.setDisable(canRun);
+                executeButton.setText(EXECUTE_STOP);
+                executeButton.setStyle(STOP_STYLE);
+            });
+        }
     }
 
     /**
