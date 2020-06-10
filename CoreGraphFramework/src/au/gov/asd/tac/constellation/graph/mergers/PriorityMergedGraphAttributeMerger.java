@@ -35,11 +35,10 @@ public class PriorityMergedGraphAttributeMerger extends GraphAttributeMerger {
     }
 
     @Override
-    public boolean mergeAttribute(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement, int attribute) {
+    public boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement, final int attribute) {
         if (!graph.isDefaultValue(attribute, mergedElement)) {
             graph.getNativeAttributeType(attribute).copyAttributeValue(graph, attribute, mergedElement, survivingElement);
         }
         return true;
     }
-
 }

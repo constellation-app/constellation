@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -90,7 +90,7 @@ public final class CircTreeArranger implements Arranger {
 
         final int vxCount = graph.getVertexCount();
         if (vxCount > 0) {
-            final BitSet verticesToArrange = GraphUtilities.vertexBits(graph);
+            final BitSet verticesToArrange = ArrangementUtilities.vertexBits(graph);
 
             int rootVxId = params.rootVxId;
             if (rootVxId == Graph.NOT_FOUND) {
@@ -108,7 +108,7 @@ public final class CircTreeArranger implements Arranger {
                 }
             }
 
-            final float[] oldCentre = maintainMean ? GraphUtilities.getXyzMean(graph) : null;
+            final float[] oldCentre = maintainMean ? ArrangementUtilities.getXyzMean(graph) : null;
 
 //            System.out.printf("@AICT Tree arranging %d vertices, root=%d\n", verticesToArrange.cardinality(), rootVxId);
             // Gather the vxIds into a BitSet for faster checking.
@@ -140,7 +140,7 @@ public final class CircTreeArranger implements Arranger {
             positionThis(rootVxId, vxsToGo, orderedChildren, ourLocX, ourLocY, 0, 0, params.strictCircularLayout, childrenRadii, fullRadii, annulusInfo, 0);
 
             if (maintainMean) {
-                final float[] newCentre = GraphUtilities.getXyzMean(graph);
+                final float[] newCentre = ArrangementUtilities.getXyzMean(graph);
                 for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
                     graph.setFloatValue(xAttr, vxId, graph.getFloatValue(xAttr, vxId) - newCentre[0] + oldCentre[0]);
                     graph.setFloatValue(yAttr, vxId, graph.getFloatValue(yAttr, vxId) - newCentre[1] + oldCentre[1]);

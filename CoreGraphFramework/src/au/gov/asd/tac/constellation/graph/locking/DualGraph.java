@@ -84,12 +84,12 @@ public class DualGraph implements Graph, Serializable {
     private LockingManager<LockingStoreGraph> createLockingManager() {
         return new LockingManager<LockingStoreGraph>() {
             @Override
-            protected void update(final Object description, Object editor) {
+            protected void update(final Object description, final Object editor) {
                 final GraphChangeEvent event = new GraphChangeEvent(previousEvent, DualGraph.this, editor, description);
                 previousEvent = event;
                 SwingUtilities.invokeLater(() -> {
                     synchronized (graphChangeListeners) {
-                        for (GraphChangeListener listener : graphChangeListeners) {
+                        for (final GraphChangeListener listener : graphChangeListeners) {
                             listener.graphChanged(event);
                         }
                     }
@@ -98,7 +98,7 @@ public class DualGraph implements Graph, Serializable {
         };
     }
 
-    public DualGraph(Schema schema) {
+    public DualGraph(final Schema schema) {
 
         lockingManager = createLockingManager();
 
@@ -114,7 +114,7 @@ public class DualGraph implements Graph, Serializable {
         MemoryManager.newObject(DualGraph.class);
     }
 
-    public DualGraph(Schema schema, final StoreGraph target) {
+    public DualGraph(final Schema schema, final StoreGraph target) {
         this(schema, target, false);
     }
 
@@ -127,11 +127,11 @@ public class DualGraph implements Graph, Serializable {
      * @param newId if true then the DualGraph gets a new id, otherwise it is
      * copied from the target.
      */
-    public DualGraph(StoreGraph target, boolean newId) {
+    public DualGraph(final StoreGraph target, final boolean newId) {
         this(target.getSchema(), target, newId);
     }
 
-    public DualGraph(Schema schema, final StoreGraph target, boolean newId) {
+    public DualGraph(final Schema schema, final StoreGraph target, final boolean newId) {
 
         target.validateKeys();
 
@@ -189,13 +189,6 @@ public class DualGraph implements Graph, Serializable {
     @Override
     public ReadableGraph getReadableGraph() {
         return lockingManager.startReading();
-    }
-
-    @Deprecated
-    @Override
-    public WritableGraph getWritableGraphOnEDT(final String name, final boolean significant) throws InterruptedException {
-        LOGGER.log(Level.WARNING, "LOCKING GRAPH ON EDT: {0}", new Exception().getStackTrace()[1]);
-        return lockingManager.startWriting(name, significant, null);
     }
 
     @Override

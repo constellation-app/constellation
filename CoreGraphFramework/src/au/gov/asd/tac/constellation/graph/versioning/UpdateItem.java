@@ -31,7 +31,7 @@ public abstract class UpdateItem implements Comparable<UpdateItem> {
     public abstract boolean appliesToGraph(final StoreGraph graph);
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (!(o instanceof UpdateItem)) {
             return false;
         }
@@ -47,7 +47,7 @@ public abstract class UpdateItem implements Comparable<UpdateItem> {
     }
 
     @Override
-    public int compareTo(UpdateItem o) {
+    public int compareTo(final UpdateItem o) {
         return getPriority() == o.getPriority() ? getName().compareTo(o.getName()) : Integer.compare(getPriority(), o.getPriority());
     }
 }

@@ -55,7 +55,7 @@ networks, network infrastructure, chemical composition, etc.
 currently no support for Mac and the feature request is tracked by 
 [Issue #21](https://github.com/constellation-app/constellation/issues/21).
 * The OpenGL graph display works with NVIDIA and ATI graphics cards that support
-OpenGL 3.3 or later. It is known to not work with Intel on-board graphics cards.
+OpenGL 3.3 or later. It is known to not work with older Intel on-board graphics cards.
 
 ## Download Constellation
 
@@ -83,7 +83,7 @@ or [MacOSX 64 bit](https://cdn.azul.com/zulu/bin/zulu11.39.15-ca-fx-jre11.0.7-ma
 * Clone this repository
 * Open the Constellation module suite from NetBeans
 * In the Projects view, expand `Important Files` > `Build Script` > Right click > 
-`Update dependencies and clean build`. This can take around 20 minutes to download the first time so go get a :coffee: and come back later.
+`Update dependencies and clean build`. This can take around 20 minutes to download the first time depending on your internet connection so feel free to get a :coffee: and come back later.
 * Start Constellation by right clicking on `Constellation` > `Run`
 
 ## Package Constellation

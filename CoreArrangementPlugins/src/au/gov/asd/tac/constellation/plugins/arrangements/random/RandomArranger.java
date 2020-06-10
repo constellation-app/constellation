@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.arrangements.random;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.security.SecureRandom;
 
@@ -39,7 +39,7 @@ public class RandomArranger implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         final int xId = VisualConcept.VertexAttribute.X.get(wg);
         final int yId = VisualConcept.VertexAttribute.Y.get(wg);
@@ -72,7 +72,7 @@ public class RandomArranger implements Arranger {
         }
 
         if (maintainMean) {
-            GraphUtilities.moveMean(wg, oldMean);
+            ArrangementUtilities.moveMean(wg, oldMean);
         }
     }
 

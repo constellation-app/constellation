@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.undo.UndoGraphEditState;
  */
 public abstract class ValueGetter {
 
-    public abstract void getExecute(UndoGraphEditState edit);
+    public abstract void getExecute(final UndoGraphEditState edit);
 
-    public abstract void getUndo(UndoGraphEditState edit);
+    public abstract void getUndo(final UndoGraphEditState edit);
 }

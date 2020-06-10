@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
+import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -28,12 +30,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.BitSet;
 import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
+
 
 /*
  * action to allow the user to set a hashmod for a graph window
@@ -65,6 +69,10 @@ public final class HashmodAction implements ActionListener {
         final DialogDescriptor dialog = new DialogDescriptor(hashmodPanel, Bundle.MSG_Title(), true, e -> {
             if (e.getActionCommand().equals("OK")) {
                 final Hashmod hashmod1 = hashmodPanel.getHashmod();
+                final Boolean isChainedHashmods = hashmodPanel.isChainedHashmods();
+                final boolean createAttributes = hashmodPanel.getCreateAttributes();
+                final Hashmod[] chainedHashmods = hashmodPanel.getChainedHashmods();
+                final int numChainedHashmods = hashmodPanel.numChainedHashmods();
                 final Boolean createNonMatchingKeysVertexes = hashmodPanel.getCreateVertexes();
                 hashmodPanel.setAttributeNames(hashmod1.getCSVKey(), hashmod1.getCSVHeader(1), hashmod1.getCSVHeader(2));
 
@@ -72,7 +80,12 @@ public final class HashmodAction implements ActionListener {
                     @Override
                     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                         if (hashmod1 != null) {
-                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes);
+                            HashmodAction.run(wg, interaction, hashmod1, createNonMatchingKeysVertexes, true, createAttributes);
+                        }
+                        if (isChainedHashmods && numChainedHashmods >= 2) {
+                            for (int i = 1; i < numChainedHashmods; i++) {
+                                HashmodAction.run(wg, interaction, chainedHashmods[i], false, false, createAttributes);
+                            }
                         }
                     }
                 }).executeLater(graph);
@@ -81,7 +94,7 @@ public final class HashmodAction implements ActionListener {
         DialogDisplayer.getDefault().notify(dialog);
     }
 
-    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys) throws InterruptedException {
+    private static void run(final GraphWriteMethods wg, final PluginInteraction interaction, final Hashmod hashmod, final Boolean createAllKeys, final Boolean setPrimary, final Boolean createAttributes) throws InterruptedException {
 
         if (wg != null && hashmod != null) {
             if (hashmod.getNumberCSVColumns() < 2) {
@@ -103,6 +116,22 @@ public final class HashmodAction implements ActionListener {
                 attributeValues[attrCount] = nextAttribute;
                 csvValues[attrCount] = i;
                 attrCount++;
+            } else if (createAttributes && StringUtils.isNotBlank(nextAttr)) {
+                final String[] attributeName = nextAttr.split("\\.");
+                String newAttributeType = StringAttributeDescription.ATTRIBUTE_NAME;
+
+                if (attributeName.length >= 2) {
+                    if (AttributeRegistry.getDefault().getAttributes().get(attributeName[attributeName.length - 1]) != null) {
+                        newAttributeType = attributeName[attributeName.length - 1];
+                    }
+                }
+
+                final int newAttribute = wg.addAttribute(GraphElementType.VERTEX, newAttributeType, nextAttr, nextAttr, "", null);
+                if (newAttribute != Graph.NOT_FOUND) {
+                    attributeValues[attrCount] = newAttribute;
+                    csvValues[attrCount] = i;
+                    attrCount++;
+                }
             }
             i++;
         }
@@ -163,7 +192,10 @@ public final class HashmodAction implements ActionListener {
                     numberSuccessful++;
                 }
             }
-            wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
+
+            if (setPrimary) {
+                wg.setPrimaryKey(GraphElementType.VERTEX, attributeValues[0]);
+            }
             interaction.notify(PluginNotificationLevel.WARNING, "Successfully added in " + numberSuccessful + " new nodes");
         }
     }

@@ -30,6 +30,6 @@ public interface GraphChangeListener {
      * @param event the {@link GraphChangeEvent} describing the change on the
      * graph.
      */
-    public void graphChanged(GraphChangeEvent event);
+    public void graphChanged(final GraphChangeEvent event);
 
 }

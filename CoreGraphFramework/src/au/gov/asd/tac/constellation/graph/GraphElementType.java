@@ -47,27 +47,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             // Override required for implementation
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, final int element) {
             return graph.getTransactionCount();
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return graph.getTransaction(position);
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return Graph.NOT_FOUND;
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return Graph.NOT_FOUND;
         }
 
@@ -77,12 +77,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return 0L;
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             return true;
         }
 
@@ -97,7 +97,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             // Override required for implementation
         }
 
@@ -126,27 +126,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             // Override required for implementation
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, final int element) {
             return graph.getTransactionCount();
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return graph.getTransaction(position);
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return Graph.NOT_FOUND;
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return Graph.NOT_FOUND;
         }
 
@@ -156,12 +156,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return 0L;
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             return true;
         }
 
@@ -176,7 +176,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             if (graph.getSchema() != null) {
                 final int vertexCount = graph.getVertexCount();
                 for (int i = 0; i < vertexCount; i++) {
@@ -217,27 +217,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             graph.removeVertex(element);
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, final int element) {
             return graph.getVertexTransactionCount(element);
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return graph.getVertexTransaction(element, position);
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return element;
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return element;
         }
 
@@ -247,12 +247,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return graph.getVertexUID(element);
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             return graph.getBooleanValue(selectedAttribute, element);
         }
 
@@ -267,7 +267,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             if (graph.getSchema() != null) {
                 graph.getSchema().completeVertex(graph, element);
             }
@@ -304,27 +304,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             // Override required for implementation
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, int element) {
             return graph.getLinkTransactionCount(element);
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return graph.getLinkTransaction(element, position);
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return graph.getLinkHighVertex(element);
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return graph.getLinkLowVertex(element);
         }
 
@@ -335,12 +335,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return graph.getLinkUID(element);
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             int transactionCount = graph.getLinkTransactionCount(element);
             for (int i = 0; i < transactionCount; i++) {
                 int transaction = graph.getLinkTransaction(element, i);
@@ -362,7 +362,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             if (graph.getSchema() != null) {
                 final int transactionCount = graph.getLinkTransactionCount(element);
                 for (int i = 0; i < transactionCount; i++) {
@@ -403,27 +403,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             // Override required for implementation
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, final int element) {
             return graph.getEdgeTransactionCount(element);
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return graph.getEdgeTransaction(element, position);
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return graph.getEdgeSourceVertex(element);
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return graph.getEdgeDestinationVertex(element);
         }
 
@@ -434,12 +434,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return graph.getEdgeUID(element);
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             int transactionCount = graph.getEdgeTransactionCount(element);
             for (int i = 0; i < transactionCount; i++) {
                 int transaction = graph.getEdgeTransaction(element, i);
@@ -461,7 +461,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             if (graph.getSchema() != null) {
                 final int transactionCount = graph.getEdgeTransactionCount(element);
                 for (int i = 0; i < transactionCount; i++) {
@@ -502,27 +502,27 @@ public enum GraphElementType {
         }
 
         @Override
-        public void removeElement(GraphWriteMethods graph, int element) {
+        public void removeElement(final GraphWriteMethods graph, final int element) {
             graph.removeTransaction(element);
         }
 
         @Override
-        public int getTransactionCount(GraphReadMethods graph, int element) {
+        public int getTransactionCount(final GraphReadMethods graph, final int element) {
             return 1;
         }
 
         @Override
-        public int getTransaction(GraphReadMethods graph, int element, int position) {
+        public int getTransaction(final GraphReadMethods graph, final int element, final int position) {
             return element;
         }
 
         @Override
-        public int getSourceVertex(GraphReadMethods graph, int element) {
+        public int getSourceVertex(final GraphReadMethods graph, final int element) {
             return graph.getTransactionSourceVertex(element);
         }
 
         @Override
-        public int getDestinationVertex(GraphReadMethods graph, int element) {
+        public int getDestinationVertex(final GraphReadMethods graph, final int element) {
             return graph.getTransactionDestinationVertex(element);
         }
 
@@ -533,12 +533,12 @@ public enum GraphElementType {
         }
 
         @Override
-        public long getUID(GraphReadMethods graph, int element) {
+        public long getUID(final GraphReadMethods graph, final int element) {
             return graph.getTransactionUID(element);
         }
 
         @Override
-        public boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute) {
+        public boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute) {
             return graph.getBooleanValue(selectedAttribute, element);
         }
 
@@ -553,7 +553,7 @@ public enum GraphElementType {
         }
 
         @Override
-        public void completeWithSchema(GraphWriteMethods graph, int element) {
+        public void completeWithSchema(final GraphWriteMethods graph, final int element) {
             if (graph.getSchema() != null) {
                 graph.getSchema().completeTransaction(graph, element);
             }
@@ -614,7 +614,7 @@ public enum GraphElementType {
      * @return the number of elements of this type that are currently present in
      * the graph.
      */
-    public abstract int getElementCount(GraphReadMethods graph);
+    public abstract int getElementCount(final GraphReadMethods graph);
 
     /**
      * Returns the element based on its position.
@@ -624,7 +624,7 @@ public enum GraphElementType {
      *
      * @return the element based on its position.
      */
-    public abstract int getElement(GraphReadMethods graph, int position);
+    public abstract int getElement(final GraphReadMethods graph, final int position);
 
     /**
      * Returns the capacity of the graph to hold this type of element.
@@ -633,7 +633,7 @@ public enum GraphElementType {
      *
      * @return the capacity of the graph to hold this type of element.
      */
-    public abstract int getElementCapacity(GraphReadMethods graph);
+    public abstract int getElementCapacity(final GraphReadMethods graph);
 
     /**
      * Removes an element of this type from the graph.
@@ -641,7 +641,7 @@ public enum GraphElementType {
      * @param graph the graph containing the element.
      * @param element the id of the element to remove.
      */
-    public abstract void removeElement(GraphWriteMethods graph, int element);
+    public abstract void removeElement(final GraphWriteMethods graph, final int element);
 
     /**
      * Returns the number of transactions that this element represents.
@@ -651,7 +651,7 @@ public enum GraphElementType {
      *
      * @return the number of transactions that this element represents.
      */
-    public abstract int getTransactionCount(GraphReadMethods graph, int element);
+    public abstract int getTransactionCount(final GraphReadMethods graph, final int element);
 
     /**
      * Returns the transaction that holds the specified position in relation to
@@ -664,7 +664,7 @@ public enum GraphElementType {
      * @return the transaction that holds the specified position in relation to
      * this element.
      */
-    public abstract int getTransaction(GraphReadMethods graph, int element, int position);
+    public abstract int getTransaction(final GraphReadMethods graph, final int element, final int position);
 
     /**
      * Returns the source vertex for this element.
@@ -674,7 +674,7 @@ public enum GraphElementType {
      *
      * @return the source vertex for this element.
      */
-    public abstract int getSourceVertex(GraphReadMethods graph, int element);
+    public abstract int getSourceVertex(final GraphReadMethods graph, final int element);
 
     /**
      * Returns the destination vertex for this element.
@@ -684,7 +684,7 @@ public enum GraphElementType {
      *
      * @return the destination vertex for this element.
      */
-    public abstract int getDestinationVertex(GraphReadMethods graph, int element);
+    public abstract int getDestinationVertex(final GraphReadMethods graph, final int element);
 
     /**
      * Returns the other vertex for this element.
@@ -695,7 +695,7 @@ public enum GraphElementType {
      *
      * @return the other vertex for this element.
      */
-    public abstract int getOtherVertex(GraphReadMethods graph, int element, int vxId);
+    public abstract int getOtherVertex(final GraphReadMethods graph, final int element, final int vxId);
 
     /**
      * Returns the UID for this element.
@@ -705,7 +705,7 @@ public enum GraphElementType {
      *
      * @return the UID for this element.
      */
-    public abstract long getUID(GraphReadMethods graph, int element);
+    public abstract long getUID(final GraphReadMethods graph, final int element);
 
     /**
      * Returns true if this element type can be selected in the graph.
@@ -727,7 +727,7 @@ public enum GraphElementType {
      *
      * @return true if this element should be considered selected.
      */
-    public abstract boolean isSelected(GraphReadMethods graph, int element, int selectedAttribute);
+    public abstract boolean isSelected(final GraphReadMethods graph, final int element, final int selectedAttribute);
 
     /**
      * Returns the element type that actually holds selection information for
@@ -761,7 +761,7 @@ public enum GraphElementType {
      * @param graph the graph containing the element.
      * @param element the id of the element.
      */
-    public abstract void completeWithSchema(GraphWriteMethods graph, int element);
+    public abstract void completeWithSchema(final GraphWriteMethods graph, final int element);
 
     /**
      * Returns the GraphElementType constant with the specified name.

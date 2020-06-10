@@ -148,6 +148,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
     private PropertyChangeListener registryListener;
     private LookupListener lookupListener;
     private static String lastDir = "";
+    private boolean isSaved = false;
 
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -180,6 +181,10 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         }
         return super.isEnabled();
     }
+
+    public boolean isSaved() {
+        return isSaved;
+    } 
 
     @Override
     public void actionPerformed(final ActionEvent e) {
@@ -220,6 +225,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
                                     ioE.getLocalizedMessage()));
                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, null, ioE);
                 }
+                isSaved = true;
             }
         }
     }
