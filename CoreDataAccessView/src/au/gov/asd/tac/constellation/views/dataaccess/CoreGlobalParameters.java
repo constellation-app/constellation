@@ -49,31 +49,33 @@ public class CoreGlobalParameters extends GlobalParameters {
      */
     private static final int QUERY_NAME_PARAMETER_ID_INDEX = 0;
     public static final String QUERY_NAME_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "query_name");
+    public static final PluginParameter QUERY_NAME_PARAMETER = StringParameterType.build(QUERY_NAME_PARAMETER_ID);
 
     /**
      * The datetime range that the query spans.
      */
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
+    public static final PluginParameter DATETIME_RANGE_PARAMETER = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
     
     // Map of string types, datetime types, etc.
-    private static final Map<String,PluginParameter> SINGLETON_MAP = new HashMap<>();
-    
-    public static PluginParameter getStringParameterType(final String PARAMETER_ID) {
-        if (SINGLETON_MAP.get(PARAMETER_ID) == null) {
-            SINGLETON_MAP.put(PARAMETER_ID, StringParameterType.build(PARAMETER_ID));
-        }
-        
-        return SINGLETON_MAP.get(PARAMETER_ID);
-    }
-    
-    public static PluginParameter getDateTimeRangeParameterType(final String PARAMETER_ID) {
-        if (SINGLETON_MAP.get(PARAMETER_ID) == null) {
-            SINGLETON_MAP.put(PARAMETER_ID, DateTimeRangeParameterType.build(PARAMETER_ID));
-        }
-        
-        return SINGLETON_MAP.get(PARAMETER_ID);
-    }
+//    private static final Map<String,PluginParameter> SINGLETON_MAP = new HashMap<>();
+//    
+//    public static PluginParameter getStringParameterType(final String PARAMETER_ID) {
+//        if (!SINGLETON_MAP.containsKey(PARAMETER_ID)) {
+//            SINGLETON_MAP.put(PARAMETER_ID, StringParameterType.build(PARAMETER_ID));
+//        }
+//        
+//        return SINGLETON_MAP.get(PARAMETER_ID);
+//    }
+//    
+//    public static PluginParameter getDateTimeRangeParameterType(final String PARAMETER_ID) {
+//        if (!SINGLETON_MAP.containsKey(PARAMETER_ID)) {
+//            SINGLETON_MAP.put(PARAMETER_ID, DateTimeRangeParameterType.build(PARAMETER_ID));
+//        }
+//        
+//        return SINGLETON_MAP.get(PARAMETER_ID);
+//    }
     
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
