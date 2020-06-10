@@ -16,20 +16,16 @@
 package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -57,25 +53,6 @@ public class CoreGlobalParameters extends GlobalParameters {
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
     public static final PluginParameter DATETIME_RANGE_PARAMETER = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
-    
-    // Map of string types, datetime types, etc.
-//    private static final Map<String,PluginParameter> SINGLETON_MAP = new HashMap<>();
-//    
-//    public static PluginParameter getStringParameterType(final String PARAMETER_ID) {
-//        if (!SINGLETON_MAP.containsKey(PARAMETER_ID)) {
-//            SINGLETON_MAP.put(PARAMETER_ID, StringParameterType.build(PARAMETER_ID));
-//        }
-//        
-//        return SINGLETON_MAP.get(PARAMETER_ID);
-//    }
-//    
-//    public static PluginParameter getDateTimeRangeParameterType(final String PARAMETER_ID) {
-//        if (!SINGLETON_MAP.containsKey(PARAMETER_ID)) {
-//            SINGLETON_MAP.put(PARAMETER_ID, DateTimeRangeParameterType.build(PARAMETER_ID));
-//        }
-//        
-//        return SINGLETON_MAP.get(PARAMETER_ID);
-//    }
     
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
