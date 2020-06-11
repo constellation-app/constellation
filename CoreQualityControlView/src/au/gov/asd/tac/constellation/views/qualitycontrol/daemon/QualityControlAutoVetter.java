@@ -54,7 +54,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     private static QualityControlAutoVetter INSTANCE = null;
 
-    private static final List<QualityControlButtonListener> buttonListeners = new ArrayList<>();
+    private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
 
     private QualityControlState state;
 
@@ -226,11 +226,11 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         listeners.remove(listener);
     }
 
-    public void addObserver(final QualityControlButtonListener buttonListener) {
+    public void addObserver(final QualityControlAutoVetterListener buttonListener) {
         buttonListeners.add(buttonListener);
     }
 
-    public void removeObserver(final QualityControlButtonListener buttonListener) {
+    public void removeObserver(final QualityControlAutoVetterListener buttonListener) {
         buttonListeners.remove(buttonListener);
     }
 
