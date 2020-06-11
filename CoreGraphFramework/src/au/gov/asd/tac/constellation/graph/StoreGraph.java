@@ -2148,9 +2148,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility of an element
     private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
-        if (elementType == GraphElementType.GRAPH) {
-            return;
-        }
         final int bitmask = recalculateLayerMask(elementType, elementId);
         transactionLayerVisibilityAttributeId = ensureAttribute(transactionLayerVisibilityAttributeId,
                 GraphElementType.TRANSACTION,
@@ -2222,10 +2219,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
-        final GraphElementType elementType = getAttributeElementType(attributeId);
-        if (elementType == GraphElementType.GRAPH) {
-            return;
-        }
         if (transactionLayerVisibilityAttributeId == Graph.NOT_FOUND) {
             transactionLayerVisibilityAttributeId = this.addAttribute(
                     GraphElementType.TRANSACTION,
@@ -2274,7 +2267,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     layerPrefs.add((byte) 0b0);
                 }
             }
-
+            final GraphElementType elementType = getAttributeElementType(attributeId);
             updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
         }
     }
