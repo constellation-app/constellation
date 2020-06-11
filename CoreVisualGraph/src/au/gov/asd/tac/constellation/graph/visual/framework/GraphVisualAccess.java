@@ -993,7 +993,14 @@ public final class GraphVisualAccess implements VisualAccess {
 
     @Override
     public float getVertexVisibility(int vertex) {
-        float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
+        //float layerVisibility = vertexLayerVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
+        float layerVisibility;
+        if (vertexLayerVisibility != Graph.NOT_FOUND) {
+            // This will fetch either 1.0, or 0.0. if it is 1.0, edit something on the graph (max transactions) then it will switch to 0.0. Vice versa.
+            layerVisibility = accessGraph.getFloatValue(vertexLayerVisibility, accessGraph.getVertex(vertex));
+        } else {
+            layerVisibility = VisualGraphDefaults.DEFAULT_VERTEX_FILTER_VISIBILITY;
+        }
         return layerVisibility * (vertexVisibility != Graph.NOT_FOUND ? accessGraph.getFloatValue(vertexVisibility, accessGraph.getVertex(vertex)) : VisualGraphDefaults.DEFAULT_VERTEX_VISIBILITY);
     }
 

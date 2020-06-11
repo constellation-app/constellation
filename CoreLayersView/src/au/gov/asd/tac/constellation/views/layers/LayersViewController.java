@@ -20,8 +20,6 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -30,9 +28,13 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import org.openide.util.Exceptions;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -77,8 +79,14 @@ public class LayersViewController {
         for (final LayerDescription layer : pane.getlayers()) {
             layerQueries.add(layer.getLayerQuery().isEmpty() ? null : layer.getLayerQuery());
         }
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries))
+        Future<?> queriesFuture = PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
+        try {
+            queriesFuture.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            Thread.currentThread().interrupt();
+            Exceptions.printStackTrace(ex);
+        }
     }
 
     /**

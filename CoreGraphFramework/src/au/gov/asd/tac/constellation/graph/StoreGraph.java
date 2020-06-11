@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
-import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -27,10 +25,12 @@ import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.query.QueryEvaluator;
 import java.io.Serializable;
@@ -534,7 +534,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 if (existingElement < 0) {
                     removed.remove(element);
 
-                // If the element was not unique then attempt a merge
+                    // If the element was not unique then attempt a merge
                 } else {
                     if (allowMerging && graphElementMerger != null) {
                         if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
@@ -2148,6 +2148,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility of an element
     private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
+        if (elementType == GraphElementType.GRAPH) {
+            return;
+        }
         final int bitmask = recalculateLayerMask(elementType, elementId);
         transactionLayerVisibilityAttributeId = ensureAttribute(transactionLayerVisibilityAttributeId,
                 GraphElementType.TRANSACTION,
@@ -2219,6 +2222,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
+        final GraphElementType elementType = getAttributeElementType(attributeId);
+        if (elementType == GraphElementType.GRAPH) {
+            return;
+        }
         if (transactionLayerVisibilityAttributeId == Graph.NOT_FOUND) {
             transactionLayerVisibilityAttributeId = this.addAttribute(
                     GraphElementType.TRANSACTION,
@@ -2260,7 +2267,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             // get the element type of selected layer mask and recalculate element mask
             currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
                     ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
-            final GraphElementType elementType = getAttributeElementType(attributeId);
 
             // preload layerPrefs jit if it hasn't been instantiated
             if (layerPrefs.isEmpty()) {
@@ -2394,7 +2400,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
         }
 
-        // if selected visible layers has changed then recalculate visibility of all objects, 
+        // if selected visible layers has changed then recalculate visibility of all objects,
         // otherwise check if the change impacts an objects visibility
         if (attribute == layerMaskSelectedAttributeId && layerMaskSelectedAttributeId != Graph.NOT_FOUND) {
             // one node changes, pass to change list then only iterate that?
