@@ -138,7 +138,7 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
      */
     public void addDropTargetToCanvas(final DropTargetListener targetListener) {
         this.targetListener = targetListener;
-        target = new DropTarget(canvas, this.targetListener);
+        target = new DropTarget(cvkCanvas, this.targetListener);
     }
 
     private final class GLSetHitTestingOperation implements VisualOperation {

@@ -26,6 +26,8 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.vkCreateFence;
 import static org.lwjgl.vulkan.VK10.vkCreateSemaphore;
+import static org.lwjgl.vulkan.VK10.vkDestroyFence;
+import static org.lwjgl.vulkan.VK10.vkDestroySemaphore;
 import static org.lwjgl.vulkan.VK10.vkResetFences;
 import static org.lwjgl.vulkan.VK10.vkWaitForFences;
 import org.lwjgl.vulkan.VkDevice;
@@ -66,6 +68,22 @@ public class CVKFrame {
             hRenderFinishedSemaphore = pImageAvailableSemaphore.get(0);
             checkVKret(vkCreateSemaphore(vkDevice, semaphoreInfo, null, pRenderFinishedSemaphore));                    
             hImageAvailableSemaphore = pRenderFinishedSemaphore.get(0);
+        }
+    }
+    
+  
+    public void Deinit() {
+        if (hImageAvailableSemaphore != VK_NULL_HANDLE) {
+            vkDestroySemaphore(vkDevice, hImageAvailableSemaphore, null);
+            hImageAvailableSemaphore = VK_NULL_HANDLE;
+        }
+        if (hRenderFinishedSemaphore != VK_NULL_HANDLE) {
+            vkDestroySemaphore(vkDevice, hRenderFinishedSemaphore, null);
+            hRenderFinishedSemaphore = VK_NULL_HANDLE;
+        }
+        if (hRenderFence != VK_NULL_HANDLE) {
+            vkDestroyFence(vkDevice, hRenderFence, null);
+            hRenderFence = VK_NULL_HANDLE;
         }
     }
     

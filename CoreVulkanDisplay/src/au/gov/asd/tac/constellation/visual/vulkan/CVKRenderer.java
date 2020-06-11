@@ -15,11 +15,12 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.visual.Renderer;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.InitVKValidationLayers;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.StartLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
@@ -28,7 +29,6 @@ import java.awt.event.ComponentListener;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -39,6 +39,8 @@ import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkInstance;
 import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkSubmitInfo;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 
 
 /*
@@ -56,19 +58,15 @@ blah: anything else
 
 */
 
-public class CVKRenderer implements ComponentListener{
+public class CVKRenderer extends Renderer implements ComponentListener {
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
     
     protected CVKInstance cvkInstance = null;
     protected CVKDevice cvkDevice = null;
     protected CVKSwapChain cvkSwapChain = null;
-    
-    
-    // TODO_TT: find out if this should be imageCount
-    //protected IntBuffer pCurrentFrame = memAllocInt(1).put(0, 0);
     protected int currentFrame = 0;
-    protected List<CVKFrame> cvkFrames = new ArrayList<>(MAX_FRAMES_IN_FLIGHT);
+    protected List<CVKFrame> cvkFrames = null;
        
     
     protected boolean swapChainNeedsRecreation = true;
@@ -89,14 +87,17 @@ public class CVKRenderer implements ComponentListener{
     public int Init(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Init();
-        for (int i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i) {
-            cvkFrames.add(new CVKFrame(cvkDevice.GetDevice()));
-        }
         return ret;
     }
     
     
     public int RecreateSwapChain() {
+//        if (!Thread.currentThread().getName().contains("AWT")) {
+//            CVKLOGGER.log(Level.INFO, "{0}: RecreateSwapChain (releasing frames)", 
+//                    Thread.currentThread().getName());
+//            LogStackTrace();            
+//        }
+        
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
             cvkDevice.WaitIdle();
@@ -108,9 +109,19 @@ public class CVKRenderer implements ComponentListener{
                 }
                 cvkSwapChain = newSwapChain;
                 swapChainNeedsRecreation = false;
+                
+                if (cvkFrames != null) {
+                    cvkFrames.forEach(frame -> {
+                        frame.Deinit();
+                    });
+                }
+                cvkFrames = new ArrayList<>(cvkSwapChain.GetImageCount());
+                for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {
+                    cvkFrames.add(new CVKFrame(cvkDevice.GetDevice()));
+                }                
             }
         } else {
-            LOGGER.info("Unable to recreate swap chain, surface not ready.");
+            CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
         }
         return ret;
     }
@@ -151,10 +162,10 @@ public class CVKRenderer implements ComponentListener{
      * @return
      */
     protected int AcquireImageFromSwapchain(CVKFrame frame, IntBuffer pImageIndex) {
-        assert(cvkDevice.GetDevice() != null);
-        assert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
-        assert(frame.GetImageAcquireSemaphoreHandle() != VK_NULL_HANDLE);
-        assert(pImageIndex != null);
+        CVKAssert(cvkDevice.GetDevice() != null);
+        CVKAssert(cvkSwapChain.GetSwapChainHandle() != VK_NULL_HANDLE);
+        CVKAssert(frame.GetImageAcquireSemaphoreHandle() != VK_NULL_HANDLE);
+        CVKAssert(pImageIndex != null);
         
         int ret;
         
@@ -163,7 +174,7 @@ public class CVKRenderer implements ComponentListener{
         
         ret = vkAcquireNextImageKHR(cvkDevice.GetDevice(),
                                     cvkSwapChain.GetSwapChainHandle(),
-                                    -1L,
+                                    UINT64_MAX,
                                     frame.GetImageAcquireSemaphoreHandle(),
                                     VK_NULL_HANDLE,
                                     pImageIndex);        
@@ -178,14 +189,13 @@ public class CVKRenderer implements ComponentListener{
      * @param stack
      * @param frame
      * @param commandBuffer
-     * @param commandBufferHandle
      * @return
      */
     protected int ExecuteCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer commandBuffer) {
         int ret;
         
-        assert(frame != null);
-        assert(commandBuffer != null);
+        CVKAssert(frame != null);
+        CVKAssert(commandBuffer != null);
         
         VkSubmitInfo submitInfo = VkSubmitInfo.callocStack(stack);
         submitInfo.pCommandBuffers(stack.pointers(commandBuffer));
@@ -213,7 +223,7 @@ public class CVKRenderer implements ComponentListener{
     protected int ReturnImageToSwapchainAndPresent(MemoryStack stack, CVKFrame frame, int imageIndex) {
         int ret;
         
-        assert(cvkDevice.GetQueue() != null);
+        CVKAssert(cvkDevice.GetQueue() != null);
         
         VkPresentInfoKHR presentInfo = VkPresentInfoKHR.callocStack(stack);
         presentInfo.pWaitSemaphores(stack.longs(frame.GetRenderFinishedSemaphoreHandle()));
@@ -227,45 +237,59 @@ public class CVKRenderer implements ComponentListener{
     }
 
     public void Display() {
-        // If there are issues with missing resizes we could just test to see
-        // if the size has changed between frames.
-        if (swapChainNeedsRecreation) {
-            RecreateSwapChain();
-        }
+        //CVKLOGGER.log(Level.INFO, Thread.currentThread().getName());
         
-        // Update everything that needs updating - drawables
-        
-        
+        // Update everything that needs updating - drawables               
         parent.signalUpdateComplete();
         
         // If the surface is not ready RecreateSwapChain won't have reset this flag
         int ret;
-        if (!swapChainNeedsRecreation) {
+        if (cvkSwapChain != null && !swapChainNeedsRecreation) {            
             try (MemoryStack stack = stackPush()) {
                 IntBuffer pImageIndex = stack.mallocInt(1);
+                CVKAssert(currentFrame < cvkFrames.size());
                 CVKFrame frame = cvkFrames.get(currentFrame);
                 ret = AcquireImageFromSwapchain(frame, pImageIndex);
-                checkVKret(ret);
-                int imageIndex = pImageIndex.get(0);
-                LOGGER.log(Level.INFO, "Displaying image {0}", imageIndex);
-                
-                ret = ExecuteCommandBuffer(stack, 
-                                           frame, 
-                                           cvkSwapChain.GetCommandBuffer(imageIndex));
-                checkVKret(ret);
-                
-                ret = ReturnImageToSwapchainAndPresent(stack,
-                                                       frame,
-                                                       imageIndex);
-                checkVKret(ret);
+                if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
+                 || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
+                    swapChainNeedsRecreation = true;
+                } else {
+                    checkVKret(ret);
+                    
+                    int imageIndex = pImageIndex.get(0);
+     //                CVKLOGGER.log(Level.INFO, "Displaying image {0}", imageIndex);
 
-                // Move the frame index to the next cab off the rank
-                currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;
-       
-                // Display all the drawables/renderables
-                LOGGER.log(Level.INFO, "Frame {0}", frameNumber++);
+                     ret = ExecuteCommandBuffer(stack, 
+                                                frame, 
+                                                cvkSwapChain.GetCommandBuffer(imageIndex));
+                     checkVKret(ret);
+
+                     ret = ReturnImageToSwapchainAndPresent(stack,
+                                                            frame,
+                                                            imageIndex);
+                     if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
+                      || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
+                         swapChainNeedsRecreation = true;
+                     } else {
+                         checkVKret(ret);
+                     }
+
+                     // Move the frame index to the next cab off the rank
+                     currentFrame = (++currentFrame) % MAX_FRAMES_IN_FLIGHT;
+
+                     // Display all the drawables/renderables
+     //                CVKLOGGER.log(Level.INFO, "Frame {0}", frameNumber++);                    
+                }
             }
         }
+        
+        // Explicit waiting on semaphores was introduced in Vulkan 1.2.  It's
+        // simpler to recreate the swap chain at the end of the display as the
+        // render fence has been the reset and the semaphores will be in the 
+        // signalled state, so we just destroy them without waiting.
+        if (cvkSwapChain == null || swapChainNeedsRecreation) {
+            RecreateSwapChain();
+        }        
         
         // hack for constant render loop
         if (debugging) {
@@ -274,6 +298,7 @@ public class CVKRenderer implements ComponentListener{
         parent.signalProcessorIdle();
     }
 
+    
     int[] getViewport() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
@@ -285,18 +310,18 @@ public class CVKRenderer implements ComponentListener{
     @Override
     public void componentResized(ComponentEvent e) {
         swapChainNeedsRecreation = true;
-        LOGGER.info("Canvas resized");
+        CVKLOGGER.info("Canvas sent componentResized");
     }
     @Override
     public void componentHidden(ComponentEvent e) {
-        LOGGER.info("Canvas hidden");
+        CVKLOGGER.info("Canvas sent ");
     }
     @Override
     public void componentMoved(ComponentEvent e) {
-        LOGGER.info("Canvas moved");     
+        CVKLOGGER.info("Canvas moved");     
     }
     @Override
     public void componentShown(ComponentEvent e) {
-        LOGGER.info("Canvas shown");
+        CVKLOGGER.info("Canvas shown");
     }    
 }

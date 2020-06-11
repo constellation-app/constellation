@@ -15,18 +15,24 @@
  */
 package au.gov.asd.tac.constellation.visual;
 
-import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import java.util.ArrayList;
+import java.util.List;
 
-
-public interface Renderable extends Comparable<Renderable> {
-    public abstract int getPriority();
-    public abstract void dispose(final AutoDrawable drawable);
-    public abstract void init(final AutoDrawable drawable);
-    public abstract void reshape(final int x, final int y, final int width, final int height);
-    public abstract void update(final AutoDrawable drawable);
-    public abstract void display(final AutoDrawable drawable, final Matrix44f pMatrix);    
-    @Override
-    public default int compareTo(final Renderable o) {
-        return Integer.compare(getPriority(), o.getPriority());
+public class SceneManager {
+    protected final Renderer renderer;
+    public List<Renderable> renderables = new ArrayList<>();
+    
+    
+    public SceneManager(Renderer inRenderer) {
+        renderer = inRenderer;
+    }
+    
+    public void Add(Renderable renderable) {
+        renderables.add(renderable);
+        
+    }
+    
+    public void Init() {
+        
     }
 }

@@ -76,11 +76,11 @@ public class CVKDevice {
     protected CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
     protected long hCommandPoolHandle = VK_NULL_HANDLE; 
     protected int queueFamilyIndex = -1; 
-    protected VkExtent2D idealExtent = VkExtent2D.malloc().set(0, 0);
+    protected VkExtent2D vkCurrentSurfaceExtent = VkExtent2D.malloc().set(0, 0);
     
     
     // Getters
-    public VkExtent2D GetIdealExtent() { return idealExtent; }
+    public VkExtent2D GetCurrentSurfaceExtent() { return vkCurrentSurfaceExtent; }
     public long GetCommandPoolHandle() { return hCommandPoolHandle; }
     public VkDevice GetDevice() { return vkDevice; }    
     public VkQueue GetQueue() { return vkQueue; }
@@ -195,7 +195,7 @@ public class CVKDevice {
                 // Enumerate extensins looking for swap chain support.  Stop once requirements met and physical device set.
                 for (int iExtension = 0; (iExtension < numExtensions) && vkPhysicalDevice == null; ++iExtension) {
                     String extensionName = deviceExtensions.position(iExtension).extensionNameString();
-                    LOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});
+                    CVKLOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});
                     if (VK_KHR_SWAPCHAIN_EXTENSION_NAME.equals(extensionName)) {
                         // Spapchain tick, now check the queue families for one that can peform graphics operations
                         pInt.put(0, 0);
@@ -245,9 +245,9 @@ public class CVKDevice {
             // Figure out our ideal backbuffer size
             // The current size of the surface will either be explicit, which we use, or 
             // set to a value indicating it will use whatever is set in the swap chain.
-            LOGGER.log(Level.INFO, "Surface will be {0}x{1}", 
-                    new Object[]{idealExtent.width(),
-                                 idealExtent.height()});
+            CVKLOGGER.log(Level.INFO, "Surface will be {0}x{1}", 
+                    new Object[]{vkCurrentSurfaceExtent.width(),
+                                 vkCurrentSurfaceExtent.height()});
                          
 
             // Surface formats our device can use
@@ -258,7 +258,7 @@ public class CVKDevice {
                 vkSurfaceFormats = VkSurfaceFormatKHR.malloc(numFormats);
                 checkVKret(vkGetPhysicalDeviceSurfaceFormatsKHR(vkPhysicalDevice, hSurfaceHandle, pInt, vkSurfaceFormats));
                 
-                LOGGER.info("Available surface formats:");
+                CVKLOGGER.info("Available surface formats:");
                 for (int i = 0; i < numFormats; ++i) {
                     VkSurfaceFormatKHR surfaceFormat = vkSurfaceFormats.get(i);
                     CVKMissingEnums.VkColorSpaceKHR colorSpace = CVKMissingEnums.VkColorSpaceKHR.GetByValue(surfaceFormat.colorSpace());
@@ -278,7 +278,7 @@ public class CVKDevice {
                         selectedColourSpace = colorSpace;
                     }
                     
-                    LOGGER.log(Level.INFO, "    {0}:{1}", new Object[]{format.name(), colorSpace.name()});                        
+                    CVKLOGGER.log(Level.INFO, "    {0}:{1}", new Object[]{format.name(), colorSpace.name()});                        
                 }
             }
             
@@ -297,7 +297,7 @@ public class CVKDevice {
                 IntBuffer presentationModes = stack.mallocInt(numPresentationModes);
                 vkGetPhysicalDeviceSurfacePresentModesKHR(vkPhysicalDevice, hSurfaceHandle, pInt, presentationModes);
                 
-                LOGGER.info("Supported presentation modes:");
+                CVKLOGGER.info("Supported presentation modes:");
                 for (int i = 0; i < numPresentationModes; ++i) {                
                     CVKMissingEnums.VkPresentModeKHR presentationMode = CVKMissingEnums.VkPresentModeKHR.values()[presentationModes.get(i)];
                     // Mailbox is our first choice
@@ -320,7 +320,7 @@ public class CVKDevice {
                      && selectedPresentationMode == CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE) {
                         selectedPresentationMode = presentationMode;
                     }
-                    LOGGER.log(Level.INFO, "   {0}", presentationMode.name());
+                    CVKLOGGER.log(Level.INFO, "   {0}", presentationMode.name());
                 }                              
             }
             
@@ -339,6 +339,7 @@ public class CVKDevice {
      * Create a logical device that gives us control over the physical device
      *
      * @param stack
+     * @return 
      */
     protected int InitVKLogicalDevice(MemoryStack stack) {
         int ret = VK_SUCCESS;
@@ -434,6 +435,10 @@ public class CVKDevice {
         return ret;
     }    
     
+    
+    
+    
+    
     /**
      * Updates surface capabilities which may have changed due to our canvas
      * being resized.  It also updates the ideal extent which is either the
@@ -442,21 +447,31 @@ public class CVKDevice {
      * @return
      */
     public int UpdateSurfaceCapabilities() {
+        StartLogSection("Device updating surface capalities");
+        
         int ret = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(vkPhysicalDevice, hSurfaceHandle, vkSurfaceCapabilities);
         if (VkSucceeded(ret)) {
-            idealExtent.set(vkSurfaceCapabilities.currentExtent());
-            if (idealExtent.width() == UINT32_MAX) {
+            vkCurrentSurfaceExtent.set(vkSurfaceCapabilities.currentExtent());
+            if (vkCurrentSurfaceExtent.width() == UINT32_MAX) {
                 //TODO_TT: find out how big our surface is somehow
-                idealExtent.set(800, 600);
+                vkCurrentSurfaceExtent.set(800, 600);
+                CVKLOGGER.log(Level.WARNING, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR returned extent with the magic don't care size");
             }
-            idealExtent.set(Ints.constrainToRange(idealExtent.width(), 
+            vkCurrentSurfaceExtent.set(Ints.constrainToRange(vkCurrentSurfaceExtent.width(), 
                                                   vkSurfaceCapabilities.minImageExtent().width(), 
                                                   vkSurfaceCapabilities.maxImageExtent().width()),
-                            Ints.constrainToRange(idealExtent.height(), 
+                            Ints.constrainToRange(vkCurrentSurfaceExtent.height(), 
                                                   vkSurfaceCapabilities.minImageExtent().height(), 
                                                   vkSurfaceCapabilities.maxImageExtent().height()));             
+            CVKLOGGER.log(Level.INFO, "Ideal extent will be {0}x{1}", new Object[]{vkCurrentSurfaceExtent.width(), vkCurrentSurfaceExtent.height()});
+        }
+        else {
+            CVKLOGGER.log(Level.SEVERE, "vkGetPhysicalDeviceSurfaceCapabilitiesKHR failed with error: {0}", ret);
         }
         
+        
+        
+        EndLogSection("Device updating surface capalities");
         return ret;
     }   
     

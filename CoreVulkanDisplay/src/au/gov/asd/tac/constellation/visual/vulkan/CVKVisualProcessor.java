@@ -26,6 +26,8 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
+import au.gov.asd.tac.constellation.visual.SceneManager;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.AxesRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -47,8 +49,9 @@ public class CVKVisualProcessor extends VisualProcessor {
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
-    protected CVKCanvas canvas;
-    private CVKRenderer vkRenderer;
+    protected SceneManager sceneManager;
+    protected CVKCanvas cvkCanvas;
+    protected CVKRenderer cvkRenderer;
     
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
     //private GraphRenderable graphRenderable;
@@ -62,7 +65,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected final void destroyCanvas() {
         //TODO_TT: is this needed?
         System.out.println("GLVisualProcessor.destroyCanvas called");        
-//        canvas.destroy();
+//        cvkCanvas.destroy();
     }
 
     /**
@@ -169,36 +172,42 @@ public class CVKVisualProcessor extends VisualProcessor {
      * @return The viewport from the {@link GLRenderer}.
      */
     protected final int[] getViewport() {
-        return vkRenderer.getViewport();
+        return cvkRenderer.getViewport();
     }
 
     @Override
     public final void performVisualUpdate() {
         updating = true;
-        //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the canvas maybe,
+        //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the cvkCanvas maybe,
         // though why then pass that back in...
         
         // performVisualUpdate maybe called before the JPanel is added to its
         // parent.  We can't get a renderable surface until the parent chain is
         // intact.
-        if (canvas.surface != 0) {
-            canvas.paint(null);
+        if (cvkCanvas.surface != 0) {
+            cvkCanvas.repaint();
         }
     }
 
     @Override
     protected void initialise() {
+        
+        sceneManager = new SceneManager(cvkRenderer);
+        sceneManager.Init();
+        
         //TODO_TT
 //        if (graphRenderable.getGraphDisplayer() == null) {
 //            graphRenderable.setGraphDisplayer(new GraphDisplayer());
 //        }
-//        canvas.addEventListener(renderer);
-//        canvas.addComponentListener(new ComponentAdapter() {
+//        cvkCanvas.addEventListener(renderer);
+//        cvkCanvas.addComponentListener(new ComponentAdapter() {
 //			public void componentResized(java.awt.event.ComponentEvent e) {
-//				canvas.repaint();
+//				cvkCanvas.repaint();
 //			};
 //		});
         //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
+        
+        
     }
 
     /**
@@ -327,9 +336,9 @@ public class CVKVisualProcessor extends VisualProcessor {
      * Query whether or not this processor is currently in its update phase.
      * <p>
      * This method allows the {@link GLRenderer} to determine whether it has
-     * entered the display phase of its GL life-cycle in response to an update
-     * coordinated by this processor, or as a result of something internal, such
-     * as a resizing of the GL canvas.
+ entered the display phase of its GL life-cycle in response to an update
+ coordinated by this processor, or as a result of something internal, such
+ as a resizing of the GL cvkCanvas.
      *
      * @return Whether or not this processor is currently in its updating phase.
      */
@@ -381,25 +390,25 @@ public class CVKVisualProcessor extends VisualProcessor {
     /**
      * Notifies us that our canvas's parent component has been added to its parent.
      * <p>
-     * Our canvas belongs to a JPanel which in turn belongs to a tabbed control.
-     * When we are constructed as part of the VisualGraphOpener call chain that
-     * panel hasn't yet been added to it's parent.  In that state we cannot lock
-     * the canvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
-     * the surface we cannot initialise all the Vulkan resources we need.   
+ Our cvkCanvas belongs to a JPanel which in turn belongs to a tabbed control.
+ When we are constructed as part of the VisualGraphOpener call chain that
+ panel hasn't yet been added to it's parent.  In that state we cannot lock
+ the cvkCanvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
+ the surface we cannot initialise all the Vulkan resources we need.   
      */
     @Override 
     protected void notifyParentAdded() {
         // At this point VisualGraphTopCOmponent
-        canvas.InitSurface();
+        cvkCanvas.InitSurface();
         
-//        // We currently have a zero sized canvas, a Vulkan swapchain requires
-//        // a non zero sized canvas so we must defer the initialisation of Vulkan
+//        // We currently have a zero sized cvkCanvas, a Vulkan swapchain requires
+//        // a non zero sized cvkCanvas so we must defer the initialisation of Vulkan
 //        // objects until later.
-//        Rectangle bounds = canvas.getBounds();
+//        Rectangle bounds = cvkCanvas.getBounds();
 //        System.out.print(bounds);
 //        
-//        // The canvas surface is needed to finish initialising CVKRenderer
-//        vkRenderer.Init(canvas.surface);        
+//        // The cvkCanvas surface is needed to finish initialising CVKRenderer
+//        cvkRenderer.Init(cvkCanvas.surface);        
     }
 
     /**
@@ -414,7 +423,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public CVKVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         try {            
             // VkInstance is setup in the constructor
-            vkRenderer = new CVKRenderer(this);
+            cvkRenderer = new CVKRenderer(this);
         } catch (Exception e) {
             LOGGER.severe(e.toString());
         }
@@ -424,14 +433,14 @@ public class CVKVisualProcessor extends VisualProcessor {
         // here rather than have a CVKCanvas constructor that just takes the
         // renderer and pulls the instance from there.
         VKData vkData = new VKData();
-        vkData.instance = vkRenderer.GetVkInstance();
-        canvas = new CVKCanvas(vkData, vkRenderer);    
-        //canvas.addEventListener(vkRenderer);
+        vkData.instance = cvkRenderer.GetVkInstance();
+        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);    
+        //canvas.addEventListener(cvkRenderer);
         //canvas.InitSurface();
         
-        // The canvas surface is needed to finish initialising CVKRenderer
-        //vkRenderer.Init(canvas.surface);
-        //vkRenderer.CreateSwapChain(canvas.surface);
+        // The cvkCanvas surface is needed to finish initialising CVKRenderer
+        //vkRenderer.Init(cvkCanvas.surface);
+        //vkRenderer.CreateSwapChain(cvkCanvas.surface);
         
 //        graphRenderable = new GraphRenderable(this);
 //        final AxesRenderable axesRenderable = new AxesRenderable(this);
@@ -442,11 +451,11 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected Component getCanvas() {
-        return canvas;
+        return cvkCanvas;
     }
     
     public Rectangle getCanvasBounds() {
-        return canvas.getBounds();
+        return cvkCanvas.getBounds();
     }
     
     /**
@@ -455,7 +464,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      * @return
      */
     public boolean surfaceReady() {
-        return (canvas != null) ? !canvas.getBounds().isEmpty() : false;
+        return (cvkCanvas != null) ? !cvkCanvas.getBounds().isEmpty() : false;
     }
     
     @Override
@@ -585,11 +594,12 @@ public class CVKVisualProcessor extends VisualProcessor {
      * Windows-DPI-Scaling
      * 
      * This function is only needed by the fix for Windows DPI scaling to get 
-     * access to the GLCanvas which is a protected member.  If JOGL is ever 
+     * access to the GLCanvas which is a protected member.If JOGL is ever 
      * updated to fix Windows DPI scaling this function should be removed.
+     * 
+     * @return DPI scale (float)
      */
     public float getDPIScaleY() {
-        return (float)((Graphics2D)(canvas).getGraphics()).getTransform().getScaleY();
-    }
-            
+        return (float)((Graphics2D)(cvkCanvas).getGraphics()).getTransform().getScaleY();
+    }            
 }

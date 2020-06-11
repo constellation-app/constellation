@@ -25,6 +25,7 @@ import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -84,6 +85,8 @@ import org.lwjgl.vulkan.VkSubpassDependency;
 import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import org.lwjgl.vulkan.VkExtent2D;
 
 public class CVKSwapChain {
     protected final CVKDevice cvkDevice;
@@ -94,8 +97,10 @@ public class CVKSwapChain {
     protected List<Long> swapChainImageViewHandles = null;
     protected List<Long> swapChainFramebufferHandles = null;
     protected List<VkCommandBuffer> commandBuffers = null; 
+    protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);
     
     
+    public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
     
@@ -119,6 +124,8 @@ public class CVKSwapChain {
             if (VkFailed(ret)) return ret; 
             ret = InitVKCommandBuffers(stack);
             if (VkFailed(ret)) return ret;
+            
+            // pipeline?
         }
         EndLogSection("Init SwapChain");   
         return ret;
@@ -170,18 +177,21 @@ public class CVKSwapChain {
             pImageCount.put(0, vkSurfaceCapablities.maxImageCount());
         }
         imageCount = pImageCount.get(0);
-        //TODO_TT: check imagecount isn't 0
-        
+        CVKLOGGER.log(Level.INFO, "Swapchain will have {0} images", imageCount);
+        if (imageCount == 0) {
+            throw new RuntimeException("Swapchain cannot have 0 images");
+        }        
        
         
         //TODO_TT: this needs a lot of commenting
+        vkCurrentImageExtent.set(cvkDevice.GetCurrentSurfaceExtent());
         VkSwapchainCreateInfoKHR createInfo = VkSwapchainCreateInfoKHR.callocStack(stack);
         createInfo.sType(VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR);
         createInfo.surface(cvkDevice.GetSurfaceHandle());
         createInfo.minImageCount(imageCount);
         createInfo.imageFormat(cvkDevice.GetSurfaceFormat().Value());
         createInfo.imageColorSpace(cvkDevice.GetSurfaceColourSpace().Value());
-        createInfo.imageExtent(cvkDevice.GetIdealExtent());
+        createInfo.imageExtent(vkCurrentImageExtent);
         createInfo.imageArrayLayers(1);
         createInfo.imageUsage(VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT);
         createInfo.imageSharingMode(VK_SHARING_MODE_EXCLUSIVE);        
@@ -251,6 +261,9 @@ public class CVKSwapChain {
      * @return
      */
     protected int InitVKFrameBuffer(MemoryStack stack) {
+        assert(vkCurrentImageExtent.width() > 0);
+        assert(vkCurrentImageExtent.height() > 0);
+        
         int ret = VK_SUCCESS;
         LongBuffer attachments = stack.mallocLong(1);
         LongBuffer pFramebuffer = stack.mallocLong(1);
@@ -258,8 +271,8 @@ public class CVKSwapChain {
         VkFramebufferCreateInfo framebufferInfo = VkFramebufferCreateInfo.callocStack(stack);
         framebufferInfo.sType(VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO);
         framebufferInfo.renderPass(hRenderPassHandle);
-        framebufferInfo.width(cvkDevice.GetIdealExtent().width());
-        framebufferInfo.height(cvkDevice.GetIdealExtent().height());
+        framebufferInfo.width(vkCurrentImageExtent.width());
+        framebufferInfo.height(vkCurrentImageExtent.height());
         framebufferInfo.layers(1);
         
         swapChainFramebufferHandles = new ArrayList<>(imageCount);
@@ -344,8 +357,8 @@ public class CVKSwapChain {
         assert(cvkDevice.GetDevice() != null);
         assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);   
         assert(imageCount > 0);
-        assert(cvkDevice.GetIdealExtent().width() > 0);
-        assert(cvkDevice.GetIdealExtent().height() > 0);
+        assert(vkCurrentImageExtent.width() > 0);
+        assert(vkCurrentImageExtent.height() > 0);
         
         int ret;
                 
@@ -376,7 +389,7 @@ public class CVKSwapChain {
 
         VkRect2D renderArea = VkRect2D.callocStack(stack);
         renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-        renderArea.extent(cvkDevice.GetIdealExtent());
+        renderArea.extent(vkCurrentImageExtent);
         renderPassInfo.renderArea(renderArea);
 
         VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
@@ -401,4 +414,10 @@ public class CVKSwapChain {
         
         return ret;
     }    
+    
+    public boolean NeedsResize() {
+        checkVKret(cvkDevice.UpdateSurfaceCapabilities());
+        return vkCurrentImageExtent.width() !=cvkDevice.GetCurrentSurfaceExtent().width()
+            || vkCurrentImageExtent.height() != cvkDevice.GetCurrentSurfaceExtent().height();
+    }
 }
