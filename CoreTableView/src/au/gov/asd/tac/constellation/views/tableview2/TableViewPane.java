@@ -958,7 +958,7 @@ public final class TableViewPane extends BorderPane {
     
     private void paginate(final List<ObservableList<String>> rows) {
         final Pagination pagination = new Pagination(table.getItems().size() / MAX_ROWS_PER_PAGE + 1);
-        pagination.setPageFactory((index) -> createPage(index, rows));
+        pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);
         });
