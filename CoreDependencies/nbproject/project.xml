@@ -2179,6 +2179,14 @@
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-macos.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/json-20190722.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-20190722.jar</binary-origin>
             </class-path-extension>
