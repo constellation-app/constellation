@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.Renderable;
 
-public class AxesRenderable implements Renderable {
+public class CVKAxesRenderable implements CVKRenderable {
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
     @Override

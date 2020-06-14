@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChang
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.SceneManager;
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.AxesRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
@@ -49,7 +49,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
-    protected SceneManager sceneManager;
+    protected CVKSceneManager sceneManager;
     protected CVKCanvas cvkCanvas;
     protected CVKRenderer cvkRenderer;
     
@@ -192,7 +192,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected void initialise() {
         
-        sceneManager = new SceneManager(cvkRenderer);
+        sceneManager = new CVKSceneManager(cvkRenderer, this);
         sceneManager.Init();
         
         //TODO_TT
@@ -223,7 +223,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 //    protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
 //        if (!isInitialised) {
 //            //TODO_TT
-//            //graphRenderable.setGraphDisplayer(graphDisplayer);
+//            //graphRenderable.setGraphDisplayer(grapProcehDisplayer);
 //        }
 //    }
 
@@ -379,7 +379,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     /**
      * Construct a new GLVisualProcessor with a {@link GraphRenderable}, an
-     * {@link AxesRenderable} and a {@link FPSRenderable}.
+     * {@link CVKAxesRenderable} and a {@link FPSRenderable}.
      * <p>
      * This processor will not use debugging or print GL capabilities.
      */
@@ -413,7 +413,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     /**
      * Construct a new GLVisualProcessor with a {@link GraphRenderable} and an
-     * {@link AxesRenderable} and a {@link FPSRenderable}.
+     * {@link CVKAxesRenderable} and a {@link FPSRenderable}.
      *
      * @param debugGl Whether or not to utilise a GLContext that includes
      * debugging.
@@ -443,7 +443,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         //vkRenderer.CreateSwapChain(cvkCanvas.surface);
         
 //        graphRenderable = new GraphRenderable(this);
-//        final AxesRenderable axesRenderable = new AxesRenderable(this);
+//        final CVKAxesRenderable axesRenderable = new CVKAxesRenderable(this);
 //        final FPSRenderable fpsRenderable = new FPSRenderable(this);
 //        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
         //canvas = new CVKCanvas(vkData);
@@ -586,8 +586,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
-        //return graphRenderable.getChangeProcessor(property);
-        return null;
+        return sceneManager.getChangeProcessor(property);
     }
     
     /**

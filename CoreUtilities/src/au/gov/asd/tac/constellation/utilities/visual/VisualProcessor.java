@@ -290,13 +290,12 @@ public abstract class VisualProcessor {
     protected abstract VisualChangeProcessor getChangeProcessor(final VisualProperty property);
 
     private void processChangeSet(final Collection<VisualChange> changes, final VisualAccess access) {
-//TODO_TT
-//        calculatePertinentChanges(changes).forEach((property, propertyChanges) -> {
-//            final VisualChangeProcessor processor = getChangeProcessor(property);
-//            propertyChanges.forEach(change -> {
-//                processor.processChange(change, access);
-//            });
-//        });
+        calculatePertinentChanges(changes).forEach((property, propertyChanges) -> {
+            final VisualChangeProcessor processor = getChangeProcessor(property);
+            propertyChanges.forEach(change -> {
+                processor.processChange(change, access);
+            });
+        });
     }
 
     private Map<VisualProperty, List<VisualChange>> calculatePertinentChanges(Collection<VisualChange> changes) {

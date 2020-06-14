@@ -13,25 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual;
+package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import java.util.ArrayList;
-import java.util.List;
+import au.gov.asd.tac.constellation.visual.Renderable;
 
-public class SceneManager {
-    protected final Renderer renderer;
-    public List<Renderable> renderables = new ArrayList<>();
+public interface CVKRenderable extends Renderable{
+
     
-    
-    public SceneManager(Renderer inRenderer) {
-        renderer = inRenderer;
-    }
-    
-    public void Add(Renderable renderable) {
-        renderables.add(renderable);        
-    }
-    
-    public void Init() {
-        
-    }
+    /**
+     * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor
+     * thread in response to user input.  If those tasks have constructors that 
+     * code will be executed in the VisualProcessor thread.  Code in the run method
+     * is called from the render thread (AWT Event thread).
+     */
+    @FunctionalInterface
+    public static interface CVKRenderableUpdateTask {
+        public void run();
+    }    
 }

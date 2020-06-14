@@ -13,25 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual;
+package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class SceneManager {
-    protected final Renderer renderer;
-    public List<Renderable> renderables = new ArrayList<>();
+public class CVKTextForegroundRenderable extends CVKTextRenderable {
     
-    
-    public SceneManager(Renderer inRenderer) {
-        renderer = inRenderer;
-    }
-    
-    public void Add(Renderable renderable) {
-        renderables.add(renderable);        
-    }
-    
-    public void Init() {
-        
-    }
 }
