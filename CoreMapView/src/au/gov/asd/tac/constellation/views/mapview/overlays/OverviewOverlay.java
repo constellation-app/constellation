@@ -40,7 +40,6 @@ public class OverviewOverlay extends MapOverlay {
 
     public OverviewOverlay() {
         super();
-        this.enabled = false;
     }
 
     @Override
@@ -106,6 +105,7 @@ public class OverviewOverlay extends MapOverlay {
     @Override
     public void mousePressed(final MouseEvent event) {
         if (viewport.isOver(renderer.mouseX, renderer.mouseY)) {
+            active = true;
             viewport.isDragging = true;
             deltaX = renderer.mouseX - viewport.x;
             deltaY = renderer.mouseY - viewport.y;
@@ -124,6 +124,7 @@ public class OverviewOverlay extends MapOverlay {
 
     @Override
     public void mouseReleased(final MouseEvent event) {
+        active = false;
         viewport.isDragging = false;
     }
 
