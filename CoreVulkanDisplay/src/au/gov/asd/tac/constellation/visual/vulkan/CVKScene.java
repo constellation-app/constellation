@@ -77,6 +77,11 @@ public class CVKScene extends Scene{
     ANSWERS
     One pipeline per vertex input state
     
+    IDEAS
+    Have each renderable detail what vertex format it needs, what texture (and
+    whatever else requires a seperate pipeline) then when adding or updating it
+    to the renderer, it's resources are created there.
+    
     */
     
     
@@ -84,7 +89,16 @@ public class CVKScene extends Scene{
     public void Init() {
         // Idea: add these with events they care about, eg axes don't care about
         // VERTICES_REBUILD
-        Add(new CVKAxesRenderable());
+        
+        //HACKITY HACKITY HACK
+        
+        CVKAxesRenderable a = new CVKAxesRenderable(this);
+        Add(a);
+        a.PrepareVulkanResources();
+                
+        CVKFPSRenderable f = new CVKFPSRenderable(this);
+        Add(f);
+        f.PrepareVulkanResources*();
     }
     
     

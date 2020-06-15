@@ -15,6 +15,17 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-public class CVKFPSRenderable extends CVKTextForegroundRenderable{
+import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 
+public class CVKFPSRenderable extends CVKTextForegroundRenderable{
+    protected final CVKScene scene;
+    
+    public CVKFPSRenderable(CVKScene inScene) {
+        scene = inScene;
+    }
+    
+    public void PrepareVulkanResources() {
+        // load shader (can probably be done earlier)
+        
+    }    
 }
