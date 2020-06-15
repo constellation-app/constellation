@@ -115,14 +115,14 @@ public class JSONImportFileParser extends ImportFileParser {
         // false.
         if (firstChild.isObject()) {
             for (final JsonNode childNode : parent) {
-                if (!childNode.isObject()) return false;
+                if (!childNode.isObject() || childNode.size() == 0) return false;
             }
         }
         if (firstChild.isArray()) {
             for (final JsonNode childNode : parent) {
                 if (!childNode.isArray())  return false;
                 
-                if (firstChild.size() != childNode.size()) return false;
+                if (firstChild.size() != childNode.size() || firstChild.size() == 0) return false;
                 
                 // also confirm the list only contains primitive values, otherwise
                 // due to list entries not being named, its not possible to align
@@ -187,11 +187,6 @@ public class JSONImportFileParser extends ImportFileParser {
                     lookForChildArrays(entry.getValue(), path + "/" + entry.getKey(), (depth + 1));
                 }  
             }
-        }
-        
-        // Check if valid data was found
-        if (selectedList == null) {
-            throw new IOException(WARN_NO_VALID_LIST);
         }
     }
 
@@ -425,52 +420,69 @@ public class JSONImportFileParser extends ImportFileParser {
      * resulting table.
      */
     private List<String[]> getResults(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
-        final ArrayList<String[]> results = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        InputStream in = input.getInputStream();
+        
+        try {
+            final ArrayList<String[]> results = new ArrayList<>();
+            ObjectMapper mapper = new ObjectMapper();
+            InputStream in = input.getInputStream();
 
-        // Get root node and try to find a valid candidate list. If no list
-        // is found there will be no data to import.
-        selectedList = null;
-        selectedListDepth = NO_LIST_LEVEL;
-        JsonNode root = mapper.readTree(in);
-        lookForChildArrays(root, "", 0);
+            // Get root node and try to find a valid candidate list. If no list
+            // is found there will be no data to import.
+            selectedList = null;
+            selectedListDepth = NO_LIST_LEVEL;
+            JsonNode root = mapper.readTree(in);
+            lookForChildArrays(root, "", 0);
 
-        if (selectedList != null) {
+            if (selectedList != null) {
 
-            // A valid list is found, extract its fully qualified column
-            // names and store them in a dictionary mapping them to column
-            // number.
-            ArrayList<String> columns = extractAllColNames(selectedList, null, "");                      
-            Map<String, Integer> columnMap = new HashMap<String, Integer>();
-            columns.forEach(column -> {
-                columnMap.put(column, columnMap.size());
-            });
+                // A valid list is found, extract its fully qualified column
+                // names and store them in a dictionary mapping them to column
+                // number.
+                ArrayList<String> columns = extractAllColNames(selectedList, null, "");                      
+                Map<String, Integer> columnMap = new HashMap<String, Integer>();
+                columns.forEach(column -> {
+                    columnMap.put(column, columnMap.size());
+                });
 
-            // Add a heading row to the return data
-            String[] headings = new String[columns.size()];
-            headings = columns.toArray(headings);
-            results.add(headings);
+                // Add a heading row to the return data
+                String[] headings = new String[columns.size()];
+                headings = columns.toArray(headings);
+                results.add(headings);
 
-            // Now process all records and add them to the return data based
-            // on column indexes
-            for (final JsonNode listNode : selectedList) {
-                if (listNode.isObject() || listNode != selectedList.get(0)) {
-                   
-                    // If we are dealing with a list of lists, the first row is used
-                    // as column headings, so skip over it.
+                // Now process all records and add them to the return data based
+                // on column indexes
+                for (final JsonNode listNode : selectedList) {
+                    if (listNode.isObject() || listNode != selectedList.get(0)) {
 
-                    String[] line = getLineContent(listNode, columnMap, "", null);
-                    results.add(line);
+                        // If we are dealing with a list of lists, the first row is used
+                        // as column headings, so skip over it.
 
-                    if (results.size() > limit && limit > 0) break; 
+                        String[] line = getLineContent(listNode, columnMap, "", null);
+                        results.add(line);
+
+                        if (results.size() > limit && limit > 0) break; 
+                    }
                 }
+            } else
+            {
+                LOGGER.info(String.format("getResults: No list found to process"));
+                throw new IOException(WARN_NO_VALID_LIST);
             }
-        } else
-        {
-            LOGGER.info(String.format("getResults: No list found to process"));
+            return results;
         }
-        return results;
+        catch (JsonParseException ex) {
+            // Catch case whre invalid JSON file has been supplied gracefully
+            throw new IOException(WARN_INVALID_JSON);
+        }
+        catch (IOException ex) {
+            // Catch case whre invalid file contenthas been supplied gracefully
+            throw(ex);
+        }
+        catch (Exception ex) {
+            // Unexpected exceptions
+            Exceptions.printStackTrace(ex);
+            throw(ex);
+        } 
     }
     
     
@@ -486,16 +498,7 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
-        try {
-            return getResults(input, parameters, 0);
-        }
-        catch (JsonParseException ex) {
-            throw new IOException("Error reading JSON file", ex);
-        }
-        catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
-        } 
-        return new ArrayList<>();
+        return getResults(input, parameters, 0);
     }  
 
     
@@ -512,22 +515,7 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
-        try {
-            return getResults(input, parameters, 100);
-        }
-        catch (JsonParseException ex) {
-            LOGGER.warning("MMDEBUG: JsonParseException ex");
-            throw new IOException(WARN_INVALID_JSON);
-        }
-        catch (IOException ex) {
-            LOGGER.warning("MMDEBUG: IOException ex");
-            throw ex;
-        }
-        catch (Exception ex) {
-            LOGGER.warning("MMDEBUG: Exception ex");
-            Exceptions.printStackTrace(ex);
-        } 
-        return new ArrayList<>();
+        return getResults(input, parameters, 100);
     }
 
     
