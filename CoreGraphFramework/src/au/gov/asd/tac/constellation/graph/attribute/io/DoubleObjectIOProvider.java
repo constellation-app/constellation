@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.DoubleObjectAttributeDescription;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -41,13 +41,16 @@ public class DoubleObjectIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
+            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         final Double attributeValue = jnode.isNull() ? null : jnode.doubleValue();
         graph.setObjectValue(attributeId, elementId, attributeValue);
     }
 
     @Override
-    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
+    public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+            final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
             final Double attributeValue = graph.getObjectValue(attribute.getId(), elementId);
             if (attributeValue != null) {

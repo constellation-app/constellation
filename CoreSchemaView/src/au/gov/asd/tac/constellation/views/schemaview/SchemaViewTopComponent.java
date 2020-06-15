@@ -63,7 +63,7 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/schema-view.css";
     }
 
     @Override

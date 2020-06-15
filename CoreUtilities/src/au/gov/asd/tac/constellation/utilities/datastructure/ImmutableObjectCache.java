@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.utilities;
+package au.gov.asd.tac.constellation.utilities.datastructure;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -59,7 +59,7 @@ public class ImmutableObjectCache {
      * @return the deduplicated object.
      */
     @SuppressWarnings("unchecked") // Cache always has object of same type
-    public <T> T deduplicate(T immutableObject) {
+    public <T> T deduplicate(final T immutableObject) {
         if (immutableObject == null) {
             return null;
         }

@@ -33,7 +33,7 @@ public class VertexAttributeNameAttributeInteraction extends AbstractAttributeIn
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         return (String) value;
     }
 

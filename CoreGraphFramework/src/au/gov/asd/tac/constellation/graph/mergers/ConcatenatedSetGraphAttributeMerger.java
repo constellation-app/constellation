@@ -38,7 +38,7 @@ public class ConcatenatedSetGraphAttributeMerger extends GraphAttributeMerger {
     }
 
     @Override
-    public boolean mergeAttribute(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement, int attribute) {
+    public boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement, final int attribute) {
         final Set<String> elements = new TreeSet<>();
 
         final String survivingValue = graph.getStringValue(attribute, survivingElement);
@@ -63,5 +63,4 @@ public class ConcatenatedSetGraphAttributeMerger extends GraphAttributeMerger {
 
         return true;
     }
-
 }

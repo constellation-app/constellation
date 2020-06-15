@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;

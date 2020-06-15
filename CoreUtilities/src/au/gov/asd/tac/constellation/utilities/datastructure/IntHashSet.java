@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph;
+package au.gov.asd.tac.constellation.utilities.datastructure;
 
 import java.io.Serializable;
 import java.util.Arrays;
 
 /**
  * A hash set that holds primitive integers instead of Integer objects for
- * speed. This class is used by StoreGraph to manage the key attribute indices
- * in the graph. The hash set has a capacity and it is assumed that all entries
+ * speed. The hash set has a capacity and it is assumed that all entries
  * will be in the range 0 &lt;= x &lt; capacity.
  *
  * @author sirius

@@ -180,7 +180,7 @@ public class TemporalFormattingNGTest {
     public void testParseDateTimeWithZone() {
         String testDateTime = "Tue Apr 23 01:16:42 AEST 2019";
         final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER, LOGGER);
-        final String expResult = "2019-04-23 01:16:42.000 +10.00 [Australia/Sydney]";
+        final String expResult = "2019-04-23 01:16:42.000 +10:00 [Australia/Sydney]";
         assertEquals(result, expResult);
     }
 
@@ -189,9 +189,9 @@ public class TemporalFormattingNGTest {
      */
     @Test
     public void testParseDateTimeWithOffset() {
-        String testDateTime = "Tue Apr 23 01:16:42 +10.00 2019";
+        String testDateTime = "Tue Apr 23 01:16:42 +1000 2019";
         final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER2, LOGGER);
-        final String expResult = "2019-04-23 01:16:42.000 +10.00";
+        final String expResult = "2019-04-23 01:16:42.000 +10:00";
         assertEquals(result, expResult);
     }
 
@@ -202,7 +202,7 @@ public class TemporalFormattingNGTest {
     public void testParseDateTimeWithNoZone() {
         String testDateTime = "20191225";
         final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER3, LOGGER);
-        final String expResult = "2019-12-25 00:00:00.000 +00.00";
+        final String expResult = "2019-12-25 00:00:00.000 +00:00";
         assertEquals(result, expResult);
     }
 

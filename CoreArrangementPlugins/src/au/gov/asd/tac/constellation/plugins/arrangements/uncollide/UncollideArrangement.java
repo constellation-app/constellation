@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.BoundingBox2D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.Orb2D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.QuadTree;
@@ -58,7 +58,7 @@ public class UncollideArrangement implements Arranger {
 
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
@@ -128,7 +128,7 @@ public class UncollideArrangement implements Arranger {
             }
 
             if (maintainMean) {
-                GraphUtilities.moveMean(wg, oldMean);
+                ArrangementUtilities.moveMean(wg, oldMean);
             }
         }
     }

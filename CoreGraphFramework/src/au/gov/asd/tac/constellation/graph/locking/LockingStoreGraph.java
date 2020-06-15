@@ -33,13 +33,13 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
     private final LockingManager<?> lockingManager;
     private final int instance;
 
-    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, Schema schema) {
+    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final Schema schema) {
         super(schema);
         this.lockingManager = lockingManager;
         this.instance = instance;
     }
 
-    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, Schema schema, final String id) {
+    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final Schema schema, final String id) {
         super(schema, id);
         this.lockingManager = lockingManager;
         this.instance = instance;
@@ -51,13 +51,13 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
         this.instance = instance;
     }
 
-    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, boolean newId) {
+    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, final boolean newId) {
         super(storeGraph, newId);
         this.lockingManager = lockingManager;
         this.instance = instance;
     }
 
-    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, String id) {
+    public LockingStoreGraph(final LockingManager<?> lockingManager, final int instance, final StoreGraph storeGraph, final String id) {
         super(storeGraph, id);
         this.lockingManager = lockingManager;
         this.instance = instance;
@@ -74,7 +74,7 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
     }
 
     @Override
-    public void commit(Object description, String commitName) {
+    public void commit(final Object description, final String commitName) {
         lockingManager.commit(description, commitName);
 
         if (VERBOSE) {
@@ -95,10 +95,5 @@ public class LockingStoreGraph extends StoreGraph implements ReadableGraph, Writ
     @Override
     public void rollBack() {
         lockingManager.rollBack();
-    }
-
-    @Override
-    public void close() {
-        release();
     }
 }

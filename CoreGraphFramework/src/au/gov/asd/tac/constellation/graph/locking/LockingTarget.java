@@ -46,9 +46,9 @@ public abstract class LockingTarget implements ReadingInterface {
 
     public abstract void validateKeys() throws DuplicateKeyException;
 
-    public abstract void setGraphEdit(GraphEdit graphEdit);
+    public abstract void setGraphEdit(final GraphEdit graphEdit);
 
-    public void setOperationMode(GraphOperationMode operationMode) {
+    public void setOperationMode(final GraphOperationMode operationMode) {
         this.operationMode = operationMode;
     }
 }

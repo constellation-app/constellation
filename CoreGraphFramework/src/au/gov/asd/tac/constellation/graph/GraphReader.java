@@ -23,6 +23,6 @@ package au.gov.asd.tac.constellation.graph;
 @FunctionalInterface
 public interface GraphReader<V> {
 
-    public V read(GraphReadMethods graph) throws InterruptedException;
+    public V read(final GraphReadMethods graph) throws InterruptedException;
 
 }

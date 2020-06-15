@@ -270,7 +270,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 switch (mode) {
                     case NODE:
                         destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
-                        if (subTypes.contains(destinationVertexType.getName())) {
+                        if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }
@@ -280,7 +280,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                         break;
                     case TRANSACTION:
                         transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
-                        if (subTypes.contains(transactionType.getName())) {
+                        if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }

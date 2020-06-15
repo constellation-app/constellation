@@ -100,13 +100,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            final Thread thread = new Thread(UPDATE_DATA) {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            thread.start();
+            pane.updateTable(graph, currentState);
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -173,13 +167,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
-            final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            tableUpdateThread.start();
+            pane.updateTable(graph, currentState);
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
                 columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -366,13 +354,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
-        final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-            @Override
-            public void run() {
-                pane.updateTable(graph, currentState);
-            }
-        };
-        tableUpdateThread.start();
+        pane.updateTable(graph, currentState);
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
             columnAttributeChanges.getSecond().forEach(attributeTuple -> {

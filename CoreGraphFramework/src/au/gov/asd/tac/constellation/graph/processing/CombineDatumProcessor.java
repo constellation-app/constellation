@@ -53,7 +53,7 @@ public abstract class CombineDatumProcessor<T, U> implements DatumProcessor<T, U
     }
 
     @Override
-    public void process(U parameters, T input, RecordStore output) throws ProcessingException {
+    public void process(final U parameters, final T input, final RecordStore output) throws ProcessingException {
         for (DatumProcessor<T, U> rowProcessor : processors) {
             rowProcessor.process(parameters, input, output);
         }

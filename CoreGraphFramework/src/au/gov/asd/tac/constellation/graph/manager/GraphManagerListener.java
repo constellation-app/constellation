@@ -32,7 +32,7 @@ public interface GraphManagerListener {
      *
      * @param graph the graph that has just been opened.
      */
-    public void graphOpened(Graph graph);
+    public void graphOpened(final Graph graph);
 
     /**
      * Called by the {@link GraphManager} when a previously open graph is
@@ -40,7 +40,7 @@ public interface GraphManagerListener {
      *
      * @param graph the graph that has just been closed.
      */
-    public void graphClosed(Graph graph);
+    public void graphClosed(final Graph graph);
 
     /**
      * Called by the {@link GraphManager} when the currently active graph
@@ -49,6 +49,6 @@ public interface GraphManagerListener {
      *
      * @param graph the new active graph.
      */
-    public void newActiveGraph(Graph graph);
+    public void newActiveGraph(final Graph graph);
 
 }
