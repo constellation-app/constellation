@@ -66,11 +66,11 @@ public class CoreGlobalParameters extends GlobalParameters {
     }
 
     private List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
-        final PluginParameter<StringParameterValue> queryNameParameter = StringParameterType.build(QUERY_NAME_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> queryNameParameter = QUERY_NAME_PARAMETER;
         queryNameParameter.setName("Query Name");
         queryNameParameter.setDescription("A reference name for the query");
 
-        final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
+        final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DATETIME_RANGE_PARAMETER;
         datetimeRangeParameter.setName("Range");
         datetimeRangeParameter.setDescription("The date and time range to query");
         datetimeRangeParameter.setHelpID(this.getClass().getCanonicalName());
