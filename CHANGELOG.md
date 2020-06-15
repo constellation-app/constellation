@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2020-06-01 Changes in June 2020
+* Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 
+
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import.
 * Added basic support for MacOS.
