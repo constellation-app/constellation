@@ -34,6 +34,7 @@ public abstract class MapOverlay {
     protected UnfoldingMap map;
     protected EventDispatcher eventDispatcher;
     protected boolean enabled;
+    protected boolean active;
     protected boolean debug;
 
     // positions and sizes
@@ -66,10 +67,9 @@ public abstract class MapOverlay {
     protected final int stepOnColor = 0xFFFFFFFF;
     protected final int valueBoxColor = 0x7F000000;
 
-    protected boolean isInFocus = false;
-
     public MapOverlay() {
-        this.enabled = true;
+        this.enabled = false;
+        this.active = false;
         this.debug = false;
     }
 
@@ -94,6 +94,14 @@ public abstract class MapOverlay {
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
     public boolean isDebug() {
@@ -234,9 +242,5 @@ public abstract class MapOverlay {
         renderer.noStroke();
         renderer.fill(separatorColor);
         renderer.rect(x + margin, y, width - (margin * 2), 1);
-    }
-
-    public final boolean isInFocus() {
-        return this.isInFocus;
     }
 }
