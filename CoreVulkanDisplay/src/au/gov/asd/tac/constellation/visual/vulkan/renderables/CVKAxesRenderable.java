@@ -17,9 +17,16 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
-import au.gov.asd.tac.constellation.visual.Renderable;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
+
 
 public class CVKAxesRenderable implements CVKRenderable {
+    protected final CVKScene scene;
+    
+    public CVKAxesRenderable(CVKScene inScene) {
+        scene = inScene;
+    }
+    
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
     @Override
@@ -32,4 +39,12 @@ public class CVKAxesRenderable implements CVKRenderable {
     public void update(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
+    
+    
+    
+    
+    public void PrepareVulkanResources() {
+        // load shader (can probably be done earlier)
+        
+    }
 }

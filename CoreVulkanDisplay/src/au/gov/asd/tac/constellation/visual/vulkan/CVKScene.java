@@ -45,6 +45,7 @@ import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTE
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTICES_REBUILD;
 import au.gov.asd.tac.constellation.visual.Scene;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -98,7 +99,7 @@ public class CVKScene extends Scene{
                 
         CVKFPSRenderable f = new CVKFPSRenderable(this);
         Add(f);
-        f.PrepareVulkanResources*();
+        f.PrepareVulkanResources();
     }
     
     

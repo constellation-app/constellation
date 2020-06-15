@@ -292,12 +292,13 @@ public class CVKSwapChain {
 
 
     /**
-     * Vulkan has explicit objects that represent render passes.  It describes the
+     * Vulkan has explicit objects that represent render passes.It describes the
      * frame buffer attachments such as the images in our swapchain, other depth,
      * colour or stencil buffers.  Subpasses read and write to these attachments.
      * A render pass will be instanced for use in a command buffer.
      * 
      * @param stack
+     * @return 
      */
     protected int InitVKRenderPass(MemoryStack stack) {
         assert(cvkDevice.GetDevice() != null);
