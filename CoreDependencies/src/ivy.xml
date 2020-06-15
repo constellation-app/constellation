@@ -77,8 +77,14 @@
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-jawt -->
         <dependency org="org.lwjgl" name="lwjgl-jawt" rev="3.2.3"/>
         <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-glfw -->
-        <dependency org="org.lwjgl" name="lwjgl-glfw" rev="3.2.3"/>          
-        
+        <dependency org="org.lwjgl" name="lwjgl-glfw" rev="3.2.3"/>
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-shaderc -->
+        <dependency org="org.lwjgl" name="lwjgl-shaderc" rev="3.2.3">
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar"/>
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="sources"/>            
+            <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-windows"/>          
+        </dependency>       
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>
