@@ -1454,6 +1454,7 @@
                 <package>org.lwjgl.system.linux</package>
                 <package>org.lwjgl.system.macosx</package>
                 <package>org.lwjgl.system.windows</package>
+                <package>org.lwjgl.util.shaderc</package>
                 <package>org.lwjgl.vulkan</package>
                 <package>org.lwjgl.vulkan.awt</package>
                 <package>org.opengis.annotation</package>
@@ -2179,14 +2180,6 @@
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-3.2.3-natives-macos.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-macos.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/json-20190722.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/json-20190722.jar</binary-origin>
             </class-path-extension>
@@ -2217,6 +2210,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-server-9.4.27.v20200227.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-server-9.4.27.v20200227.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-macos.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-coverage-22.3.jar</runtime-relative-path>
@@ -2317,6 +2314,18 @@
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-dsparse-0.39.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-dsparse-0.39.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-jdbc-22.3.jar</runtime-relative-path>
