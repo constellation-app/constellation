@@ -42,7 +42,6 @@ import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
-import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
@@ -410,7 +409,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         AnchorPane.setTopAnchor(options, 5.0);
         AnchorPane.setRightAnchor(options, 5.0);
         getChildren().add(options);
-        QualityControlAutoVetter.getInstance().addObserver(this);
     }
 
     /**
@@ -1042,13 +1040,13 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     public void qualityControlRuleChanged(final boolean canRun) {
         if (canRun) {
             Platform.runLater(() -> {
-                executeButton.setDisable(canRun);
+                executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_GO);
                 executeButton.setStyle(GO_STYLE);
             });
         } else {
             Platform.runLater(() -> {
-                executeButton.setDisable(canRun);
+                executeButton.setDisable(!canRun);
                 executeButton.setText(EXECUTE_CALCULATING);
                 executeButton.setStyle(CALCULATING_STYLE);
             });
