@@ -9,6 +9,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.JSONIm
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,9 +28,24 @@ import org.testng.annotations.Test;
  * @author serpens24
  */
 public class JSONImportFielParserNGTest {
+    
+    // Refelction used to view private fields in class under test.
+    static JSONImportFileParser instance = new JSONImportFileParser();
+    static Field private_invalidJSONField = null;
+    static Field private_noValidListField = null;
+    static String private_invalidJSONMsg = "";
+    static String private_noValidListMsg = "";
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        // Store content of some private strings used in class under test to
+        // allow verification of thrown exception content.
+        private_invalidJSONField = JSONImportFileParser.class.getDeclaredField("WARN_INVALID_JSON");
+        private_noValidListField = JSONImportFileParser.class.getDeclaredField("WARN_NO_VALID_LIST");
+        private_invalidJSONField.setAccessible(true);
+        private_noValidListField.setAccessible(true);
+        private_invalidJSONMsg = (String)private_invalidJSONField.get(instance);
+        private_noValidListMsg = (String)private_noValidListField.get(instance);
     }
 
     @AfterClass
@@ -51,9 +67,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-invalidContent.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_invalidJSONMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -61,12 +77,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseInvalidJSON() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-invalidContent.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-invalidContent.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_invalidJSONMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -77,9 +93,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyContent.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -87,12 +103,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseEmptyJSON() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyContent.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyContent.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -103,9 +119,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyObject.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -113,12 +129,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseEmptyObject() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyObject.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyObject.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -129,9 +145,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList1.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -139,12 +155,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseEmptyList1() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList1.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList1.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -155,9 +171,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList2.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -165,12 +181,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseEmptyList2() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList2.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList2.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -181,9 +197,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList3.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -191,12 +207,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseEmptyList3() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList3.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList3.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -207,9 +223,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-inconsistentListLength.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -220,9 +236,9 @@ public class JSONImportFielParserNGTest {
             final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-inconsistentListLength.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -233,9 +249,9 @@ public class JSONImportFielParserNGTest {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-complexMembersInList.json").getFile())), null, 100);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -243,12 +259,12 @@ public class JSONImportFielParserNGTest {
     public void checkParseListWithInvalidObjects() throws InterruptedException {
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
-            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-complexMembersInList.json").getFile())), null);
+            parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-complexMembersInList.json").getFile())), null);
             Assert.fail("Expected exception not received");
         } catch (IOException ex) {
-            Assert.assertTrue(true);
+            Assert.assertTrue(ex.getMessage().contains(private_noValidListMsg));
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
 
@@ -263,12 +279,62 @@ public class JSONImportFielParserNGTest {
             final List<String[]> data = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-skipInvalidContent.json").getFile())), null, 100);
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
-                Assert.assertEquals(data.get(idx), expectedData.get(idx), "message");
+                Assert.assertEquals(data.get(idx), expectedData.get(idx));
            });     
         } catch (Exception ex) {
-            Assert.fail("Unexpected exception received");
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
     }
-    
-    
+
+    @Test
+    public void checkParseIgnoreInvalidNestedLists() throws InterruptedException {
+        final JSONImportFileParser parser = new JSONImportFileParser();
+        try {
+            final ArrayList<String[]> expectedData = new ArrayList<>();
+            expectedData.add(new String[]{"word"});
+            expectedData.add(new String[]{"Hello"});
+            expectedData.add(new String[]{"World"});
+            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-skipInvalidContent.json").getFile())), null);
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
+            IntStream.range(0, data.size()).forEach(idx -> {
+                Assert.assertEquals(data.get(idx), expectedData.get(idx));
+           });     
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
+    @Test
+    public void checkPreviewFindShallowestList() throws InterruptedException {
+        final JSONImportFileParser parser = new JSONImportFileParser();
+        try {
+            final ArrayList<String[]> expectedData = new ArrayList<>();
+            expectedData.add(new String[]{"depth2a"});
+            expectedData.add(new String[]{"2"});
+            final List<String[]> data = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-getShallowest.json").getFile())), null, 100);
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
+            IntStream.range(0, data.size()).forEach(idx -> {
+                Assert.assertEquals(data.get(idx), expectedData.get(idx));
+           });     
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
+    @Test
+    public void checkParseFindShallowestList() throws InterruptedException {
+        final JSONImportFileParser parser = new JSONImportFileParser();
+        try {
+            final ArrayList<String[]> expectedData = new ArrayList<>();
+            expectedData.add(new String[]{"depth2a"});
+            expectedData.add(new String[]{"2"});
+            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-getShallowest.json").getFile())), null);
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
+            IntStream.range(0, data.size()).forEach(idx -> {
+                Assert.assertEquals(data.get(idx), expectedData.get(idx));
+           });     
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
 }
