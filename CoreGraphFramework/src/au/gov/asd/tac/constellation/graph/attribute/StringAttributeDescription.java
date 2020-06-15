@@ -72,8 +72,6 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
         } else {
             return string;
         }
-        
-//        value == null ? null : String.valueOf(value);
     }
 
     @Override

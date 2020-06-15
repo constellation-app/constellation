@@ -2206,7 +2206,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
         transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
 
-        // TODO: not sure about why we have to keep id's recorded
         if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
             // get the element type of selected layer mask and recalculate element mask
             currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
