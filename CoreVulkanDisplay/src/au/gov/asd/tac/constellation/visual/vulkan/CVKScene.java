@@ -43,19 +43,48 @@ import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTE
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_SELECTED;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_X;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTICES_REBUILD;
-import au.gov.asd.tac.constellation.visual.SceneManager;
+import au.gov.asd.tac.constellation.visual.Scene;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public class CVKSceneManager extends SceneManager{
+public class CVKScene extends Scene{
     private final CVKVisualProcessor parent;
     private final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     
-    public CVKSceneManager(CVKRenderer inRenderer, CVKVisualProcessor inCVKVisualProcessor) {
+    public CVKScene(CVKRenderer inRenderer, CVKVisualProcessor inCVKVisualProcessor) {
         super(inRenderer);
         parent = inCVKVisualProcessor;
+    }
+    
+    
+    /*
+    TO ANSWER:
+    
+    When do we load resources
+    When do we prepare Vulkan resources
+    How do we batch Vulkan resources
+    
+    
+    WHAT ARE OUR VULKAN UNITS?
+    
+    What's in a command buffer
+    What's in a renderpass
+    What's in a pipeline
+    
+    ANSWERS
+    One pipeline per vertex input state
+    
+    */
+    
+    
+    @Override
+    public void Init() {
+        // Idea: add these with events they care about, eg axes don't care about
+        // VERTICES_REBUILD
+        Add(new CVKAxesRenderable());
     }
     
     

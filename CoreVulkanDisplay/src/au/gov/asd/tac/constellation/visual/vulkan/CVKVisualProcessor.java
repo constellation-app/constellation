@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.SceneManager;
+import au.gov.asd.tac.constellation.visual.Scene;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -49,7 +49,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
-    protected CVKSceneManager sceneManager;
+    protected CVKScene sceneManager;
     protected CVKCanvas cvkCanvas;
     protected CVKRenderer cvkRenderer;
     
@@ -192,7 +192,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected void initialise() {
         
-        sceneManager = new CVKSceneManager(cvkRenderer, this);
+        sceneManager = new CVKScene(cvkRenderer, this);
         sceneManager.Init();
         
         //TODO_TT
@@ -357,6 +357,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      */
     protected final void addRenderable(final Comparable<Renderable> renderable) {
         if (!isInitialised) {
+            //sceneManager.Add(renderable);
             //TODO_TT
             //renderer.addRenderable(renderable);
         }

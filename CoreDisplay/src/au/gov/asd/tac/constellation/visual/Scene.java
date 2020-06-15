@@ -18,12 +18,12 @@ package au.gov.asd.tac.constellation.visual;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SceneManager {
+public class Scene {
     protected final Renderer renderer;
     public List<Renderable> renderables = new ArrayList<>();
     
     
-    public SceneManager(Renderer inRenderer) {
+    public Scene(Renderer inRenderer) {
         renderer = inRenderer;
     }
     
