@@ -49,6 +49,10 @@ public class LayersConcept extends SchemaConcept {
 
     public static class GraphAttribute {
 
+        private GraphAttribute() {
+            throw new IllegalStateException("Concept class");
+        }
+
         public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
                 .setDescription("The layers currently enabled for display")
                 .setDefaultValue(1)
@@ -57,6 +61,10 @@ public class LayersConcept extends SchemaConcept {
     }
 
     public static class VertexAttribute {
+
+        private VertexAttribute() {
+            throw new IllegalStateException("Concept class");
+        }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this vertex belongs to")
@@ -69,8 +77,12 @@ public class LayersConcept extends SchemaConcept {
                 .create()
                 .build();
     }
-    
+
     public static class TransactionAttribute {
+
+        private TransactionAttribute() {
+            throw new IllegalStateException("Concept class");
+        }
 
         public static final SchemaAttribute LAYER_MASK = new SchemaAttribute.Builder(GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_mask")
                 .setDescription("Bitmask identifying the layers this transaction belongs to")
