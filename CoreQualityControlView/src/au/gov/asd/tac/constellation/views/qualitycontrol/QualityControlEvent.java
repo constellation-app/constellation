@@ -50,7 +50,7 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
         this.type = type != null ? type.getName() : null;
         this.rules = rules;
         reasons = new ArrayList<>();
-        updateEvent(rules);
+        updateEvent(List.copyOf(rules));
     }
 
     /**
