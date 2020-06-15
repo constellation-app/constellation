@@ -1,7 +1,8 @@
 # Constellation Changes
 
-## 2020-06-15 Changes in June 2020
-* Moved creation of QUERY_NAME_PARAMETER and DATETIME_RANGE_PARAMETER within CoreGlobalParameters.java. Can be accessed by direct reference; i.e. CoreGlobalParameters.QUERY_NAME_PARAMETERS.
+## 2020-06-01 Changes in June 2020
+* Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 
+* Moved the creation of `QUERY_NAME_PARAMETER` and `DATETIME_RANGE_PARAMETER` within `CoreGlobalParameters` and can be accessed by direct reference; i.e. `CoreGlobalParameters.QUERY_NAME_PARAMETERS`.
 
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import.
