@@ -45,13 +45,15 @@ public class CoreGlobalParameters extends GlobalParameters {
      */
     private static final int QUERY_NAME_PARAMETER_ID_INDEX = 0;
     public static final String QUERY_NAME_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "query_name");
+    public static final PluginParameter QUERY_NAME_PARAMETER = StringParameterType.build(QUERY_NAME_PARAMETER_ID);
 
     /**
      * The datetime range that the query spans.
      */
     private static final int DATETIME_RANGE_PARAMETER_ID_INDEX = 1;
     public static final String DATETIME_RANGE_PARAMETER_ID = PluginParameter.buildId(CoreGlobalParameters.class, "datetime_range");
-
+    public static final PluginParameter DATETIME_RANGE_PARAMETER = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
+    
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
         if (CORE_GLOBAL_PARAMETER_IDS == null) {
@@ -64,11 +66,11 @@ public class CoreGlobalParameters extends GlobalParameters {
     }
 
     private List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
-        final PluginParameter<StringParameterValue> queryNameParameter = StringParameterType.build(QUERY_NAME_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> queryNameParameter = QUERY_NAME_PARAMETER;
         queryNameParameter.setName("Query Name");
         queryNameParameter.setDescription("A reference name for the query");
 
-        final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DateTimeRangeParameterType.build(DATETIME_RANGE_PARAMETER_ID);
+        final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DATETIME_RANGE_PARAMETER;
         datetimeRangeParameter.setName("Range");
         datetimeRangeParameter.setDescription("The date and time range to query");
         datetimeRangeParameter.setHelpID(this.getClass().getCanonicalName());

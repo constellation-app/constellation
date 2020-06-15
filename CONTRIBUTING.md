@@ -352,6 +352,11 @@ logic to check whether the freeze graph view state is enabled like so:
     ```java
     final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
     ```
+* QUERY_NAME_PARAMETER and DATETIME_RANGE_PARAMETER are defined as singletons within CoreGlobalParameters.java
+    * Can be accessed by referring to them directly, for example:
+    ```java
+    final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.QUERY_NAME_PARAMETER;
+    ```
 * If you're using `javafx.stage.Stage` as a dialog, replace it with
 `ConstellationDialog` which makes sure your dialog remains on top (i.e is modal aware).
 * When documenting use the following conventions:
