@@ -113,8 +113,8 @@ public class JSONImportFileParser extends ImportFileParser {
             for (final JsonNode childNode : parent) {
                 if (!childNode.isObject() || childNode.size() == 0) return false;
             }
-        }
-        if (firstChild.isArray()) {
+            return true;
+        } else if (firstChild.isArray()) {
             for (final JsonNode childNode : parent) {
                 if (!childNode.isArray())  return false;
                 
@@ -127,8 +127,9 @@ public class JSONImportFileParser extends ImportFileParser {
                     if (grandchildNode.isArray() || grandchildNode.isObject()) return false;
                 }
             }
+            return true;
         }
-        return true;
+        return false;
     }
 
     
@@ -187,8 +188,10 @@ public class JSONImportFileParser extends ImportFileParser {
 
     /**
      * Private function designed to only be called by extractAllColNames. This
-     * function actually works in tandem with extractAllColNames in a multiple
-     * function recursive algorithm.
+     * recursive function digs down through nested JSON objects to extract
+     * further column names to add to existingColumns and return the updated
+     * value.
+     *
      * @param parent he parent node to start column name extraction from.
      * @param existingColumns List of already identified columns. This list is
      * added to if new column names are identified.
@@ -196,17 +199,17 @@ public class JSONImportFileParser extends ImportFileParser {
      * qualified column name relative to the list origin.
      * @return Updated list of known column headers.
      */
-    private ArrayList<String> extractColNamesFromFields(JsonNode parent, ArrayList<String> existingColumns, String prefix) {
-        if (parent.isObject()) {
+    private ArrayList<String> extractColNamesFromFields(JsonNode node, ArrayList<String> existingColumns, String prefix) {
+        if (node.isObject()) {
             // Iterate over each field in object and add its name if it doesnt already exist in results
-            for (Iterator it = parent.fields(); it.hasNext();) {
+            for (Iterator it = node.fields(); it.hasNext();) {
                 Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
 
                 if (entry.getValue().isObject()) {
                     // If the entry node is an Object node then apply recursion to
                     // it and progress its fields. Note the updated prefix string
                     // which allows column names in table to represent JSON path.
-                    extractAllColNames(entry.getValue(), existingColumns, prefix + entry.getKey() + ".");
+                    extractColNamesFromFields(entry.getValue(), existingColumns, prefix + entry.getKey() + ".");
                 }
                 else if (!existingColumns.contains(prefix + entry.getKey())) {
                     // The entry node is not an object, meaning it should be either
@@ -222,8 +225,7 @@ public class JSONImportFileParser extends ImportFileParser {
 
     
     /**
-     * Private wrapper function that operates in tandem with the function
-     * extractColNamesFromFields to create a comprehensive list of column
+     * Private wrapper function designed to create a comprehensive list of column
      * names within the JSON structure starting at the supplied parent node.
      * This function requires the list to have already been validated, as is
      * done by lookForChildArrays, which only identifies valid lists.
@@ -245,9 +247,9 @@ public class JSONImportFileParser extends ImportFileParser {
         // Check the first entry in the collection which will either be a list or
         // and object. All collection members will be of the same type due to
         // earlier validation.
-        if (parent.get(0).isArray()) {
-            // Treat first row as column headers. For lists, we need to have a
-            // list of lists ot be able to import data.
+        if (parent.get(0) != null && parent.get(0).isArray()) {
+            // This is a list of lists (rows).
+            // Treat first list as column headers.
             for (final JsonNode listNode : parent.get(0)) {
                 // TODO: In future there may be an option to select if first row 
                 //       is column names or actual data, for now use it as
@@ -255,9 +257,10 @@ public class JSONImportFileParser extends ImportFileParser {
                 existingColumns.add(listNode.toString());
             }
         } else {
-            for (final JsonNode childNode : parent) {
-                // Extract column names from all child fields.
-                extractColNamesFromFields(childNode, existingColumns, prefix);
+            // The list is a list of complex objects, extract unique names from
+            // each of these.
+            for (final JsonNode node : parent) {
+                extractColNamesFromFields(node, existingColumns, prefix);
             }
         }
         return existingColumns;
@@ -508,7 +511,7 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
-        return getResults(input, parameters, 100);
+        return getResults(input, parameters, limit);
     }
 
     

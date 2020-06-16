@@ -62,6 +62,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewInvalidJSON() throws InterruptedException {
+        // Confirm that attempts to preview invalid JSON return a clean
+        // IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-invalidContent.json").getFile())), null, 100);
@@ -75,6 +77,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseInvalidJSON() throws InterruptedException {
+        // Confirm that attempts to parse invalid JSON return a clean
+        // IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-invalidContent.json").getFile())), null);
@@ -88,6 +92,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewEmptyJSON() throws InterruptedException {
+        // Confirm that attempts to preview empty JSON return a clean
+        // IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyContent.json").getFile())), null, 100);
@@ -101,6 +107,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseEmptyJSON() throws InterruptedException {
+        // Confirm that attempts to parse empty JSON return a clean
+        // IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyContent.json").getFile())), null);
@@ -114,6 +122,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewEmptyObject() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing only an empty object
+        // return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyObject.json").getFile())), null, 100);
@@ -127,6 +137,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseEmptyObject() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing only an empty object
+        // return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyObject.json").getFile())), null);
@@ -140,6 +152,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewEmptyList1() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing only an empty list
+        // return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList1.json").getFile())), null, 100);
@@ -153,6 +167,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseEmptyList1() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing only an empty list
+        // return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList1.json").getFile())), null);
@@ -166,6 +182,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewEmptyList2() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing a list containing
+        // only empty lists return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList2.json").getFile())), null, 100);
@@ -179,6 +197,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseEmptyList2() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing a list containing
+        // only empty lists return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList2.json").getFile())), null);
@@ -192,6 +212,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewEmptyList3() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing a list containing
+        // only empty objects return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-emptyList3.json").getFile())), null, 100);
@@ -218,6 +240,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewInconsistentListLength() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing a list with rows
+        // of different lengths return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-inconsistentListLength.json").getFile())), null, 100);
@@ -231,6 +255,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseInconsistentListLength() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing a list with rows
+        // of different lengths return a clean IOException exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-inconsistentListLength.json").getFile())), null);
@@ -244,6 +270,9 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewListWithInvalidObjects() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing a list with rows
+        // containing nested complex objects return a clean IOException
+        // exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-complexMembersInList.json").getFile())), null, 100);
@@ -257,6 +286,9 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseListWithInvalidObjects() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing a list with rows
+        // containing nested complex objects return a clean IOException
+        // exception.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-complexMembersInList.json").getFile())), null);
@@ -270,6 +302,9 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewIgnoreInvalidNestedLists() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing an object containing
+        // invalid nested lists do not return this list, but instrad skip over
+        // them to find a suitable list, even thou8gh nested deeper.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             final ArrayList<String[]> expectedData = new ArrayList<>();
@@ -288,6 +323,9 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseIgnoreInvalidNestedLists() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing an object containing
+        // invalid nested lists do not return this list, but instrad skip over
+        // them to find a suitable list, even thou8gh nested deeper.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             final ArrayList<String[]> expectedData = new ArrayList<>();
@@ -306,6 +344,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkPreviewFindShallowestList() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing multiple valid lists
+        // return the shallowest of these lists.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             final ArrayList<String[]> expectedData = new ArrayList<>();
@@ -323,6 +363,8 @@ public class JSONImportFielParserNGTest {
 
     @Test
     public void checkParseFindShallowestList() throws InterruptedException {
+        // Confirm that attempts to parse JSON containing multiple valid lists
+        // return the shallowest of these lists.
         final JSONImportFileParser parser = new JSONImportFileParser();
         try {
             final ArrayList<String[]> expectedData = new ArrayList<>();
@@ -332,6 +374,53 @@ public class JSONImportFielParserNGTest {
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 Assert.assertEquals(data.get(idx), expectedData.get(idx));
+           });     
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
+    @Test
+    public void checkPreviewNestedObjects() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing multiple valid lists
+        // return the shallowest of these lists.
+        final JSONImportFileParser parser = new JSONImportFileParser();
+        try {
+            final ArrayList<String[]> expectedData = new ArrayList<>();
+            expectedData.add(new String[]{"name", "age", "address.town", "address.state", "address.postcode", "address.commercial", "address.history.est", "address.history.population", "description", "address.latitude", "address.longitude"});
+            expectedData.add(new String[]{"record1", "45", "Darwin", "NT", "0800", "[\"pub\",\"shop\"]", "2025", "600", null, null, null});
+            final List<String[]> data = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-processNestedObjects.json").getFile())), null, 1);
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");            
+            IntStream.range(0, data.size()).forEach(idx -> {
+                String[] dataRow = data.get(idx);
+                String[] expectedRow = expectedData.get(idx);
+                IntStream.range(0, dataRow.length).forEach(jdx -> {
+                    Assert.assertEquals(dataRow[jdx], expectedRow[jdx]);
+                });
+           });     
+        } catch (Exception ex) {
+            Assert.fail("Unexpected exception received: " + ex.getClass().getName());
+        }
+    }
+
+    @Test
+    public void checkParseNestedObjects() throws InterruptedException {
+        // Confirm that attempts to preview JSON containing multiple valid lists
+        // return the shallowest of these lists.
+        final JSONImportFileParser parser = new JSONImportFileParser();
+        try {
+            final ArrayList<String[]> expectedData = new ArrayList<>();
+            expectedData.add(new String[]{"name", "age", "address.town", "address.state", "address.postcode", "address.commercial", "address.history.est", "address.history.population", "description", "address.latitude", "address.longitude"});
+            expectedData.add(new String[]{"record1", "45", "Darwin", "NT", "0800", "[\"pub\",\"shop\"]", "2025", "600", null, null, null});
+            expectedData.add(new String[]{"record2", null, "Hobart", "TAS", "7000", null, null, null, "this is a description", "-42.8821", "147.3272"});
+            final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-processNestedObjects.json").getFile())), null);
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");            
+            IntStream.range(0, data.size()).forEach(idx -> {
+                String[] dataRow = data.get(idx);
+                String[] expectedRow = expectedData.get(idx);
+                IntStream.range(0, dataRow.length).forEach(jdx -> {
+                    Assert.assertEquals(dataRow[jdx], expectedRow[jdx]);
+                });
            });     
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
