@@ -24,10 +24,13 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.SPIRV;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.FRAGMENT_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.VERTEX_SHADER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.compileShaderFile;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
+import java.util.logging.Level;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
@@ -78,8 +81,8 @@ public class CVKAxesRenderable implements CVKRenderable {
     private long renderPass;
     private long pipelineLayout;
     private long graphicsPipeline;
-    //protected SPIRV vertShaderSPIRV;
-   // protected SPIRV fragShaderSPIRV;
+    protected SPIRV vertShaderSPIRV;
+    protected SPIRV fragShaderSPIRV;
     
     public CVKAxesRenderable(CVKScene inScene) {
         scene = inScene;
@@ -99,16 +102,16 @@ public class CVKAxesRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
     
     
-    public int CreatePipeline(CVKDevice cvkDevice) {
+    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
+        
+        // TODO This is failing atm so just returning
+        if(true)
+            return ret;
+        
         try (MemoryStack stack = stackPush()) {
-            SPIRV vertShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.vert", VERTEX_SHADER);
-            SPIRV fragShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.frag", FRAGMENT_SHADER);
-
-            vertShaderModule = CVKShaderUtils.createShaderModule(vertShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-            fragShaderModule = CVKShaderUtils.createShaderModule(fragShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-        
-        
+            
+            
             ByteBuffer entryPoint = stack.UTF8("main");
 
             VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.callocStack(2, stack);
@@ -145,8 +148,8 @@ public class CVKAxesRenderable implements CVKRenderable {
             VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
             viewport.x(0.0f);
             viewport.y(0.0f);
-            viewport.width(300);
-            viewport.height(300);
+            viewport.width(cvkSwapChain.GetWidth());
+            viewport.height(cvkSwapChain.GetHeight());
             viewport.minDepth(0.0f);
             viewport.maxDepth(1.0f);
 
@@ -249,10 +252,10 @@ public class CVKAxesRenderable implements CVKRenderable {
     
     
     @Override
-    public int SwapChainRezied(CVKDevice cvkDevice) {
-        int ret = DestroyPipeline();
+    public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkDevice);
+            ret = CreatePipeline(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
@@ -261,24 +264,16 @@ public class CVKAxesRenderable implements CVKRenderable {
     @Override
     public int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
-        ByteBuffer strVertShader = null;
-        ByteBuffer strFragShader = null;
-        
-//        try {
-//            strVertShader = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/09_shader_base.vert.spv");
-//            strFragShader = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/09_shader_base.frag.spv");
-//        } catch(IOException ex){
-//            CVKLOGGER.severe(ex.toString());
-//        }
-        
-//        vertShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.vert", VERTEX_SHADER);
-//        fragShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.frag", FRAGMENT_SHADER);
-//
-//        vertShaderModule = CVKShaderUtils.createShaderModule(vertShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-//        fragShaderModule = CVKShaderUtils.createShaderModule(fragShaderSPIRV.bytecode(), cvkDevice.GetDevice());
-//        
-        // Delete buffers?
-        
+
+        try{
+            vertShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.vert", VERTEX_SHADER);
+            fragShaderSPIRV = compileShaderFile(CVKShaderPlaceHolder.class, "09_shader_base.frag", FRAGMENT_SHADER);
+
+            vertShaderModule = CVKShaderUtils.createShaderModule(vertShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+            fragShaderModule = CVKShaderUtils.createShaderModule(fragShaderSPIRV.bytecode(), cvkDevice.GetDevice());
+        } catch(Exception ex){
+            CVKLOGGER.log(Level.WARNING, "Failed to compile AxesRenderable shaders: {0}", ex.toString());
+        }
         return ret;
     }
 }
