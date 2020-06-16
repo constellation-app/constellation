@@ -162,6 +162,61 @@ final class GlyphRectangleBuffer {
 
         newRectBuffer();
     }
+    
+        
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+}
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GlyphRectangleBuffer other = (GlyphRectangleBuffer) obj;
+        if (this.bufferType != other.bufferType) {
+            return false;
+        }
+        if (this.x != other.x) {
+            return false;
+        }
+        if (this.y != other.y) {
+            return false;
+        }
+        if (this.maxHeight != other.maxHeight) {
+            return false;
+        }
+        if (this.rectangleCount != other.rectangleCount) {
+            return false;
+        }
+        if (this.width != other.width) {
+            return false;
+        }
+        if (this.height != other.height) {
+            return false;
+        }
+        if (!bufferedImagesEqual(this.rectBuffer, other.rectBuffer)) {
+            return false;
+        }
+        if (!this.memory.equals(other.memory)) {
+            return false;
+        }
+        if (this.rectBuffers.size() != other.rectBuffers.size()) {
+            return false;
+        } else {
+            for (int i = 0; this.rectBuffers.size()>i ; i++) {
+                if (!bufferedImagesEqual(this.rectBuffers.get(i), other.rectBuffers.get(i))) {
+                    return false;
+                }
+            }
+        }
+        if (!Arrays.equals(this.rectTextureCoordinates, other.rectTextureCoordinates)) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Add a rectangle containing an image to the buffers.
@@ -272,4 +327,19 @@ final class GlyphRectangleBuffer {
         y += maxHeight + PADDING;
         maxHeight = 0;
     }
+    
+    private boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+    // Code copied from https://stackoverflow.com/questions/15305037/java-compare-one-bufferedimage-to-another
+    if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+        for (int xCoord = 0; xCoord < img1.getWidth(); xCoord++) {
+            for (int yCoord = 0; yCoord < img1.getHeight(); yCoord++) {
+                if (img1.getRGB(xCoord, yCoord) != img2.getRGB(xCoord, yCoord))
+                    return false;
+            }
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
 }
