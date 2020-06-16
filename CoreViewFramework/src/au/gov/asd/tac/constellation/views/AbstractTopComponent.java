@@ -69,75 +69,69 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
-        super.componentOpened();
         isVisible = true;
+        super.componentOpened();
         ConstellationLogger.getDefault().viewStarted(this);
     }
 
     @Override
     protected void componentClosed() {
-        super.componentClosed();
         isVisible = false;
+        super.componentClosed();
         ConstellationLogger.getDefault().viewStopped(this);
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
-            isVisible = true;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Minimised");
             isVisible = false;
         } else {
-            isVisible = true;
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Docked");
         }
     }
 
     @Override
     protected void componentHidden() {
+        isVisible = false;
         super.componentHidden();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
-            isVisible = false;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Minimised");
-            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Docked");
-            isVisible = false;
         }
     }
 
     @Override
     protected void componentActivated() {
+        isVisible = true;
         super.componentActivated();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
-            isVisible = true;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
             isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
-            isVisible = true;
         }
     }
 
     @Override
     protected void componentDeactivated() {
+        isVisible = false;
         super.componentDeactivated();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");
-            isVisible = false;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Minimised");
-            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Docked");
-            isVisible = false;
         }
     }
 
