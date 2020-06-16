@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.logging.Level;
-import static org.geotools.referencing.factory.ReferencingFactory.LOGGER;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -148,7 +148,14 @@ public class CVKInstance {
                 level = Level.INFO; break;
         }                      
         VkDebugUtilsMessengerCallbackDataEXT callbackData = VkDebugUtilsMessengerCallbackDataEXT.create(pCallbackData);
-        LOGGER.log(level, "Validation layer: {0}", callbackData.pMessageString());
+        String callbackMsg = callbackData.pMessageString();
+        CVKLOGGER.log(level, "Validation layer: {0}", callbackMsg);
+        
+        // This is an E for effort attempt to get something logged in the case
+        // that Constellation/JVM is crashing to desktop.
+        for (var handler : CVKLOGGER.getHandlers()) {
+            handler.flush();
+        }
         return VK_FALSE;
     }                
 }

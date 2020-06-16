@@ -3,7 +3,7 @@
 //
 // The [gf]DisplayColor passes the highlight color through to the fragment shader.
 
-#version 330 core
+#version 450
 
 
 // === CONSTANTS
@@ -21,24 +21,24 @@ const mat4 IDENTITY_MATRIX = mat4(
 
 
 // === UNIFORMS
-layout(std140) uniform UniformBlock {
+layout(std140, binding = 0) uniform UniformBlock {
     mat4 pMatrix;
     float pixelDensity;
     float pScale;
-};
+} ub;
 
 
 // === PER PRIMITIVE DATA IN
 layout(points) in;
-flat in ivec2 gData[];
-flat in mat4 gBackgroundIconColor[];
-flat in float gRadius[];
+layout(location = 0) flat in ivec2 gData[];
+layout(location = 1) flat in mat4 gBackgroundIconColor[];
+layout(location = 5) flat in float gRadius[];
 
 
 // === PER PRIMITIVE DATA OUT
 layout(triangle_strip, max_vertices=28) out;
-flat out mat4 iconColor;
-noperspective centroid out vec3 textureCoords;
+layout(location = 0) flat out mat4 iconColor;
+layout(location = 4) noperspective centroid out vec3 textureCoords;
 
 
 // === FILE SCOPE VARS
@@ -51,22 +51,22 @@ void drawIcon(float x, float y, float radius, int icon, mat4 color) {
 
         vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
 
-        gl_Position = v + (pScale * pMatrix * vec4(x, y, 0, 0));
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y, 0, 0));
         iconColor = color;
         textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = v + (pScale * pMatrix * vec4(x, y + radius, 0, 0));
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y + radius, 0, 0));
         iconColor = color;
         textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = v + (pScale * pMatrix * vec4(x + radius, y, 0, 0));
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y, 0, 0));
         iconColor = color;
         textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = v + (pScale * pMatrix * vec4(x + radius, y + radius, 0, 0));
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y + radius, 0, 0));
         iconColor = color;
         textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
@@ -85,7 +85,7 @@ void main() {
 
         int bgIcon = (gData[0][0] >> ICON_BITS) & ICON_MASK;
 
-        float iconPixelRadius = sideRadius * pixelDensity / -v.z;
+        float iconPixelRadius = sideRadius * ub.pixelDensity / -v.z;
         if (iconPixelRadius < 1 && bgIcon != TRANSPARENT_ICON) {
             mat4 backgroundIconColor = gBackgroundIconColor[0];
             backgroundIconColor[3][3] = max(smoothstep(0.0, 1.0, iconPixelRadius), 0.7);

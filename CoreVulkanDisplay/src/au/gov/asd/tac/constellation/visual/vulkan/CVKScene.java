@@ -113,8 +113,8 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     
     
     @Override
-    public void SwapChainRezied() {
-        renderables.forEach(renderable -> {renderable.SwapChainRezied();});
+    public void SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        renderables.forEach(renderable -> {renderable.SwapChainRezied(cvkDevice, cvkSwapChain);});
     }
     
     @Override

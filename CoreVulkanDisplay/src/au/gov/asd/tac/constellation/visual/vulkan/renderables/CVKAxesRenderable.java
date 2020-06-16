@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
@@ -46,7 +47,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
     
     
-    public int CreatePipeline() {
+    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -55,7 +56,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     }
     
     
-    public int DestroyPipeline() {
+    public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -65,10 +66,10 @@ public class CVKAxesRenderable implements CVKRenderable {
     
     
     @Override
-    public int SwapChainRezied() {
-        int ret = DestroyPipeline();
+    public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline();
+            ret = CreatePipeline(cvkDevice, cvkSwapChain);
         }
         return ret;
     }

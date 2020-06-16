@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.io.IOException;
@@ -33,6 +34,45 @@ import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import java.nio.LongBuffer;
+import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
+import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
+import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
+import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
+import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
+import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
+import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
+import org.lwjgl.vulkan.VkOffset2D;
+import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
+import org.lwjgl.vulkan.VkPipelineColorBlendStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineInputAssemblyStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineLayoutCreateInfo;
+import org.lwjgl.vulkan.VkPipelineMultisampleStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineRasterizationStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
+import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
+import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
+import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkViewport;
 
 public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected final CVKScene scene;
@@ -123,7 +163,17 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     
     @Override
-    public int CreatePipeline() {
+    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        assert(cvkDevice.GetDevice() != null);
+        assert(cvkSwapChain.GetSwapChainHandle()  != VK_NULL_HANDLE);
+        assert(cvkSwapChain.GetRenderPassHandle() != VK_NULL_HANDLE);
+        assert(pVertexShader   != VK_NULL_HANDLE);
+        assert(pGeometryShader != VK_NULL_HANDLE);
+        assert(pFragmentShader != VK_NULL_HANDLE);        
+        assert(cvkSwapChain.GetWidth() > 0);
+        assert(cvkSwapChain.GetHeight() > 0);
+        
+        
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             // prepare vertex attributes
@@ -154,14 +204,150 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             // Ouput:
             // flat out mat4 iconColor;
             // noperspective centroid out vec3 textureCoords;
-            // layout(triangle_strip, max_vertices=28) out;            
+            // layout(triangle_strip, max_vertices=28) out;     
+            
+            
+            
+            ByteBuffer entryPoint = stack.UTF8("main");
+
+            VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.callocStack(3, stack);
+
+            VkPipelineShaderStageCreateInfo vertShaderStageInfo = shaderStages.get(0);
+
+            vertShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
+            vertShaderStageInfo.stage(VK_SHADER_STAGE_VERTEX_BIT);
+            vertShaderStageInfo.module(pVertexShader);
+            vertShaderStageInfo.pName(entryPoint);
+            
+            VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
+            geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
+            geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
+            geomShaderStageInfo.module(pFragmentShader);
+            geomShaderStageInfo.pName(entryPoint);            
+
+            VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);
+            fragShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
+            fragShaderStageInfo.stage(VK_SHADER_STAGE_FRAGMENT_BIT);
+            fragShaderStageInfo.module(pFragmentShader);
+            fragShaderStageInfo.pName(entryPoint);
+
+            // ===> VERTEX STAGE <===
+            VkPipelineVertexInputStateCreateInfo vertexInputInfo = VkPipelineVertexInputStateCreateInfo.callocStack(stack);
+            vertexInputInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO);
+            vertexInputInfo.pVertexBindingDescriptions(Vertex.GetBindingDescription());
+            vertexInputInfo.pVertexAttributeDescriptions(Vertex.GetAttributeDescriptions());
+
+            // ===> ASSEMBLY STAGE <===
+            // Triangle list is stipulated by the layout of the out attribute of
+            // SimpleIcon.gs
+            VkPipelineInputAssemblyStateCreateInfo inputAssembly = VkPipelineInputAssemblyStateCreateInfo.callocStack(stack);
+            inputAssembly.sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO);
+            inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+            inputAssembly.primitiveRestartEnable(false);
+
+            // ===> VIEWPORT & SCISSOR
+            VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
+            viewport.x(0.0f);
+            viewport.y(0.0f);
+            viewport.width(cvkSwapChain.GetWidth());
+            viewport.height(cvkSwapChain.GetHeight());
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
+
+            VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
+            scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            scissor.extent(cvkSwapChain.GetExtent());
+
+            VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
+            viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
+            viewportState.pViewports(viewport);
+            viewportState.pScissors(scissor);
+
+            // ===> RASTERIZATION STAGE <===
+            VkPipelineRasterizationStateCreateInfo rasterizer = VkPipelineRasterizationStateCreateInfo.callocStack(stack);
+            rasterizer.sType(VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO);
+            rasterizer.depthClampEnable(false);
+            rasterizer.rasterizerDiscardEnable(false);
+            rasterizer.polygonMode(VK_POLYGON_MODE_FILL);
+            rasterizer.lineWidth(1.0f);
+            rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
+            rasterizer.frontFace(VK_FRONT_FACE_CLOCKWISE);
+            rasterizer.depthBiasEnable(false);
+
+            // ===> MULTISAMPLING <===
+            VkPipelineMultisampleStateCreateInfo multisampling = VkPipelineMultisampleStateCreateInfo.callocStack(stack);
+            multisampling.sType(VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO);
+            multisampling.sampleShadingEnable(false);
+            multisampling.rasterizationSamples(VK_SAMPLE_COUNT_1_BIT);
+
+            // ===> COLOR BLENDING <===
+            VkPipelineColorBlendAttachmentState.Buffer colorBlendAttachment = VkPipelineColorBlendAttachmentState.callocStack(1, stack);
+            colorBlendAttachment.colorWriteMask(VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT);
+            colorBlendAttachment.blendEnable(false);
+
+            VkPipelineColorBlendStateCreateInfo colorBlending = VkPipelineColorBlendStateCreateInfo.callocStack(stack);
+            colorBlending.sType(VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO);
+            colorBlending.logicOpEnable(false);
+            colorBlending.logicOp(VK_LOGIC_OP_COPY);
+            colorBlending.pAttachments(colorBlendAttachment);
+            colorBlending.blendConstants(stack.floats(0.0f, 0.0f, 0.0f, 0.0f));
+
+            // ===> PIPELINE LAYOUT CREATION <===
+            VkPipelineLayoutCreateInfo pipelineLayoutInfo = VkPipelineLayoutCreateInfo.callocStack(stack);
+            pipelineLayoutInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO);
+
+            LongBuffer pPipelineLayout = stack.longs(VK_NULL_HANDLE);
+
+            ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
+            checkVKret(ret);
+
+            long pipelineLayout = pPipelineLayout.get(0);
+            assert(pipelineLayout != VK_NULL_HANDLE);
+
+            VkGraphicsPipelineCreateInfo.Buffer pipelineInfo = VkGraphicsPipelineCreateInfo.callocStack(1, stack);
+            pipelineInfo.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO);
+            pipelineInfo.pStages(shaderStages);
+            pipelineInfo.pVertexInputState(vertexInputInfo);
+            pipelineInfo.pInputAssemblyState(inputAssembly);
+            pipelineInfo.pViewportState(viewportState);
+            pipelineInfo.pRasterizationState(rasterizer);
+            pipelineInfo.pMultisampleState(multisampling);
+            pipelineInfo.pColorBlendState(colorBlending);
+            pipelineInfo.layout(pipelineLayout);
+            pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+            pipelineInfo.subpass(0);
+            pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
+            pipelineInfo.basePipelineIndex(-1);
+
+            LongBuffer pGraphicsPipeline = stack.mallocLong(1);
+            
+
+            ret = vkCreateGraphicsPipelines(cvkDevice.GetDevice(), 
+                                            VK_NULL_HANDLE, 
+                                            pipelineInfo, 
+                                            null, 
+                                            pGraphicsPipeline);
+            checkVKret(ret);
+
+            long graphicsPipeline = pGraphicsPipeline.get(0);
+            if (graphicsPipeline == VK_NULL_HANDLE) {
+                
+            }
+//
+//            // ===> RELEASE RESOURCES <===
+//
+//            vkDestroyShaderModule(device, vertShaderModule, null);
+//            vkDestroyShaderModule(device, fragShaderModule, null);
+//
+//            vertShaderSPIRV.free();
+//            fragShaderSPIRV.free();            
         }
         return ret;
     }
     
     
     @Override
-    public int DestroyPipeline() {
+    public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -171,10 +357,10 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     
     @Override
-    public int SwapChainRezied() {
-        int ret = DestroyPipeline();
+    public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline();
+            ret = CreatePipeline(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
@@ -183,16 +369,32 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     public int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         
-        // load shader (can probably be done earlier)
         try {
             ByteBuffer vsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.vs.spv");
-            ByteBuffer strGSBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
-            ByteBuffer strFSBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
+            if (vsBytes.capacity() == 0) {
+                throw new RuntimeException("Failed to load compiled/SimpleIcon.vs.spv");
+            }
+            ByteBuffer gsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.gs.spv");
+            if (vsBytes.capacity() == 0) {
+                throw new RuntimeException("Failed to load compiled/SimpleIcon.gs.spv");
+            }            
+            ByteBuffer fsBytes = LoadFileToDirectBuffer(CVKShaderPlaceHolder.class, "compiled/SimpleIcon.fs.spv");
+            if (vsBytes.capacity() == 0) {
+                throw new RuntimeException("Failed to load compiled/SimpleIcon.fs.spv");
+            }            
             
-            long hVS = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
-            long hGS = CVKShaderUtils.createShaderModule(strGSBytes, cvkDevice.GetDevice());
-            long hFS = CVKShaderUtils.createShaderModule(strFSBytes, cvkDevice.GetDevice());
-            
+            pVertexShader   = CVKShaderUtils.createShaderModule(vsBytes, cvkDevice.GetDevice());
+            if (pVertexShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from SimpleIcon.vs.spv bytes");
+            }            
+            pGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
+            if (pVertexShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from SimpleIcon.gs.spv bytes");
+            }             
+            pFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());            
+            if (pVertexShader == VK_NULL_HANDLE) {
+                throw new RuntimeException("Failed to create shader from SimpleIcon.fs.spv bytes");
+            }             
         } catch (IOException e) {
             //TODO_TT
         }
