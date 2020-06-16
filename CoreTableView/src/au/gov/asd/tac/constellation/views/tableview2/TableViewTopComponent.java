@@ -90,7 +90,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         initContent();
 
         addStructureChangeHandler(graph -> {
-            if (!this.isVisible) {
+            if (!needsUpdate()) {
                 return;
             }
             final Thread thread = new Thread(UPDATE_DATA) {
@@ -103,17 +103,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            if (!this.isVisible) {
-                return;
+            if (needsUpdate()) {
+                pane.updateTable(graph, currentState);
             }
-            pane.updateTable(graph, currentState);
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            if (!this.isVisible) {
-                return;
-            }
-            if (currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
                     final Thread thread = new Thread(UPDATE_DATA) {
                         @Override
@@ -135,10 +131,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (!this.isVisible) {
-                return;
-            }
-            if (currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 final Thread thread;
                 if (currentState.isSelectedOnly()) {
                     thread = new Thread(UPDATE_DATA) {
@@ -161,7 +154,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE, graph -> {
-            if (!this.isVisible) {
+            if (!needsUpdate()) {
                 return;
             }
             final TableViewState previousState = currentState;

@@ -31,7 +31,17 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
 
-    protected boolean isVisible;
+    private boolean isVisible;
+
+    /**
+     * Checks if the view will need an update when a graph changes based on if
+     * the view is visible currently.
+     *
+     * @return true if the view is visible and needs updating
+     */
+    protected boolean needsUpdate() {
+        return isVisible;
+    }
 
     /**
      * Builds and initialises the content for this top component. You should
