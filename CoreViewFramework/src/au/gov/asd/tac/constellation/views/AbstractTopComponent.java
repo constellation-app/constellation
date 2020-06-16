@@ -31,6 +31,8 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
 
+    protected boolean isVisible;
+
     /**
      * Builds and initialises the content for this top component. You should
      * call this method in the constructor of your TopComponent implementation
@@ -58,12 +60,14 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentOpened() {
         super.componentOpened();
+        isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
     }
 
     @Override
     protected void componentClosed() {
         super.componentClosed();
+        isVisible = false;
         ConstellationLogger.getDefault().viewStopped(this);
     }
 
@@ -72,9 +76,12 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         super.componentShowing();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
+            isVisible = true;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Minimised");
+            isVisible = false;
         } else {
+            isVisible = true;
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Docked");
         }
     }
@@ -84,10 +91,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         super.componentHidden();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
+            isVisible = false;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Docked");
+            isVisible = false;
         }
     }
 
@@ -96,10 +106,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         super.componentActivated();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
+            isVisible = true;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
+            isVisible = true;
         }
     }
 
@@ -108,10 +121,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         super.componentDeactivated();
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");
+            isVisible = false;
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Docked");
+            isVisible = false;
         }
     }
 
