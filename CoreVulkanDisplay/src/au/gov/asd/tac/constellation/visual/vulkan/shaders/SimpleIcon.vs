@@ -1,15 +1,13 @@
 // Draw icons as point sprites.
 // Make points that are nearer to the camera bigger.
-#version 330 core
-
+#version 450
 
 // === UNIFORMS
-layout(std140) uniform UniformBlock {
+layout(std140, binding = 0) uniform UniformBlock {
     mat4 mvMatrix;
     float visibilityLow;
     float visibilityHigh;
-    float offset;
-};
+} ub;
 
 // === PER VERTEX DATA IN
 // This is a set of data for this vertex.
@@ -17,9 +15,9 @@ layout(location = 0) in ivec2 data;
 layout(location = 1) in vec4 backgroundIconColor;
 
 // === PER VERTEX DATA OUT
-out ivec2 gData; // {icon indexes (encoded to int), digit index * 4)
-out mat4 gBackgroundIconColor; //mat4 eats 4 slots
-flat out float gRadius;
+layout(location = 0) out ivec2 gData; // {icon indexes (encoded to int), digit index * 4)
+layout(location = 1) out mat4 gBackgroundIconColor; //mat4 eats 4 slots
+layout(location = 5) flat out float gRadius;
 
 void main(void) {
     // Pass stuff to the next shader.
@@ -34,11 +32,11 @@ void main(void) {
     vec3 digitPosition = vec3(data[1], 0, 0);
     
     float visibility = backgroundIconColor.a;
-    if(visibility > max(visibilityLow, 0.0) && (visibility <= visibilityHigh || visibility > 1.0)) {
+    if(visibility > max(ub.visibilityLow, 0.0) && (visibility <= ub.visibilityHigh || visibility > 1.0)) {
         gRadius = 1;
     } else {
         gRadius = -1;
     }
 
-    gl_Position = mvMatrix * vec4(digitPosition, 1);
+    gl_Position = ub.mvMatrix * vec4(digitPosition, 1);
 }

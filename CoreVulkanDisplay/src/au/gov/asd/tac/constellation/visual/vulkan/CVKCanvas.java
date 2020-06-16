@@ -17,7 +17,6 @@ import org.lwjgl.vulkan.awt.VKData;
 
 
 public class CVKCanvas extends AWTVKCanvas{
-    private static final Logger LOGGER = Logger.getLogger("VKRenderer");
     private boolean parentAdded = false;
     static int frameNo = 0;
     protected long handle = 0;

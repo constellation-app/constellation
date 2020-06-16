@@ -102,6 +102,7 @@ public class CVKSwapChain {
     
     public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
+    public long GetRenderPassHandle() { return hRenderPassHandle; }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
     
     
@@ -421,4 +422,8 @@ public class CVKSwapChain {
         return vkCurrentImageExtent.width() !=cvkDevice.GetCurrentSurfaceExtent().width()
             || vkCurrentImageExtent.height() != cvkDevice.GetCurrentSurfaceExtent().height();
     }
+    
+    public VkExtent2D GetExtent() { return vkCurrentImageExtent; } 
+    public int GetWidth() { return vkCurrentImageExtent.width(); }
+    public int GetHeight() { return vkCurrentImageExtent.height(); }
 }

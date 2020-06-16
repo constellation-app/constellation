@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -395,7 +396,7 @@ public class CVKVisualProcessor extends VisualProcessor {
             // VkInstance is setup in the constructor
             cvkRenderer = new CVKRenderer(this);
         } catch (Exception e) {
-            LOGGER.severe(e.toString());
+            CVKLOGGER.severe(e.toString());
         }
         
         // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance

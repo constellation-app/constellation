@@ -61,7 +61,7 @@ blah: anything else
 public class CVKRenderer extends Renderer implements ComponentListener {
     public interface CVKRenderEventListener {
         //TODO_TT: how do we handle errors from this?
-        public void SwapChainRezied();
+        public void SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
         public void DeviceInitialised(CVKDevice cvkDevice);
     }
     
@@ -140,7 +140,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 }
                 
                 renderEventListeners.forEach(listener -> {
-                    listener.SwapChainRezied();
+                    listener.SwapChainRezied(cvkDevice, cvkSwapChain);
                 });                
             }
         } else {

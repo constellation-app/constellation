@@ -239,7 +239,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     }
     
     
-    public int DestroyPipeline() {
+    public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
