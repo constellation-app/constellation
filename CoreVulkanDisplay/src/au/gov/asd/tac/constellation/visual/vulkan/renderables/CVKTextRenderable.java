@@ -18,6 +18,11 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.Renderable;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 public class CVKTextRenderable implements CVKRenderable {
     @Override
@@ -32,4 +37,38 @@ public class CVKTextRenderable implements CVKRenderable {
     public void update(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
+    
+    
+    
+    public int CreatePipeline() {
+        int ret = VK_SUCCESS;
+        try (MemoryStack stack = stackPush()) {
+            
+        }
+        return ret;
+    }
+    
+    
+    public int DestroyPipeline() {
+        int ret = VK_SUCCESS;
+        try (MemoryStack stack = stackPush()) {
+            
+        }
+        return ret;
+    }
+    
+    
+    @Override
+    public int SwapChainRezied() {
+        int ret = DestroyPipeline();
+        if (VkSucceeded(ret)) {
+            ret = CreatePipeline();
+        }
+        return ret;
+    }
+    
+    @Override
+    public int LoadShaders(CVKDevice cvkDevice) {
+        return VK_SUCCESS;
+    }    
 }

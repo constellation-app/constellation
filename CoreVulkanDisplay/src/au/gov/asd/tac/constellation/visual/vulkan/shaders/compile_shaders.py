@@ -45,11 +45,11 @@ def compile_shaders(src_dir, dst_dir):
                 for (dir_path, dir_names, file_names) in walk(src_dir):
                     for file_name in file_names:
                         if not __file__.endswith(file_name):
-                            if file_name.endswith('.fs'):
+                            if file_name.endswith('.fs') or file_name.endswith('.frag'):
                                 stage = 'frag'
-                            elif file_name.endswith('.gs'):
+                            elif file_name.endswith('.gs') or file_name.endswith('.geom'):
                                 stage = 'geom'
-                            elif file_name.endswith('.vs'):
+                            elif file_name.endswith('.vs') or file_name.endswith('.vert'):
                                 stage = 'vert'
                             else:
                                 print('WARNING: {0} skipped, supported file extensions: [.gs, .fs, .vs]'.format(file_name))

@@ -17,7 +17,12 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 
 public class CVKAxesRenderable implements CVKRenderable {
@@ -41,10 +46,38 @@ public class CVKAxesRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
     
     
+    public int CreatePipeline() {
+        int ret = VK_SUCCESS;
+        try (MemoryStack stack = stackPush()) {
+            
+        }
+        return ret;
+    }
     
     
-    public void PrepareVulkanResources() {
+    public int DestroyPipeline() {
+        int ret = VK_SUCCESS;
+        try (MemoryStack stack = stackPush()) {
+            
+        }
+        return ret;
+    }
+    
+    
+    @Override
+    public int SwapChainRezied() {
+        int ret = DestroyPipeline();
+        if (VkSucceeded(ret)) {
+            ret = CreatePipeline();
+        }
+        return ret;
+    }
+    
+    
+    @Override
+    public int LoadShaders(CVKDevice cvkDevice) {
+        int ret = VK_SUCCESS;
         // load shader (can probably be done earlier)
-        
+        return ret;
     }
 }

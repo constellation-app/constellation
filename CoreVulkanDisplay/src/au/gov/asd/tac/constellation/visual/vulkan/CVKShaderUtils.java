@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import org.lwjgl.system.NativeResource;
 import java.io.IOException;
 import java.net.URI;
@@ -28,17 +29,16 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.util.shaderc.Shaderc.*;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCreateShaderModule;
 import org.lwjgl.vulkan.VkShaderModuleCreateInfo;
 import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import org.lwjgl.vulkan.VkDevice;
 
 
 /**
- * Collection of Shader utility functions (e.g. compiling shaders and modules)
- * 
- * @author hydra
+ * TODO_TT: rationalise this
+ * Copy of GLTools and Vulkan Tutorial
  */
 public class CVKShaderUtils {
 
@@ -124,9 +124,8 @@ public class CVKShaderUtils {
 
             LongBuffer pShaderModule = stack.mallocLong(1);
 
-            if(vkCreateShaderModule(device, createInfo, null, pShaderModule) != VK_SUCCESS) {
-                throw new RuntimeException("Failed to create shader module");
-            }
+            int ret = vkCreateShaderModule(device, createInfo, null, pShaderModule);
+            if (VkFailed(ret)) { return VK_NULL_HANDLE; }
 
             return pShaderModule.get(0);
         }

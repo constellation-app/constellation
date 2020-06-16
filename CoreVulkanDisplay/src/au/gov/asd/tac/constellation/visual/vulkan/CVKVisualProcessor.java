@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
 import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.Scene;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -49,7 +48,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
-    protected CVKScene sceneManager;
+    protected CVKScene cvkScene;
     protected CVKCanvas cvkCanvas;
     protected CVKRenderer cvkRenderer;
     
@@ -191,41 +190,11 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void initialise() {
-        
-        sceneManager = new CVKScene(cvkRenderer, this);
-        sceneManager.Init();
-        
-        //TODO_TT
-//        if (graphRenderable.getGraphDisplayer() == null) {
-//            graphRenderable.setGraphDisplayer(new GraphDisplayer());
-//        }
-//        cvkCanvas.addEventListener(renderer);
-//        cvkCanvas.addComponentListener(new ComponentAdapter() {
-//			public void componentResized(java.awt.event.ComponentEvent e) {
-//				cvkCanvas.repaint();
-//			};
-//		});
-        //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
-        
-        
+        //TODO_TT: the relationship should probably be event-listener
+        cvkScene = new CVKScene(cvkRenderer, this);
+        cvkScene.Init();
+        cvkRenderer.AddRenderEventListener(cvkScene);
     }
-
-    /**
-     * Tells the {@link GraphRenderable} to use the specified
-     * {@link GraphDisplayer}.
-     * <p>
-     * A {@link GraphDisplayer} is used as an intermediate texture that the
-     * {@link GraphRenderable} draws to which is then drawn to the screen.
-     *
-     * @param graphDisplayer The {@link GraphDisplayer} to use in the
-     * {@link GraphRenderable}.
-     */
-//    protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
-//        if (!isInitialised) {
-//            //TODO_TT
-//            //graphRenderable.setGraphDisplayer(grapProcehDisplayer);
-//        }
-//    }
 
     @Override
     protected void cleanup() {
@@ -357,7 +326,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      */
     protected final void addRenderable(final Comparable<Renderable> renderable) {
         if (!isInitialised) {
-            //sceneManager.Add(renderable);
+           // cvkScene.Add(renderable);
             //TODO_TT
             //renderer.addRenderable(renderable);
         }
@@ -435,19 +404,7 @@ public class CVKVisualProcessor extends VisualProcessor {
         // renderer and pulls the instance from there.
         VKData vkData = new VKData();
         vkData.instance = cvkRenderer.GetVkInstance();
-        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);    
-        //canvas.addEventListener(cvkRenderer);
-        //canvas.InitSurface();
-        
-        // The cvkCanvas surface is needed to finish initialising CVKRenderer
-        //vkRenderer.Init(cvkCanvas.surface);
-        //vkRenderer.CreateSwapChain(cvkCanvas.surface);
-        
-//        graphRenderable = new GraphRenderable(this);
-//        final CVKAxesRenderable axesRenderable = new CVKAxesRenderable(this);
-//        final FPSRenderable fpsRenderable = new FPSRenderable(this);
-//        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
-        //canvas = new CVKCanvas(vkData);
+        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);
     }
 
     @Override
@@ -587,7 +544,7 @@ public class CVKVisualProcessor extends VisualProcessor {
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
-        return sceneManager.getChangeProcessor(property);
+        return cvkScene.getChangeProcessor(property);
     }
     
     /**

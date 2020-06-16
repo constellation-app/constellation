@@ -59,6 +59,13 @@ blah: anything else
 */
 
 public class CVKRenderer extends Renderer implements ComponentListener {
+    public interface CVKRenderEventListener {
+        //TODO_TT: how do we handle errors from this?
+        public void SwapChainRezied();
+        public void DeviceInitialised(CVKDevice cvkDevice);
+    }
+    
+    
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
     
@@ -67,13 +74,18 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     protected CVKSwapChain cvkSwapChain = null;
     protected int currentFrame = 0;
     protected List<CVKFrame> cvkFrames = null;
-       
-    
+           
     protected boolean swapChainNeedsRecreation = true;
     protected static boolean debugging = true;
     protected int frameNumber = 0;
     private final CVKVisualProcessor parent;  
+    
+    protected List<CVKRenderEventListener> renderEventListeners = new ArrayList<>();
 
+    
+    public void AddRenderEventListener(CVKRenderEventListener e) {
+        renderEventListeners.add(e);
+    }
 
     /**
      *
@@ -87,6 +99,13 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     public int Init(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Init();
+        
+        if (VkSucceeded(ret)) {
+            renderEventListeners.forEach(listener -> {
+                listener.DeviceInitialised(cvkDevice);
+            });
+        }
+        
         return ret;
     }
     
@@ -101,7 +120,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
             cvkDevice.WaitIdle();
-            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);
+            CVKSwapChain newSwapChain = new CVKSwapChain(cvkDevice);                                 
             ret = newSwapChain.Init();
             if (VkSucceeded(ret)) {
                 if (cvkSwapChain != null) {
@@ -118,7 +137,11 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 cvkFrames = new ArrayList<>(cvkSwapChain.GetImageCount());
                 for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {
                     cvkFrames.add(new CVKFrame(cvkDevice.GetDevice()));
-                }                
+                }
+                
+                renderEventListeners.forEach(listener -> {
+                    listener.SwapChainRezied();
+                });                
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");

@@ -16,9 +16,12 @@
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.visual.Renderable;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 
 public interface CVKRenderable extends Renderable{
 
+    public abstract int SwapChainRezied();
+    public abstract int LoadShaders(CVKDevice cvkDevice);
     
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor

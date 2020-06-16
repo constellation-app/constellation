@@ -43,20 +43,32 @@ import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTE
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_SELECTED;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_X;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTICES_REBUILD;
-import au.gov.asd.tac.constellation.visual.Scene;
+import au.gov.asd.tac.constellation.visual.Renderer;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable.CVKRenderableUpdateTask;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
-public class CVKScene extends Scene{
+public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     private final CVKVisualProcessor parent;
     private final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     
+    protected final Renderer renderer;
+    public List<CVKRenderable> renderables = new ArrayList<>();
+    
+   
+    
+    public void Add(CVKRenderable renderable) {
+        renderables.add(renderable);        
+    }
+    
     public CVKScene(CVKRenderer inRenderer, CVKVisualProcessor inCVKVisualProcessor) {
-        super(inRenderer);
+        renderer = inRenderer;
         parent = inCVKVisualProcessor;
     }
     
@@ -86,7 +98,6 @@ public class CVKScene extends Scene{
     */
     
     
-    @Override
     public void Init() {
         // Idea: add these with events they care about, eg axes don't care about
         // VERTICES_REBUILD
@@ -95,13 +106,21 @@ public class CVKScene extends Scene{
         
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
-        a.PrepareVulkanResources();
                 
         CVKFPSRenderable f = new CVKFPSRenderable(this);
         Add(f);
-        f.PrepareVulkanResources();
     }
     
+    
+    @Override
+    public void SwapChainRezied() {
+        renderables.forEach(renderable -> {renderable.SwapChainRezied();});
+    }
+    
+    @Override
+    public void DeviceInitialised(CVKDevice cvkDevice) {
+        renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
+    }
     
 /**
      * Gets the relevant {@link VisualChangeProcessor} for the specified

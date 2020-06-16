@@ -18,8 +18,11 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import java.beans.Beans;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -38,6 +41,7 @@ import static org.lwjgl.vulkan.KHRWin32Surface.VK_KHR_WIN32_SURFACE_EXTENSION_NA
 import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
+import org.lwjgl.BufferUtils;
 
 public class CVKUtils {
     
@@ -309,6 +313,25 @@ public class CVKUtils {
         }
     }
     
+    /**
+     *
+     * @param refClass
+     * @param resourceName
+     * @return
+     * @throws IOException
+     */
+    public static ByteBuffer LoadFileToDirectBuffer(final Class<?> refClass, final String resourceName) throws IOException {
+        final StringBuilder buf = new StringBuilder();
+        InputStream source = refClass.getResourceAsStream(resourceName);
+        byte[] allBytes = source.readAllBytes();
+        
+        ByteBuffer buffer = BufferUtils.createByteBuffer(allBytes.length);
+        buffer.put(allBytes);
+        buffer.flip();
+        return buffer;          
+    }
+   
+        
     public static boolean VkSucceeded(int ret) { return ret == VK_SUCCESS; }
     public static boolean VkFailed(int ret) { return !VkSucceeded(ret); }
 }
