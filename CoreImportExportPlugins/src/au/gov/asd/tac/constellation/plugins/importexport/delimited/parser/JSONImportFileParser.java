@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javafx.stage.FileChooser;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -98,7 +99,7 @@ public class JSONImportFileParser extends ImportFileParser {
      * it can be assumed that parent is an array and not empty as this is
      * checked in lookForChildArrays.
      */
-    private boolean checkAllArrayItemsAreObjects(JsonNode parent) throws IOException {
+    private boolean checkAllArrayItemsAreObjects(JsonNode parent) {
         
         // Get the first child of the list and ensure all children are same type.
         // We only want a list of lists or a list of objects.
@@ -148,19 +149,16 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     private void lookForChildArrays(JsonNode node, String path, int depth) throws IOException {
         if (node.isArray()) {
-            if (node.size() > 0) {
+            if (node.size() > 0 && checkAllArrayItemsAreObjects(node)) {
                 // Process node content. IF errors are detected an IOException is
                 // thrown so only successful case needs to be handled. On success
                 // update details of list to use.
-                if (checkAllArrayItemsAreObjects(node)) {
                 selectedList = node;
                 selectedListDepth = 1;
-                    
-                }
             }
         } else if (node.size() > 0) {
             // Top level node is not an array, go searching
-            for (Iterator it = node.fields(); it.hasNext();) {
+            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
 
                 // We are only interested in arrays that contain at least one
@@ -200,7 +198,7 @@ public class JSONImportFileParser extends ImportFileParser {
     private ArrayList<String> extractColNamesFromFields(JsonNode node, ArrayList<String> existingColumns, String prefix) {
         if (node.isObject()) {
             // Iterate over each field in object and add its name if it doesnt already exist in results
-            for (Iterator it = node.fields(); it.hasNext();) {
+            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
 
                 if (entry.getValue().isObject()) {
@@ -239,7 +237,7 @@ public class JSONImportFileParser extends ImportFileParser {
         
         // Ensure existingColumns is created if it wasn't already.
         if (existingColumns == null) {
-            existingColumns = new ArrayList<String>();
+            existingColumns = new ArrayList<>();
         }
         
         // Check the first entry in the collection which will either be a list or
@@ -249,9 +247,9 @@ public class JSONImportFileParser extends ImportFileParser {
             // This is a list of lists (rows).
             // Treat first list as column headers.
             for (final JsonNode listNode : parent.get(0)) {
-                // TODO: In future there may be an option to select if first row 
-                //       is column names or actual data, for now use it as
-                //       column headings.
+                // In future there may be an option to select if first row is
+                // column names or actual data, for now use it as column
+                // headings.
                 existingColumns.add(listNode.toString());
             }
         } else {
@@ -306,7 +304,7 @@ public class JSONImportFileParser extends ImportFileParser {
             // to extract its values, if not, extract the value. Note that nested
             // lists will be converted to text, so if a list contains another list,
             // that second list is treated as a single object.
-            for (Iterator it = node.fields(); it.hasNext();) {
+            for (Iterator<Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 Map.Entry<String, JsonNode> entry = (Map.Entry<String, JsonNode>) it.next();
 
                 if (entry.getValue().isObject()) {
@@ -410,11 +408,11 @@ public class JSONImportFileParser extends ImportFileParser {
      *    or differing fields.
      * 
      * @param input Input file
-     * @param parameters the parameters that configure the parse operation.
+     * @param limit How many rows to return
      * @return a List of String arrays, each of which represents a row in the
      * resulting table.
      */
-    private List<String[]> getResults(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
+    private List<String[]> getResults(final InputSource input, final int limit) throws IOException {
         
         try {
             final ArrayList<String[]> results = new ArrayList<>();
@@ -434,7 +432,7 @@ public class JSONImportFileParser extends ImportFileParser {
                 // names and store them in a dictionary mapping them to column
                 // number.
                 ArrayList<String> columns = extractAllColNames(selectedList, null, "");                      
-                Map<String, Integer> columnMap = new HashMap<String, Integer>();
+                Map<String, Integer> columnMap = new HashMap<>();
                 columns.forEach(column -> {
                     columnMap.put(column, columnMap.size());
                 });
@@ -492,7 +490,7 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
-        return getResults(input, parameters, 0);
+        return getResults(input, 0);
     }  
 
     
@@ -509,7 +507,7 @@ public class JSONImportFileParser extends ImportFileParser {
      */
     @Override
     public List<String[]> preview(final InputSource input, final PluginParameters parameters, final int limit) throws IOException {
-        return getResults(input, parameters, limit);
+        return getResults(input, limit);
     }
 
     
