@@ -15,12 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -104,11 +105,13 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     @Override
     public void handleComponentOpened() {
         PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        QualityControlAutoVetter.getInstance().addObserver(dataAccessViewPane);
     }
 
     @Override
     public void handleComponentClosed() {
         PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
     }
 
     @Override

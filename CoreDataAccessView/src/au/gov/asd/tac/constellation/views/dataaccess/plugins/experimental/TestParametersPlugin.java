@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
-import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
@@ -178,10 +177,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         selected.setDescription("Only use selected elements");
         params.addParameter(selected);
 
-        final PluginParameter<StringParameterValue> queryName = StringParameterType.build(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.QUERY_NAME_PARAMETER;
         params.addParameter(queryName);
 
-        final PluginParameter<DateTimeRangeParameterValue> dt = DateTimeRangeParameterType.build(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+        final PluginParameter<DateTimeRangeParameterValue> dt = CoreGlobalParameters.DATETIME_RANGE_PARAMETER;
         params.addParameter(dt);
 
         final PluginParameter<StringParameterValue> string1 = StringParameterType.build(TEST1_PARAMETER_ID);
