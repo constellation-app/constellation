@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import org.lwjgl.system.NativeResource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.LongBuffer;
 import static java.lang.ClassLoader.getSystemClassLoader;
+import org.lwjgl.BufferUtils;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.util.shaderc.Shaderc.*;
@@ -42,6 +44,18 @@ import org.lwjgl.vulkan.VkDevice;
  */
 public class CVKShaderUtils {
 
+    public static SPIRV compileShaderFile( final Class<?> refClass, final String shaderFile, ShaderKind shaderKind){
+        InputStream source = refClass.getResourceAsStream(shaderFile);
+        try {
+            String stringBytes = new String(source.readAllBytes());
+            return compileShader(shaderFile, stringBytes, shaderKind);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
+        return null;
+    }
+    
     public static SPIRV compileShaderFile(String shaderFile, ShaderKind shaderKind) {
         return compileShaderAbsoluteFile(getSystemClassLoader().getResource(shaderFile).toExternalForm(), shaderKind);
     }
