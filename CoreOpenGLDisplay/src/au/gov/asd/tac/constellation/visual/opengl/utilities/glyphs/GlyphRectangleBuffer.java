@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class encapsulates a BufferedImage that holds rectangles containing
@@ -206,25 +207,7 @@ final class GlyphRectangleBuffer {
             g2d.drawImage(img, x, y, null);
 //            g2d.drawImage(img, IDENTITY_OP, x, y);
 
-            rectIndex = memory.size();
-            memory.put(hashCode, rectIndex);
-
-            final int ptr = rectIndex * FLOATS_PER_RECT;
-
-            // Ensure that the coordinates array has enough room to add more coordinates.
-            //
-            if (ptr == rectTextureCoordinates.length) {
-                rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
-            }
-
-            // Texture coordinates are in units of texture buffer size;
-            // each coordinate ranges from 0 to 1. The x coordinate also encodes
-            // the texture page.
-            //
-            rectTextureCoordinates[ptr + 0] = (size() - 1) + (x + extra) / (float) width;
-            rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
-            rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
-            rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
+            rectIndex = putImageInMemory(hashCode, extra, w, h);
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
@@ -232,6 +215,31 @@ final class GlyphRectangleBuffer {
             rectangleCount++;
         }
 
+        return rectIndex;
+    }
+    
+    synchronized private int putImageInMemory(final int hashCode, final int extra , final int w, final int h) {
+        // Add the image to memory
+        int rectIndex = memory.size();
+        memory.put(hashCode, rectIndex);
+
+        final int ptr = rectIndex * FLOATS_PER_RECT;
+
+        // Ensure that the coordinates array has enough room to add more coordinates.
+        //
+        if (ptr == rectTextureCoordinates.length) {
+            rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
+        }
+
+        // Texture coordinates are in units of texture buffer size;
+        // each coordinate ranges from 0 to 1. The x coordinate also encodes
+        // the texture page.
+        //
+        rectTextureCoordinates[ptr + 0] = (size() - 1) + (x + extra) / (float) width;
+        rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
+        rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
+        rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
+        
         return rectIndex;
     }
 
