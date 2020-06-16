@@ -56,6 +56,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -147,6 +148,8 @@ public final class TableViewPane extends BorderPane {
     private final TableView<ObservableList<String>> table;
     private TableFilter<ObservableList<String>> filter;
     private final BorderPane progress;
+    private List<ObservableList<String>> rowList;
+    private List<ObservableList<String>> filteredRowList;
 
     private Button columnVisibilityButton;
     private ToggleButton selectedOnlyButton;
@@ -185,7 +188,7 @@ public final class TableViewPane extends BorderPane {
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));      
-        paginate(null);
+        paginate(rowList);
 
         // TODO: experiment with caching
         table.setCache(false);
@@ -463,13 +466,13 @@ public final class TableViewPane extends BorderPane {
         splitTransactionButton.getItems().add(columnFilterTransaction);
 
         columnIndex.forEach(columnTuple -> {
-            if (columnTuple.getFirst() == "source.") {
+            if (columnTuple.getFirst().equals("source.")) {
                 columnCheckboxesSource.add(getColumnVisibility(columnTuple));
 
-            } else if (columnTuple.getFirst() == "destination.") {
+            } else if (columnTuple.getFirst().equals("destination.")) {
                 columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
 
-            } else if (columnTuple.getFirst() == "transaction.") {
+            } else if (columnTuple.getFirst().equals("transaction.")) {
                 columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
             }
         });
@@ -957,8 +960,8 @@ public final class TableViewPane extends BorderPane {
     }
     
     private void paginate(final List<ObservableList<String>> rows) {
-        final Pagination pagination = new Pagination(table.getItems().size() / MAX_ROWS_PER_PAGE + 1);
-        pagination.setPageFactory(index -> createPage(index, rows));
+        final Pagination pagination = new Pagination(rows == null ? 1 : rows.size() / MAX_ROWS_PER_PAGE + 1);
+        pagination.setPageFactory((index) -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);
         });
@@ -1070,8 +1073,9 @@ public final class TableViewPane extends BorderPane {
                     selectedProperty.removeListener(tableSelectionListener);
 
                     // add table data to table
-                    table.setItems(FXCollections.observableArrayList(rows));                   
-                    paginate(rows);
+                    rowList = rows;
+                    table.setItems(FXCollections.observableArrayList(rowList));
+                    paginate(rowList);
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
@@ -1082,7 +1086,11 @@ public final class TableViewPane extends BorderPane {
                             return false;
                         }
                     });
-                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> table.refresh());
+                    filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
+                        table.refresh();
+                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rowList), filter.getFilteredList().getPredicate());
+                        paginate(filteredRowList);
+                    });
                     updateDataLatch.countDown();
 
                     selectedProperty.addListener(tableSelectionListener);
