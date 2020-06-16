@@ -50,8 +50,6 @@ import org.openide.util.lookup.ServiceProvider;
  * to use, however this first requires an input mechanism on the file importer
  * dialog.
  * 
- * Function Catalog:
- * 
  * @author serpens24
  */
 @ServiceProvider(service = ImportFileParser.class)
