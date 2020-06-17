@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * This class encapsulates a BufferedImage that holds rectangles containing
@@ -114,12 +113,6 @@ final class GlyphRectangleBuffer {
         this.bufferType = bufferType;
         rectBuffers = new ArrayList<>();
         memory = new HashMap<>();
-
-        // Start with room for an arbitrary number of rectangles
-        // so we don't have to grow the array too quickly.
-        //
-        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
-
         reset();
     }
 
@@ -151,6 +144,12 @@ final class GlyphRectangleBuffer {
     }
 
     public void reset() {
+        
+        // Start with room for an arbitrary number of rectangles
+        // so we don't have to grow the array too quickly.
+        //
+        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
+        
         rectBuffers.clear();
         memory.clear();
         if (g2d != null) {
@@ -230,7 +229,7 @@ final class GlyphRectangleBuffer {
      * @param extra The number of extra pixels drawn around the edges of this
      * image to avoid interpolation problems later. Store the actual image but
      * only record the size-extra.
-     * @return
+     * @return rectIndex The index of the rectangle in this.memory.
      */
     int addRectImage(final BufferedImage img, final int extra) {
         final int w = img.getWidth();
@@ -290,7 +289,8 @@ final class GlyphRectangleBuffer {
         // each coordinate ranges from 0 to 1. The x coordinate also encodes
         // the texture page.
         //
-        rectTextureCoordinates[ptr + 0] = (size() - 1) + (x + extra) / (float) width;
+        int pageNumber = size() - 1;
+        rectTextureCoordinates[ptr + 0] = pageNumber + ((x + extra) / (float) width);
         rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
         rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
         rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
