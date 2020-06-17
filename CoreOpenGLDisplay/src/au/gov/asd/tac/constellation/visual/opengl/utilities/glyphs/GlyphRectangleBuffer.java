@@ -272,7 +272,7 @@ final class GlyphRectangleBuffer {
         return rectIndex;
     }
     
-    synchronized private int putImageInMemory(final int hashCode, final int extra , final int w, final int h) {
+    private synchronized int putImageInMemory(final int hashCode, final int extra , final int w, final int h) {
         // Add the image to memory
         int rectIndex = memory.size();
         memory.put(hashCode, rectIndex);
