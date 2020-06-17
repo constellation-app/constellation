@@ -166,7 +166,6 @@ final class GlyphRectangleBuffer {
         
     @Override
     public boolean equals(Object obj) {
-        boolean result = true;
         if (this == obj) {
             return true;
         }
