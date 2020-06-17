@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class encapsulates a BufferedImage that holds rectangles containing
@@ -216,6 +217,25 @@ final class GlyphRectangleBuffer {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.rectBuffers);
+        hash = 47 * hash + this.bufferType;
+        hash = 47 * hash + Objects.hashCode(this.rectBuffer);
+        hash = 47 * hash + this.x;
+        hash = 47 * hash + this.y;
+        hash = 47 * hash + this.maxHeight;
+        hash = 47 * hash + Arrays.hashCode(this.rectTextureCoordinates);
+        hash = 47 * hash + Objects.hashCode(this.memory);
+        hash = 47 * hash + this.rectangleCount;
+        hash = 47 * hash + this.width;
+        hash = 47 * hash + this.height;
+        return hash;
+    }
+    
+    
 
     /**
      * Add a rectangle containing an image to the buffers.
