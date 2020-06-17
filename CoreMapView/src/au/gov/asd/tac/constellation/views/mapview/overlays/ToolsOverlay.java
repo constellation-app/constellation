@@ -103,10 +103,6 @@ public class ToolsOverlay extends MapOverlay {
     private int drawDeltaX = -1;
     private int drawDeltaY = -1;
 
-    public ToolsOverlay() {
-        this.enabled = false;
-    }
-
     @Override
     public String getName() {
         return "Tools Overlay";
@@ -120,13 +116,6 @@ public class ToolsOverlay extends MapOverlay {
     @Override
     public float getY() {
         return renderer.getComponent().getY() + 10f;
-    }
-
-    /**
-     * @return the measureActive
-     */
-    public boolean isMeasureActive() {
-        return measureActive;
     }
 
     private Location getMeasureToolStart() {
@@ -178,7 +167,6 @@ public class ToolsOverlay extends MapOverlay {
                 && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
-                this.isInFocus = !this.isInFocus;
                 mouseLeftMeasureToolRegion = false;
             }
         } else {
@@ -370,6 +358,8 @@ public class ToolsOverlay extends MapOverlay {
                 }
             }
         }
+        
+        active = measureActive || drawActive;
     }
 
     @Override
@@ -390,7 +380,7 @@ public class ToolsOverlay extends MapOverlay {
 
     @Override
     public void mouseClicked(final MouseEvent event) {
-        if (event.getButton() == PConstants.LEFT && !renderer.isIgnoreMapInteractions()) {
+        if (event.getButton() == PConstants.LEFT) {
 
             // draw measure line
             if (mouseLeftMeasureToolRegion && measureActive) {

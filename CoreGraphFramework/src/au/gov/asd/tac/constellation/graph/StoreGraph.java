@@ -21,8 +21,6 @@ import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeRegistry;
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
@@ -129,7 +127,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private GraphEdit graphEdit;
     private int layerMaskSelectedAttributeId = Graph.NOT_FOUND;
     private int vertexLayerMaskAttribureId = Graph.NOT_FOUND;
-    private int transactionFilterBitmaskAttrId = Graph.NOT_FOUND;
+    private int transactionLayerMaskAttrId = Graph.NOT_FOUND;
     private int vertexLayerVisibilityAttributeId = Graph.NOT_FOUND;
     private int transactionLayerVisibilityAttributeId = Graph.NOT_FOUND;
     private int cameraAttributeId = Graph.NOT_FOUND;
@@ -198,9 +196,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 // Loop through all transactions and remove bitmasks
                 final int transactionCount = getTransactionCount();
                 for (int i = 0; i < transactionCount; i++) {
-                    int bitmask = getIntValue(transactionFilterBitmaskAttrId, i);
+                    int bitmask = getIntValue(transactionLayerMaskAttrId, i);
                     bitmask = bitmask & ~(1 << count); // set bit to false
-                    setIntValue(transactionFilterBitmaskAttrId, i, bitmask);
+                    setIntValue(transactionLayerMaskAttrId, i, bitmask);
                 }
             }
             count++;
@@ -459,7 +457,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         // New Parameters copied
         this.layerMaskSelectedAttributeId = original.layerMaskSelectedAttributeId;
         this.vertexLayerMaskAttribureId = original.vertexLayerMaskAttribureId;
-        this.transactionFilterBitmaskAttrId = original.transactionFilterBitmaskAttrId;
+        this.transactionLayerMaskAttrId = original.transactionLayerMaskAttrId;
         this.vertexLayerVisibilityAttributeId = original.vertexLayerVisibilityAttributeId;
         this.transactionLayerVisibilityAttributeId = original.transactionLayerVisibilityAttributeId;
         this.transactionXAttributeId = original.transactionXAttributeId;
@@ -1731,7 +1729,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         layerMaskSelectedAttributeId = LAYER_MASK_SELECTED_ATTRIBUTE_LABEL.equals(label) ? attributeId : layerMaskSelectedAttributeId;
         vertexLayerMaskAttribureId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerMaskAttribureId) : vertexLayerMaskAttribureId;
         vertexLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.VERTEX ? attributeId : vertexLayerVisibilityAttributeId) : vertexLayerVisibilityAttributeId;
-        transactionFilterBitmaskAttrId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionFilterBitmaskAttrId) : transactionFilterBitmaskAttrId;
+        transactionLayerMaskAttrId = LAYER_MASK_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerMaskAttrId) : transactionLayerMaskAttrId;
         transactionLayerVisibilityAttributeId = LAYER_VISIBILITY_ATTRIBUTE_LABEL.equals(label) ? (elementType == GraphElementType.TRANSACTION ? attributeId : transactionLayerVisibilityAttributeId) : transactionLayerVisibilityAttributeId;
 
         return attributeId;
@@ -1986,9 +1984,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     /**
-     * TODO: The definitions outlined within this method can be refactored into
-     * a Concept. The attributes are specific to the layers implementation.
-     *
      * Loop over all queries, recalculate dynamic ones. Append bit flag to
      * bitmask when it satisfies the query.
      *
@@ -2000,20 +1995,14 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private int recalculateLayerMask(final GraphElementType elementType, final int elementId) {
         int bitmask = 0;
         if (elementType == GraphElementType.VERTEX && vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            vertexLayerMaskAttribureId = ensureAttribute(vertexLayerMaskAttribureId,
-                    GraphElementType.VERTEX, IntegerAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_MASK_ATTRIBUTE_LABEL, "Bitmask identifying the layers "
-                    + "this vertex belongs to", 1, null);
+            vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
             if (vertexLayerMaskAttribureId != Graph.NOT_FOUND) {
                 bitmask = getIntValue(vertexLayerMaskAttribureId, elementId);
             }
-        } else if (elementType == GraphElementType.TRANSACTION && transactionFilterBitmaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            transactionFilterBitmaskAttrId = ensureAttribute(transactionFilterBitmaskAttrId,
-                    GraphElementType.TRANSACTION, IntegerAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_MASK_ATTRIBUTE_LABEL, "Bitmask identifying the layers "
-                    + "this transaction belongs to", 1, null);
-            if (transactionFilterBitmaskAttrId != Graph.NOT_FOUND) {
-                bitmask = getIntValue(transactionFilterBitmaskAttrId, elementId);
+        } else if (elementType == GraphElementType.TRANSACTION && transactionLayerMaskAttrId != Graph.NOT_FOUND && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
+            transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
+            if (transactionLayerMaskAttrId != Graph.NOT_FOUND) {
+                bitmask = getIntValue(transactionLayerMaskAttrId, elementId);
             }
         }
 
@@ -2149,22 +2138,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     // update the layer visibility of an element
     private void updateLayerMask(final int attributeId, final GraphElementType elementType, final int elementId, final int selectedLayerMask) {
         final int bitmask = recalculateLayerMask(elementType, elementId);
-        transactionLayerVisibilityAttributeId = ensureAttribute(transactionLayerVisibilityAttributeId,
-                GraphElementType.TRANSACTION,
-                FloatAttributeDescription.ATTRIBUTE_NAME,
-                LAYER_VISIBILITY_ATTRIBUTE_LABEL,
-                "The visibility of the transaction given "
-                + "the layers it belongs to", 1.0f, null);
-
-        vertexLayerVisibilityAttributeId = ensureAttribute(vertexLayerVisibilityAttributeId,
-                GraphElementType.VERTEX,
-                FloatAttributeDescription.ATTRIBUTE_NAME,
-                LAYER_VISIBILITY_ATTRIBUTE_LABEL,
-                "The visibility of the vertex given "
-                + "the layers it belongs to", 1.0f, null);
+        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
+        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
 
         if (elementType == GraphElementType.VERTEX) {
-
             // when attr ids are found
             if (vertexLayerMaskAttribureId != Graph.NOT_FOUND && vertexLayerVisibilityAttributeId != Graph.NOT_FOUND) {
                 // Attributes exist, update bitmask (this eventually becomes more comples to cover all layers). If the bitmask
@@ -2193,11 +2170,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION
-                && transactionFilterBitmaskAttrId != Graph.NOT_FOUND
+                && transactionLayerMaskAttrId != Graph.NOT_FOUND
                 && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
-            if (attributeId != transactionFilterBitmaskAttrId) {
+            if (attributeId != transactionLayerMaskAttrId) {
                 avoidLayerUpdate = true;
-                setIntValue(transactionFilterBitmaskAttrId, elementId, bitmask);
+                setIntValue(transactionLayerMaskAttrId, elementId, bitmask);
                 avoidLayerUpdate = false;
             }
             final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
@@ -2219,43 +2196,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
     // update the layer visibility for an element when an attribute changes
     private void updateLayerMask(final int attributeId, final int elementid) {
-        if (transactionLayerVisibilityAttributeId == Graph.NOT_FOUND) {
-            transactionLayerVisibilityAttributeId = this.addAttribute(
-                    GraphElementType.TRANSACTION,
-                    FloatAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_VISIBILITY_ATTRIBUTE_LABEL,
-                    "The visibility of the transaction given "
-                    + "the layers it belongs to", 1.0f, null);
-        }
-        if (vertexLayerVisibilityAttributeId == Graph.NOT_FOUND) {
-            vertexLayerVisibilityAttributeId = this.addAttribute(
-                    GraphElementType.VERTEX,
-                    FloatAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_VISIBILITY_ATTRIBUTE_LABEL,
-                    "The visibility of the vertex given "
-                    + "the layers it belongs to", 1.0f, null);
-        }
-        if (layerMaskSelectedAttributeId == Graph.NOT_FOUND) {
-            layerMaskSelectedAttributeId = this.addAttribute(
-                    GraphElementType.GRAPH,
-                    IntegerAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_MASK_SELECTED_ATTRIBUTE_LABEL,
-                    "The layers currently enabled for display", 1, null);
-        }
-        if (vertexLayerMaskAttribureId == Graph.NOT_FOUND) {
-            vertexLayerMaskAttribureId = this.addAttribute(
-                    GraphElementType.VERTEX,
-                    IntegerAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_MASK_ATTRIBUTE_LABEL,
-                    "Bitmask identifying the layers this vertex belongs to", 1, null);
-        }
-        if (transactionFilterBitmaskAttrId == Graph.NOT_FOUND) {
-            transactionFilterBitmaskAttrId = this.addAttribute(
-                    GraphElementType.TRANSACTION,
-                    IntegerAttributeDescription.ATTRIBUTE_NAME,
-                    LAYER_MASK_ATTRIBUTE_LABEL,
-                    "Bitmask identifying the layers this transaction belongs to", 1, null);
-        }
+        layerMaskSelectedAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(this);
+        vertexLayerMaskAttribureId = LayersConcept.VertexAttribute.LAYER_MASK.get(this);
+        vertexLayerVisibilityAttributeId = LayersConcept.VertexAttribute.LAYER_VISIBILITY.get(this);
+        transactionLayerMaskAttrId = LayersConcept.TransactionAttribute.LAYER_MASK.get(this);
+        transactionLayerVisibilityAttributeId = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.get(this);
+
         if (attributeId != vertexLayerVisibilityAttributeId && attributeId != transactionLayerVisibilityAttributeId) {
             // get the element type of selected layer mask and recalculate element mask
             currentVisibleMask = (layerMaskSelectedAttributeId != Graph.NOT_FOUND)
@@ -2290,16 +2236,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         final int transactionCount = getTransactionCount();
         for (int i = 0; i < transactionCount; i++) {
             updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
-        }
-    }
-
-    private int ensureAttribute(final int attributeId, final GraphElementType elementType, final String attributeType, final String label,
-            final String description, final Object defaultValue, final String attributeMergerId) {
-        if (attributeDescriptions[attributeId] == null) {
-            return this.addAttribute(elementType, attributeType, label, description,
-                    defaultValue, attributeMergerId);
-        } else {
-            return this.getAttribute(elementType, label);
         }
     }
 

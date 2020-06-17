@@ -18,10 +18,9 @@ package au.gov.asd.tac.constellation.views.layers;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -30,9 +29,10 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -45,6 +45,25 @@ public class LayersViewController {
 
     public LayersViewController(final LayersViewTopComponent parent) {
         this.parent = parent;
+    }
+
+    /**
+     * Add attributes required by the Layers View for it to function
+     */
+    public void addAttributes() {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            PluginExecution.withPlugin(new SimpleEditPlugin("Layers View: Add Required Attributes") {
+                @Override
+                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+                    LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+                    LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
+                    LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
+                    LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
+                    LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+                }
+            }).executeLater(activeGraph);
+        }
     }
 
     /**

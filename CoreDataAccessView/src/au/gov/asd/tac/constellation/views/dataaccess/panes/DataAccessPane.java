@@ -42,6 +42,7 @@ import static au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginType
 import au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.DataAccessPreQueryValidation;
+import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetterListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.QualityControlAutoButton;
 import java.io.File;
 import java.util.ArrayList;
@@ -102,7 +103,7 @@ import org.openide.util.NbPreferences;
  * @author arcturus
  * @author antares
  */
-public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener {
+public class DataAccessPane extends AnchorPane implements PluginParametersPaneListener, QualityControlAutoVetterListener {
 
     // Insets with 0 top and bottom so the title doesn't change size vertically.
     static final Insets HELP_INSETS = new Insets(0, 8, 0, 8);
@@ -116,9 +117,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     private static final String EXECUTE_GO = "Go";
     private static final String EXECUTE_STOP = "Stop";
+    private static final String EXECUTE_CALCULATING = "Calculating";
     private static final String GO_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
     private static final String STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
     private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;";
+    private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;";
 
     private final Preferences dataAccessPrefs = NbPreferences.forModule(DataAccessPreferenceKeys.class);
 
@@ -1031,6 +1034,23 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         dataAccessTabPane.getTabs().stream().filter(this::tabHasEnabledPlugins).forEachOrdered(tab -> {
             getQueryPhasePane(tab).getDataAccessPanes().forEach(dataAccessPane -> dataAccessPane.validityChanged(false));
         });
+    }
+
+    @Override
+    public void qualityControlRuleChanged(final boolean canRun) {
+        if (canRun) {
+            Platform.runLater(() -> {
+                executeButton.setDisable(!canRun);
+                executeButton.setText(EXECUTE_GO);
+                executeButton.setStyle(GO_STYLE);
+            });
+        } else {
+            Platform.runLater(() -> {
+                executeButton.setDisable(!canRun);
+                executeButton.setText(EXECUTE_CALCULATING);
+                executeButton.setStyle(CALCULATING_STYLE);
+            });
+        }
     }
 
     /**
