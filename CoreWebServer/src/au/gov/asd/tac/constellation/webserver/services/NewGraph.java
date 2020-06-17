@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class NewGraph extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String schemaParam = parameters.getStringValue(SCHEMA_PARAMETER_ID);
 
         String schemaName = null;
@@ -121,5 +122,6 @@ public class NewGraph extends RestService {
         root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
         root.put("schema", schemaName);
         mapper.writeValue(out, root);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

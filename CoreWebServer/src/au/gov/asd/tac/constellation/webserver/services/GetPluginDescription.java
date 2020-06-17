@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -69,7 +70,7 @@ public class GetPluginDescription extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
 
         final Plugin plugin = PluginRegistry.get(pluginName);
@@ -96,5 +97,6 @@ public class GetPluginDescription extends RestService {
         });
 
         mapper.writeValue(out, root);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

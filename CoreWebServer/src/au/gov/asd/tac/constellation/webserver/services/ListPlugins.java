@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class ListPlugins extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final boolean alias = parameters.getBooleanValue(ALIAS_PARAMETER_ID);
 
         final ObjectMapper mapper = new ObjectMapper();
@@ -80,5 +81,6 @@ public class ListPlugins extends RestService {
                 });
 
         mapper.writeValue(out, root);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

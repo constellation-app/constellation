@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class ListIcons extends RestService {
     }
 
     @Override
-    public void callService(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public ServiceResponse callService(PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final boolean editable = parameters.getBooleanValue(EDITABLE_PARAMETER_ID);
         final List<String> names = new ArrayList<>(IconManager.getIconNames(editable));
         names.sort(String::compareToIgnoreCase);
@@ -80,5 +81,6 @@ public class ListIcons extends RestService {
         names.forEach(root::add);
 
         mapper.writeValue(out, root);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

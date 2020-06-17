@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -93,27 +94,32 @@ public class RunPlugin extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String pluginName = parameters.getStringValue(PLUGIN_NAME_PARAMETER_ID);
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode json = mapper.readTree(in);
-            if (json.size() > 0) {
-                final Plugin plugin = PluginRegistry.get(pluginName);
-                final PluginParameters pluginParameters = plugin.createParameters();
-                RestServiceUtilities.parametersFromJson((ObjectNode) json, pluginParameters);
-                PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
-            } else {
-                PluginExecution.withPlugin(pluginName).executeNow(graph);
+        if (graph != null ){
+            try {
+                final ObjectMapper mapper = new ObjectMapper();
+                final JsonNode json = mapper.readTree(in);
+                if (json.size() > 0) {
+                    final Plugin plugin = PluginRegistry.get(pluginName);
+                    final PluginParameters pluginParameters = plugin.createParameters();
+                    RestServiceUtilities.parametersFromJson((ObjectNode) json, pluginParameters);
+                    PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
+                } else {
+                    PluginExecution.withPlugin(pluginName).executeNow(graph);
+                }
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new RestServiceException(ex);
+            } catch (final PluginException | IllegalArgumentException ex) {
+                throw new RestServiceException(ex);
             }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RestServiceException(ex);
-        } catch (final PluginException | IllegalArgumentException ex) {
-            throw new RestServiceException(ex);
+        } else {
+            return new ServiceResponse(SC_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
+        return new ServiceResponse(SC_OK, "Successful"); 
     }
 }

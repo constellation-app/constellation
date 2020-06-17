@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -55,7 +56,7 @@ public class ListGraphs extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
         final Map<String, Graph> graphs = GraphNode.getAllGraphs();
@@ -71,5 +72,6 @@ public class ListGraphs extends RestService {
         });
 
         mapper.writeValue(out, root);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

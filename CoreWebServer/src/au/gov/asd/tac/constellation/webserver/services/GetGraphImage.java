@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -56,7 +57,7 @@ public class GetGraphImage extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
 
         // This is asynchronous, so we need a Semaphore.
@@ -73,7 +74,8 @@ public class GetGraphImage extends RestService {
             ImageIO.write(img1[0], "png", out);
         } else {
             throw new IOException("Graph image unavailable");
-        }
+        }        
+        return new ServiceResponse(SC_OK, "Successful"); 
     }
 
     @Override

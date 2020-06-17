@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -70,7 +71,7 @@ public class GetTypeDescription extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String typeName = parameters.getStringValue(TYPE_PARAMETER_ID);
 
         if (!SchemaVertexTypeUtilities.getDefaultType().equals(SchemaVertexTypeUtilities.getType(typeName))) {
@@ -130,5 +131,6 @@ public class GetTypeDescription extends RestService {
         } else {
             throw new IllegalArgumentException(String.format("The type '%s' is unknown.", typeName));
         }
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

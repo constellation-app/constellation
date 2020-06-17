@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
+import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -67,10 +68,11 @@ public class GetIcon extends RestService {
     }
 
     @Override
-    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String iconName = parameters.getStringValue(ICON_PARAMETER_ID);
         final ConstellationIcon icon = IconManager.getIcon(iconName);
         out.write(icon.buildByteArray());
+        return new ServiceResponse(SC_OK, "Successful"); 
     }
 
     @Override
