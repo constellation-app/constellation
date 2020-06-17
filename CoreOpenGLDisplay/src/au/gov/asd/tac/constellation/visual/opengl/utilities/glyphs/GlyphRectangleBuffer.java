@@ -166,9 +166,10 @@ final class GlyphRectangleBuffer {
         
     @Override
     public boolean equals(Object obj) {
+        boolean result = true;
         if (this == obj) {
             return true;
-}
+        }
         if (obj == null) {
             return false;
         }
@@ -205,15 +206,14 @@ final class GlyphRectangleBuffer {
         }
         if (this.rectBuffers.size() != other.rectBuffers.size()) {
             return false;
-        } else {
-            for (int i = 0; this.rectBuffers.size()>i ; i++) {
-                if (!bufferedImagesEqual(this.rectBuffers.get(i), other.rectBuffers.get(i))) {
-                    return false;
-                }
-            }
-        }
+        } 
         if (!Arrays.equals(this.rectTextureCoordinates, other.rectTextureCoordinates)) {
             return false;
+        }
+        for (int i = 0; this.rectBuffers.size()>i ; i++) {
+            if (!bufferedImagesEqual(this.rectBuffers.get(i), other.rectBuffers.get(i))) {
+                return false;
+            }
         }
         return true;
     }
