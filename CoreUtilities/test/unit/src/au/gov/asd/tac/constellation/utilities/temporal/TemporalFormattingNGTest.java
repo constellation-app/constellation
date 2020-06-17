@@ -19,6 +19,7 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
+import java.util.Locale;
 import java.util.logging.Logger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -36,9 +37,9 @@ import org.testng.annotations.Test;
 public class TemporalFormattingNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(TemporalFormattingNGTest.class.getName());
-    private static final DateTimeFormatter MY_DATETIME_FORMATTER = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss z yyyy");
-    private static final DateTimeFormatter MY_DATETIME_FORMATTER2 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss x yyyy");
-    private static final DateTimeFormatter MY_DATETIME_FORMATTER3 = DateTimeFormatter.ofPattern("yyyyMMdd");
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER1 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER2 = DateTimeFormatter.ofPattern("E MMM dd HH:mm:ss x yyyy", Locale.ENGLISH);
+    private static final DateTimeFormatter MY_DATETIME_FORMATTER3 = DateTimeFormatter.ofPattern("yyyyMMdd", Locale.ENGLISH);
 
     public TemporalFormattingNGTest() {
     }
@@ -179,7 +180,7 @@ public class TemporalFormattingNGTest {
     @Test
     public void testParseDateTimeWithZone() {
         String testDateTime = "Tue Apr 23 01:16:42 AEST 2019";
-        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER, LOGGER);
+        final String result = TemporalFormatting.parseAsZonedDateTime(testDateTime, MY_DATETIME_FORMATTER1, LOGGER);
         final String expResult = "2019-04-23 01:16:42.000 +10:00 [Australia/Sydney]";
         assertEquals(result, expResult);
     }
