@@ -156,6 +156,8 @@ public class CVKInstance {
         for (var handler : CVKLOGGER.getHandlers()) {
             handler.flush();
         }
+        
+        // TODO_TT: this has to be false because...
         return VK_FALSE;
     }                
 }

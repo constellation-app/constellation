@@ -11,6 +11,8 @@ layout(std140, binding = 0) uniform UniformBlock {
 
 // === PER VERTEX DATA IN
 // This is a set of data for this vertex.
+// TODO_TT: maybe we can remove data from the vert shader altogether as it is
+// unused and in the geo shader only the first element of data is used.
 layout(location = 0) in ivec2 data;
 layout(location = 1) in vec4 backgroundIconColor;
 

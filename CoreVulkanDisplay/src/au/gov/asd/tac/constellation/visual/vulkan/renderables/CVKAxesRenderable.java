@@ -21,9 +21,21 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
+import static au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable.hDescriptorLayout;
+import java.nio.LongBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
+import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
+import org.lwjgl.vulkan.VkDescriptorSetLayoutBinding;
+import org.lwjgl.vulkan.VkDescriptorSetLayoutCreateInfo;
 
 
 public class CVKAxesRenderable implements CVKRenderable {
@@ -75,10 +87,69 @@ public class CVKAxesRenderable implements CVKRenderable {
     }
     
     
-    @Override
-    public int LoadShaders(CVKDevice cvkDevice) {
+    public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         // load shader (can probably be done earlier)
         return ret;
     }
+    
+    @Override
+    public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        return VK_SUCCESS;
+    }    
+    
+    @Override
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+        assert(descriptorTypeCounts.length == (VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT + 1));
+        ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
+        ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
+    }    
+    
+    
+    public static int CreateDescriptorLayout(CVKDevice cvkDevice) {
+        int ret = VK_SUCCESS;
+        
+        try(MemoryStack stack = stackPush()) {
+            /*
+            Vertex shader needs a uniform buffer.
+            Geometry shader needs a different uniform buffer.
+            Fragment shader needs a sampler2Darray
+            */
+
+//            VkDescriptorSetLayoutBinding.Buffer bindings = VkDescriptorSetLayoutBinding.callocStack(3, stack);
+//
+//            VkDescriptorSetLayoutBinding vertexUBOLayout = bindings.get(0);
+//            vertexUBOLayout.binding(0);
+//            vertexUBOLayout.descriptorCount(1);
+//            vertexUBOLayout.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+//            vertexUBOLayout.pImmutableSamplers(null);
+//            vertexUBOLayout.stageFlags(VK_SHADER_STAGE_VERTEX_BIT);
+//            
+//            VkDescriptorSetLayoutBinding geomUBOLayout = bindings.get(1);
+//            geomUBOLayout.binding(1);
+//            geomUBOLayout.descriptorCount(1);
+//            geomUBOLayout.descriptorType(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER);
+//            geomUBOLayout.pImmutableSamplers(null);
+//            geomUBOLayout.stageFlags(VK_SHADER_STAGE_GEOMETRY_BIT);            
+//
+//            VkDescriptorSetLayoutBinding samplerLayoutBinding = bindings.get(2);
+//            samplerLayoutBinding.binding(2);
+//            samplerLayoutBinding.descriptorCount(1);
+//            samplerLayoutBinding.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+//            samplerLayoutBinding.pImmutableSamplers(null);
+//            samplerLayoutBinding.stageFlags(VK_SHADER_STAGE_FRAGMENT_BIT);
+//
+//            VkDescriptorSetLayoutCreateInfo layoutInfo = VkDescriptorSetLayoutCreateInfo.callocStack(stack);
+//            layoutInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO);
+//            layoutInfo.pBindings(bindings);
+//
+//            LongBuffer pDescriptorSetLayout = stack.mallocLong(1);
+//
+//            ret = vkCreateDescriptorSetLayout(cvkDevice.GetDevice(), layoutInfo, null, pDescriptorSetLayout);
+//            if (VkSucceeded(ret)) {
+//                hDescriptorLayout = pDescriptorSetLayout.get(0);
+//            }
+        }        
+        return ret;
+    }    
 }

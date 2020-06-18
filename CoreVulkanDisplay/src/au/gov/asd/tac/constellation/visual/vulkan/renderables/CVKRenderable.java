@@ -22,7 +22,8 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 public interface CVKRenderable extends Renderable{
 
     public abstract int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-    public abstract int LoadShaders(CVKDevice cvkDevice);
+    public abstract int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);    
     
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor
@@ -33,5 +34,5 @@ public interface CVKRenderable extends Renderable{
     @FunctionalInterface
     public static interface CVKRenderableUpdateTask {
         public void run();
-    }    
+    }                
 }

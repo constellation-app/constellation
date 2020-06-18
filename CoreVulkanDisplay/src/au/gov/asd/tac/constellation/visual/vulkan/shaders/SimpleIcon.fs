@@ -8,7 +8,7 @@
 
 // === UNIFORMS
 // note this is an opaque uniform, ie not data we pass in but an object this shader can reference
-//uniform sampler2DArray images;
+layout(binding = 2) uniform sampler2DArray images;
 
 
 // === PER TEXEL DATA IN

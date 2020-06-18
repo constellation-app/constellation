@@ -193,7 +193,6 @@ public class CVKVisualProcessor extends VisualProcessor {
     protected void initialise() {
         //TODO_TT: the relationship should probably be event-listener
         cvkScene = new CVKScene(cvkRenderer, this);
-        cvkScene.Init();
         cvkRenderer.AddRenderEventListener(cvkScene);
     }
 

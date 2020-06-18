@@ -17,12 +17,11 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import java.beans.Beans;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
@@ -175,7 +174,11 @@ public class CVKUtils {
             }
             else {
                 desc = String.format("Vulkan error [0x%X]", retCode);
-            }           
+            }          
+            CVKLOGGER.severe(String.format("SEVERE: checkVKret failed, %s\nStack:", desc));
+            LogStackTrace(Level.SEVERE);
+            CVKLOGGER.severe("Exception incoming");
+            
             throw new IllegalStateException(desc); 
         }
     }

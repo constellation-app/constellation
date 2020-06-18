@@ -44,6 +44,7 @@ import static org.lwjgl.vulkan.VK10.vkEnumerateDeviceExtensionProperties;
 import static org.lwjgl.vulkan.VK10.vkEnumeratePhysicalDevices;
 import static org.lwjgl.vulkan.VK10.vkGetDeviceQueue;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceFeatures;
+import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceMemoryProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceProperties;
 import static org.lwjgl.vulkan.VK10.vkGetPhysicalDeviceQueueFamilyProperties;
 import org.lwjgl.vulkan.VkCommandPoolCreateInfo;
@@ -54,6 +55,7 @@ import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
+import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkQueue;
 import org.lwjgl.vulkan.VkQueueFamilyProperties;
@@ -71,6 +73,7 @@ public class CVKDevice {
     protected VkPhysicalDeviceFeatures vkPhysicalDeviceFeatures = null;    
     protected VkSurfaceCapabilitiesKHR vkSurfaceCapabilities = null;
     protected VkSurfaceFormatKHR.Buffer vkSurfaceFormats = null;
+    protected VkPhysicalDeviceMemoryProperties vkPhysicalDeviceMemoryProperties = null;
     protected CVKMissingEnums.VkFormat selectedFormat = CVKMissingEnums.VkFormat.VK_FORMAT_NONE;
     protected CVKMissingEnums.VkColorSpaceKHR selectedColourSpace = CVKMissingEnums.VkColorSpaceKHR.VK_COLOR_SPACE_NONE;
     protected CVKMissingEnums.VkPresentModeKHR selectedPresentationMode = CVKMissingEnums.VkPresentModeKHR.VK_PRESENT_MODE_NONE;    
@@ -181,18 +184,26 @@ public class CVKDevice {
         for (int iDevice = 0; (iDevice < numDevices) && vkPhysicalDevice == null; ++iDevice) {
             // Get the count of extensions supported by this device
             VkPhysicalDevice candidate = new VkPhysicalDevice(physicalDevices.get(iDevice), cvkInstance.GetInstance());
+            
+            // Check this device supports geometry shaders
+            VkPhysicalDeviceFeatures candidatePhysicalDeviceFeatures = VkPhysicalDeviceFeatures.mallocStack(stack);
+            vkGetPhysicalDeviceFeatures(candidate, candidatePhysicalDeviceFeatures);
+            if (!candidatePhysicalDeviceFeatures.geometryShader()) {
+                CVKLOGGER.info(String.format("Device %d discarded as it does not support geometry shaders", iDevice));
+            }
+            
+            // Check extensions for Swapchain support
             pInt.put(0, 0);
             ret = vkEnumerateDeviceExtensionProperties(candidate, (String) null, pInt, null);
             if (VkFailed(ret)) return ret;
             int numExtensions = pInt.get(0);
-
             if (numExtensions > 0) {
                 // Get the extensions supported by this device
                 VkExtensionProperties.Buffer deviceExtensions = VkExtensionProperties.mallocStack(numExtensions, stack);
                 ret = vkEnumerateDeviceExtensionProperties(candidate, (String) null, pInt, deviceExtensions);
                 if (VkFailed(ret)) return ret;
 
-                // Enumerate extensins looking for swap chain support.  Stop once requirements met and physical device set.
+                // Enumerate extensions looking for swap chain support.  Stop once requirements met and physical device set.
                 for (int iExtension = 0; (iExtension < numExtensions) && vkPhysicalDevice == null; ++iExtension) {
                     String extensionName = deviceExtensions.position(iExtension).extensionNameString();
                     CVKLOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});
@@ -241,6 +252,10 @@ public class CVKDevice {
             // Device caps for our surface
             vkSurfaceCapabilities = VkSurfaceCapabilitiesKHR.malloc();
             checkVKret(UpdateSurfaceCapabilities());
+            
+            // What memory types are available
+            vkPhysicalDeviceMemoryProperties = VkPhysicalDeviceMemoryProperties.malloc();
+            vkGetPhysicalDeviceMemoryProperties(vkPhysicalDevice, vkPhysicalDeviceMemoryProperties);
   
             // Figure out our ideal backbuffer size
             // The current size of the surface will either be explicit, which we use, or 
@@ -361,6 +376,7 @@ public class CVKDevice {
 
         //TODO_TT: do we need this for Consty?
         VkPhysicalDeviceFeatures features = VkPhysicalDeviceFeatures.callocStack(stack);
+        features.geometryShader(true);
         if (vkPhysicalDeviceFeatures.shaderClipDistance()) {
             features.shaderClipDistance(true);
         }
@@ -480,4 +496,30 @@ public class CVKDevice {
         assert(vkDevice != null);
         vkDeviceWaitIdle(vkDevice);
     }    
+    
+    /**
+     * Use the mask provided by VkMemoryRequirements to return the index of the memory
+     * type we want that match the provided properties bit mask.
+     * 
+     * The reason we need this function is that physical devices may support only some
+     * of the types of display memory types eg device local, host visible.  In addition
+     * to this memory types are referred to by their type index but the same type if 
+     * available can be at different indexes on different gpus.  So this function exists
+     * to map the type we want to the correct index.
+     * 
+     * @param typeFilter 1 << the type we want, which is the representation VkMemoryRequirements uses
+     * @param properties 
+     * @return
+     */
+    public int GetMemoryType(int typeFilter, int properties) {
+        assert(vkPhysicalDeviceMemoryProperties != null);
+        
+        for (int i = 0; i < vkPhysicalDeviceMemoryProperties.memoryTypeCount(); ++i) {
+            if ((typeFilter & (1 << i)) != 0 && (vkPhysicalDeviceMemoryProperties.memoryTypes(i).propertyFlags() & properties) == properties) {
+                return i;
+            }
+        }
+        
+        throw new RuntimeException(String.format("GetMemoryType failed to translate type %d with properties %d", typeFilter, properties));
+    }
 }

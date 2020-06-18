@@ -40,7 +40,7 @@ public class CVKTextRenderable implements CVKRenderable {
     
     
     
-    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -62,13 +62,16 @@ public class CVKTextRenderable implements CVKRenderable {
     public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkDevice, cvkSwapChain);
+            ret = CreatePipelines(cvkDevice, cvkSwapChain);
         }
         return ret;
+    }   
+    
+    @Override
+    public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        return VK_SUCCESS;
     }
     
     @Override
-    public int LoadShaders(CVKDevice cvkDevice) {
-        return VK_SUCCESS;
-    }    
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}
 }
