@@ -136,11 +136,8 @@ public class TemporalFormattingNGTest {
     @Test
     public void testParseDateTimeForRecordWithValidDate() {
         final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
-        final String time = TemporalFormatting.formatAsZonedDateTime(accessor);
-
-        final DateTimeFormatter formatter = TemporalFormatting.UTC_DATE_TIME_FORMATTER;
+        final String result = TemporalFormatting.formatAsZonedDateTime(accessor);
         final String expResult = "2016-06-11 22:48:48.000 +00:00";
-        final String result = TemporalFormatting.parseAsZonedDateTime(time, formatter, LOGGER);
         assertEquals(result, expResult);
     }
 
