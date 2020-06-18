@@ -16,31 +16,36 @@
 package au.gov.asd.tac.constellation.webserver.restapi;
 
 /**
- * This class is used to send custom HTTP error codes generated from the 
+ * This class is used to send custom HTTP status codes generated from the 
  * callService in webserver.services classes.
  */
 public class ServiceResponse { 
-    private String errorMessage;
-    private int errorCode;
+    private String statusMessage;
+    private int statusCode;
     
-    public ServiceResponse(int errorCode, String errorMessage){
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
+    public ServiceResponse(int statusCode){
+        this.statusCode = statusCode;
+        this.statusMessage = null;
+    }
+    
+    public ServiceResponse(int statusCode, String statusMessage){
+        this.statusCode = statusCode;
+        this.statusMessage = statusMessage;
     }    
     
-    public void setErrorCode(int errorCode) {
-        this.errorCode = errorCode;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }    
 
-    public int getErrorCode() {
-        return errorCode;
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getStatusMessage() {
+        return statusMessage;
     }
 }

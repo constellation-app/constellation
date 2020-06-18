@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -74,7 +75,7 @@ public class GetGraph extends RestService {
         root.put("name", name);
         root.put("schema", schemaName);
 
-        mapper.writeValue(out, root);        
-        return new ServiceResponse(SC_OK, "Successful"); 
+        mapper.writeValue(out, root);
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 }

@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.net.HttpURLConnection;
 import javax.swing.SwingUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -77,6 +78,9 @@ public class SetGraph extends RestService {
     @Override
     public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
+        if (GraphNode.getAllGraphs().isEmpty()) {
+            return new ServiceResponse(HTTP_UNPROCESSABLE_ENTITY, "No graph is opened. You need to open " + graphId + " in Constellation.");
+        }
 
         final GraphNode graphNode = GraphNode.getGraphNode(graphId);
         if (graphNode != null) {
@@ -90,9 +94,9 @@ public class SetGraph extends RestService {
             } catch (final InvocationTargetException ex) {
                 throw new RestServiceException(ex);
             }
-        } else {            
-            return new ServiceResponse(SC_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        } else {
+            return new ServiceResponse(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
-        return new ServiceResponse(SC_OK, "Successful");
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 }

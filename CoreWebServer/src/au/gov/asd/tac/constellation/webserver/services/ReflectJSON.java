@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -63,6 +64,6 @@ public class ReflectJSON extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
         mapper.writeValue(out, json);
-        return new ServiceResponse(SC_OK, "Successful");
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 }

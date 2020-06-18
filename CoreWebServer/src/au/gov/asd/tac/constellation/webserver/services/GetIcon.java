@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -72,7 +73,7 @@ public class GetIcon extends RestService {
         final String iconName = parameters.getStringValue(ICON_PARAMETER_ID);
         final ConstellationIcon icon = IconManager.getIcon(iconName);
         out.write(icon.buildByteArray());
-        return new ServiceResponse(SC_OK, "Successful"); 
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 
     @Override

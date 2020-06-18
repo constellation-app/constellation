@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -112,6 +113,6 @@ public class OpenGraph extends RestService {
         } catch (final GraphParseException ex) {
             throw new RestServiceException(ex);
         }
-        return new ServiceResponse(SC_OK, "Successful");
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 }

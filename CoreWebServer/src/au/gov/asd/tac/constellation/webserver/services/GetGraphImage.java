@@ -27,6 +27,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.util.concurrent.Semaphore;
 import javax.imageio.ImageIO;
 import org.openide.util.lookup.ServiceProvider;
@@ -74,8 +75,8 @@ public class GetGraphImage extends RestService {
             ImageIO.write(img1[0], "png", out);
         } else {
             throw new IOException("Graph image unavailable");
-        }        
-        return new ServiceResponse(SC_OK, "Successful"); 
+        }
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 
     @Override

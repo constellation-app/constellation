@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -219,7 +220,7 @@ public class GetRecordStore extends RestService {
         mapper.writeValue(out, root);
 
         ioph.finish();
-        return new ServiceResponse(SC_OK, "Successful");
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 
     /**

@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -122,7 +123,7 @@ public class SetGraphValues extends RestService {
         }
 
         setGraphAttributes(graphId, columns, row);
-        return new ServiceResponse(SC_OK, "Successful");
+        return new ServiceResponse(HttpURLConnection.HTTP_OK);
     }
 
     private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
