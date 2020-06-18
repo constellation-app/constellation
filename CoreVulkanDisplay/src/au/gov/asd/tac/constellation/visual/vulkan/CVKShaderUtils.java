@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import org.lwjgl.system.NativeResource;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -25,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.LongBuffer;
 import static java.lang.ClassLoader.getSystemClassLoader;
+import org.lwjgl.BufferUtils;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 import static org.lwjgl.util.shaderc.Shaderc.*;
@@ -41,21 +43,34 @@ import org.lwjgl.vulkan.VkDevice;
  * Copy of GLTools and Vulkan Tutorial
  */
 public class CVKShaderUtils {
-
-    public static SPIRV compileShaderFile(String shaderFile, ShaderKind shaderKind) {
-        return compileShaderAbsoluteFile(getSystemClassLoader().getResource(shaderFile).toExternalForm(), shaderKind);
-    }
-
-    public static SPIRV compileShaderAbsoluteFile(String shaderFile, ShaderKind shaderKind) {
+    /**
+     * 
+     * @param refClass Base class used as the root folder to search for shaderFile
+     * @param shaderFile Name of the shader to compile
+     * @param shaderKind Type of shader to compile
+     * @return A SPIRV object with the compiled shader in bytes
+     */
+    public static SPIRV compileShaderFile( final Class<?> refClass, final String shaderFile, ShaderKind shaderKind){
+        InputStream source = refClass.getResourceAsStream(shaderFile);
         try {
-            String source = new String(Files.readAllBytes(Paths.get(new URI(shaderFile))));
-            return compileShader(shaderFile, source, shaderKind);
-        } catch (IOException | URISyntaxException e) {
+            String stringBytes = new String(source.readAllBytes());
+            return compileShader(shaderFile, stringBytes, shaderKind);
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        
         return null;
     }
-
+    
+    /**
+     * Uses the lwjgl-shaderc library to compile a shader into SPIRV format
+     * for Vulkan to use.
+     * 
+     * @param filename Filename of the shader
+     * @param source Contents of the shader file in bytes
+     * @param shaderKind Type of shader being compiled
+     * @return A SPIRV object with the compiled shader in bytes
+     */
     public static SPIRV compileShader(String filename, String source, ShaderKind shaderKind) {
 
         long compiler = shaderc_compiler_initialize();
@@ -79,6 +94,9 @@ public class CVKShaderUtils {
         return new SPIRV(result, shaderc_result_get_bytes(result));
     }
 
+    /**
+     * ShaderKind: Vertex, geometry, fragment
+     */
     public enum ShaderKind {
 
         VERTEX_SHADER(shaderc_glsl_vertex_shader),
@@ -92,6 +110,9 @@ public class CVKShaderUtils {
         }
     }
 
+    /**
+     * SPIRV class - holder for the bytecode of a compiled SPIRV shader
+     */
     public static final class SPIRV implements NativeResource {
 
         private final long handle;
