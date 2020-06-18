@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class SceneBatchTests {
+public class SceneBatchNGTest {
 
     @Test
     public void ellipsisIsSingleChar() {
