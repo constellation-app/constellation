@@ -181,7 +181,7 @@ public class ModCountNGTest {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
             int attribute, vertex;
-            final double value = 1, defaultValue = 0;
+            final double value = 1, defaultValue = -1;
             try {
                 vertex = wg.addVertex();
                 attribute = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);
