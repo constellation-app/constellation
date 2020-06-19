@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import org.lwjgl.system.MemoryStack;
@@ -65,7 +67,7 @@ public class CVKTextRenderable implements CVKRenderable {
             // TODO Draw indexed
     }
     
-    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -87,13 +89,19 @@ public class CVKTextRenderable implements CVKRenderable {
     public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkDevice, cvkSwapChain);
+            ret = CreatePipelines(cvkDevice, cvkSwapChain);
         }
         return ret;
+    }   
+    
+    @Override
+    public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        return VK_SUCCESS;
     }
     
     @Override
-    public int LoadShaders(CVKDevice cvkDevice) {
-        return VK_SUCCESS;
-    }    
+    public void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]) {}
+    
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {}
 }

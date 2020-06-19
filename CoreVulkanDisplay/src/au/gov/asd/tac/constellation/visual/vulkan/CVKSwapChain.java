@@ -69,6 +69,7 @@ import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
 import org.lwjgl.vulkan.VkClearValue;
@@ -86,34 +87,56 @@ import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
+import org.lwjgl.vulkan.VkDescriptorPoolSize;
 import org.lwjgl.vulkan.VkExtent2D;
 
+/**
+ * This class owns the presentable Vulkan swapchain.  It is a collection of presentable
+ * images as well as the procedure used for presentation (eg single, double or triple 
+ * buffered, singular or stereoscopic).
+ * 
+ * Swapchains are regularly destroyed when our rendering surface is resized or
+ * recreated (which could happen in response to users changing system display
+ * properties).
+ * 
+ * For most resources controlled by the swapchain there will be an instance held
+ * for each image in the swapchain.  This is so we can utilise Vulkan's buffered
+ * approach to displaying, that is submitting a completed list of commands and
+ * resources and updating the next set before the first has been presented.
+ */
 public class CVKSwapChain {
     protected final CVKDevice cvkDevice;
+    protected final CVKRenderer cvkRenderer; //TODO_TT: only used for verification, Javafy this away?
     protected long hSwapChainHandle = VK_NULL_HANDLE;
     protected long hRenderPassHandle = VK_NULL_HANDLE;
+    protected long hDescriptorPool = VK_NULL_HANDLE;
     protected int imageCount = 0;
     protected List<Long> swapChainImageHandles = null;
     protected List<Long> swapChainImageViewHandles = null;
     protected List<Long> swapChainFramebufferHandles = null;
-    protected List<VkCommandBuffer> commandBuffers = null; 
-    protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);
+    protected List<VkCommandBuffer> commandBuffers = null;
+    protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
     
+    // How big is the pool now?  The actual counts used to sized the pool are multiplied by the number of images in the chain
+    protected int poolDescriptorTypeCounts[] = new int[11];
     
     public int GetImageCount() { return imageCount; }
     public long GetSwapChainHandle() { return hSwapChainHandle; }
     public long GetRenderPassHandle() { return hRenderPassHandle; }
+    public long GetDescriptorPoolHandle() { return hDescriptorPool; }
+    public long GetFrameBufferHandle(int image) { return swapChainFramebufferHandles.get(image); }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
-    public Long GetFrameBufferHandle(int index) { return swapChainFramebufferHandles.get(index); }
     
     
-    public CVKSwapChain(CVKDevice device) {
+    public CVKSwapChain(CVKDevice device, CVKRenderer renderer) {
         cvkDevice = device;
+        cvkRenderer = renderer;
     }
     
     
-    public int Init() {
+    public int Init(CVKSynchronizedDescriptorTypeCounts poolDescriptorTypeCounts) {
         int ret;
         StartLogSection("Init SwapChain");
         try (MemoryStack stack = stackPush()) {                                
@@ -127,6 +150,10 @@ public class CVKSwapChain {
             ret = InitVKCommandBuffers(stack);
             if (VkFailed(ret)) return ret;
             
+            // Do we need a descriptor pool?
+            ret = InitVKDescriptorPool(stack, poolDescriptorTypeCounts);
+            if (VkFailed(ret)) return ret;
+            
             // pipeline?
         }
         EndLogSection("Init SwapChain");   
@@ -134,11 +161,16 @@ public class CVKSwapChain {
     }
 
     
-    public int Deinit() {
-        StartLogSection("Deinit SwapChain");
-        int ret = VK_SUCCESS;
+    public void Deinit() {
+        StartLogSection("Deinit SwapChain");        
+        
+        ReleaseVKDescriptorPool();
+        ReleaseVKCommandBuffers();       
+        ReleaseVKFrameBuffer();      
+        ReleaseVKRenderPass();    
+        ReleaseVKSwapChain();
+      
         EndLogSection("Deinit SwapChain");   
-        return ret;
     }
     
     /**
@@ -382,19 +414,6 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
         }
-        
-        return ret;
-        
-    }
-    
-  
-    public int BuildCommandBuffers(List<CVKRenderable> renderables){
-        int ret = VK_SUCCESS;
-        
-        try (MemoryStack stack = stackPush()) {
-        
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
             VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
             renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
@@ -431,7 +450,128 @@ public class CVKSwapChain {
         }
         
         return ret;
-    }    
+    }
+    
+    
+    public void DescriptorTypeRequirementsUpdated(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts) {
+        cvkRenderer.VerifyInRenderThread();
+        assert(poolDescriptorTypeCounts.length == 11);
+                
+        // If this was set, it is now out of date as descriptorTypeCounts is current        
+        boolean embiggen = false;
+        for (int i = 0; i < 11 && !embiggen; ++i) {
+            if (descriptorTypeCounts.Get(i) > poolDescriptorTypeCounts[i]) {
+                embiggen = true;                
+            }
+        }
+        
+        // desiredPoolDescriptorTypeCounts is only set if the current requirements
+        // exceed what we can allocate in the current pool.
+        if (embiggen) {
+            ReleaseVKDescriptorPool();
+            InitVKDescriptorPool(stackPush(), descriptorTypeCounts);
+        }
+    }
+    
+    
+    protected int GetNumberOfDescripterTypes() {
+        int allTypesCount = 0;
+        for (int i = 0; i < 11; ++i) {
+            if (poolDescriptorTypeCounts[i] > 0) {
+                ++allTypesCount;
+            }
+        }
+        return allTypesCount;
+    }
+
+    
+    /**
+     * Rather than allocate a pool that can only just accommodate our needs we
+     * use a simple minimum then multiple growth.
+     * 
+     * @param type one of the 11 VkDescriptorTypes
+     * @param desired is the minimum size we must accommodate for this size
+     * @return
+     */
+    private static final int MIN_POOL_PERTYPE_SIZE = 10; 
+    private static final float POOL_GROWTH_FACTOR = 1.5f;
+    protected int CalculateDescriptorPoolSizeForType(int type, int current, int desired) {
+        // ignore type for now, same strategy for all types
+        int size = desired;
+        if (size > current) {
+            size = Math.round((float)size * POOL_GROWTH_FACTOR) + 1; 
+        }
+        if (size < MIN_POOL_PERTYPE_SIZE) {
+            size = MIN_POOL_PERTYPE_SIZE;
+        }
+        return size;
+    }
+    
+    
+    public int InitVKDescriptorPool(MemoryStack stack, CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts) {
+        cvkRenderer.VerifyInRenderThread();
+        assert(desiredPoolDescriptorTypeCounts != null);
+        
+        int ret = VK_SUCCESS;
+        
+        // Every renderable object will likely want it's own descriptor set.  For some it will
+        // consist of a uniform buffer, a sampler and image.
+        
+        // To size the descriptor pool we need to know how many objects will have a descriptor set
+        // and what types are in those descriptor sets.
+        
+        // This will need to be resized periodically when new renderable objects are added to our
+        // scene.  The descriptor pool will also need to be recreated to the appropriate size when
+        // the swapchain is rebuilt.
+        
+        // Do we have anything to render?
+        int allTypesCount = desiredPoolDescriptorTypeCounts.NumberOfDescriptorTypes();
+        if (allTypesCount > 0) {
+            VkDescriptorPoolSize.Buffer pPoolSizes = VkDescriptorPoolSize.callocStack(allTypesCount, stack);
+            
+            int iPoolSize = 0;
+            for (int iType = 0; iType < 11; ++iType) {
+                int count = desiredPoolDescriptorTypeCounts.Get(iType);
+                if (count > 0) {
+                    VkDescriptorPoolSize poolSize = pPoolSizes.get(iPoolSize++);
+                    poolSize.type(iType);
+                    int size = CalculateDescriptorPoolSizeForType(iType, 
+                                                                  poolDescriptorTypeCounts[iType],
+                                                                  count); 
+                    poolDescriptorTypeCounts[iType] = size;
+                    CVKLOGGER.info(String.format("Descriptor pool type %d = count %d", iType, size));
+                    
+                    // We will allocate a complete set of descriptors for each image
+                    size *= imageCount;
+                    poolSize.descriptorCount(size);
+                } else {
+                    // We aren't allocating memory for this type
+                    poolDescriptorTypeCounts[iType] = 0;
+                }
+            }
+            
+            VkDescriptorPoolCreateInfo poolInfo = VkDescriptorPoolCreateInfo.callocStack(stack);
+            poolInfo.sType(VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO);
+            poolInfo.pPoolSizes(pPoolSizes);
+            poolInfo.maxSets(imageCount);
+
+            LongBuffer pDescriptorPool = stack.mallocLong(1);
+            ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
+            checkVKret(ret);
+            hDescriptorPool = pDescriptorPool.get(0);                
+        }           
+        assert(hDescriptorPool != VK_NULL_HANDLE);
+
+        return ret;
+    }
+    
+    
+    protected void ReleaseVKDescriptorPool() {}
+    protected void ReleaseVKCommandBuffers() {}       
+    protected void ReleaseVKFrameBuffer() {}      
+    protected void ReleaseVKRenderPass() {}    
+    protected void ReleaseVKSwapChain() {}
+    
     
     public boolean NeedsResize() {
         checkVKret(cvkDevice.UpdateSurfaceCapabilities());

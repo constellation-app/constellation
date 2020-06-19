@@ -43,7 +43,7 @@ import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTE
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_SELECTED;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTEX_X;
 import static au.gov.asd.tac.constellation.utilities.visual.VisualProperty.VERTICES_REBUILD;
-import au.gov.asd.tac.constellation.visual.Renderer;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
@@ -52,28 +52,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.lwjgl.system.MemoryStack;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 
 public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     private final CVKVisualProcessor parent;
     private final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     
-    protected final CVKRenderer renderer;
+    protected final CVKRenderer cvkRenderer;
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
     
     public void Add(CVKRenderable renderable) {
-        // Hydra: this is terrible and needs a better solution
         renderables.add(renderable);
-        
-        renderer.AddRenderable(renderable);
+        cvkRenderer.RenderableAdded(this, renderable);
     }
     
+    public void Remove(CVKRenderable renderable) {
+        renderables.remove(renderable);
+        //cvkRenderer.RenderableAdded(this, false);
+    }    
+    
     public CVKScene(CVKRenderer inRenderer, CVKVisualProcessor inCVKVisualProcessor) {
-        renderer = inRenderer;
+        cvkRenderer = inRenderer;
         parent = inCVKVisualProcessor;
- 
     }
     
     
@@ -102,28 +106,47 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     */
     
     
-    public void Init() {
-        // Idea: add these with events they care about, eg axes don't care about
-        // VERTICES_REBUILD
-        
-        //HACKITY HACKITY HACK
-        
-        CVKAxesRenderable a = new CVKAxesRenderable(this);
-        Add(a);
-                
-        //CVKFPSRenderable f = new CVKFPSRenderable(this);
-        //Add(f);
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        renderables.forEach(renderable -> {renderable.Display(stack, frame, cvkRenderer, cvkDevice, cvkSwapChain, frameIndex);});
     }
     
     
     @Override
-    public void SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         renderables.forEach(renderable -> {renderable.SwapChainRezied(cvkDevice, cvkSwapChain);});
     }
     
     @Override
     public void DeviceInitialised(CVKDevice cvkDevice) {
-        renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
+     // Idea: add these with events they care about, eg axes don't care about
+        // VERTICES_REBUILD
+        
+        //HACKITY HACKITY HACK
+        
+        
+        // Scene knows about all renderable types so build the static descriptor layout
+        // for each class.
+        assert(cvkDevice != null && cvkDevice.GetDevice() != null);
+        checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
+        checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
+        
+        // Load shaders for known renderable types
+        checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
+        checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));        
+        
+        CVKAxesRenderable a = new CVKAxesRenderable(this);
+        Add(a);
+                
+        CVKFPSRenderable f = new CVKFPSRenderable(this);
+        Add(f);              
+        
+        //renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
+    }
+    
+    @Override
+    public void DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        renderables.forEach(renderable -> {renderable.DisplayUpdate(cvkDevice, cvkSwapChain, frameIndex);});
     }
     
 /**
@@ -310,4 +333,8 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     protected void addTask(final CVKRenderableUpdateTask task) {
         taskQueue.add(task);
     }    
+    
+    public void GetDescriptorTypeRequirements(int descriptorTypeCounts[]) {
+        renderables.forEach(renderable -> {renderable.IncrementDescriptorTypeRequirements(descriptorTypeCounts);});
+    }
 }

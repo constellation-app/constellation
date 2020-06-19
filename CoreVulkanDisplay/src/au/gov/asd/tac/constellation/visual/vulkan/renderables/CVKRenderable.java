@@ -17,19 +17,27 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
 import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
-import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.system.MemoryStack;
 
 public interface CVKRenderable extends Renderable{
 
     public abstract int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
+    public abstract int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);  
+    
+    //TEMP TEMP TEMP
+    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     public abstract int LoadShaders(CVKDevice cvkDevice);
     public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
     public abstract VkCommandBuffer GetCommandBuffer();
     public abstract long GetGraphicsPipeline();
     public abstract int GetVertex();
     public abstract void draw(VkCommandBuffer commandBuffer);
-    
+    // TEMP TEMP TEMP
+
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor
      * thread in response to user input.  If those tasks have constructors that 
@@ -39,5 +47,5 @@ public interface CVKRenderable extends Renderable{
     @FunctionalInterface
     public static interface CVKRenderableUpdateTask {
         public void run();
-    }    
+    }                
 }
