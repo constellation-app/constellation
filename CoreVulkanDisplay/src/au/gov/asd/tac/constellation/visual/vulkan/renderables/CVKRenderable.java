@@ -18,11 +18,17 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
+import org.lwjgl.vulkan.VkCommandBuffer;
 
 public interface CVKRenderable extends Renderable{
 
     public abstract int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
     public abstract int LoadShaders(CVKDevice cvkDevice);
+    public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
+    public abstract VkCommandBuffer GetCommandBuffer();
+    public abstract long GetGraphicsPipeline();
+    public abstract int GetVertex();
+    public abstract void draw(VkCommandBuffer commandBuffer);
     
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor

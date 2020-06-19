@@ -43,6 +43,7 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
@@ -58,8 +59,11 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
+import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkOffset2D;
 import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
@@ -79,7 +83,15 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected long pVertexShader = VK_NULL_HANDLE;
     protected long pGeometryShader = VK_NULL_HANDLE;
     protected long pFragmentShader = VK_NULL_HANDLE;
+    public long graphicsPipeline;
     
+    @Override
+    public void draw(VkCommandBuffer commandBuffer){
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
+            
+            // TODO Draw indexed
+    }
     
     private static class Vertex {
         private static final int SIZEOF = 2 * Integer.BYTES + 4 * Float.BYTES;
@@ -161,6 +173,11 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         scene = inScene;
     }
     
+    @Override
+    public long GetGraphicsPipeline(){return graphicsPipeline; }
+    
+    @Override
+    public int GetVertex(){return 0; }
     
     @Override
     public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
@@ -173,6 +190,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         assert(cvkSwapChain.GetWidth() > 0);
         assert(cvkSwapChain.GetHeight() > 0);
         
+        if(true)
+            return 0;
         
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
@@ -222,7 +241,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             VkPipelineShaderStageCreateInfo geomShaderStageInfo = shaderStages.get(1);
             geomShaderStageInfo.sType(VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO);
             geomShaderStageInfo.stage(VK_SHADER_STAGE_GEOMETRY_BIT);
-            geomShaderStageInfo.module(pFragmentShader);
+            geomShaderStageInfo.module(pGeometryShader);
             geomShaderStageInfo.pName(entryPoint);            
 
             VkPipelineShaderStageCreateInfo fragShaderStageInfo = shaderStages.get(2);

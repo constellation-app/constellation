@@ -21,9 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
+import java.nio.LongBuffer;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -42,6 +43,12 @@ import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.BufferUtils;
+import static org.lwjgl.system.MemoryUtil.memAllocLong;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
+import org.lwjgl.vulkan.VkClearColorValue;
+import org.lwjgl.vulkan.VkClearValue;
+import au.gov.asd.tac.constellation.visual.vulkan.maths.*;
+
 
 public class CVKUtils {
     
@@ -321,7 +328,6 @@ public class CVKUtils {
      * @throws IOException
      */
     public static ByteBuffer LoadFileToDirectBuffer(final Class<?> refClass, final String resourceName) throws IOException {
-        final StringBuilder buf = new StringBuilder();
         InputStream source = refClass.getResourceAsStream(resourceName);
         byte[] allBytes = source.readAllBytes();
         
@@ -334,4 +340,132 @@ public class CVKUtils {
         
     public static boolean VkSucceeded(int ret) { return ret == VK_SUCCESS; }
     public static boolean VkFailed(int ret) { return !VkSucceeded(ret); }
+    
+    public static VkClearValue getClearValueColor(Vec3f clearColor){
+    	
+    	VkClearValue clearValues = VkClearValue.calloc();
+        clearValues.color()
+                .float32(0, clearColor.getX())
+                .float32(1, clearColor.getY())
+                .float32(2, clearColor.getZ())
+                .float32(3, 1.0f);
+        
+        return clearValues;
+    }
+    
+    public static VkClearColorValue getClearColorValue(){
+    	
+    	VkClearColorValue clearValues = VkClearColorValue.calloc();
+        clearValues
+                .float32(0, 0.0f)
+                .float32(1, 0.0f)
+                .float32(2, 0.0f)
+                .float32(3, 1.0f);
+        
+        return clearValues;
+    }
+    
+    public static VkClearValue getClearValueDepth(){
+    	
+    	VkClearValue clearValues = VkClearValue.calloc();
+        clearValues.depthStencil()
+        		.depth(1.0f);
+        
+        return clearValues;
+    }
+    
+    public static int getSampleCountBit(int samples){
+    	
+    	int sampleCountBit = 0;
+    	
+    	switch (samples) {
+			case 1: sampleCountBit = VK_SAMPLE_COUNT_1_BIT; break;
+			case 2: sampleCountBit = VK_SAMPLE_COUNT_2_BIT; break;
+			case 4: sampleCountBit = VK_SAMPLE_COUNT_4_BIT; break;
+			case 8: sampleCountBit = VK_SAMPLE_COUNT_8_BIT; break;
+			case 16: sampleCountBit = VK_SAMPLE_COUNT_16_BIT; break;
+			case 32: sampleCountBit = VK_SAMPLE_COUNT_32_BIT; break;
+			case 64: sampleCountBit = VK_SAMPLE_COUNT_64_BIT; break;
+		}
+    	
+    	if (sampleCountBit == 0){
+    		CVKLOGGER.info("Multisamplecount: " + samples + ". Allowed numbers [1,2,4,8,16,32,64]");
+    	}
+    	
+    	return sampleCountBit;
+    }
+    
+//    public static long[] createLongArray(List<DescriptorSet> descriptorSets){
+//    	
+//    	long[] descriptorSetHandles = new long[descriptorSets.size()];
+//    	
+//		for (int i=0; i<descriptorSets.size(); i++){
+//			
+//			descriptorSetHandles[i] = descriptorSets.get(i).getHandle();
+//		}
+//		
+//		return descriptorSetHandles;
+//    }
+//    
+//    public static long[] createLongArray(DescriptorSet descriptorSet){
+//    	
+//    	long[] descriptorSetHandles = new long[1];
+//    	descriptorSetHandles[0] = descriptorSet.getHandle();
+//		
+//		return descriptorSetHandles;
+//    }
+//    
+//    public static LongBuffer createLongBuffer(List<DescriptorSetLayout> descriptorSetLayouts){
+//    	
+//    	if (descriptorSetLayouts.size() == 0){
+//    		CVKLOGGER.info("createLongBuffer: descriptorSetLayouts empty");
+//    	}
+//    	
+//    	LongBuffer descriptorSetLayoutsBuffer = memAllocLong(descriptorSetLayouts.size());
+//		
+//		for (DescriptorSetLayout layout : descriptorSetLayouts){
+//			
+//			descriptorSetLayoutsBuffer.put(layout.getHandle());
+//		}
+//		descriptorSetLayoutsBuffer.flip();
+//		
+//		return descriptorSetLayoutsBuffer;
+//    }
+    
+    public static PointerBuffer createPointerBuffer(List<CVKCommandBuffer> commandBuffers){
+    	
+    	if (commandBuffers.size() == 0){
+    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
+    	}
+    	
+    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+		
+		for (CVKCommandBuffer cmdBuffer : commandBuffers){
+			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+		}
+		
+		cmdBuffersPointer.flip();
+		
+		return cmdBuffersPointer;
+    }
+    
+    public static PointerBuffer createPointerBuffer(Collection<CVKCommandBuffer> commandBuffers){
+    	
+    	if (commandBuffers.size() == 0){
+    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
+    		return null;
+    	}
+    	
+    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+		
+		for (CVKCommandBuffer cmdBuffer : commandBuffers){
+			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+		}
+		
+		cmdBuffersPointer.flip();
+		
+		return cmdBuffersPointer;
+    }
+
+    
 }

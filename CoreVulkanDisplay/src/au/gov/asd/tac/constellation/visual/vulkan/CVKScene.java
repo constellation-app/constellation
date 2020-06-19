@@ -58,18 +58,22 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     private final CVKVisualProcessor parent;
     private final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     
-    protected final Renderer renderer;
+    protected final CVKRenderer renderer;
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
     
     public void Add(CVKRenderable renderable) {
-        renderables.add(renderable);        
+        // Hydra: this is terrible and needs a better solution
+        renderables.add(renderable);
+        
+        renderer.AddRenderable(renderable);
     }
     
     public CVKScene(CVKRenderer inRenderer, CVKVisualProcessor inCVKVisualProcessor) {
         renderer = inRenderer;
         parent = inCVKVisualProcessor;
+ 
     }
     
     
@@ -107,8 +111,8 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
                 
-        CVKFPSRenderable f = new CVKFPSRenderable(this);
-        Add(f);
+        //CVKFPSRenderable f = new CVKFPSRenderable(this);
+        //Add(f);
     }
     
     

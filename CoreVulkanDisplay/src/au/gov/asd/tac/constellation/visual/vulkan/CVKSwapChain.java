@@ -86,6 +86,7 @@ import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import org.lwjgl.vulkan.VkExtent2D;
 
 public class CVKSwapChain {
@@ -104,7 +105,7 @@ public class CVKSwapChain {
     public long GetSwapChainHandle() { return hSwapChainHandle; }
     public long GetRenderPassHandle() { return hRenderPassHandle; }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
-    
+    public Long GetFrameBufferHandle(int index) { return swapChainFramebufferHandles.get(index); }
     
     
     public CVKSwapChain(CVKDevice device) {
@@ -381,38 +382,53 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
         }
+        
+        return ret;
+        
+    }
+    
+  
+    public int BuildCommandBuffers(List<CVKRenderable> renderables){
+        int ret = VK_SUCCESS;
+        
+        try (MemoryStack stack = stackPush()) {
+        
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
-        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+            renderPassInfo.renderPass(hRenderPassHandle);
 
-        VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-        renderPassInfo.renderPass(hRenderPassHandle);
+            VkRect2D renderArea = VkRect2D.callocStack(stack);
+            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            renderArea.extent(vkCurrentImageExtent);
+            renderPassInfo.renderArea(renderArea);
 
-        VkRect2D renderArea = VkRect2D.callocStack(stack);
-        renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-        renderArea.extent(vkCurrentImageExtent);
-        renderPassInfo.renderArea(renderArea);
+            VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+            clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
+            renderPassInfo.pClearValues(clearValues);
 
-        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-        clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
-        renderPassInfo.pClearValues(clearValues);
+            for (int i = 0; i < imageCount; ++i) {
+                assert(swapChainFramebufferHandles.get(i) != VK_NULL_HANDLE);
 
-        for (int i = 0; i < imageCount; ++i) {
-            assert(swapChainFramebufferHandles.get(i) != VK_NULL_HANDLE);
-            
-            VkCommandBuffer commandBuffer = commandBuffers.get(i);
+                VkCommandBuffer commandBuffer = commandBuffers.get(i);
 
-            checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
-            renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
-            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            {
-//                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-//                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+                checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
+                renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
+                vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+                {
+                    // Loop renderables and call draw()
+                    for(int r = 0; r < renderables.size(); ++r){
+                        renderables.get(r).draw(commandBuffer);
+                    }
+    //                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    //                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+                }
+                vkCmdEndRenderPass(commandBuffer);
+                checkVKret(vkEndCommandBuffer(commandBuffer));
             }
-            vkCmdEndRenderPass(commandBuffer);
-            checkVKret(vkEndCommandBuffer(commandBuffer));
-        }    
+        }
         
         return ret;
     }    

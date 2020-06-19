@@ -33,6 +33,7 @@
             </module-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.visual.vulkan</package>
+                <package>au.gov.asd.tac.constellation.visual.vulkan.maths</package>
             </public-packages>
         </data>
     </configuration>

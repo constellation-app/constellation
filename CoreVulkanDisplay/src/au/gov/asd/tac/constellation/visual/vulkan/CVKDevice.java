@@ -30,6 +30,7 @@ import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceFormatsKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfacePresentModesKHR;
 import static org.lwjgl.vulkan.KHRSurface.vkGetPhysicalDeviceSurfaceSupportKHR;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_KHR_SWAPCHAIN_EXTENSION_NAME;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_QUEUE_GRAPHICS_BIT;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
@@ -426,6 +427,7 @@ public class CVKDevice {
         VkCommandPoolCreateInfo poolInfo = VkCommandPoolCreateInfo.callocStack(stack);
         poolInfo.sType(VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO);
         poolInfo.queueFamilyIndex(queueFamilyIndex);
+        poolInfo.flags(VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT);   // Hydra - added this for secondary buffers which we may not need
         LongBuffer pCommandPool = stack.mallocLong(1);
         ret = vkCreateCommandPool(vkDevice, poolInfo, null, pCommandPool);
         if (VkSucceeded(ret)) {
