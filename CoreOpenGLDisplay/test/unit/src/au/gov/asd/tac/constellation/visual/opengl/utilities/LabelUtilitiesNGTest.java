@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl;
+package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class SceneBatchNGTest {
+public class LabelUtilitiesNGTest {
 
     @Test
     public void ellipsisIsSingleChar() {
