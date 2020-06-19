@@ -126,6 +126,7 @@ public class CVKSwapChain {
     public long GetSwapChainHandle() { return hSwapChainHandle; }
     public long GetRenderPassHandle() { return hRenderPassHandle; }
     public long GetDescriptorPoolHandle() { return hDescriptorPool; }
+    public long GetFrameBufferHandle(int image) { return swapChainFramebufferHandles.get(image); }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
      
     

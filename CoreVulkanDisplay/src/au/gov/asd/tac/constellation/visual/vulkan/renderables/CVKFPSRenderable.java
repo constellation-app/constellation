@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
@@ -40,11 +44,14 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import org.lwjgl.PointerBuffer;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -54,12 +61,15 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -71,12 +81,29 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
+import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
+import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
+import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
+import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
+import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
+import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkMapMemory;
+import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
+import org.lwjgl.vulkan.VkClearValue;
+import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
+import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
@@ -94,22 +121,44 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
 public class CVKFPSRenderable extends CVKTextForegroundRenderable{
+    protected static final int MAX_DIGITS = 4;
+    protected static final int ICON_BITS = 16;
+    protected static final int ICON_MASK = 0xffff;    
+    protected static final int DIGIT_ICON_OFFSET = 4;
+    protected static final int FPS_OFFSET = 50;
+    protected static final float FIELD_OF_VIEW = 35; //move to renderer or scene
+    protected static final Matrix44f IDENTITY_44F = Matrix44f.identity();
+    protected static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
+    
+    protected final Vector3f bottomRightCorner = new Vector3f();
+    protected float pixelDensity = 0;
+    protected float pyScale = 0;
+    protected float pxScale = 0;
+    
+    
     protected final CVKScene scene;
     protected static long hVertexShader = VK_NULL_HANDLE;
     protected static long hGeometryShader = VK_NULL_HANDLE;
     protected static long hFragmentShader = VK_NULL_HANDLE;
     protected static long hDescriptorLayout = VK_NULL_HANDLE;
     protected List<Long> pipelines = null;
+    protected List<Long> pipelineLayouts = null;
     protected List<CVKBuffer> vertUniformBuffers = null;
     protected List<CVKBuffer> geomUniformBuffers = null;
+    protected List<CVKBuffer> vertBuffers = null;
+    protected List<VkCommandBuffer> commandBuffers = null;
+    protected Vertex[] vertices = new Vertex[MAX_DIGITS];
+    protected VertexUniformBufferObject vertUBO = new VertexUniformBufferObject();
+    protected GeometryUniformBufferObject geomUBO = new GeometryUniformBufferObject();
     protected List<Long> descriptorSets = null;
     
     
-    private static class Vertex {
+    protected static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
         private static final int SIZEOF = 2 * Integer.BYTES + 4 * Float.BYTES;
@@ -124,6 +173,18 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             data = inData;
             backgroundIconColor = inColour;
         }
+        
+        private static void CopyTo(ByteBuffer buffer, Vertex[] vertices) {
+            for(Vertex vertex : vertices) {
+                buffer.putInt(vertex.data[0]);
+                buffer.putInt(vertex.data[1]);
+                                
+                buffer.putFloat(vertex.backgroundIconColor.a[0]);
+                buffer.putFloat(vertex.backgroundIconColor.a[1]);
+                buffer.putFloat(vertex.backgroundIconColor.a[2]);
+                buffer.putFloat(vertex.backgroundIconColor.a[3]);
+            }
+        }        
 
         /**
          * A VkVertexInputBindingDescription defines the rate at which data is
@@ -187,30 +248,51 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     }
     
     
-    private static class VertexUniformBufferObject {
+    protected static class VertexUniformBufferObject {
         private static final int SIZEOF = (16 + 1 + 1) * Float.BYTES;
 
-        private final Matrix44f mvMatrix;
-        private final float visibilityLow = 0;
-        private final float visibilityHigh = 0;
+        public Matrix44f mvMatrix;
+        public float visibilityLow = 0;
+        public float visibilityHigh = 0;
         
 
         public VertexUniformBufferObject() {
             mvMatrix = new Matrix44f();
         }
+        
+        private void CopyTo(ByteBuffer buffer) {
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(mvMatrix.get(iRow, iCol));
+                }
+            }
+            buffer.putFloat(visibilityLow);
+            buffer.putFloat(visibilityHigh);
+        }         
     }
     
     
-    private static class GeometryUniformBufferObject {
+    protected static class GeometryUniformBufferObject {
         private static final int SIZEOF = (16 + 1 + 1) * Float.BYTES;
 
-        private final Matrix44f pMatrix;
-        private final float pixelDensity = 0;
-        private final float pScale = 0;        
+        public Matrix44f pMatrix;
+        public float pixelDensity = 0;
+        public float pScale = 0;        
 
         public GeometryUniformBufferObject() {
             pMatrix = new Matrix44f();
         }
+        
+        private void CopyTo(ByteBuffer buffer) {
+            // TODO_TT: convert to a blat
+            for (int iRow = 0; iRow < 4; ++iRow) {
+                for (int iCol = 0; iCol < 4; ++iCol) {
+                    buffer.putFloat(pMatrix.get(iRow, iCol));
+                }
+            }
+            buffer.putFloat(pixelDensity);
+            buffer.putFloat(pScale);
+        }             
     }       
     
     
@@ -218,30 +300,249 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         scene = inScene;
     }
     
+    // LIFTED FROM FPSRenderable.java
+    private float calculateXProjectionScale(final int[] viewport) {
+        // calculate the number of pixels a scene object of y-length 1 projects to.
+        final Vector4f proj1 = new Vector4f();
+        //TT: Projects 0,0,0 into an identity matrix scaled to the width and 
+        // height of the viewport (in pixels) and a z of 0->1.  This will lead to
+        // proj1 being width/2, height/2, 0.5
+        Graphics3DUtilities.project(ZERO_3F, IDENTITY_44F, viewport, proj1);
+        final Vector4f proj2 = new Vector4f();
+        final Vector3f unitPosition = new Vector3f(1, 0, 0);
+        //TT: Projecting 1,0,0 into the same space yields width, height/2, 0.5
+        Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
+        //TT: the above seems like a lot of messing around to arrive at 
+        // xScale = width/2
+        final float xScale = proj2.getX() - proj1.getX();
+        //TT: 4/(width/2), what are the 256 and 64?  Magic numbers rock.  Maybe
+        // dimensions of the generated icon texture?  8/width.
+        return (256.0f / 64) / xScale;
+    }
+    private float calculateYProjectionScale(final int[] viewport) {
+        // calculate the number of pixels a scene object of y-length 1 projects to.
+        final Vector4f proj1 = new Vector4f();
+        Graphics3DUtilities.project(ZERO_3F, IDENTITY_44F, viewport, proj1);
+        final Vector4f proj2 = new Vector4f();
+        final Vector3f unitPosition = new Vector3f(0, 1, 0);
+        Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
+        final float yScale = proj2.getY() - proj1.getY();
+        return (256.0f / 64) / yScale;
+    }    
+    
     
     protected int CreateUniformBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
      
         // TODO_TT: investigate a frames in flight < imageCount approach
         int imageCount = cvkSwapChain.GetImageCount();
+        
+        
+        // LIFTED FROM FPSRenerable.reshape(...)
+        //TT: the logic here seems to be the FPS text needs to be 50 pixels from the 
+        // edges, the calculation of dx and dy implies that the viewport is 
+        //-width/2, -height/2, width/2, height/2
+        
+        // whenever the drawable shape changes, recalculate the place where the fps is drawn
+        final int[] viewport = new int[]{0, 0, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight()};
+        final int dx = cvkSwapChain.GetWidth() / 2 - FPS_OFFSET;
+        final int dy = cvkSwapChain.GetHeight() / 2 - FPS_OFFSET;
+        pxScale = calculateXProjectionScale(viewport);
+        pyScale = calculateYProjectionScale(viewport);
+        Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, bottomRightCorner);
+
+        // set the number of pixels per world unit at distance 1
+        pixelDensity = (float) (cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
+        
+             
+        
+        // LIFTED FROM FPSRenerable.display(...)
+        // Initialise source data to sensible values   
+        final Matrix44f scalingMatrix = new Matrix44f();
+        scalingMatrix.makeScalingMatrix(pxScale, pyScale, 0);
+        final Matrix44f srMatrix = new Matrix44f();
+        srMatrix.multiply(scalingMatrix, IDENTITY_44F);
+
+        // build the fps matrix by translating the sr matrix
+        final Matrix44f translationMatrix = new Matrix44f();
+        translationMatrix.makeTranslationMatrix(bottomRightCorner.getX(),
+                                                bottomRightCorner.getY(), 
+                                                bottomRightCorner.getZ());
+        final Matrix44f fpsMatrix = new Matrix44f();
+        fpsMatrix.multiply(translationMatrix, srMatrix);
+                      
                 
+        // In the JOGL version these were in a static var CAMERA that never changed
+        vertUBO.visibilityLow = 0.0f;
+        vertUBO.visibilityHigh = 1.0f;
+                
+        
         //TODO_TT: clean these up
         vertUniformBuffers = new ArrayList<>();
-        geomUniformBuffers = new ArrayList<>();
-        
+        geomUniformBuffers = new ArrayList<>();        
         for (int i = 0; i < imageCount; ++i) {   
-            vertUniformBuffers.add(CVKBuffer.CreateBuffer(cvkDevice, 
+            // Initial fill of the vertex uniform buffer
+            int size = VertexUniformBufferObject.SIZEOF;
+            CVKBuffer vertUniformBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
                                                           VertexUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT));
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                        
+            PointerBuffer vertData = stack.mallocPointer(1);
+            vkMapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, vertData);
+            {
+                vertUBO.CopyTo(vertData.getByteBuffer(0, size));
+            }
+            vkUnmapMemory(cvkDevice.GetDevice(), vertUniformBuffer.GetMemoryBufferHandle());     
+            vertUniformBuffers.add(vertUniformBuffer);            
             
-            geomUniformBuffers.add(CVKBuffer.CreateBuffer(cvkDevice, 
+            // Initial fill of the geometry uniform buffer
+            size = GeometryUniformBufferObject.SIZEOF;
+            CVKBuffer geomUniformBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
                                                           GeometryUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
-                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT));            
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            PointerBuffer geomData = stack.mallocPointer(1);
+            vkMapMemory(cvkDevice.GetDevice(), geomUniformBuffer.GetMemoryBufferHandle(), 0, size, 0, geomData);
+            {
+                geomUBO.CopyTo(geomData.getByteBuffer(0, size));
+            }
+            vkUnmapMemory(cvkDevice.GetDevice(), geomUniformBuffer.GetMemoryBufferHandle());                                      
+            geomUniformBuffers.add(geomUniformBuffer);            
         }
         return ret;                
     }
+    
+    
+    protected int CreateVertexBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        int ret = VK_SUCCESS;
+     
+        // TODO_TT: investigate a frames in flight < imageCount approach
+        int imageCount = cvkSwapChain.GetImageCount();
+                
+        // TODO_TT: clean this up
+        vertBuffers = new ArrayList<>();
+        
+        // Size to upper limit, we don't have to draw each one.
+        int size = vertices.length * Vertex.SIZEOF;
+        for (int i = 0; i < vertices.length; ++i) {
+            int data[] = new int[2];
+            
+            // packed icon indices
+            data[0] = 0; //(backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);;
+            
+            // offset which is used for this digit's position in SimpleIcon.vs
+            data[1] = i * DIGIT_ICON_OFFSET;
+            
+            // colour which is inexplicably converted to a 4x4 matrix in the vert shader
+            Vector4f colour = new Vector4f(1.0f,1.0f,1.0f,1.0f);
+            
+            vertices[i] = new Vertex(data, colour);
+        }
+        
+        //TODO_TT: most if not all of Constellation's vertex buffers won't change after creation
+        // so they should probably be allocated as VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT and staged
+        // to once to fill them (staging buffer this is host visible then copied to the device local)
+        for (int i = 0; i < imageCount; ++i) {   
+            CVKBuffer vertexBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
+                                                            size,
+                                                            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
+                                                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+            vertBuffers.add(vertexBuffer);
+            
+            PointerBuffer data = stack.mallocPointer(1);
+            vkMapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle(), 0, size, 0, data);
+            {
+                Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
+            }
+            vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());            
+        }
+        return ret;  
+    }
+    
+    
+    protected int CreateCommandBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        assert(cvkDevice.GetDevice() != null);
+        assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);           
+                
+        int ret = VK_SUCCESS;
+     
+        // TODO_TT: investigate a frames in flight < imageCount approach
+        int imageCount = cvkSwapChain.GetImageCount();
+        commandBuffers = new ArrayList<>(imageCount);
+
+        // Create
+        VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
+        allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
+        allocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
+        allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+        allocInfo.commandBufferCount(imageCount);
+
+        PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
+        ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), allocInfo, pCommandBuffers);
+        checkVKret(ret);
+
+        for (int i = 0; i < imageCount; ++i) {
+            commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
+        }
+
+        // Fill
+        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+
+        VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+        renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+
+        VkRect2D renderArea = VkRect2D.callocStack(stack);
+        renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+        renderArea.extent(cvkSwapChain.GetExtent());
+        renderPassInfo.renderArea(renderArea);
+
+        VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
+        clearValues.get(0).color().float32(stack.floats(0.0f, 0.0f, 0.5f, 1.0f));
+        clearValues.get(1).depthStencil().set(1.0f, 0);
+
+        renderPassInfo.pClearValues(clearValues);
+
+        for (int i = 0; i < imageCount; ++i) {
+            VkCommandBuffer commandBuffer = commandBuffers.get(i);
+            ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
+            checkVKret(ret);
+
+            renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(i));
+
+            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+            {
+                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(i));
+
+                LongBuffer vertexBuffers = stack.longs(vertBuffers.get(i).GetBufferHandle());
+                LongBuffer offsets = stack.longs(0);
+                
+                // Bind verts
+                vkCmdBindVertexBuffers(commandBuffer, 0, vertexBuffers, offsets);
+
+                // Bind descriptrs
+                vkCmdBindDescriptorSets(commandBuffer, 
+                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                        pipelineLayouts.get(i), 
+                                        0, 
+                                        stack.longs(descriptorSets.get(i)), 
+                                        null);
+                vkCmdDraw(commandBuffer,
+                          2,  //number of verts == number of digits
+                          1,  //no instancing, but we must draw at least 1 point
+                          0,  //first vert index
+                          0); //first instance index (N/A)                         
+            }
+            vkCmdEndRenderPass(commandBuffer);
+            ret = vkEndCommandBuffer(commandBuffer);
+            checkVKret(ret);
+        }
+        
+        return ret;
+    }    
+
     
     protected int CreateDescriptorSets(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret;
@@ -334,6 +635,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     }    
     
     
+        
+    
     
     @Override
     public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
@@ -361,8 +664,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             ret = CreateDescriptorSets(stack, cvkDevice, cvkSwapChain);
             checkVKret(ret);     
             
+            ret = CreateVertexBuffers(stack, cvkDevice, cvkSwapChain);
+            checkVKret(ret);     
+            
             // A complete pipeline for each swapchain image.  Wasteful?
             pipelines = new ArrayList<>(imageCount);            
+            pipelineLayouts = new ArrayList<>(imageCount);   
             for (int i = 0; i < imageCount; ++i) {                              
                 // prepare vertex attributes
 
@@ -490,9 +797,10 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 ret = vkCreatePipelineLayout(cvkDevice.GetDevice(), pipelineLayoutInfo, null, pPipelineLayout);
                 checkVKret(ret);
 
-                long pipelineLayout = pPipelineLayout.get(0);
-                assert(pipelineLayout != VK_NULL_HANDLE);
-
+                long hPipelineLayout = pPipelineLayout.get(0);
+                assert(hPipelineLayout != VK_NULL_HANDLE);
+                pipelineLayouts.add(hPipelineLayout);
+                
                 VkGraphicsPipelineCreateInfo.Buffer pipelineInfo = VkGraphicsPipelineCreateInfo.callocStack(1, stack);
                 pipelineInfo.sType(VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO);
                 pipelineInfo.pStages(shaderStages);
@@ -502,7 +810,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 pipelineInfo.pRasterizationState(rasterizer);
                 pipelineInfo.pMultisampleState(multisampling);
                 pipelineInfo.pColorBlendState(colorBlending);
-                pipelineInfo.layout(pipelineLayout);
+                pipelineInfo.layout(hPipelineLayout);
                 pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
                 pipelineInfo.subpass(0);
                 pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
@@ -520,6 +828,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 pipelines.add(pGraphicsPipeline.get(0));
                 assert(pipelines.get(i) != VK_NULL_HANDLE);        
             }
+            ret = CreateCommandBuffers(stack, cvkDevice, cvkSwapChain);
+            checkVKret(ret);
         }
         return ret;
     }
@@ -646,5 +956,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER];
         // SimpleIcon.fs
         ++descriptorTypeCounts[VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER];
-    }     
+    } 
+    
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        assert(commandBuffers != null);
+        VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
+        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+    }
 }

@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.SPIRV;
@@ -338,4 +340,7 @@ public class CVKAxesRenderable implements CVKRenderable {
         }        
         return ret;
     }    
+    
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {}
 }

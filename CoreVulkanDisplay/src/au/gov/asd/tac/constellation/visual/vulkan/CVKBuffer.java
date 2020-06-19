@@ -37,10 +37,10 @@ public class CVKBuffer {
     protected LongBuffer pBuffer = BufferUtils.createLongBuffer(1);
     protected LongBuffer pBufferMemory = BufferUtils.createLongBuffer(1);
     
-    protected CVKBuffer() { 
-    }
+    protected CVKBuffer() { }
     
     public long GetBufferHandle() { return pBuffer.get(0); }
+    public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
     
     public static CVKBuffer CreateBuffer(CVKDevice cvkDevice,
                                          long size, 

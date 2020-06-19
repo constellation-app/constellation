@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 
@@ -105,6 +106,10 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     */
     
     
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        renderables.forEach(renderable -> {renderable.Display(stack, frame, cvkRenderer, cvkDevice, cvkSwapChain, frameIndex);});
+    }
     
     
     @Override

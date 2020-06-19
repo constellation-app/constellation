@@ -68,6 +68,9 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         public abstract void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
         public abstract void DeviceInitialised(CVKDevice cvkDevice);
         public abstract void DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+        
+        //TEMP TEMP TEMP
+        public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
     
     
@@ -248,7 +251,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
      * @param commandBuffer
      * @return
      */
-    protected int ExecuteCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer commandBuffer) {
+    public int ExecuteCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer commandBuffer) {
         int ret;
         
         CVKAssert(frame != null);
@@ -354,11 +357,17 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     }
                     
                     parent.signalUpdateComplete();     
+                    
+                    //TEMP TEMP TEMP
+                    renderEventListeners.forEach(listener->{
+                        listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
+                    });
+                    //TEMP TEMP TEMP
      
-                     ret = ExecuteCommandBuffer(stack, 
-                                                frame, 
-                                                cvkSwapChain.GetCommandBuffer(imageIndex));
-                     checkVKret(ret);
+//                     ret = ExecuteCommandBuffer(stack, 
+//                                                frame, 
+//                                                cvkSwapChain.GetCommandBuffer(imageIndex));
+//                     checkVKret(ret);
 
                      ret = ReturnImageToSwapchainAndPresent(stack,
                                                             frame,
