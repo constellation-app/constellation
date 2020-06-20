@@ -67,6 +67,12 @@ public class CVKTextRenderable implements CVKRenderable {
             // TODO Draw indexed
     }
     
+    //@Override    
+//    public int LoadShaders(CVKDevice cvkDevice) {
+//        int ret = VK_SUCCESS;
+//        return ret;
+//    }
+    
     public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {

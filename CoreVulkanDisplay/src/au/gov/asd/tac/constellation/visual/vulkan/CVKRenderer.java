@@ -33,8 +33,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.KHRSwapchain.vkAcquireNextImageKHR;
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import java.awt.event.ComponentEvent;
@@ -48,10 +46,11 @@ import org.lwjgl.vulkan.VkPresentInfoKHR;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
-==== BASE ====
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
-==== BASE ====
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
 
 
 /*
@@ -80,6 +79,8 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
     
+    // Set to true to use one command buffer for all renderables
+    static boolean GLOBAL_COMMAND_BUFFER = false;
     
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
@@ -111,6 +112,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
 
     // hack - replace with a getRenderables function from the scene
     public List<CVKRenderable> renderables = new ArrayList<>();
+    protected CVKScene scene = null;
     
     private static float red = 0.0f;
     private static float green = 0.0f;
@@ -199,8 +201,10 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 });
                 
                 // Hydra WIP: Now rebuild the command buffer with all the objects
-                ret = cvkSwapChain.BuildCommandBuffers(renderables);
-                checkVKret(ret);
+                if (GLOBAL_COMMAND_BUFFER) {
+                    ret = cvkSwapChain.BuildCommandBuffers(scene.GetRenderables());
+                    checkVKret(ret);
+                }
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
@@ -462,15 +466,18 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     parent.signalUpdateComplete();     
                     
                     //TEMP TEMP TEMP
-                    renderEventListeners.forEach(listener->{
-                        listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
-                    });
+                    if (!GLOBAL_COMMAND_BUFFER) {
+                        renderEventListeners.forEach(listener->{
+                            listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
+                        });
+                    }
+                    else {
+                        ret = ExecuteCommandBuffer(stack, 
+                               frame, 
+                               cvkSwapChain.GetCommandBuffer(imageIndex));
+                        checkVKret(ret);             
+                    }                   
                     //TEMP TEMP TEMP
-     
-//                     ret = ExecuteCommandBuffer(stack, 
-//                                                frame, 
-//                                                cvkSwapChain.GetCommandBuffer(imageIndex));
-//                     checkVKret(ret);
 
                      ret = ReturnImageToSwapchainAndPresent(stack,
                                                             frame,
@@ -553,7 +560,8 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         int[] descriptorTypeCounts = new int[11];
         cvkScene.GetDescriptorTypeRequirements(descriptorTypeCounts);         
         desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
-                
+
+        scene = cvkScene;
 //        pendingUpdates.add(new CVKUpdateDescriptorTypeRequirements(cvkScene, renderableAdded));
     }
     

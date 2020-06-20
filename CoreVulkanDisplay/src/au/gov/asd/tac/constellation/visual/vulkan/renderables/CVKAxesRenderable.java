@@ -431,13 +431,13 @@ public class CVKAxesRenderable implements CVKRenderable {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            //CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
-            //RecordCommandBuffer(cvkDevice, cvkSwapChain);
+            CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
+            RecordCommandBuffer(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
     
-    
+    //@Override
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
 

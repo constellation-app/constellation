@@ -64,6 +64,9 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
+    public List<CVKRenderable> GetRenderables(){
+        return renderables;
+    }
     
     public void Add(CVKRenderable renderable) {
         renderables.add(renderable);
@@ -128,10 +131,13 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // Scene knows about all renderable types so build the static descriptor layout
         // for each class.
         assert(cvkDevice != null && cvkDevice.GetDevice() != null);
+        
+        // Hydra: Not sure why these are static? called from constructor makes more sense to me
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
         
         // Load shaders for known renderable types
+        // Hydra: Not sure why these are static?
         checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
         checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));        
         

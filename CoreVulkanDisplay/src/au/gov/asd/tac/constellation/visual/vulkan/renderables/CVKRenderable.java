@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.VkCommandBuffer;
 
 public interface CVKRenderable extends Renderable{
 
@@ -30,7 +31,7 @@ public interface CVKRenderable extends Renderable{
     
     //TEMP TEMP TEMP
     public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
-    public abstract int LoadShaders(CVKDevice cvkDevice);
+    //public abstract int LoadShaders(CVKDevice cvkDevice);
     public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
     public abstract VkCommandBuffer GetCommandBuffer();
     public abstract long GetGraphicsPipeline();
