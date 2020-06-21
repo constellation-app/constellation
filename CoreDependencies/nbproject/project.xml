@@ -2056,6 +2056,10 @@
                 <binary-origin>release/modules/ext/javaee-api-7.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-natives-windows.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-gml2-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-xsd-gml2-22.3.jar</binary-origin>
             </class-path-extension>
@@ -2248,6 +2252,10 @@
                 <binary-origin>release/modules/ext/jetty-http-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/si-quantity-0.7.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/si-quantity-0.7.1.jar</binary-origin>
             </class-path-extension>
@@ -2318,14 +2326,6 @@
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-natives-windows.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-jdbc-22.3.jar</runtime-relative-path>
@@ -2524,12 +2524,12 @@
                 <binary-origin>release/modules/ext/ejml-cdense-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl3-awt-0.1.7.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/commons-dbcp-1.4.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-dbcp-1.4.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl3-awt-0.1.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javafx-media-11.0.2.jar</runtime-relative-path>

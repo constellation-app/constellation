@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
@@ -53,17 +55,23 @@ import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.lwjgl.system.MemoryStack;
-import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 
 
 public class CVKScene implements CVKRenderer.CVKRenderEventListener{
-    private final CVKVisualProcessor parent;
-    private final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
+    protected static final float FIELD_OF_VIEW = 35;
+        private static final float PERSPECTIVE_NEAR = 1;
+    private static final float PERSPECTIVE_FAR = 500000;
+    
+    protected final CVKVisualProcessor parent;
+    protected final BlockingQueue<CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
     
     protected final CVKRenderer cvkRenderer;
+    protected final Frustum viewFrustum = new Frustum();
+    private final Matrix44f projectionMatrix = new Matrix44f();
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
+    public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
     
     public void Add(CVKRenderable renderable) {
         renderables.add(renderable);
@@ -114,7 +122,30 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     
     @Override
     public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
-        renderables.forEach(renderable -> {renderable.SwapChainRezied(cvkDevice, cvkSwapChain);});
+        
+        //  Windows-DPI-Scaling
+        //
+        // If JOGL is ever fixed or another solution is found, either change
+        // needsManualDPIScaling to return false (so there is effectively no
+        // DPI scaling here) or remove the scaled height and width below.         
+        float dpiScaleX = 1.0f;
+        float dpiScaleY = 1.0f;
+//        if (GLTools.needsManualDPIScaling()){
+//            dpiScaleX = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleX();
+//            dpiScaleY = (float)((Graphics2D)(parent.canvas).getGraphics()).getTransform().getScaleY();
+//        }
+        
+        // These need to be final as they are used in the lambda function below
+        final int dpiScaledWidth = (int)(cvkSwapChain.GetWidth() * dpiScaleX);
+        final int dpiScaledHeight = (int)(cvkSwapChain.GetHeight() * dpiScaleY);
+        
+        // Create the projection matrix, and load it on the projection matrix stack.
+        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+        
+        projectionMatrix.set(viewFrustum.getProjectionMatrix());      
+        
+        renderables.forEach(renderable -> {
+            renderable.SwapChainRezied(cvkDevice, cvkSwapChain);});
     }
     
     @Override

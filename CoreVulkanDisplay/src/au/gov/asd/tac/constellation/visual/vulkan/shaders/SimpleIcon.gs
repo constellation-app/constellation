@@ -46,7 +46,6 @@ vec4 v;
 
 
 void drawIcon(float x, float y, float radius, int icon, mat4 color) {
-
     if (icon != TRANSPARENT_ICON) {
 
         vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
@@ -76,7 +75,6 @@ void drawIcon(float x, float y, float radius, int icon, mat4 color) {
 }
 
 void main() {
-
     float sideRadius = gRadius[0];
     if (sideRadius > 0) {
 
