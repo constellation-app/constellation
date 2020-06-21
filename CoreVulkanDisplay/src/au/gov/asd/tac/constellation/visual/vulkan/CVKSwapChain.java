@@ -53,7 +53,6 @@ import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BI
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
@@ -69,13 +68,11 @@ import static org.lwjgl.vulkan.VK10.vkCreateFramebuffer;
 import static org.lwjgl.vulkan.VK10.vkCreateImageView;
 import static org.lwjgl.vulkan.VK10.vkCreateRenderPass;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
-import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
 import org.lwjgl.vulkan.VkAttachmentDescription;
 import org.lwjgl.vulkan.VkAttachmentReference;
 import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
-import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkFramebufferCreateInfo;
 import org.lwjgl.vulkan.VkImageViewCreateInfo;
 import org.lwjgl.vulkan.VkOffset2D;
@@ -87,7 +84,11 @@ import org.lwjgl.vulkan.VkSubpassDescription;
 import org.lwjgl.vulkan.VkSurfaceCapabilitiesKHR;
 import org.lwjgl.vulkan.VkSwapchainCreateInfoKHR;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.vkCreateDescriptorPool;
+import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolCreateInfo;
 import org.lwjgl.vulkan.VkDescriptorPoolSize;
 import org.lwjgl.vulkan.VkExtent2D;
@@ -116,7 +117,7 @@ public class CVKSwapChain {
     protected List<Long> swapChainImageHandles = null;
     protected List<Long> swapChainImageViewHandles = null;
     protected List<Long> swapChainFramebufferHandles = null;
-    protected List<VkCommandBuffer> commandBuffers = null;     
+    protected List<VkCommandBuffer> commandBuffers = null;
     protected VkExtent2D vkCurrentImageExtent = VkExtent2D.malloc().set(0,0);    
     
     // How big is the pool now?  The actual counts used to sized the pool are multiplied by the number of images in the chain
@@ -128,7 +129,6 @@ public class CVKSwapChain {
     public long GetDescriptorPoolHandle() { return hDescriptorPool; }
     public long GetFrameBufferHandle(int image) { return swapChainFramebufferHandles.get(image); }
     public VkCommandBuffer GetCommandBuffer(int index) { return commandBuffers.get(index); }
-     
     
     
     public CVKSwapChain(CVKDevice device, CVKRenderer renderer) {
@@ -415,38 +415,53 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
         }
-
-        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
-
-        VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-        renderPassInfo.renderPass(hRenderPassHandle);
-
-        VkRect2D renderArea = VkRect2D.callocStack(stack);
-        renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-        renderArea.extent(vkCurrentImageExtent);
-        renderPassInfo.renderArea(renderArea);
-
-        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-        clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
-        renderPassInfo.pClearValues(clearValues);
-
-        for (int i = 0; i < imageCount; ++i) {
-            assert(swapChainFramebufferHandles.get(i) != VK_NULL_HANDLE);
+        //BuildCommandBuffers
+        
+        return ret;
+    }
+    
+    public int BuildCommandBuffers(List<CVKRenderable> renderables){
+        int ret = VK_SUCCESS;
+        
+        try (MemoryStack stack = stackPush()) {
             
-            VkCommandBuffer commandBuffer = commandBuffers.get(i);
+            // Hydra: add the following two lines...
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
-            checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
-            renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
-            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            {
-//                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-//                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+            renderPassInfo.renderPass(hRenderPassHandle);
+
+            VkRect2D renderArea = VkRect2D.callocStack(stack);
+            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            renderArea.extent(vkCurrentImageExtent);
+            renderPassInfo.renderArea(renderArea);
+
+            VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+            clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
+            renderPassInfo.pClearValues(clearValues);
+
+            for (int i = 0; i < imageCount; ++i) {
+                assert(swapChainFramebufferHandles.get(i) != VK_NULL_HANDLE);
+
+                VkCommandBuffer commandBuffer = commandBuffers.get(i);
+
+                checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
+                renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
+                vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+                {
+                    // Loop renderables and call draw()
+                    for(int r = 0; r < renderables.size(); ++r){
+                        renderables.get(r).draw(commandBuffer);
+                    }
+    //                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+    //                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+                }
+                vkCmdEndRenderPass(commandBuffer);
+                checkVKret(vkEndCommandBuffer(commandBuffer));
             }
-            vkCmdEndRenderPass(commandBuffer);
-            checkVKret(vkEndCommandBuffer(commandBuffer));
-        }    
+        }
         
         return ret;
     }

@@ -33,12 +33,16 @@ import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.nio.ByteBuffer;
 import java.nio.LongBuffer;
 import java.util.logging.Level;
+import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -46,11 +50,14 @@ import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
 import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -60,10 +67,24 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
+import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
+import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
+import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
+import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
+import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
+import org.lwjgl.vulkan.VkClearValue;
+import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
+import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
 import org.lwjgl.vulkan.VkOffset2D;
 import org.lwjgl.vulkan.VkPipelineColorBlendAttachmentState;
@@ -76,22 +97,42 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
+import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkViewport;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
 
 public class CVKAxesRenderable implements CVKRenderable {
     protected final CVKScene scene;
+    
+    // Compiled Shader modules
     protected static long vertShaderModule = 0;
     protected static long fragShaderModule = 0;
-    private long renderPass;
+    
     private long pipelineLayout;
     private long graphicsPipeline;
+    public VkCommandBuffer commandBuffer;
+    private PointerBuffer handlePointer;
+    
+    // DESCRIPTOR SET
+    
     protected static SPIRV vertShaderSPIRV;
     protected static SPIRV fragShaderSPIRV;
+    
     
     public CVKAxesRenderable(CVKScene inScene) {
         scene = inScene;
     }
+    
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(){return commandBuffer; }
+    
+    @Override
+    public long GetGraphicsPipeline(){return graphicsPipeline; }
+    
+    @Override
+    public int GetVertex(){return 3; }
     
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
@@ -104,19 +145,31 @@ public class CVKAxesRenderable implements CVKRenderable {
     @Override
     public void update(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override
-    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
+    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
+        
+    }
     
-    
+    @Override
+    public void draw(VkCommandBuffer commandBuffer){
+
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
+            
+            // TODO Draw indexed
+            //VkDeviceSize offsets[1] = { 0 };
+            //vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline);
+            //vkCmdBindVertexBuffers(cmdBuffer, VERTEX_BUFFER_BIND_ID, 1, &model.vertices.buffer, offsets);
+            //vkCmdBindIndexBuffer(cmdBuffer, model.indices.buffer, 0, VK_INDEX_TYPE_UINT32);
+            //vkCmdDrawIndexed(cmdBuffer, model.indexCount, 1, 0, 0, 0);
+    }
+
     public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        // TODO Add param checking
+        
         int ret = VK_SUCCESS;
         
-        // TODO This is failing atm so just returning
-        if(true)
-            return ret;
-        
         try (MemoryStack stack = stackPush()) {
-            
-            
+                       
             ByteBuffer entryPoint = stack.UTF8("main");
 
             VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.callocStack(2, stack);
@@ -222,7 +275,7 @@ public class CVKAxesRenderable implements CVKRenderable {
             pipelineInfo.pMultisampleState(multisampling);
             pipelineInfo.pColorBlendState(colorBlending);
             pipelineInfo.layout(pipelineLayout);
-            pipelineInfo.renderPass(renderPass);
+            pipelineInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
             pipelineInfo.subpass(0);
             pipelineInfo.basePipelineHandle(VK_NULL_HANDLE);
             pipelineInfo.basePipelineIndex(-1);
@@ -246,11 +299,128 @@ public class CVKAxesRenderable implements CVKRenderable {
         return ret;
     }
     
+    /*
+    device: VK device
+    commandPool: handles the memory for command buffers
+    level: Can be PRIMARY or SECONDAY
+    */
+    public int CreateCommandBuffer(CVKDevice cvkDevice, long commandPool, int level){
+        VkCommandBufferAllocateInfo cmdBufAllocateInfo = VkCommandBufferAllocateInfo.calloc()
+	                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
+	                .commandPool(commandPool)
+	                .level(VK_COMMAND_BUFFER_LEVEL_SECONDARY)  // Testing out secondary buffers
+	                .commandBufferCount(1);
+		 
+        handlePointer = memAllocPointer(1);
+        int err = vkAllocateCommandBuffers(cvkDevice.GetDevice(), cmdBufAllocateInfo, handlePointer);
+
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to allocate command buffer: ");
+        }
+
+        commandBuffer = new VkCommandBuffer(handlePointer.get(0), cvkDevice.GetDevice());
+
+        cmdBufAllocateInfo.free();
+        
+        return 1;
+    }
+    
+    // Testing secondary command buffers for each object
+    @Override
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {	
+        int ret = VK_SUCCESS;
+        
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
+                            .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
+                            .pNext(0)
+                            .framebuffer(0)  // can be null but can have better performance if set
+                            .renderPass(cvkSwapChain.GetRenderPassHandle())
+                            .subpass(0)  // think i read this has to be set...
+                            .occlusionQueryEnable(false)
+                            .queryFlags(0)
+                            .pipelineStatistics(0);
+
+        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc()
+                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+                .pNext(0)
+                .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
+                .pInheritanceInfo(inheritanceInfo);
+
+        int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
+
+        if (err != VK_SUCCESS) {
+                throw new AssertionError("Failed to begin record command buffer: ");
+        }
+
+        // Record stuff here
+        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+        // Check these params with the Oren engine, think they are different for secondary buffers
+        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+                
+        beginInfo.free();
+
+        ret = vkEndCommandBuffer(commandBuffer);
+        if (ret != VK_SUCCESS) {
+            throw new AssertionError("Failed to finish record command buffer: ");
+        }
+       
+        return ret;
+    }
+    
+    //@Override
+    public int RecordPrimaryCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        // TODO add param checking 
+        int ret = VK_SUCCESS;
+        
+        try (MemoryStack stack = stackPush()) {
+            
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+
+            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+
+            renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+
+            VkRect2D renderArea = VkRect2D.callocStack(stack);
+            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            renderArea.extent(cvkSwapChain.GetExtent());
+            renderPassInfo.renderArea(renderArea);
+
+            VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+            clearValues.color().float32(stack.floats(0.0f, 0.0f, 0.0f, 1.0f));
+            renderPassInfo.pClearValues(clearValues);
+
+            if(vkBeginCommandBuffer(commandBuffer, beginInfo) != VK_SUCCESS) {
+                throw new RuntimeException("Failed to begin recording command buffer");
+            }
+
+            renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(0));
+
+            // I believe the render pass should only be done on primary command buffers
+            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+            {
+                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+                // 3 = number of verts, should store this
+                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            }
+            vkCmdEndRenderPass(commandBuffer);
+
+
+            if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
+                throw new RuntimeException("Failed to record command buffer");
+            }
+        }
+        return ret;
+    }
+
     
     public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
-            
+            // Destroy the command buffer
         }
         return ret;
     }
@@ -261,11 +431,13 @@ public class CVKAxesRenderable implements CVKRenderable {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
+            CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
+            RecordCommandBuffer(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
     
-    
+    //@Override
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
 

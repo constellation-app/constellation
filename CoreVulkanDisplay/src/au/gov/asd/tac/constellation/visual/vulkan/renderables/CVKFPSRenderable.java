@@ -156,6 +156,13 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected GeometryUniformBufferObject geomUBO = new GeometryUniformBufferObject();
     protected List<Long> descriptorSets = null;
     
+    @Override
+    public void draw(VkCommandBuffer commandBuffer){
+           // vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+          //  vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
+            
+            // TODO Draw indexed
+    }
     
     protected static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
@@ -336,6 +343,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         // TODO_TT: investigate a frames in flight < imageCount approach
         int imageCount = cvkSwapChain.GetImageCount();
         
+       // if(true)
+       //     return 0;
         
         // LIFTED FROM FPSRenerable.reshape(...)
         //TT: the logic here seems to be the FPS text needs to be 50 pixels from the 
@@ -858,7 +867,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;
     }
         
-    
+    //@Override    
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         

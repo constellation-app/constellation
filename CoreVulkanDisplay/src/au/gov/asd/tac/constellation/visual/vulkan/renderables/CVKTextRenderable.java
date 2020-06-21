@@ -24,9 +24,23 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
+import static org.lwjgl.vulkan.VK10.vkCmdDraw;
+import org.lwjgl.vulkan.VkCommandBuffer;
 
 public class CVKTextRenderable implements CVKRenderable {
+    public VkCommandBuffer commandBuffer;
+    public long graphicsPipeline;
+        
+    @Override
+    public long GetGraphicsPipeline(){return 0; }
+    
+    @Override
+    public int GetVertex(){return 0; }
+    @Override
+    public VkCommandBuffer GetCommandBuffer(){return commandBuffer; }
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
     @Override
@@ -40,7 +54,24 @@ public class CVKTextRenderable implements CVKRenderable {
     @Override
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
     
+    @Override
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        return 0;
+    }
     
+    @Override
+    public void draw(VkCommandBuffer commandBuffer){
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
+            
+            // TODO Draw indexed
+    }
+    
+    //@Override    
+//    public int LoadShaders(CVKDevice cvkDevice) {
+//        int ret = VK_SUCCESS;
+//        return ret;
+//    }
     
     public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;

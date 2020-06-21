@@ -71,8 +71,14 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
+
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
-    
+
+    public List<CVKRenderable> GetRenderables(){
+        return renderables;
+    }
+
+
     public void Add(CVKRenderable renderable) {
         renderables.add(renderable);
         cvkRenderer.RenderableAdded(this, renderable);
@@ -159,10 +165,13 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // Scene knows about all renderable types so build the static descriptor layout
         // for each class.
         assert(cvkDevice != null && cvkDevice.GetDevice() != null);
+        
+        // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
         
         // Load shaders for known renderable types
+        // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
         checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));        
         
