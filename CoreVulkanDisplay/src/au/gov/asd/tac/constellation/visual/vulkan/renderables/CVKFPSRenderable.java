@@ -37,6 +37,7 @@ import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
+import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
@@ -57,14 +58,13 @@ import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_CLOCKWISE;
+import static org.lwjgl.vulkan.VK10.VK_FRONT_FACE_COUNTER_CLOCKWISE;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_LOGIC_OP_COPY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
 import static org.lwjgl.vulkan.VK10.VK_POLYGON_MODE_FILL;
-import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
@@ -128,17 +128,16 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected static final int ICON_MASK = 0xffff;    
     protected static final int DIGIT_ICON_OFFSET = 4;
     protected static final int FPS_OFFSET = 50;
-    protected static final float FIELD_OF_VIEW = 35; //move to renderer or scene
+    protected static final float FIELD_OF_VIEW = 35; //move to renderer or cvkScene
     protected static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     protected static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
     protected final Vector3f bottomRightCorner = new Vector3f();
-    protected float pixelDensity = 0;
     protected float pyScale = 0;
     protected float pxScale = 0;
     
     
-    protected final CVKScene scene;
+    protected final CVKScene cvkScene;
     protected static long hVertexShader = VK_NULL_HANDLE;
     protected static long hGeometryShader = VK_NULL_HANDLE;
     protected static long hFragmentShader = VK_NULL_HANDLE;
@@ -305,12 +304,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     
     public CVKFPSRenderable(CVKScene inScene) {
-        scene = inScene;
+        cvkScene = inScene;
     }
     
     // LIFTED FROM FPSRenderable.java
     private float calculateXProjectionScale(final int[] viewport) {
-        // calculate the number of pixels a scene object of y-length 1 projects to.
+        // calculate the number of pixels a cvkScene object of y-length 1 projects to.
         final Vector4f proj1 = new Vector4f();
         //TT: Projects 0,0,0 into an identity matrix scaled to the width and 
         // height of the viewport (in pixels) and a z of 0->1.  This will lead to
@@ -362,8 +361,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, bottomRightCorner);
 
         // set the number of pixels per world unit at distance 1
-        pixelDensity = (float) (cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
-        
+        geomUBO.pixelDensity = (float)(cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
+        geomUBO.pScale = pyScale;
              
         
         // LIFTED FROM FPSRenerable.display(...)
@@ -378,13 +377,17 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         translationMatrix.makeTranslationMatrix(bottomRightCorner.getX(),
                                                 bottomRightCorner.getY(), 
                                                 bottomRightCorner.getZ());
-        final Matrix44f fpsMatrix = new Matrix44f();
-        fpsMatrix.multiply(translationMatrix, srMatrix);
+        vertUBO.mvMatrix.multiply(translationMatrix, srMatrix);
+        
+        // GL invert Y
                       
                 
         // In the JOGL version these were in a static var CAMERA that never changed
         vertUBO.visibilityLow = 0.0f;
         vertUBO.visibilityHigh = 1.0f;
+        
+        // Get the projection matrix from the scence
+        geomUBO.pMatrix.set(cvkScene.GetProjectionMatrix());
                 
         
         //TODO_TT: clean these up
@@ -761,7 +764,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 // SimpleIcon.gs
                 VkPipelineInputAssemblyStateCreateInfo inputAssembly = VkPipelineInputAssemblyStateCreateInfo.callocStack(stack);
                 inputAssembly.sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO);
-                //inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+//                inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
                 inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
                 inputAssembly.primitiveRestartEnable(false);
 
@@ -791,7 +794,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 rasterizer.polygonMode(VK_POLYGON_MODE_FILL);
                 rasterizer.lineWidth(1.0f);
                 rasterizer.cullMode(VK_CULL_MODE_BACK_BIT);
-                rasterizer.frontFace(VK_FRONT_FACE_CLOCKWISE);
+                rasterizer.frontFace(VK_FRONT_FACE_COUNTER_CLOCKWISE);
                 rasterizer.depthBiasEnable(false);
 
                 // ===> MULTISAMPLING <===
