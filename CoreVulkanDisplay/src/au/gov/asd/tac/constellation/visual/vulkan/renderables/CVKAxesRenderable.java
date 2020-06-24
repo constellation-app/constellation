@@ -70,7 +70,6 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CR
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
@@ -152,8 +151,8 @@ public class CVKAxesRenderable implements CVKRenderable {
     @Override
     public void draw(VkCommandBuffer commandBuffer){
 
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
+            //vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+            //vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
             
             // TODO Draw indexed
             //VkDeviceSize offsets[1] = { 0 };
@@ -296,6 +295,9 @@ public class CVKAxesRenderable implements CVKRenderable {
             vertShaderSPIRV.free();
             fragShaderSPIRV.free();
         }
+        
+        CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
+        
         return ret;
     }
     
@@ -304,10 +306,13 @@ public class CVKAxesRenderable implements CVKRenderable {
     commandPool: handles the memory for command buffers
     level: Can be PRIMARY or SECONDAY
     */
-    public int CreateCommandBuffer(CVKDevice cvkDevice, long commandPool, int level){
+    @Override 
+    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
         VkCommandBufferAllocateInfo cmdBufAllocateInfo = VkCommandBufferAllocateInfo.calloc()
 	                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO)
-	                .commandPool(commandPool)
+	                .commandPool(cvkDevice.GetCommandPoolHandle())
 	                .level(VK_COMMAND_BUFFER_LEVEL_SECONDARY)  // Testing out secondary buffers
 	                .commandBufferCount(1);
 		 
@@ -322,49 +327,66 @@ public class CVKAxesRenderable implements CVKRenderable {
 
         cmdBufAllocateInfo.free();
         
-        return 1;
+        CVKLOGGER.log(Level.INFO, "Init Command Buffer - Ax.");
+        
+        return ret;
     }
-    
+       
     // Testing secondary command buffers for each object
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {	
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo) {	
         int ret = VK_SUCCESS;
+
+        // TODO: should the stack be passed though as a parameter?
+        try (MemoryStack stack = stackPush()) {
+
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc()
+                    .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+                    .pNext(0)
+                    .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
+                    .pInheritanceInfo(inheritanceInfo);     
+
+            int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
+            if (err != VK_SUCCESS) {
+                    throw new AssertionError("Failed to begin record command buffer: ");
+            }
+
+            // Viewport
+            VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
+            viewport.x(0.0f);
+            viewport.y(0.0f);
+            viewport.width(cvkSwapChain.GetWidth());
+            viewport.height(cvkSwapChain.GetHeight());
+            viewport.minDepth(0.0f);
+            viewport.maxDepth(1.0f);
+         
+            // Scissor
+            VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
+            scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
+            scissor.extent(cvkDevice.GetCurrentSurfaceExtent()); 
+
+            VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
+            viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
+            viewportState.pViewports(viewport);
+            viewportState.pScissors(scissor);            
+
+            // TODO! This is weird, example on setting viewort and scissors without the pipeline layout?
+            //vkCmdSetViewport()
+            
+            // Record stuff here
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+
+            // Check these params with the Oren engine, think they are different for secondary buffers
+            vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+
+            beginInfo.free();
+
+            ret = vkEndCommandBuffer(commandBuffer);
+            if (ret != VK_SUCCESS) {
+                throw new AssertionError("Failed to finish record command buffer: ");
+            }
+        }
         
-        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
-                            .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-                            .pNext(0)
-                            .framebuffer(0)  // can be null but can have better performance if set
-                            .renderPass(cvkSwapChain.GetRenderPassHandle())
-                            .subpass(0)  // think i read this has to be set...
-                            .occlusionQueryEnable(false)
-                            .queryFlags(0)
-                            .pipelineStatistics(0);
-
-        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc()
-                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
-                .pNext(0)
-                .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
-                .pInheritanceInfo(inheritanceInfo);
-
-        int err = vkBeginCommandBuffer(commandBuffer, beginInfo);
-
-        if (err != VK_SUCCESS) {
-                throw new AssertionError("Failed to begin record command buffer: ");
-        }
-
-        // Record stuff here
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-        // Check these params with the Oren engine, think they are different for secondary buffers
-        vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-                
-        beginInfo.free();
-
-        ret = vkEndCommandBuffer(commandBuffer);
-        if (ret != VK_SUCCESS) {
-            throw new AssertionError("Failed to finish record command buffer: ");
-        }
-       
         return ret;
     }
     
@@ -431,8 +453,9 @@ public class CVKAxesRenderable implements CVKRenderable {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
-            RecordCommandBuffer(cvkDevice, cvkSwapChain);
+            InitCommandBuffer(cvkDevice, cvkSwapChain);
+            //CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
+            //RecordCommandBuffer(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
@@ -450,6 +473,8 @@ public class CVKAxesRenderable implements CVKRenderable {
         } catch(Exception ex){
             CVKLOGGER.log(Level.WARNING, "Failed to compile AxesRenderable shaders: {0}", ex.toString());
         }
+        
+        CVKLOGGER.log(Level.INFO, "Static shaders loaded for AxesRenderable class");
         return ret;
     }
     
