@@ -26,7 +26,9 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.compare.CompareGraphAction")
-@ActionRegistration(displayName = "#CTL_CompareGraphAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CompareGraphAction",
+        iconBase = "au/gov/asd/tac/constellation/functionality/compare/compareGraph.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/Tools", position = 600)
 @Messages("CTL_CompareGraphAction=Compare Graph")
 public final class CompareGraphAction implements ActionListener {
