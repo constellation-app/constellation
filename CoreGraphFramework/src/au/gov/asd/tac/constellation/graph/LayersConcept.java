@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -56,6 +57,18 @@ public class LayersConcept extends SchemaConcept {
         public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
                 .setDescription("The layers currently enabled for display")
                 .setDefaultValue(1)
+                .create()
+                .build();
+
+        public static final SchemaAttribute LAYER_QUERIES = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "layer_queries")
+                .setDescription("The dynamic layer queries currently stored")
+                .setDefaultValue(null)
+                .create()
+                .build();
+
+        public static final SchemaAttribute LAYER_PREFERENCES = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "layer_preferences")
+                .setDescription("The type of layer stored in the layers queries")
+                .setDefaultValue(null)
                 .create()
                 .build();
     }

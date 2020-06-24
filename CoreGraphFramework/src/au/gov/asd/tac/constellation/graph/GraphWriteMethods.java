@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph;
 
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
-import java.util.List;
 
 /**
  * GraphWriteMethods extends GraphReadMethods and adds methods that allow
@@ -41,12 +40,9 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param elementType the element type.
      * @param attributes the ids of the attributes that will make up the primary
      * key for this element type.
-     * @see
-     * GraphReadMethods#getPrimaryKey(GraphElementType)
-     * @see
-     * GraphWriteMethods#validateKey(GraphElementType, boolean)
-     * @see
-     * GraphWriteMethods#validateKey(GraphElementType, int, boolean)
+     * @see GraphReadMethods#getPrimaryKey(GraphElementType)
+     * @see GraphWriteMethods#validateKey(GraphElementType, boolean)
+     * @see GraphWriteMethods#validateKey(GraphElementType, int, boolean)
      */
     public void setPrimaryKey(final GraphElementType elementType, final int... attributes);
 
@@ -69,10 +65,8 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws DuplicateKeyException if a primary key clash occurred and either
      * merging was not allowed or the graph's merger was unable to merge the two
      * elements.
-     * @see
-     * GraphReadMethods#getPrimaryKey(GraphElementType)
-     * @see
-     * GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
+     * @see GraphReadMethods#getPrimaryKey(GraphElementType)
+     * @see GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
      */
     public void validateKey(final GraphElementType elementType, final boolean allowMerging) throws DuplicateKeyException;
 
@@ -96,10 +90,8 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws DuplicateKeyException if a primary key clash occurred and either
      * merging was not allowed or the graph's merger was unable to merge the two
      * elements.
-     * @see
-     * GraphReadMethods#getPrimaryKey(GraphElementType)
-     * @see
-     * GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
+     * @see GraphReadMethods#getPrimaryKey(GraphElementType)
+     * @see GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
      */
     public void validateKey(final GraphElementType elementType, final int element, final boolean allowMerging) throws DuplicateKeyException;
 
@@ -269,7 +261,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      *
      * @return the id of the new attribute.
      */
-    int addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+    int addAttribute(final GraphElementType elementType, final String attributeType, final String label,
             final String description, final Object defaultValue, final String attributeMergerId);
 
     /**
@@ -576,12 +568,4 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#ORDERED
      */
     public void setAttributeIndexType(final int attribute, final GraphIndexType indexType);
-
-    /**
-     * Sets the queries currently linked to layers on the graph.
-     *
-     * @param queries the list of String queries to layer a graph by.
-     */
-    public void setLayerQueries(final List<String> queries);
-
 }
