@@ -6,7 +6,7 @@
     <description>Builds, tests, and runs the project au.gov.asd.tac.constellation.dependencies.</description>
     <import file="nbproject/build-impl.xml"/>
 
-    <import file="${suite.dir}/../constellation/ProjectUpdater/src/build.xml" />
+    <import file="${suite.dir}/ProjectUpdater/src/build.xml" />
     <target name="netbeans" depends="update-dependencies">
         <ant target="projectized-common.netbeans" />
     </target>
