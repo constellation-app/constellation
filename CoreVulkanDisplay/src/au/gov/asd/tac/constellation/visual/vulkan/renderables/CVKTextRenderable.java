@@ -41,7 +41,7 @@ public class CVKTextRenderable implements CVKRenderable {
     @Override
     public int GetVertex(){return 0; }
     @Override
-    public VkCommandBuffer GetCommandBuffer(){return commandBuffer; }
+    public VkCommandBuffer GetCommandBuffer(int index){return commandBuffer; }
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
     @Override
@@ -54,19 +54,13 @@ public class CVKTextRenderable implements CVKRenderable {
     public void update(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
     @Override
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
-    
+   
     @Override
     public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo) {
         return 0;
     }
-    
     @Override
-    public void draw(VkCommandBuffer commandBuffer){
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
-            
-            // TODO Draw indexed
-    }
+    public boolean IsDirty(){return true; }
     
     @Override 
     public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){

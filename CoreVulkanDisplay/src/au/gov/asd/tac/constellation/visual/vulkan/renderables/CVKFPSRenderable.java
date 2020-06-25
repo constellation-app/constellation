@@ -155,18 +155,17 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected VertexUniformBufferObject vertUBO = new VertexUniformBufferObject();
     protected GeometryUniformBufferObject geomUBO = new GeometryUniformBufferObject();
     protected List<Long> descriptorSets = null;
+    protected boolean isDirty = true;
+     
     
     @Override
-    public void draw(VkCommandBuffer commandBuffer){
-           // vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-          //  vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
-            
-            // TODO Draw indexed
+    public VkCommandBuffer GetCommandBuffer(int index){
+        assert(index < commandBuffers.size());
+        return commandBuffers.get(index); 
     }
     
-    
     @Override
-    public VkCommandBuffer GetCommandBuffer(){return commandBuffers.get(0); }
+    public boolean IsDirty(){return isDirty; }
     
     protected static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
@@ -511,7 +510,6 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;
     }
     
-    //protected int CreateCommandBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
     @Override
     public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo){
     
@@ -869,9 +867,6 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 pipelines.add(pGraphicsPipeline.get(0));
                 assert(pipelines.get(i) != VK_NULL_HANDLE);        
             }
-            //ret = CreateCommandBuffers(stack, cvkDevice, cvkSwapChain);
-            //ret = RecordCommandBuffers(stack, cvkDevice, cvkSwapChain);
-            //checkVKret(ret);
         }
         return ret;
     }
@@ -920,11 +915,11 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 throw new RuntimeException("Failed to create shader from SimpleIcon.vs.spv bytes");
             }            
             hGeometryShader = CVKShaderUtils.createShaderModule(gsBytes, cvkDevice.GetDevice());
-            if (hVertexShader == VK_NULL_HANDLE) {
+            if (hGeometryShader == VK_NULL_HANDLE) {
                 throw new RuntimeException("Failed to create shader from SimpleIcon.gs.spv bytes");
             }             
             hFragmentShader = CVKShaderUtils.createShaderModule(fsBytes, cvkDevice.GetDevice());            
-            if (hVertexShader == VK_NULL_HANDLE) {
+            if (hFragmentShader == VK_NULL_HANDLE) {
                 throw new RuntimeException("Failed to create shader from SimpleIcon.fs.spv bytes");
             }             
         } catch (IOException e) {
@@ -986,9 +981,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int imageIndex) {
         int ret = VK_SUCCESS;
         // TODO Update uniforms that will be used in the next image
-        
-        ret = RecordCommandBuffer(cvkDevice, cvkSwapChain, null);
-        
+               
         return ret;
     }
     

@@ -59,7 +59,7 @@ import org.lwjgl.system.MemoryStack;
 
 public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     protected static final float FIELD_OF_VIEW = 35;
-        private static final float PERSPECTIVE_NEAR = 1;
+    private static final float PERSPECTIVE_NEAR = 1;
     private static final float PERSPECTIVE_FAR = 500000;
     
     protected final CVKVisualProcessor parent;
