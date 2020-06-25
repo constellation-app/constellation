@@ -1446,6 +1446,7 @@
                 <package>org.lwjgl.awthacks</package>
                 <package>org.lwjgl.glfw</package>
                 <package>org.lwjgl.opengl.awt</package>
+                <package>org.lwjgl.stb</package>
                 <package>org.lwjgl.system</package>
                 <package>org.lwjgl.system.dyncall</package>
                 <package>org.lwjgl.system.jawt</package>
@@ -2390,6 +2391,30 @@
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-javadoc.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-javadoc.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-macos.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-windows.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>

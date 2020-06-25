@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
@@ -41,6 +42,7 @@ import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -304,6 +306,15 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     public CVKFPSRenderable(CVKScene inScene) {
         cvkScene = inScene;
+    }
+    
+    public int Init() {
+        int ret = VK_SUCCESS;
+        for (int digit = 0; digit < 10; digit++) {
+            ret = CVKIconTextureAtlas.AddIcon(Integer.toString(digit));
+            if (VkFailed(ret)) { return ret; }
+        }
+        return ret;
     }
     
     // LIFTED FROM FPSRenderable.java
