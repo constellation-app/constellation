@@ -1,6 +1,8 @@
 package au.gov.asd.tac.constellation.visual.vulkan.maths;
 
 
+//TODO_TT: Replace these the Vector3f that already exists
+
 public class Vec3f {
 	
 	private float X;

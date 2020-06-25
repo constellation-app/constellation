@@ -170,22 +170,28 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
         
-        // Load shaders for known renderable types
-        // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
-        checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
-        checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));        
+      
         
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
                 
         CVKFPSRenderable f = new CVKFPSRenderable(this);
+        f.Init();
         Add(f);              
+        
+        // Load shaders for known renderable types
+        // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
+        checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
+        checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));          
         
         //renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
     }
     
     @Override
     public void DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        // Give the shared icon loader a chance to recreate itself if needed
+        CVKIconTextureAtlas.DisplayUpdate(cvkDevice);
+        
         renderables.forEach(renderable -> {renderable.DisplayUpdate(cvkDevice, cvkSwapChain, frameIndex);});
     }
     

@@ -361,4 +361,26 @@ public class CVKMissingEnums {
         @Override
         public int Value() { return val; }                
     }
+    
+    public enum VkPhysicalDeviceType implements IntValue {
+        VK_PHYSICAL_DEVICE_TYPE_OTHER,
+        VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU,
+        VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU,
+        VK_PHYSICAL_DEVICE_TYPE_VIRTUAL_GPU,
+        VK_PHYSICAL_DEVICE_TYPE_CPU,
+        
+        // Added sentinel value
+        VK_PHYSICAL_DEVICE_TYPE_NONE;
+        
+        @Override
+        public int Value() { return ordinal(); }     
+        
+        public static VkPhysicalDeviceType GetByValue(int value) {
+            if (value >= 0 && value < VK_PHYSICAL_DEVICE_TYPE_NONE.Value()) {
+                return VkPhysicalDeviceType.values()[value];
+            } else {
+                return VK_PHYSICAL_DEVICE_TYPE_NONE;
+            }
+        }        
+    }
 }

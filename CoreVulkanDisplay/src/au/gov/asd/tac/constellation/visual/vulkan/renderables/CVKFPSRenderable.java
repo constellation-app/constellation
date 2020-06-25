@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
@@ -41,6 +42,7 @@ import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
@@ -307,6 +310,15 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         cvkScene = inScene;
     }
     
+    public int Init() {
+        int ret = VK_SUCCESS;
+        for (int digit = 0; digit < 10; digit++) {
+            ret = CVKIconTextureAtlas.AddIcon(Integer.toString(digit));
+            if (VkFailed(ret)) { return ret; }
+        }
+        return ret;
+    }
+    
     // LIFTED FROM FPSRenderable.java
     private float calculateXProjectionScale(final int[] viewport) {
         // calculate the number of pixels a cvkScene object of y-length 1 projects to.
@@ -473,7 +485,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;  
     }
     
-    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int level){
         int ret = VK_SUCCESS;
         
         try (MemoryStack stack = stackPush()) {
@@ -484,7 +496,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
             allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
             allocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-            allocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+            if(level == 1){
+                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+            }else if (level == 2) {
+                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+            }
+            
             allocInfo.commandBufferCount(imageCount);
 
             PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
@@ -879,7 +896,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            InitCommandBuffer(cvkDevice, cvkSwapChain);
+            InitCommandBuffer(cvkDevice, cvkSwapChain, 1);
         }
         return ret;
     }
@@ -971,10 +988,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     @Override
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int imageIndex) {
-        // Update uniforms that will be used in the next image
+        int ret = VK_SUCCESS;
+        // TODO Update uniforms that will be used in the next image
         
+        ret = RecordCommandBuffer(cvkDevice, cvkSwapChain, null);
         
-        return VK_SUCCESS;
+        return ret;
     }
     
     @Override

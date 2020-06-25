@@ -84,7 +84,16 @@
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="javadoc"/>
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="sources"/>            
             <artifact name="lwjgl-shaderc" type="jar" ext="jar" e:classifier="natives-windows"/>          
-        </dependency>       
+        </dependency>  
+        <!-- https://mvnrepository.com/artifact/org.lwjgl/lwjgl-stb -->
+        <dependency org="org.lwjgl" name="lwjgl-stb" rev="3.2.3">
+            <artifact name="lwjgl-stb" type="jar" ext="jar"/>
+            <artifact name="lwjgl-stb" type="jar" ext="jar" e:classifier="javadoc"/>
+            <artifact name="lwjgl-stb" type="jar" ext="jar" e:classifier="sources"/>            
+            <artifact name="lwjgl-stb" type="jar" ext="jar" e:classifier="natives-linux"/>
+            <artifact name="lwjgl-stb" type="jar" ext="jar" e:classifier="natives-macos"/> 
+            <artifact name="lwjgl-stb" type="jar" ext="jar" e:classifier="natives-windows"/> 
+        </dependency>                 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>

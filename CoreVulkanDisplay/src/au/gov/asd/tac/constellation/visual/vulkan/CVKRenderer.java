@@ -80,8 +80,8 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
     
-    // Set to true to use one command buffer for all renderables
-    static boolean GLOBAL_COMMAND_BUFFER = true;
+    // Set to true to use secondary command buffers for all renderables
+    static boolean SECONDARY_COMMAND_BUFFERS = true;
     
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
@@ -202,7 +202,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 });
                 
                 // Hydra WIP: Now rebuild the command buffer with all the objects
-                if (GLOBAL_COMMAND_BUFFER) {
+                if (SECONDARY_COMMAND_BUFFERS) {
                     ret = cvkSwapChain.BuildCommandBuffers(scene.GetRenderables());
                     checkVKret(ret);
                 }
@@ -323,12 +323,13 @@ public class CVKRenderer extends Renderer implements ComponentListener {
             for (int r = 0; r < renderables.size(); ++r) {
                
                 renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo);
+                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer());
             }
             
-            for (int r = 0; r < renderables.size(); ++r) {
+ //           for (int r = 0; r < renderables.size(); ++r) {
                 //secondaryBuffers.add(renderables.get(r).GetCommandBuffer());
                 
-                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer());
+ //               vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer());
                 
 //                VkCommandBufferBeginInfo beginInfoSecondary = VkCommandBufferBeginInfo.calloc()
 //                                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
@@ -343,7 +344,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
 //                    vkCmdDraw(secondaryBuffer, renderables.get(r).GetVertex(), 1, 0, 0);
 //
 //                checkVKret(vkEndCommandBuffer(primaryCommandBuffer));
-            }
+ //           }
             
         // Execute render commands from the secondary command buffer
         //vkCmdExecuteCommands(primaryCommandBuffer, secondaryBuffers);
@@ -456,7 +457,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                          
 
                     // Update everything that needs updating - drawables 
-                    if (!GLOBAL_COMMAND_BUFFER) {
+                    if (!SECONDARY_COMMAND_BUFFERS) {
                         renderEventListeners.forEach(listener->{
                             listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
                         });
@@ -480,7 +481,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     parent.signalUpdateComplete();     
                     
                     //TEMP TEMP TEMP
-                    if (!GLOBAL_COMMAND_BUFFER) {
+                    if (!SECONDARY_COMMAND_BUFFERS) {
                         renderEventListeners.forEach(listener->{
                             listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
                         });

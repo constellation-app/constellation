@@ -480,7 +480,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     
     @Override
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
-        return VK_SUCCESS;
+        return RecordCommandBuffer(cvkDevice, cvkSwapChain, null);
     }    
     
     @Override
@@ -539,5 +539,9 @@ public class CVKAxesRenderable implements CVKRenderable {
     }    
     
     @Override
-    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {}
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+        assert(commandBuffer != null);
+        VkCommandBuffer vkCommandBuffer = commandBuffer;
+        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+    }
 }

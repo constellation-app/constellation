@@ -56,6 +56,7 @@ import org.lwjgl.vulkan.VkExtensionProperties;
 import org.lwjgl.vulkan.VkExtent2D;
 import org.lwjgl.vulkan.VkPhysicalDevice;
 import org.lwjgl.vulkan.VkPhysicalDeviceFeatures;
+import org.lwjgl.vulkan.VkPhysicalDeviceLimits;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 import org.lwjgl.vulkan.VkPhysicalDeviceProperties;
 import org.lwjgl.vulkan.VkQueue;
@@ -244,7 +245,7 @@ public class CVKDevice {
         if (vkPhysicalDevice != null) {
             // Happy dance, we have a suitable physical device, get its properties
             vkPhysicalDeviceProperties = VkPhysicalDeviceProperties.malloc();
-            vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);
+            vkGetPhysicalDeviceProperties(vkPhysicalDevice, vkPhysicalDeviceProperties);            
 
             // And features
             vkPhysicalDeviceFeatures = VkPhysicalDeviceFeatures.malloc();
@@ -263,7 +264,72 @@ public class CVKDevice {
             // set to a value indicating it will use whatever is set in the swap chain.
             CVKLOGGER.log(Level.INFO, "Surface will be {0}x{1}", 
                     new Object[]{vkCurrentSurfaceExtent.width(),
-                                 vkCurrentSurfaceExtent.height()});
+                                 vkCurrentSurfaceExtent.height()});           
+            
+            if (debugging) {
+                VkPhysicalDeviceLimits l = vkPhysicalDeviceProperties.limits();
+                CVKLOGGER.info(String.format("Physcial device properties:\n"
+                        + "\tdeviceName: %s\n"
+                        + "\tdeviceType: %s\n"
+                        + "\tapiVersion: %d\n"
+                        + "\tdriverVersion: %d\n"
+                        + "\tvendorID: %d\n"
+                        + "\tdeviceID: %d\n"
+                        + "\tLimits\n"
+                        + "\t\t maxImageDimension1D: %d\n"
+                        + "\t\t maxImageDimension2D: %d\n"
+                        + "\t\t maxImageDimension3D: %d\n"
+                        + "\t\t maxImageDimensionCube: %d\n"
+                        + "\t\t maxImageArrayLayers: %d\n"
+                        + "\t\t maxPerStageDescriptorSamplers: %d\n"
+                        + "\t\t maxPerStageDescriptorUniformBuffers: %d\n"
+                        + "\t\t maxGeometryShaderInvocations: %d\n"
+                        + "\t\t maxGeometryInputComponents: %d\n"
+                        + "\t\t maxGeometryOutputComponents: %d\n"
+                        + "\t\t maxGeometryOutputVertices: %d\n"
+                        + "\t\t maxGeometryTotalOutputComponents: %d\n"
+                        + "\t\t maxViewportDimensions: %d x %d\n"
+                        + "\t\t viewportBoundsRange: %f x %f\n"
+                        + "\t\t maxFramebuffer dims: %d x %d\n"
+                        + "\t\t maxFramebufferLayers: %d\n"
+                        + "\t\t maxColorAttachments: %d\n"
+                        + "\t\t minMemoryMapAlignment: %d\n"
+                        + "\t\t minTexelBufferOffsetAlignment: %d\n"
+                        + "\t\t minUniformBufferOffsetAlignment: %d\n"
+                        + "\t\t minStorageBufferOffsetAlignment: %d\n"
+                        + "\t\t pointSizeRange: %f - %f\n"
+                        + "\t\t lineWidthRange: %f - %f\n",
+                        vkPhysicalDeviceProperties.deviceNameString(),
+                        CVKMissingEnums.VkPhysicalDeviceType.GetByValue(vkPhysicalDeviceProperties.deviceType()).name(),
+                        vkPhysicalDeviceProperties.apiVersion(),
+                        vkPhysicalDeviceProperties.driverVersion(),
+                        vkPhysicalDeviceProperties.vendorID(),
+                        vkPhysicalDeviceProperties.deviceID(),
+                        l.maxImageDimension1D(),
+                        l.maxImageDimension2D(),
+                        l.maxImageDimension3D(),
+                        l.maxImageDimensionCube(),
+                        l.maxImageArrayLayers(),
+                        l.maxPerStageDescriptorSamplers(),
+                        l.maxPerStageDescriptorUniformBuffers(),
+                        l.maxGeometryShaderInvocations(),
+                        l.maxGeometryInputComponents(),
+                        l.maxGeometryOutputComponents(),
+                        l.maxGeometryOutputVertices(),
+                        l.maxGeometryTotalOutputComponents(),
+                        l.maxViewportDimensions().get(0), l.maxViewportDimensions().get(1),
+                        l.viewportBoundsRange().get(0), l.viewportBoundsRange().get(1),
+                        l.maxFramebufferWidth(), l.maxFramebufferHeight(),
+                        l.maxFramebufferLayers(),
+                        l.maxColorAttachments(),
+                        l.minMemoryMapAlignment(),
+                        l.minTexelBufferOffsetAlignment(),
+                        l.minUniformBufferOffsetAlignment(),
+                        l.minStorageBufferOffsetAlignment(),
+                        l.pointSizeRange().get(0), l.pointSizeRange().get(1),
+                        l.lineWidthRange().get(0), l.lineWidthRange().get(1)                                                
+                        ));
+            }            
                          
 
             // Surface formats our device can use
