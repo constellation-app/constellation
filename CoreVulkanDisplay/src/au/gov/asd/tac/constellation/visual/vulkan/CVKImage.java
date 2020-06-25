@@ -20,32 +20,69 @@ import java.nio.LongBuffer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
+import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_X8_D24_UNORM_PACK32;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_STENCIL_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TYPE_2D;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_PIPELINE_STAGE_TRANSFER_BIT;
+import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
+import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
+import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImage;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
+import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkImageCreateInfo;
+import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 
 public class CVKImage {
-    protected LongBuffer pImage = BufferUtils.createLongBuffer(1);
-    protected LongBuffer pImageMemory = BufferUtils.createLongBuffer(1);
-    protected final CVKDevice cvkDevice;
+    private LongBuffer pImage = BufferUtils.createLongBuffer(1);
+    private LongBuffer pImageMemory = BufferUtils.createLongBuffer(1);
+    private CVKDevice cvkDevice = null;
+    private int width       = 0;
+    private int height      = 0;
+    private int layers      = 0;
+    private int format      = 0;
+    private int tiling      = 0;
+    private int usage       = 0;
+    private int properties  = 0;   
     
-    protected CVKImage(CVKDevice cvkDevice) {
-        this.cvkDevice = cvkDevice;
-    }
+    private CVKImage() {}
     
     public long GetImageHandle() { return pImage.get(0); }
     public long GetMemoryImageHandle() { return pImageMemory.get(0); }
@@ -71,6 +108,103 @@ public class CVKImage {
         
         super.finalize();
     }
+    
+    public static boolean HasDepthComponent(int format) {
+        if (format == VK_FORMAT_D16_UNORM ||
+            format == VK_FORMAT_X8_D24_UNORM_PACK32 ||
+            format == VK_FORMAT_D32_SFLOAT  ||
+            format == VK_FORMAT_D16_UNORM_S8_UINT ||
+            format == VK_FORMAT_D24_UNORM_S8_UINT ||
+            format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
+            return true;
+        } else { return false; }
+    }
+    
+    /**
+     * This method transitions an image from layout to another.  It uses a memory
+     * barrier to do this.  It doesn't sound like the kind of construct that is
+     * implicitly a command, but as the Vulkan-Tutorial (Images) says:
+     * "One of the most common ways to perform layout transitions is using an image
+     * memory barrier. A pipeline barrier like that is generally used to synchronize
+     * access to resources, like ensuring that a write to a buffer completes before
+     * reading from it..."
+     * 
+     * 
+     * @param oldLayout
+     * @param newLayout
+     * @return
+     */
+    public int Transition(CVKCommandBuffer cvkCmdBuf, int oldLayout, int newLayout) {
+        int ret = VK_SUCCESS;
+    
+        try(MemoryStack stack = stackPush()) {
+            VkImageMemoryBarrier.Buffer vkBarrier = VkImageMemoryBarrier.callocStack(1, stack);
+            vkBarrier.sType(VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER);
+            vkBarrier.oldLayout(oldLayout);
+            vkBarrier.newLayout(newLayout);
+            vkBarrier.srcQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+            vkBarrier.dstQueueFamilyIndex(VK_QUEUE_FAMILY_IGNORED);
+            vkBarrier.image(GetImageHandle());
+
+            vkBarrier.subresourceRange().baseMipLevel(0);
+            vkBarrier.subresourceRange().levelCount(1);
+            vkBarrier.subresourceRange().baseArrayLayer(0);
+            vkBarrier.subresourceRange().layerCount(1);
+
+            // Depth/stencil or colour?
+            if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+                vkBarrier.subresourceRange().aspectMask(VK_IMAGE_ASPECT_DEPTH_BIT);
+                if (HasDepthComponent(format)) {
+                    vkBarrier.subresourceRange().aspectMask(
+                            vkBarrier.subresourceRange().aspectMask() | VK_IMAGE_ASPECT_STENCIL_BIT);
+                }
+
+            } else {
+                vkBarrier.subresourceRange().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
+            }
+
+            int sourceStage;
+            int destinationStage;
+            if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+                vkBarrier.srcAccessMask(0);
+                vkBarrier.dstAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+                sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+                destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+
+            } else if(oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
+                vkBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
+                vkBarrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT);
+                sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
+                destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            } else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
+                vkBarrier.srcAccessMask(0);
+                vkBarrier.dstAccessMask(VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT);
+                sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+                destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+            } else if(oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL) {
+                vkBarrier.srcAccessMask(0);
+                vkBarrier.dstAccessMask(VK_ACCESS_COLOR_ATTACHMENT_READ_BIT | VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT);
+                sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
+                destinationStage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+            } else {
+                throw new IllegalArgumentException("Unsupported layout transition");
+            }
+            
+//            CVKCommandBuffer cvkBarrierCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+//            ret = cvkBarrierCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+//            checkVKret(ret);
+            vkCmdPipelineBarrier(cvkCmdBuf.GetVKCommandBuffer(),
+                                 sourceStage,
+                                 destinationStage,
+                                 0,                 // dependency flags
+                                 null,              // memory barriers
+                                 null,              // buffer memory barriers
+                                 vkBarrier);        // image memory barriers
+//            ret = cvkBarrierCmd.EndAndSubmit();
+//            checkVKret(ret);                        
+        }
+        return ret;
+    }
         
     
     public static CVKImage Create(  CVKDevice cvkDevice,
@@ -86,7 +220,15 @@ public class CVKImage {
         assert(layers >= 1);
         
         int ret;
-        CVKImage cvkImage = new CVKImage(cvkDevice);             
+        CVKImage cvkImage   = new CVKImage();
+        cvkImage.cvkDevice  = cvkDevice;
+        cvkImage.width      = width;
+        cvkImage.height     = height;
+        cvkImage.layers     = layers;
+        cvkImage.format     = format;
+        cvkImage.tiling     = tiling;
+        cvkImage.usage      = usage; 
+        cvkImage.properties = properties;                      
          
         try(MemoryStack stack = stackPush()) {
             VkImageCreateInfo vkImageInfo = VkImageCreateInfo.callocStack(stack);

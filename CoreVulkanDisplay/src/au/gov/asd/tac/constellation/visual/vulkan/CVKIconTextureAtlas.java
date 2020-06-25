@@ -32,8 +32,13 @@ import java.util.List;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_SRGB;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
@@ -41,6 +46,7 @@ import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
+import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import org.lwjgl.vulkan.VkBufferImageCopy;
 import org.lwjgl.vulkan.VkExtent3D;
 
@@ -83,6 +89,9 @@ public class CVKIconTextureAtlas {
     
     // Rather than a shared drawable like the GL renderer uses we'll just access this as a singleton.
     private static final CVKIconTextureAtlas instance = new CVKIconTextureAtlas();
+    
+    // Instance members
+    private CVKImage atlasImage = null;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
 //    private boolean requiresReload = false;
     private int maxIcons = Short.MAX_VALUE; //replace this with a calculated value
@@ -208,6 +217,7 @@ public class CVKIconTextureAtlas {
     private int AddIconsToAtlas(CVKDevice cvkDevice, List<IndexedConstellationIcon> icons) {
         int ret = VK_SUCCESS;
         
+        
         try (MemoryStack stack = stackPush()) {
             // Allocate one big staging buffer for all of the images.  This will be inefficient if
             // this function is called often with a growing list of icons.  If that happens the best
@@ -275,14 +285,14 @@ public class CVKIconTextureAtlas {
             // Create destination texture
             //CVKTexture atlasTexture = CVKTexture.Create(cvkDevice);
             
-            CVKImage atlasImage = CVKImage.Create(cvkDevice, 
-                                                  textureWidth, 
-                                                  textureHeight, 
-                                                  requiredLayers, 
-                                                  VK_FORMAT_R8G8B8A8_SRGB, //non-linear format with better use than 
-                                                  VK_IMAGE_TILING_OPTIMAL, //source data is linear, will this bite us?
-                                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-                                                  VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+            atlasImage = CVKImage.Create(cvkDevice, 
+                                         textureWidth, 
+                                         textureHeight, 
+                                         requiredLayers, 
+                                         VK_FORMAT_R8G8B8A8_SRGB, //non-linear format with better use than 
+                                         VK_IMAGE_TILING_OPTIMAL, //source data is linear, will this bite us?
+                                         VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                                         VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
             
             // Source data is ready, now create structs to copy it layer by layer
             VkBufferImageCopy.Buffer bufferCopyLayers = VkBufferImageCopy.callocStack(requiredLayers, stack);
@@ -302,27 +312,32 @@ public class CVKIconTextureAtlas {
                 bufferCopyLayer.imageSubresource().layerCount(1);
                 bufferCopyLayer.imageOffset().set(0, 0, iLayer);
                 bufferCopyLayer.imageExtent(VkExtent3D.callocStack(stack).set(textureWidth, textureHeight, requiredLayers));                               
-            }            
+            }      
+            
+            // Command to copy pixels and transition formats
+            CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+            ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
+            checkVKret(ret);            
+            
+            // Transition image from undefined to transfer destination optimal
+            ret = atlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            checkVKret(ret);
+            
+            // Copy staging buffer to atlas texture
+            vkCmdCopyBufferToImage(cvkCopyCmd.GetVKCommandBuffer(),
+                                   cvkStagingBuffer.GetBufferHandle(),
+                                   atlasImage.GetImageHandle(),
+                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                   bufferCopyLayers);
+            
+            // Now the image is populated, transition it for reading
+            ret = atlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            checkVKret(ret);      
+            
+            // Ok nothing has actually happened yet, time to execute the transitions and copy
+            ret = cvkCopyCmd.EndAndSubmit();
+            checkVKret(ret);
         }
-        
-        // Create the command buffer to do the copy
-        //VkCommandBuffer copyCmd = vulkanDevice->createCommandBuffer(VK_COMMAND_BUFFER_LEVEL_PRIMARY, true);
-        
-//        vkCmdCopyBufferToImage(
-//                copyCmd,
-//                stagingBuffer,
-//                textureArray.image,
-//                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-//                bufferCopyRegions.size(),
-//                bufferCopyRegions.data()
-//                );
-//
-//        
-//        vkCmdCopyBufferToImage(VkCommandBuffer commandBuffer, 
-//        @NativeType("VkBuffer") long srcBuffer, 
-//                @NativeType("VkImage") long dstImage, 
-//                        @NativeType("VkImageLayout") int dstImageLayout, 
-//                                @NativeType("VkBufferImageCopy const *") VkBufferImageCopy.Buffer pRegions) {
         
         return ret;
     }

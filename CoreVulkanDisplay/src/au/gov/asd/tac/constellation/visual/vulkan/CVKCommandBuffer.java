@@ -16,95 +16,73 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 
-import static org.lwjgl.system.MemoryUtil.memAllocLong;
-import static org.lwjgl.system.MemoryUtil.memFree;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT;
-import static org.lwjgl.vulkan.VK10.VK_DEPENDENCY_BY_REGION_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
-import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
-import static org.lwjgl.vulkan.VK10.VK_INDEX_TYPE_UINT32;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_COMPUTE;
-import static org.lwjgl.vulkan.VK10.VK_PIPELINE_BIND_POINT_GRAPHICS;
-import static org.lwjgl.vulkan.VK10.VK_QUEUE_FAMILY_IGNORED;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_BARRIER;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
-import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
-import static org.lwjgl.vulkan.VK10.vkCmdBindIndexBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
-import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
-import static org.lwjgl.vulkan.VK10.vkCmdClearColorImage;
-import static org.lwjgl.vulkan.VK10.vkCmdCopyBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
-import static org.lwjgl.vulkan.VK10.vkCmdDispatch;
-import static org.lwjgl.vulkan.VK10.vkCmdDraw;
-import static org.lwjgl.vulkan.VK10.vkCmdDrawIndexed;
-import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
-import static org.lwjgl.vulkan.VK10.vkCmdExecuteCommands;
-import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
-import static org.lwjgl.vulkan.VK10.vkCmdPushConstants;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
-import static org.lwjgl.vulkan.VK10.vkResetCommandBuffer;
-import java.nio.ByteBuffer;
-import java.nio.LongBuffer;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.vulkan.VkBufferCopy;
-import org.lwjgl.vulkan.VkBufferImageCopy;
-import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
-import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
-import org.lwjgl.vulkan.VkExtent3D;
-import org.lwjgl.vulkan.VkImageMemoryBarrier;
-import org.lwjgl.vulkan.VkImageSubresourceLayers;
-import org.lwjgl.vulkan.VkImageSubresourceRange;
-import org.lwjgl.vulkan.VkMemoryBarrier;
-import org.lwjgl.vulkan.VkOffset3D;
-import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
-import au.gov.asd.tac.constellation.visual.vulkan.maths.*;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
+import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
+import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
+import org.lwjgl.vulkan.VkSubmitInfo;
 
 
 public class CVKCommandBuffer {
-	private VkCommandBuffer vkCommandBuffer;
-	private CVKDevice cvkDevice;
-        
-        
-        private CVKCommandBuffer() {}
-  
+    private VkCommandBuffer vkCommandBuffer;
+    private CVKDevice cvkDevice;
+
+
+    private CVKCommandBuffer() {}
+
+
+    public VkCommandBuffer GetVKCommandBuffer(){ return vkCommandBuffer; }
+
+
+    @Override
+    public void finalize() throws Throwable {		
+        vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);
+        super.finalize();
+    }
+
+    public int Begin(int flags) {		
+        int ret;            
+        try (MemoryStack stack = stackPush()) {
+            VkCommandBufferBeginInfo vkBeginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+            vkBeginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+            vkBeginInfo.pNext(0);
+            vkBeginInfo.flags(flags);
+            ret = vkBeginCommandBuffer(vkCommandBuffer, vkBeginInfo);
+        }
+        return ret;
+    }
     
-        public VkCommandBuffer GetVKCommandBuffer(){ return vkCommandBuffer; }
-		
-               
-        @Override
-        public void finalize() throws Throwable {		
-            vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);
-            super.finalize();
-	}
-	
-	public int BeginRecord(int flags) {		
-            int ret;            
-            try (MemoryStack stack = stackPush()) {
-                VkCommandBufferBeginInfo vkBeginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-                vkBeginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
-                vkBeginInfo.pNext(0);
-                vkBeginInfo.flags(flags);
-                ret = vkBeginCommandBuffer(vkCommandBuffer, vkBeginInfo);
-            }
-            return ret;
-	}
+    public int EndAndSubmit() {
+        int ret;
+        try(MemoryStack stack = stackPush()) {
+            ret = vkEndCommandBuffer(vkCommandBuffer);
+            if (VkFailed(ret)) { return ret; }
+
+            VkSubmitInfo.Buffer submitInfo = VkSubmitInfo.callocStack(1, stack);
+            submitInfo.sType(VK_STRUCTURE_TYPE_SUBMIT_INFO);
+            submitInfo.pCommandBuffers(stack.pointers(vkCommandBuffer));
+
+            ret = vkQueueSubmit(cvkDevice.GetQueue(), submitInfo, VK_NULL_HANDLE);
+            if (VkFailed(ret)) { return ret; }
+            ret = vkQueueWaitIdle(cvkDevice.GetQueue());
+        }  
+        return ret;
+    }
+    
+    
 //	
 //	public void BeginRecordSecondary(int flags, long framebuffer, long renderPass, int subpass) {
 //		
@@ -416,27 +394,27 @@ public class CVKCommandBuffer {
 //		vkResetCommandBuffer(vkCommandBuffer, VK_COMMAND_BUFFER_RESET_RELEASE_RESOURCES_BIT);
 //	}
 //	
-//        public static CVKCommandBuffer Create(CVKDevice cvkDevice, int level) {
-//            assert(cvkDevice != null);
-//            assert(cvkDevice.GetDevice() != null);
-//
-//            int ret;
-//            CVKCommandBuffer cvkCommandBuffer = new CVKCommandBuffer();
-//            cvkCommandBuffer.cvkDevice = cvkDevice;
-//            try (MemoryStack stack = stackPush()) {
-//                VkCommandBufferAllocateInfo vkAllocateInfo = VkCommandBufferAllocateInfo.callocStack(stack);
-//                vkAllocateInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-//                vkAllocateInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-//                vkAllocateInfo.level(level);
-//                vkAllocateInfo.commandBufferCount(1);
-//
-//                PointerBuffer pCommandBuffer = stack.mallocPointer(1);
-//                ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocateInfo, pCommandBuffer);
-//                checkVKret(ret);
-//
-//
-//                cvkCommandBuffer.vkCommandBuffer = new VkCommandBuffer(pCommandBuffer.get(0), cvkDevice.GetDevice());
-//            }
-//            return cvkCommandBuffer;
-//	}	
+    public static CVKCommandBuffer Create(CVKDevice cvkDevice, int level) {
+        assert(cvkDevice != null);
+        assert(cvkDevice.GetDevice() != null);
+
+        int ret;
+        CVKCommandBuffer cvkCommandBuffer = new CVKCommandBuffer();
+        cvkCommandBuffer.cvkDevice = cvkDevice;
+        try (MemoryStack stack = stackPush()) {
+            VkCommandBufferAllocateInfo vkAllocateInfo = VkCommandBufferAllocateInfo.callocStack(stack);
+            vkAllocateInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
+            vkAllocateInfo.commandPool(cvkDevice.GetCommandPoolHandle());
+            vkAllocateInfo.level(level);
+            vkAllocateInfo.commandBufferCount(1);
+
+            PointerBuffer pCommandBuffer = stack.mallocPointer(1);
+            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocateInfo, pCommandBuffer);
+            checkVKret(ret);
+
+
+            cvkCommandBuffer.vkCommandBuffer = new VkCommandBuffer(pCommandBuffer.get(0), cvkDevice.GetDevice());
+        }
+        return cvkCommandBuffer;
+    }	
 }
