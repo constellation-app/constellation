@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -108,6 +107,6 @@ public class GetServiceDescription extends RestService {
         });
 
         mapper.writeValue(out, root);
-        return new ServiceResponse(HttpURLConnection.HTTP_OK);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 }

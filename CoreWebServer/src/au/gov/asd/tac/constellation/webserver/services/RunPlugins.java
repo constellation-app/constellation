@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -188,7 +187,7 @@ public class RunPlugins extends RestService {
         if (buf.length() > 0) {
             throw new RestServiceException(buf.toString());
         }
-        return new ServiceResponse(HttpURLConnection.HTTP_OK);
+        return new ServiceResponse(SC_OK, "Successful");
     }
 
     /**

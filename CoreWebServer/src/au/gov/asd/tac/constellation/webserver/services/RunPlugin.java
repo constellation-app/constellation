@@ -36,7 +36,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -119,8 +118,8 @@ public class RunPlugin extends RestService {
                 throw new RestServiceException(ex);
             }
         } else {
-            return new ServiceResponse(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+            return new ServiceResponse(SC_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
-        return new ServiceResponse(HttpURLConnection.HTTP_OK); 
+        return new ServiceResponse(SC_OK, "Successful"); 
     }
 }

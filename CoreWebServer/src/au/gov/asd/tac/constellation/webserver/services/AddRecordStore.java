@@ -48,7 +48,6 @@ import com.fasterxml.jackson.databind.node.JsonNodeType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.util.Iterator;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -184,7 +183,7 @@ public class AddRecordStore extends RestService {
         }
 
         addToGraph(graphId, rs, completeWithSchema, arrange, resetView);
-        return new ServiceResponse(HttpURLConnection.HTTP_OK);
+        return new ServiceResponse(SC_OK, "Successful"); 
     }
 
     private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {

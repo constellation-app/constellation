@@ -103,8 +103,8 @@ public class RestServiceServlet extends ConstellationApiServlet {
             response.setContentType(rs.getMimeType());
             response.setStatus(HttpServletResponse.SC_OK);
             ServiceResponse serviceResponse = rs.callService(parameters, request.getInputStream(), response.getOutputStream());
-            if (serviceResponse.getStatusCode()!=200){
-                response.sendError(serviceResponse.getStatusCode(), serviceResponse.getStatusMessage());
+            if (serviceResponse.getErrorCode()!=200){
+                response.sendError(serviceResponse.getErrorCode(), serviceResponse.getErrorMessage());
             }
         } catch (final IOException | RuntimeException ex) {
             throw new ServletException(ex);
