@@ -76,21 +76,22 @@ public class CVKBuffer {
             vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), 0, bufferSize, 0, data);
             {                
                 ByteBuffer dest = data.getByteBuffer(0, (int)bufferSize);
-                long written = 0;
-                byte zeroes[] = new byte[COPY_SIZE];
-                while (written < bufferSize) {
-                    if ((written + COPY_SIZE) <= bufferSize) {
-                        // The second argument is the offset into the source array not the destination.  The
-                        // nio buffer types walk their position with each put so we don't need to specify an
-                        // destination offset.
-                        dest.put(zeroes, 0, COPY_SIZE);
-                        written += COPY_SIZE;
-                    } else {
-                        long remaining = bufferSize - written;
-                        dest.put(zeroes, 0, (int)remaining);
-                        written += remaining;                        
-                    }
-                }
+                BufferUtils.zeroBuffer(dest);
+//                long written = 0;
+//                byte zeroes[] = new byte[COPY_SIZE];
+//                while (written < bufferSize) {
+//                    if ((written + COPY_SIZE) <= bufferSize) {
+//                        // The second argument is the offset into the source array not the destination.  The
+//                        // nio buffer types walk their position with each put so we don't need to specify an
+//                        // destination offset.
+//                        dest.put(zeroes, 0, COPY_SIZE);
+//                        written += COPY_SIZE;
+//                    } else {
+//                        long remaining = bufferSize - written;
+//                        dest.put(zeroes, 0, (int)remaining);
+//                        written += remaining;                        
+//                    }
+//                }
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }
@@ -99,7 +100,7 @@ public class CVKBuffer {
     @Override
     public void finalize() throws Throwable {
         vkDestroyBuffer(cvkDevice.GetDevice(), pBuffer.get(0), null);
-        vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);        
+        vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);
         
         super.finalize();
     }
@@ -113,10 +114,10 @@ public class CVKBuffer {
      * @param properties
      * @return
      */
-    public static CVKBuffer CreateBuffer(CVKDevice cvkDevice,
-                                         long size, 
-                                         int usage, 
-                                         int properties) {
+    public static CVKBuffer Create( CVKDevice cvkDevice,
+                                    long size, 
+                                    int usage, 
+                                    int properties) {
         assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
         

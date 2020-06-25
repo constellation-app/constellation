@@ -41,8 +41,11 @@ import org.lwjgl.vulkan.VkMemoryRequirements;
 public class CVKImage {
     protected LongBuffer pImage = BufferUtils.createLongBuffer(1);
     protected LongBuffer pImageMemory = BufferUtils.createLongBuffer(1);
+    protected final CVKDevice cvkDevice;
     
-    protected CVKImage() { }
+    protected CVKImage(CVKDevice cvkDevice) {
+        this.cvkDevice = cvkDevice;
+    }
     
     public long GetImageHandle() { return pImage.get(0); }
     public long GetMemoryImageHandle() { return pImageMemory.get(0); }
@@ -61,18 +64,29 @@ public class CVKImage {
 //        }
 //    }
     
-    public static CVKImage CreateImage(CVKDevice cvkDevice,
-                                       int width,
-                                       int height,
-                                       int format,
-                                       int tiling,
-                                       int usage, 
-                                       int properties) {
+    @Override
+    public void finalize() throws Throwable {
+        vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
+        vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);     
+        
+        super.finalize();
+    }
+        
+    
+    public static CVKImage Create(  CVKDevice cvkDevice,
+                                    int width,
+                                    int height,
+                                    int layers,
+                                    int format,
+                                    int tiling,
+                                    int usage, 
+                                    int properties) {
         assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
+        assert(layers >= 1);
         
         int ret;
-        CVKImage image = new CVKImage();             
+        CVKImage image = new CVKImage(cvkDevice);             
          
         try(MemoryStack stack = stackPush()) {
             VkImageCreateInfo imageInfo = VkImageCreateInfo.callocStack(stack);
@@ -82,7 +96,7 @@ public class CVKImage {
             imageInfo.extent().height(height);
             imageInfo.extent().depth(1);
             imageInfo.mipLevels(1);
-            imageInfo.arrayLayers(1);
+            imageInfo.arrayLayers(layers);
             imageInfo.format(format);
             imageInfo.tiling(tiling);
             imageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
@@ -92,6 +106,7 @@ public class CVKImage {
 
             ret = vkCreateImage(cvkDevice.GetDevice(), imageInfo, null, image.pImage);
             checkVKret(ret);
+            assert(image.pImage.get(0) != VK_NULL_HANDLE);
 
             VkMemoryRequirements memRequirements = VkMemoryRequirements.mallocStack(stack);
             vkGetImageMemoryRequirements(cvkDevice.GetDevice(), image.pImage.get(0), memRequirements);

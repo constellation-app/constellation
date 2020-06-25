@@ -310,9 +310,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     public int Init() {
         int ret = VK_SUCCESS;
-        for (int digit = 0; digit < 10; digit++) {
-            ret = CVKIconTextureAtlas.AddIcon(Integer.toString(digit));
-            if (VkFailed(ret)) { return ret; }
+        for (int digit = 0; digit < 10; ++digit) {
+            // Returns the index of the icon, not a success code
+            CVKIconTextureAtlas.AddIcon(Integer.toString(digit));
         }
         return ret;
     }
@@ -334,6 +334,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         final float xScale = proj2.getX() - proj1.getX();
         //TT: 4/(width/2), what are the 256 and 64?  Magic numbers rock.  Maybe
         // dimensions of the generated icon texture?  8/width.
+        // 256 is the icon width and height in the atlas texture, 64 is the number
+        // of icons you can fit in a 2048x2048 texture.
         return (256.0f / 64) / xScale;
     }
     private float calculateYProjectionScale(final int[] viewport) {
@@ -406,7 +408,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         for (int i = 0; i < imageCount; ++i) {   
             // Initial fill of the vertex uniform buffer
             int size = VertexUniformBufferObject.SIZEOF;
-            CVKBuffer vertUniformBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
+            CVKBuffer vertUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           VertexUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -421,7 +423,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             
             // Initial fill of the geometry uniform buffer
             size = GeometryUniformBufferObject.SIZEOF;
-            CVKBuffer geomUniformBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
+            CVKBuffer geomUniformBuffer = CVKBuffer.Create(cvkDevice, 
                                                           GeometryUniformBufferObject.SIZEOF,
                                                           VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
                                                           VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
@@ -467,7 +469,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         // so they should probably be allocated as VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT and staged
         // to once to fill them (staging buffer this is host visible then copied to the device local)
         for (int i = 0; i < imageCount; ++i) {   
-            CVKBuffer vertexBuffer = CVKBuffer.CreateBuffer(cvkDevice, 
+            CVKBuffer vertexBuffer = CVKBuffer.Create(cvkDevice, 
                                                             size,
                                                             VK_BUFFER_USAGE_VERTEX_BUFFER_BIT,
                                                             VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
