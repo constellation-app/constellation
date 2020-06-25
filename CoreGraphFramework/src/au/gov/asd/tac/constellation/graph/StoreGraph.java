@@ -1911,11 +1911,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private List<String> getQueries() {
         final int queriesId = LayersConcept.GraphAttribute.LAYER_QUERIES.get(this);
         if (queriesId == Graph.NOT_FOUND) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         Object queriesObject = getObjectValue(queriesId, 0);
         if (queriesObject == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return (List<String>) queriesObject;
     }
@@ -1923,11 +1923,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private List<Byte> getLayerPreferences() {
         final int preferencesId = LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this);
         if (preferencesId == Graph.NOT_FOUND) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         Object preferencesObject = getObjectValue(preferencesId, 0);
         if (preferencesObject == null) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return (List<Byte>) preferencesObject;
     }
@@ -1960,9 +1960,11 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             // if current mask has bit set, recheck
             if ((currentVisibleMask & (1 << (i))) > 0) {
                 if (queries.get(i) == null || queries.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
+                    // Used correctly as loop does not iterate the preferences list
                     preferences.remove(i);
                     preferences.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
                 } else {
+                    // Used correctly as loop does not iterate the preferences list
                     preferences.remove(i);
                     preferences.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b11 : (byte) 0b1);
                 }
@@ -2202,7 +2204,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             List<Byte> preferences = getLayerPreferences();
             // preload layerPrefs jit if it hasn't been instantiated
             if (preferences.isEmpty()) {
-                preferences = new ArrayList<Byte>();
+                preferences = new ArrayList<>();
                 for (int i = 0; i < 31; i++) {
                     preferences.add((byte) 0b0);
                 }
