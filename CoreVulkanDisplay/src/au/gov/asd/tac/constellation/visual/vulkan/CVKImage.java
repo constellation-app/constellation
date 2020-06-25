@@ -86,50 +86,50 @@ public class CVKImage {
         assert(layers >= 1);
         
         int ret;
-        CVKImage image = new CVKImage(cvkDevice);             
+        CVKImage cvkImage = new CVKImage(cvkDevice);             
          
         try(MemoryStack stack = stackPush()) {
-            VkImageCreateInfo imageInfo = VkImageCreateInfo.callocStack(stack);
-            imageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
-            imageInfo.imageType(VK_IMAGE_TYPE_2D);
-            imageInfo.extent().width(width);
-            imageInfo.extent().height(height);
-            imageInfo.extent().depth(1);
-            imageInfo.mipLevels(1);
-            imageInfo.arrayLayers(layers);
-            imageInfo.format(format);
-            imageInfo.tiling(tiling);
-            imageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
-            imageInfo.usage(usage);
-            imageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
-            imageInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
+            VkImageCreateInfo vkImageInfo = VkImageCreateInfo.callocStack(stack);
+            vkImageInfo.sType(VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO);
+            vkImageInfo.imageType(VK_IMAGE_TYPE_2D);
+            vkImageInfo.extent().width(width);
+            vkImageInfo.extent().height(height);
+            vkImageInfo.extent().depth(1);
+            vkImageInfo.mipLevels(1);
+            vkImageInfo.arrayLayers(layers);
+            vkImageInfo.format(format);
+            vkImageInfo.tiling(tiling);
+            vkImageInfo.initialLayout(VK_IMAGE_LAYOUT_UNDEFINED);
+            vkImageInfo.usage(usage);
+            vkImageInfo.samples(VK_SAMPLE_COUNT_1_BIT);
+            vkImageInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
 
-            ret = vkCreateImage(cvkDevice.GetDevice(), imageInfo, null, image.pImage);
+            ret = vkCreateImage(cvkDevice.GetDevice(), vkImageInfo, null, cvkImage.pImage);
             checkVKret(ret);
-            assert(image.pImage.get(0) != VK_NULL_HANDLE);
+            assert(cvkImage.pImage.get(0) != VK_NULL_HANDLE);
 
             VkMemoryRequirements memRequirements = VkMemoryRequirements.mallocStack(stack);
-            vkGetImageMemoryRequirements(cvkDevice.GetDevice(), image.pImage.get(0), memRequirements);
+            vkGetImageMemoryRequirements(cvkDevice.GetDevice(), cvkImage.pImage.get(0), memRequirements);
 
             VkMemoryAllocateInfo allocInfo = VkMemoryAllocateInfo.callocStack(stack);
             allocInfo.sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO);
             allocInfo.allocationSize(memRequirements.size());
             allocInfo.memoryTypeIndex(cvkDevice.GetMemoryType(memRequirements.memoryTypeBits(), properties));
 
-            if(vkAllocateMemory(cvkDevice.GetDevice(), allocInfo, null, image.pImageMemory) != VK_SUCCESS) {
+            if(vkAllocateMemory(cvkDevice.GetDevice(), allocInfo, null, cvkImage.pImageMemory) != VK_SUCCESS) {
                 throw new RuntimeException("Failed to allocate image memory");
             }
 
-            vkBindImageMemory(cvkDevice.GetDevice(), image.pImage.get(0), image.pImageMemory.get(0), 0);
+            vkBindImageMemory(cvkDevice.GetDevice(), cvkImage.pImage.get(0), cvkImage.pImageMemory.get(0), 0);
             
-            return image;
+            return cvkImage;
         } catch (Exception e) {
             //TODO_TT: move this to class destructor
-            if (image.pImage.get(0) != VK_NULL_HANDLE) {
-                vkDestroyImage(cvkDevice.GetDevice(), image.GetImageHandle(), null);
+            if (cvkImage.pImage.get(0) != VK_NULL_HANDLE) {
+                vkDestroyImage(cvkDevice.GetDevice(), cvkImage.GetImageHandle(), null);
             }
-            if (image.pImageMemory.get(0) != VK_NULL_HANDLE) {
-                vkFreeMemory(cvkDevice.GetDevice(), image.GetMemoryImageHandle(), null);
+            if (cvkImage.pImageMemory.get(0) != VK_NULL_HANDLE) {
+                vkFreeMemory(cvkDevice.GetDevice(), cvkImage.GetMemoryImageHandle(), null);
             }       
         }
         

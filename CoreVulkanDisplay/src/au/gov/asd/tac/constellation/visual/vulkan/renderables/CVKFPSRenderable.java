@@ -487,27 +487,21 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;  
     }
     
-    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int level){
+    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
         int ret = VK_SUCCESS;
         
         try (MemoryStack stack = stackPush()) {
             int imageCount = cvkSwapChain.GetImageCount();
             commandBuffers = new ArrayList<>(imageCount);
 
-            // Create
-            VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
-            allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-            allocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-            if(level == 1){
-                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-            }else if (level == 2) {
-                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);
-            }
-            
-            allocInfo.commandBufferCount(imageCount);
+            VkCommandBufferAllocateInfo vkAllocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
+            vkAllocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
+            vkAllocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
+            vkAllocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);            
+            vkAllocInfo.commandBufferCount(imageCount);
 
             PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
-            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), allocInfo, pCommandBuffers);
+            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocInfo, pCommandBuffers);
             checkVKret(ret);
 
             for (int i = 0; i < imageCount; ++i) {
@@ -898,7 +892,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            InitCommandBuffer(cvkDevice, cvkSwapChain, 1);
+            InitCommandBuffer(cvkDevice, cvkSwapChain);
         }
         return ret;
     }

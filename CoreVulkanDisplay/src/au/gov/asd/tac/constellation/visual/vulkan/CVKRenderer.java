@@ -48,7 +48,6 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
-import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -67,6 +66,14 @@ pBlah: this is an object that has been explicitly malloced and needs to be expli
        a stack allocator was used to allocate it).
 blah: anything else
 
+CODING STANDARDS
+helper classes should return error codes where possible
+controller classes like CVKRenderer and aggregation classes like CVKScene will need some other mechanism
+use MemoryStack to allocate nio buffers unless an allocation needs to last longer than function scope
+comment where ever code is not trivially simple
+make methods static whereever possible
+TODO_TT: remember the reason for the Create factory patten in buffer and image
+
 */
 
 public class CVKRenderer extends Renderer implements ComponentListener {
@@ -79,9 +86,6 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         //TEMP TEMP TEMP
         public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
-    
-    // Set to true to use secondary command buffers for all renderables
-    static boolean SECONDARY_COMMAND_BUFFERS = true;
     
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
@@ -202,10 +206,8 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 });
                 
                 // Hydra WIP: Now rebuild the command buffer with all the objects
-                if (SECONDARY_COMMAND_BUFFERS) {
-                    ret = cvkSwapChain.BuildCommandBuffers(scene.GetRenderables());
-                    checkVKret(ret);
-                }
+                ret = cvkSwapChain.BuildCommandBuffers(scene.GetRenderables());
+                checkVKret(ret);
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
@@ -457,15 +459,15 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                          
 
                     // Update everything that needs updating - drawables 
-                    if (!SECONDARY_COMMAND_BUFFERS) {
-                        renderEventListeners.forEach(listener->{
-                            listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
-                        });
-                    }
-                    else{
+//                    if (!SECONDARY_COMMAND_BUFFERS) {
+//                        renderEventListeners.forEach(listener->{
+//                            listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
+//                        });
+//                    }
+//                    else{
                         // error needing to wait for fence
                         RecordCommandBuffer(stack, frame, cvkSwapChain.GetCommandBuffer(imageIndex), imageIndex);
-                    }
+//                    }
                         
                     
                     // TODO_TT: simplify queues, renderEventListeners and this could be merged
@@ -481,17 +483,17 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     parent.signalUpdateComplete();     
                     
                     //TEMP TEMP TEMP
-                    if (!SECONDARY_COMMAND_BUFFERS) {
-                        renderEventListeners.forEach(listener->{
-                            listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
-                        });
-                    }
-                    else {
+//                    if (!SECONDARY_COMMAND_BUFFERS) {
+//                        renderEventListeners.forEach(listener->{
+//                            listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
+//                        });
+//                    }
+//                    else {
                         ret = ExecuteCommandBuffer(stack, 
                                frame, 
                                cvkSwapChain.GetCommandBuffer(imageIndex));
                         checkVKret(ret);             
-                    }                   
+//                    }                   
                     //TEMP TEMP TEMP
 
                      ret = ReturnImageToSwapchainAndPresent(stack,
