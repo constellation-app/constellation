@@ -203,7 +203,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             interaction.setProgress(++currentRow, totalRows, "Importing Vertices: " + source, true);
 
             final String[] row = data.get(i);
-            if (filter == null || filter.passesFilter(i, row)) {
+            if (filter == null || filter.passesFilter(i - 1, row)) {
                 final int vertexId = graph.addVertex();
                 newVertices.add(vertexId);
 
@@ -245,7 +245,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
             final String[] row = data.get(i);
 
-            if (filter == null || filter.passesFilter(i, row)) {
+            if (filter == null || filter.passesFilter(i - 1, row)) {
                 final int sourceVertexId = graph.addVertex();
                 for (final ImportAttributeDefinition attributeDefinition : sourceVertexDefinitions) {
                     attributeDefinition.setValue(graph, sourceVertexId, row, (i - 1));
