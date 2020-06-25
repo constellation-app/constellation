@@ -67,20 +67,14 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
-import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
-import static org.lwjgl.vulkan.VK10.vkDestroyShaderModule;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
-import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
@@ -96,7 +90,6 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
@@ -105,27 +98,27 @@ public class CVKAxesRenderable implements CVKRenderable {
     protected final CVKScene scene;
     
     // Compiled Shader modules
-    protected static long vertShaderModule = 0;
-    protected static long fragShaderModule = 0;
+    protected static long vertShaderModule = VK_NULL_HANDLE;
+    protected static long fragShaderModule = VK_NULL_HANDLE;
+    
+    // Compiled Shaders
+    protected static SPIRV vertShaderSPIRV;
+    protected static SPIRV fragShaderSPIRV;
     
     private long pipelineLayout;
     private long graphicsPipeline;
     public VkCommandBuffer commandBuffer;
     private PointerBuffer handlePointer;
+    protected boolean isDirty = true;
     
-    // DESCRIPTOR SET
-    
-    protected static SPIRV vertShaderSPIRV;
-    protected static SPIRV fragShaderSPIRV;
-    
+    // TODO DESCRIPTOR SET
     
     public CVKAxesRenderable(CVKScene inScene) {
         scene = inScene;
     }
     
-    
     @Override
-    public VkCommandBuffer GetCommandBuffer(){return commandBuffer; }
+    public VkCommandBuffer GetCommandBuffer(int index){return commandBuffer; }
     
     @Override
     public long GetGraphicsPipeline(){return graphicsPipeline; }
@@ -147,21 +140,9 @@ public class CVKAxesRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
         
     }
-    
     @Override
-    public void draw(VkCommandBuffer commandBuffer){
-
-            //vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-            //vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
-            
-            // TODO Draw indexed
-            //VkDeviceSize offsets[1] = { 0 };
-            //vkCmdBindPipeline(cmdBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, *pipeline);
-            //vkCmdBindVertexBuffers(cmdBuffer, VERTEX_BUFFER_BIND_ID, 1, &model.vertices.buffer, offsets);
-            //vkCmdBindIndexBuffer(cmdBuffer, model.indices.buffer, 0, VK_INDEX_TYPE_UINT32);
-            //vkCmdDrawIndexed(cmdBuffer, model.indexCount, 1, 0, 0, 0);
-    }
-
+    public boolean IsDirty(){return isDirty; }
+    
     public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         // TODO Add param checking
         
@@ -289,11 +270,12 @@ public class CVKAxesRenderable implements CVKRenderable {
 
             // ===> RELEASE RESOURCES <===
 
-            vkDestroyShaderModule(cvkDevice.GetDevice(), vertShaderModule, null);
-            vkDestroyShaderModule(cvkDevice.GetDevice(), fragShaderModule, null);
-
-            vertShaderSPIRV.free();
-            fragShaderSPIRV.free();
+            // Move to cleanup
+//            vkDestroyShaderModule(cvkDevice.GetDevice(), vertShaderModule, null);
+//            vkDestroyShaderModule(cvkDevice.GetDevice(), fragShaderModule, null);
+//
+//            vertShaderSPIRV.free();
+//            fragShaderSPIRV.free();
         }
         
         CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for AxesRenderable class.");
@@ -332,7 +314,7 @@ public class CVKAxesRenderable implements CVKRenderable {
         return ret;
     }
        
-    // Testing secondary command buffers for each object
+    // Called from Record in the Renderer
     @Override
     public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo) {	
         int ret = VK_SUCCESS;
@@ -351,33 +333,32 @@ public class CVKAxesRenderable implements CVKRenderable {
                     throw new AssertionError("Failed to begin record command buffer: ");
             }
 
-            // Viewport
-            VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
-            viewport.x(0.0f);
-            viewport.y(0.0f);
-            viewport.width(cvkSwapChain.GetWidth());
-            viewport.height(cvkSwapChain.GetHeight());
-            viewport.minDepth(0.0f);
-            viewport.maxDepth(1.0f);
-         
-            // Scissor
-            VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
-            scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
-            scissor.extent(cvkDevice.GetCurrentSurfaceExtent()); 
-
-            VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
-            viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
-            viewportState.pViewports(viewport);
-            viewportState.pScissors(scissor);            
-
             // TODO! This is weird, example on setting viewort and scissors without the pipeline layout?
-            //vkCmdSetViewport()
-            
+            // if the viewport changes i think we rebuild the pipeline?
+            // Viewport
+//            VkViewport.Buffer viewport = VkViewport.callocStack(1, stack);
+//            viewport.x(0.0f);
+//            viewport.y(0.0f);
+//            viewport.width(cvkSwapChain.GetWidth());
+//            viewport.height(cvkSwapChain.GetHeight());
+//            viewport.minDepth(0.0f);
+//            viewport.maxDepth(1.0f);
+//         
+//            // Scissor
+//            VkRect2D.Buffer scissor = VkRect2D.callocStack(1, stack);
+//            scissor.offset(VkOffset2D.callocStack(stack).set(0, 0));
+//            scissor.extent(cvkDevice.GetCurrentSurfaceExtent()); 
+//
+//            VkPipelineViewportStateCreateInfo viewportState = VkPipelineViewportStateCreateInfo.callocStack(stack);
+//            viewportState.sType(VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO);
+//            viewportState.pViewports(viewport);
+//            viewportState.pScissors(scissor);            
+                    
             // Record stuff here
             vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
             // Check these params with the Oren engine, think they are different for secondary buffers
-            vkCmdDraw(commandBuffer, 3, 1, 0, 0);
+            vkCmdDraw(commandBuffer, GetVertex(), 1, 0, 0);
 
             beginInfo.free();
 
@@ -389,56 +370,7 @@ public class CVKAxesRenderable implements CVKRenderable {
         
         return ret;
     }
-    
-    //@Override
-    public int RecordPrimaryCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
-        // TODO add param checking 
-        int ret = VK_SUCCESS;
-        
-        try (MemoryStack stack = stackPush()) {
-            
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
-
-            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-
-            renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
-
-            VkRect2D renderArea = VkRect2D.callocStack(stack);
-            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-            renderArea.extent(cvkSwapChain.GetExtent());
-            renderPassInfo.renderArea(renderArea);
-
-            VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-            clearValues.color().float32(stack.floats(0.0f, 0.0f, 0.0f, 1.0f));
-            renderPassInfo.pClearValues(clearValues);
-
-            if(vkBeginCommandBuffer(commandBuffer, beginInfo) != VK_SUCCESS) {
-                throw new RuntimeException("Failed to begin recording command buffer");
-            }
-
-            renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(0));
-
-            // I believe the render pass should only be done on primary command buffers
-            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            {
-                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-
-                // 3 = number of verts, should store this
-                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-            }
-            vkCmdEndRenderPass(commandBuffer);
-
-
-            if(vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
-                throw new RuntimeException("Failed to record command buffer");
-            }
-        }
-        return ret;
-    }
-
-    
+       
     public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
@@ -454,8 +386,6 @@ public class CVKAxesRenderable implements CVKRenderable {
         if (VkSucceeded(ret)) {
             ret = CreatePipeline(cvkDevice, cvkSwapChain);
             InitCommandBuffer(cvkDevice, cvkSwapChain);
-            //CreateCommandBuffer(cvkDevice, cvkDevice.GetCommandPoolHandle(), 1);
-            //RecordCommandBuffer(cvkDevice, cvkSwapChain);
         }
         return ret;
     }
@@ -480,7 +410,9 @@ public class CVKAxesRenderable implements CVKRenderable {
     
     @Override
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
-        return RecordCommandBuffer(cvkDevice, cvkSwapChain, null);
+        // UPDATE CODE
+        
+        return VK_SUCCESS;
     }    
     
     @Override
@@ -541,7 +473,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     @Override
     public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
         assert(commandBuffer != null);
-        VkCommandBuffer vkCommandBuffer = commandBuffer;
-        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+        //VkCommandBuffer vkCommandBuffer = commandBuffer;
+        //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
     }
 }

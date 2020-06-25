@@ -34,11 +34,11 @@ public interface CVKRenderable extends Renderable{
     public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     //public abstract int LoadShaders(CVKDevice cvkDevice);
     public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo);
-    public abstract VkCommandBuffer GetCommandBuffer();
+    public abstract VkCommandBuffer GetCommandBuffer(int index);
     public abstract int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
     public abstract long GetGraphicsPipeline();
     public abstract int GetVertex();
-    public abstract void draw(VkCommandBuffer commandBuffer);
+    public abstract boolean IsDirty();
     // TEMP TEMP TEMP
 
     /**

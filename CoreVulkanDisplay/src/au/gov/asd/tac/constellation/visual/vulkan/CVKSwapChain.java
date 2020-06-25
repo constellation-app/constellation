@@ -415,57 +415,10 @@ public class CVKSwapChain {
         for (int i = 0; i < imageCount; ++i) {
             commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
         }
-        //BuildCommandBuffers
         
         return ret;
     }
-    
-    public int BuildCommandBuffers(List<CVKRenderable> renderables){
-        int ret = VK_SUCCESS;
-        
-        try (MemoryStack stack = stackPush()) {
-            
-            // Hydra: add the following two lines...
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
-
-            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-            renderPassInfo.renderPass(hRenderPassHandle);
-
-            VkRect2D renderArea = VkRect2D.callocStack(stack);
-            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-            renderArea.extent(vkCurrentImageExtent);
-            renderPassInfo.renderArea(renderArea);
-
-            VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-            clearValues.color().float32(stack.floats(1.0f, 0.0f, 0.0f, 1.0f));
-            renderPassInfo.pClearValues(clearValues);
-
-            for (int i = 0; i < imageCount; ++i) {
-                assert(swapChainFramebufferHandles.get(i) != VK_NULL_HANDLE);
-
-                VkCommandBuffer commandBuffer = commandBuffers.get(i);
-
-                checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
-                renderPassInfo.framebuffer(swapChainFramebufferHandles.get(i));
-                vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-                {
-                    // Loop renderables and call draw()
-                    for(int r = 0; r < renderables.size(); ++r){
-                        renderables.get(r).draw(commandBuffer);
-                    }
-    //                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-    //                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-                }
-                vkCmdEndRenderPass(commandBuffer);
-                checkVKret(vkEndCommandBuffer(commandBuffer));
-            }
-        }
-        
-        return ret;
-    }
-    
+       
     
     public void DescriptorTypeRequirementsUpdated(CVKSynchronizedDescriptorTypeCounts descriptorTypeCounts) {
         cvkRenderer.VerifyInRenderThread();
