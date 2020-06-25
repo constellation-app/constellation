@@ -29,6 +29,7 @@ import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import org.lwjgl.vulkan.VkCommandBuffer;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
 public class CVKTextRenderable implements CVKRenderable {
     public VkCommandBuffer commandBuffer;
@@ -55,7 +56,7 @@ public class CVKTextRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
     
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo) {
         return 0;
     }
     
@@ -67,13 +68,21 @@ public class CVKTextRenderable implements CVKRenderable {
             // TODO Draw indexed
     }
     
+    @Override 
+    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
+        
+        return ret;
+    }
+    
     //@Override    
 //    public int LoadShaders(CVKDevice cvkDevice) {
 //        int ret = VK_SUCCESS;
 //        return ret;
 //    }
     
-    public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -95,7 +104,7 @@ public class CVKTextRenderable implements CVKRenderable {
     public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipelines(cvkDevice, cvkSwapChain);
+            ret = CreatePipeline(cvkDevice, cvkSwapChain);
         }
         return ret;
     }   

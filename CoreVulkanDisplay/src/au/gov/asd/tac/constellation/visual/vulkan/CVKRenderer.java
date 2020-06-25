@@ -48,6 +48,7 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
+import java.util.Vector;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -79,8 +80,8 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
     
-    // Set to true to use one command buffer for all renderables
-    static boolean GLOBAL_COMMAND_BUFFER = false;
+    // Set to true to use secondary command buffers for all renderables
+    static boolean SECONDARY_COMMAND_BUFFERS = true;
     
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
@@ -201,7 +202,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 });
                 
                 // Hydra WIP: Now rebuild the command buffer with all the objects
-                if (GLOBAL_COMMAND_BUFFER) {
+                if (SECONDARY_COMMAND_BUFFERS) {
                     ret = cvkSwapChain.BuildCommandBuffers(scene.GetRenderables());
                     checkVKret(ret);
                 }
@@ -276,14 +277,18 @@ public class CVKRenderer extends Renderer implements ComponentListener {
      * @param commandBuffer
      * @return 
      */
-    //protected int RecordCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer commandBuffer){
-    protected int RecordCommandBuffer(MemoryStack stack, VkCommandBuffer commandBuffer){
+    protected int RecordCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer primaryCommandBuffer, int index){
+    //protected int RecordCommandBuffer(MemoryStack stack, VkCommandBuffer commandBuffer){
+        assert(cvkSwapChain.GetFrameBufferHandle(index) != VK_NULL_HANDLE);
+    
         int ret = VK_SUCCESS;
-        
-        //cvkSwapChain.RecordCommandBuffer()
+           
         VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
         beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
+        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
+        clearValues.color().float32(stack.floats(red, green, blue, 1.0f));
+        
         VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
         renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
         renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
@@ -291,57 +296,61 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         VkRect2D renderArea = VkRect2D.callocStack(stack);
         renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
         renderArea.extent(cvkSwapChain.GetExtent());
-        renderPassInfo.renderArea(renderArea);
-
-        VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-        clearValues.color().float32(stack.floats(red, green, blue, 1.0f));
+        renderPassInfo.renderArea(renderArea);       
         renderPassInfo.pClearValues(clearValues);
+        renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(index));
 
-   //     for (int i = 0; i < cvkSwapChain.GetImageCount(); ++i) {
-    //        assert(cvkSwapChain.GetFrameBufferHandle(i) != VK_NULL_HANDLE);
-            
-   //         VkCommandBuffer commandBuffer = cvkSwapChain.GetCommandBuffer(i);
+        // The primary command buffer does not contain any rendering commands
+	// These are stored (and retrieved) from the secondary command buffers
+        checkVKret(vkBeginCommandBuffer(primaryCommandBuffer, beginInfo));
+        
+        //vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+        vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
-            checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
-            renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(0));
-            //vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
-       
-                    // Do we need to do a vkBeginCommandBuffer again here?
-                    //checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
-                    // Loop through renderables and record their buffers
-                    for (int r = 0; r < renderables.size(); ++r) {
-                        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
-				.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-				.pNext(0)
-				.framebuffer(cvkSwapChain.GetFrameBufferHandle(0))
-				.renderPass(cvkSwapChain.GetRenderPassHandle())
-				.subpass(1) // Get the subpass of make it here?
-				.occlusionQueryEnable(false)
-				.queryFlags(0)
-				.pipelineStatistics(0);
-		
-                        VkCommandBufferBeginInfo beginInfoSecondary = VkCommandBufferBeginInfo.calloc()
-                                        .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
-                                        .pNext(0)
-                                        .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)
-                                        .pInheritanceInfo(inheritanceInfo);
-                
-                        VkCommandBuffer secondaryBuffer = renderables.get(r).GetCommandBuffer();
-                        checkVKret(vkBeginCommandBuffer(secondaryBuffer, beginInfoSecondary));
-                    
-                            vkCmdBindPipeline(secondaryBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, renderables.get(r).GetGraphicsPipeline());
-                            vkCmdDraw(secondaryBuffer, renderables.get(r).GetVertex(), 1, 0, 0);
-                        
-                        checkVKret(vkEndCommandBuffer(commandBuffer));
-                    }
+        // Inheritance info for the secondary command buffers (same for all!)
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
+                        .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
+                        .pNext(0)
+                        .framebuffer(cvkSwapChain.GetFrameBufferHandle(index))
+                        .renderPass(cvkSwapChain.GetRenderPassHandle())
+                        .subpass(0) // Get the subpass of make it here?
+                        .occlusionQueryEnable(false)
+                        .queryFlags(0)
+                        .pipelineStatistics(0);
+            // Do we need to do a vkBeginCommandBuffer again here?
+            //checkVKret(vkBeginCommandBuffer(commandBuffer, beginInfo));
+            // Loop through renderables and record their buffers
+            for (int r = 0; r < renderables.size(); ++r) {
                
-//                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
-//                vkCmdDraw(commandBuffer, 3, 1, 0, 0);
-         
-            vkCmdEndRenderPass(commandBuffer);
-            checkVKret(vkEndCommandBuffer(commandBuffer));
-    //    }    
+                renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo);
+                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer());
+            }
+            
+ //           for (int r = 0; r < renderables.size(); ++r) {
+                //secondaryBuffers.add(renderables.get(r).GetCommandBuffer());
+                
+ //               vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer());
+                
+//                VkCommandBufferBeginInfo beginInfoSecondary = VkCommandBufferBeginInfo.calloc()
+//                                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+//                                .pNext(0)
+//                                .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)
+//                                .pInheritanceInfo(inheritanceInfo);
+//
+//                VkCommandBuffer secondaryBuffer = renderables.get(r).GetCommandBuffer();
+//                checkVKret(vkBeginCommandBuffer(secondaryBuffer, beginInfoSecondary));
+//
+//                    vkCmdBindPipeline(secondaryBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, renderables.get(r).GetGraphicsPipeline());
+//                    vkCmdDraw(secondaryBuffer, renderables.get(r).GetVertex(), 1, 0, 0);
+//
+//                checkVKret(vkEndCommandBuffer(primaryCommandBuffer));
+ //           }
+            
+        // Execute render commands from the secondary command buffer
+        //vkCmdExecuteCommands(primaryCommandBuffer, secondaryBuffers);
+        
+        vkCmdEndRenderPass(primaryCommandBuffer);
+        checkVKret(vkEndCommandBuffer(primaryCommandBuffer)); 
     
         Debug_UpdateRGB();
         
@@ -447,11 +456,17 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     }
                          
 
-                    // Update everything that needs updating - drawables  
-                    renderEventListeners.forEach(listener->{
-                        listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
-                    });
-                    
+                    // Update everything that needs updating - drawables 
+                    if (!SECONDARY_COMMAND_BUFFERS) {
+                        renderEventListeners.forEach(listener->{
+                            listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
+                        });
+                    }
+                    else{
+                        // error needing to wait for fence
+                        RecordCommandBuffer(stack, frame, cvkSwapChain.GetCommandBuffer(imageIndex), imageIndex);
+                    }
+                        
                     
                     // TODO_TT: simplify queues, renderEventListeners and this could be merged
                     // Process updates queue by other threads
@@ -466,7 +481,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     parent.signalUpdateComplete();     
                     
                     //TEMP TEMP TEMP
-                    if (!GLOBAL_COMMAND_BUFFER) {
+                    if (!SECONDARY_COMMAND_BUFFERS) {
                         renderEventListeners.forEach(listener->{
                             listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
                         });
@@ -562,6 +577,12 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
 
         scene = cvkScene;
+        
+        // TEMP TEMP TEMP
+        //renderable.InitCommandBuffer(cvkDevice, cvkSwapChain);
+        renderables.add(renderable);
+        
+        
 //        pendingUpdates.add(new CVKUpdateDescriptorTypeRequirements(cvkScene, renderableAdded));
     }
     
@@ -592,18 +613,23 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     }    
     
     private void Debug_UpdateRGB(){
-        if(red < 1.f)
+        if(red == 1.f && blue == 1.f && green == 1.f)
+            red -=0.01;
+        else if(red == 0.f && blue > 0.f && green == 1.f)
+            blue -=0.01;
+        else if(red == 0.f && blue == 0.f && green == 1.f)
+            green -=0.01; 
+        else if(red < 1.f)
             red +=0.01;
-        else if(green < 1.f)
-            green +=0.01;
         else if(blue < 1.f)
             blue +=0.01;
+        else if(green < 1.f)
+            green +=0.01;
         else
         {
             red = 0.f;
             green = 0.f;
             blue = 0.f;
-        }
-        
+        } 
     }
 }

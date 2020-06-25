@@ -55,6 +55,8 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -83,18 +85,14 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.VK_SUBPASS_CONTENTS_INLINE;
 import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
-import static org.lwjgl.vulkan.VK10.vkCmdBeginRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkCmdBindPipeline;
 import static org.lwjgl.vulkan.VK10.vkCmdBindVertexBuffers;
 import static org.lwjgl.vulkan.VK10.vkCmdDraw;
-import static org.lwjgl.vulkan.VK10.vkCmdEndRenderPass;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkCreateDescriptorSetLayout;
@@ -106,6 +104,7 @@ import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
 import org.lwjgl.vulkan.VkDescriptorImageInfo;
 import org.lwjgl.vulkan.VkDescriptorSetAllocateInfo;
@@ -123,7 +122,6 @@ import org.lwjgl.vulkan.VkPipelineShaderStageCreateInfo;
 import org.lwjgl.vulkan.VkPipelineVertexInputStateCreateInfo;
 import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
-import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
@@ -165,6 +163,10 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             
             // TODO Draw indexed
     }
+    
+    
+    @Override
+    public VkCommandBuffer GetCommandBuffer(){return commandBuffers.get(0); }
     
     protected static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
@@ -485,84 +487,107 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;  
     }
     
+    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int level){
+        int ret = VK_SUCCESS;
+        
+        try (MemoryStack stack = stackPush()) {
+            int imageCount = cvkSwapChain.GetImageCount();
+            commandBuffers = new ArrayList<>(imageCount);
+
+            // Create
+            VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
+            allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
+            allocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
+            if(level == 1){
+                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
+            }else if (level == 2) {
+                allocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+            }
+            
+            allocInfo.commandBufferCount(imageCount);
+
+            PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
+            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), allocInfo, pCommandBuffers);
+            checkVKret(ret);
+
+            for (int i = 0; i < imageCount; ++i) {
+                commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
+            }
+        }
+        return ret;
+    }
     
-    protected int CreateCommandBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    //protected int CreateCommandBuffers(MemoryStack stack, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    @Override
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo){
+    
         assert(cvkDevice.GetDevice() != null);
         assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);           
                 
         int ret = VK_SUCCESS;
      
         // TODO_TT: investigate a frames in flight < imageCount approach
-        int imageCount = cvkSwapChain.GetImageCount();
-        commandBuffers = new ArrayList<>(imageCount);
+        try (MemoryStack stack = stackPush()) {
+            
+            int imageCount = cvkSwapChain.GetImageCount();
+ 
+            // Fill
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack)
+                    .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
+                    .pNext(0)
+                    .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
+                    .pInheritanceInfo(inheritanceInfo);             
+            // Hydra: beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
-        // Create
-        VkCommandBufferAllocateInfo allocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
-        allocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-        allocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-        allocInfo.level(VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-        allocInfo.commandBufferCount(imageCount);
+//            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
+//            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
+//            renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+//
+//            VkRect2D renderArea = VkRect2D.callocStack(stack);
+//            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
+//            renderArea.extent(cvkSwapChain.GetExtent());
+//            renderPassInfo.renderArea(renderArea);
 
-        PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
-        ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), allocInfo, pCommandBuffers);
-        checkVKret(ret);
+            VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
+            clearValues.get(0).color().float32(stack.floats(0.0f, 0.0f, 0.5f, 1.0f));
+            clearValues.get(1).depthStencil().set(1.0f, 0);
 
-        for (int i = 0; i < imageCount; ++i) {
-            commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
-        }
+            //renderPassInfo.pClearValues(clearValues);
 
-        // Fill
-        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
-        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+            for (int i = 0; i < imageCount; ++i) {
+                VkCommandBuffer commandBuffer = commandBuffers.get(i);
+                ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
+                checkVKret(ret);
 
-        VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-        renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-        renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+//                renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(i));
 
-        VkRect2D renderArea = VkRect2D.callocStack(stack);
-        renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-        renderArea.extent(cvkSwapChain.GetExtent());
-        renderPassInfo.renderArea(renderArea);
+ //               vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+ //               {
+                    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(i));
 
-        VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
-        clearValues.get(0).color().float32(stack.floats(0.0f, 0.0f, 0.5f, 1.0f));
-        clearValues.get(1).depthStencil().set(1.0f, 0);
+                    LongBuffer vertexBuffers = stack.longs(vertBuffers.get(i).GetBufferHandle());
+                    LongBuffer offsets = stack.longs(0);
 
-        renderPassInfo.pClearValues(clearValues);
+                    // Bind verts
+                    vkCmdBindVertexBuffers(commandBuffer, 0, vertexBuffers, offsets);
 
-        for (int i = 0; i < imageCount; ++i) {
-            VkCommandBuffer commandBuffer = commandBuffers.get(i);
-            ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
-            checkVKret(ret);
-
-            renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(i));
-
-            vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-            {
-                vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(i));
-
-                LongBuffer vertexBuffers = stack.longs(vertBuffers.get(i).GetBufferHandle());
-                LongBuffer offsets = stack.longs(0);
-                
-                // Bind verts
-                vkCmdBindVertexBuffers(commandBuffer, 0, vertexBuffers, offsets);
-
-                // Bind descriptrs
-                vkCmdBindDescriptorSets(commandBuffer, 
-                                        VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                        pipelineLayouts.get(i), 
-                                        0, 
-                                        stack.longs(descriptorSets.get(i)), 
-                                        null);
-                vkCmdDraw(commandBuffer,
-                          2,  //number of verts == number of digits
-                          1,  //no instancing, but we must draw at least 1 point
-                          0,  //first vert index
-                          0); //first instance index (N/A)                         
+                    // Bind descriptrs
+                    vkCmdBindDescriptorSets(commandBuffer, 
+                                            VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                            pipelineLayouts.get(i), 
+                                            0, 
+                                            stack.longs(descriptorSets.get(i)), 
+                                            null);
+                    vkCmdDraw(commandBuffer,
+                              2,  //number of verts == number of digits
+                              1,  //no instancing, but we must draw at least 1 point
+                              0,  //first vert index
+                              0); //first instance index (N/A)                         
+ //               }
+   //             vkCmdEndRenderPass(commandBuffer);
+                ret = vkEndCommandBuffer(commandBuffer);
+                checkVKret(ret);
             }
-            vkCmdEndRenderPass(commandBuffer);
-            ret = vkEndCommandBuffer(commandBuffer);
-            checkVKret(ret);
         }
         
         return ret;
@@ -657,14 +682,10 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         }
         
         return ret;
-    }    
-    
-    
-        
-    
-    
+    }
+
     @Override
-    public int CreatePipelines(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         assert(cvkDevice.GetDevice() != null);
         assert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
         assert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
@@ -854,8 +875,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 pipelines.add(pGraphicsPipeline.get(0));
                 assert(pipelines.get(i) != VK_NULL_HANDLE);        
             }
-            ret = CreateCommandBuffers(stack, cvkDevice, cvkSwapChain);
-            checkVKret(ret);
+            //ret = CreateCommandBuffers(stack, cvkDevice, cvkSwapChain);
+            //ret = RecordCommandBuffers(stack, cvkDevice, cvkSwapChain);
+            //checkVKret(ret);
         }
         return ret;
     }
@@ -875,7 +897,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipelines(cvkDevice, cvkSwapChain);
+            ret = CreatePipeline(cvkDevice, cvkSwapChain);
+            InitCommandBuffer(cvkDevice, cvkSwapChain, 1);
         }
         return ret;
     }
@@ -967,10 +990,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     @Override
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int imageIndex) {
-        // Update uniforms that will be used in the next image
+        int ret = VK_SUCCESS;
+        // TODO Update uniforms that will be used in the next image
         
+        ret = RecordCommandBuffer(cvkDevice, cvkSwapChain, null);
         
-        return VK_SUCCESS;
+        return ret;
     }
     
     @Override

@@ -8,7 +8,6 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.EventListener;
-import java.util.logging.Logger;
 import org.lwjgl.vulkan.awt.AWTVKCanvas;
 
 import javax.swing.SwingUtilities;
