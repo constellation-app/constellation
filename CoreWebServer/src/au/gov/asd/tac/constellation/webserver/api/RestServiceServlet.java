@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.HttpMethod;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import java.io.IOException;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -102,10 +101,7 @@ public class RestServiceServlet extends ConstellationApiServlet {
         try {
             response.setContentType(rs.getMimeType());
             response.setStatus(HttpServletResponse.SC_OK);
-            ServiceResponse serviceResponse = rs.callService(parameters, request.getInputStream(), response.getOutputStream());
-            if (serviceResponse.getErrorCode()!=200){
-                response.sendError(serviceResponse.getErrorCode(), serviceResponse.getErrorMessage());
-            }
+            rs.callService(parameters, request.getInputStream(), response.getOutputStream());
         } catch (final IOException | RuntimeException ex) {
             throw new ServletException(ex);
         }

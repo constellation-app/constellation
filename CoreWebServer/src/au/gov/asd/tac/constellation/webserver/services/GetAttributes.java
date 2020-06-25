@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -72,7 +71,7 @@ public class GetAttributes extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
@@ -111,7 +110,6 @@ public class GetAttributes extends RestService {
             rg.release();
         }
 
-        mapper.writeValue(out, root);        
-        return new ServiceResponse(SC_OK, "Successful"); 
+        mapper.writeValue(out, root);
     }
 }

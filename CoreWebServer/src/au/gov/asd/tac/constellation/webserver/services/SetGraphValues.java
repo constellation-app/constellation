@@ -32,7 +32,6 @@ import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -87,7 +86,7 @@ public class SetGraphValues extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         // We want to read a JSON document that looks like:
@@ -122,7 +121,6 @@ public class SetGraphValues extends RestService {
         }
 
         setGraphAttributes(graphId, columns, row);
-        return new ServiceResponse(SC_OK, "Successful");
     }
 
     private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {

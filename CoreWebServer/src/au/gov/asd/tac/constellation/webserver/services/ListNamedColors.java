@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.webserver.services;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -53,7 +52,7 @@ public class ListNamedColors extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         ConstellationColor.NAMED_COLOR_LIST
@@ -62,6 +61,5 @@ public class ListNamedColors extends RestService {
                 });
 
         mapper.writeValue(out, root);
-        return new ServiceResponse(SC_OK, "Successful");
     }
 }

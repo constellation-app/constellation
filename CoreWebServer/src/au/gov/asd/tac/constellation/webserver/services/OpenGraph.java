@@ -29,7 +29,6 @@ import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
@@ -85,7 +84,7 @@ public class OpenGraph extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String filePath = parameters.getStringValue(FILE_PARAMETER_ID);
 
         final String existingId = RestServiceUtilities.activeGraphId();
@@ -112,6 +111,5 @@ public class OpenGraph extends RestService {
         } catch (final GraphParseException ex) {
             throw new RestServiceException(ex);
         }
-        return new ServiceResponse(SC_OK, "Successful");
     }
 }

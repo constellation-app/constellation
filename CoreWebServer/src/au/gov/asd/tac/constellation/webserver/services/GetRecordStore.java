@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -114,7 +113,7 @@ public class GetRecordStore extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final boolean selected = parameters.getBooleanValue(SELECTED_PARAMETER_ID);
         final boolean vx = parameters.getBooleanValue(VX_PARAMETER_ID);
@@ -219,7 +218,6 @@ public class GetRecordStore extends RestService {
         mapper.writeValue(out, root);
 
         ioph.finish();
-        return new ServiceResponse(SC_OK, "Successful");
     }
 
     /**

@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -75,7 +74,7 @@ public class SetGraph extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final GraphNode graphNode = GraphNode.getGraphNode(graphId);
@@ -90,9 +89,8 @@ public class SetGraph extends RestService {
             } catch (final InvocationTargetException ex) {
                 throw new RestServiceException(ex);
             }
-        } else {            
-            return new ServiceResponse(SC_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        } else {
+            throw new RestServiceException(String.format("No graph with id '%s'", graphId));
         }
-        return new ServiceResponse(SC_OK, "Successful");
     }
 }

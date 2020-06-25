@@ -40,7 +40,6 @@ import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
-import au.gov.asd.tac.constellation.webserver.restapi.ServiceResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -127,7 +126,7 @@ public class AddRecordStore extends RestService {
     }
 
     @Override
-    public ServiceResponse callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
+    public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final boolean completeWithSchema = parameters.getBooleanValue(COMPLETE_PARAMETER_ID);
         final String arrange = parameters.getStringValue(ARRANGE_PARAMETER_ID);
@@ -183,7 +182,6 @@ public class AddRecordStore extends RestService {
         }
 
         addToGraph(graphId, rs, completeWithSchema, arrange, resetView);
-        return new ServiceResponse(SC_OK, "Successful"); 
     }
 
     private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
