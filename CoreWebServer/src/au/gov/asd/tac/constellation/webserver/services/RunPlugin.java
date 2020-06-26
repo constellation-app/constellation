@@ -98,22 +98,26 @@ public class RunPlugin extends RestService {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode json = mapper.readTree(in);
-            if (json.size() > 0) {
-                final Plugin plugin = PluginRegistry.get(pluginName);
-                final PluginParameters pluginParameters = plugin.createParameters();
-                RestServiceUtilities.parametersFromJson((ObjectNode) json, pluginParameters);
-                PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
-            } else {
-                PluginExecution.withPlugin(pluginName).executeNow(graph);
+        if (graph != null) {
+            try {
+                final ObjectMapper mapper = new ObjectMapper();
+                final JsonNode json = mapper.readTree(in);
+                if (json.size() > 0) {
+                    final Plugin plugin = PluginRegistry.get(pluginName);
+                    final PluginParameters pluginParameters = plugin.createParameters();
+                    RestServiceUtilities.parametersFromJson((ObjectNode) json, pluginParameters);
+                    PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
+                } else {
+                    PluginExecution.withPlugin(pluginName).executeNow(graph);
+                }
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new RestServiceException(ex);
+            } catch (final PluginException | IllegalArgumentException ex) {
+                throw new RestServiceException(ex);
             }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RestServiceException(ex);
-        } catch (final PluginException | IllegalArgumentException ex) {
-            throw new RestServiceException(ex);
+        } else {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
     }
 }

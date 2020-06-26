@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 get(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -70,6 +74,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 post(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -89,6 +96,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 put(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
