@@ -49,6 +49,7 @@ import org.lwjgl.vulkan.VkRenderPassBeginInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.UINT64_MAX;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import static org.lwjgl.vulkan.KHRSwapchain.VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
@@ -109,10 +110,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     
 //    // What is the minimum size the pool needs to accomodate?
 //    protected int desiredPoolDescriptorTypeCounts[] = null;    
-        
-    
-    // Remove this once we are sure everything is working, but for now ensure all render ops happen in the render thread
-    private long renderThreadID = 0;
+          
     
     protected List<CVKRenderEventListener> renderEventListeners = new ArrayList<>();     
 
@@ -278,6 +276,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
      * @return 
      */
     protected int RecordCommandBuffer(MemoryStack stack, CVKFrame frame, VkCommandBuffer primaryCommandBuffer, int index){
+        VerifyInRenderThread();
         assert(cvkSwapChain.GetFrameBufferHandle(index) != VK_NULL_HANDLE);
     
         int ret = VK_SUCCESS;
@@ -398,10 +397,10 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         // some thought.
         //==================================
         
-        if (renderThreadID != 0) {
+        if (CVKUtils.renderThreadID != 0) {
             VerifyInRenderThread();
         } else {
-            renderThreadID = Thread.currentThread().getId();
+            CVKUtils.renderThreadID = Thread.currentThread().getId();
         }
         
         
@@ -551,12 +550,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
 //        pendingUpdates.add(new CVKUpdateDescriptorTypeRequirements(cvkScene, renderableAdded));
     }
     
-    public void VerifyInRenderThread() {
-        if (renderThreadID != Thread.currentThread().getId()) {
-            throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
-                    Thread.currentThread().getId(), renderThreadID));
-        }
-    }
+
     
     
     @Override
@@ -578,49 +572,18 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     }    
     
     private void Debug_UpdateRGB(){   
-        // Change element
+        // When the current component reaches it's limit do something
         if (clr.a[curClrEl] >= 1.0f || clr.a[curClrEl] < 0.0f) {
+            // Clamp it to 0-1
             clr.a[curClrEl] = Math.max(0.0f, Math.min(1.0f, clr.a[curClrEl]));
+            // If we have hit the ceiling or floor on all components, change direction
             if (curClrEl == 2) {
                 clrChange = -clrChange;
             }
+            // Start changing the next component
             curClrEl = (curClrEl + 1) % 3;
         }
-        clr.a[curClrEl] += clrChange;
-        
-        
-//        if (red >= 1.0f && blue >= 1.0f && green >= 1.0f) {
-//            change = -0.01f;
-//        } else if (red < 0.0f && blue < 0.0f && green < 0.0f) {
-//            change = 0.01f;
-//        }
-//        
-//        // Clamp
-//        red = Math.max(0.0f, Math.min(1.0f, red));
-//        green = Math.max(0.0f, Math.min(1.0f, green));
-//        blue = Math.max(0.0f, Math.min(1.0f, blue));
-//        
-//        // Walk, preference red, then blue, then green
-//        if (red != 0.0f || red != 1.0f) { red += change; }
-//        else if (red != 0.0f || red != 1.0f) { blue
-        
-//        if(blue == 1.f && green == 1.f)
-//            red -=0.01;
-//        else if(red == 0.f && blue > 0.f && green == 1.f)
-//            blue -=0.01;
-//        else if(red == 0.f && blue == 0.f && green == 1.f)
-//            green -=0.01; 
-//        else if(red < 1.f)
-//            red +=0.01;
-//        else if(blue < 1.f)
-//            blue +=0.01;
-//        else if(green < 1.f)
-//            green +=0.01;
-//        else
-//        {
-//            //red = 0.f;
-//            green = 0.f;
-//            //blue = 0.f;
-//        } 
+        // Walk the current component a little
+        clr.a[curClrEl] += clrChange;            
     }
 }

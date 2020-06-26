@@ -54,6 +54,10 @@ public class CVKUtils {
     public static final int UINT32_MAX = 0xFFFFFFFF;
     public static final long UINT64_MAX = 0xFFFFFFFFFFFFFFFFL;
     
+    // Remove this once we are sure everything is working, but for now ensure all render ops happen in the render thread
+    // TODO_TT: !!!THIS WILL ONLY WORK FOR A SINGLE GRAPH, MULTIPLE GRAPHS WILL TRIP THIS !!!
+    public static long renderThreadID = 0;    
+    
     // Logger shared by all of Constellation's Vulkan classes with a minimal formatter
     // as a proxy for the IDE's console window (as prints to stdout aren't appearing).
     public final static Logger CVKLOGGER = CreateNamedFileLogger("CVK");
@@ -169,7 +173,13 @@ public class CVKUtils {
         }
         return false;
     }
-    
+        
+    public static void VerifyInRenderThread() {
+        if (renderThreadID != 0 && (renderThreadID != Thread.currentThread().getId())) {
+            throw new RuntimeException(String.format("Error: render operation performed from thread %d, render thread %d",
+                    Thread.currentThread().getId(), renderThreadID));
+        }
+    }    
     
     public static void checkVKret(int retCode) throws IllegalStateException {
         if (retCode != VK_SUCCESS) {

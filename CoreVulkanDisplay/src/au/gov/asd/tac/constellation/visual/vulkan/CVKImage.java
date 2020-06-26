@@ -26,13 +26,12 @@ import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_SHADER_READ_BIT;
 import static org.lwjgl.vulkan.VK10.VK_ACCESS_TRANSFER_WRITE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D16_UNORM_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D24_UNORM_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_D32_SFLOAT_S8_UINT;
+import static org.lwjgl.vulkan.VK10.VK_FORMAT_S8_UINT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_X8_D24_UNORM_PACK32;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_DEPTH_BIT;
@@ -58,13 +57,11 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateMemory;
 import static org.lwjgl.vulkan.VK10.vkBindImageMemory;
-import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
 import static org.lwjgl.vulkan.VK10.vkCmdPipelineBarrier;
 import static org.lwjgl.vulkan.VK10.vkCreateImage;
 import static org.lwjgl.vulkan.VK10.vkDestroyImage;
 import static org.lwjgl.vulkan.VK10.vkFreeMemory;
 import static org.lwjgl.vulkan.VK10.vkGetImageMemoryRequirements;
-import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkImageCreateInfo;
 import org.lwjgl.vulkan.VkImageMemoryBarrier;
 import org.lwjgl.vulkan.VkMemoryAllocateInfo;
@@ -81,11 +78,14 @@ public class CVKImage {
     private int tiling      = 0;
     private int usage       = 0;
     private int properties  = 0;   
+    private int aspectMask  = 0;
     
     private CVKImage() {}
     
     public long GetImageHandle() { return pImage.get(0); }
     public long GetMemoryImageHandle() { return pImageMemory.get(0); }
+    public int GetFormat() { return format; }
+    public int GetAspectMask() { return aspectMask; }
     
 //    public void Set(CVKDevice cvkDevice, ByteBuffer pBytes, int size) {
 //        try (MemoryStack stack = stackPush()) {
@@ -101,23 +101,35 @@ public class CVKImage {
 //        }
 //    }
     
+    public void Destroy() {
+        if (pImage.get(0) != VK_NULL_HANDLE) {
+            vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
+        }
+        if (pImageMemory.get(0) != VK_NULL_HANDLE) {
+            vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);
+        }
+    }
+    
     @Override
     public void finalize() throws Throwable {
-        vkDestroyImage(cvkDevice.GetDevice(), pImage.get(0), null);
-        vkFreeMemory(cvkDevice.GetDevice(), pImageMemory.get(0), null);     
-        
+        Destroy();        
         super.finalize();
     }
     
     public static boolean HasDepthComponent(int format) {
-        if (format == VK_FORMAT_D16_UNORM ||
-            format == VK_FORMAT_X8_D24_UNORM_PACK32 ||
-            format == VK_FORMAT_D32_SFLOAT  ||
-            format == VK_FORMAT_D16_UNORM_S8_UINT ||
-            format == VK_FORMAT_D24_UNORM_S8_UINT ||
-            format == VK_FORMAT_D32_SFLOAT_S8_UINT) {
-            return true;
-        } else { return false; }
+        return  format == VK_FORMAT_D16_UNORM ||
+                format == VK_FORMAT_X8_D24_UNORM_PACK32 ||
+                format == VK_FORMAT_D32_SFLOAT  ||
+                format == VK_FORMAT_D16_UNORM_S8_UINT ||
+                format == VK_FORMAT_D24_UNORM_S8_UINT ||
+                format == VK_FORMAT_D32_SFLOAT_S8_UINT;
+    }
+    
+    public static boolean HasStencilComponent(int format) {
+        return format == VK_FORMAT_S8_UINT ||
+               format == VK_FORMAT_D16_UNORM_S8_UINT ||
+               format == VK_FORMAT_D24_UNORM_S8_UINT ||
+               format == VK_FORMAT_D32_SFLOAT_S8_UINT;
     }
     
     /**
@@ -129,6 +141,8 @@ public class CVKImage {
      * access to resources, like ensuring that a write to a buffer completes before
      * reading from it..."
      * 
+     * Some member variables aren't set until an image is transitioned for the first 
+     * time, TODO_TT add asserts to catch access before transition?
      * 
      * @param oldLayout
      * @param newLayout
@@ -153,15 +167,14 @@ public class CVKImage {
 
             // Depth/stencil or colour?
             if (newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL) {
-                vkBarrier.subresourceRange().aspectMask(VK_IMAGE_ASPECT_DEPTH_BIT);
-                if (HasDepthComponent(format)) {
-                    vkBarrier.subresourceRange().aspectMask(
-                            vkBarrier.subresourceRange().aspectMask() | VK_IMAGE_ASPECT_STENCIL_BIT);
+                aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;                
+                if (HasStencilComponent(format)) {
+                    aspectMask |= VK_IMAGE_ASPECT_STENCIL_BIT;
                 }
-
             } else {
-                vkBarrier.subresourceRange().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
+                aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
             }
+            vkBarrier.subresourceRange().aspectMask(aspectMask);
 
             int sourceStage;
             int destinationStage;
@@ -170,7 +183,6 @@ public class CVKImage {
                 vkBarrier.dstAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
                 sourceStage = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 destinationStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
-
             } else if(oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL) {
                 vkBarrier.srcAccessMask(VK_ACCESS_TRANSFER_WRITE_BIT);
                 vkBarrier.dstAccessMask(VK_ACCESS_SHADER_READ_BIT);

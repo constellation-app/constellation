@@ -53,7 +53,9 @@ public class CVKCommandBuffer {
         super.finalize();
     }
 
-    public int Begin(int flags) {		
+    public int Begin(int flags) {	
+        VerifyInRenderThread();
+        
         int ret;            
         try (MemoryStack stack = stackPush()) {
             VkCommandBufferBeginInfo vkBeginInfo = VkCommandBufferBeginInfo.callocStack(stack);

@@ -22,10 +22,10 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
@@ -42,7 +42,7 @@ import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
 import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
@@ -54,9 +54,9 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -313,7 +313,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         int ret = VK_SUCCESS;
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
-            CVKIconTextureAtlas.AddIcon(Integer.toString(digit));
+            cvkScene.GetTextureAtlas().AddIcon(Integer.toString(digit));
         }
         return ret;
     }
@@ -454,8 +454,11 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         for (int i = 0; i < vertices.length; ++i) {
             int data[] = new int[2];
             
+            final int foregroundIconIndex = cvkScene.GetTextureAtlas().AddIcon(Integer.toString(7-(i*4)));
+            final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
+            
             // packed icon indices
-            data[0] = 0; //(backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);;
+            data[0] = (backgroundIconIndex << ICON_BITS) | (foregroundIconIndex & ICON_MASK);
             
             // offset which is used for this digit's position in SimpleIcon.vs
             data[1] = i * DIGIT_ICON_OFFSET;
@@ -512,7 +515,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     @Override
     public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo){
-    
+        VerifyInRenderThread();
         assert(cvkDevice.GetDevice() != null);
         assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);           
                 
@@ -527,7 +530,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack)
                     .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
                     .pNext(0)
-                    .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
+                    .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT | VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT)  // hard coding this for now
                     .pInheritanceInfo(inheritanceInfo);             
             // Hydra: beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
@@ -624,13 +627,11 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         // Struct for the size of the image sampler used by SimpleIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
         imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        //TODO_TT: textures!
-//            imageInfo.imageView(textureImageView);
-//            imageInfo.sampler(textureSampler);            
+        imageInfo.imageView(cvkScene.GetTextureAtlas().GetAtlasImageViewHandle());
+        imageInfo.sampler(cvkScene.GetTextureAtlas().GetAtlasSamplerHandle());            
 
         // We need 3 write descriptors, 2 for uniform buffers (vs + gs) and one for texture (fs)
-//        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(3, stack);
-        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(2, stack);
+        VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(3, stack);
 
         VkWriteDescriptorSet vertUBDescriptorWrite = descriptorWrites.get(0);
         vertUBDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
@@ -648,13 +649,13 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         geomUBDescriptorWrite.descriptorCount(1);
         geomUBDescriptorWrite.pBufferInfo(geomBufferInfo);            
 
-//        VkWriteDescriptorSet samplerDescriptorWrite = descriptorWrites.get(2);
-//        samplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
-//        samplerDescriptorWrite.dstBinding(2);
-//        samplerDescriptorWrite.dstArrayElement(0);
-//        samplerDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
-//        samplerDescriptorWrite.descriptorCount(1);
-//        samplerDescriptorWrite.pImageInfo(imageInfo);                                
+        VkWriteDescriptorSet samplerDescriptorWrite = descriptorWrites.get(2);
+        samplerDescriptorWrite.sType(VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET);
+        samplerDescriptorWrite.dstBinding(2);
+        samplerDescriptorWrite.dstArrayElement(0);
+        samplerDescriptorWrite.descriptorType(VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER);
+        samplerDescriptorWrite.descriptorCount(1);
+        samplerDescriptorWrite.pImageInfo(imageInfo);                                
 
 
         for (int i = 0; i < imageCount; ++i) {
@@ -665,7 +666,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
  
             vertUBDescriptorWrite.dstSet(descriptorSet);
             geomUBDescriptorWrite.dstSet(descriptorSet);
-            //samplerDescriptorWrite.dstSet(descriptorSet);
+            samplerDescriptorWrite.dstSet(descriptorSet);
 
             // Update the descriptors with a write and no copy
             vkUpdateDescriptorSets(cvkDevice.GetDevice(), descriptorWrites, null);
@@ -999,7 +1000,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     @Override
     public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
         assert(commandBuffers != null);
-        VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
-        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+//        VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
+//        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
     }
 }

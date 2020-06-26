@@ -68,11 +68,13 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
     protected final CVKRenderer cvkRenderer;
     protected final Frustum viewFrustum = new Frustum();
     private final Matrix44f projectionMatrix = new Matrix44f();
+    private CVKIconTextureAtlas cvkIconTextureAtlas = null;
     public List<CVKRenderable> renderables = new ArrayList<>();
     
    
 
     public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
+    public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
 
     public List<CVKRenderable> GetRenderables(){
         return renderables;
@@ -166,12 +168,13 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // for each class.
         assert(cvkDevice != null && cvkDevice.GetDevice() != null);
         
+        // Initialise the shared atlas texture
+        cvkIconTextureAtlas = new CVKIconTextureAtlas(cvkDevice);        
+        
         // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
-        
-      
-        
+                    
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
                 
@@ -185,12 +188,17 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));          
         
         //renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
+        
+        // The renderables above will have requested the icons they need for their initial state, we
+        // now need to generate the atlas texture and sampler before the renderables that rely on them
+        // create their descriptors
+        cvkIconTextureAtlas.Init();
     }
     
     @Override
     public void DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
         // Give the shared icon loader a chance to recreate itself if needed
-        CVKIconTextureAtlas.DisplayUpdate(cvkDevice);
+        cvkIconTextureAtlas.DisplayUpdate();
         
         renderables.forEach(renderable -> {renderable.DisplayUpdate(cvkDevice, cvkSwapChain, frameIndex);});
     }

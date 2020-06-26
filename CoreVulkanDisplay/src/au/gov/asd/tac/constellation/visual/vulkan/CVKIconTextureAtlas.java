@@ -26,14 +26,18 @@ import java.awt.image.BufferedImage;
 import static java.awt.image.BufferedImage.TYPE_4BYTE_ABGR;
 import java.awt.image.DataBufferByte;
 import java.nio.ByteBuffer;
+import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+import static org.lwjgl.vulkan.VK10.VK_COMPARE_OP_NEVER;
+import static org.lwjgl.vulkan.VK10.VK_FILTER_LINEAR;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R8G8B8A8_SRGB;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_ASPECT_COLOR_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -42,13 +46,25 @@ import static org.lwjgl.vulkan.VK10.VK_IMAGE_LAYOUT_UNDEFINED;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_TILING_OPTIMAL;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_SAMPLED_BIT;
 import static org.lwjgl.vulkan.VK10.VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+import static org.lwjgl.vulkan.VK10.VK_IMAGE_VIEW_TYPE_2D_ARRAY;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
+import static org.lwjgl.vulkan.VK10.VK_SAMPLER_MIPMAP_MODE_LINEAR;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkCmdCopyBufferToImage;
+import static org.lwjgl.vulkan.VK10.vkCreateImageView;
+import static org.lwjgl.vulkan.VK10.vkCreateSampler;
+import static org.lwjgl.vulkan.VK10.vkDestroyImageView;
+import static org.lwjgl.vulkan.VK10.vkDestroySampler;
 import org.lwjgl.vulkan.VkBufferImageCopy;
 import org.lwjgl.vulkan.VkExtent3D;
+import org.lwjgl.vulkan.VkImageViewCreateInfo;
+import org.lwjgl.vulkan.VkSamplerCreateInfo;
 
 
 public class CVKIconTextureAtlas {
@@ -88,14 +104,21 @@ public class CVKIconTextureAtlas {
     
     
     // Rather than a shared drawable like the GL renderer uses we'll just access this as a singleton.
-    private static final CVKIconTextureAtlas instance = new CVKIconTextureAtlas();
-    
+    //private static final CVKIconTextureAtlas instance = new CVKIconTextureAtlas();
+           
     // Instance members
-    private CVKImage atlasImage = null;
+    private final CVKDevice cvkDevice;
+    private CVKImage cvkAtlasImage = null;
+    private long hAtlasSampler = VK_NULL_HANDLE;
+    private long hAtlasImageView = VK_NULL_HANDLE;
     private final LinkedHashMap<String, Integer> loadedIcons = new LinkedHashMap<>();
 //    private boolean requiresReload = false;
     private int maxIcons = Short.MAX_VALUE; //replace this with a calculated value
     private int lastTransferedIconCount = 0;
+    
+    
+    public long GetAtlasImageViewHandle() { return hAtlasImageView; }
+    public long GetAtlasSamplerHandle() { return hAtlasSampler; }
     
     
     // This could be replaced with a templated Pair type
@@ -113,16 +136,26 @@ public class CVKIconTextureAtlas {
     }
     
     
-    private CVKIconTextureAtlas() {
+    public CVKIconTextureAtlas(CVKDevice cvkDevice) {
+        this.cvkDevice = cvkDevice;
+        
         // These icons are guaranteed to be in the iconMap in this order.
         // They must be at these pre-defined indices so other code (in particular the shaders) can use them.
         // See *_INDEX constants above.
         for (final String iconName : new String[]{HIGHLIGHTED_ICON, UNKNOWN_ICON, LOOP_DIRECTED_ICON, LOOP_UNDIRECTED_ICON, NOISE_ICON, TRANSPARENT_ICON}) {
-            DoAddIcon(iconName);
+            AddIcon(iconName);
         }        
     }
     
-    private int DoAddIcon(final String label) {
+    
+    private void Destroy() {
+        vkDestroyImageView(cvkDevice.GetDevice(), cvkAtlasImage.GetImageHandle(), null);
+        //vkDestroyImage(cvkDevice.GetDevice(), textureArray.image, nullptr);
+        cvkAtlasImage.Destroy();
+        vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
+    }
+    
+    public int AddIcon(final String label) {
         final Integer iconIndex = loadedIcons.get(label);
         if (iconIndex == null) {
             final int index = loadedIcons.size();
@@ -132,7 +165,6 @@ public class CVKIconTextureAtlas {
             }
 
             loadedIcons.put(label, index);
-//            requiresReload = true;
             return index;
         }
 
@@ -214,7 +246,7 @@ public class CVKIconTextureAtlas {
         return true;
     }
     
-    private int AddIconsToAtlas(CVKDevice cvkDevice, List<IndexedConstellationIcon> icons) {
+    private int AddIconsToAtlas(List<IndexedConstellationIcon> icons) {
         int ret = VK_SUCCESS;
         
         
@@ -226,9 +258,9 @@ public class CVKIconTextureAtlas {
             int requiredLayers = (icons.size() / iconsPerLayer) + 1;
             int stagingBufferSize = iconsPerLayer * requiredLayers * ICON_SIZE_BYTES;
             CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
-                                                                stagingBufferSize, 
-                                                                VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-                                                                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+                                                          stagingBufferSize, 
+                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
             
             // Zero this buffer so undersized icons are padded with transparent pixels
             cvkStagingBuffer.ZeroMemory();
@@ -285,7 +317,7 @@ public class CVKIconTextureAtlas {
             // Create destination texture
             //CVKTexture atlasTexture = CVKTexture.Create(cvkDevice);
             
-            atlasImage = CVKImage.Create(cvkDevice, 
+            cvkAtlasImage = CVKImage.Create(cvkDevice, 
                                          textureWidth, 
                                          textureHeight, 
                                          requiredLayers, 
@@ -299,10 +331,10 @@ public class CVKIconTextureAtlas {
             for (int iLayer = 0; iLayer < requiredLayers; ++iLayer) {
                 VkBufferImageCopy bufferCopyLayer = bufferCopyLayers.get(iLayer);
                 
-                // Calculate offset into staging buffer for the current array layer
+                // Calculate offset into staging buffer for the current image layer
                 long offset = iLayer * iconsPerLayer * ICON_SIZE_BYTES;
 
-                // Setup a buffer image copy structure for the current array layer
+                // Setup a buffer image copy structure for the current image layer
                 bufferCopyLayer.bufferOffset(offset);
                 bufferCopyLayer.bufferRowLength(0);    // Tightly packed
                 bufferCopyLayer.bufferImageHeight(0);  // Tightly packed
@@ -320,29 +352,99 @@ public class CVKIconTextureAtlas {
             checkVKret(ret);            
             
             // Transition image from undefined to transfer destination optimal
-            ret = atlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
             checkVKret(ret);
             
             // Copy staging buffer to atlas texture
             vkCmdCopyBufferToImage(cvkCopyCmd.GetVKCommandBuffer(),
                                    cvkStagingBuffer.GetBufferHandle(),
-                                   atlasImage.GetImageHandle(),
+                                   cvkAtlasImage.GetImageHandle(),
                                    VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
                                    bufferCopyLayers);
             
             // Now the image is populated, transition it for reading
-            ret = atlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
             checkVKret(ret);      
             
             // Ok nothing has actually happened yet, time to execute the transitions and copy
             ret = cvkCopyCmd.EndAndSubmit();
+            checkVKret(ret);       
+            
+            // We've finished with the staging buffer
+            cvkStagingBuffer.Destroy();            
+            
+            // Image view
+            VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
+            vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
+            vkViewInfo.image(cvkAtlasImage.GetImageHandle());
+            vkViewInfo.viewType(VK_IMAGE_VIEW_TYPE_2D_ARRAY);
+            vkViewInfo.format(cvkAtlasImage.GetFormat());
+            vkViewInfo.subresourceRange().aspectMask(cvkAtlasImage.GetAspectMask());
+            vkViewInfo.subresourceRange().baseMipLevel(0);
+            vkViewInfo.subresourceRange().levelCount(1);
+            vkViewInfo.subresourceRange().baseArrayLayer(0);
+            vkViewInfo.subresourceRange().layerCount(requiredLayers);
+
+            LongBuffer pImageView = stack.mallocLong(1);
+            ret = vkCreateImageView(cvkDevice.GetDevice(), vkViewInfo, null, pImageView);
             checkVKret(ret);
+            hAtlasImageView = pImageView.get(0);   
+            
+            // Create a sampler to match the image.  Note the sampler allows us to sample
+            // an image but isn't tied to a specific image, note the lack of image or 
+            // imageview parameters below.
+            VkSamplerCreateInfo vkSamplerCreateInfo = VkSamplerCreateInfo.callocStack(stack);                        
+            vkSamplerCreateInfo.sType(VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO);
+            vkSamplerCreateInfo.maxAnisotropy(1.0f);
+            vkSamplerCreateInfo.magFilter(VK_FILTER_LINEAR);
+            vkSamplerCreateInfo.minFilter(VK_FILTER_LINEAR);
+            vkSamplerCreateInfo.mipmapMode(VK_SAMPLER_MIPMAP_MODE_LINEAR);
+            vkSamplerCreateInfo.addressModeU(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+            vkSamplerCreateInfo.addressModeV(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+            vkSamplerCreateInfo.addressModeW(VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE);
+            vkSamplerCreateInfo.mipLodBias(0.0f);
+            vkSamplerCreateInfo.maxAnisotropy(8);
+            vkSamplerCreateInfo.compareOp(VK_COMPARE_OP_NEVER);
+            vkSamplerCreateInfo.minLod(0.0f);
+            vkSamplerCreateInfo.maxLod(0.0f);
+            vkSamplerCreateInfo.borderColor(VK_BORDER_COLOR_FLOAT_OPAQUE_WHITE);
+            
+            LongBuffer pTextureSampler = stack.mallocLong(1);
+            ret = vkCreateSampler(cvkDevice.GetDevice(), vkSamplerCreateInfo, null, pTextureSampler);
+            checkVKret(ret);
+            hAtlasSampler = pTextureSampler.get(0);
+            assert(hAtlasSampler != VK_NULL_HANDLE);                       
         }
         
         return ret;
     }
     
-    private int DoDisplayUpdate(CVKDevice cvkDevice) {
+    private void DestroyAtlas() {
+        
+    }
+    
+    
+    public int Init() {
+        assert(lastTransferedIconCount == 0);
+        assert(cvkAtlasImage == null);
+        assert(hAtlasSampler == VK_NULL_HANDLE);
+        assert(hAtlasImageView == VK_NULL_HANDLE);
+        
+        int ret = VK_SUCCESS;
+        if (loadedIcons.size() > 0) {
+            List<IndexedConstellationIcon> allIcons = new ArrayList<>();
+            loadedIcons.entrySet().forEach(entry -> {                
+                allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
+            });
+                        
+            ret = AddIconsToAtlas(allIcons);
+            checkVKret(ret);
+            lastTransferedIconCount = loadedIcons.size();  
+        }
+        return ret;
+    }
+    
+    public int DisplayUpdate() {
         int ret = VK_SUCCESS;
         
         // TODO_TT: This needs to be synchronised
@@ -366,7 +468,13 @@ public class CVKIconTextureAtlas {
                 //}
                 allIcons.add(new IndexedConstellationIcon(entry.getValue(), IconManager.getIcon(entry.getKey()))); 
             });
-            ret = AddIconsToAtlas(cvkDevice, allIcons);
+            
+            //TODO_TT: we have to wait until all of the renderer's swap chain frames are waiting,
+            // otherwise we will be ripping out the atlas image, view and sampler from under any
+            // in flight frames.
+            DestroyAtlas();
+            
+            ret = AddIconsToAtlas(allIcons);
             checkVKret(ret);
             lastTransferedIconCount = loadedIcons.size();
         }
@@ -374,11 +482,6 @@ public class CVKIconTextureAtlas {
         return ret;
     }
     
-    //==========================================================================
-    // Singleton access
-    //==========================================================================
-    public static int AddIcon(final String label) { return instance.DoAddIcon(label); }
-    public static int DisplayUpdate(CVKDevice cvkDevice) { return instance.DoDisplayUpdate(cvkDevice); }
     
 /**
      * Load an array of icon textures.

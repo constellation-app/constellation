@@ -6,7 +6,7 @@
 
 
 //DELETE
-const float TEXTURE_SCALE = 1.0/0.125;
+/const float TEXTURE_SCALE = 1.0/0.125;
 
 
 // === UNIFORMS
@@ -25,8 +25,8 @@ layout(location = 0) out vec4 fragColor;
 
 void main(void) {
     //TODO_TT: hook up texture
-    fragColor = iconColor * vec4((textureCoords * TEXTURE_SCALE), 1.0);
-    //fragColor = iconColor * texture(images, textureCoords);
+    //fragColor = iconColor * vec4((textureCoords * TEXTURE_SCALE), 1.0);
+    fragColor = iconColor * texture(images, textureCoords);
 
     // Discarding only when fragColor.a==0.0 means that some "nearly transparent" pixels get drawn, which causes weird see-through
     // artifacts around the edges. Instead we'll discard nearly transparent pixels as well at an arbitrary cut-off point.

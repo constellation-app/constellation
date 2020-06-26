@@ -22,6 +22,7 @@ import org.lwjgl.BufferUtils;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
 import static org.lwjgl.vulkan.VK10.VK_SHARING_MODE_EXCLUSIVE;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -97,11 +98,20 @@ public class CVKBuffer {
         }
     }
     
+    public void Destroy() {
+        if (pBuffer.get(0) != VK_NULL_HANDLE) {
+            vkDestroyBuffer(cvkDevice.GetDevice(), pBuffer.get(0), null);
+            pBuffer.put(0, VK_NULL_HANDLE);
+        }
+        if (pBufferMemory.get(0) != VK_NULL_HANDLE) {
+            vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);
+            pBufferMemory.put(0, VK_NULL_HANDLE);
+        }        
+    }
+    
     @Override
     public void finalize() throws Throwable {
-        vkDestroyBuffer(cvkDevice.GetDevice(), pBuffer.get(0), null);
-        vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);
-        
+        Destroy();
         super.finalize();
     }
     
