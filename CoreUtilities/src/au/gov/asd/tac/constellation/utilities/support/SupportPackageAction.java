@@ -36,7 +36,8 @@ import org.openide.windows.WindowManager;
         id = "au.gov.asd.tac.constellation.utilities.support.SupportPackageAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_SupportPackageAction"
+        displayName = "#CTL_SupportPackageAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/support/supportPackage.png"
 )
 @ActionReference(path = "Menu/Help", position = 920)
 @Messages({

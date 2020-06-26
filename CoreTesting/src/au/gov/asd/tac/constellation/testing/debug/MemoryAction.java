@@ -25,7 +25,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.MemoryAction")
-@ActionRegistration(displayName = "#CTL_MemoryAction")
+@ActionRegistration(displayName = "#CTL_MemoryAction",
+        iconBase = "au/gov/asd/tac/constellation/testing/debug/memory.png")
 @ActionReference(path = "Menu/Help", position = 1451)
 @Messages("CTL_MemoryAction=Memory")
 public final class MemoryAction implements ActionListener {
