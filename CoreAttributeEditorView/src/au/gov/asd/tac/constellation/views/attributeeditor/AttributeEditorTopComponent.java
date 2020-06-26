@@ -198,12 +198,14 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        attributePanel.resetPanel();
+        if (needsUpdate()) {
+            attributePanel.resetPanel();
+        }
     }
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (activeGraph != graph) {
+        if (needsUpdate() && activeGraph != graph) {
             if (activeGraph != null) {
                 activeGraph.removeGraphChangeListener(this);
             }
@@ -220,7 +222,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void handleGraphChange(GraphChangeEvent event) {
-        if (event == null) { // can be null at this point in time
+        if (!needsUpdate() || event == null) { // can be null at this point in time
             return;
         }
         event = event.getLatest();
@@ -237,6 +239,22 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
                     refreshThread.start();
                 }
             }
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            activeGraph.removeGraphChangeListener(this);
+        }
+        activeGraph = graph;
+        if (activeGraph != null) {
+            activeGraph.addGraphChangeListener(this);
+            reader = new AttributeReader(activeGraph);
+            attributePanel.updateEditorPanel(reader.refreshAttributes());
+        } else {
+            reader = null;
         }
     }
 

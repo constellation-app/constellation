@@ -65,6 +65,9 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         initContent();
 
         addAttributeValueChangeHandler(LayersViewConcept.MetaAttribute.LAYERS_VIEW_STATE, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             layersViewController.readState();
         });
     }
@@ -81,27 +84,32 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (graph != null) {
+        if (needsUpdate() && graph != null) {
             preparePane();
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (graph != null) {
+        if (needsUpdate() && graph != null) {
             preparePane();
         }
     }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
-        if (graph != null) {
+        if (needsUpdate() && graph != null) {
             preparePane();
         }
     }
 
     @Override
     protected void handleComponentOpened() {
+        preparePane();
+    }
+
+    @Override
+    protected void componentShowing() {
         preparePane();
     }
 

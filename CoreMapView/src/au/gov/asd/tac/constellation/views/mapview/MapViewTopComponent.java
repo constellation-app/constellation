@@ -374,7 +374,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             ScheduledFuture scheduledFuture;
 
             @Override
-            //Cancels the previous resize (future) and then performs the latest one every half second 
+            //Cancels the previous resize (future) and then performs the latest one every half second
             public void componentResized(ComponentEvent event) {
                 if (scheduledFuture != null) {
                     scheduledFuture.cancel(true);
@@ -393,68 +393,102 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // add graph structure listener
         addStructureChangeHandler(graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
 
         // add graph visual listeners
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.DIMMED, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.DIMMED, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.VISIBILITY, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.VISIBILITY, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
 
         // add graph geo listeners
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.SHAPE, graph -> {
-            renderer.updateMarkers(graph, markerState);
+            if (needsUpdate()) {
+                renderer.updateMarkers(graph, markerState);
+            }
         });
 
         // add state listeners
         if (markerState.getLabel().getVertexAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getLabel().getVertexAttribute(), graph -> {
-                renderer.updateMarkers(graph, markerState);
+                if (needsUpdate()) {
+                    renderer.updateMarkers(graph, markerState);
+                }
             });
         }
         if (markerState.getLabel().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getLabel().getTransactionAttribute(), graph -> {
-                renderer.updateMarkers(graph, markerState);
+                if (needsUpdate()) {
+                    renderer.updateMarkers(graph, markerState);
+                }
             });
         }
         if (markerState.getColorScheme().getVertexAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getVertexAttribute(), graph -> {
-                renderer.updateMarkers(graph, markerState);
+                if (needsUpdate()) {
+                    renderer.updateMarkers(graph, markerState);
+                }
             });
         }
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), graph -> {
-                renderer.updateMarkers(graph, markerState);
+                if (needsUpdate()) {
+                    renderer.updateMarkers(graph, markerState);
+                }
             });
         }
     }
@@ -579,6 +613,13 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        if (needsUpdate() && renderer != null) {
+            renderer.updateMarkers(currentGraph, markerState);
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
         if (renderer != null) {
             renderer.updateMarkers(currentGraph, markerState);
         }

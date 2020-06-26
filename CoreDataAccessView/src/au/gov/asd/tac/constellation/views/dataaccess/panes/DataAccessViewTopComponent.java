@@ -73,7 +73,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         initContent();
 
         addAttributeCountChangeHandler(graph -> {
-            if (dataAccessViewPane != null) {
+            if (needsUpdate() && dataAccessViewPane != null) {
                 dataAccessViewPane.update(graph);
             }
         });
@@ -116,7 +116,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (dataAccessViewPane != null) {
+        if (needsUpdate() && dataAccessViewPane != null) {
             dataAccessViewPane.update(graph);
             Platform.runLater(() -> {
                 ParameterIOUtilities.loadDataAccessState(dataAccessViewPane, graph);

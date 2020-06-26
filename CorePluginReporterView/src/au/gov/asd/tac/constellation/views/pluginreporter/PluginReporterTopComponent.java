@@ -72,8 +72,17 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         initComponents();
         setName(Bundle.CTL_PluginReporterTopComponent());
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
-        reporterPane = new PluginReporterPane();
+        reporterPane = new PluginReporterPane(this);
         initContent();
+    }
+
+    /**
+     *
+     * @return boolean value if the view should update - depending on the top
+     * component's visibility status
+     */
+    public boolean shouldUpdate() {
+        return this.needsUpdate();
     }
 
     /**
@@ -98,14 +107,13 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
     @Override
     protected void handleComponentOpened() {
         GraphManager.getDefault().addGraphManagerListener(this);
         GraphReportManager.addGraphReportListener(this);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
-    
+
     @Override
     protected void handleComponentClosed() {
         handleNewGraph(null);
@@ -120,16 +128,23 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     void readProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
     }
-    
+
     @Override
     protected void handleNewGraph(final Graph graph) {
-        Platform.runLater(() -> {
-            if (graph == null) {
-                reporterPane.setGraphReport(null);
-            } else {
-                reporterPane.setGraphReport(GraphReportManager.getGraphReport(graph.getId()));
-            }
-        });
+        if (needsUpdate()) {
+            Platform.runLater(() -> {
+                if (graph == null) {
+                    reporterPane.setGraphReport(null);
+                } else {
+                    reporterPane.setGraphReport(GraphReportManager.getGraphReport(graph.getId()));
+                }
+            });
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        handleNewGraph(GraphManager.getDefault().getActiveGraph()); // test this
     }
 
     @Override

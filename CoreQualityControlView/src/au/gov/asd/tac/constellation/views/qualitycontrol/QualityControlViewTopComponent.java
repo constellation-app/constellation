@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
@@ -91,7 +91,9 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     public void qualityControlChanged(QualityControlState state) {
-        qualityControlViewPane.refreshQualityControlView(state);
+        if (needsUpdate()) {
+            qualityControlViewPane.refreshQualityControlView(state);
+        }
     }
 
     /**

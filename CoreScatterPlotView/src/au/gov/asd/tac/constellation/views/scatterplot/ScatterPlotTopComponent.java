@@ -86,6 +86,9 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
         initContent();
 
         selectionHandler = graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             ScatterPlotState state = null;
             try {
                 state = getState(graph);
@@ -102,6 +105,9 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
         };
 
         refreshHandler = graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             ScatterPlotState state = null;
             if (graph != null) {
                 try {
@@ -217,6 +223,9 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected void handleNewGraph(Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         if (graph == null) {
             scatterPlotPane.getOptionsPane().disableOptions();
             refreshHandler.accept(graph);
@@ -227,6 +236,11 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             scatterPlotPane.getOptionsPane().enableOptions();
             scatterPlotPane.getOptionsPane().refreshOptions(currentState);
         }
+    }
+
+    @Override
+    protected void componentShowing() {
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     /**
