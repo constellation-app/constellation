@@ -525,9 +525,10 @@ public class CVKSwapChain {
             LongBuffer pDescriptorPool = stack.mallocLong(1);
             ret = vkCreateDescriptorPool(cvkDevice.GetDevice(), poolInfo, null, pDescriptorPool);
             checkVKret(ret);
-            hDescriptorPool = pDescriptorPool.get(0);                
-        }           
-        assert(hDescriptorPool != VK_NULL_HANDLE);
+            hDescriptorPool = pDescriptorPool.get(0);
+            
+            assert(hDescriptorPool != VK_NULL_HANDLE);
+        } 
 
         return ret;
     }

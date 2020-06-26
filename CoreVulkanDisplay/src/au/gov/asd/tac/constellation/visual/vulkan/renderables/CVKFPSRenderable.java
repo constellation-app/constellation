@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkSucceeded;
 import au.gov.asd.tac.constellation.visual.vulkan.shaders.CVKShaderPlaceHolder;
 import java.io.IOException;
@@ -47,6 +48,7 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
@@ -506,12 +508,14 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             for (int i = 0; i < imageCount; ++i) {
                 commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
             }
+            
+            CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
         }
         return ret;
     }
     
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo){
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
     
         assert(cvkDevice.GetDevice() != null);
         assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);           
@@ -520,66 +524,40 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
      
         // TODO_TT: investigate a frames in flight < imageCount approach
         try (MemoryStack stack = stackPush()) {
-            
-            int imageCount = cvkSwapChain.GetImageCount();
  
             // Fill
-            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack)
-                    .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
-                    .pNext(0)
-                    .flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT)  // hard coding this for now
-                    .pInheritanceInfo(inheritanceInfo);             
-            // Hydra: beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+            VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.callocStack(stack);
+            beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+            beginInfo.pNext(0);
+            beginInfo.flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);  // hard coding this for now
+            beginInfo.pInheritanceInfo(inheritanceInfo);             
 
-//            VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
-//            renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
-//            renderPassInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
-//
-//            VkRect2D renderArea = VkRect2D.callocStack(stack);
-//            renderArea.offset(VkOffset2D.callocStack(stack).set(0, 0));
-//            renderArea.extent(cvkSwapChain.GetExtent());
-//            renderPassInfo.renderArea(renderArea);
+            VkCommandBuffer commandBuffer = commandBuffers.get(index);
+            ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
+            checkVKret(ret);
 
-            VkClearValue.Buffer clearValues = VkClearValue.callocStack(2, stack);
-            clearValues.get(0).color().float32(stack.floats(0.0f, 0.0f, 0.5f, 1.0f));
-            clearValues.get(1).depthStencil().set(1.0f, 0);
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(index));
 
-            //renderPassInfo.pClearValues(clearValues);
+            LongBuffer vertexBuffers = stack.longs(vertBuffers.get(index).GetBufferHandle());
+            LongBuffer offsets = stack.longs(0);
 
-            for (int i = 0; i < imageCount; ++i) {
-                VkCommandBuffer commandBuffer = commandBuffers.get(i);
-                ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
-                checkVKret(ret);
+            // Bind verts
+            vkCmdBindVertexBuffers(commandBuffer, 0, vertexBuffers, offsets);
 
-//                renderPassInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(i));
-
- //               vkCmdBeginRenderPass(commandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
- //               {
-                    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelines.get(i));
-
-                    LongBuffer vertexBuffers = stack.longs(vertBuffers.get(i).GetBufferHandle());
-                    LongBuffer offsets = stack.longs(0);
-
-                    // Bind verts
-                    vkCmdBindVertexBuffers(commandBuffer, 0, vertexBuffers, offsets);
-
-                    // Bind descriptrs
-                    vkCmdBindDescriptorSets(commandBuffer, 
-                                            VK_PIPELINE_BIND_POINT_GRAPHICS,
-                                            pipelineLayouts.get(i), 
-                                            0, 
-                                            stack.longs(descriptorSets.get(i)), 
-                                            null);
-                    vkCmdDraw(commandBuffer,
-                              2,  //number of verts == number of digits
-                              1,  //no instancing, but we must draw at least 1 point
-                              0,  //first vert index
-                              0); //first instance index (N/A)                         
- //               }
-   //             vkCmdEndRenderPass(commandBuffer);
-                ret = vkEndCommandBuffer(commandBuffer);
-                checkVKret(ret);
-            }
+            // Bind descriptors
+            vkCmdBindDescriptorSets(commandBuffer, 
+                                    VK_PIPELINE_BIND_POINT_GRAPHICS,
+                                    pipelineLayouts.get(index), 
+                                    0, 
+                                    stack.longs(descriptorSets.get(index)), 
+                                    null);
+            vkCmdDraw(commandBuffer,
+                      2,  //number of verts == number of digits
+                      1,  //no instancing, but we must draw at least 1 point
+                      0,  //first vert index
+                      0); //first instance index (N/A)                         
+            ret = vkEndCommandBuffer(commandBuffer);
+            checkVKret(ret);
         }
         
         return ret;
@@ -741,6 +719,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
 
 
             
+                // TODO: Generalize map of shaders and type per renderable
+                // Then can dynamically set here? Think I saw something like
+                // this in the Oreon engine.
                 ByteBuffer entryPoint = stack.UTF8("main");
 
                 VkPipelineShaderStageCreateInfo.Buffer shaderStages = VkPipelineShaderStageCreateInfo.callocStack(3, stack);
@@ -776,6 +757,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 VkPipelineInputAssemblyStateCreateInfo inputAssembly = VkPipelineInputAssemblyStateCreateInfo.callocStack(stack);
                 inputAssembly.sType(VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO);
 //                inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST);
+                
+                // Generalize me! Parameter?
                 inputAssembly.topology(VK_PRIMITIVE_TOPOLOGY_POINT_LIST);
                 inputAssembly.primitiveRestartEnable(false);
 
@@ -998,8 +981,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     @Override
     public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
-        assert(commandBuffers != null);
-        VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
-        cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+        //assert(commandBuffers != null);
+        //VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
+        //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
     }
 }

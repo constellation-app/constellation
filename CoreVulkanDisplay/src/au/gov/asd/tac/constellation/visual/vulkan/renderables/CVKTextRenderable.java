@@ -39,7 +39,7 @@ public class CVKTextRenderable implements CVKRenderable {
     public long GetGraphicsPipeline(){return 0; }
     
     @Override
-    public int GetVertex(){return 0; }
+    public int GetVertexCount(){return 0; }
     @Override
     public VkCommandBuffer GetCommandBuffer(int index){return commandBuffer; }
     @Override
@@ -56,7 +56,7 @@ public class CVKTextRenderable implements CVKRenderable {
     public void display(final AutoDrawable drawable, final Matrix44f pMatrix) { throw new UnsupportedOperationException("Not yet implemented"); }
    
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo) {
+    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
         return 0;
     }
     @Override

@@ -310,8 +310,15 @@ public class CVKRenderer extends Renderer implements ComponentListener {
             // Loop through renderables and record their buffers
             for (int r = 0; r < renderables.size(); ++r) {
                
-                renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo);
-                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
+                //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
+                if (renderables.get(r).IsDirty()){
+                    renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo, index);
+     
+                    // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
+                    // call the following line once with the whole list
+                    vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
+                }
+                //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
             }
         
         vkCmdEndRenderPass(primaryCommandBuffer);
@@ -404,6 +411,10 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 IntBuffer pImageIndex = stack.mallocInt(1);
                 CVKAssert(currentFrame < cvkFrames.size());
                 CVKFrame frame = cvkFrames.get(currentFrame);
+  
+                // Wait for fence to signal that all command buffers are ready
+                //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
+                
                 ret = AcquireImageFromSwapchain(frame, pImageIndex);
                 if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
                  || ret == CVKMissingEnums.VkResult.VK_ERROR_OUT_OF_DATE_KHR.Value()) {
@@ -444,6 +455,9 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     //renderEventListeners.forEach(listener->{
                     //       listener.Display(stack, frame, this, cvkDevice, cvkSwapChain, imageIndex);
                     //    });
+                    
+                    // Reset the fences
+                    //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
                     
                     ret = ExecuteCommandBuffer(stack, 
                                frame, 

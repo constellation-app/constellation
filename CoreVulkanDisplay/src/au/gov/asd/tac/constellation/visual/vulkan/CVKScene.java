@@ -169,9 +169,7 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
-        
-      
-        
+               
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
                 
@@ -182,9 +180,7 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // Load shaders for known renderable types
         // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.LoadShaders(cvkDevice));
-        checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));          
-        
-        //renderables.forEach(renderable -> {renderable.LoadShaders(cvkDevice);});
+        checkVKret(CVKFPSRenderable.LoadShaders(cvkDevice));
     }
     
     @Override
