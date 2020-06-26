@@ -17,12 +17,10 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import java.beans.Beans;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
-import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -44,7 +42,6 @@ import static org.lwjgl.vulkan.KHRXlibSurface.VK_KHR_XLIB_SURFACE_EXTENSION_NAME
 import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkLayerProperties;
 import org.lwjgl.BufferUtils;
-import static org.lwjgl.system.MemoryUtil.memAllocLong;
 import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import org.lwjgl.vulkan.VkClearColorValue;
 import org.lwjgl.vulkan.VkClearValue;
@@ -379,98 +376,62 @@ public class CVKUtils {
         return clearValues;
     }
     
-    public static int getSampleCountBit(int samples){
-    	
-    	int sampleCountBit = 0;
-    	
-    	switch (samples) {
-			case 1: sampleCountBit = VK_SAMPLE_COUNT_1_BIT; break;
-			case 2: sampleCountBit = VK_SAMPLE_COUNT_2_BIT; break;
-			case 4: sampleCountBit = VK_SAMPLE_COUNT_4_BIT; break;
-			case 8: sampleCountBit = VK_SAMPLE_COUNT_8_BIT; break;
-			case 16: sampleCountBit = VK_SAMPLE_COUNT_16_BIT; break;
-			case 32: sampleCountBit = VK_SAMPLE_COUNT_32_BIT; break;
-			case 64: sampleCountBit = VK_SAMPLE_COUNT_64_BIT; break;
-		}
-    	
-    	if (sampleCountBit == 0){
-    		CVKLOGGER.info("Multisamplecount: " + samples + ". Allowed numbers [1,2,4,8,16,32,64]");
-    	}
-    	
-    	return sampleCountBit;
-    }
-    
-//    public static long[] createLongArray(List<DescriptorSet> descriptorSets){
+//    public static int getSampleCountBit(int samples){
 //    	
-//    	long[] descriptorSetHandles = new long[descriptorSets.size()];
+//    	int sampleCountBit = 0;
 //    	
-//		for (int i=0; i<descriptorSets.size(); i++){
-//			
-//			descriptorSetHandles[i] = descriptorSets.get(i).getHandle();
+//    	switch (samples) {
+//			case 1: sampleCountBit = VK_SAMPLE_COUNT_1_BIT; break;
+//			case 2: sampleCountBit = VK_SAMPLE_COUNT_2_BIT; break;
+//			case 4: sampleCountBit = VK_SAMPLE_COUNT_4_BIT; break;
+//			case 8: sampleCountBit = VK_SAMPLE_COUNT_8_BIT; break;
+//			case 16: sampleCountBit = VK_SAMPLE_COUNT_16_BIT; break;
+//			case 32: sampleCountBit = VK_SAMPLE_COUNT_32_BIT; break;
+//			case 64: sampleCountBit = VK_SAMPLE_COUNT_64_BIT; break;
 //		}
-//		
-//		return descriptorSetHandles;
-//    }
-//    
-//    public static long[] createLongArray(DescriptorSet descriptorSet){
 //    	
-//    	long[] descriptorSetHandles = new long[1];
-//    	descriptorSetHandles[0] = descriptorSet.getHandle();
-//		
-//		return descriptorSetHandles;
-//    }
-//    
-//    public static LongBuffer createLongBuffer(List<DescriptorSetLayout> descriptorSetLayouts){
-//    	
-//    	if (descriptorSetLayouts.size() == 0){
-//    		CVKLOGGER.info("createLongBuffer: descriptorSetLayouts empty");
+//    	if (sampleCountBit == 0){
+//    		CVKLOGGER.info("Multisamplecount: " + samples + ". Allowed numbers [1,2,4,8,16,32,64]");
 //    	}
 //    	
-//    	LongBuffer descriptorSetLayoutsBuffer = memAllocLong(descriptorSetLayouts.size());
-//		
-//		for (DescriptorSetLayout layout : descriptorSetLayouts){
-//			
-//			descriptorSetLayoutsBuffer.put(layout.getHandle());
-//		}
-//		descriptorSetLayoutsBuffer.flip();
-//		
-//		return descriptorSetLayoutsBuffer;
+//    	return sampleCountBit;
 //    }
     
-    public static PointerBuffer createPointerBuffer(List<CVKCommandBuffer> commandBuffers){
-    	
-    	if (commandBuffers.size() == 0){
-    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
-    	}
-    	
-    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
-		
-		for (CVKCommandBuffer cmdBuffer : commandBuffers){
-			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
-		}
-		
-		cmdBuffersPointer.flip();
-		
-		return cmdBuffersPointer;
-    }
     
-    public static PointerBuffer createPointerBuffer(Collection<CVKCommandBuffer> commandBuffers){
-    	
-    	if (commandBuffers.size() == 0){
-    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
-    		return null;
-    	}
-    	
-    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
-		
-		for (CVKCommandBuffer cmdBuffer : commandBuffers){
-			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
-		}
-		
-		cmdBuffersPointer.flip();
-		
-		return cmdBuffersPointer;
-    }
-
-    
+//    public static PointerBuffer createPointerBuffer(List<CVKCommandBuffer> commandBuffers){
+//    	
+//    	if (commandBuffers.size() == 0){
+//    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
+//    	}
+//    	
+//    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+//		
+//		for (CVKCommandBuffer cmdBuffer : commandBuffers){
+//			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+//		}
+//		
+//		cmdBuffersPointer.flip();
+//		
+//		return cmdBuffersPointer;
+//    }
+//    
+//    public static PointerBuffer createPointerBuffer(Collection<CVKCommandBuffer> commandBuffers){
+//    	
+//    	if (commandBuffers.size() == 0){
+//    		CVKLOGGER.info("createPointerBuffer: commandBuffers empty");
+//    		return null;
+//    	}
+//    	
+//    	PointerBuffer cmdBuffersPointer = memAllocPointer(commandBuffers.size());
+//		
+//		for (CVKCommandBuffer cmdBuffer : commandBuffers){
+//			cmdBuffersPointer.put(cmdBuffer.getHandlePointer());
+//		}
+//		
+//		cmdBuffersPointer.flip();
+//		
+//		return cmdBuffersPointer;
+//    }
+//
+//    
 }

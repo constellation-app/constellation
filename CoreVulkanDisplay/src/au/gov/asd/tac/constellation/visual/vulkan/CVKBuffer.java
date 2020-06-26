@@ -76,21 +76,22 @@ public class CVKBuffer {
             vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), 0, bufferSize, 0, data);
             {                
                 ByteBuffer dest = data.getByteBuffer(0, (int)bufferSize);
-                long written = 0;
-                byte zeroes[] = new byte[COPY_SIZE];
-                while (written < bufferSize) {
-                    if ((written + COPY_SIZE) <= bufferSize) {
-                        // The second argument is the offset into the source array not the destination.  The
-                        // nio buffer types walk their position with each put so we don't need to specify an
-                        // destination offset.
-                        dest.put(zeroes, 0, COPY_SIZE);
-                        written += COPY_SIZE;
-                    } else {
-                        long remaining = bufferSize - written;
-                        dest.put(zeroes, 0, (int)remaining);
-                        written += remaining;                        
-                    }
-                }
+                BufferUtils.zeroBuffer(dest);
+//                long written = 0;
+//                byte zeroes[] = new byte[COPY_SIZE];
+//                while (written < bufferSize) {
+//                    if ((written + COPY_SIZE) <= bufferSize) {
+//                        // The second argument is the offset into the source array not the destination.  The
+//                        // nio buffer types walk their position with each put so we don't need to specify an
+//                        // destination offset.
+//                        dest.put(zeroes, 0, COPY_SIZE);
+//                        written += COPY_SIZE;
+//                    } else {
+//                        long remaining = bufferSize - written;
+//                        dest.put(zeroes, 0, (int)remaining);
+//                        written += remaining;                        
+//                    }
+//                }
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }
@@ -99,7 +100,7 @@ public class CVKBuffer {
     @Override
     public void finalize() throws Throwable {
         vkDestroyBuffer(cvkDevice.GetDevice(), pBuffer.get(0), null);
-        vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);        
+        vkFreeMemory(cvkDevice.GetDevice(), pBufferMemory.get(0), null);
         
         super.finalize();
     }
@@ -113,57 +114,57 @@ public class CVKBuffer {
      * @param properties
      * @return
      */
-    public static CVKBuffer CreateBuffer(CVKDevice cvkDevice,
-                                         long size, 
-                                         int usage, 
-                                         int properties) {
+    public static CVKBuffer Create( CVKDevice cvkDevice,
+                                    long size, 
+                                    int usage, 
+                                    int properties) {
         assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
         
         int ret;
-        CVKBuffer buffer = new CVKBuffer();      
+        CVKBuffer cvkBuffer = new CVKBuffer();      
         try(MemoryStack stack = stackPush()) {
-            buffer.bufferSize = size;
-            buffer.cvkDevice = cvkDevice;
+            cvkBuffer.bufferSize = size;
+            cvkBuffer.cvkDevice = cvkDevice;
             
             // Creating a buffer doesn't actually back it with memory.  Thanks Vulkan.
-            VkBufferCreateInfo bufferInfo = VkBufferCreateInfo.callocStack(stack);
-            bufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
-            bufferInfo.size(size);
-            bufferInfo.usage(usage);
+            VkBufferCreateInfo vkBufferInfo = VkBufferCreateInfo.callocStack(stack);
+            vkBufferInfo.sType(VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO);
+            vkBufferInfo.size(size);
+            vkBufferInfo.usage(usage);
             
             // This refers to sharing across device queues and seeing as we only have one queue...
-            bufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
+            vkBufferInfo.sharingMode(VK_SHARING_MODE_EXCLUSIVE);
            
             // Create the buffer, it isn't memory backed yet so not terribly useful
             ret = vkCreateBuffer(cvkDevice.GetDevice(), 
-                                 bufferInfo, 
+                                 vkBufferInfo, 
                                  null, //alloc callbacks
-                                 buffer.pBuffer);
+                                 cvkBuffer.pBuffer);
             checkVKret(ret);
             
             // Calculate memory requirements based on the info we proved to the bufferInfo struct
-            VkMemoryRequirements memRequirements = VkMemoryRequirements.mallocStack(stack);
-            vkGetBufferMemoryRequirements(cvkDevice.GetDevice(), buffer.pBuffer.get(0), memRequirements);
+            VkMemoryRequirements vkMemRequirements = VkMemoryRequirements.mallocStack(stack);
+            vkGetBufferMemoryRequirements(cvkDevice.GetDevice(), cvkBuffer.pBuffer.get(0), vkMemRequirements);
 
             // Allocation info struct, type index needs a little logic as types can be mapped differently between GPUs
-            VkMemoryAllocateInfo allocInfo = VkMemoryAllocateInfo.callocStack(stack);
-            allocInfo.sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO);
-            allocInfo.allocationSize(memRequirements.size());
-            allocInfo.memoryTypeIndex(cvkDevice.GetMemoryType(memRequirements.memoryTypeBits(), properties));
+            VkMemoryAllocateInfo vkAllocInfo = VkMemoryAllocateInfo.callocStack(stack);
+            vkAllocInfo.sType(VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO);
+            vkAllocInfo.allocationSize(vkMemRequirements.size());
+            vkAllocInfo.memoryTypeIndex(cvkDevice.GetMemoryType(vkMemRequirements.memoryTypeBits(), properties));
 
             // Allocate the memory needed for the buffer (still needs to be bound)
-            ret = vkAllocateMemory(cvkDevice.GetDevice(), allocInfo, null, buffer.pBufferMemory);
+            ret = vkAllocateMemory(cvkDevice.GetDevice(), vkAllocInfo, null, cvkBuffer.pBufferMemory);
             checkVKret(ret);
 
             // We have a pen, we have a apple, we have a pineapple...err bind the buffer to its memory
             ret = vkBindBufferMemory(cvkDevice.GetDevice(), 
-                                     buffer.pBuffer.get(0), 
-                                     buffer.pBufferMemory.get(0), 
+                                     cvkBuffer.pBuffer.get(0), 
+                                     cvkBuffer.pBufferMemory.get(0), 
                                      0); //this memory exists only for this buffer, so no offset
             checkVKret(ret);
             
-            return buffer;
+            return cvkBuffer;
         }
     }
 }

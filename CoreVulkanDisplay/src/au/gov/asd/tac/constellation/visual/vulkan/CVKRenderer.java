@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan;
 
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.Renderer;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
@@ -66,6 +67,14 @@ pBlah: this is an object that has been explicitly malloced and needs to be expli
        a stack allocator was used to allocate it).
 blah: anything else
 
+CODING STANDARDS
+helper classes should return error codes where possible
+controller classes like CVKRenderer and aggregation classes like CVKScene will need some other mechanism
+use MemoryStack to allocate nio buffers unless an allocation needs to last longer than function scope
+comment where ever code is not trivially simple
+make methods static whereever possible
+TODO_TT: remember the reason for the Create factory patten in buffer and image
+
 */
 
 public class CVKRenderer extends Renderer implements ComponentListener {
@@ -78,7 +87,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         //TEMP TEMP TEMP
         public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     }
-       
+    
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
     
@@ -111,9 +120,9 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     public List<CVKRenderable> renderables = new ArrayList<>();
     protected CVKScene scene = null;
     
-    private static float red = 0.0f;
-    private static float green = 0.0f;
-    private static float blue = 0.0f;
+    private static float clrChange = 0.01f;
+    private static int curClrEl = 0;
+    private static Vector3f clr = new Vector3f(0.0f, 0.0f, 0.0f);
     
     
     public void AddRenderable(CVKRenderable renderable) {
@@ -277,7 +286,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
 
         VkClearValue.Buffer clearValues = VkClearValue.callocStack(1, stack);
-        clearValues.color().float32(stack.floats(red, green, blue, 1.0f));
+        clearValues.color().float32(stack.floats(clr.getR(), clr.getG(), clr.getB(), 1.0f));
         
         VkRenderPassBeginInfo renderPassInfo = VkRenderPassBeginInfo.callocStack(stack);
         renderPassInfo.sType(VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO);
@@ -582,24 +591,50 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         CVKLOGGER.info("Canvas shown");
     }    
     
-    private void Debug_UpdateRGB(){
-        if(blue == 1.f && green == 1.f)
-            red -=0.01;
-        else if(red == 0.f && blue > 0.f && green == 1.f)
-            blue -=0.01;
-        else if(red == 0.f && blue == 0.f && green == 1.f)
-            green -=0.01; 
-        else if(red < 1.f)
-            red +=0.01;
-        else if(blue < 1.f)
-            blue +=0.01;
-        else if(green < 1.f)
-            green +=0.01;
-        else
-        {
-            //red = 0.f;
-            green = 0.f;
-            //blue = 0.f;
-        } 
+    private void Debug_UpdateRGB(){   
+        // Change element
+        if (clr.a[curClrEl] >= 1.0f || clr.a[curClrEl] < 0.0f) {
+            clr.a[curClrEl] = Math.max(0.0f, Math.min(1.0f, clr.a[curClrEl]));
+            if (curClrEl == 2) {
+                clrChange = -clrChange;
+            }
+            curClrEl = (curClrEl + 1) % 3;
+        }
+        clr.a[curClrEl] += clrChange;
+        
+        
+//        if (red >= 1.0f && blue >= 1.0f && green >= 1.0f) {
+//            change = -0.01f;
+//        } else if (red < 0.0f && blue < 0.0f && green < 0.0f) {
+//            change = 0.01f;
+//        }
+//        
+//        // Clamp
+//        red = Math.max(0.0f, Math.min(1.0f, red));
+//        green = Math.max(0.0f, Math.min(1.0f, green));
+//        blue = Math.max(0.0f, Math.min(1.0f, blue));
+//        
+//        // Walk, preference red, then blue, then green
+//        if (red != 0.0f || red != 1.0f) { red += change; }
+//        else if (red != 0.0f || red != 1.0f) { blue
+        
+//        if(blue == 1.f && green == 1.f)
+//            red -=0.01;
+//        else if(red == 0.f && blue > 0.f && green == 1.f)
+//            blue -=0.01;
+//        else if(red == 0.f && blue == 0.f && green == 1.f)
+//            green -=0.01; 
+//        else if(red < 1.f)
+//            red +=0.01;
+//        else if(blue < 1.f)
+//            blue +=0.01;
+//        else if(green < 1.f)
+//            green +=0.01;
+//        else
+//        {
+//            //red = 0.f;
+//            green = 0.f;
+//            //blue = 0.f;
+//        } 
     }
 }
