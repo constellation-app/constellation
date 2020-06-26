@@ -30,16 +30,15 @@ public interface CVKRenderable extends Renderable{
     public abstract int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);  
     
-    //TEMP TEMP TEMP
     public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
     //public abstract int LoadShaders(CVKDevice cvkDevice);
-    public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo);
+    public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
     public abstract VkCommandBuffer GetCommandBuffer(int index);
     public abstract int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
     public abstract long GetGraphicsPipeline();
-    public abstract int GetVertex();
+    public abstract int GetVertexCount();
     public abstract boolean IsDirty();
-    // TEMP TEMP TEMP
+
 
     /**
      * Tasks that implement CVKRenderableUpdateTask are created in the VisualProcessor

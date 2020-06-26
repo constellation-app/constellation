@@ -174,7 +174,7 @@ public class CVKScene implements CVKRenderer.CVKRenderEventListener{
         // Static as the descriptor layout doesn't change per instance of renderable or over the course of the program
         checkVKret(CVKAxesRenderable.CreateDescriptorLayout(cvkDevice));
         checkVKret(CVKFPSRenderable.CreateDescriptorLayout(cvkDevice));
-                    
+               
         CVKAxesRenderable a = new CVKAxesRenderable(this);
         Add(a);
                 

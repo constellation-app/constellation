@@ -35,6 +35,11 @@ public final class Vector2f {
     public Vector2f() {
         a = new float[LENGTH];
     }
+    
+    public Vector2f(float x, float y) {
+        a = new float[LENGTH];
+        set(x, y);
+    }
 
     public void set(final float x, final float y) {
         a[0] = x;
@@ -46,6 +51,14 @@ public final class Vector2f {
         a[1] = v.a[1];
     }
 
+    public float x() {
+        return a[0];
+    }
+    
+    public float y() {
+        return a[1];
+    }
+    
     public void scale(final float s) {
         a[0] *= s;
         a[1] *= s;
