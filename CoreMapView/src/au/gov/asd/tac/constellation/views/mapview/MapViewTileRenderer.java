@@ -232,6 +232,9 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     public void updateMarkers(final Graph graph, final MarkerState markerState) {
+        if (!parent.shouldUpdate()) {
+            return;
+        }
         updating = true;
 
         final Thread thread = new Thread("Map View: Update Markers") {
@@ -346,7 +349,7 @@ public class MapViewTileRenderer extends PApplet {
         map.setTweening(true);
 
         dispatcher = MapUtils.createDefaultEventDispatcher(this, map);
-        // The map library, Unfolding Maps, defaults to a hard-coded left click pan  
+        // The map library, Unfolding Maps, defaults to a hard-coded left click pan
         dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
         dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
 
@@ -698,7 +701,7 @@ public class MapViewTileRenderer extends PApplet {
     private void handleMouseSelection(final MouseEvent event, final Set<ConstellationAbstractMarker> markers) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        // Is the measuring tool currently active 
+        // Is the measuring tool currently active
         final boolean isOverlayActive = overlays.stream().anyMatch(overlay -> overlay.isActive());
 
         if (event == null || markers == null || isOverlayActive) {

@@ -70,6 +70,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.swing.JButton;
 import javax.swing.JToolBar;
@@ -145,6 +146,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     private final MarkerState markerState;
     private int cachedWidth;
     private int cachedHeight;
+    private final Consumer<Graph> updateMarkers;
 
     public MapViewTopComponent() {
         super();
@@ -159,6 +161,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.markerState = new MarkerState();
         this.cachedWidth = getWidth();
         this.cachedHeight = getHeight();
+
+        updateMarkers = (graph) -> {
+            renderer.updateMarkers(graph, markerState);
+        };
 
         // lookup map providers
         this.defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
@@ -392,104 +398,36 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         });
 
         // add graph structure listener
-        addStructureChangeHandler(graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
+        addStructureChangeHandler(updateMarkers);
 
         // add graph visual listeners
-        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.DIMMED, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.DIMMED, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.VISIBILITY, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.VISIBILITY, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
+        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, updateMarkers);
+        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, updateMarkers);
+        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.DIMMED, updateMarkers);
+        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.DIMMED, updateMarkers);
+        addAttributeValueChangeHandler(VisualConcept.VertexAttribute.VISIBILITY, updateMarkers);
+        addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.VISIBILITY, updateMarkers);
 
         // add graph geo listeners
-        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
-        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.SHAPE, graph -> {
-            if (needsUpdate()) {
-                renderer.updateMarkers(graph, markerState);
-            }
-        });
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.SHAPE, updateMarkers);
 
         // add state listeners
         if (markerState.getLabel().getVertexAttribute() != null) {
-            addAttributeValueChangeHandler(markerState.getLabel().getVertexAttribute(), graph -> {
-                if (needsUpdate()) {
-                    renderer.updateMarkers(graph, markerState);
-                }
-            });
+            addAttributeValueChangeHandler(markerState.getLabel().getVertexAttribute(), updateMarkers);
         }
         if (markerState.getLabel().getTransactionAttribute() != null) {
-            addAttributeValueChangeHandler(markerState.getLabel().getTransactionAttribute(), graph -> {
-                if (needsUpdate()) {
-                    renderer.updateMarkers(graph, markerState);
-                }
-            });
+            addAttributeValueChangeHandler(markerState.getLabel().getTransactionAttribute(), updateMarkers);
         }
         if (markerState.getColorScheme().getVertexAttribute() != null) {
-            addAttributeValueChangeHandler(markerState.getColorScheme().getVertexAttribute(), graph -> {
-                if (needsUpdate()) {
-                    renderer.updateMarkers(graph, markerState);
-                }
-            });
+            addAttributeValueChangeHandler(markerState.getColorScheme().getVertexAttribute(), updateMarkers);
         }
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
-            addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), graph -> {
-                if (needsUpdate()) {
-                    renderer.updateMarkers(graph, markerState);
-                }
-            });
+            addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), updateMarkers);
         }
     }
 
@@ -659,6 +597,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    public boolean shouldUpdate() {
+        return this.needsUpdate();
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables

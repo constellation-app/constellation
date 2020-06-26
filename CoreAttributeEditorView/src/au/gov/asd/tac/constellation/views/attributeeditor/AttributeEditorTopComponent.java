@@ -244,18 +244,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void componentShowing() {
-        Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null) {
-            activeGraph.removeGraphChangeListener(this);
-        }
-        activeGraph = graph;
-        if (activeGraph != null) {
-            activeGraph.addGraphChangeListener(this);
-            reader = new AttributeReader(activeGraph);
-            attributePanel.updateEditorPanel(reader.refreshAttributes());
-        } else {
-            reader = null;
-        }
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     @Override
