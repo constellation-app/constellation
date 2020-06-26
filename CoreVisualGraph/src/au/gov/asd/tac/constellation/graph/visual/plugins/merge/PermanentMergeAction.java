@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
@@ -46,7 +46,9 @@ import org.openide.util.NbBundle;
  * @author altair
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.merge.PermanentMergeAction")
-@ActionRegistration(displayName = "#CTL_PermanentMergeAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_PermanentMergeAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/merge/mergeNodes.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 1100)
 })
