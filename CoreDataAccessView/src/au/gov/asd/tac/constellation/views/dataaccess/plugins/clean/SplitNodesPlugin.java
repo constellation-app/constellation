@@ -157,19 +157,16 @@ public class SplitNodesPlugin extends RecordStoreQueryPlugin implements DataAcce
         result.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, right);
 
         //Loops through all of the Node attributes and copies them to the new node
-        query.reset();
-        while (query.next()) {
-            for (final String key : query.keys()) {
-                if (key.endsWith(".[id]") || SOURCE_IDENTIFIER.equals(key)) {
-                    //Skips the id and Identifier to make the new node unique
-                } else if ((GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X).equals(key)
-                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y).equals(key)
-                        || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z).equals(key)) {
-                    //The coordinates are also skipped so that the second node is not created in the exact same location
-                    //as the first node
-                } else {
-                    result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), query.get(key));
-                }
+        for (final String key : query.keys()) {
+            if (key.endsWith(".[id]") || SOURCE_IDENTIFIER.equals(key)) {
+                //Skips the id and Identifier to make the new node unique
+            } else if ((GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.X).equals(key)
+                    || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Y).equals(key)
+                    || (GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.Z).equals(key)) {
+                //The coordinates are also skipped so that the second node is not created in the exact same location
+                //as the first node
+            } else {
+                result.set(GraphRecordStoreUtilities.DESTINATION + key.replace(GraphRecordStoreUtilities.SOURCE, ""), query.get(key));
             }
         }
 
