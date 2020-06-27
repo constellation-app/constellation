@@ -153,7 +153,7 @@ public final class Vector3i implements Serializable {
         return a[0] == 0 && a[1] == 0 && a[2] == 0;
     }
 
-    public float getX() {
+    public int getX() {
         return a[0];
     }
 
@@ -161,7 +161,7 @@ public final class Vector3i implements Serializable {
         a[0] = x;
     }
 
-    public float getY() {
+    public int getY() {
         return a[1];
     }
 
@@ -169,7 +169,7 @@ public final class Vector3i implements Serializable {
         a[1] = y;
     }
 
-    public float getZ() {
+    public int getZ() {
         return a[2];
     }
 
@@ -177,17 +177,29 @@ public final class Vector3i implements Serializable {
         a[2] = z;
     }
 
-    public float getR() {
+    public int getR() {
         return a[0];
     }
 
-    public float getG() {
+    public int getG() {
         return a[1];
     }
 
-    public float getB() {
+    public int getB() {
         return a[2];
     }
+    
+    public int getU() {
+        return a[0];
+    }
+
+    public int getV() {
+        return a[1];
+    }
+
+    public int getW() {
+        return a[2];
+    }    
 
     @Override
     public String toString() {
