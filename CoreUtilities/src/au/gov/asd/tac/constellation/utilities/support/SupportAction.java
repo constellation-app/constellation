@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(
         displayName = "#CTL_SupportAction")
 @ActionReference(path = "Menu/Help", position = 900)
-@Messages("CTL_SupportAction=Submit a ticket")
+@Messages("CTL_SupportAction=Submit a Ticket")
 public final class SupportAction implements ActionListener {
 
     @Override

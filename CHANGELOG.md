@@ -117,7 +117,7 @@
     * You can set the command line argument `constellation.environment` with a label and it will appear in the title. For instance, this could be used to distinguish "Development", "QA" and "Production" versions.
 * Added `PluginParameters.hasParameter()` to the Core Plugin Framework module as a convenient way to check if a parameter exists.
 * Fixed a Null Pointer Exception when selecting Circle arrangements.
-* Fixed the `GitHub` url used by Help -> Submit a ticket.
+* Fixed the `GitHub` url used by Help -> Submit a Ticket.
 * Removed several unused dependencies, including JOGL, JTS, `OpenCSV,` Trove4j, `JScience,` and `XML-APIs`.
 * Renamed `ConstellationLogger.ApplicationStart` to `ConstellationLogger.ApplicationStarted,` `ConstellationLogger.ApplicationStop` to `ConstellationLogger.ApplicationStopped,` `ConstellationLogger.PluginStart` to `ConstellationLogger.PluginStarted` and `ConstellationLogger.PluginStop` to `ConstellationLogger.PluginStopped`.
 * Updated several dependencies to the latest versions, including Geotools, Jetty, Apache Commons, Jackson, `RSyntaxArea,` Google Guava, Apache POI, EJML, Processing, Jython, and `SwingX`.
