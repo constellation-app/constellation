@@ -250,8 +250,7 @@ public class CVKIconTextureAtlas {
     }
     
     private int AddIconsToAtlas(List<IndexedConstellationIcon> icons) {
-        int ret = VK_SUCCESS;
-        
+        int ret;
         
         try (MemoryStack stack = stackPush()) {
             // Allocate one big staging buffer for all of the images.  This will be inefficient if
@@ -259,20 +258,16 @@ public class CVKIconTextureAtlas {
             // solution will be to better manage the updating of the atlas rather than minimise the
             // staging buffer size.
             int requiredLayers = (icons.size() / iconsPerLayer) + 1;
-            int stagingBufferSize = iconsPerLayer * requiredLayers * ICON_SIZE_BYTES;
             
             // Create destination image            
             cvkAtlasImage = CVKImage.Create(cvkDevice, 
                                             textureWidth, 
                                             textureHeight, 
                                             requiredLayers, 
-                                            VK_FORMAT_R8G8B8A8_SRGB, //non-linear format with better use than 
-                                            VK_IMAGE_TILING_OPTIMAL, //source data is linear, will this bite us?
+                                            VK_FORMAT_R8G8B8A8_SRGB, //non-linear format to give more fidelity to the hues we are most able to perceive
+                                            VK_IMAGE_TILING_OPTIMAL, //we usually sample rectangles rather than long straight lines
                                             VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
-                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
-            
-            
-//===================================================================================================================================            
+                                            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);              
             
            // Command to copy pixels and transition formats
             CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
@@ -285,7 +280,6 @@ public class CVKIconTextureAtlas {
 
             int numIcons = icons.size();
             List<CVKBuffer> iconStagingBuffers = new ArrayList<>(numIcons);
-            List<VkBufferImageCopy.Buffer> bufferCopyBuffers = new ArrayList<>(numIcons);
             
             for (int iIcon = 0; iIcon < numIcons; ++iIcon) {
                 IndexedConstellationIcon el = icons.get(iIcon);
@@ -357,17 +351,16 @@ public class CVKIconTextureAtlas {
                 copyLayer.imageOffset().set(texIndices.getU() * ICON_WIDTH,
                                             texIndices.getV() * ICON_HEIGHT, 
                                             0);
-                copyLayer.imageExtent(VkExtent3D.callocStack(stack).set(textureWidth, textureHeight, requiredLayers));
-                bufferCopyBuffers.add(copyLayerBuffer);
+                copyLayer.imageExtent(VkExtent3D.callocStack(stack).set(ICON_WIDTH, ICON_HEIGHT, requiredLayers));
+                CVKLOGGER.info(String.format("Icon %d: (%d, %d)",
+                        el.index, texIndices.getU() * ICON_WIDTH, texIndices.getV() * ICON_HEIGHT));
                 
                 // Copy staging buffer to atlas texture
                 vkCmdCopyBufferToImage(cvkCopyCmd.GetVKCommandBuffer(),
                                        cvkStagingBuffer.GetBufferHandle(),
                                        cvkAtlasImage.GetImageHandle(),
                                        VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                                       copyLayerBuffer);                
-                
-                ++iIcon;
+                                       copyLayerBuffer);                               
             }
             
             // Now the image is populated, transition it for reading
@@ -379,116 +372,8 @@ public class CVKIconTextureAtlas {
             checkVKret(ret);       
             
             // We've finished with the staging buffer
-            //cvkStagingBuffer.Destroy();               
-
-//===================================================================================================================================
-            
-//            CVKBuffer cvkStagingBuffer = CVKBuffer.Create(cvkDevice, 
-//                                                          stagingBufferSize, 
-//                                                          VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-//                                                          VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-//            
-//            // Zero this buffer so undersized icons are padded with transparent pixels
-//            cvkStagingBuffer.ZeroMemory();
-//            
-//            // Copy each icon's pixel data into the staging buffer
-//            icons.forEach((IndexedConstellationIcon el) -> {               
-//                BufferedImage iconImage = el.icon.buildBufferedImage();
-//                
-//                // Convert the buffered image if its not in our desired state.
-//                if (TYPE_4BYTE_ABGR != iconImage.getType()) {
-//                    BufferedImage convertedImg = new BufferedImage(iconImage.getWidth(), iconImage.getHeight(), BufferedImage.TYPE_INT_ARGB);
-//                    convertedImg.getGraphics().drawImage(iconImage, 0, 0, null);
-//                    iconImage = convertedImg;
-//                }     
-//                int width = iconImage.getWidth();
-//                int height = iconImage.getHeight();
-//                assert(width <= ICON_WIDTH);
-//                assert(height <= ICON_HEIGHT);
-//                
-//                // Get pixel data into a direct buffer
-//                ByteBuffer pixels = ByteBuffer.wrap(((DataBufferByte) iconImage.getRaster().getDataBuffer()).getData());
-//                if (debugging) {
-//                    if (IsEmpty(pixels)) {
-//                        CVKLOGGER.warning(String.format("Icon %d is empty", el.index));
-//                    }
-//                }
-//                
-//                // Calculate the offset to write these pixels
-//                long offset = IndexToBufferOffset(el.index);
-//                long endIndex = offset + ICON_SIZE_BYTES;
-//                assert((offset + ICON_SIZE_BYTES) <= stagingBufferSize);
-//                CVKLOGGER.info(String.format("Icon %d: %d -> %d", 
-//                        el.index, offset, endIndex -1));
-//                
-//                // Copy pixels, note for undersized icons we need extra offsets to pad the top and sides                    
-//                if (width == ICON_WIDTH && height == ICON_HEIGHT) {
-//                    assert(pixels.capacity() == ICON_SIZE_BYTES);
-//                    cvkStagingBuffer.Put(pixels, (int)offset, ICON_SIZE_BYTES);
-//                } else {
-//                    // Offsets to centre the icon are in pixels
-//                    int colOffset = (ICON_WIDTH - width) / 2;
-//                    int colPadding = (ICON_WIDTH - width) - colOffset;
-//                    int rowOffset = (ICON_HEIGHT / 2) * ICON_WIDTH;
-//                    
-//                    // Adjust the start position to the right row
-//                    offset += rowOffset * ICON_COMPONENTS;
-//                    for (int iRow = 0; iRow < height; ++iRow) {                        
-//                        offset += colPadding * ICON_COMPONENTS;
-//                        cvkStagingBuffer.Put(pixels, (int)offset, width * ICON_COMPONENTS);
-//                        offset += colPadding * ICON_COMPONENTS;
-//                        assert(offset <= endIndex);
-//                    }
-//                }
-//            });           
-//            
-//            // Source data is ready, now create structs to copy it layer by layer
-//            VkBufferImageCopy.Buffer bufferCopyLayers = VkBufferImageCopy.callocStack(requiredLayers, stack);
-//            for (int iLayer = 0; iLayer < requiredLayers; ++iLayer) {
-//                VkBufferImageCopy bufferCopyLayer = bufferCopyLayers.get(iLayer);
-//                
-//                // Calculate offset into staging buffer for the current image layer
-//                long offset = iLayer * iconsPerLayer * ICON_SIZE_BYTES;
-//
-//                // Setup a buffer image copy structure for the current image layer
-//                bufferCopyLayer.bufferOffset(offset);
-//                bufferCopyLayer.bufferRowLength(textureWidth);//0);    // Tightly packed
-//                bufferCopyLayer.bufferImageHeight(textureHeight/ICON_HEIGHT);//0);  // Tightly packed
-//                bufferCopyLayer.imageSubresource().aspectMask(VK_IMAGE_ASPECT_COLOR_BIT);
-//                bufferCopyLayer.imageSubresource().mipLevel(0);
-//                bufferCopyLayer.imageSubresource().baseArrayLayer(iLayer);
-//                bufferCopyLayer.imageSubresource().layerCount(1);
-//                bufferCopyLayer.imageOffset().set(0, 0, iLayer);
-//                bufferCopyLayer.imageExtent(VkExtent3D.callocStack(stack).set(textureWidth, textureHeight, requiredLayers));                               
-//            }      
-            
-//            // Command to copy pixels and transition formats
-//            CVKCommandBuffer cvkCopyCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-//            ret = cvkCopyCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-//            checkVKret(ret);            
-//            
-//            // Transition image from undefined to transfer destination optimal
-//            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-//            checkVKret(ret);
-//            
-//            // Copy staging buffer to atlas texture
-//            vkCmdCopyBufferToImage(cvkCopyCmd.GetVKCommandBuffer(),
-//                                   cvkStagingBuffer.GetBufferHandle(),
-//                                   cvkAtlasImage.GetImageHandle(),
-//                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-//                                   bufferCopyLayers);
-//            
-//            // Now the image is populated, transition it for reading
-//            ret = cvkAtlasImage.Transition(cvkCopyCmd, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-//            checkVKret(ret);      
-//            
-//            // Ok nothing has actually happened yet, time to execute the transitions and copy
-//            ret = cvkCopyCmd.EndAndSubmit();
-//            checkVKret(ret);       
-//            
-//            // We've finished with the staging buffer
-//            cvkStagingBuffer.Destroy();            
-            
+            iconStagingBuffers.forEach(el -> {el.Destroy();});
+  
             // Image view
             VkImageViewCreateInfo vkViewInfo = VkImageViewCreateInfo.callocStack(stack);
             vkViewInfo.sType(VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO);
