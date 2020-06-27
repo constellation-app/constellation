@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.webserver.transport.ToggleFileListenerAction")
 @ActionRegistration(displayName = "#CTL_StartFileListenerAction",
-        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/filelistener_off.png",
+        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/stopFileListener.png",
         surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
 @Messages({
@@ -44,8 +44,8 @@ import org.openide.util.NbBundle.Messages;
 })
 public final class ToggleFileListenerAction extends AbstractAction {
 
-    private static final String ICON_ON_RESOURCE = "resources/filelistener_on.png";
-    private static final String ICON_OFF_RESOURCE = "resources/filelistener_off.png";
+    private static final String ICON_ON_RESOURCE = "resources/startFileListener.png";
+    private static final String ICON_OFF_RESOURCE = "resources/stopFileListener.png";
     private static final ImageIcon ICON_ON = new ImageIcon(ToggleFileListenerAction.class.getResource(ICON_ON_RESOURCE));
     private static final ImageIcon ICON_OFF = new ImageIcon(ToggleFileListenerAction.class.getResource(ICON_OFF_RESOURCE));
     private static final long JOIN_WAIT = 1000;

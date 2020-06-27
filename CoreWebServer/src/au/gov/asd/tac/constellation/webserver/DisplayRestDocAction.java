@@ -26,7 +26,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.webserver.DisplayRestDocAction")
-@ActionRegistration(displayName = "#CTL_DisplayRestDocAction", iconBase = "au/gov/asd/tac/constellation/webserver/resources/swagger-16x16.png")
+@ActionRegistration(displayName = "#CTL_DisplayRestDocAction",
+        iconBase = "au/gov/asd/tac/constellation/webserver/resources/displayRESTServerDocumentation.png")
 @ActionReference(path = "Menu/Tools", position = 1600)
 @Messages("CTL_DisplayRestDocAction=Display REST Server Documentation")
 public final class DisplayRestDocAction implements ActionListener {

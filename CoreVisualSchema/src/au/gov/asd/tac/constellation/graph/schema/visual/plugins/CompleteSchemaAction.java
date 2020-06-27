@@ -30,7 +30,9 @@ import org.openide.util.NbBundle.Messages;
  * @author twinkle2_little
  */
 @ActionID(category = "Schema", id = "au.gov.asd.tac.constellation.graph.schema.visual.plugin.CompleteSchemaAction")
-@ActionRegistration(displayName = "#CTL_CompleteSchemaAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CompleteSchemaAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/schema/visual/plugins/completeWithSchema.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 500, separatorBefore = 499),
     @ActionReference(path = "Shortcuts", name = "F5")

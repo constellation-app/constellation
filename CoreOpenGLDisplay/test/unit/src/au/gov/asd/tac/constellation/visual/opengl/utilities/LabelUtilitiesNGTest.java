@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.visual.opengl;
+package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class SceneBatchNGTest {
+public class LabelUtilitiesNGTest {
 
     @Test
     public void ellipsisIsSingleChar() {
@@ -183,10 +183,10 @@ public class SceneBatchNGTest {
 
         final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), LabelUtilities.MAX_LINES_PER_ATTRIBUTE);
-        assertEquals("00000000001111111111222222222233333333334444444444", out.get(0));
-        assertEquals("55555555556666666666777777777788888888889999999999", out.get(1));
-        assertEquals("aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee", out.get(2));
-        assertEquals("ffffffffffgggggggggghhhhhhhhhhiiiiiiiiiijjjjjjjjj" + LabelUtilities.ELLIPSIS, out.get(3));
+        assertEquals(out.get(0), "00000000001111111111222222222233333333334444444444");
+        assertEquals(out.get(1), "55555555556666666666777777777788888888889999999999");
+        assertEquals(out.get(2), "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee");
+        assertEquals(out.get(3), "ffffffffffgggggggggghhhhhhhhhhiiiiiiiiiijjjjjjjjj" + LabelUtilities.ELLIPSIS);
     }
 
     /**
@@ -199,10 +199,10 @@ public class SceneBatchNGTest {
 
         final List<String> out = LabelUtilities.splitTextIntoLines(text);
         assertEquals(out.size(), LabelUtilities.MAX_LINES_PER_ATTRIBUTE);
-        assertEquals("00000000001111111111222222222233333333334444444444", out.get(0));
-        assertEquals("55555555556666666666777777777788888888889999999999", out.get(1));
-        assertEquals("aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee", out.get(2));
-        assertEquals("ffffffffffgggggggggghhhhhhhhhhiiiiiiiiiijjjjjjjjj" + LabelUtilities.ELLIPSIS, out.get(3));
+        assertEquals(out.get(0), "00000000001111111111222222222233333333334444444444");
+        assertEquals(out.get(1), "55555555556666666666777777777788888888889999999999");
+        assertEquals(out.get(2), "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee");
+        assertEquals(out.get(3), "ffffffffffgggggggggghhhhhhhhhhiiiiiiiiiijjjjjjjjj" + LabelUtilities.ELLIPSIS);
         assertTrue(out.get(LabelUtilities.MAX_LINES_PER_ATTRIBUTE - 1).endsWith(LabelUtilities.ELLIPSIS));
     }
 
