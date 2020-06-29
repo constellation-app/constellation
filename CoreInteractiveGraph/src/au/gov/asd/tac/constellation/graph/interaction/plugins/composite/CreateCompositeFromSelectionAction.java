@@ -32,7 +32,8 @@ import org.openide.util.NbBundle.Messages;
  * @author twilight_sparkle
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.CreateCompositeFromSelectionAction")
-@ActionRegistration(displayName = "#CTL_CreateCompositeFromSelectionAction")
+@ActionRegistration(displayName = "#CTL_CreateCompositeFromSelectionAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/compositeSelectedNodes.png")
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 700)
 })
