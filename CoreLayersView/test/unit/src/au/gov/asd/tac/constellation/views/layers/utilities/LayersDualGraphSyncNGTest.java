@@ -132,6 +132,9 @@ public class LayersDualGraphSyncNGTest {
         queries.add("Default");
         queries.add("color == " + vx1Color.toString());
 
+        LayersConcept.GraphAttribute.LAYER_QUERIES.ensure(graph);
+        LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(graph);
+
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b10)).executeNow(graph);
 
