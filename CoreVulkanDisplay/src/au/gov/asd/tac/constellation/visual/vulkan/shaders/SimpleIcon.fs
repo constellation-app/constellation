@@ -5,10 +5,6 @@
 #version 450
 
 
-//DELETE
-/const float TEXTURE_SCALE = 1.0/0.125;
-
-
 // === UNIFORMS
 // note this is an opaque uniform, ie not data we pass in but an object this shader can reference
 layout(binding = 2) uniform sampler2DArray images;
@@ -24,8 +20,6 @@ layout(location = 0) out vec4 fragColor;
 
 
 void main(void) {
-    //TODO_TT: hook up texture
-    //fragColor = iconColor * vec4((textureCoords * TEXTURE_SCALE), 1.0);
     fragColor = iconColor * texture(images, textureCoords);
 
     // Discarding only when fragColor.a==0.0 means that some "nearly transparent" pixels get drawn, which causes weird see-through
