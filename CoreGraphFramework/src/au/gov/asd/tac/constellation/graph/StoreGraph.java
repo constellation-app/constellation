@@ -1913,7 +1913,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (queriesId == Graph.NOT_FOUND) {
             return Collections.emptyList();
         }
-        Object queriesObject = getObjectValue(queriesId, 0);
+        final Object queriesObject = getObjectValue(queriesId, 0);
         if (queriesObject == null) {
             return Collections.emptyList();
         }
@@ -1925,7 +1925,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         if (preferencesId == Graph.NOT_FOUND) {
             return Collections.emptyList();
         }
-        Object preferencesObject = getObjectValue(preferencesId, 0);
+        final Object preferencesObject = getObjectValue(preferencesId, 0);
         if (preferencesObject == null) {
             return Collections.emptyList();
         }
@@ -1953,8 +1953,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * </ul>
      */
     private void recalculateLayerVisibilities() {
-        List<String> queries = getQueries();
-        List<Byte> preferences = getLayerPreferences();
+        final List<String> queries = getQueries();
+        final List<Byte> preferences = getLayerPreferences();
 
         for (int i = 0; i < queries.size(); i++) {
             // if current mask has bit set, recheck
@@ -1997,8 +1997,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
 
         synchronized (this) {
-            List<String> queries = getQueries();
-            List<Byte> preferences = getLayerPreferences();
+            final List<String> queries = getQueries();
+            final List<Byte> preferences = getLayerPreferences();
             if (!preferences.isEmpty()) {
                 for (int i = 0; i < queries.size(); i++) {
                     // calculate bitmask for dynamic layers that are displayed
