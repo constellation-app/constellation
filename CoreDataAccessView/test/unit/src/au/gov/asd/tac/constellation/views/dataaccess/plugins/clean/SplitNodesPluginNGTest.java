@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -96,7 +97,7 @@ public class SplitNodesPluginNGTest {
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "+123456789");
         expResult.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
         expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "192.168.1.1");
-        expResult.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.URL);
+        expResult.set(GraphRecordStoreUtilities.DESTINATION + AnalyticConcept.VertexAttribute.TYPE, AnalyticConcept.VertexType.HOST_NAME);
         expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
 
         final PluginInteraction interaction = new TextPluginInteraction();
@@ -137,6 +138,36 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
         parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(":");
         parameters.getParameters().get(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID).setBooleanValue(true);
+
+        final RecordStore result = instance.query(query, interaction, parameters);
+        assertEquals(result, expResult);
+    }
+
+    @Test
+    public void testQueryWithMultipleNodes() throws Exception {
+        final RecordStore query = new GraphRecordStore();
+        query.add();
+        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "hello world");
+        query.add();
+        query.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "goodbye world");
+
+        final RecordStore expResult = new GraphRecordStore();
+        expResult.add();
+        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
+        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "hello");
+        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "world");
+        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
+
+        expResult.add();
+        expResult.set(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID, null);
+        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, "goodbye");
+        expResult.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, "world");
+        expResult.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.TYPE, AnalyticConcept.TransactionType.CORRELATION);
+
+        final PluginInteraction interaction = new TextPluginInteraction();
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(" ");
 
         final RecordStore result = instance.query(query, interaction, parameters);
         assertEquals(result, expResult);

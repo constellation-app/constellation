@@ -1,3 +1,5 @@
+package au.gov.asd.tac.constellation.graph.node;
+
 /*
  * Copyright 2010-2020 Australian Signals Directorate
  *
@@ -13,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.node;
+
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -37,7 +39,7 @@ import org.testng.annotations.Test;
  *
  * @author algol
  */
-public class Misc {
+public class MiscNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -56,7 +58,7 @@ public class Misc {
     }
 
     @Test
-    public void createTransactionToNonexistentDestinationInPluginTest() {
+    public void testCreateTransactionToNonexistentDestinationInPluginTest() {
         try {
             final DualGraph graph = new DualGraph(null);
             graph.setUndoManager(new UndoRedo.Manager());
@@ -89,6 +91,9 @@ public class Misc {
             Assert.fail("Nothing was interrupted.");
         } catch (PluginException ex) {
             Assert.fail("There shouldn't be a plugin exception.");
+        } catch (RuntimeException ex){
+            final boolean containsIllegalArgumentException = ex.getLocalizedMessage().contains("IllegalArgumentException: Attempt to create transaction to destination vertex that does not exist");
+            Assert.assertTrue(containsIllegalArgumentException);
         }
     }
 }
