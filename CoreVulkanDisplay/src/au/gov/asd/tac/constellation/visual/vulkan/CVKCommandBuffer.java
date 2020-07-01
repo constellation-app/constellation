@@ -30,9 +30,12 @@ import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.*;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
+import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_SUBMIT_INFO;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkQueueSubmit;
 import static org.lwjgl.vulkan.VK10.vkQueueWaitIdle;
+import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkSubmitInfo;
 
 
@@ -85,42 +88,42 @@ public class CVKCommandBuffer {
     }
     
     
-//	
-//	public void BeginRecordSecondary(int flags, long framebuffer, long renderPass, int subpass) {
-//		
-//		VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
-//				.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-//				.pNext(0)
-//				.framebuffer(framebuffer)
-//				.renderPass(renderPass)
-//				.subpass(subpass)
-//				.occlusionQueryEnable(false)
-//				.queryFlags(0)
-//				.pipelineStatistics(0);
-//		
-//		VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc()
-//                .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO)
-//                .pNext(0)
-//                .flags(flags)
-//                .pInheritanceInfo(inheritanceInfo);
-//			
-//		int err = vkBeginCommandBuffer(vkCommandBuffer, beginInfo);
-//
-//		if (err != VK_SUCCESS) {
-//			throw new AssertionError("Failed to begin record command buffer: ");
-//		}
-//        
-//        beginInfo.free();
-//	}
-//	
-//	public void finishRecord(){
-//			
-//		int err = vkEndCommandBuffer(vkCommandBuffer);
-//		
-//        if (err != VK_SUCCESS) {
-//            throw new AssertionError("Failed to finish record command buffer: ");
-//        }
-//	}
+	
+    public void BeginRecordSecondary(int flags, long framebuffer, long renderPass, int subpass) {
+
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc();
+        inheritanceInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO);
+        inheritanceInfo.pNext(0);
+        inheritanceInfo.framebuffer(framebuffer);
+        inheritanceInfo.renderPass(renderPass);
+        inheritanceInfo.subpass(subpass);
+        inheritanceInfo.occlusionQueryEnable(false);
+        inheritanceInfo.queryFlags(0);
+        inheritanceInfo.pipelineStatistics(0);
+
+        VkCommandBufferBeginInfo beginInfo = VkCommandBufferBeginInfo.calloc();
+        beginInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO);
+        beginInfo.pNext(0);
+        beginInfo.flags(flags);
+        beginInfo.pInheritanceInfo(inheritanceInfo);
+
+        int err = vkBeginCommandBuffer(vkCommandBuffer, beginInfo);
+
+        if (err != VK_SUCCESS) {
+                throw new AssertionError("Failed to begin record command buffer: ");
+        }
+
+        beginInfo.free();
+    }
+	
+    public void FinishRecord(){
+
+        int err = vkEndCommandBuffer(vkCommandBuffer);
+
+        if (err != VK_SUCCESS) {
+            throw new AssertionError("Failed to finish record command buffer: ");
+        }
+    }
 //	
 //	public void beginRenderPassCmd(long renderPass, long frameBuffer,
 //			int width, int height, int colorAttachmentCount, int depthAttachment,

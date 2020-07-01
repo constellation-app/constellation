@@ -31,17 +31,12 @@ import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
-public class CVKTextRenderable implements CVKRenderable {
-    public VkCommandBuffer commandBuffer;
-    public long graphicsPipeline;
-        
+public class CVKTextRenderable extends CVKRenderable {
+       
     @Override
-    public long GetGraphicsPipeline(){return 0; }
-    
+    public void Destroy(CVKDevice cvkDevice){};
     @Override
-    public int GetVertexCount(){return 0; }
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int index){return commandBuffer; }
+    public int GetVertexCount(){return 0;}
     @Override
     public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
     @Override
@@ -57,33 +52,23 @@ public class CVKTextRenderable implements CVKRenderable {
    
     @Override
     public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
-        return 0;
+        return VK_SUCCESS;
     }
     @Override
     public boolean IsDirty(){return true; }
     
     @Override 
     public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
-        int ret = VK_SUCCESS;
-        
-        
-        return ret;
+        return VK_SUCCESS;
     }
-    
-    //@Override    
-//    public int LoadShaders(CVKDevice cvkDevice) {
-//        int ret = VK_SUCCESS;
-//        return ret;
-//    }
-    
+        
     public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
         }
         return ret;
-    }
-    
+    }   
     
     public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
@@ -92,8 +77,7 @@ public class CVKTextRenderable implements CVKRenderable {
         }
         return ret;
     }
-    
-    
+     
     @Override
     public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = DestroyPipeline(cvkDevice, cvkSwapChain);

@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
@@ -37,7 +38,6 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32B32_SFLOAT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_R32G32_SINT;
 import static org.lwjgl.vulkan.VK10.VK_NULL_HANDLE;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.VK_VERTEX_INPUT_RATE_VERTEX;
 import static org.lwjgl.vulkan.VK10.VK_PRIMITIVE_TOPOLOGY_POINT_LIST;
 import org.lwjgl.vulkan.VkVertexInputAttributeDescription;
@@ -58,7 +58,6 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -74,7 +73,6 @@ import static org.lwjgl.vulkan.VK10.VK_SAMPLE_COUNT_1_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_FRAGMENT_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_GEOMETRY_BIT;
 import static org.lwjgl.vulkan.VK10.VK_SHADER_STAGE_VERTEX_BIT;
-import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
@@ -88,7 +86,7 @@ import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREA
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
 import static org.lwjgl.vulkan.VK10.VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-import static org.lwjgl.vulkan.VK10.vkAllocateCommandBuffers;
+import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 import static org.lwjgl.vulkan.VK10.vkAllocateDescriptorSets;
 import static org.lwjgl.vulkan.VK10.vkBeginCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkCmdBindDescriptorSets;
@@ -102,9 +100,7 @@ import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
-import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
-import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 import org.lwjgl.vulkan.VkDescriptorBufferInfo;
@@ -149,26 +145,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected static long hDescriptorLayout = VK_NULL_HANDLE;
     protected List<Long> pipelines = null;
     protected List<Long> pipelineLayouts = null;
-    protected List<CVKBuffer> vertUniformBuffers = null;
-    protected List<CVKBuffer> geomUniformBuffers = null;
-    protected List<CVKBuffer> vertBuffers = null;
-    protected List<VkCommandBuffer> commandBuffers = null;
     protected Vertex[] vertices = new Vertex[MAX_DIGITS];
     protected VertexUniformBufferObject vertUBO = new VertexUniformBufferObject();
     protected GeometryUniformBufferObject geomUBO = new GeometryUniformBufferObject();
     protected List<Long> descriptorSets = null;
-    protected boolean isDirty = true;
      
-    
-    @Override
-    public VkCommandBuffer GetCommandBuffer(int index){
-        assert(index < commandBuffers.size());
-        return commandBuffers.get(index); 
-    }
-    
-    @Override
-    public boolean IsDirty(){return isDirty; }
-    
+       
     protected static class Vertex {
         // This looks a little weird for Java, but LWJGL and JOGL both require
         // contiguous memory which is passed to the native GL or VK libraries.        
@@ -311,6 +293,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         cvkScene = inScene;
     }
     
+    @Override
+    public int GetVertexCount(){ return 2; }
+  
     public int Init() {
         int ret = VK_SUCCESS;
         for (int digit = 0; digit < 10; ++digit) {
@@ -486,34 +471,26 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             {
                 Vertex.CopyTo(data.getByteBuffer(0, size), vertices);
             }
-            vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());            
+            vkUnmapMemory(cvkDevice.GetDevice(), vertexBuffer.GetMemoryBufferHandle());
         }
         return ret;  
     }
     
+    @Override
     public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+           
         int ret = VK_SUCCESS;
+        int imageCount = cvkSwapChain.GetImageCount();
         
-        try (MemoryStack stack = stackPush()) {
-            int imageCount = cvkSwapChain.GetImageCount();
-            commandBuffers = new ArrayList<>(imageCount);
+        commandBuffers = new ArrayList<>(imageCount);
 
-            VkCommandBufferAllocateInfo vkAllocInfo = VkCommandBufferAllocateInfo.callocStack(stack);
-            vkAllocInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO);
-            vkAllocInfo.commandPool(cvkDevice.GetCommandPoolHandle());
-            vkAllocInfo.level(VK_COMMAND_BUFFER_LEVEL_SECONDARY);            
-            vkAllocInfo.commandBufferCount(imageCount);
-
-            PointerBuffer pCommandBuffers = stack.mallocPointer(imageCount);
-            ret = vkAllocateCommandBuffers(cvkDevice.GetDevice(), vkAllocInfo, pCommandBuffers);
-            checkVKret(ret);
-
-            for (int i = 0; i < imageCount; ++i) {
-                commandBuffers.add(new VkCommandBuffer(pCommandBuffers.get(i), cvkDevice.GetDevice()));
-            }
-            
-            CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
+        for (int i = 0; i < imageCount; ++i) {
+            CVKCommandBuffer buffer = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_SECONDARY);
+            commandBuffers.add(buffer);
         }
+        
+        CVKLOGGER.log(Level.INFO, "Init Command Buffer - FPSRenderable");
+        
         return ret;
     }
     
@@ -535,7 +512,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
             beginInfo.flags(VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT);  // hard coding this for now
             beginInfo.pInheritanceInfo(inheritanceInfo);             
 
-            VkCommandBuffer commandBuffer = commandBuffers.get(index);
+            VkCommandBuffer commandBuffer = commandBuffers.get(index).GetVKCommandBuffer();
             ret = vkBeginCommandBuffer(commandBuffer, beginInfo);
             checkVKret(ret);
 
@@ -555,7 +532,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                                     stack.longs(descriptorSets.get(index)), 
                                     null);
             vkCmdDraw(commandBuffer,
-                      2,  //number of verts == number of digits
+                      GetVertexCount(),  //number of verts == number of digits
                       1,  //no instancing, but we must draw at least 1 point
                       0,  //first vert index
                       0); //first instance index (N/A)                         
