@@ -47,6 +47,12 @@ public final class Matrix44f {
     public Matrix44f() {
         a = new float[LENGTH];
     }
+    public Matrix44f(final Matrix44f other) {
+        a = new float[LENGTH];
+        for (int i = 0; i < 16; ++i) {
+            a[i] = other.a[i];
+        }
+    }    
 
     /**
      * Set the matrix element at (row, column) to value.

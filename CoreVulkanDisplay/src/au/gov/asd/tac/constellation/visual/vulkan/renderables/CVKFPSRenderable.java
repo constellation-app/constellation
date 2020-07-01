@@ -342,10 +342,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         int ret = VK_SUCCESS;
      
         // TODO_TT: investigate a frames in flight < imageCount approach
-        int imageCount = cvkSwapChain.GetImageCount();
-        
-       // if(true)
-       //     return 0;
+        int imageCount = cvkSwapChain.GetImageCount();        
         
         // LIFTED FROM FPSRenerable.reshape(...)
         //TT: the logic here seems to be the FPS text needs to be 50 pixels from the 
@@ -353,13 +350,22 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         //-width/2, -height/2, width/2, height/2
         
         // whenever the drawable shape changes, recalculate the place where the fps is drawn
-        final int[] viewport = new int[]{0, 0, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight()};
+        
+        // This is a GL viewport where the screen space origin is in the bottom left corner
+        //final int[] viewport = new int[]{0, 0, cvkSwapChain.GetWidth(), cvkSwapChain.GetHeight()};
+        
+        // In Vulkan the screen space origin is in the top left hand corner.  Note we put the origin at 0, H and 
+        // the viewport dimensions are W and -H.  The -H means we we still have a 0->H range, just running in the
+        // opposite direction to GL.
+        final int[] viewport = new int[]{0, cvkSwapChain.GetHeight(), cvkSwapChain.GetWidth(), -cvkSwapChain.GetHeight()};
+        
         final int dx = cvkSwapChain.GetWidth() / 2 - FPS_OFFSET;
         final int dy = cvkSwapChain.GetHeight() / 2 - FPS_OFFSET;
         pxScale = calculateXProjectionScale(viewport);
         pyScale = calculateYProjectionScale(viewport);
         Graphics3DUtilities.moveByProjection(ZERO_3F, IDENTITY_44F, viewport, dx, dy, bottomRightCorner);
 
+        
         // set the number of pixels per world unit at distance 1
         geomUBO.pixelDensity = (float)(cvkSwapChain.GetHeight() * 0.5 / Math.tan(Math.toRadians(FIELD_OF_VIEW)));        
         geomUBO.pScale = pyScale;
@@ -377,9 +383,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         translationMatrix.makeTranslationMatrix(bottomRightCorner.getX(),
                                                 bottomRightCorner.getY(), 
                                                 bottomRightCorner.getZ());
-        vertUBO.mvMatrix.multiply(translationMatrix, srMatrix);
-        
-        // GL invert Y
+        vertUBO.mvMatrix.multiply(translationMatrix, srMatrix);        
                       
                 
         // In the JOGL version these were in a static var CAMERA that never changed

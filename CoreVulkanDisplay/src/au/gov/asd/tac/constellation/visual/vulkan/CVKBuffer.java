@@ -52,15 +52,38 @@ public class CVKBuffer {
     public long GetBufferHandle() { return pBuffer.get(0); }
     public long GetMemoryBufferHandle() { return pBufferMemory.get(0); }
     
-    public void Put(ByteBuffer pBytes, int offset, int size) {
+    /**
+     *
+     * @param pBytes, source ByteBuffer
+     * @param destOffset, where in our buffer to start the write
+     * @param srcOffset, where in pBytes to start the read
+     * @param size, how much to read/write
+     */
+    public void Put(ByteBuffer pBytes, int destOffset, int srcOffset, int size) {
         try (MemoryStack stack = stackPush()) {
             PointerBuffer data = stack.mallocPointer(1);
-            vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), offset, size, 0, data); //arg 5 is flags
+            
+            // Remember source position and limit so we can restore them post copy
+            int origPos = pBytes.position();
+            int origLim = pBytes.limit();
+            
+            // Map destOffset into our buffer into host writable memory
+            vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), destOffset, size, 0, data); //arg 5 is flags
             {
+                // Get a ByteBuffer representing the mapped memory, note offset is 0 as we offset in vkMapMemory
                 ByteBuffer dest = data.getByteBuffer(0, (int)size);
-                pBytes.limit((int)size);
+                
+                // Move to the source start position
+                pBytes.position(srcOffset);
+                
+                // Set the limit from there so we only copy size bytes even if both buffers would allow a bigger read/write
+                pBytes.limit(size + srcOffset);
+                
+                // Do the copy
                 dest.put(pBytes);
-                pBytes.limit(pBytes.capacity()).rewind();
+                
+                // Reset pBytes to it's starting position and limit         
+                pBytes.limit(origLim).position(origPos);
             }
             vkUnmapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle());
         }

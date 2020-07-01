@@ -192,6 +192,7 @@ public class CVKDevice {
             vkGetPhysicalDeviceFeatures(candidate, candidatePhysicalDeviceFeatures);
             if (!candidatePhysicalDeviceFeatures.geometryShader()) {
                 CVKLOGGER.info(String.format("Device %d discarded as it does not support geometry shaders", iDevice));
+                continue;
             }
             
             // Check extensions for Swapchain support
@@ -236,7 +237,6 @@ public class CVKDevice {
                                 }
                             }
                         } //end queue family loop  
-                        break; // we don't care about other extensions here
                     }  // end if extension is swapchain                    
                 } // end extension loop                
             } // end if numExtensions  > 0

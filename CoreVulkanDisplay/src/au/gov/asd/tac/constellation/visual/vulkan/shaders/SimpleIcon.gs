@@ -45,29 +45,48 @@ layout(location = 4) noperspective centroid out vec3 textureCoords;
 vec4 v;
 
 
+/*
+OpenGL
+^
+|
+|
+.---->
+
+Vulkan
+.---->
+|
+|
+V
+*/
+
+
 void drawIcon(float x, float y, float radius, int icon, mat4 color) {
     if (icon != TRANSPARENT_ICON) {
 
         vec3 iconOffset = vec3(float(icon & 7) / 8, float((icon >> 3) & 7) / 8, float(icon >> 6));
 
+        // Top left
         gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y, 0, 0));
+        iconColor = color;
+        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;        
+        EmitVertex();
+
+        // Bottom left
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y + radius, 0, 0));
+        iconColor = color;
+        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;        
+        EmitVertex();
+
+        // Top right
+        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y, 0, 0));
         iconColor = color;
         textureCoords = vec3(HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
         EmitVertex();
 
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x, y + radius, 0, 0));
-        iconColor = color;
-        textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
-        EmitVertex();
-
-        gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y, 0, 0));
-        iconColor = color;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, TEXTURE_SIZE - HALF_PIXEL, 0) + iconOffset;
-        EmitVertex();
-
+        // Bottom right
         gl_Position = v + (ub.pScale * ub.pMatrix * vec4(x + radius, y + radius, 0, 0));
         iconColor = color;
-        textureCoords = vec3(TEXTURE_SIZE - HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;
+        textureCoords = vec3(HALF_PIXEL, HALF_PIXEL, 0) + iconOffset;      
         EmitVertex();
 
         EndPrimitive();
@@ -96,7 +115,6 @@ void main() {
 
             // Draw the foreground icon
             int fgIcon = gData[0][0] & ICON_MASK;
-//            iconColor = IDENTITY_MATRIX;
             if (bgIcon != TRANSPARENT_ICON) {
                 iconColor[3][3] = smoothstep(1.0, 5.0, iconPixelRadius);
                 drawIcon(-sideRadius, -sideRadius, 2 * sideRadius, fgIcon, iconColor);

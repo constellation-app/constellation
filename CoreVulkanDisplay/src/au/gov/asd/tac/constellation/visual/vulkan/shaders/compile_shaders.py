@@ -44,6 +44,7 @@ def compile_shaders(src_dir, dst_dir):
             if os.path.exists(path_to_glslc):
                 for (dir_path, dir_names, file_names) in walk(src_dir):
                     for file_name in file_names:
+                        # exclude this script
                         if not __file__.endswith(file_name):
                             if file_name.endswith('.fs') or file_name.endswith('.frag'):
                                 stage = 'frag'
@@ -58,6 +59,8 @@ def compile_shaders(src_dir, dst_dir):
                             in_name = os.path.join(dir_path, file_name)
                             out_name = os.path.join(dst_dir, file_name) + '.spv'
                             compile_shader(path_to_glslc, in_name, stage, out_name)
+                    # Don't recurse
+                    break; 
             else:
                 raise Exception('{0} not found.'.format(path_to_glslc))
         else:
