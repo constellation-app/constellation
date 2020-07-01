@@ -78,8 +78,11 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     public void handleComponentOpened() {
-        QualityControlAutoVetter.getInstance().addListener(this);
-        QualityControlAutoVetter.getInstance().invokeListener(this);
+//        new Thread(() -> {
+            QualityControlAutoVetter.getInstance().addListener(this);
+            QualityControlAutoVetter.getInstance().invokeListener(this);
+            QualityControlAutoVetter.getInstance().init();
+//        }).start();
         PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
