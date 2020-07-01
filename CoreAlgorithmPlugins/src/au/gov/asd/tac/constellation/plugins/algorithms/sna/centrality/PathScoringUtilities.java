@@ -31,7 +31,7 @@ import java.util.BitSet;
  * @author cygnus_x-1
  */
 public class PathScoringUtilities {
-    
+
     private static final String SCORETYPE_ERROR_FORMAT = "The requested ScoreType, %s, is not supported.";
     private static final String OUT_OF_BOUNDS_EXCEPTION_STRING = "The 'selected' attribute does not exist on the given graph.";
 

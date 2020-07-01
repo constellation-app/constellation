@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -32,7 +32,9 @@ import org.openide.util.NbBundle.Messages;
  * @author twilight_sparkle
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.spectral.SpectralArrangementAction")
-@ActionRegistration(displayName = "#CTL_SpectralArrangementAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SpectralArrangementAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/spectral/resources/Spectral3D.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1400),
     @ActionReference(path = "Shortcuts", name = "C-A-L")

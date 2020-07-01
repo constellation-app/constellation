@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public interface Record {
      * @return True if this record has a value for the specified key. False
      * otherwise.
      */
-    public boolean hasValue(String key);
+    public boolean hasValue(final String key);
 
     /**
      * Returns a value from this record.
@@ -43,7 +43,7 @@ public interface Record {
      * @return The value associated with this key if hasValue(key) is true. Null
      * otherwise
      */
-    public String get(String key);
+    public String get(final String key);
 
     /**
      * Sets a key/value pair for this record
@@ -51,7 +51,7 @@ public interface Record {
      * @param key The key to set a value for.
      * @param value The value to set.
      */
-    public void set(String key, String value);
+    public void set(final String key, final String value);
 
     /**
      * Set a key/value pair for this record with an Object value. This is a
@@ -63,7 +63,7 @@ public interface Record {
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    public default void set(String key, Object value) {
+    public default void set(final String key, final Object value) {
         set(key, value == null ? null : value.toString());
     }
 

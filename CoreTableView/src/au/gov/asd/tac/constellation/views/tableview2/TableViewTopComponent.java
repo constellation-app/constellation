@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     private TableViewState currentState;
     private final TableViewPane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
-    
+
     private static final String UPDATE_DATA = "Table View: Update Data";
     private static final String UPDATE_SELECTION = "Table View: Update Selection";
 
@@ -100,13 +100,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            final Thread thread = new Thread(UPDATE_DATA) {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            thread.start();
+            pane.updateTable(graph, currentState);
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -173,13 +167,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
-            final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            tableUpdateThread.start();
+            pane.updateTable(graph, currentState);
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
                 columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -188,11 +176,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                             attributeTuple.getSecond().getName(),
                             g -> {
                                 final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                    @Override
-                                    public void run() {
-                                        pane.updateData(g, currentState);
-                                    }
-                                };
+                            @Override
+                            public void run() {
+                                pane.updateData(g, currentState);
+                            }
+                        };
                                 dataUpdateThread.start();
                             }));
                 });
@@ -366,13 +354,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
-        final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-            @Override
-            public void run() {
-                pane.updateTable(graph, currentState);
-            }
-        };
-        tableUpdateThread.start();
+        pane.updateTable(graph, currentState);
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
             columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -381,11 +363,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                         attributeTuple.getSecond().getName(),
                         g -> {
                             final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                @Override
-                                public void run() {
-                                    pane.updateData(g, currentState);
-                                }
-                            };
+                        @Override
+                        public void run() {
+                            pane.updateData(g, currentState);
+                        }
+                    };
                             dataUpdateThread.start();
                         }));
             });

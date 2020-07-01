@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,11 @@ package au.gov.asd.tac.constellation.utilities.javafx;
  * @author twinkle2_little
  */
 public class JavafxStyleManager {
-    
+
     public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
     public static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
     public static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
-    
+
     public static final String UNEDITABLE_COMBOBOX = "uneditableCombo";
     public static final String HIDDEN = "hidden";
     public static final String LIGHT_NAME_TEXT = "lightNameText";

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import java.util.List;
 
 /**
@@ -41,15 +42,13 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param attributes the ids of the attributes that will make up the primary
      * key for this element type.
      * @see
-     * GraphReadMethods#getPrimaryKey(au.gov.asd.tac.constellation.graph.GraphElementType)
+     * GraphReadMethods#getPrimaryKey(GraphElementType)
      * @see
-     * GraphWriteMethods#validateKey(au.gov.asd.tac.constellation.graph.GraphElementType,
-     * boolean)
+     * GraphWriteMethods#validateKey(GraphElementType, boolean)
      * @see
-     * GraphWriteMethods#validateKey(au.gov.asd.tac.constellation.graph.GraphElementType,
-     * int, boolean)
+     * GraphWriteMethods#validateKey(GraphElementType, int, boolean)
      */
-    public void setPrimaryKey(GraphElementType elementType, int... attributes);
+    public void setPrimaryKey(final GraphElementType elementType, final int... attributes);
 
     /**
      * Validates all elements of the specified key for uniqueness with regard to
@@ -71,12 +70,11 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * merging was not allowed or the graph's merger was unable to merge the two
      * elements.
      * @see
-     * GraphReadMethods#getPrimaryKey(au.gov.asd.tac.constellation.graph.GraphElementType)
+     * GraphReadMethods#getPrimaryKey(GraphElementType)
      * @see
-     * GraphWriteMethods#setPrimaryKey(au.gov.asd.tac.constellation.graph.GraphElementType,
-     * int...)
+     * GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
      */
-    public void validateKey(GraphElementType elementType, boolean allowMerging) throws DuplicateKeyException;
+    public void validateKey(final GraphElementType elementType, final boolean allowMerging) throws DuplicateKeyException;
 
     /**
      * Validates a specific element for uniqueness with regard to the primary
@@ -99,12 +97,11 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * merging was not allowed or the graph's merger was unable to merge the two
      * elements.
      * @see
-     * GraphReadMethods#getPrimaryKey(au.gov.asd.tac.constellation.graph.GraphElementType)
+     * GraphReadMethods#getPrimaryKey(GraphElementType)
      * @see
-     * GraphWriteMethods#setPrimaryKey(au.gov.asd.tac.constellation.graph.GraphElementType,
-     * int...)
+     * GraphWriteMethods#setPrimaryKey(GraphElementType, int...)
      */
-    public void validateKey(final GraphElementType elementType, int element, boolean allowMerging) throws DuplicateKeyException;
+    public void validateKey(final GraphElementType elementType, final int element, final boolean allowMerging) throws DuplicateKeyException;
 
     /**
      * Adds a new vertex to the graph.
@@ -132,7 +129,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified vertex does not exist
      * in the graph.
      */
-    void removeVertex(int vertex);
+    void removeVertex(final int vertex);
 
     /**
      * Adds a new transaction to the graph.
@@ -167,7 +164,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * undirected.
      * @return the id of the new transaction.
      */
-    int addTransaction(int sourceVertex, int destinationVertex, boolean directed);
+    int addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed);
 
     /**
      * Adds a new transaction to the graph.
@@ -203,7 +200,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * undirected.
      * @return the id of the new transaction.
      */
-    int addTransaction(int transaction, int sourceVertex, int destinationVertex, boolean directed);
+    int addTransaction(final int transaction, final int sourceVertex, final int destinationVertex, final boolean directed);
 
     /**
      * Removes the specified transaction from the graph. If this is the last
@@ -215,7 +212,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified transaction does not
      * exist in the graph.
      */
-    void removeTransaction(int transaction);
+    void removeTransaction(final int transaction);
 
     /**
      * Sets the source vertex of a transaction. If this transaction is
@@ -234,7 +231,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param transaction the id of the transaction.
      * @param newSourceVertex the id of the new source vertex.
      */
-    public void setTransactionSourceVertex(int transaction, int newSourceVertex);
+    public void setTransactionSourceVertex(final int transaction, final int newSourceVertex);
 
     /**
      * Sets the destination vertex of a transaction. If this transaction is
@@ -253,7 +250,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param transaction the id of the transaction.
      * @param newDestinationVertex the id of the new destination vertex.
      */
-    public void setTransactionDestinationVertex(int transaction, int newDestinationVertex);
+    public void setTransactionDestinationVertex(final int transaction, final int newDestinationVertex);
 
     /**
      * Add an attribute to the graph. The new attribute will be given an id that
@@ -272,30 +269,8 @@ public interface GraphWriteMethods extends GraphReadMethods {
      *
      * @return the id of the new attribute.
      */
-    int addAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue, String attributeMergerId);
-
-    /**
-     * Add an attribute to the graph. The new attribute will be given an id that
-     * is both unused and less than the graph's current attribute capacity. If
-     * the graph's attribute capacity is exhausted then it will be increased
-     * automatically to accommodate the new attribute.
-     *
-     * @param elementType The type of element.
-     * @param attributeType The type of attribute to be added.
-     * @param label The attribute label.
-     * @param description The attribute description.
-     * @param defaultValue The default value of this attribute. This is
-     * typically assigned in the same way that setObjectValue() assigns values.
-     *
-     * @return the id of the new attribute.
-     *
-     * @deprecated please use
-     * {@link GraphWriteMethods#addAttribute(au.gov.asd.tac.constellation.graph.GraphElementType, java.lang.String, java.lang.String, java.lang.String, java.lang.Object, java.lang.String)}
-     */
-    @Deprecated
-    default int addAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue) {
-        return addAttribute(elementType, attributeType, label, description, defaultValue, null);
-    }
+    int addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId);
 
     /**
      * Removes the attribute with the specified id from the graph.
@@ -304,7 +279,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified attribute does not
      * exist in the graph.
      */
-    void removeAttribute(int attribute);
+    void removeAttribute(final int attribute);
 
     /**
      * Changes the name of an attribute in the graph.
@@ -314,7 +289,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if a new name is specified that is
      * already in use for an attribute for the same element type.
      */
-    void updateAttributeName(int attribute, String newName);
+    void updateAttributeName(final int attribute, final String newName);
 
     /**
      * Changes the description of an attribute in the graph.
@@ -322,7 +297,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param attribute the id of the attribute.
      * @param newDescription the new description of the attribute.
      */
-    void updateAttributeDescription(int attribute, String newDescription);
+    void updateAttributeDescription(final int attribute, final String newDescription);
 
     /**
      * Changes the default value of an attribute in the graph. From this point
@@ -335,7 +310,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * setObjectValue();
      * @see GraphWriteMethods#setObjectValue(int, int, java.lang.Object)
      */
-    void updateAttributeDefaultValue(int attribute, Object newObject);
+    void updateAttributeDefaultValue(final int attribute, final Object newObject);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -345,7 +320,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param id the id of the element.
      * @see GraphWriteMethods#updateAttributeDefaultValue(int, java.lang.Object)
      */
-    abstract void clearValue(int attribute, int id);
+    abstract void clearValue(final int attribute, final int id);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -362,7 +337,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified byte value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setByteValue(int attribute, int id, byte value);
+    abstract void setByteValue(final int attribute, final int id, final byte value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -379,7 +354,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified short value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setShortValue(int attribute, int id, short value);
+    abstract void setShortValue(final int attribute, final int id, final short value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -396,7 +371,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified int value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setIntValue(int attribute, int id, int value);
+    abstract void setIntValue(final int attribute, final int id, final int value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -413,7 +388,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified long value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setLongValue(int attribute, int id, long value);
+    abstract void setLongValue(final int attribute, final int id, final long value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -430,7 +405,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified float value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setFloatValue(int attribute, int id, float value);
+    abstract void setFloatValue(final int attribute, final int id, final float value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -447,7 +422,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified double value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setDoubleValue(int attribute, int id, double value);
+    abstract void setDoubleValue(final int attribute, final int id, final double value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -464,7 +439,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified boolean value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setBooleanValue(int attribute, int id, boolean value);
+    abstract void setBooleanValue(final int attribute, final int id, final boolean value);
 
     /**
      * Sets the value of the specified attribute for the specified element to
@@ -481,7 +456,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @throws IllegalArgumentException if the specified char value cannot be
      * converted into the native type of the attribute.
      */
-    abstract void setCharValue(int attribute, int id, char value);
+    abstract void setCharValue(final int attribute, final int id, final char value);
 
     /**
      * Set the value of the specified attribute for the specified element to the
@@ -514,7 +489,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * valid for this attribute.
      * @see GraphReadMethods#getStringValue(int, int)
      */
-    abstract void setStringValue(int attribute, int id, String value);
+    abstract void setStringValue(final int attribute, final int id, final String value);
 
     /**
      * Set an Object value.
@@ -559,7 +534,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * valid for this attribute.
      * @see GraphReadMethods#getObjectValue(int, int)
      */
-    abstract void setObjectValue(int attribute, int id, Object value);
+    abstract void setObjectValue(final int attribute, final int id, final Object value);
 
     /**
      * Executes the specified graph operation on the graph. In general, the
@@ -586,7 +561,7 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @param operation the GraphOperation to execute.
      * @see GraphOperation
      */
-    public void executeGraphOperation(GraphOperation operation);
+    public void executeGraphOperation(final GraphOperation operation);
 
     /**
      * Sets the type of index that operates on this attribute. This can be used
@@ -600,11 +575,11 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphIndexType#UNORDERED
      * @see GraphIndexType#ORDERED
      */
-    public void setAttributeIndexType(int attribute, GraphIndexType indexType);
-    
+    public void setAttributeIndexType(final int attribute, final GraphIndexType indexType);
+
     /**
      * Sets the queries currently linked to layers on the graph.
-     * 
+     *
      * @param queries the list of String queries to layer a graph by.
      */
     public void setLayerQueries(final List<String> queries);

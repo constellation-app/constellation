@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -80,10 +82,20 @@ public final class CreateVertexPlugin extends SimpleEditPlugin {
         final int yAttrId = VisualConcept.VertexAttribute.Y.get(graph);
         final int zAttrId = VisualConcept.VertexAttribute.Z.get(graph);
 
+        final int vxLayerAttrId = LayersConcept.VertexAttribute.LAYER_MASK.get(graph);
+        final int graphLayerAttrId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.get(graph);
+
         final int vxId = graph.addVertex();
         graph.setFloatValue(xAttrId, vxId, x);
         graph.setFloatValue(yAttrId, vxId, y);
         graph.setFloatValue(zAttrId, vxId, z);
+
+        // add layer mask attributes
+        if (graphLayerAttrId != Graph.NOT_FOUND && vxLayerAttrId != Graph.NOT_FOUND) {
+            int layer = graph.getIntValue(graphLayerAttrId, 0);
+            layer = layer == 1 ? 1 : layer | (1 << 0);
+            graph.setIntValue(vxLayerAttrId, vxId, layer);
+        }
 
         graph.getSchema().newVertex(graph, vxId);
     }

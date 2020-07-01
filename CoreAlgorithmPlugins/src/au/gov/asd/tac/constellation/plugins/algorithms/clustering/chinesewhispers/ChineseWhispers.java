@@ -56,7 +56,7 @@ public final class ChineseWhispers {
 
     // Map a vxId to it's cluster number.
     private int[] vxClusters;
-    
+
     private final SecureRandom random = new SecureRandom();
 
     public ChineseWhispers(final GraphWriteMethods wg) {

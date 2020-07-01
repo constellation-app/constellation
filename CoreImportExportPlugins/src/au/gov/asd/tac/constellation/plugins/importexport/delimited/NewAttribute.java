@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class NewAttribute implements Attribute {
     private final String name;
     private final String description;
     private int id = ImportDelimitedPlugin.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
-    
+
     private static final String CANNOT_SET_VALUES = "You cannot set values on a NewAttribute";
 
     public NewAttribute(final Attribute original) {

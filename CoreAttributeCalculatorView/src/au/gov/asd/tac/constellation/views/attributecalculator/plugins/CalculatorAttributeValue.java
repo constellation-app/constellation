@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -168,8 +168,8 @@ public class CalculatorAttributeValue extends AbstractCalculatorValue {
 
     public boolean isTemporalAttribute(final GraphReadMethods graph, final int attrID) {
         final Class<?> type = graph.getAttributeDataType(attrID);
-        return type.equals(DateAttributeDescription.class) 
-                || type.equals(ZonedDateTimeAttributeDescription.class) 
+        return type.equals(DateAttributeDescription.class)
+                || type.equals(ZonedDateTimeAttributeDescription.class)
                 || type.equals(TimeAttributeDescription.class);
     }
 }

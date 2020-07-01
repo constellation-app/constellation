@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.paths;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
+import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -34,8 +34,8 @@ import org.openide.util.NbBundle.Messages;
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.paths.ShortestPathsAction")
 @ActionRegistration(
-        displayName = "#CTL_ShortestPathsAction", 
-        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/paths/shortestpaths.png", 
+        displayName = "#CTL_ShortestPathsAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/paths/shortestpaths.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 1500),

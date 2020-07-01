@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
     public static final AttributeValueUpdater3 INSTANCE = new AttributeValueUpdater3();
 
     @Override
-    public int store(UndoGraphEditState state, int attribute) {
+    public int store(final UndoGraphEditState state, int attribute) {
         int delta = attribute - state.getCurrentAttribute();
         state.setCurrentAttribute(attribute);
         switch (delta) {
@@ -57,68 +57,68 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
     }
 
     @Override
-    public void updateExecute(UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, int parameters) {
         ATTRIBUTE_GETTERS[parameters & 7].getExecute(state);
     }
 
     @Override
-    public void updateUndo(UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, int parameters) {
         ATTRIBUTE_GETTERS[parameters & 7].getUndo(state);
     }
 
     private static final ValueGetter[] ATTRIBUTE_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - 2);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + 2);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + 1);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 // This method has been intentionally left blank
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 // This method has been intentionally left blank
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - 1);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + 2);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - 2);
             }
         },
@@ -130,33 +130,33 @@ public class AttributeValueUpdater3 implements ValueUpdater32 {
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setBytePointer(edit.getBytePointer() - 1);
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - edit.getByteStack()[edit.getBytePointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + edit.getShortStack()[edit.getShortPointer()]);
                 edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setShortPointer(edit.getShortPointer() - 1);
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - edit.getShortStack()[edit.getShortPointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentAttribute(edit.getCurrentAttribute() + edit.getIntStack()[edit.getIntPointer()]);
                 edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setIntPointer(edit.getIntPointer() - 1);
                 edit.setCurrentAttribute(edit.getCurrentAttribute() - edit.getIntStack()[edit.getIntPointer()]);
             }

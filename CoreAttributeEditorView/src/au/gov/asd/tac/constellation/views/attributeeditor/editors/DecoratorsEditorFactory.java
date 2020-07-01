@@ -19,10 +19,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DecoratorsAttributeDescription;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,7 +80,7 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
 
         @Override
         protected VertexDecorators getValueFromControls() throws ControlsInvalidException {
-            return new VertexDecorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo), 
+            return new VertexDecorators(getDecoratorChoice(nwCombo), getDecoratorChoice(neCombo),
                     getDecoratorChoice(seCombo), getDecoratorChoice(swCombo));
         }
 

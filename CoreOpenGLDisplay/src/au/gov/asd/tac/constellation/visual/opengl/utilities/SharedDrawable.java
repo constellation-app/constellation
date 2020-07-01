@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,16 @@ package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLAutoDrawable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLProfile;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerBI;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManagerOpenGLController;
+import com.jogamp.opengl.DebugGL3;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLDrawableFactory;
+import com.jogamp.opengl.GLProfile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +37,7 @@ import javafx.application.Platform;
 import org.openide.util.Utilities;
 
 /**
- * Set up a shared STUB_GLAutoDrawable to share textures across multiple
+ * Set up a shared GLAutoDrawable to share textures across multiple
  * graphs/displays.
  * <p>
  * This makes use of the GLSharedContextSetter interface implemented by GLCanvas
@@ -48,8 +53,8 @@ import org.openide.util.Utilities;
  */
 public final class SharedDrawable {
 
-    private static STUB_GLAutoDrawable sharedDrawable = null;
-    //private static GL30 gl;
+    private static GLAutoDrawable sharedDrawable = null;
+    private static GL3 gl;
     private static int iconTextureName;
 
     private static boolean isInitialised = false;
@@ -80,43 +85,42 @@ public final class SharedDrawable {
     }
 
     private static void init() {
-        // TODO_TT: this whole func
-//        if (isInitialised) {
-//            throw new RenderException("Can't initialise SharedDrawable more than once.");
-//        }
-//
-//        // Use own display device.
-//        final boolean createNewDevice = true;
-//        sharedDrawable = GLDrawableFactory.getFactory(getGLProfile()).createDummyAutoDrawable(null, createNewDevice, getGLCapabilities(), null);
-//
-//        // Trigger GLContext object creation and native realization.
-//        sharedDrawable.display();
-//        sharedDrawable.getContext().makeCurrent();
-//        try {
-//            sharedDrawable.setGL(new DebugGL3(sharedDrawable.getGL().getGL3()));
-//
-//            // Create a shared texture object for the icon texture array.
-//            gl = sharedDrawable.getGL().getGL3();
-//            final int[] textureName = new int[1];
-//            gl.glGenTextures(1, textureName, 0);
-//            iconTextureName = textureName[0];
-//
-//            // Create shared glyph coordinates and glyph image textures using a GlyphManager
-//            final boolean useMultiFonts = LabelFontsPreferenceKeys.useMultiFontLabels();
-//            if (useMultiFonts) {
-//                glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo());
-//            } else {
-//                glyphManager = null;
-//            }
-//
-//            glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
-//
-//            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5f) : 0;
-//            glyphTextureController.init(gl);
-//        } finally {
-//            sharedDrawable.getContext().release();
-//            isInitialised = true;
-//        }
+        if (isInitialised) {
+            throw new RenderException("Can't initialise SharedDrawable more than once.");
+        }
+
+        // Use own display device.
+        final boolean createNewDevice = true;
+        sharedDrawable = GLDrawableFactory.getFactory(getGLProfile()).createDummyAutoDrawable(null, createNewDevice, getGLCapabilities(), null);
+
+        // Trigger GLContext object creation and native realization.
+        sharedDrawable.display();
+        sharedDrawable.getContext().makeCurrent();
+        try {
+            sharedDrawable.setGL(new DebugGL3(sharedDrawable.getGL().getGL3()));
+
+            // Create a shared texture object for the icon texture array.
+            gl = sharedDrawable.getGL().getGL3();
+            final int[] textureName = new int[1];
+            gl.glGenTextures(1, textureName, 0);
+            iconTextureName = textureName[0];
+
+            // Create shared glyph coordinates and glyph image textures using a GlyphManager
+            final boolean useMultiFonts = LabelFontsPreferenceKeys.useMultiFontLabels();
+            if (useMultiFonts) {
+                glyphManager = new GlyphManagerBI(LabelFontsPreferenceKeys.getFontInfo());
+            } else {
+                glyphManager = null;
+            }
+
+            glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
+
+            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5f) : 0;
+            glyphTextureController.init(gl);
+        } finally {
+            sharedDrawable.getContext().release();
+            isInitialised = true;
+        }
     }
 
     public static void exportGlyphTextures(final File baseFile) {
@@ -154,11 +158,11 @@ public final class SharedDrawable {
         }
     }
 
-    public static STUB_GLProfile getGLProfile() {
+    public static GLProfile getGLProfile() {
         final long startTime = System.currentTimeMillis();
-        final STUB_GLProfile glProfile = STUB_GLProfile.get(STUB_GLProfile.GL30);
+        final GLProfile glProfile = GLProfile.get(GLProfile.GL3);
         final long endTime = System.currentTimeMillis();
-        LOGGER.log(Level.INFO, "Took {0} seconds to retrieve a GL30 profile", (endTime - startTime) / 1000);
+        LOGGER.log(Level.INFO, "Took {0} seconds to retrieve a GL3 profile", (endTime - startTime) / 1000);
 
         return glProfile;
     }
@@ -171,13 +175,11 @@ public final class SharedDrawable {
      *
      * @return the capabilities required by the application.
      */
-//    public static GLCapabilities getGLCapabilities() {
-//        // TODO_TT:
-//        return (GLCapabilities)null;
-//        //return new GLCapabilities(getGLProfile());
-//    }
+    public static GLCapabilities getGLCapabilities() {
+        return new GLCapabilities(getGLProfile());
+    }
 
-    public static STUB_GLAutoDrawable getSharedAutoDrawable() {
+    public static GLAutoDrawable getSharedAutoDrawable() {
         if (sharedDrawable == null) {
             init();
         }
@@ -210,27 +212,23 @@ public final class SharedDrawable {
      * @param glCurrent The GL context to switch back to after updating the
      * shared context.
      */
-    public static void updateGlyphTextureController(/*final GL30 glCurrent*/) {
-        // TODO_TT: this whole func
-//        if (Utilities.isMac())
-//        {
-//            glyphTextureController.update(glCurrent);
-//        }
-//        else
-//        {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//                glyphTextureController.update(gl);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static void updateGlyphTextureController(final GL3 glCurrent) {
+        if (Utilities.isMac()) {
+            glyphTextureController.update(glCurrent);
+        } else {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+                glyphTextureController.update(gl);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
     }
 
     /**
@@ -244,29 +242,28 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getSimpleIconShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (simpleIconShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.fs");
-//                simpleIconShader = GLTools.loadShaderSourceWithAttributes(gl, "SimpleIcon", vp, gp, fp,
-//                        colorTarget, colorShaderName,
-//                        iconTarget, iconShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getSimpleIconShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+        if (simpleIconShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/SimpleIcon.fs");
+                simpleIconShader = GLTools.loadShaderSourceWithAttributes(gl, "SimpleIcon", vp, gp, fp,
+                        colorTarget, colorShaderName,
+                        iconTarget, iconShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return simpleIconShader;
     }
@@ -282,29 +279,28 @@ public final class SharedDrawable {
      * @return the id of the icon shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getVertexIconShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (vertexIconShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.fs");
-//                vertexIconShader = GLTools.loadShaderSourceWithAttributes(gl, "VertexIcon", vp, gp, fp,
-//                        colorTarget, colorShaderName,
-//                        iconTarget, iconShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getVertexIconShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int iconTarget, final String iconShaderName) throws IOException {
+        if (vertexIconShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/VertexIcon.fs");
+                vertexIconShader = GLTools.loadShaderSourceWithAttributes(gl, "VertexIcon", vp, gp, fp,
+                        colorTarget, colorShaderName,
+                        iconTarget, iconShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return vertexIconShader;
     }
@@ -320,29 +316,28 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineShader(/*final GL30 glCurrent, */final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
-            // TODO_TT: this whole func
-//        if (lineShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.fs");
-//                lineShader = GLTools.loadShaderSourceWithAttributes(gl, "Line", vp, gp, fp,
-//                        colotTarget, colorShaderName,
-//                        connectionInfoTarget, connectionInfoShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getLineShader(final GL3 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+        if (lineShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.fs");
+                lineShader = GLTools.loadShaderSourceWithAttributes(gl, "Line", vp, gp, fp,
+                        colotTarget, colorShaderName,
+                        connectionInfoTarget, connectionInfoShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return lineShader;
     }
@@ -359,29 +354,28 @@ public final class SharedDrawable {
      * @return the id of the line shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLineLineShader(/*final GL30 glCurrent, */final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
-            // TODO_TT: this whole func
-//        if (lineLineShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/LineLine.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/LineLine.fs");
-//                lineLineShader = GLTools.loadShaderSourceWithAttributes(gl, "LineLine", vp, gp, fp,
-//                        colotTarget, colorShaderName,
-//                        connectionInfoTarget, connectionInfoShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getLineLineShader(final GL3 glCurrent, final int colotTarget, final String colorShaderName, final int connectionInfoTarget, final String connectionInfoShaderName) throws IOException {
+        if (lineLineShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Line.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/LineLine.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/LineLine.fs");
+                lineLineShader = GLTools.loadShaderSourceWithAttributes(gl, "LineLine", vp, gp, fp,
+                        colotTarget, colorShaderName,
+                        connectionInfoTarget, connectionInfoShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return lineLineShader;
     }
@@ -397,29 +391,28 @@ public final class SharedDrawable {
      * @return the id of the loop shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getLoopShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (loopShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.fs");
-//                loopShader = GLTools.loadShaderSourceWithAttributes(gl, "Loop", vp, gp, fp,
-//                        colorTarget, colorShaderName,
-//                        loopInfoTarget, loopInfoShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getLoopShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int loopInfoTarget, final String loopInfoShaderName) throws IOException {
+        if (loopShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Loop.fs");
+                loopShader = GLTools.loadShaderSourceWithAttributes(gl, "Loop", vp, gp, fp,
+                        colorTarget, colorShaderName,
+                        loopInfoTarget, loopInfoShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return loopShader;
     }
@@ -435,29 +428,28 @@ public final class SharedDrawable {
      * @return the id of the shader.
      * @throws IOException if an error occurs while reading the shader source.
      */
-    public static int getNodeLabelShader(/*final GL30 glCurrent, */final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (nodeLabelShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/NodeLabel.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.fs");
-//                nodeLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
-//                        labelFloatsTarget, labelFloatsShaderName,
-//                        labelIntsTarget, labelIntsShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getNodeLabelShader(final GL3 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+        if (nodeLabelShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/NodeLabel.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.fs");
+                nodeLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
+                        labelFloatsTarget, labelFloatsShaderName,
+                        labelIntsTarget, labelIntsShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return nodeLabelShader;
     }
@@ -475,29 +467,28 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getConnectionLabelShader(/*final GL30 glCurrent, */final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (connectionLabelShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/ConnectionLabel.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.fs");
-//                connectionLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
-//                        labelFloatsTarget, labelFloatsShaderName,
-//                        labelIntsTarget, labelIntsShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getConnectionLabelShader(final GL3 glCurrent, final int labelFloatsTarget, final String labelFloatsShaderName, final int labelIntsTarget, final String labelIntsShaderName) throws IOException {
+        if (connectionLabelShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/ConnectionLabel.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Label.fs");
+                connectionLabelShader = GLTools.loadShaderSourceWithAttributes(gl, "Label", vp, gp, fp,
+                        labelFloatsTarget, labelFloatsShaderName,
+                        labelIntsTarget, labelIntsShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return connectionLabelShader;
     }
@@ -514,29 +505,28 @@ public final class SharedDrawable {
      * @return the name of the shader.
      * @throws IOException if an error occurs while reader the shader source.
      */
-    public static int getBlazeShader(/*final GL30 glCurrent, */final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
-        // TODO_TT: this whole func
-//        if (blazeShader == 0) {
-//            glCurrent.getContext().release();
-//            try {
-//                final int result = gl.getContext().makeCurrent();
-//                if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//                    glCurrent.getContext().makeCurrent();
-//                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
-//                }
-//
-//                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.vs");
-//                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.gs");
-//                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.fs");
-//                blazeShader = GLTools.loadShaderSourceWithAttributes(gl, "Blaze", vp, gp, fp,
-//                        colorTarget, colorShaderName,
-//                        blazeInfoTarget, blazeInfoShaderName,
-//                        ShaderManager.FRAG_BASE, FRAG_COLOR);
-//            } finally {
-//                gl.getContext().release();
-//                glCurrent.getContext().makeCurrent();
-//            }
-//        }
+    public static int getBlazeShader(final GL3 glCurrent, final int colorTarget, final String colorShaderName, final int blazeInfoTarget, final String blazeInfoShaderName) throws IOException {
+        if (blazeShader == 0) {
+            glCurrent.getContext().release();
+            try {
+                final int result = gl.getContext().makeCurrent();
+                if (result == GLContext.CONTEXT_NOT_CURRENT) {
+                    glCurrent.getContext().makeCurrent();
+                    throw new RenderException(COULD_NOT_CONTEXT_CURRENT);
+                }
+
+                final String vp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.vs");
+                final String gp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.gs");
+                final String fp = GLTools.loadFile(GLVisualProcessor.class, "shaders/Blaze.fs");
+                blazeShader = GLTools.loadShaderSourceWithAttributes(gl, "Blaze", vp, gp, fp,
+                        colorTarget, colorShaderName,
+                        blazeInfoTarget, blazeInfoShaderName,
+                        ShaderManager.FRAG_BASE, FRAG_COLOR);
+            } finally {
+                gl.getContext().release();
+                glCurrent.getContext().makeCurrent();
+            }
+        }
 
         return blazeShader;
     }

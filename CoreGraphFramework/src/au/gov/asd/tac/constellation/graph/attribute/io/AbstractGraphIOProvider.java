@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.graph.attribute.io;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
@@ -93,7 +93,7 @@ public abstract class AbstractGraphIOProvider {
      * @param attributeId The id of the attribute being read.
      * @param elementId The id of the element being read.
      * @param jnode The JsonNode to read from.
-     * @param wg The graph that the resulting object will be placed in. Provided
+     * @param writableGraph The graph that the resulting object will be placed in. Provided
      * in case the object requires some graph data.
      * @param vertexMap A mapping from a vertex id in the file to the vertex id
      * in th graph.
@@ -106,7 +106,9 @@ public abstract class AbstractGraphIOProvider {
      *
      * @throws java.io.IOException If there's a problem reading the document.
      */
-    public abstract void readObject(int attributeId, int elementId, JsonNode jnode, GraphWriteMethods wg, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException;
+    public abstract void readObject(final int attributeId, final int elementId, final JsonNode jnode, 
+            final GraphWriteMethods writableGraph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, 
+            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException;
 
     /**
      * Write this object to the JSON generator.
@@ -125,7 +127,7 @@ public abstract class AbstractGraphIOProvider {
      * @param elementId The id of the element being written.
      * @param jsonGenerator The JsonGenerator used to write to the JSON
      * document.
-     * @param rg The graph that the object belongs to. Provided in case the
+     * @param readableGraph The graph that the object belongs to. Provided in case the
      * object requires some graph data.
      * @param byteWriter For ancillary data (e.g. images) that doesn't easily
      * fit into a JSON document.
@@ -134,7 +136,8 @@ public abstract class AbstractGraphIOProvider {
      *
      * @throws IOException If there's a problem writing.
      */
-    public abstract void writeObject(Attribute attribute, int elementId, JsonGenerator jsonGenerator, GraphReadMethods rg, GraphByteWriter byteWriter, final boolean verbose) throws IOException;
+    public abstract void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, 
+            final GraphReadMethods readableGraph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException;
 
     /**
      * Get the version of this IOProvider

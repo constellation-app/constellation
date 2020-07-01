@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,7 +145,6 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         // Overridden in class DualGraph
     }
 
-
     public void commit(final Object description, final String commitName) throws DuplicateKeyException {
         if (currentEdit == null || !globalWriteLock.isHeldByCurrentThread()) {
             throw new IllegalMonitorStateException("commit: attempt to unlock write lock, not locked by current thread");
@@ -185,11 +184,11 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         private long modificationCounter;
 
-        public void setModificationCounter(long modificationCounter) {
+        public void setModificationCounter(final long modificationCounter) {
             this.modificationCounter = modificationCounter;
         }
 
-        public boolean hasChanged(long modificationCounter) {
+        public boolean hasChanged(final long modificationCounter) {
             return this.modificationCounter != modificationCounter;
         }
 

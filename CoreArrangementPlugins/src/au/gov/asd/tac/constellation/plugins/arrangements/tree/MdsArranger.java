@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.security.SecureRandom;
 import java.util.BitSet;
 import org.openide.util.NotImplementedException;
@@ -48,12 +48,13 @@ import org.openide.util.NotImplementedException;
  * @author sol
  */
 public class MdsArranger implements Arranger {
+
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final float RADIUS_INFLATION_AT_100_PERCENT = 1.5f;
     private static final float EXTENTS_SIZE_INFLATION = 1.2f;
-    
+
     private final MDSChoiceParameters params;
 
     public MdsArranger(final MDSChoiceParameters params) {
@@ -66,7 +67,7 @@ public class MdsArranger implements Arranger {
             return;
         }
 
-        final BitSet verticesToArrange = GraphUtilities.vertexBits(wg);
+        final BitSet verticesToArrange = ArrangementUtilities.vertexBits(wg);
 
         // Parameter setup.
         int maxTrialsPerStage = params.maxTrialsPerStage;
@@ -93,14 +94,14 @@ public class MdsArranger implements Arranger {
         final float perturbationSize;
         if (usingExtents) {
             scaleFactor = params.scale;
-            perturbationSize = (scaleFactor * 3f * GraphUtilities.FUNDAMENTAL_SIZE) / 2f;
+            perturbationSize = (scaleFactor * 3f * ArrangementUtilities.FUNDAMENTAL_SIZE) / 2f;
         } else {
             final float minSpacing;
 
             final int nradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
             if (nradiusAttr == Graph.NOT_FOUND) {
                 // Default radius is 1.
-                minSpacing = Math.max(1, 3 * GraphUtilities.FUNDAMENTAL_SIZE);
+                minSpacing = Math.max(1, 3 * ArrangementUtilities.FUNDAMENTAL_SIZE);
             } else {
                 float min = 0;
                 for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
@@ -110,7 +111,7 @@ public class MdsArranger implements Arranger {
                     }
                 }
 
-                minSpacing = Math.max(min, 3 * GraphUtilities.FUNDAMENTAL_SIZE);
+                minSpacing = Math.max(min, 3 * ArrangementUtilities.FUNDAMENTAL_SIZE);
             }
 
             scaleFactor = 3f * minSpacing * params.scale;
@@ -397,14 +398,14 @@ public class MdsArranger implements Arranger {
      * Usual edge weights, multiple edges, etc, are not considered.
      */
     private static float[][] calcDistanceMatrixByExtent(final GraphWriteMethods graph, final BitSet verticesToArrange, final float scaleFactor) {
-        final float minRadius = 1.5f * GraphUtilities.FUNDAMENTAL_SIZE;
+        final float minRadius = 1.5f * ArrangementUtilities.FUNDAMENTAL_SIZE;
 
         // Record distances here.
         final float[][] distanceMatrix = new float[graph.getVertexCapacity()][graph.getVertexCapacity()];
 
         // Loop through each arrange vertex, recording distances to each influence vertex.
         for (int vxId = verticesToArrange.nextSetBit(0); vxId >= 0; vxId = verticesToArrange.nextSetBit(vxId + 1)) {
-            final float[] distancesFromVertex = GraphUtilities.getMinDistancesToReachableVertices(graph, vxId, true, true, minRadius);
+            final float[] distancesFromVertex = ArrangementUtilities.getMinDistancesToReachableVertices(graph, vxId, true, true, minRadius);
 
             // Loop through each influence vertex.
             for (int inflVxId = verticesToArrange.nextSetBit(0); inflVxId >= 0; inflVxId = verticesToArrange.nextSetBit(inflVxId + 1)) {

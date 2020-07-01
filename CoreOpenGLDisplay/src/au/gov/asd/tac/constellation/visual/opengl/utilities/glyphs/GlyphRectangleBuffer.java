@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * This class encapsulates a BufferedImage that holds rectangles containing
@@ -113,12 +114,6 @@ final class GlyphRectangleBuffer {
         this.bufferType = bufferType;
         rectBuffers = new ArrayList<>();
         memory = new HashMap<>();
-
-        // Start with room for an arbitrary number of rectangles
-        // so we don't have to grow the array too quickly.
-        //
-        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
-
         reset();
     }
 
@@ -150,6 +145,12 @@ final class GlyphRectangleBuffer {
     }
 
     public void reset() {
+        
+        // Start with room for an arbitrary number of rectangles
+        // so we don't have to grow the array too quickly.
+        //
+        rectTextureCoordinates = new float[256 * FLOATS_PER_RECT];
+        
         rectBuffers.clear();
         memory.clear();
         if (g2d != null) {
@@ -161,6 +162,79 @@ final class GlyphRectangleBuffer {
 
         newRectBuffer();
     }
+    
+        
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final GlyphRectangleBuffer other = (GlyphRectangleBuffer) obj;
+        if (this.bufferType != other.bufferType) {
+            return false;
+        }
+        if (this.x != other.x) {
+            return false;
+        }
+        if (this.y != other.y) {
+            return false;
+        }
+        if (this.maxHeight != other.maxHeight) {
+            return false;
+        }
+        if (this.rectangleCount != other.rectangleCount) {
+            return false;
+        }
+        if (this.width != other.width) {
+            return false;
+        }
+        if (this.height != other.height) {
+            return false;
+        }
+        if (!bufferedImagesEqual(this.rectBuffer, other.rectBuffer)) {
+            return false;
+        }
+        if (!this.memory.equals(other.memory)) {
+            return false;
+        }
+        if (this.rectBuffers.size() != other.rectBuffers.size()) {
+            return false;
+        } 
+        if (!Arrays.equals(this.rectTextureCoordinates, other.rectTextureCoordinates)) {
+            return false;
+        }
+        for (int i = 0; this.rectBuffers.size()>i ; i++) {
+            if (!bufferedImagesEqual(this.rectBuffers.get(i), other.rectBuffers.get(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 47 * hash + Objects.hashCode(this.rectBuffers);
+        hash = 47 * hash + this.bufferType;
+        hash = 47 * hash + Objects.hashCode(this.rectBuffer);
+        hash = 47 * hash + this.x;
+        hash = 47 * hash + this.y;
+        hash = 47 * hash + this.maxHeight;
+        hash = 47 * hash + Arrays.hashCode(this.rectTextureCoordinates);
+        hash = 47 * hash + Objects.hashCode(this.memory);
+        hash = 47 * hash + this.rectangleCount;
+        hash = 47 * hash + this.width;
+        hash = 47 * hash + this.height;
+        return hash;
+    }
+    
+    
 
     /**
      * Add a rectangle containing an image to the buffers.
@@ -174,7 +248,7 @@ final class GlyphRectangleBuffer {
      * @param extra The number of extra pixels drawn around the edges of this
      * image to avoid interpolation problems later. Store the actual image but
      * only record the size-extra.
-     * @return
+     * @return rectIndex The index of the rectangle in this.memory.
      */
     int addRectImage(final BufferedImage img, final int extra) {
         final int w = img.getWidth();
@@ -206,25 +280,7 @@ final class GlyphRectangleBuffer {
             g2d.drawImage(img, x, y, null);
 //            g2d.drawImage(img, IDENTITY_OP, x, y);
 
-            rectIndex = memory.size();
-            memory.put(hashCode, rectIndex);
-
-            final int ptr = rectIndex * FLOATS_PER_RECT;
-
-            // Ensure that the coordinates array has enough room to add more coordinates.
-            //
-            if (ptr == rectTextureCoordinates.length) {
-                rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
-            }
-
-            // Texture coordinates are in units of texture buffer size;
-            // each coordinate ranges from 0 to 1. The x coordinate also encodes
-            // the texture page.
-            //
-            rectTextureCoordinates[ptr + 0] = (size() - 1) + (x + extra) / (float) width;
-            rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
-            rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
-            rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
+            rectIndex = putImageInMemory(hashCode, extra, w, h);
 
             x += w + PADDING;
             maxHeight = Math.max(h, maxHeight);
@@ -232,6 +288,32 @@ final class GlyphRectangleBuffer {
             rectangleCount++;
         }
 
+        return rectIndex;
+    }
+    
+    private synchronized int putImageInMemory(final int hashCode, final int extra , final int w, final int h) {
+        // Add the image to memory
+        int rectIndex = memory.size();
+        memory.put(hashCode, rectIndex);
+
+        final int ptr = rectIndex * FLOATS_PER_RECT;
+
+        // Ensure that the coordinates array has enough room to add more coordinates.
+        //
+        if (ptr == rectTextureCoordinates.length) {
+            rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
+        }
+
+        // Texture coordinates are in units of texture buffer size;
+        // each coordinate ranges from 0 to 1. The x coordinate also encodes
+        // the texture page.
+        //
+        int pageNumber = size() - 1;
+        rectTextureCoordinates[ptr + 0] = pageNumber + ((x + extra) / (float) width);
+        rectTextureCoordinates[ptr + 1] = (y + extra) / (float) height;
+        rectTextureCoordinates[ptr + 2] = (w - extra * 2) / (float) width;
+        rectTextureCoordinates[ptr + 3] = (h - extra * 2) / (float) height;
+        
         return rectIndex;
     }
 
@@ -264,4 +346,19 @@ final class GlyphRectangleBuffer {
         y += maxHeight + PADDING;
         maxHeight = 0;
     }
+    
+    private boolean bufferedImagesEqual(BufferedImage img1, BufferedImage img2) {
+    // Code copied from https://stackoverflow.com/questions/15305037/java-compare-one-bufferedimage-to-another
+    if (img1.getWidth() == img2.getWidth() && img1.getHeight() == img2.getHeight()) {
+        for (int xCoord = 0; xCoord < img1.getWidth(); xCoord++) {
+            for (int yCoord = 0; yCoord < img1.getHeight(); yCoord++) {
+                if (img1.getRGB(xCoord, yCoord) != img2.getRGB(xCoord, yCoord))
+                    return false;
+            }
+        }
+    } else {
+        return false;
+    }
+    return true;
+}
 }

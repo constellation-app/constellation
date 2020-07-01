@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,6 @@ public enum MonitorTransition {
      * updated with a graph in which the monitored entity is present.
      */
     UNDEFINED_TO_PRESENT(MonitorState.UNDEFINED, MonitorState.PRESENT),
-    /**
-     *
-     */
     CHANGED(MonitorState.PRESENT, MonitorState.PRESENT),
     ADDED(MonitorState.MISSING, MonitorState.PRESENT),
     REMOVED_AND_ADDED(MonitorState.PRESENT, MonitorState.PRESENT),
@@ -46,7 +43,7 @@ public enum MonitorTransition {
     STILL_MISSING(MonitorState.MISSING, MonitorState.MISSING),
     REMOVED(MonitorState.PRESENT, MonitorState.MISSING);
 
-    private MonitorTransition(MonitorState previousState, MonitorState currentState) {
+    private MonitorTransition(final MonitorState previousState, final MonitorState currentState) {
         this.previousState = previousState;
         this.currentState = currentState;
         this.mask = 1 << ordinal();

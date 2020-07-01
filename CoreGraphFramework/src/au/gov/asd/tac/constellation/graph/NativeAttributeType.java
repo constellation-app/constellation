@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,39 +33,39 @@ public enum NativeAttributeType {
 
     BYTE("byte") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setByteValue(attribute, destinationElement, graph.getByteValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.b = graph.getByteValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setByteValue(attribute, element, value.b);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setByteValue(attribute, element, oldValue.b, newValue.b);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.b == a.b;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.b = ((Number) value).byteValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             byte currentValue = graph.getByteValue(attribute, element);
             if (currentValue != oldValue.b) {
                 edit.setByteValue(attribute, element, oldValue.b, currentValue);
@@ -76,39 +76,39 @@ public enum NativeAttributeType {
     },
     SHORT("short") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setShortValue(attribute, destinationElement, graph.getShortValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.s = graph.getShortValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setShortValue(attribute, element, value.s);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setShortValue(attribute, element, oldValue.s, newValue.s);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.s == a.s;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.s = ((Number) value).shortValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             short currentValue = graph.getShortValue(attribute, element);
             if (currentValue != oldValue.s) {
                 edit.setShortValue(attribute, element, oldValue.s, currentValue);
@@ -119,39 +119,39 @@ public enum NativeAttributeType {
     },
     INT("int") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setIntValue(attribute, destinationElement, graph.getIntValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.i = graph.getIntValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setIntValue(attribute, element, value.i);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setIntValue(attribute, element, oldValue.i, newValue.i);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.i == a.i;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.i = ((Number) value).intValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             int currentValue = graph.getIntValue(attribute, element);
             if (currentValue != oldValue.i) {
                 edit.setIntValue(attribute, element, oldValue.i, currentValue);
@@ -162,39 +162,39 @@ public enum NativeAttributeType {
     },
     LONG("long") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setLongValue(attribute, destinationElement, graph.getLongValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.l = graph.getLongValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setLongValue(attribute, element, value.l);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setLongValue(attribute, element, oldValue.l, newValue.l);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.l == a.l;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.l = ((Number) value).longValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             long currentValue = graph.getLongValue(attribute, element);
             if (currentValue != oldValue.l) {
                 edit.setLongValue(attribute, element, oldValue.l, currentValue);
@@ -205,39 +205,39 @@ public enum NativeAttributeType {
     },
     FLOAT("float") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setFloatValue(attribute, destinationElement, graph.getFloatValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.f = graph.getFloatValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setFloatValue(attribute, element, value.f);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setFloatValue(attribute, element, oldValue.f, newValue.f);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.f == a.f;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.f = ((Number) value).floatValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             float currentValue = graph.getFloatValue(attribute, element);
             if (currentValue != oldValue.f) {
                 edit.setFloatValue(attribute, element, oldValue.f, currentValue);
@@ -248,39 +248,39 @@ public enum NativeAttributeType {
     },
     DOUBLE("double") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setDoubleValue(attribute, destinationElement, graph.getDoubleValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.d = graph.getDoubleValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setDoubleValue(attribute, element, value.d);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setDoubleValue(attribute, element, oldValue.d, newValue.d);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.d == a.d;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.d = ((Number) value).doubleValue();
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             double currentValue = graph.getDoubleValue(attribute, element);
             if (currentValue != oldValue.d) {
                 edit.setDoubleValue(attribute, element, oldValue.d, currentValue);
@@ -291,39 +291,39 @@ public enum NativeAttributeType {
     },
     BOOLEAN("boolean") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setBooleanValue(attribute, destinationElement, graph.getBooleanValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.z = graph.getBooleanValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setBooleanValue(attribute, element, value.z);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setBooleanValue(attribute, element, oldValue.z, newValue.z);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.z == a.z;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.z = (Boolean) value;
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             boolean currentValue = graph.getBooleanValue(attribute, element);
             if (currentValue != oldValue.z) {
                 edit.setBooleanValue(attribute, element, oldValue.z, currentValue);
@@ -334,39 +334,39 @@ public enum NativeAttributeType {
     },
     CHAR("char") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setCharValue(attribute, destinationElement, graph.getCharValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.c = graph.getCharValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setCharValue(attribute, element, value.c);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setCharValue(attribute, element, oldValue.c, newValue.c);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return b.c == a.c;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.c = (Character) value;
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             char currentValue = graph.getCharValue(attribute, element);
             if (currentValue != oldValue.c) {
                 edit.setCharValue(attribute, element, oldValue.c, currentValue);
@@ -377,39 +377,39 @@ public enum NativeAttributeType {
     },
     OBJECT("Object") {
         @Override
-        public void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement) {
+        public void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement) {
             graph.setObjectValue(attribute, destinationElement, graph.getObjectValue(attribute, sourceElement));
         }
 
         @Override
-        public void get(GraphReadMethods graph, int attribute, int element, NativeValue value) {
+        public void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value) {
             value.o = graph.getObjectValue(attribute, element);
         }
 
         @Override
-        public void set(GraphWriteMethods graph, int attribute, int element, NativeValue value) {
+        public void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value) {
             graph.setObjectValue(attribute, element, value.o);
         }
 
         @Override
-        public void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue) {
+        public void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue) {
             edit.setObjectValue(attribute, element, oldValue.o, newValue.o);
         }
 
         @Override
-        public boolean equalValue(NativeValue a, NativeValue b) {
+        public boolean equalValue(final NativeValue a, final NativeValue b) {
             return a.o == b.o;
         }
 
         @Override
-        public NativeValue create(Object value) {
+        public NativeValue create(final Object value) {
             NativeValue nativeValue = new NativeValue();
             nativeValue.o = value;
             return nativeValue;
         }
 
         @Override
-        public boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue) {
+        public boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue) {
             Object currentValue = graph.getObjectValue(attribute, element);
             if (currentValue != oldValue.o) {
                 edit.setObjectValue(attribute, element, oldValue.o, currentValue);
@@ -421,7 +421,7 @@ public enum NativeAttributeType {
 
     private final String label;
 
-    private NativeAttributeType(String label) {
+    private NativeAttributeType(final String label) {
         this.label = label;
     }
 
@@ -439,7 +439,7 @@ public enum NativeAttributeType {
      * @param sourceElement the source element id.
      * @param destinationElement the destination element id.
      */
-    public abstract void copyAttributeValue(GraphWriteMethods graph, int attribute, int sourceElement, int destinationElement);
+    public abstract void copyAttributeValue(final GraphWriteMethods graph, final int attribute, final int sourceElement, final int destinationElement);
 
     /**
      * Efficiently copies the attribute value from an element into a NativeValue
@@ -450,7 +450,7 @@ public enum NativeAttributeType {
      * @param element the element id.
      * @param value the NativeValue that will hold the attribute value.
      */
-    public abstract void get(GraphReadMethods graph, int attribute, int element, NativeValue value);
+    public abstract void get(final GraphReadMethods graph, final int attribute, final int element, final NativeValue value);
 
     /**
      * Efficiently sets the attribute value of a specified element to the value
@@ -461,7 +461,7 @@ public enum NativeAttributeType {
      * @param element the id of the element to set.
      * @param value the NativeValue holding the attribute value.
      */
-    public abstract void set(GraphWriteMethods graph, int attribute, int element, NativeValue value);
+    public abstract void set(final GraphWriteMethods graph, final int attribute, final int element, final NativeValue value);
 
     /**
      * Updates the specified GraphEdit to include modifying the attribute value
@@ -474,7 +474,7 @@ public enum NativeAttributeType {
      * @param oldValue the old value for the attribute.
      * @param newValue the new value for the attribute.
      */
-    public abstract void addEdit(GraphEdit edit, int attribute, int element, NativeValue oldValue, NativeValue newValue);
+    public abstract void addEdit(final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue, final NativeValue newValue);
 
     /**
      * Efficiently test for equality between 2 NativeValue objects. This test
@@ -485,9 +485,9 @@ public enum NativeAttributeType {
      * @param a the first NativeValue object.
      * @param b the second NativeValue object.
      * @return true if the 2 NativeValue objects are equalValue for this
- NativeValueType.
+     * NativeValueType.
      */
-    public abstract boolean equalValue(NativeValue a, NativeValue b);
+    public abstract boolean equalValue(final NativeValue a, final NativeValue b);
 
     /**
      * Creates a new NativeValue object for the specified value, converting as
@@ -497,7 +497,7 @@ public enum NativeAttributeType {
      * @return a new NativeValue object for the specified value, converting as
      * required.
      */
-    public abstract NativeValue create(Object value);
+    public abstract NativeValue create(final Object value);
 
     /**
      * Updates the specified GraphEdit to include modifying the attribute value
@@ -512,10 +512,10 @@ public enum NativeAttributeType {
      * @param element the element that was modified.
      * @param oldValue the previous value.
      * @return true if the edit needed to be updated. In cases where the current
- value is equalValue to the old value the edit can remain unchanged and false
- is returned.
+     * value is equalValue to the old value the edit can remain unchanged and
+     * false is returned.
      */
-    public abstract boolean addEdit(GraphReadMethods graph, GraphEdit edit, int attribute, int element, NativeValue oldValue);
+    public abstract boolean addEdit(final GraphReadMethods graph, final GraphEdit edit, final int attribute, final int element, final NativeValue oldValue);
 
     /**
      * A NativeValue object holds an attribute value in an efficient form,

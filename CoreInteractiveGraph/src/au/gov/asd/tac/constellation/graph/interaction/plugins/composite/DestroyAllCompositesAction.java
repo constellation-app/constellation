@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ import org.openide.util.NbBundle.Messages;
  * @author twilight_sparkle
  */
 @ActionID(category = "Tools", id = "au.gov.asd.tac.constellation.functionality.composite.DestroyAllCompositesAction")
-@ActionRegistration(displayName = "#CTL_DestroyAllCompositesAction")
+@ActionRegistration(displayName = "#CTL_DestroyAllCompositesAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/composite/destroyCompositeNodes.png")
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 1000)
 })

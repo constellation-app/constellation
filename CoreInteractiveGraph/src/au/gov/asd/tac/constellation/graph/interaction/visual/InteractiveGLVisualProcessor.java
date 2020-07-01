@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,21 +38,18 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
-import java.awt.Graphics2D;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Logger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An extension of the {@link GLVisualProcessor} that adds support for user
@@ -65,15 +62,15 @@ import java.util.logging.Level;
  *
  * @author twilight_sparkle
  */
-public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements VisualInteraction, VisualAnnotator {
+public class InteractiveGLVisualProcessor extends GLVisualProcessor implements VisualInteraction, VisualAnnotator {
 
     private final long selectionBoxUpdateId = VisualChangeBuilder.generateNewId();
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();
-    private HitTester hitTester;
-    private SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
+    private final HitTester hitTester;
+    private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
     private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
     private final PlanesRenderable planesRenderable = new PlanesRenderable();
     private final TransformableGraphDisplayer graphDisplayer = new TransformableGraphDisplayer();
@@ -81,7 +78,7 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
     private InteractionEventHandler handler;
     private DropTargetListener targetListener;
     private DropTarget target;
-    
+
     private static final Logger LOGGER = Logger.getLogger(InteractiveGLVisualProcessor.class.getName());
 
     /**
@@ -94,11 +91,10 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
      */
     public InteractiveGLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         super(debugGl, printGlCapabilities);
-        //TODO_TT
-//        setGraphDisplayer(graphDisplayer);
-//        addRenderable(newLineRenderable);
-//        addRenderable(selectionBoxRenderable);
-//        addRenderable(planesRenderable);
+        setGraphDisplayer(graphDisplayer);
+        addRenderable(newLineRenderable);
+        addRenderable(selectionBoxRenderable);
+        addRenderable(planesRenderable);
         hitTester = new HitTester(this);
         addRenderable(hitTester);
     }
@@ -138,7 +134,7 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
      */
     public void addDropTargetToCanvas(final DropTargetListener targetListener) {
         this.targetListener = targetListener;
-        target = new DropTarget(cvkCanvas, this.targetListener);
+        target = new DropTarget(canvas, this.targetListener);
     }
 
     private final class GLSetHitTestingOperation implements VisualOperation {
@@ -172,8 +168,6 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
 
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
-        assert(hitTester != null);
-        //TODO_TT
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
             if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
                 getCanvas().setCursor(DEFAULT_CURSOR);
@@ -328,20 +322,17 @@ public class InteractiveGLVisualProcessor extends CVKVisualProcessor implements 
         final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
     }
-    
+
     @Override
-    public float getDPIScalingFactor(){
+    public float getDPIScalingFactor() {
         // HACK_DPI - Get the X Scale value from the GLCanva's transform matrix
         // This method was derived from the JOGL post found here:
         // http://forum.jogamp.org/canvas-not-filling-frame-td4040092.html#a4040210
-        try
-        {
-        	return (float)((Graphics2D)getCanvas().getGraphics()).getTransform().getScaleX();
-        }
-        catch (Exception ex)
-        {
-        	LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
-        	return 1.0f;	
+        try {
+            return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
+        } catch (Exception ex) {
+            LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
+            return 1.0f;
         }
     }
 }

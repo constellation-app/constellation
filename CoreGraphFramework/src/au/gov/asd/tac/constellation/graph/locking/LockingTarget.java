@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,9 +46,9 @@ public abstract class LockingTarget implements ReadingInterface {
 
     public abstract void validateKeys() throws DuplicateKeyException;
 
-    public abstract void setGraphEdit(GraphEdit graphEdit);
+    public abstract void setGraphEdit(final GraphEdit graphEdit);
 
-    public void setOperationMode(GraphOperationMode operationMode) {
+    public void setOperationMode(final GraphOperationMode operationMode) {
         this.operationMode = operationMode;
     }
 }

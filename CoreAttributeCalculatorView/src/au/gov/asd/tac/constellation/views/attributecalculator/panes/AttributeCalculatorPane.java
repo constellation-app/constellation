@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ public final class AttributeCalculatorPane extends GridPane {
     private boolean helpSideBarHidden = false;
 
     private InsertListCategory savedScriptsCat;
-    
+
     private static final String NEW_ATTRIBUTE_DESCRIPTION = "<new attribute>";
     private static final String TEXT_COLOR = "#0096C9";
     private static final String NODE_ATTRIBUTES = "Node Attributes";

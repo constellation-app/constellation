@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,8 @@ import javafx.scene.layout.Pane;
  * {@link PluginParameter}. Plugins using this should call
  * {@link au.gov.asd.tac.constellation.plugins.parameters.PluginParameters#addController(String, PluginParameterController) }
  * to the parameter inside
- * {@link au.gov.asd.tac.constellation.plugins.Plugin#createParameters}
- * so that the desired action will be performed after the ParameterChange is
- * fired.
+ * {@link au.gov.asd.tac.constellation.plugins.Plugin#createParameters} so that
+ * the desired action will be performed after the ParameterChange is fired.
  *
  * @see
  * au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType

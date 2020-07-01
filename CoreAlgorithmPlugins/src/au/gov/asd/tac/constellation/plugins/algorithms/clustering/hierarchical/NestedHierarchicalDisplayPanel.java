@@ -85,8 +85,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         for (LinePositioning line : lines) {
             GroupTreeNode node = line.n;
-            while (node.mergeStep <= state.currentStep) {
+            while (node != null && node.mergeStep <= state.currentStep) {
                 node = node.parent;
+            }
+            if (node == null) {
+                return;
             }
             line.color = node.color;
         }

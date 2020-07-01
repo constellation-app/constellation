@@ -56,7 +56,7 @@ public final class Orb3D {
     public void setZ(float z) {
         this.z = z;
     }
-    
+
 //    public boolean contains(final float x2, final float y2, final float z2)
 //    {
 //        final double dx = x - x2;

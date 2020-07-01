@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,12 +69,12 @@ public class NodeQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-                for (FindResult item : results) {
-                    if (item != null) {
-                        // We have a valid result, so report:
-                        response.addResult(new SelectContent(graph, item), item.toString());
-                    }
+            for (FindResult item : results) {
+                if (item != null) {
+                    // We have a valid result, so report:
+                    response.addResult(new SelectContent(graph, item), item.toString());
                 }
+            }
         }
     }
 

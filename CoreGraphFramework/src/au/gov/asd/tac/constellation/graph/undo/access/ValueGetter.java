@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.undo.UndoGraphEditState;
  */
 public abstract class ValueGetter {
 
-    public abstract void getExecute(UndoGraphEditState edit);
+    public abstract void getExecute(final UndoGraphEditState edit);
 
-    public abstract void getUndo(UndoGraphEditState edit);
+    public abstract void getUndo(final UndoGraphEditState edit);
 }

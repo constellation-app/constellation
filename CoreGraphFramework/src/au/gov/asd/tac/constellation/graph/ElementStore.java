@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -198,11 +198,11 @@ public class ElementStore implements Serializable {
         return id2position[element] & LOW_BITS;
     }
 
-    public long getUID(int element) {
+    public long getUID(final int element) {
         return id2UID[element];
     }
 
-    public void setUID(int element, long UID) {
+    public void setUID(final int element, final long UID) {
         id2UID[element] = UID;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,13 +49,13 @@ public interface GLRenderable extends Renderable {
         ANNOTATIONS_PRIORITY(20),
         DEFAULT_PRIORITY(10),
         HIGH_PRIORITY(0);
-        
+
         private final int value;
-        
+
         private RenderablePriority(final int value) {
             this.value = value;
         }
-        
+
         public int getValue() {
             return value;
         }

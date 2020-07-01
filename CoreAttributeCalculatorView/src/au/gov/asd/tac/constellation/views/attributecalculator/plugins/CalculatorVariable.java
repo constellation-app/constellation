@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -532,8 +532,9 @@ public enum CalculatorVariable {
     public void init(GraphReadMethods graph) {
         //Intetionally left blank, overridden within this class
     }
-    
+
     private class CalculatorVariableConstants {
+
         private static final String GRAPH_PROPERTIES = "Graph Properties";
         private static final String NODE_PROPERTIES = "Node Properties";
         private static final String SOURCE_NODE_PROPERTIES = "Source Node Properties";

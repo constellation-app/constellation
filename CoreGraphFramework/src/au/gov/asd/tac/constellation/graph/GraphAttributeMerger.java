@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,7 @@ public abstract class GraphAttributeMerger {
 
     public abstract String getId();
 
-    public abstract boolean mergeAttribute(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement, int attribute);
+    public abstract boolean mergeAttribute(final GraphWriteMethods graph, final GraphElementType elementType, 
+            final int survivingElement, final int mergedElement, final int attribute);
 
 }

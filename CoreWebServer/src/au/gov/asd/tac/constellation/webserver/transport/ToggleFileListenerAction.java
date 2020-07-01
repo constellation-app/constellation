@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,8 @@ import org.openide.util.NbBundle.Messages;
  * @author rsabhi modified
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.webserver.transport.ToggleFileListenerAction")
-@ActionRegistration(displayName = "#CTL_StartFileListenerAction", 
-        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/filelistener_off.png", 
+@ActionRegistration(displayName = "#CTL_StartFileListenerAction",
+        iconBase = "au/gov/asd/tac/constellation/webserver/transport/resources/stopFileListener.png",
         surviveFocusChange = true, lazy = true)
 @ActionReference(path = "Menu/Tools", position = 1550)
 @Messages({
@@ -44,8 +44,8 @@ import org.openide.util.NbBundle.Messages;
 })
 public final class ToggleFileListenerAction extends AbstractAction {
 
-    private static final String ICON_ON_RESOURCE = "resources/filelistener_on.png";
-    private static final String ICON_OFF_RESOURCE = "resources/filelistener_off.png";
+    private static final String ICON_ON_RESOURCE = "resources/startFileListener.png";
+    private static final String ICON_OFF_RESOURCE = "resources/stopFileListener.png";
     private static final ImageIcon ICON_ON = new ImageIcon(ToggleFileListenerAction.class.getResource(ICON_ON_RESOURCE));
     private static final ImageIcon ICON_OFF = new ImageIcon(ToggleFileListenerAction.class.getResource(ICON_OFF_RESOURCE));
     private static final long JOIN_WAIT = 1000;
@@ -53,7 +53,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
     private boolean listenerOn;
     private FileListener fileListener;
     private Thread listenerRunner;
-    
+
     public ToggleFileListenerAction() {
         listenerOn = false;
     }
@@ -82,7 +82,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
                 Thread.currentThread().interrupt();
             }
         }
-        
+
         listenerOn = !listenerOn;
     }
 }

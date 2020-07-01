@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ import java.util.Map;
  * @author twilight_sparkle
  */
 public class DefaultCalculatorTemplateCategoryDescriptions extends AbstractCalculatorTemplateCategoryDescriptions {
-    
+
     private static final String STRUCTURAL_PROPERTIES = "Structural properties of nodes, such as the number of neighbours.";
-    
+
     private static final Map<String, String[]> TEMPLATE_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, String[]> TEMPLATE_USAGE_EXAMPLES = new HashMap<>();
 

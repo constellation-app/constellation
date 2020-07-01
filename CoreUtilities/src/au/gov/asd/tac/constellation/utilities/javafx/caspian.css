@@ -30,7 +30,7 @@
  *                                                                             *
  ******************************************************************************/
 
- .root {
+.root {
     /***************************************************************************
      *                                                                         *
      * The main color palette from which the rest of the colors are derived.   *
@@ -109,7 +109,7 @@
         derive(-fx-base,20%) 20%,
         derive(-fx-base,30%) 35%,
         derive(-fx-base,40%) 50%
-     );
+        );
 
     /* A little darker than -fx-base and used as the -fx-color for the
      * "armed" pseudoclass state.
@@ -133,7 +133,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-     );
+        );
 
     /* The default color for all text.  Sections should change the -fx-text-fill
      * property if change the background color to something else.  See also:
@@ -152,7 +152,7 @@
         -fx-color,
         black 20%,
         derive(-fx-color,-30%) 30%
-    );
+        );
 
     /* Darker than -fx-background and used to draw boxes around text boxes and
      * password boxes.
@@ -161,7 +161,7 @@
         -fx-background,
         black 10%,
         derive(-fx-background, -15%) 30%
-    );
+        );
 
     /* Typically lighter than -fx-background and used to provide a small
      * highlight under controls and tick marks for checkboxes and radio buttons.
@@ -177,7 +177,7 @@
         derive(-fx-background,100%) 85%,
         derive(-fx-background,100%) 97%,
         derive(-fx-background,-10%) 97.5%
-      );
+        );
 
     /* A gradient that goes from a little darker than -fx-color on the top to
      * even more darker than -fx-color on the bottom.  Typically is the second
@@ -189,7 +189,7 @@
         to bottom,
         derive(-fx-color,-9%) 0%, 
         derive(-fx-color,-33%) 100%
-    );
+        );
 
     /* A gradient that goes from a bit lighter than -fx-color on the top to
      * a little darker at the bottom.  Typically is the third color in the
@@ -199,31 +199,31 @@
     -fx-inner-border: linear-gradient(
         to bottom,
         ladder(-fx-color, 
-               derive(-fx-color,80%) 60%, 
-               white 82%) 0%,
+        derive(-fx-color,80%) 60%, 
+        white 82%) 0%,
         ladder(-fx-color, 
-               derive(-fx-color,20%) 10%, 
-               derive(-fx-color,-10%) 80%) 100%
-    );
+        derive(-fx-color,20%) 10%, 
+        derive(-fx-color,-10%) 80%) 100%
+        );
 
     -fx-inner-border-horizontal: linear-gradient(
         to right,
         ladder(-fx-color, 
-               derive(-fx-color,80%) 60%, 
-               white 82%) 0%,
+        derive(-fx-color,80%) 60%, 
+        white 82%) 0%,
         ladder(-fx-color, 
-               derive(-fx-color,20%) 10%, 
-               derive(-fx-color,-10%) 80%) 100%
-    );
+        derive(-fx-color,20%) 10%, 
+        derive(-fx-color,-10%) 80%) 100%
+        );
 
     -fx-inner-border-bottomup: linear-gradient(
         to top,
         ladder(-fx-color, 
-               derive(-fx-color,80%) 60%, 
-               white 82%) 0%,
+        derive(-fx-color,80%) 60%, 
+        white 82%) 0%,
         ladder(-fx-color, 
-               derive(-fx-color,20%) 10%, 
-               derive(-fx-color,-10%) 80%) 100%);
+        derive(-fx-color,20%) 10%, 
+        derive(-fx-color,-10%) 80%) 100%);
 
     /* A gradient that goes from a little lighter than -fx-color at the top to
      * a little darker than -fx-color at the bottom and is used to fill the
@@ -235,13 +235,13 @@
         to bottom,
         derive(-fx-color,34%) 0%,
         derive(-fx-color,-18%) 100%
-    );
-        
+        );
+
     -fx-body-color-bottomup:  linear-gradient(
         to top,
         derive(-fx-color,34%) 0%,
         derive(-fx-color,-18%) 100%
-    );
+        );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-base, -fx-color, and -fx-body-color.
@@ -252,7 +252,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-    );
+        );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-control-inner-background.
@@ -263,7 +263,7 @@
         -fx-dark-text-color  46%,
         -fx-dark-text-color  59%,
         -fx-mid-text-color   60%
-    );
+        );
 
     /* The color to use for small mark-like objects such as checks on check
      * boxes, filled in circles in radio buttons, arrows on scroll bars, etc.
@@ -272,7 +272,7 @@
         -fx-color,
         white 30%,
         derive(-fx-color,-63%) 31%
-    );
+        );
 
     /* The small thin light "shadow" for mark-like objects. Typically used in
      * conjunction with -fx-mark-color with an insets of 1 0 -1 0.
@@ -281,7 +281,7 @@
         -fx-color,
         derive(-fx-color,80%) 60%,
         white 70%
-    );
+        );
 
     /* Background for items in list like things such as menus, lists, trees,
      * and tables.
@@ -294,7 +294,7 @@
         to bottom,
         derive(-fx-background,-7%) 0%,
         derive(-fx-background,-34%) 100%
-    );
+        );
 
     /* The color to use as -fx-text-fill when painting text on top of
      * backgrounds filled with -fx-selection-bar.
@@ -305,7 +305,7 @@
         -fx-background,
         -fx-light-text-color 50%,
         -fx-mid-text-color   51%
-    );
+        );
 
     /* The default border color for a tab.
      *
@@ -318,17 +318,17 @@
     -fx-background-radius: inherit;
     -fx-background-insets: inherit;
     -fx-padding: inherit;
-    
+
     /* The color to use in ListView/TreeView/TableView to indicate hover. */
     -fx-cell-hover-color: #cce3f4;
-    
+
     -fx-cell-focus-inner-border: #85b9de;
-    
+
     /* The colors to use in Pagination */
     -fx-page-bullet-border: #acacac;    
     -fx-page-indicator-hover-border: #accee5;
-    
-    
+
+
 }
 
 .mnemonic-underline {
@@ -515,7 +515,7 @@
 .button:armed {
     -fx-color: -fx-pressed-base;
 }
- 
+
 .button:default {
     -fx-base: -fx-accent;
 }
@@ -606,10 +606,10 @@
 }
 
 .radio-button > .radio  {
-   -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-   -fx-background-insets: 0 0 -1 0,  0,  1,  2;
-   -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
-   -fx-padding: 0.333333em; /* 4 -- padding from outside edge to the inner black dot */
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0 0 -1 0,  0,  1,  2;
+    -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
+    -fx-padding: 0.333333em; /* 4 -- padding from outside edge to the inner black dot */
 }
 
 .radio-button:focused > .radio {
@@ -626,15 +626,15 @@
 }
 
 .radio-button > .radio > .dot {
-   -fx-background-color: transparent;
-   -fx-background-insets: 0;
-   -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
-   -fx-padding: 0.25em; /* 3 -- radius of the inner black dot when selected */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1.0em; /* large value to make sure this remains circular */
+    -fx-padding: 0.25em; /* 3 -- radius of the inner black dot when selected */
 }
 
 .radio-button:selected > .radio > .dot {
-   -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
-   -fx-background-insets: 0 0 -1 0, 0;
+    -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
+    -fx-background-insets: 0 0 -1 0, 0;
 }
 
 .radio-button:disabled {
@@ -762,7 +762,7 @@
         linear-gradient(to bottom, derive(-fx-color,100%) 0%, derive(-fx-color,50%) 12%, derive(-fx-color,65%) 88%, derive(-fx-color,23%) 100%);
     -fx-background-insets: 0, 1, 2;
     -fx-background-radius: 0 6 6 6, 0 5 5 5, 0 4 4 4;
-/*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
+    /*    -fx-padding: 0.666667em 0.083333em 0.666667em 0.083333em;  8 1 8 1 */
     -fx-padding: 0.333333em 0.083333em 0.666667em 0.083333em; /* 4 1 8 1 */
 }
 
@@ -931,9 +931,9 @@
 }
 
 .menu-item:focused {
-     -fx-background: -fx-accent;
-     -fx-background-color: -fx-selection-bar;
-     -fx-text-fill: -fx-selection-bar-text;
+    -fx-background: -fx-accent;
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
 }
 
 .menu-item:focused > .label {
@@ -1197,21 +1197,21 @@
 */
 
 .scroll-bar:horizontal > .track {
-     -fx-background-color:
+    -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
     -fx-background-radius: 0.5em; /* makes sure this remains circular */
 }
 .scroll-bar:horizontal > .track-background {
-     -fx-background-color:
+    -fx-background-color:
         -fx-box-border,
         linear-gradient(to top, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
 }
 
 .scroll-bar:vertical > .track {
-     -fx-background-color:
+    -fx-background-color:
         -fx-box-border,
         linear-gradient(to right, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
@@ -1219,7 +1219,7 @@
 }
 
 .scroll-bar:vertical > .track-background {
-     -fx-background-color:
+    -fx-background-color:
         -fx-box-border,
         linear-gradient(to left, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
@@ -1460,8 +1460,8 @@
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
     -fx-background-insets: 0, 1;
 
-     /* There is some oddness if padding is in em values rather than pixels,
-        in particular, the left border of the control doesn't show. */
+    /* There is some oddness if padding is in em values rather than pixels,
+       in particular, the left border of the control doesn't show. */
     -fx-padding: 1; /* 0.083333em; */
 }
 
@@ -1727,7 +1727,7 @@
 .menu-button > .label { 
     /* TODO workaround for RT-19062 */
     -fx-text-fill: -fx-text-base-color; 
-    
+
     /* The MenuButton skin uses an inner Label part */
     -fx-padding: 0.166667em 0.667em 0.25em 0.833333em; /* 2 8 3 10 */
 }
@@ -1938,13 +1938,13 @@
 }
 
 .tool-bar-overflow-button:focused > .arrow {
-   -fx-background-color: -fx-mark-highlight-color, derive(-fx-accent, -15%);
-   -fx-background-insets: 1 0 -1 0, 0;
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-accent, -15%);
+    -fx-background-insets: 1 0 -1 0, 0;
 }
 
 .tool-bar-overflow-button:hover > .arrow {
-   -fx-background-color: -fx-mark-highlight-color, derive(-fx-hover-base, -35%);
-   -fx-background-insets: 1 0 -1 0, 0;
+    -fx-background-color: -fx-mark-highlight-color, derive(-fx-hover-base, -35%);
+    -fx-background-insets: 1 0 -1 0, 0;
 }
 
 /*******************************************************************************
@@ -1978,7 +1978,7 @@
 }
 
 .progress-bar > .track {
-     -fx-background-color:
+    -fx-background-color:
         -fx-box-border,
         linear-gradient(to bottom, derive(-fx-color,-15%), derive(-fx-color,2.2%) 20%, derive(-fx-color,60%));
     -fx-background-insets:  0, 1;
@@ -2085,7 +2085,7 @@
      * TODO: Should these be derived from the palette in .scene?
      */
     -fx-table-header-border-color: #959595;
-/*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
+    /*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
     -fx-table-cell-border-color: #bbbbbb;
 }
 
@@ -2278,10 +2278,10 @@
 }
 
 /* When the TableView is _not_ focused, we show alternate selection colors */
- .table-row-cell:filled > .table-cell:selected:focused, 
- .table-row-cell:filled > .table-cell:selected,
- .tree-table-row-cell:filled > .tree-table-cell:selected:focused, 
- .tree-table-row-cell:filled > .tree-table-cell:selected {
+.table-row-cell:filled > .table-cell:selected:focused, 
+.table-row-cell:filled > .table-cell:selected,
+.tree-table-row-cell:filled > .tree-table-cell:selected:focused, 
+.tree-table-row-cell:filled > .tree-table-cell:selected {
     -fx-background-color: lightgray;
     -fx-text-fill: -fx-selection-bar-text;
 }
@@ -2583,7 +2583,7 @@
 .split-pane > * > .split-pane {
     -fx-background-insets: 0, 0;
     -fx-padding: 0;
- }
+}
 
 .split-pane {
     -fx-background-color: -fx-box-border, -fx-control-inner-background;
@@ -2597,16 +2597,16 @@
 
 /* horizontal the two nodes are placed to the left/right of each other. */
 .split-pane:horizontal > .split-pane-divider {
-   -fx-border-color: transparent -fx-box-border transparent #BBBBBB;
-   -fx-background-color: transparent, -fx-inner-border-horizontal;
-   -fx-background-insets: 0, 0 1 0 1;
+    -fx-border-color: transparent -fx-box-border transparent #BBBBBB;
+    -fx-background-color: transparent, -fx-inner-border-horizontal;
+    -fx-background-insets: 0, 0 1 0 1;
 }
 
 /* vertical the two nodes are placed on top of each other. */
 .split-pane:vertical > .split-pane-divider {
-   -fx-border-color:  #BBBBBB transparent -fx-box-border transparent;
-   -fx-background-color: transparent, -fx-inner-border;
-   -fx-background-insets: 0, 1 0 1 0;
+    -fx-border-color:  #BBBBBB transparent -fx-box-border transparent;
+    -fx-background-color: transparent, -fx-inner-border;
+    -fx-background-insets: 0, 1 0 1 0;
 }
 
 .split-pane > .split-pane-divider > .horizontal-grabber {
@@ -2655,14 +2655,14 @@
 .tab-pane > .tab-header-area > .headers-region > .tab {
     /* This is how it is done in Button, but the -1 inset caused a white line  */
     /* to appear beneath the tab, which looks bad, so it's taken out below.    */
-/*    -fx-background-color: -fx-shadow-highlight-color, -fx-tab-border-color, -fx-inner-border, -fx-body-color;
-    -fx-background-radius: 5 5 0 0, 5 5 0 0, 4 4 0 0, 3 3 0 0;
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
+    /*    -fx-background-color: -fx-shadow-highlight-color, -fx-tab-border-color, -fx-inner-border, -fx-body-color;
+        -fx-background-radius: 5 5 0 0, 5 5 0 0, 4 4 0 0, 3 3 0 0;
+        -fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
     /*-fx-background-insets: 0, 1, 2;*/
     -fx-background-insets: 0 1 1 0, 1 2 1 1, 2 3 1 2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
     -fx-padding: 0.083333em 0.5em 0.083333em 0.5em; /* 1 6 1 6 */
-/*    -fx-text-fill: -fx-text-base-color;*/
+    /*    -fx-text-fill: -fx-text-base-color;*/
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:top {
@@ -2686,11 +2686,11 @@
 }
 
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
-/*    -fx-background-color: white;*/
+    /*    -fx-background-color: white;*/
 
-/*    -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
-    -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
-    -fx-background-insets: 0, 1 1 0 1, 2 2 0 2;*/
+    /*    -fx-background-color: -fx-tab-border-color, -fx-inner-border, -fx-body-color;
+        -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
+        -fx-background-insets: 0, 1 1 0 1, 2 2 0 2;*/
     -fx-background-color: -fx-tab-border-color, -fx-control-inner-background;
     -fx-background-insets: 0 1 0 0, 1 2 0 1;
     -fx-background-radius: 5 5 0 0, 4 4 0 0;
@@ -2717,8 +2717,8 @@
 }
 
 /*.tab-pane *.tab-header-area {*/
-    /* I would like to use -fx-tab-border-color here, but for some reason it */
-    /* just isn't the correct color, even though it works in :top above */
+/* I would like to use -fx-tab-border-color here, but for some reason it */
+/* just isn't the correct color, even though it works in :top above */
 /*    -fx-background-color: -fx-tab-border-color, lightgray;*/
 /*}*/
 
@@ -2828,11 +2828,11 @@
     -fx-font-size: 1.4em;
 }
 .chart-legend {
-   -fx-background-color: ladder(-fx-background, derive(-fx-box-border, -10%) 50%, derive(-fx-box-border, 10%) 51%),
-                         ladder(-fx-background, derive(-fx-control-inner-background, 5%) 50%, derive(-fx-control-inner-background, -5%) 51%);
-   -fx-background-insets: 0,1;
-   -fx-background-radius: 6,5;
-   -fx-padding: 6px;
+    -fx-background-color: ladder(-fx-background, derive(-fx-box-border, -10%) 50%, derive(-fx-box-border, 10%) 51%),
+        ladder(-fx-background, derive(-fx-control-inner-background, 5%) 50%, derive(-fx-control-inner-background, -5%) 51%);
+    -fx-background-insets: 0,1;
+    -fx-background-radius: 6,5;
+    -fx-padding: 6px;
 }
 
 /* ====== AXIS ============================================================================ */
@@ -2862,7 +2862,7 @@
 }
 
 .axis .text {
-  -fx-font-smoothing-type: lcd;
+    -fx-font-smoothing-type: lcd;
 }
 
 /* ====== CHART PLOT BACKGROUND =========================================================== */
@@ -3034,28 +3034,28 @@
 .chart-bar {
     -fx-bar-fill: #22bad9;
     -fx-background-color: linear-gradient(derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-                          linear-gradient(derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
-                          linear-gradient(derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+        linear-gradient(derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
+        linear-gradient(derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-insets: 0,1,2;
     -fx-background-radius: 5 5 0 0, 4 4 0 0, 3 3 0 0;
 }
 
 .negative.chart-bar {
-   -fx-background-color: linear-gradient(to top, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-                          linear-gradient(to top, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill,0%)),
-                          linear-gradient(to top, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
-   -fx-background-radius: 0 0 5 5, 0 0 4 4, 0 0 3 3;
+    -fx-background-color: linear-gradient(to top, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
+        linear-gradient(to top, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill,0%)),
+        linear-gradient(to top, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+    -fx-background-radius: 0 0 5 5, 0 0 4 4, 0 0 3 3;
 }
 .bar-chart:horizontal .chart-bar, .stacked-bar-chart:horizontal .chart-bar {
     -fx-background-color: linear-gradient(to left, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-                          linear-gradient(to left, derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
-                          linear-gradient(to left, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+        linear-gradient(to left, derive(-fx-bar-fill,80%), derive(-fx-bar-fill, 0%)),
+        linear-gradient(to left, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-radius: 0 5 5 0, 0 4 4 0, 0 3 3 0;
 }
 .bar-chart:horizontal .negative.chart-bar, .stacked-bar-chart:horizontal .negative.chart-bar {
     -fx-background-color: linear-gradient(to right, derive(-fx-bar-fill,-30%), derive(-fx-bar-fill,-40%)),
-                          linear-gradient(to right, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill, 0%)),
-                          linear-gradient(to right, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
+        linear-gradient(to right, derive(-fx-bar-fill, 80%), derive(-fx-bar-fill, 0%)),
+        linear-gradient(to right, derive(-fx-bar-fill,30%), derive(-fx-bar-fill,-10%));
     -fx-background-radius: 5 0 0 5, 4 0 0 4, 3 0 0 3;
 }
 .default-color0.chart-bar { -fx-bar-fill: #f9d900; }
@@ -3212,7 +3212,7 @@ Only the properties with values that are different from the TextBox are specifie
 
 .combo-box-popup > .list-view > .virtual-flow > .clipped-container > .sheet > .list-cell {
     -fx-padding: 4 0 4 5;
-    
+
     /* No alternate highlighting */
     -fx-background-color: -fx-control-inner-background;
 }
@@ -3276,7 +3276,7 @@ Only the properties with values that are different from the TextBox are specifie
 }
 
 .color-picker > .split-button > .color-picker-label:hover {
-     -fx-color: -fx-hover-base;
+    -fx-color: -fx-hover-base;
 }
 
 .color-picker > .color-picker-label > .picker-color {
@@ -3291,7 +3291,7 @@ Only the properties with values that are different from the TextBox are specifie
 
 .color-palette {
     -fx-spacing: 15px;
-     -fx-background-color:
+    -fx-background-color:
         derive(-fx-color,-40%),
         derive(-fx-color,100%),
         linear-gradient(to bottom, 
@@ -3780,11 +3780,11 @@ Only the properties with values that are different from the TextBox are specifie
 }
 
 .pagination > .pagination-control > .control-box > .bullet-button {   
-   -fx-background-radius: 0, 4em, 4em, 4em, 4em;
-   -fx-padding: 0.333em;
-   
-   -fx-background-color: transparent, -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-   -fx-background-insets: 0, 4 4 3 4,  5,  6,  7;
+    -fx-background-radius: 0, 4em, 4em, 4em, 4em;
+    -fx-padding: 0.333em;
+
+    -fx-background-color: transparent, -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+    -fx-background-insets: 0, 4 4 3 4,  5,  6,  7;
 }
 
 .pagination > .pagination-control > .control-box > .bullet-button:selected {   
@@ -3829,7 +3829,7 @@ Only the properties with values that are different from the TextBox are specifie
      * TODO: Should these be derived from the palette in .scene?
      */
     -fx-table-header-border-color: #959595;
-/*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
+    /*    -fx-table-header-background-color: linear (0%,0%) to (0%,100%) stops (80%, #bbbbbb) (10%, #f6f6f6);*/
     -fx-table-cell-border-color: #bbbbbb;
 }
 
@@ -3945,7 +3945,7 @@ Only the properties with values that are different from the TextBox are specifie
         linear-gradient(to bottom,  derive(-fx-base, 5%) 0%, derive(-fx-base, -15%) 90%);
     -fx-background-insets: 0, 1;
     -fx-border-color: transparent derive(-fx-base,50%) transparent derive(-fx-base,50%),
-    transparent transparent derive(-fx-base,-60%) transparent;
+        transparent transparent derive(-fx-base,-60%) transparent;
     -fx-border-width: 1, 0;
     -fx-padding: 0.166667em 0.5em 0.166667em 1.5em; /* 2 6 2 6;*/
 }
@@ -4035,8 +4035,8 @@ to the top and bottom -fx-padding values of the parent toolbar. */
 
 .html-editor > * > * > .toggle-button:selected {
     -fx-background-color: transparent,
-    linear-gradient(to bottom,  derive(-fx-base, -70%) 10%, derive(-fx-base, -40%) 90%),
-    linear-gradient(to bottom,  derive(-fx-base, -40%) 0%, derive(-fx-base, -20%) 50%, derive(-fx-base, -10%) 98%, derive(-fx-base, -35%) 100%);
+        linear-gradient(to bottom,  derive(-fx-base, -70%) 10%, derive(-fx-base, -40%) 90%),
+        linear-gradient(to bottom,  derive(-fx-base, -40%) 0%, derive(-fx-base, -20%) 50%, derive(-fx-base, -10%) 98%, derive(-fx-base, -35%) 100%);
 }
 
 .html-editor > * > * > .font-menu-button {

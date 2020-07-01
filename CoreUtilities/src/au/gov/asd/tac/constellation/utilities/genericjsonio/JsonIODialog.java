@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,10 +43,11 @@ public class JsonIODialog {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
 
-    /***
-     * Present a dialog allowing user to select an entry from a list of available
-     * files.
-     * 
+    /**
+     * *
+     * Present a dialog allowing user to select an entry from a list of
+     * available files.
+     *
      * @param names list of filenames to choose from
      * @return the selected element text or null if nothing was selected
      */
@@ -93,9 +94,9 @@ public class JsonIODialog {
      * preference
      *
      * @author formalhaut69
-     * @return A tuple, the first item is a Boolean indicating whether the user selected
-     *         to proceed with the operation or not, the second is the name of the file
-     *         requested by the user.
+     * @return A tuple, the first item is a Boolean indicating whether the user
+     * selected to proceed with the operation or not, the second is the name of
+     * the file requested by the user.
      */
     public static Tuple<Boolean, String> getName() {
         String returnedName = "";

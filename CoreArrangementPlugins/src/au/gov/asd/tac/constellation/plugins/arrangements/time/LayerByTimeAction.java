@@ -15,12 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.time;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -38,7 +38,9 @@ import org.openide.util.NbBundle.Messages;
  * @author procyon
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.time.LayerByTimeAction")
-@ActionRegistration(displayName = "#CTL_LayerByTimeAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/time/resources/time.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_LayerByTimeAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/time/resources/layerByTime.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/Arrange", position = 2500)
 @Messages({
     "CTL_LayerByTimeAction=Layer by Time",

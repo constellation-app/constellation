@@ -16,10 +16,10 @@
 package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.interaction;
 
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.CompositeNodeStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.AttributeValueTranslator;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.CompositeNodeStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeNodeState;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.CompositeStatus;
 import java.util.Arrays;
@@ -53,7 +53,7 @@ public class CompositeNodeStateAttributeInteraction extends AbstractAttributeInt
             return String.format("%s with %d other node%s.", status.compositeName, state.getNumberOfNodes() - 1, state.getNumberOfNodes() == 1 ? "" : "s");
         }
     }
-    
+
     @Override
     public List<String> getPreferredEditTypes() {
         return Arrays.asList(StringAttributeDescription.ATTRIBUTE_NAME);

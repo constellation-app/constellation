@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,5 +31,5 @@ public interface HookRecordStoreCallback {
      * @param recordStore A {@link RecordStore} on which to perform this
      * operation.
      */
-    public void onAdd(RecordStore recordStore);
+    public void onAdd(final RecordStore recordStore);
 }

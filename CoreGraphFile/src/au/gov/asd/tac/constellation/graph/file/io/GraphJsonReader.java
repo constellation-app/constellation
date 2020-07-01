@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
@@ -74,11 +74,11 @@ public final class GraphJsonReader {
     private long structModCount;
     private final Map<Integer, Long> attrValCount = new HashMap<>();
     private GraphByteReader byteReader;
-    
+
     private static final String ATTRIBUTE_MOD_COUNT = "attribute_mod_count";
     private static final String GLOBAL_MOD_COUNT = "global_mod_count";
     private static final String STRUCTURE_MOD_COUNT = "structure_mod_count";
-    
+
     private static final String DID_NOT_FIND_FORMAT = "Did not find '%s' at '%s'";
     private static final String EXPECTED_LONG_FORMAT = "Expected long value, found '%s' at %s";
     private static final String EXPECTED_NUMERIC_FORMAT = "Expected numeric value, found '%s' at %s";
@@ -126,7 +126,7 @@ public final class GraphJsonReader {
             } catch (InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new GraphParseException(ex.getMessage(), ex);
-            }finally {
+            } finally {
                 in.getInputStream().close();
             }
         } finally {
@@ -530,9 +530,9 @@ public final class GraphJsonReader {
             final JsonNode dv = node.get("default");
             final Object attrDefault
                     = (dv == null || dv.isNull()) ? null
-                            : dv.isNumber() ? dv.numberValue()
-                            : dv.isBoolean() ? dv.booleanValue()
-                            : dv.textValue();
+                    : dv.isNumber() ? dv.numberValue()
+                    : dv.isBoolean() ? dv.booleanValue()
+                    : dv.textValue();
 
             final String attributeMergerId = node.has("merger") ? node.get("merger").textValue() : null;
 

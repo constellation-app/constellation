@@ -71,6 +71,15 @@ public class STNumbering {
             defactoPendants = new HashSet<>();
             pendants = new HashSet<>();
         }
+
+        public int getvLow() {
+            return vLow;
+        }
+
+        public int getPreorder() {
+            return preorder;
+        }
+        
     }
 
     private class NodeResult {

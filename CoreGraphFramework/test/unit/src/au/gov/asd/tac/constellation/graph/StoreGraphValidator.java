@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import java.util.ArrayList;
@@ -345,18 +346,6 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-//    @Override
-//    public void firePropertyChange(int firerId, int attrId) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//    @Override
-//    public void firePropertyChange(int attrId) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
-//    @Override
-//    public void firePropertyChange(int attrId, Object newValue) {
-//        throw new UnsupportedOperationException("Not supported yet.");
-//    }
     private class Vertex {
 
         private int id;

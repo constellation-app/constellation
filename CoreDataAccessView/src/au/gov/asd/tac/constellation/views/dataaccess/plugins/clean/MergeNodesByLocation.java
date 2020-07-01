@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
@@ -75,7 +76,12 @@ public class MergeNodesByLocation implements MergeNodeType {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         final int latitudeAttribute = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
         final int longitudeAttribute = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-        final int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
+        int shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.get(graph);
+
+        // check if the attributes are defined
+        if (latitudeAttribute == Graph.NOT_FOUND || longitudeAttribute == Graph.NOT_FOUND) {
+            return nodesToMerge;
+        }
 
         // map the distances between every pair of vertices with valid locations
         final Map<Integer, Map<Integer, Double>> distanceMap = calculateDistances(graph, null, selectedOnly);
@@ -110,6 +116,9 @@ public class MergeNodesByLocation implements MergeNodeType {
                         (double) graph.getFloatValue(latitudeAttribute, vertexId)))
                         .collect(Collectors.toList());
                 try {
+                    if (shapeAttribute == Graph.NOT_FOUND) {
+                        shapeAttribute = SpatialConcept.VertexAttribute.SHAPE.ensure(graph);
+                    }
                     graph.setStringValue(shapeAttribute, clusterNode, Shape.generateShape(clusterId, GeometryType.BOX, clusterCoordinates));
                 } catch (IOException ex) {
                     throw new MergeException("Error creating shape for location cluster.", ex);

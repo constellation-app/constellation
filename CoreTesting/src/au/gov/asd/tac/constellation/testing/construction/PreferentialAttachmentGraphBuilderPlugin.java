@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
     public static final String RANDOM_WEIGHTS_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "random_weights");
     public static final String NODE_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "node_types");
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "transaction_types");
-    
+
     private final SecureRandom r = new SecureRandom();
 
     @Override
@@ -263,7 +263,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                                     dxId = vxId;
                                 }
                                 break;
-                            case 1: 
+                            case 1:
                                 int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = destination;

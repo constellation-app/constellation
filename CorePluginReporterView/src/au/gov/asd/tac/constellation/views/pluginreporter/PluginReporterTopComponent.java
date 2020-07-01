@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,19 +17,12 @@ package au.gov.asd.tac.constellation.views.pluginreporter;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.pluginreporter.panes.PluginReporterPane;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
 import javafx.application.Platform;
-import javafx.embed.swing.JFXPanel;
-import javafx.scene.Scene;
-import javafx.scene.paint.Color;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -59,8 +52,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 900)
-    ,
+    @ActionReference(path = "Menu/Views", position = 900),
     @ActionReference(path = "Shortcuts", name = "CS-P")
 })
 @TopComponent.OpenActionRegistration(
@@ -72,32 +64,16 @@ import org.openide.windows.TopComponent;
     "CTL_PluginReporterTopComponent=Plugin Reporter",
     "HINT_PluginReporterTopComponent=Plugin Reporter"
 })
-public final class PluginReporterTopComponent extends TopComponent implements GraphManagerListener, GraphReportListener {
+public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginReporterPane> implements GraphReportListener {
 
-    private JFXPanel panel = new JFXPanel();
     private PluginReporterPane reporterPane;
 
     public PluginReporterTopComponent() {
         initComponents();
         setName(Bundle.CTL_PluginReporterTopComponent());
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
-
-        setPreferredSize(new Dimension(400, 800));
-
-        setLayout(new BorderLayout());
-        add(panel, BorderLayout.CENTER);
-
-        Platform.setImplicitExit(false);
-        Platform.runLater(() -> {
-            reporterPane = new PluginReporterPane();
-
-            final Scene scene = new Scene(reporterPane, Color.web("#444444"));
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-            scene.getStylesheets().add(PluginReporterTopComponent.class.getResource("resources/plugin-reporter.css").toExternalForm());
-
-            panel.setScene(scene);
-        });
+        reporterPane = new PluginReporterPane();
+        initContent();
     }
 
     /**
@@ -122,41 +98,31 @@ public final class PluginReporterTopComponent extends TopComponent implements Gr
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-    @Override
-    public void componentOpened() {
-        GraphManager.getDefault().addGraphManagerListener(this);
-        GraphReportManager.addGraphReportListener(this);
-        newActiveGraph(GraphManager.getDefault().getActiveGraph());
-    }
 
     @Override
-    public void componentClosed() {
-        newActiveGraph(null);
+    protected void handleComponentOpened() {
+        GraphManager.getDefault().addGraphManagerListener(this);
+        GraphReportManager.addGraphReportListener(this);
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }
+    
+    @Override
+    protected void handleComponentClosed() {
+        handleNewGraph(null);
         GraphReportManager.removeGraphReportListener(this);
         GraphManager.getDefault().removeGraphManagerListener(this);
     }
 
     void writeProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
-
     }
 
     void readProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
     }
-
+    
     @Override
-    public void graphOpened(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
-    }
-
-    @Override
-    public void graphClosed(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
-    }
-
-    @Override
-    public void newActiveGraph(Graph graph) {
+    protected void handleNewGraph(final Graph graph) {
         Platform.runLater(() -> {
             if (graph == null) {
                 reporterPane.setGraphReport(null);
@@ -167,10 +133,20 @@ public final class PluginReporterTopComponent extends TopComponent implements Gr
     }
 
     @Override
-    public void newPluginReport(PluginReport pluginReport) {
+    public void newPluginReport(final PluginReport pluginReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())) {
             reporterPane.addPluginReport(pluginReport);
         }
+    }
+
+    @Override
+    protected String createStyle() {
+        return "resources/plugin-reporter.css";
+    }
+
+    @Override
+    protected PluginReporterPane createContent() {
+        return reporterPane;
     }
 }

@@ -20,14 +20,14 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
-import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.CompositeNodeStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.RawAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.TransactionTypeAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.VertexTypeAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
@@ -293,7 +293,7 @@ public class AnalyticConcept extends SchemaConcept {
                         + "(?:(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // slash path
                         + ")"
                         + "|(?:\\/(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*))?)" // slash path
-//                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
+                        //                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
                         + ")"
                         + "(?:\\?(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?" // query string
                         + "(?:\\#(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?", // fragment
@@ -311,7 +311,7 @@ public class AnalyticConcept extends SchemaConcept {
                         + "(?:(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // slash path
                         + ")"
                         + "|(?:\\/(?:(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*))?)" // slash path
-//                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
+                        //                        + "|(?:[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]+(?:\\/[\\w\\(\\)\\+\\$\\.\\-~!&'*,;=:@%]*)*)" // path - TODO: this component is too general
                         + ")"
                         + "(?:\\?(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?" // query string
                         + "(?:\\#(?:[\\w\\(\\)\\+\\?\\$\\.\\-\\/~!&'*,;=:@%]*))?$", // fragment
