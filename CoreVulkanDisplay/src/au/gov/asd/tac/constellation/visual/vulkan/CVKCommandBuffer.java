@@ -46,7 +46,7 @@ public class CVKCommandBuffer {
 
     public VkCommandBuffer GetVKCommandBuffer(){ return vkCommandBuffer; }
 
-
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {		
         vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), vkCommandBuffer);

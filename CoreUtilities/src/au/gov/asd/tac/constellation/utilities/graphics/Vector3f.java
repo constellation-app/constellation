@@ -124,17 +124,6 @@ public final class Vector3f implements Serializable {
         a[2] = v.a[2];
     }
 
-    public float x() {
-        return a[0];
-    }
-    
-    public float y() {
-        return a[1];
-    }
-    
-    public float z() {
-        return a[2];
-    }
     /**
      * Rotate a given vector, storing the result in this instance.
      *

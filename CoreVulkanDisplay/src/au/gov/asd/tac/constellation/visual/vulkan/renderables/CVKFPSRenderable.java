@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKIconTextureAtlas;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKSwapChain;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
@@ -45,6 +44,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.LoadFileToDirectBuffer;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VerifyInRenderThread;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.checkVKret;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +58,6 @@ import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -102,7 +101,6 @@ import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
 import static org.lwjgl.vulkan.VK10.vkMapMemory;
 import static org.lwjgl.vulkan.VK10.vkUnmapMemory;
 import static org.lwjgl.vulkan.VK10.vkUpdateDescriptorSets;
-import org.lwjgl.vulkan.VkClearValue;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferAllocateInfo;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
@@ -127,7 +125,7 @@ import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
 
-public class CVKFPSRenderable extends CVKTextForegroundRenderable{
+public class CVKFPSRenderable extends CVKRenderable {
     protected static final int MAX_DIGITS = 4;
     protected static final int ICON_BITS = 16;
     protected static final int ICON_MASK = 0xffff;    
@@ -137,16 +135,16 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected static final Matrix44f IDENTITY_44F = Matrix44f.identity();
     protected static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     
-    protected final Vector3f bottomRightCorner = new Vector3f();
-    protected float pyScale = 0;
-    protected float pxScale = 0;
-    
-    
-    protected final CVKScene cvkScene;
     protected static long hVertexShader = VK_NULL_HANDLE;
     protected static long hGeometryShader = VK_NULL_HANDLE;
     protected static long hFragmentShader = VK_NULL_HANDLE;
-    protected static long hDescriptorLayout = VK_NULL_HANDLE;
+    protected static long hDescriptorLayout = VK_NULL_HANDLE;    
+    
+    protected final CVKVisualProcessor parent;
+    protected CVKDevice cvkDevice = null;
+    protected final Vector3f bottomRightCorner = new Vector3f();
+    protected float pyScale = 0;
+    protected float pxScale = 0;         
     protected List<Long> pipelines = null;
     protected List<Long> pipelineLayouts = null;
     protected List<CVKBuffer> vertUniformBuffers = null;
@@ -307,15 +305,15 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     }       
     
     
-    public CVKFPSRenderable(CVKScene inScene) {
-        cvkScene = inScene;
+    public CVKFPSRenderable(CVKVisualProcessor visualProcessor) {
+        parent = visualProcessor;
     }
     
     public int Init() {
         int ret = VK_SUCCESS;
         for (int digit = 0; digit < 10; ++digit) {
             // Returns the index of the icon, not a success code
-            cvkScene.GetTextureAtlas().AddIcon(Integer.toString(digit));
+            parent.GetTextureAtlas().AddIcon(Integer.toString(digit));
         }
         return ret;
     }
@@ -406,7 +404,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         vertUBO.visibilityHigh = 1.0f;
         
         // Get the projection matrix from the scence
-        geomUBO.pMatrix.set(cvkScene.GetProjectionMatrix());
+        geomUBO.pMatrix.set(parent.GetProjectionMatrix());
                 
         
         //TODO_TT: clean these up
@@ -460,7 +458,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         for (int i = 0; i < vertices.length; ++i) {
             int data[] = new int[2];
             
-            final int foregroundIconIndex = cvkScene.GetTextureAtlas().AddIcon(Integer.toString(7-(i*4)));
+            final int foregroundIconIndex = parent.GetTextureAtlas().AddIcon(Integer.toString(7-(i*4)));
             final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
             
             // packed icon indices
@@ -495,7 +493,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;  
     }
     
-    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+    
+    @Override
+    public int InitCommandBuffer(CVKSwapChain cvkSwapChain){
         int ret = VK_SUCCESS;
         
         try (MemoryStack stack = stackPush()) {
@@ -522,7 +522,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     }
     
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
+    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index){
         VerifyInRenderThread();
         assert(cvkDevice.GetDevice() != null);
         assert(cvkDevice.GetCommandPoolHandle() != VK_NULL_HANDLE);           
@@ -609,8 +609,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         // Struct for the size of the image sampler used by SimpleIcon.fs
         VkDescriptorImageInfo.Buffer imageInfo = VkDescriptorImageInfo.callocStack(1, stack);
         imageInfo.imageLayout(VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-        imageInfo.imageView(cvkScene.GetTextureAtlas().GetAtlasImageViewHandle());
-        imageInfo.sampler(cvkScene.GetTextureAtlas().GetAtlasSamplerHandle());            
+        imageInfo.imageView(parent.GetTextureAtlas().GetAtlasImageViewHandle());
+        imageInfo.sampler(parent.GetTextureAtlas().GetAtlasSamplerHandle());            
 
         // We need 3 write descriptors, 2 for uniform buffers (vs + gs) and one for texture (fs)
         VkWriteDescriptorSet.Buffer descriptorWrites = VkWriteDescriptorSet.callocStack(3, stack);
@@ -659,8 +659,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;
     }
 
-    @Override
-    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+
+    public int CreatePipeline(CVKSwapChain cvkSwapChain) {
+        assert(cvkDevice != null);
         assert(cvkDevice.GetDevice() != null);
         assert(cvkSwapChain.GetSwapChainHandle()        != VK_NULL_HANDLE);
         assert(cvkSwapChain.GetRenderPassHandle()       != VK_NULL_HANDLE);
@@ -859,9 +860,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         return ret;
     }
         
-    
-    @Override
-    public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+   
+    public int DestroyPipeline(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             
@@ -871,11 +871,11 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     
     @Override
-    public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
-        int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
+    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+        int ret = DestroyPipeline(cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            InitCommandBuffer(cvkDevice, cvkSwapChain);
+            ret = CreatePipeline(cvkSwapChain);
+            InitCommandBuffer(cvkSwapChain);
         }
         return ret;
     }
@@ -966,7 +966,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     }
     
     @Override
-    public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int imageIndex) {
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int imageIndex) {
         int ret = VK_SUCCESS;
         // TODO Update uniforms that will be used in the next image
                
@@ -985,9 +985,25 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     } 
     
     @Override
-    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+    public int GetVertexCount() {
+        return 2;
+    }
+    
+    @Override
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
         //assert(commandBuffers != null);
         //VkCommandBuffer vkCommandBuffer = commandBuffers.get(frameIndex);
         //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
+    }
+    
+    @Override
+    public int DeviceInitialised(CVKDevice cvkDevice) {
+        this.cvkDevice = cvkDevice;
+        return VK_SUCCESS;
+    }
+    
+    @Override
+    public boolean NeedsCompleteHalt() {
+        return parent.GetTextureAtlas().NeedsCompleteHalt();
     }
 }

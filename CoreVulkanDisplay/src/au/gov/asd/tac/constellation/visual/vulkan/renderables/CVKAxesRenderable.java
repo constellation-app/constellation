@@ -15,12 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKScene;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.SPIRV;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKShaderUtils.ShaderKind.FRAGMENT_SHADER;
@@ -38,14 +35,12 @@ import java.util.logging.Level;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.system.MemoryStack;
 import static org.lwjgl.system.MemoryStack.stackPush;
-import static org.lwjgl.system.MemoryUtil.memAllocPointer;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_A_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_B_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_G_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COLOR_COMPONENT_R_BIT;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_LEVEL_SECONDARY;
 import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-import static org.lwjgl.vulkan.VK10.VK_COMMAND_BUFFER_USAGE_SIMULTANEOUS_USE_BIT;
 import static org.lwjgl.vulkan.VK10.VK_CULL_MODE_BACK_BIT;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
 import static org.lwjgl.vulkan.VK10.VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
@@ -103,6 +98,7 @@ import org.lwjgl.vulkan.VkVertexInputBindingDescription;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector2f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKBuffer;
+import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
 import java.util.ArrayList;
 import java.util.List;
 import static org.lwjgl.vulkan.VK10.VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
@@ -125,8 +121,9 @@ import org.lwjgl.vulkan.VkMemoryAllocateInfo;
 import org.lwjgl.vulkan.VkMemoryRequirements;
 import org.lwjgl.vulkan.VkPhysicalDeviceMemoryProperties;
 
-public class CVKAxesRenderable implements CVKRenderable {
-    protected final CVKScene scene;
+public class CVKAxesRenderable extends CVKRenderable {
+    protected final CVKVisualProcessor parent;
+    protected CVKDevice cvkDevice = null;
     
     // Compiled Shader modules
     protected static long vertShaderModule = VK_NULL_HANDLE;
@@ -156,10 +153,10 @@ public class CVKAxesRenderable implements CVKRenderable {
         private static final int OFFSETOF_POS = 0;
         private static final int OFFSETOF_COLOR = 2 * Float.BYTES;
 
-        private Vector2f pos;
-        private Vector3f color;
+        private final Vector2f pos;
+        private final Vector3f color;
 
-        public Vertex(Vector2f pos, Vector3f color) {
+        public Vertex(final Vector2f pos, final Vector3f color) {
             this.pos = pos;
             this.color = color;
         }
@@ -205,8 +202,8 @@ public class CVKAxesRenderable implements CVKRenderable {
                 new Vertex(new Vector2f(-0.5f, 0.5f), new Vector3f(1.0f, 0.0f, 1.0f))
     };
      
-    public CVKAxesRenderable(CVKScene inScene) {
-        scene = inScene;
+    public CVKAxesRenderable(CVKVisualProcessor visualProcessor) {
+        parent = visualProcessor;
     }
     
     void Cleanup(CVKDevice cvkDevice) {
@@ -224,29 +221,13 @@ public class CVKAxesRenderable implements CVKRenderable {
     }
     
     @Override
-    public long GetGraphicsPipeline(){return graphicsPipeline; }
-    
-    @Override
     public int GetVertexCount(){return VERTICES.length; }
     
-    @Override
-    public int getPriority() { if (true) throw new UnsupportedOperationException(""); else return 0; }
-    @Override
-    public void dispose(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override
-    public void init(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override
-    public void reshape(final int x, final int y, final int width, final int height) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override
-    public void update(final AutoDrawable drawable) { throw new UnsupportedOperationException("Not yet implemented"); }
-    @Override
-    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
-        
-    }
+
     @Override
     public boolean IsDirty(){return isDirty; }
     
-    public int CreatePipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int CreatePipeline(CVKSwapChain cvkSwapChain) {
         // TODO Add param checking
         
         int ret = VK_SUCCESS;
@@ -445,7 +426,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     level: Can be PRIMARY or SECONDAY
     */
     @Override 
-    public int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+    public int InitCommandBuffer(CVKSwapChain cvkSwapChain){
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             int imageCount = cvkSwapChain.GetImageCount();
@@ -474,7 +455,7 @@ public class CVKAxesRenderable implements CVKRenderable {
        
     // Called from Record in the Renderer
     @Override
-    public int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
+    public int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index) {
         VerifyInRenderThread();
         int ret = VK_SUCCESS;
         
@@ -535,7 +516,7 @@ public class CVKAxesRenderable implements CVKRenderable {
         return ret;
     }
        
-    public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+    public int DestroyPipeline(CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
         try (MemoryStack stack = stackPush()) {
             // Destroy the command buffer
@@ -545,11 +526,14 @@ public class CVKAxesRenderable implements CVKRenderable {
     
     
     @Override
-    public int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
-        int ret = DestroyPipeline(cvkDevice, cvkSwapChain);
+    public int SwapChainRecreated(CVKSwapChain cvkSwapChain) {
+        assert(cvkDevice != null);
+        assert(cvkDevice.GetDevice() != null);
+        
+        int ret = DestroyPipeline(cvkSwapChain);
         if (VkSucceeded(ret)) {
-            ret = CreatePipeline(cvkDevice, cvkSwapChain);
-            InitCommandBuffer(cvkDevice, cvkSwapChain);
+            ret = CreatePipeline(cvkSwapChain);
+            InitCommandBuffer(cvkSwapChain);
         }
         return ret;
     }
@@ -572,7 +556,7 @@ public class CVKAxesRenderable implements CVKRenderable {
     }
     
     @Override
-    public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+    public int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex) {
         // UPDATE CODE
         
         return VK_SUCCESS;
@@ -634,20 +618,31 @@ public class CVKAxesRenderable implements CVKRenderable {
     }    
     
     @Override
-    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex) {
+    public void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex) {
         //assert(commandBuffer != null);
         //VkCommandBuffer vkCommandBuffer = commandBuffer;
         //cvkRenderer.ExecuteCommandBuffer(stack, frame, vkCommandBuffer);
     }
     
+    @Override
+    public boolean NeedsCompleteHalt() {
+        return false;
+    }
+    
+    @Override
+    public int DeviceInitialised(CVKDevice cvkDevice) {
+        this.cvkDevice = cvkDevice;
+        return VK_SUCCESS;
+    }    
+    
      private void memcpy(ByteBuffer buffer, Vertex[] vertices) {
         for(Vertex vertex : vertices) {
-            buffer.putFloat(vertex.pos.x());
-            buffer.putFloat(vertex.pos.y());
+            buffer.putFloat(vertex.pos.getX());
+            buffer.putFloat(vertex.pos.getY());
 
-            buffer.putFloat(vertex.color.x());
-            buffer.putFloat(vertex.color.y());
-            buffer.putFloat(vertex.color.z());
+            buffer.putFloat(vertex.color.getX());
+            buffer.putFloat(vertex.color.getY());
+            buffer.putFloat(vertex.color.getZ());
         }
     }
 

@@ -149,6 +149,7 @@ public class DualGraph implements Graph, Serializable {
         MemoryManager.newObject(DualGraph.class);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         try {

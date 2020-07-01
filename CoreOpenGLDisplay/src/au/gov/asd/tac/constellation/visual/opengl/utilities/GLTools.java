@@ -20,9 +20,13 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GL;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_GLContext;
-import au.gov.asd.tac.constellation.visual.opengl.renderer.STUB_Texture;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.util.texture.Texture;
+import com.jogamp.opengl.util.texture.TextureData;
+import com.jogamp.opengl.util.texture.TextureIO;
+import com.jogamp.opengl.util.texture.awt.AWTTextureIO;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,7 +41,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.Utilities; //pulled in by Windows-DPI-Scaling
-
 
 /**
  * Tools for OpenGL and JOGL.
@@ -71,10 +74,9 @@ public final class GLTools {
      * @param version An int[2] to receive the version: version[0] contains
      * GL_MAJOR_VERSION, version[1] contains GL_MINOR_VERSION.
      */
-    public static void getOpenGLVersion(/*final GL30 gl, */int[] version) {
-        // TODO_TT: this whole func
-//        gl.glGetIntegerv(GL30.GL_MAJOR_VERSION, version, 0);
-//        gl.glGetIntegerv(GL30.GL_MINOR_VERSION, version, 1);
+    public static void getOpenGLVersion(final GL3 gl, int[] version) {
+        gl.glGetIntegerv(GL3.GL_MAJOR_VERSION, version, 0);
+        gl.glGetIntegerv(GL3.GL_MINOR_VERSION, version, 1);
     }
 
     /**
@@ -129,146 +131,139 @@ public final class GLTools {
         return buf.toString();
     }
 
-    public static void loadShaderSource(/*final GL30 gl, */final String shaderSrc, final int shader) {
+    public static void loadShaderSource(final GL3 gl, final String shaderSrc, final int shader) {
         final String[] shaderParam = {shaderSrc};
 
-        // TODO_TT:
-//        gl.glShaderSource(shader, 1, shaderParam, null, 0);
+        gl.glShaderSource(shader, 1, shaderParam, null, 0);
     }
 
-    public static String getShaderLog(/*final GL30 gl, */final int shader) {
+    public static String getShaderLog(final GL3 gl, final int shader) {
         final int[] maxLength = new int[1];
-        // TODO_TT:
-//        gl.glGetShaderiv(shader, GL30.GL_INFO_LOG_LENGTH, maxLength, 0);
+        gl.glGetShaderiv(shader, GL3.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
             return "";
         }
 
         final byte[] buf = new byte[maxLength[0]];
         final int[] length = new int[1];
-        // TODO_TT:
-//        gl.glGetShaderInfoLog(shader, maxLength[0], length, 0, buf, 0);
+        gl.glGetShaderInfoLog(shader, maxLength[0], length, 0, buf, 0);
         final String log = new String(buf);
 
         return log.trim();
     }
 
-    public static String getProgramLog(/*final GL30 gl, */final int shader) {
+    public static String getProgramLog(final GL3 gl, final int shader) {
         final int[] maxLength = new int[1];
-        // TODO_TT:
-//        gl.glGetProgramiv(shader, GL30.GL_INFO_LOG_LENGTH, maxLength, 0);
+        gl.glGetProgramiv(shader, GL3.GL_INFO_LOG_LENGTH, maxLength, 0);
         if (maxLength[0] == 0) {
             return "";
         }
 
         final byte[] buf = new byte[maxLength[0]];
         final int[] length = new int[1];
-        // TODO_TT:
-//        gl.glGetProgramInfoLog(shader, maxLength[0], length, 0, buf, 0);
+        gl.glGetProgramInfoLog(shader, maxLength[0], length, 0, buf, 0);
         final String log = new String(buf);
 
         return log.trim();
     }
 
-    public static int loadShaderSourceWithAttributes(/*final GL30 gl, */final String label, final String vertexSrc, final String geometrySrc, final String fragmentSrc, final Object... args) {
-        // TODO_TT: this whole func
-        int progid = -1;
+    public static int loadShaderSourceWithAttributes(final GL3 gl, final String label, final String vertexSrc, final String geometrySrc, final String fragmentSrc, final Object... args) {
         // Temporary shader objects.
-//        final int vertexShader = gl.glCreateShader(GL30.GL_VERTEX_SHADER);
-//        final int fragmentShader = gl.glCreateShader(GL30.GL_FRAGMENT_SHADER);
-//        final int geometryShader = geometrySrc != null ? gl.glCreateShader(GL30.GL_GEOMETRY_SHADER) : -1;
-//
-//        final int[] testVal = new int[1];
-//
-//        // Load the shaders.
-//        loadShaderSource(gl, vertexSrc, vertexShader);
-//        LOGGER.log(Level.FINE, "VERTEXSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, vertexShader)});
-//        loadShaderSource(gl, fragmentSrc, fragmentShader);
-//        LOGGER.log(Level.FINE, "FRAGMENTSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, fragmentShader)});
-//        if (geometryShader != -1) {
-//            loadShaderSource(gl, geometrySrc, geometryShader);
-//            LOGGER.log(Level.FINE, "GEOMETRYSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, geometryShader)});
-//        }
-//
-//        // Compile the shaders.
-//        gl.glCompileShader(vertexShader);
-//        gl.glCompileShader(fragmentShader);
-//        if (geometryShader != -1) {
-//            gl.glCompileShader(geometryShader);
-//        }
-//
-//        // Check for compile errors.
-//        gl.glGetShaderiv(vertexShader, GL30.GL_COMPILE_STATUS, testVal, 0);
-//        if (testVal[0] == GL30.GL_FALSE) {
-//            final String log = getShaderLog(gl, vertexShader);
-//            gl.glDeleteShader(vertexShader);
-//            gl.glDeleteShader(fragmentShader);
-//            if (geometryShader != -1) {
-//                gl.glDeleteShader(geometryShader);
-//            }
-//            throw new RenderException(String.format("Invalid vertex shader '%s':%n%n%s", label, log));
-//        }
-//
-//        gl.glGetShaderiv(fragmentShader, GL30.GL_COMPILE_STATUS, testVal, 0);
-//        if (testVal[0] == GL30.GL_FALSE) {
-//            final String log = getShaderLog(gl, fragmentShader);
-//            gl.glDeleteShader(vertexShader);
-//            gl.glDeleteShader(fragmentShader);
-//            if (geometryShader != -1) {
-//                gl.glDeleteShader(geometryShader);
-//            }
-//            throw new RenderException(String.format("Invalid fragment shader '%s':%n%n%s", label, log));
-//        }
-//
-//        if (geometryShader != -1) {
-//            gl.glGetShaderiv(geometryShader, GL30.GL_COMPILE_STATUS, testVal, 0);
-//            if (testVal[0] == GL30.GL_FALSE) {
-//                final String log = getShaderLog(gl, geometryShader);
-//                gl.glDeleteShader(vertexShader);
-//                gl.glDeleteShader(fragmentShader);
-//                gl.glDeleteShader(geometryShader);
-//                throw new RenderException(String.format("Invalid geometry shader '%s':%n%n%s", label, log));
-//            }
-//        }
-//
-//        // Link.
-//        final int progid = gl.glCreateProgram();
-//        gl.glAttachShader(progid, vertexShader);
-//        gl.glAttachShader(progid, fragmentShader);
-//        if (geometryShader != -1) {
-//            gl.glAttachShader(progid, geometryShader);
-//        }
-//
-//        // Bind attributes from the args.
-//        for (int i = 0; i < args.length;) {
-//            final int index = (Integer) args[i++];
-//            final String arg = (String) args[i++];
-//            if (index >= ShaderManager.FRAG_BASE) {
-//                final int fragDataLocation = index - ShaderManager.FRAG_BASE;
-//                gl.glBindFragDataLocation(progid, fragDataLocation, arg);
-//            } else {
-//                gl.glBindAttribLocation(progid, index, arg);
-//            }
-//        }
-//
-//        gl.glLinkProgram(progid);
-//
-//        // These are no longer needed.
-//        gl.glDeleteShader(vertexShader);
-//        gl.glDeleteShader(fragmentShader);
-//        if (geometryShader != -1) {
-//            gl.glDeleteShader(geometryShader);
-//        }
-//
-//        // Check for link errors.
-//        gl.glGetProgramiv(progid, GL30.GL_LINK_STATUS, testVal, 0);
-//        if (testVal[0] == GL30.GL_FALSE) {
-//            final String log = getProgramLog(gl, progid);
-//            gl.glDeleteProgram(progid);
-//            throw new RenderException(String.format("Invalid program link '%s':%n%n%s", label, log));
-//        }
-//
-//        LOGGER.log(Level.FINE, "PROGRAMLOG::{0}::{1}", new Object[]{label, getProgramLog(gl, progid)});
+        final int vertexShader = gl.glCreateShader(GL3.GL_VERTEX_SHADER);
+        final int fragmentShader = gl.glCreateShader(GL3.GL_FRAGMENT_SHADER);
+        final int geometryShader = geometrySrc != null ? gl.glCreateShader(GL3.GL_GEOMETRY_SHADER) : -1;
+
+        final int[] testVal = new int[1];
+
+        // Load the shaders.
+        loadShaderSource(gl, vertexSrc, vertexShader);
+        LOGGER.log(Level.FINE, "VERTEXSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, vertexShader)});
+        loadShaderSource(gl, fragmentSrc, fragmentShader);
+        LOGGER.log(Level.FINE, "FRAGMENTSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, fragmentShader)});
+        if (geometryShader != -1) {
+            loadShaderSource(gl, geometrySrc, geometryShader);
+            LOGGER.log(Level.FINE, "GEOMETRYSHADERLOG::{0}::{1}", new Object[]{label, getShaderLog(gl, geometryShader)});
+        }
+
+        // Compile the shaders.
+        gl.glCompileShader(vertexShader);
+        gl.glCompileShader(fragmentShader);
+        if (geometryShader != -1) {
+            gl.glCompileShader(geometryShader);
+        }
+
+        // Check for compile errors.
+        gl.glGetShaderiv(vertexShader, GL3.GL_COMPILE_STATUS, testVal, 0);
+        if (testVal[0] == GL3.GL_FALSE) {
+            final String log = getShaderLog(gl, vertexShader);
+            gl.glDeleteShader(vertexShader);
+            gl.glDeleteShader(fragmentShader);
+            if (geometryShader != -1) {
+                gl.glDeleteShader(geometryShader);
+            }
+            throw new RenderException(String.format("Invalid vertex shader '%s':%n%n%s", label, log));
+        }
+
+        gl.glGetShaderiv(fragmentShader, GL3.GL_COMPILE_STATUS, testVal, 0);
+        if (testVal[0] == GL3.GL_FALSE) {
+            final String log = getShaderLog(gl, fragmentShader);
+            gl.glDeleteShader(vertexShader);
+            gl.glDeleteShader(fragmentShader);
+            if (geometryShader != -1) {
+                gl.glDeleteShader(geometryShader);
+            }
+            throw new RenderException(String.format("Invalid fragment shader '%s':%n%n%s", label, log));
+        }
+
+        if (geometryShader != -1) {
+            gl.glGetShaderiv(geometryShader, GL3.GL_COMPILE_STATUS, testVal, 0);
+            if (testVal[0] == GL3.GL_FALSE) {
+                final String log = getShaderLog(gl, geometryShader);
+                gl.glDeleteShader(vertexShader);
+                gl.glDeleteShader(fragmentShader);
+                gl.glDeleteShader(geometryShader);
+                throw new RenderException(String.format("Invalid geometry shader '%s':%n%n%s", label, log));
+            }
+        }
+
+        // Link.
+        final int progid = gl.glCreateProgram();
+        gl.glAttachShader(progid, vertexShader);
+        gl.glAttachShader(progid, fragmentShader);
+        if (geometryShader != -1) {
+            gl.glAttachShader(progid, geometryShader);
+        }
+
+        // Bind attributes from the args.
+        for (int i = 0; i < args.length;) {
+            final int index = (Integer) args[i++];
+            final String arg = (String) args[i++];
+            if (index >= ShaderManager.FRAG_BASE) {
+                final int fragDataLocation = index - ShaderManager.FRAG_BASE;
+                gl.glBindFragDataLocation(progid, fragDataLocation, arg);
+            } else {
+                gl.glBindAttribLocation(progid, index, arg);
+            }
+        }
+
+        gl.glLinkProgram(progid);
+
+        // These are no longer needed.
+        gl.glDeleteShader(vertexShader);
+        gl.glDeleteShader(fragmentShader);
+        if (geometryShader != -1) {
+            gl.glDeleteShader(geometryShader);
+        }
+
+        // Check for link errors.
+        gl.glGetProgramiv(progid, GL3.GL_LINK_STATUS, testVal, 0);
+        if (testVal[0] == GL3.GL_FALSE) {
+            final String log = getProgramLog(gl, progid);
+            gl.glDeleteProgram(progid);
+            throw new RenderException(String.format("Invalid program link '%s':%n%n%s", label, log));
+        }
+
+        LOGGER.log(Level.FINE, "PROGRAMLOG::{0}::{1}", new Object[]{label, getProgramLog(gl, progid)});
 
         return progid;
     }
@@ -282,7 +277,7 @@ public final class GLTools {
      * @param iSlices the number of slices in the sphere.
      * @param iStacks the number of stacks in the sphere.
      */
-    public static void makeSphere(/*final GL30 gl, */final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
+    public static void makeSphere(final GL3 gl, final TriangleBatch sphereBatch, final float fRadius, final int iSlices, final int iStacks) {
         float drho = (float) Math.PI / (float) iStacks;
         float dtheta = 2.0f * (float) Math.PI / (float) iSlices;
         float ds = 1.0f / (float) iSlices;
@@ -384,7 +379,7 @@ public final class GLTools {
 
             t -= dt;
         }
-//        sphereBatch.end(gl);
+        sphereBatch.end(gl);
     }
 
     /**
@@ -397,7 +392,7 @@ public final class GLTools {
      * @param numMajor the number of slices around the major radius.
      * @param numMinor the number of slices around the minor radius.
      */
-    public static void makeTorus(/*final GL30 gl, */final TriangleBatch torusBatch, final float majorRadius, final float minorRadius, final int numMajor, final int numMinor) {
+    public static void makeTorus(final GL3 gl, final TriangleBatch torusBatch, final float majorRadius, final float minorRadius, final int numMajor, final int numMinor) {
         final double majorStep = 2.0f * Math.PI / numMajor;
         final double minorStep = 2.0f * Math.PI / numMinor;
 
@@ -484,23 +479,21 @@ public final class GLTools {
                 torusBatch.addTriangle(vVertex, vNormal, vTexture);
             }
         }
-        //torusBatch.end(gl);
+        torusBatch.end(gl);
     }
 
     // Load a TGA as a 2D Texture. Completely initialize the state
-    public static STUB_Texture loadTexture(/*final GL30 gl, */final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
+    public static Texture loadTexture(final GL3 gl, final InputStream in, final String ext, final int minFilter, final int magFilter, final int wrapMode) throws IOException {
         // NVS-415: Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
 //         final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, ext);
-        // TODO_TT:
-        STUB_Texture tex = null;
-//        final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
-//        final Texture tex = TextureIO.newTexture(data);
+        final TextureData data = TextureIO.newTextureData(gl.getGLProfile(), in, false, null);
+        final Texture tex = TextureIO.newTexture(data);
 
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_WRAP_T, wrapMode);
-//
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_S, wrapMode);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_WRAP_T, wrapMode);
+
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MIN_FILTER, minFilter);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D, GL3.GL_TEXTURE_MAG_FILTER, magFilter);
 
         return tex;
     }
@@ -526,40 +519,38 @@ public final class GLTools {
      * @param magFilter Texture selection with TEXTURE_MAG_FILTER.
      * @param wrapMode texture wrap mode with TEXTURE_WRAP_S and TEXTURE_WRAP_T.
      */
-    public static void loadTextures(/*final GL30 gl, */final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
-//        GL30.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName);
-//
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, wrapMode);
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, wrapMode);
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, minFilter);
-//        GL30.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, magFilter);
+    public static void loadTextures(final GL3 gl, final int textureName, final List<BufferedImage> images, final int maxWidth, final int maxHeight, final int minFilter, final int magFilter, final int wrapMode) {
+        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName);
+
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, wrapMode);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, wrapMode);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MIN_FILTER, minFilter);
+        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MAG_FILTER, magFilter);
 
         // Call glTexImage3D() to create the buffer here: we've assumed the internalformat and format.
-        // TODO_TT:
-        //gl.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, STUB_GL.GL_RGBA, maxWidth, maxHeight, images.size(), 0, STUB_GL.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
+        gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, maxWidth, maxHeight, images.size(), 0, GL.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
 
-        // TODO_TT:
-//        int i = 0;
-//        for (BufferedImage image : images) {
-//            try {
-//                final TextureData data = AWTTextureIO.newTextureData(gl.getGLProfile(), image, false);
-//
-//                if (data.getWidth() > maxWidth || data.getHeight() > maxHeight) {
-//                    throw new RenderException(String.format("Image %d is too large", i));
-//                }
-//
-//                // Images are always placed at 0,0.
-//                final int xoffset = 0;
-//                final int yoffset = 0;
-//                final int zoffset = i;
-//                gl.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL30.GL_UNSIGNED_BYTE, data.getBuffer());
-//                data.destroy();
-//            } catch (final RuntimeException ex) {
-//                LOGGER.log(Level.SEVERE, null, ex);
-//            }
-//
-//            i++;
-//        }
+        int i = 0;
+        for (BufferedImage image : images) {
+            try {
+                final TextureData data = AWTTextureIO.newTextureData(gl.getGLProfile(), image, false);
+
+                if (data.getWidth() > maxWidth || data.getHeight() > maxHeight) {
+                    throw new RenderException(String.format("Image %d is too large", i));
+                }
+
+                // Images are always placed at 0,0.
+                final int xoffset = 0;
+                final int yoffset = 0;
+                final int zoffset = i;
+                gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
+                data.destroy();
+            } catch (final RuntimeException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+
+            i++;
+        }
     }
 
     /**
@@ -591,70 +582,68 @@ public final class GLTools {
      *
      * @return the id of the texture buffer.
      */
-    public static int loadSharedIconTextures(/*final GL30 glCurrent, */final List<ConstellationIcon> icons, final int width, final int height) {
-        return -1;
-                // TODO_TT: this whole func
-//        final int[] v = new int[1];
-//        glCurrent.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
-//        final int maxIcons = v[0] * 64;
-//        if (icons.size() > maxIcons) {
-//            System.out.printf("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
-//        }
-//
-//        final int nIcons = Math.min(icons.size(), maxIcons);
-//
-//        glCurrent.getContext().release();
-//        final GL30 gl = (GL30) SharedDrawable.getSharedAutoDrawable().getGL();
-//        final int result = gl.getContext().makeCurrent();
-//        if (result == STUB_GLContext.CONTEXT_NOT_CURRENT) {
-//            glCurrent.getContext().makeCurrent();
-//            throw new RenderException("Could not make texture context current.");
-//        }
-//
-//        final int[] textureName = new int[1];
-//        try {
-//            textureName[0] = SharedDrawable.getIconTextureName();
-//            gl.glBindTexture(GL30.GL_TEXTURE_2D_ARRAY, textureName[0]);
-//            gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_S, GL30.GL_CLAMP_TO_EDGE);
-//            gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_WRAP_T, GL30.GL_CLAMP_TO_EDGE);
-//            gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MIN_FILTER, GL30.GL_LINEAR);
-//            gl.glTexParameteri(GL30.GL_TEXTURE_2D_ARRAY, GL30.GL_TEXTURE_MAG_FILTER, GL30.GL_LINEAR);
-//            gl.glTexImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, width * 8, height * 8, (nIcons + 63) / 64, 0, GL.GL_RGBA, GL30.GL_UNSIGNED_BYTE, null);
-//
-//            final Iterator<ConstellationIcon> iconIterator = icons.iterator();
-//            for (int i = 0; i < nIcons; i++) {
-//                final ConstellationIcon icon = iconIterator.next();
-//                try {
-//                    BufferedImage iconImage = icon.buildBufferedImage();
-//
-//                    if (iconImage != null) {
-//                        // Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
-//                        final TextureData data = AWTTextureIO.newTextureData(gl.getGLProfile(), iconImage, false);
-//
-//                        if (data.getWidth() > width || data.getHeight() > height) {
-//                            throw new RenderException(String.format("Image %d is too large (width %d>%d, height %d>%d)", i, data.getWidth(), width, data.getHeight(), height));
-//                        }
-//
-//                        // Offset each icon into an 8x8 matrix.
-//                        // There are multiple icons in each
-//                        // Allow for icons that are smaller than width,height.
-//                        final int xoffset = (width - data.getWidth()) / 2 + (width * (i & 7));
-//                        final int yoffset = (height - data.getHeight()) / 2 + (height * ((i >>> 3) & 7));
-//                        final int zoffset = i >>> 6;
-//                        gl.glTexSubImage3D(GL30.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL30.GL_UNSIGNED_BYTE, data.getBuffer());
-//                        data.destroy();
-//                    }
-//                } catch (final RuntimeException ex) {
-//                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
-//                    LOGGER.log(Level.SEVERE, null, ex);
-//                }
-//            }
-//        } finally {
-//            gl.getContext().release();
-//            glCurrent.getContext().makeCurrent();
-//        }
+    public static int loadSharedIconTextures(final GL3 glCurrent, final List<ConstellationIcon> icons, final int width, final int height) {
+        final int[] v = new int[1];
+        glCurrent.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        final int maxIcons = v[0] * 64;
+        if (icons.size() > maxIcons) {
+            System.out.printf("****\n**** Warning: nIcons %d > GL_MAX_ARRAY_TEXTURE_LAYERS %d\n****\n", icons.size(), maxIcons);
+        }
 
-//        return textureName[0];
+        final int nIcons = Math.min(icons.size(), maxIcons);
+
+        glCurrent.getContext().release();
+        final GL3 gl = (GL3) SharedDrawable.getSharedAutoDrawable().getGL();
+        final int result = gl.getContext().makeCurrent();
+        if (result == GLContext.CONTEXT_NOT_CURRENT) {
+            glCurrent.getContext().makeCurrent();
+            throw new RenderException("Could not make texture context current.");
+        }
+
+        final int[] textureName = new int[1];
+        try {
+            textureName[0] = SharedDrawable.getIconTextureName();
+            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName[0]);
+            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
+            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
+            gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+            gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, GL.GL_RGBA, width * 8, height * 8, (nIcons + 63) / 64, 0, GL.GL_RGBA, GL3.GL_UNSIGNED_BYTE, null);
+
+            final Iterator<ConstellationIcon> iconIterator = icons.iterator();
+            for (int i = 0; i < nIcons; i++) {
+                final ConstellationIcon icon = iconIterator.next();
+                try {
+                    BufferedImage iconImage = icon.buildBufferedImage();
+
+                    if (iconImage != null) {
+                        // Appears to be a bug in JOGL where texture provider for PNG files does not flip the texture.
+                        final TextureData data = AWTTextureIO.newTextureData(gl.getGLProfile(), iconImage, false);
+
+                        if (data.getWidth() > width || data.getHeight() > height) {
+                            throw new RenderException(String.format("Image %d is too large (width %d>%d, height %d>%d)", i, data.getWidth(), width, data.getHeight(), height));
+                        }
+
+                        // Offset each icon into an 8x8 matrix.
+                        // There are multiple icons in each
+                        // Allow for icons that are smaller than width,height.
+                        final int xoffset = (width - data.getWidth()) / 2 + (width * (i & 7));
+                        final int yoffset = (height - data.getHeight()) / 2 + (height * ((i >>> 3) & 7));
+                        final int zoffset = i >>> 6;
+                        gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, xoffset, yoffset, zoffset, data.getWidth(), data.getHeight(), 1, data.getPixelFormat(), GL3.GL_UNSIGNED_BYTE, data.getBuffer());
+                        data.destroy();
+                    }
+                } catch (final RuntimeException ex) {
+                    System.out.printf("##%n## GLTools.loadTextures() icon %d throwable: %s%n##%n", i, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
+                }
+            }
+        } finally {
+            gl.getContext().release();
+            glCurrent.getContext().makeCurrent();
+        }
+
+        return textureName[0];
     }
 
     // These icons must be permanently present at these pre-defined indexes.
@@ -783,7 +772,7 @@ public final class GLTools {
      *
      * @return the id of the texture buffer.
      */
-    public static int loadSharedIconTextures(/*final GL30 glCurrent, */final int width, final int height) {
+    public static int loadSharedIconTextures(final GL3 glCurrent, final int width, final int height) {
         // Do we have new icons to be loaded?
         // If so, reload the lot.
         if (LOADED_ICON_HELPER.requiresReload) {
@@ -807,13 +796,12 @@ public final class GLTools {
 
             LOADED_ICON_HELPER.requiresReload = false;
 
-//            final long t0 = System.currentTimeMillis();
-//            final int iconTextureArray = loadSharedIconTextures(glCurrent, iconList, width, height);
-//            final long t1 = System.currentTimeMillis();
-//            LOGGER.log(Level.FINE, "Time to load icon textures: {0} msec\n", (t1 - t0));
-//
-//            return iconTextureArray;
-return 0;
+            final long t0 = System.currentTimeMillis();
+            final int iconTextureArray = loadSharedIconTextures(glCurrent, iconList, width, height);
+            final long t1 = System.currentTimeMillis();
+            LOGGER.log(Level.FINE, "Time to load icon textures: {0} msec\n", (t1 - t0));
+
+            return iconTextureArray;
         }
 
         return SharedDrawable.getIconTextureName();
@@ -828,35 +816,35 @@ return 0;
      * @param gl the current OpenGL context.
      * @param msg the message that will be printed out if an error has occurred.
      */
-    public static void checkError(/*final GL30 gl, */final String msg) {
-//        while (true) {
-//            final int err = GL30.glGetError();
-//            if (err == GL30.GL_NO_ERROR || msg == null) {
-//                return;
-//            }
-//            String errtext;
-//            switch (err) {
-//                case GL30.GL_INVALID_ENUM:
-//                    errtext = "invalid enum";
-//                    break;
-//                case GL30.GL_INVALID_VALUE:
-//                    errtext = "invalid value";
-//                    break;
-//                case GL30.GL_INVALID_OPERATION:
-//                    errtext = "invalid operation";
-//                    break;
-//                case GL30.GL_OUT_OF_MEMORY:
-//                    errtext = "out of memory";
-//                    break;
-//                case GL30.GL_INVALID_FRAMEBUFFER_OPERATION:
-//                    errtext = "invalid framebuffer operation";
-//                    break;
-//                default:
-//                    errtext = Integer.toString(err);
-//                    break;
-//            }
-//            LOGGER.log(Level.SEVERE, "OpenGL error {0}: {1} ({2})", new Object[]{msg, errtext, err});
-//        }
+    public static void checkError(final GL3 gl, final String msg) {
+        while (true) {
+            final int err = gl.glGetError();
+            if (err == GL3.GL_NO_ERROR || msg == null) {
+                return;
+            }
+            String errtext;
+            switch (err) {
+                case GL3.GL_INVALID_ENUM:
+                    errtext = "invalid enum";
+                    break;
+                case GL3.GL_INVALID_VALUE:
+                    errtext = "invalid value";
+                    break;
+                case GL3.GL_INVALID_OPERATION:
+                    errtext = "invalid operation";
+                    break;
+                case GL3.GL_OUT_OF_MEMORY:
+                    errtext = "out of memory";
+                    break;
+                case GL3.GL_INVALID_FRAMEBUFFER_OPERATION:
+                    errtext = "invalid framebuffer operation";
+                    break;
+                default:
+                    errtext = Integer.toString(err);
+                    break;
+            }
+            LOGGER.log(Level.SEVERE, "OpenGL error {0}: {1} ({2})", new Object[]{msg, errtext, err});
+        }
     }
 
     /**
@@ -868,19 +856,19 @@ return 0;
      * @param msg msg the message that will be printed out if an error has
      * occurred.
      */
-    public static void checkFramebufferStatus(/*final GL30 gl, */final String msg) {
-//        int fboStatus = GL30.glCheckFramebufferStatus(GL30.GL_DRAW_FRAMEBUFFER);
-//        if (fboStatus == GL30.GL_FRAMEBUFFER_COMPLETE) {
-//            return;
-//        }
-//
-//        String errtext = "";
-//        if (fboStatus == GL30.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-//            errtext = "framebuffer incomplete missing attachment";
-//        } else if (fboStatus == GL30.GL_FRAMEBUFFER_UNSUPPORTED) {
-//            errtext = "framebuffer unsupported";
-//        }
-//        LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
+    public static void checkFramebufferStatus(final GL3 gl, final String msg) {
+        int fboStatus = gl.glCheckFramebufferStatus(GL3.GL_DRAW_FRAMEBUFFER);
+        if (fboStatus == GL3.GL_FRAMEBUFFER_COMPLETE) {
+            return;
+        }
+
+        String errtext = "";
+        if (fboStatus == GL3.GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
+            errtext = "framebuffer incomplete missing attachment";
+        } else if (fboStatus == GL3.GL_FRAMEBUFFER_UNSUPPORTED) {
+            errtext = "framebuffer unsupported";
+        }
+        LOGGER.log(Level.SEVERE, "**** Framebuffer error %{0}: %{1} ({2})", new Object[]{msg, errtext, fboStatus});
     }
 
     /**

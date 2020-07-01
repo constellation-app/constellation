@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -26,27 +28,25 @@ import java.nio.FloatBuffer;
  */
 public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
 
-    public FloatTextureBuffer(/*final GL30 gl, */final FloatBuffer buffer) {
-        super(/*gl, */buffer);
+    public FloatTextureBuffer(final GL3 gl, final FloatBuffer buffer) {
+        super(gl, buffer);
     }
 
     @Override
     protected int sizeOfType() {
-        return Float.BYTES;
+        return Buffers.SIZEOF_FLOAT;
     }
 
     @Override
     protected int internalFormat() {
-        return 0;//return GL30.GL_RGBA32F;
+        return GL3.GL_RGBA32F;
     }
 
     @Override
-    public FloatBuffer connectBuffer(/*GL30 gl*/) {
-        // TODO_TT:
-        return null;
-//        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, getBufferName());
-//        ByteBuffer buffer = gl.glMapBuffer(GL30.GL_TEXTURE_BUFFER, GL30.GL_READ_WRITE);
-//        return buffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
+    public FloatBuffer connectBuffer(GL3 gl) {
+        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, getBufferName());
+        ByteBuffer buffer = gl.glMapBuffer(GL3.GL_TEXTURE_BUFFER, GL3.GL_READ_WRITE);
+        return buffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }
 
 }

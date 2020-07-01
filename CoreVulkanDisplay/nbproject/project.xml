@@ -22,18 +22,11 @@
                         <specification-version>1.0</specification-version>
                     </run-dependency>
                 </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
             </module-dependencies>
             <public-packages>
                 <package>au.gov.asd.tac.constellation.visual.vulkan</package>
                 <package>au.gov.asd.tac.constellation.visual.vulkan.maths</package>
+                <package>au.gov.asd.tac.constellation.visual.vulkan.renderables</package>
             </public-packages>
         </data>
     </configuration>

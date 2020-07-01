@@ -15,17 +15,26 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
+import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_COLOR;
+import static au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineRenderable.NEW_LINE_WIDTH;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Encapsulates the JOGL code required to draw a new line over the main scene
@@ -51,7 +60,7 @@ public class NewLineRenderable implements GLRenderable {
     // The batch of OpenGL primitives representing the new line
     private final Batch batch;
 
-    private final CVKVisualProcessor parent;
+    private final GLVisualProcessor parent;
 
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final int NUMBER_OF_VERTICES = 2;
@@ -63,11 +72,9 @@ public class NewLineRenderable implements GLRenderable {
 
     private final BlockingDeque<NewLineModel> modelQueue = new LinkedBlockingDeque<>();
 
-    public NewLineRenderable(final CVKVisualProcessor parent) {        
+    public NewLineRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        // TODO_TT:
-        batch = new Batch(-1);
-//        batch = new Batch(GL30.GL_LINES);
+        batch = new Batch(GL3.GL_LINES);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = batch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -83,37 +90,37 @@ public class NewLineRenderable implements GLRenderable {
      * @param drawable The OpenGL rendering target
      */
     @Override
-    public void init(final AutoDrawable drawable) {
-//        final GL30 gl = drawable.getGL().getGL3();
-//
-//        String newLineVp = null;
-//        String newLineGp = null;
-//        String newLineFp = null;
-//
-//        try {
-//            newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
-//            newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
-//            newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-//        } catch (IOException ex) {
-//            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//
-//        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,
-//                vertexTarget, "vertex",
-//                colorTarget, "color",
-//                ShaderManager.FRAG_BASE, "fragColor");
-//
-//        shaderMVP = gl.glGetUniformLocation(shader, "mvpMatrix");
-//
-//        // The batch we create here has dummy values for vertices.
-//        // They'll be updated later when the user drags a line.
-//        batch.initialise(NUMBER_OF_VERTICES);
-//        batch.stage(colorTarget, NEW_LINE_COLOR);
-//        batch.stage(vertexTarget, ZERO_3F);
-//        batch.stage(colorTarget, NEW_LINE_COLOR);
-//        batch.stage(vertexTarget, ZERO_3F);
-//
-//        batch.finalise(gl);
+    public void init(final GLAutoDrawable drawable) {
+        final GL3 gl = drawable.getGL().getGL3();
+
+        String newLineVp = null;
+        String newLineGp = null;
+        String newLineFp = null;
+
+        try {
+            newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
+            newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
+            newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
+        } catch (IOException ex) {
+            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,
+                vertexTarget, "vertex",
+                colorTarget, "color",
+                ShaderManager.FRAG_BASE, "fragColor");
+
+        shaderMVP = gl.glGetUniformLocation(shader, "mvpMatrix");
+
+        // The batch we create here has dummy values for vertices.
+        // They'll be updated later when the user drags a line.
+        batch.initialise(NUMBER_OF_VERTICES);
+        batch.stage(colorTarget, NEW_LINE_COLOR);
+        batch.stage(vertexTarget, ZERO_3F);
+        batch.stage(colorTarget, NEW_LINE_COLOR);
+        batch.stage(vertexTarget, ZERO_3F);
+
+        batch.finalise(gl);
     }
 
     private NewLineModel model;
@@ -123,7 +130,7 @@ public class NewLineRenderable implements GLRenderable {
     }
 
     @Override
-    public void update(final AutoDrawable drawable) {
+    public void update(final GLAutoDrawable drawable) {
         final Camera camera = parent.getDisplayCamera();
         NewLineModel updatedModel = modelQueue.peek();
         while (updatedModel != null && updatedModel.getCamera() != camera) {
@@ -149,48 +156,48 @@ public class NewLineRenderable implements GLRenderable {
      * @param pMatrix The model view projection matrix.
      */
     @Override
-    public void display(final AutoDrawable drawable, final Matrix44f pMatrix) {
-        // TODO_TT: this whole func
-//        final Matrix44f mvpMatrix = parent.getDisplayModelViewProjectionMatrix();
-//
-//        // If no endpoints are set, don't draw anything
-//        if (model != null && !model.isClear()) {
-//            final Vector3f startPosition = model.getStartLocation();
-//            final Vector3f endPosition = model.getEndLocation();
-//
-//            final GL30 gl = drawable.getGL().getGL3();
-//
-//            gl.glBindBuffer(GL30.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
-//            ByteBuffer bbuf = gl.glMapBuffer(GL30.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
-//            FloatBuffer fbuf = bbuf.asFloatBuffer();
-//
-//            // Update the line endpoints in the vertex buffer.
-//            float[] vertices = new float[]{
-//                startPosition.getX(), startPosition.getY(), startPosition.getZ(),
-//                endPosition.getX(), endPosition.getY(), endPosition.getZ()};
-//            fbuf.put(vertices);
-//
-//            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
-//
-//            // Disable depth so the line is drawn over everything else.
-//            gl.glDisable(GL3.GL_DEPTH_TEST);
-//            gl.glDepthMask(false);
-//
-//            // Draw the line.
-//            gl.glLineWidth(NEW_LINE_WIDTH);
-//            gl.glUseProgram(shader);
-//            gl.glUniformMatrix4fv(shaderMVP, 1, false, mvpMatrix.a, 0);
-//            batch.draw(gl);
-//
-//            gl.glLineWidth(1);
-//
-//            // Reenable depth.
-//            gl.glEnable(GL3.GL_DEPTH_TEST);
-//            gl.glDepthMask(true);
-//
-//            // Rebind default array buffer
-//            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
-//        }
+    public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix) {
+
+        final Matrix44f mvpMatrix = parent.getDisplayModelViewProjectionMatrix();
+
+        // If no endpoints are set, don't draw anything
+        if (model != null && !model.isClear()) {
+            final Vector3f startPosition = model.getStartLocation();
+            final Vector3f endPosition = model.getEndLocation();
+
+            final GL3 gl = drawable.getGL().getGL3();
+
+            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
+            ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
+            FloatBuffer fbuf = bbuf.asFloatBuffer();
+
+            // Update the line endpoints in the vertex buffer.
+            float[] vertices = new float[]{
+                startPosition.getX(), startPosition.getY(), startPosition.getZ(),
+                endPosition.getX(), endPosition.getY(), endPosition.getZ()};
+            fbuf.put(vertices);
+
+            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+
+            // Disable depth so the line is drawn over everything else.
+            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDepthMask(false);
+
+            // Draw the line.
+            gl.glLineWidth(NEW_LINE_WIDTH);
+            gl.glUseProgram(shader);
+            gl.glUniformMatrix4fv(shaderMVP, 1, false, mvpMatrix.a, 0);
+            batch.draw(gl);
+
+            gl.glLineWidth(1);
+
+            // Reenable depth.
+            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glDepthMask(true);
+
+            // Rebind default array buffer
+            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+        }
     }
 
     /**
@@ -199,7 +206,7 @@ public class NewLineRenderable implements GLRenderable {
      * @param drawable The OpenGL rendering target.
      */
     @Override
-    public void dispose(final AutoDrawable drawable) {
-//        batch.dispose(drawable.getGL().getGL3());
+    public void dispose(final GLAutoDrawable drawable) {
+        batch.dispose(drawable.getGL().getGL3());
     }
 }

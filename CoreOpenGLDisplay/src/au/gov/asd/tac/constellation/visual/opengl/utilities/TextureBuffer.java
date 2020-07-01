@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import com.jogamp.opengl.GL3;
 import java.nio.Buffer;
 
 /**
@@ -35,29 +36,25 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * @param gl the current OpenGL context.
      * @param buffer A Buffer to be wrapped in a texture.
      */
-    public TextureBuffer(/*final GL30 gl, */final BufferType buffer) {
+    public TextureBuffer(final GL3 gl, final BufferType buffer) {
         final int nItems = buffer.limit();
 
         // Generate a buffer object name.
         bufferName = new int[1];
-        // TODO_TT:
-//        gl.glGenBuffers(1, bufferName, 0);
+        gl.glGenBuffers(1, bufferName, 0);
 
         // Bind the buffer.
         // Initialise the buffer's data store.
-        // TODO_TT:
-//        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, bufferName[0]);
-//        gl.glBufferData(GL30.GL_TEXTURE_BUFFER, sizeOfType() * nItems, buffer, GL30.GL_DYNAMIC_DRAW);
+        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, bufferName[0]);
+        gl.glBufferData(GL3.GL_TEXTURE_BUFFER, sizeOfType() * nItems, buffer, GL3.GL_DYNAMIC_DRAW);
 
         // Generate a texture name.
         textureName = new int[1];
-        // TODO_TT:
-//        gl.glGenTextures(1, textureName, 0);
+        gl.glGenTextures(1, textureName, 0);
 
         // Bind the texture to the buffer.
-        // TODO_TT:
-//        gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, textureName[0]);
-//        gl.glTexBuffer(GL30.GL_TEXTURE_BUFFER, internalFormat(), bufferName[0]);
+        gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, textureName[0]);
+        gl.glTexBuffer(GL3.GL_TEXTURE_BUFFER, internalFormat(), bufferName[0]);
 
         this.buffer = buffer;
     }
@@ -92,12 +89,11 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
         return textureName[0];
     }
 
-    public abstract BufferType connectBuffer(/*final GL30 gl*/);
+    public abstract BufferType connectBuffer(final GL3 gl);
 
-    public void disconnectBuffer(/*final GL30 gl*/) {
-        // TODO_TT:
-//        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, bufferName[0]);
-//        gl.glUnmapBuffer(GL30.GL_TEXTURE_BUFFER);
+    public void disconnectBuffer(final GL3 gl) {
+        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, bufferName[0]);
+        gl.glUnmapBuffer(GL3.GL_TEXTURE_BUFFER);
     }
 
     /**
@@ -108,28 +104,25 @@ public abstract class TextureBuffer<BufferType extends Buffer> {
      * update range from.
      * @param size The size (number of [type] values) of the range to update.
      */
-    public void update(/*final GL30 gl, */final int offset, final int size) {
+    public void update(final GL3 gl, final int offset, final int size) {
         buffer.position(sizeOfType() * offset);
-        // TODO_TT:
-//        gl.glBindBuffer(GL30.GL_TEXTURE_BUFFER, bufferName[0]);
-//        gl.glBufferSubData(GL30.GL_TEXTURE_BUFFER, sizeOfType() * offset, sizeOfType() * size, buffer);
+        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, bufferName[0]);
+        gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, sizeOfType() * offset, sizeOfType() * size, buffer);
     }
 
-    public void uniform(/*final GL30 gl, */final int uniform, final int textureUnit) {
+    public void uniform(final GL3 gl, final int uniform, final int textureUnit) {
         // Bind the uniform to the texture unit.
-//        GL30.glUniform1i(uniform, textureUnit);
-//
-//        // Activate the texture unit.
-//        GL30.glActiveTexture(GL30.GL_TEXTURE0 + textureUnit);
+        gl.glUniform1i(uniform, textureUnit);
+
+        // Activate the texture unit.
+        gl.glActiveTexture(GL3.GL_TEXTURE0 + textureUnit);
 
         // Bind the texture to the texture unit.
-        // TODO_TT:
-//        gl.glBindTexture(GL30.GL_TEXTURE_BUFFER, textureName[0]);
+        gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, textureName[0]);
     }
 
-    public void dispose(/*final GL30 gl, */) {
-        // TODO_TT:
-//        gl.glDeleteTextures(1, textureName, 0);
-//        gl.glDeleteBuffers(1, bufferName, 0);
+    public void dispose(final GL3 gl) {
+        gl.glDeleteTextures(1, textureName, 0);
+        gl.glDeleteBuffers(1, bufferName, 0);
     }
 }

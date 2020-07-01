@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.Renderable;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.AutoDrawable;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
 
 /**
  * An interface for a unit that performs drawing operations on a GLContext.
@@ -32,17 +32,17 @@ import au.gov.asd.tac.constellation.visual.AutoDrawable;
  *
  * @author twilight_sparkle
  */
-public interface GLRenderable extends Renderable {
-    
+public interface GLRenderable extends Comparable<GLRenderable> {
+
     /**
      * A convenient functional interface for specifying operations which usually
-     * involve transferring data to the specified openGL context as part of a
+     * involve transfering data to the specified openGL context as part of a
      * call to {@link #update}.
      */
     @FunctionalInterface
     public static interface GLRenderableUpdateTask {
 
-        public void run(/*final GL30 gl*/);
+        public void run(final GL3 gl);
     }
 
     public enum RenderablePriority {
@@ -62,7 +62,7 @@ public interface GLRenderable extends Renderable {
     }
 
     @Override
-    public default int compareTo(final Renderable o) {
+    public default int compareTo(final GLRenderable o) {
         return Integer.compare(getPriority(), o.getPriority());
     }
 
@@ -85,7 +85,7 @@ public interface GLRenderable extends Renderable {
      *
      * @param drawable The drawable to initialise with respect to.
      */
-    public void init(final AutoDrawable drawable);
+    public void init(final GLAutoDrawable drawable);
 
     /**
      * Reshape this renderable.
@@ -103,7 +103,7 @@ public interface GLRenderable extends Renderable {
      *
      * @param drawable The drawable to update with respect to.
      */
-    public default void update(final AutoDrawable drawable) {
+    public default void update(final GLAutoDrawable drawable) {
     }
 
     /**
@@ -112,12 +112,12 @@ public interface GLRenderable extends Renderable {
      * @param drawable The drawable to display with respect to.
      * @param pMatrix The projection matrix of the renderer being displayed on.
      */
-    public void display(final AutoDrawable drawable, final Matrix44f pMatrix);
+    public void display(final GLAutoDrawable drawable, final Matrix44f pMatrix);
 
     /**
      * Dispose this renderable using the specified drawable.
      *
      * @param drawable The drawable to dispose with respect to.
      */
-    public void dispose(final AutoDrawable drawable);
+    public void dispose(final GLAutoDrawable drawable);
 }

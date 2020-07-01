@@ -67,6 +67,7 @@ public abstract class AbstractCalculatorUtilities {
     // An object is true and contains non nulls if and only if:
     //  - it is not an iterable containing only objects which are null
     //  - is not itself false according to isTrueValue
+    @SuppressWarnings("unchecked")
     protected static boolean isTrueAndContainsNonNulls(PyObject obj) {
         if (obj instanceof PyList) {
             ((PyList) obj).removeIf((Object t) -> nullCheck(t));

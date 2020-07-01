@@ -165,6 +165,7 @@ public class GraphNode extends AbstractNode {
         MemoryManager.newObject(GraphNode.class);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() {
         MemoryManager.finalizeObject(GraphNode.class);

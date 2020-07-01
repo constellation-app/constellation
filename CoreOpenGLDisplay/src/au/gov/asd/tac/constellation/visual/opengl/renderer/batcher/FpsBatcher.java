@@ -23,12 +23,12 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
-import org.lwjgl.BufferUtils;
-
 
 /**
  *
@@ -48,9 +48,9 @@ public class FpsBatcher implements SceneBatcher {
     private static final int ICON_BUFFER_WIDTH = 2;
     private static final int DIGIT_ICON_OFFSET = 4;
 
-//    private final Batch batch;
-//    private final int colorTarget;
-//    private final int iconTarget;
+    private final Batch batch;
+    private final int colorTarget;
+    private final int iconTarget;
     private float pixelDensity;
     private float projectionScale;
     private int shader;
@@ -67,9 +67,9 @@ public class FpsBatcher implements SceneBatcher {
     public FpsBatcher() {
 
         // Create the batch
-//        this.batch = new Batch(GL30.GL_POINTS);
-//        this.colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
-//        this.iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
+        this.batch = new Batch(GL3.GL_POINTS);
+        this.colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
+        this.iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
         this.pixelDensity = 0;
         this.projectionScale = 0;
     }
@@ -83,84 +83,79 @@ public class FpsBatcher implements SceneBatcher {
     }
 
     @Override
-    public void createShader(/*final GL30 gl*/) throws IOException {
-//
-//        // Create the shader
-//        shader = SharedDrawable.getSimpleIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
-//
-//        // Set up uniform locations in the shader
-//        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
-//        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
-//        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
-//        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
-//        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
-//        shaderPixelDensity = GL30.glGetUniformLocation(shader, "pixelDensity");
-//        shaderPScale = GL30.glGetUniformLocation(shader, "pScale");
+    public void createShader(final GL3 gl) throws IOException {
+
+        // Create the shader
+        shader = SharedDrawable.getSimpleIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
+
+        // Set up uniform locations in the shader
+        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
+        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
+        shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderPixelDensity = gl.glGetUniformLocation(shader, "pixelDensity");
+        shaderPScale = gl.glGetUniformLocation(shader, "pScale");
     }
 
-    private int updateIconTexture(/*final GL30 gl*/) {
+    private int updateIconTexture(final GL3 gl) {
         final int[] v = new int[1];
-        // TODO_TT:
-//        gl.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxTextureLayers = v[0];
         GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
-//        return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
-return 0;
+        return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
     }
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
-        final FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(COLOR_BUFFER_WIDTH * 2);
+        final FloatBuffer colorBuffer = Buffers.newDirectFloatBuffer(COLOR_BUFFER_WIDTH * 2);
         bufferColorInfo(0, colorBuffer, ConstellationColor.WHITE);
         bufferColorInfo(1, colorBuffer, ConstellationColor.WHITE);
         colorBuffer.flip();
-        final IntBuffer iconBuffer = BufferUtils.createIntBuffer(ICON_BUFFER_WIDTH * 2);
+        final IntBuffer iconBuffer = Buffers.newDirectIntBuffer(ICON_BUFFER_WIDTH * 2);
         bufferIconInfo(0, iconBuffer, 0, 0);
         bufferIconInfo(1, iconBuffer, 0, 0);
         iconBuffer.flip();
-//        return gl -> {
-//            batch.initialise(2);
-//            batch.buffer(gl, colorTarget, colorBuffer);
-//            batch.buffer(gl, iconTarget, iconBuffer);
-//            // Ensure that the icons for the digits are loaded into the texture
-//            for (int digit = 0; digit < 10; digit++) {
-//                GLTools.LOADED_ICON_HELPER.addIcon(Integer.toString(digit));
-//            }
-//            updateIconTexture(gl);
-//            batch.finalise(gl);
-//        };
-return null;
+        return gl -> {
+            batch.initialise(2);
+            batch.buffer(gl, colorTarget, colorBuffer);
+            batch.buffer(gl, iconTarget, iconBuffer);
+            // Ensure that the icons for the digits are loaded into the texture
+            for (int digit = 0; digit < 10; digit++) {
+                GLTools.LOADED_ICON_HELPER.addIcon(Integer.toString(digit));
+            }
+            updateIconTexture(gl);
+            batch.finalise(gl);
+        };
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-//        return gl -> {
-//            batch.dispose(gl);
-//        };
-return null;
+        return gl -> {
+            batch.dispose(gl);
+        };
     }
 
     @Override
     public boolean batchReady() {
-//        return batch.isDrawable();
-return false;
+        return batch.isDrawable();
     }
 
     @Override
-    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-//        if (batch.isDrawable()) {
-//            GL30.glUseProgram(shader);
-//
-//            // Uniform variables
-//            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
-//            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
-//            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-//            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-//            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-//            GL30.glUniform1f(shaderPixelDensity, pixelDensity);
-//            GL30.glUniform1f(shaderPScale, projectionScale);
-//            batch.draw(gl);
-//        }
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+        if (batch.isDrawable()) {
+            gl.glUseProgram(shader);
+
+            // Uniform variables
+            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1f(shaderPixelDensity, pixelDensity);
+            gl.glUniform1f(shaderPScale, projectionScale);
+            batch.draw(gl);
+        }
     }
 
     @FunctionalInterface
@@ -170,41 +165,40 @@ return false;
     }
 
     public GLRenderableUpdateTask updateIcons(final int[] digits) {
-//        final IconOperation operation = this::bufferIconInfo;
-//        final IntBufferConnection connector = gl -> batch.connectIntBuffer(gl, iconTarget);
-//        final BufferDisconnection disconnector = gl -> batch.disconnectBuffer(gl, iconTarget);
-//        final int width = ICON_BUFFER_WIDTH;
-//
-//        final boolean[] updateMask = new boolean[width];
-//        Arrays.fill(updateMask, true);
-//        final int maskSize = updateMask.length;
-//        final int numChanges = digits.length;
-//        final IntBuffer updateBuffer = BufferUtils.createIntBuffer(maskSize * numChanges);
-//        final int[] bufferUpdatePositions = new int[numChanges];
-//        int updatePosition = 0;
-//        for (int i = 0; i < numChanges; i++) {
-//            final int updatedPosition = operation.buffer(i, updateBuffer, digits[i], i * DIGIT_ICON_OFFSET);
-//            if (updatedPosition >= 0) {
-//                bufferUpdatePositions[updatePosition++] = updatedPosition;
-//            }
-//        }
-//        final int numUpdates = updatePosition;
-//        updateBuffer.flip();
-//        return gl -> {
-//            final IntBuffer buffer = connector.connect(gl);
-//            for (int i = 0; i < numUpdates; i++) {
-//                buffer.position(bufferUpdatePositions[i] * maskSize);
-//                for (boolean update : updateMask) {
-//                    if (update) {
-//                        buffer.put(updateBuffer.get());
-//                    } else {
-//                        buffer.get();
-//                    }
-//                }
-//            }
-//            disconnector.disconnect(gl);
-//        };
-return null;
+        final IconOperation operation = this::bufferIconInfo;
+        final IntBufferConnection connector = gl -> batch.connectIntBuffer(gl, iconTarget);
+        final BufferDisconnection disconnector = gl -> batch.disconnectBuffer(gl, iconTarget);
+        final int width = ICON_BUFFER_WIDTH;
+
+        final boolean[] updateMask = new boolean[width];
+        Arrays.fill(updateMask, true);
+        final int maskSize = updateMask.length;
+        final int numChanges = digits.length;
+        final IntBuffer updateBuffer = Buffers.newDirectIntBuffer(maskSize * numChanges);
+        final int[] bufferUpdatePositions = new int[numChanges];
+        int updatePosition = 0;
+        for (int i = 0; i < numChanges; i++) {
+            final int updatedPosition = operation.buffer(i, updateBuffer, digits[i], i * DIGIT_ICON_OFFSET);
+            if (updatedPosition >= 0) {
+                bufferUpdatePositions[updatePosition++] = updatedPosition;
+            }
+        }
+        final int numUpdates = updatePosition;
+        updateBuffer.flip();
+        return gl -> {
+            final IntBuffer buffer = connector.connect(gl);
+            for (int i = 0; i < numUpdates; i++) {
+                buffer.position(bufferUpdatePositions[i] * maskSize);
+                for (boolean update : updateMask) {
+                    if (update) {
+                        buffer.put(updateBuffer.get());
+                    } else {
+                        buffer.get();
+                    }
+                }
+            }
+            disconnector.disconnect(gl);
+        };
     }
 
     private int bufferIconInfo(final int pos, final IntBuffer buffer, final int digit, final int offset) {
@@ -234,41 +228,40 @@ return null;
     }
 
     public GLRenderableUpdateTask updateColors(final ConstellationColor color) {
-//        final ColorOperation operation = this::bufferColorInfo;
-//        final FloatBufferConnection connector = gl -> batch.connectFloatBuffer(gl, colorTarget);
-//        final BufferDisconnection disconnector = gl -> batch.disconnectBuffer(gl, colorTarget);
-//        final int width = COLOR_BUFFER_WIDTH;
-//
-//        final boolean[] updateMask = new boolean[width];
-//        Arrays.fill(updateMask, true);
-//        final int maskSize = updateMask.length;
-//        final int numChanges = 2;
-//        final FloatBuffer updateBuffer = BufferUtils.createFloatBuffer(maskSize * numChanges);
-//        final int[] bufferUpdatePositions = new int[numChanges];
-//        int updatePos = 0;
-//        for (int i = 0; i < numChanges; i++) {
-//            final int updatedPosition = operation.buffer(i, updateBuffer, color);
-//            if (updatedPosition >= 0) {
-//                bufferUpdatePositions[updatePos++] = updatedPosition;
-//            }
-//        }
-//        final int numUpdates = updatePos;
-//        updateBuffer.flip();
-//        return gl -> {
-//            final FloatBuffer buffer = connector.connect(gl);
-//            for (int i = 0; i < numUpdates; i++) {
-//                buffer.position(bufferUpdatePositions[i] * maskSize);
-//                for (boolean update : updateMask) {
-//                    if (update) {
-//                        buffer.put(updateBuffer.get());
-//                    } else {
-//                        buffer.get();
-//                    }
-//                }
-//            }
-//            disconnector.disconnect(gl);
-//        };
-return null;
+        final ColorOperation operation = this::bufferColorInfo;
+        final FloatBufferConnection connector = gl -> batch.connectFloatBuffer(gl, colorTarget);
+        final BufferDisconnection disconnector = gl -> batch.disconnectBuffer(gl, colorTarget);
+        final int width = COLOR_BUFFER_WIDTH;
+
+        final boolean[] updateMask = new boolean[width];
+        Arrays.fill(updateMask, true);
+        final int maskSize = updateMask.length;
+        final int numChanges = 2;
+        final FloatBuffer updateBuffer = Buffers.newDirectFloatBuffer(maskSize * numChanges);
+        final int[] bufferUpdatePositions = new int[numChanges];
+        int updatePos = 0;
+        for (int i = 0; i < numChanges; i++) {
+            final int updatedPosition = operation.buffer(i, updateBuffer, color);
+            if (updatedPosition >= 0) {
+                bufferUpdatePositions[updatePos++] = updatedPosition;
+            }
+        }
+        final int numUpdates = updatePos;
+        updateBuffer.flip();
+        return gl -> {
+            final FloatBuffer buffer = connector.connect(gl);
+            for (int i = 0; i < numUpdates; i++) {
+                buffer.position(bufferUpdatePositions[i] * maskSize);
+                for (boolean update : updateMask) {
+                    if (update) {
+                        buffer.put(updateBuffer.get());
+                    } else {
+                        buffer.get();
+                    }
+                }
+            }
+            disconnector.disconnect(gl);
+        };
     }
 
     private int bufferColorInfo(final int pos, final FloatBuffer colorBuffer, final ConstellationColor color) {

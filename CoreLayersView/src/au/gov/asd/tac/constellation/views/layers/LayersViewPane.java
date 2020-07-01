@@ -200,6 +200,7 @@ public class LayersViewPane extends BorderPane {
         return Collections.unmodifiableList(layers);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public synchronized void setLayers(final List<LayerDescription> layers) {
         Platform.runLater(() -> {
             this.layers.clear();

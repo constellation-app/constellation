@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -38,7 +39,7 @@ public class BlazeBatcher implements SceneBatcher {
     private static final String COLOR_SHADER_NAME = "blazeColor";
     private static final String BLAZE_INFO_SHADER_NAME = "blazeData";
 
-//    private final Batch batch;
+    private final Batch batch;
     private int shader;
 
     private float blazeSize;
@@ -58,8 +59,8 @@ public class BlazeBatcher implements SceneBatcher {
     private FloatArray blazeColors;
     private IntArray blazeInfo;
 
-//    private final int colorTarget;
-//    private final int infoTarget;
+    private final int colorTarget;
+    private final int infoTarget;
 
     private static final int COLOR_BUFFER_WIDTH = 4;
     private static final int INFO_BUFFER_WIDTH = 4;
@@ -67,40 +68,39 @@ public class BlazeBatcher implements SceneBatcher {
     public BlazeBatcher() {
 
         // Create the batch
-//        batch = new Batch(GL30.GL_POINTS);
-//        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
-//        infoTarget = batch.newIntBuffer(INFO_BUFFER_WIDTH, false);
+        batch = new Batch(GL3.GL_POINTS);
+        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
+        infoTarget = batch.newIntBuffer(INFO_BUFFER_WIDTH, false);
     }
 
     @Override
     public boolean batchReady() {
-        return false;//return batch.isDrawable();
+        return batch.isDrawable();
     }
 
     @Override
-    public void createShader(/*GL30 gl*/) throws IOException {
-//
-//        // Create the shader
-//        shader = SharedDrawable.getBlazeShader(gl, colorTarget, COLOR_SHADER_NAME, infoTarget, BLAZE_INFO_SHADER_NAME);
-//
-//        // Set up uniform locations in the shader
-//        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
-//        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
-//        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
-//        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
-//        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
-//        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
-//        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
-//        shaderScale = GL30.glGetUniformLocation(shader, "scale");
-//        shaderOpacity = GL30.glGetUniformLocation(shader, "opacity");
+    public void createShader(GL3 gl) throws IOException {
+
+        // Create the shader
+        shader = SharedDrawable.getBlazeShader(gl, colorTarget, COLOR_SHADER_NAME, infoTarget, BLAZE_INFO_SHADER_NAME);
+
+        // Set up uniform locations in the shader
+        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
+        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
+        shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
+        shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
+        shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderScale = gl.glGetUniformLocation(shader, "scale");
+        shaderOpacity = gl.glGetUniformLocation(shader, "opacity");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-//        return gl -> {
-//            batch.dispose(gl);
-//        };
-return null;
+        return gl -> {
+            batch.dispose(gl);
+        };
     }
 
     public GLRenderableUpdateTask updateBlazes(final VisualAccess access, final VisualChange change) {
@@ -109,36 +109,33 @@ return null;
         blazeInfo.clear();
         fillBatch(access);
 
-//        return gl -> {
-//            batch.dispose(gl);
-//            batch.initialise(blazeInfo.size() / INFO_BUFFER_WIDTH);
-//            batch.buffer(gl, colorTarget, FloatBuffer.wrap(blazeColors.rawArray()));
-//            batch.buffer(gl, infoTarget, IntBuffer.wrap(blazeInfo.rawArray()));
-//            batch.finalise(gl);
-//        };
-return null;
+        return gl -> {
+            batch.dispose(gl);
+            batch.initialise(blazeInfo.size() / INFO_BUFFER_WIDTH);
+            batch.buffer(gl, colorTarget, FloatBuffer.wrap(blazeColors.rawArray()));
+            batch.buffer(gl, infoTarget, IntBuffer.wrap(blazeInfo.rawArray()));
+            batch.finalise(gl);
+        };
     }
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
         fillBatch(access);
-//        return gl -> {
-//            batch.initialise(blazeInfo.size() / INFO_BUFFER_WIDTH);
-//            batch.buffer(gl, colorTarget, FloatBuffer.wrap(blazeColors.rawArray()));
-//            batch.buffer(gl, infoTarget, IntBuffer.wrap(blazeInfo.rawArray()));
-//            batch.finalise(gl);
-//        };
-return null;
+        return gl -> {
+            batch.initialise(blazeInfo.size() / INFO_BUFFER_WIDTH);
+            batch.buffer(gl, colorTarget, FloatBuffer.wrap(blazeColors.rawArray()));
+            batch.buffer(gl, infoTarget, IntBuffer.wrap(blazeInfo.rawArray()));
+            batch.finalise(gl);
+        };
     }
 
     public GLRenderableUpdateTask updateSizeAndOpacity(final VisualAccess access) {
         final float updatedBlazeSize = access.getBlazeSize();
         final float updatedBlazeOpacity = access.getBlazeOpacity();
-//        return gl -> {
-//            blazeSize = updatedBlazeSize;
-//            blazeOpacity = updatedBlazeOpacity;
-//        };
-return null;
+        return gl -> {
+            blazeSize = updatedBlazeSize;
+            blazeOpacity = updatedBlazeOpacity;
+        };
     }
 
     private void fillBatch(final VisualAccess access) {
@@ -163,23 +160,23 @@ return null;
     }
 
     @Override
-    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-//
-//        if (batch.isDrawable()) {
-//            GL30.glUseProgram(shader);
-//            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
-//            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
-//            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-//            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-//            GL30.glUniform1f(shaderMorphMix, camera.getMix());
-//            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-//            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-//            GL30.glUniform1f(shaderScale, blazeSize);
-//            GL30.glUniform1f(shaderOpacity, blazeOpacity);
-//
-//            GL30.glDisable(GL30.GL_DEPTH_TEST);
-//            batch.draw(gl);
-//            GL30.glEnable(GL30.GL_DEPTH_TEST);
-//        }
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+
+        if (batch.isDrawable()) {
+            gl.glUseProgram(shader);
+            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            gl.glUniform1f(shaderMorphMix, camera.getMix());
+            gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+            gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1f(shaderScale, blazeSize);
+            gl.glUniform1f(shaderOpacity, blazeOpacity);
+
+            gl.glDisable(GL3.GL_DEPTH_TEST);
+            batch.draw(gl);
+            gl.glEnable(GL3.GL_DEPTH_TEST);
+        }
     }
 }

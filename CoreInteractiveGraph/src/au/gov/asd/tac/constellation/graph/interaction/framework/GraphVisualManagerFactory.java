@@ -44,7 +44,8 @@ public abstract class GraphVisualManagerFactory {
      *
      * @param graph The graph to be visually managed.
      * @return A {@link VisualManager} for the graph.
+     * @throws java.lang.Throwable
      */
-    public abstract VisualManager constructVisualManager(final Graph graph);
+    public abstract VisualManager constructVisualManager(final Graph graph) throws Throwable;
 
 }

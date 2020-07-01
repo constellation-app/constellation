@@ -224,6 +224,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
      * @param isNew are these attribute from a new graph?
      * @param attributes the new attribute to display.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void updateAttributes(final boolean isNew, final ArrayList<Attribute> attributes) {
         if (!attributes.isEmpty()) {
             cmbAttributes.setModel(new AttributeComboBoxModel(attributes));
@@ -253,6 +254,7 @@ public class FindCriteriaPanel extends JPanel implements DateTimeListenerInterfa
      * @param isNew <code>true</code> to get new operator list,
      * <code>false</code> to use existing.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void updateOperators(final boolean isNew) {
         if (cmbAttributes.getSelectedItem() instanceof Attribute) {
             final Attribute attr = localState.getAttribute();

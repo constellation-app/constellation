@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.vulkan.renderables;
 
-import au.gov.asd.tac.constellation.visual.Renderable;
+
 import au.gov.asd.tac.constellation.visual.vulkan.CVKDevice;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKFrame;
 import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
@@ -24,20 +24,21 @@ import org.lwjgl.system.MemoryStack;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferInheritanceInfo;
 
-public interface CVKRenderable extends Renderable{
+public abstract class CVKRenderable{
 
-    public abstract int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-    public abstract int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
+    public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
     public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);  
     
-    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
-    //public abstract int LoadShaders(CVKDevice cvkDevice);
-    public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
+    public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKSwapChain cvkSwapChain, int frameIndex);
+    public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
     public abstract VkCommandBuffer GetCommandBuffer(int index);
-    public abstract int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-    public abstract long GetGraphicsPipeline();
+    public abstract int InitCommandBuffer(CVKSwapChain cvkSwapChain);
     public abstract int GetVertexCount();
     public abstract boolean IsDirty();
+    public abstract int DeviceInitialised(CVKDevice cvkDevice);
+    
+    public abstract boolean NeedsCompleteHalt();
 
 
     /**

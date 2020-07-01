@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.FloatTextureBuffer;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import com.jogamp.common.nio.Buffers;
 import java.nio.FloatBuffer;
-import org.lwjgl.BufferUtils;
 
 /**
  *
@@ -42,22 +42,21 @@ public class XyzTexturiser {
     }
 
     public GLRenderableUpdateTask dispose() {
-//        return gl -> {
-//            if (xyzTexture != null) {
-//                xyzTexture.dispose(gl);
-//                xyzTexture = null;
-//            }
-//        };
-        return null;
+        return gl -> {
+            if (xyzTexture != null) {
+                xyzTexture.dispose(gl);
+                xyzTexture = null;
+            }
+        };
     }
 
     public GLRenderableUpdateTask createTexture(final VisualAccess access) {
-        final FloatBuffer xyzBuffer = BufferUtils.createFloatBuffer(XYZ_BUFFER_WIDTH * access.getVertexCount());
+        final FloatBuffer xyzBuffer = Buffers.newDirectFloatBuffer(XYZ_BUFFER_WIDTH * access.getVertexCount());
         for (int i = 0; i < access.getVertexCount(); i++) {
             bufferXyzInfo(i, xyzBuffer, access);
         }
         xyzBuffer.flip();
-        return null;//gl -> xyzTexture = new FloatTextureBuffer(gl, xyzBuffer);
+        return gl -> xyzTexture = new FloatTextureBuffer(gl, xyzBuffer);
     }
 
     public GLRenderableUpdateTask updateXyzs(final VisualAccess access, final VisualChange change) {

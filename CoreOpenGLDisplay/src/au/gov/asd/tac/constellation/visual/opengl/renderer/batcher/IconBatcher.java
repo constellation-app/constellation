@@ -24,10 +24,11 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRender
 import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import org.lwjgl.BufferUtils;
 
 /**
  *
@@ -43,7 +44,7 @@ public class IconBatcher implements SceneBatcher {
     private static final String COLOR_SHADER_NAME = "backgroundIconColor";
     private static final String ICON_SHADER_NAME = "data";
 
-//    private final Batch batch;
+    private final Batch batch;
     private int shader;
 
     private float pixelDensity;
@@ -63,90 +64,86 @@ public class IconBatcher implements SceneBatcher {
     private int shaderHighlightColor;
     private int shaderPixelDensity;
 
-//    private final int colorTarget;
-//    private final int iconTarget;
+    private final int colorTarget;
+    private final int iconTarget;
     private static final int ICON_BUFFER_WIDTH = 4;
     private static final int COLOR_BUFFER_WIDTH = 4;
 
     public IconBatcher() {
 
         // Create the batch
-//        batch = new Batch(GL30.GL_POINTS);
-//        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
-//        iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
+        batch = new Batch(GL3.GL_POINTS);
+        colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
+        iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
     }
 
     @Override
     public boolean batchReady() {
-        return false;//return batch.isDrawable();
+        return batch.isDrawable();
     }
 
     @Override
-    public void createShader(/*GL30 gl*/) throws IOException {
-//
-//        // Create the shader
-//        shader = SharedDrawable.getVertexIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
-//
-//        // Set up uniform locations in the shader
-//        shaderMVMatrix = GL30.glGetUniformLocation(shader, "mvMatrix");
-//        shaderPMatrix = GL30.glGetUniformLocation(shader, "pMatrix");
-//        shaderLocDrawHitTest = GL30.glGetUniformLocation(shader, "drawHitTest");
-//        shaderVisibilityLow = GL30.glGetUniformLocation(shader, "visibilityLow");
-//        shaderVisibilityHigh = GL30.glGetUniformLocation(shader, "visibilityHigh");
-//        shaderMorphMix = GL30.glGetUniformLocation(shader, "morphMix");
-//        shaderXyzTexture = GL30.glGetUniformLocation(shader, "xyzTexture");
-//        shaderImagesTexture = GL30.glGetUniformLocation(shader, "images");
-//        shaderFlagsTexture = GL30.glGetUniformLocation(shader, "flags");
-//        shaderHighlightColor = GL30.glGetUniformLocation(shader, "highlightColor");
-//        shaderPixelDensity = GL30.glGetUniformLocation(shader, "pixelDensity");
+    public void createShader(GL3 gl) throws IOException {
+
+        // Create the shader
+        shader = SharedDrawable.getVertexIconShader(gl, colorTarget, COLOR_SHADER_NAME, iconTarget, ICON_SHADER_NAME);
+
+        // Set up uniform locations in the shader
+        shaderMVMatrix = gl.glGetUniformLocation(shader, "mvMatrix");
+        shaderPMatrix = gl.glGetUniformLocation(shader, "pMatrix");
+        shaderLocDrawHitTest = gl.glGetUniformLocation(shader, "drawHitTest");
+        shaderVisibilityLow = gl.glGetUniformLocation(shader, "visibilityLow");
+        shaderVisibilityHigh = gl.glGetUniformLocation(shader, "visibilityHigh");
+        shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
+        shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
+        shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderFlagsTexture = gl.glGetUniformLocation(shader, "flags");
+        shaderHighlightColor = gl.glGetUniformLocation(shader, "highlightColor");
+        shaderPixelDensity = gl.glGetUniformLocation(shader, "pixelDensity");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-//        return gl -> {
-//            batch.dispose(gl);
-//        };
-return null;
+        return gl -> {
+            batch.dispose(gl);
+        };
     }
 
-    public int updateIconTexture(/*final GL30 gl*/) {
-//        final int[] v = new int[1];
-//        GL30.glGetIntegerv(GL30.GL_MAX_ARRAY_TEXTURE_LAYERS, v);
-//        final int maxTextureLayers = v[0];
-//        GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
-//        return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
-return 0;
+    public int updateIconTexture(final GL3 gl) {
+        final int[] v = new int[1];
+        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        final int maxTextureLayers = v[0];
+        GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
+        return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
     }
 
     public GLRenderableUpdateTask updateIcons(final VisualAccess access, final VisualChange change) {
-//        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> {
-//            return batch.connectIntBuffer(gl, iconTarget);
-//        }, gl -> {
-//            batch.disconnectBuffer(gl, iconTarget);
-//        }, ICON_BUFFER_WIDTH);
-return null;
+        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> {
+            return batch.connectIntBuffer(gl, iconTarget);
+        }, gl -> {
+            batch.disconnectBuffer(gl, iconTarget);
+        }, ICON_BUFFER_WIDTH);
     }
 
     @Override
     public GLRenderableUpdateTask createBatch(final VisualAccess access) {
         final int numVertices = access.getVertexCount();
-        final FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(COLOR_BUFFER_WIDTH * numVertices);
-        final IntBuffer iconBuffer = BufferUtils.createIntBuffer(ICON_BUFFER_WIDTH * numVertices);
+        final FloatBuffer colorBuffer = Buffers.newDirectFloatBuffer(COLOR_BUFFER_WIDTH * numVertices);
+        final IntBuffer iconBuffer = Buffers.newDirectIntBuffer(ICON_BUFFER_WIDTH * numVertices);
         for (int pos = 0; pos < numVertices; pos++) {
             bufferColorInfo(pos, colorBuffer, access);
             bufferIconInfo(pos, iconBuffer, access);
         }
         colorBuffer.flip();
         iconBuffer.flip();
-//        return gl -> {
-//            if (numVertices > 0) {
-//                batch.initialise(numVertices);
-//                batch.buffer(gl, colorTarget, colorBuffer);
-//                batch.buffer(gl, iconTarget, iconBuffer);
-//                batch.finalise(gl);
-//            }
-//        };
-return null;
+        return gl -> {
+            if (numVertices > 0) {
+                batch.initialise(numVertices);
+                batch.buffer(gl, colorTarget, colorBuffer);
+                batch.buffer(gl, iconTarget, iconBuffer);
+                batch.finalise(gl);
+            }
+        };
     }
 
     private int bufferIconInfo(final int pos, final IntBuffer iconBuffer, final VisualAccess access) {
@@ -189,12 +186,11 @@ return null;
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-//        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-//            return batch.connectFloatBuffer(gl, colorTarget);
-//        }, gl -> {
-//            batch.disconnectBuffer(gl, colorTarget);
-//        }, COLOR_BUFFER_WIDTH);
-return null;
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
+            return batch.connectFloatBuffer(gl, colorTarget);
+        }, gl -> {
+            batch.disconnectBuffer(gl, colorTarget);
+        }, COLOR_BUFFER_WIDTH);
     }
 
     private int bufferColorInfo(final int pos, final FloatBuffer colorBuffer, final VisualAccess access) {
@@ -208,14 +204,13 @@ return null;
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor highlightColor = access.getHighlightColor();
-//        return gl -> {
-//            highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0,
-//                0, highlightColor.getGreen(), 0, 0,
-//                0, 0, highlightColor.getBlue(), 0,
-//                0, 0, 0, 1
-//            };
-//        };
-return null;
+        return gl -> {
+            highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0,
+                0, highlightColor.getGreen(), 0, 0,
+                0, 0, highlightColor.getBlue(), 0,
+                0, 0, 0, 1
+            };
+        };
     }
 
     public void setPixelDensity(final float pixelDensity) {
@@ -227,28 +222,28 @@ return null;
     }
 
     @Override
-    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
-//        if (batch.isDrawable()) {
-//            GL30.glUseProgram(shader);
-//
-//            // Uniform variables
-//            if (drawForHitTest) {
-//                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_TRUE);
-//            } else {
-//                GL30.glUniform1i(shaderLocDrawHitTest, GL30.GL_FALSE);
-//            }
-//            GL30.glUniformMatrix4fv(shaderMVMatrix, false, mvMatrix.a);
-//            GL30.glUniformMatrix4fv(shaderPMatrix, false, pMatrix.a);
-//            GL30.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
-//            GL30.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
-//            GL30.glUniform1f(shaderPixelDensity, pixelDensity);
-//            GL30.glUniform1f(shaderMorphMix, camera.getMix());
-//            GL30.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
-//            GL30.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
-//            GL30.glUniform1i(shaderFlagsTexture, TextureUnits.VERTEX_FLAGS);
-//            GL30.glUniformMatrix4fv(shaderHighlightColor, false, highlightColorMatrix);
-//            batch.draw(gl);
-//        }
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+        if (batch.isDrawable()) {
+            gl.glUseProgram(shader);
+
+            // Uniform variables
+            if (drawForHitTest) {
+                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+            } else {
+                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+            }
+            gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
+            gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
+            gl.glUniform1f(shaderVisibilityLow, camera.getVisibilityLow());
+            gl.glUniform1f(shaderVisibilityHigh, camera.getVisibilityHigh());
+            gl.glUniform1f(shaderPixelDensity, pixelDensity);
+            gl.glUniform1f(shaderMorphMix, camera.getMix());
+            gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
+            gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1i(shaderFlagsTexture, TextureUnits.VERTEX_FLAGS);
+            gl.glUniformMatrix4fv(shaderHighlightColor, 1, false, highlightColorMatrix, 0);
+            batch.draw(gl);
+        }
         drawForHitTest = false;
     }
 }

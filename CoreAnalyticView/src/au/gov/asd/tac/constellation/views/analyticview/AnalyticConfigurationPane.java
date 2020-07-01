@@ -99,6 +99,7 @@ public class AnalyticConfigurationPane extends VBox {
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
     private final Lock lock = new ReentrantLock(true);
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public AnalyticConfigurationPane() {
 
         // create the parameters needed for all analytic questions
@@ -367,6 +368,7 @@ public class AnalyticConfigurationPane extends VBox {
      *
      * @return the answered {@link AnalyticQuestion}.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     protected final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
 
         // build question
@@ -516,6 +518,7 @@ public class AnalyticConfigurationPane extends VBox {
         updateGlobalParameters();
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             pluginList.getItems().forEach(selectablePlugin -> {
@@ -555,6 +558,7 @@ public class AnalyticConfigurationPane extends VBox {
         selectionSuppressed = newValue;
     }
 
+    @SuppressWarnings("rawtypes")
     public final class SelectableAnalyticPlugin {
 
         private final CheckBox checkbox;
