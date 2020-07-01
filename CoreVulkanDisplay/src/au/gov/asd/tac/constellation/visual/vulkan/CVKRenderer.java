@@ -306,28 +306,29 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         vkCmdBeginRenderPass(primaryCommandBuffer, renderPassInfo, VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS);
 
         // Inheritance info for the secondary command buffers (same for all!)
-        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc()
-                        .sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO)
-                        .pNext(0)
-                        .framebuffer(cvkSwapChain.GetFrameBufferHandle(index))
-                        .renderPass(cvkSwapChain.GetRenderPassHandle())
-                        .subpass(0) // Get the subpass of make it here?
-                        .occlusionQueryEnable(false)
-                        .queryFlags(0)
-                        .pipelineStatistics(0);
-            // Loop through renderables and record their buffers
-            for (int r = 0; r < renderables.size(); ++r) {
-               
-                //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
-                if (renderables.get(r).IsDirty()){
-                    renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo, index);
-     
-                    // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
-                    // call the following line once with the whole list
-                    vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
-                }
-                //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
+        VkCommandBufferInheritanceInfo inheritanceInfo = VkCommandBufferInheritanceInfo.calloc();
+        inheritanceInfo.sType(VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO);
+        inheritanceInfo.pNext(0);
+        inheritanceInfo.framebuffer(cvkSwapChain.GetFrameBufferHandle(index));
+        inheritanceInfo.renderPass(cvkSwapChain.GetRenderPassHandle());
+        inheritanceInfo.subpass(0); // Get the subpass of make it here?
+        inheritanceInfo.occlusionQueryEnable(false);
+        inheritanceInfo.queryFlags(0);
+        inheritanceInfo.pipelineStatistics(0);
+            
+        // Loop through renderables and record their buffers
+        for (int r = 0; r < renderables.size(); ++r) {
+
+            //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
+            if (renderables.get(r).IsDirty()){
+                renderables.get(r).RecordCommandBuffer(cvkDevice, cvkSwapChain, inheritanceInfo, index);
+
+                // TODO Hydra: may be more efficient to add all the visible command buffers to a master list then 
+                // call the following line once with the whole list
+                vkCmdExecuteCommands(primaryCommandBuffer, renderables.get(r).GetCommandBuffer(index));
             }
+            //vkResetFences(cvkDevice.GetDevice(), frame.GetRenderFence());
+        }
         
         vkCmdEndRenderPass(primaryCommandBuffer);
         checkVKret(vkEndCommandBuffer(primaryCommandBuffer)); 

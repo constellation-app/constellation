@@ -30,13 +30,13 @@ import au.gov.asd.tac.constellation.visual.vulkan.CVKCommandBuffer;
 
 public abstract class CVKRenderable implements Renderable{
 
-    protected long pipelineLayout;
-    protected long graphicsPipeline;
+    protected long pipelineLayout = 0;
+    protected long graphicsPipeline = 0;
     protected List<CVKCommandBuffer> commandBuffers = null;
     protected PointerBuffer handlePointer;
     
-    protected long vertexBuffer;
-    protected long vertexBufferMemory;
+    protected long vertexBuffer = 0;
+    protected long vertexBufferMemory = 0;
         
     protected List<CVKBuffer> vertUniformBuffers = null;
     protected List<CVKBuffer> geomUniformBuffers = null;

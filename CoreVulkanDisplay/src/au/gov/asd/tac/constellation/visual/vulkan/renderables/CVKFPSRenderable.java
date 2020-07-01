@@ -122,6 +122,11 @@ import org.lwjgl.vulkan.VkPipelineViewportStateCreateInfo;
 import org.lwjgl.vulkan.VkRect2D;
 import org.lwjgl.vulkan.VkViewport;
 import org.lwjgl.vulkan.VkWriteDescriptorSet;
+import java.util.Random;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+import static org.lwjgl.vulkan.VK10.vkFreeCommandBuffers;
+
 
 public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected static final int MAX_DIGITS = 4;
@@ -136,7 +141,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     protected final Vector3f bottomRightCorner = new Vector3f();
     protected float pyScale = 0;
     protected float pxScale = 0;
-    
+    protected List<Integer> currentFPS = null;
     
     protected final CVKScene cvkScene;
     protected static long hVertexShader = VK_NULL_HANDLE;
@@ -291,6 +296,12 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     
     public CVKFPSRenderable(CVKScene inScene) {
         cvkScene = inScene;
+        
+        currentFPS = new ArrayList();
+        currentFPS.add(7);
+        currentFPS.add(3);
+        currentFPS.add(0);  // unused
+        currentFPS.add(0);  // unused
     }
     
     @Override
@@ -445,7 +456,9 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         for (int i = 0; i < vertices.length; ++i) {
             int data[] = new int[2];
             
-            final int foregroundIconIndex = cvkScene.GetTextureAtlas().AddIcon(Integer.toString(7-(i*4)));
+            int digit = currentFPS.get(i);
+            
+            final int foregroundIconIndex = cvkScene.GetTextureAtlas().AddIcon(Integer.toString(digit));
             final int backgroundIconIndex = CVKIconTextureAtlas.TRANSPARENT_ICON_INDEX;
             
             // packed icon indices
@@ -833,6 +846,8 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
                 assert(pipelines.get(i) != VK_NULL_HANDLE);        
             }
         }
+        
+        CVKLOGGER.log(Level.INFO, "Graphics Pipeline created for FPSRenderable class.");
         return ret;
     }
         
@@ -840,8 +855,20 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
     @Override
     public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
-        try (MemoryStack stack = stackPush()) {
-            
+        // Destory the command buffers
+        if(null != commandBuffers && commandBuffers.size() > 0){
+            for(int i = 0; i < commandBuffers.size(); ++i){
+                vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), commandBuffers.get(i).GetVKCommandBuffer());
+            }
+        }
+        
+        // Destory pipeline and layout
+        if (0 != graphicsPipeline){
+            vkDestroyPipeline(cvkDevice.GetDevice(), graphicsPipeline, null);
+        }
+        
+        if (0 != pipelineLayout){
+            vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayout, null);
         }
         return ret;
     }
@@ -856,8 +883,7 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         }
         return ret;
     }
-        
-    //@Override    
+         
     public static int LoadShaders(CVKDevice cvkDevice) {
         int ret = VK_SUCCESS;
         
@@ -941,13 +967,47 @@ public class CVKFPSRenderable extends CVKTextForegroundRenderable{
         }        
         return ret;
     }
-    
+
+
     @Override
     public int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int imageIndex) {
         int ret = VK_SUCCESS;
+        
         // TODO Update uniforms that will be used in the next image
-               
+        
+        // Debug code to update the FPS value
+        ret = DebugUpdateFPS(cvkDevice, cvkSwapChain);
+        
         return ret;
+    }
+    
+    static int counter = 0;
+    private int DebugUpdateFPS(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain){
+        int ret = VK_SUCCESS;
+        
+        counter++;
+        
+        // Debug code to update every 100 frames
+        if (counter % 100 != 0)
+            return ret;
+        
+        int randTens = GetRandom(0,9);
+        int randOnes = GetRandom(0,9);
+        
+        currentFPS.set(0, randTens);
+        currentFPS.set(1, randOnes);
+        
+        // Convert to icon index
+        try(MemoryStack stack = stackPush()) {
+            // Update vertex buffers
+            ret = CreateVertexBuffers(stack, cvkDevice, cvkSwapChain);
+        }
+        
+        return ret;
+    }
+    
+    private int GetRandom(int min, int max){
+        return (int) ((Math.random() * ((max - min) + 1)) + min);
     }
     
     @Override

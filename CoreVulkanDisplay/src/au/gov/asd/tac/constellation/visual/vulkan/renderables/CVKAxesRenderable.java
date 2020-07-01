@@ -76,6 +76,9 @@ import static org.lwjgl.vulkan.VK10.vkCmdDraw;
 import static org.lwjgl.vulkan.VK10.vkCreateGraphicsPipelines;
 import static org.lwjgl.vulkan.VK10.vkCreatePipelineLayout;
 import static org.lwjgl.vulkan.VK10.vkEndCommandBuffer;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipeline;
+import static org.lwjgl.vulkan.VK10.vkDestroyPipelineLayout;
+import static org.lwjgl.vulkan.VK10.*;
 import org.lwjgl.vulkan.VkCommandBuffer;
 import org.lwjgl.vulkan.VkCommandBufferBeginInfo;
 import org.lwjgl.vulkan.VkGraphicsPipelineCreateInfo;
@@ -191,13 +194,15 @@ public class CVKAxesRenderable extends CVKRenderable {
     
     @Override
     public void Destroy(CVKDevice cvkDevice) {
-        // Destory pipeline
-        
+        DestroyPipeline(cvkDevice, null);
         // Destroy vertex buffers
         //vkDestroyBuffer(cvkDevice, vertexBuffer);
         //vkFreeMemory(cvkDevice, vertexBufferMemory);
         
-        // Detory command buffers
+        // Destroy command buffers
+        //vkDestroyShaderModule(cvkDevice.GetDevice(), vertShaderModule, 0);
+        //vkDestroyShaderModule(cvkDevice.GetDevice(), fragShaderModule, 0);
+        
     }
     
     @Override
@@ -491,9 +496,23 @@ public class CVKAxesRenderable extends CVKRenderable {
        
     public int DestroyPipeline(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
         int ret = VK_SUCCESS;
-        try (MemoryStack stack = stackPush()) {
-            // Destroy the command buffer
+        
+        // Destory the command buffers
+        if(null != commandBuffers && commandBuffers.size() > 0){
+            for(int i = 0; i < commandBuffers.size(); ++i){
+                vkFreeCommandBuffers(cvkDevice.GetDevice(), cvkDevice.GetCommandPoolHandle(), commandBuffers.get(i).GetVKCommandBuffer());
+            }
         }
+        
+        // Destory pipeline and layout
+        if (0 != graphicsPipeline){
+            vkDestroyPipeline(cvkDevice.GetDevice(), graphicsPipeline, null);
+        }
+        
+        if (0 != pipelineLayout){
+            vkDestroyPipelineLayout(cvkDevice.GetDevice(), pipelineLayout, null);
+        }
+        
         return ret;
     }
         
