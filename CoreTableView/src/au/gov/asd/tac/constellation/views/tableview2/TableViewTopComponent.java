@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -343,7 +344,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     }
 
     @Override
+    protected void componentShowing() {
+        this.setComponentVisible(true);
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }
+
+    @Override
     protected void handleNewGraph(final Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         final TableViewState previousState = currentState;
         updateState(graph);
         final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);

@@ -144,7 +144,8 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
 
     @Override
     protected void componentShowing() {
-        handleNewGraph(GraphManager.getDefault().getActiveGraph()); // test this
+        this.setComponentVisible(true);
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     @Override

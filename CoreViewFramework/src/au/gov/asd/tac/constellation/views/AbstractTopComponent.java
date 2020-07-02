@@ -43,6 +43,10 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
         return isVisible;
     }
 
+    protected void setComponentVisible(final boolean visibility) {
+        isVisible = visibility;
+    }
+
     /**
      * Builds and initialises the content for this top component. You should
      * call this method in the constructor of your TopComponent implementation

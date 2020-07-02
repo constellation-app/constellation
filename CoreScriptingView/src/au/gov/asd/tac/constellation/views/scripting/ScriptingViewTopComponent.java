@@ -88,6 +88,7 @@ public final class ScriptingViewTopComponent extends SwingTopComponent {
 
     @Override
     protected void componentShowing() {
+        this.setComponentVisible(true);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 

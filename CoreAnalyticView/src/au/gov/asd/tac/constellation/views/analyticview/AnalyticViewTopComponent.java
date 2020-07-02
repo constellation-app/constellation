@@ -198,6 +198,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void componentShowing() {
+        this.setComponentVisible(true);
         analyticViewPane.reset();
         analyticViewPane.getConfigurationPane().updateState(false);
     }
