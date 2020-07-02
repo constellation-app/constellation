@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.Graph;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -47,31 +48,6 @@ public class QualityControlAutoVetterNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of graphOpened method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testGraphOpened() {
-//        System.out.println("graphOpened");
-//        Graph graph = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.graphOpened(graph);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of graphClosed method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testGraphClosed() {
-//        System.out.println("graphClosed");
-//        Graph graph = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.graphClosed(graph);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
 //
 //    /**
 //     * Test of newActiveGraph method, of class QualityControlAutoVetter.
@@ -104,7 +80,7 @@ public class QualityControlAutoVetterNGTest {
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
-        final GraphReadMethods graph = null;
+        final Graph graph = null;
         QualityControlAutoVetter.updateQualityControlState(graph);
     }
 
@@ -200,17 +176,14 @@ public class QualityControlAutoVetterNGTest {
 //        fail("The test case is a prototype.");
 //    }
 //
-//    /**
-//     * Test of getInstance method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testGetInstance() {
-//        System.out.println("getInstance");
-//        QualityControlAutoVetter expResult = null;
-//        QualityControlAutoVetter result = QualityControlAutoVetter.getInstance();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+    /**
+     * Test of getInstance method, of class QualityControlAutoVetter.
+     */
+    @Test
+    public void testGetInstance() {
+        final QualityControlAutoVetter instance1 = QualityControlAutoVetter.getInstance();
+        final QualityControlAutoVetter instance2 = QualityControlAutoVetter.getInstance();
+        assertEquals(instance1, instance2);
+    }
     
 }
