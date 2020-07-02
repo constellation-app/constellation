@@ -32,7 +32,9 @@ import org.openide.util.NbBundle.Messages;
  * @author CrucisGamma
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.scatter3d.ArrangeInScatter3dAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInScatter3dAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/scatter/resources/scatter3d.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInScatter3dAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/scatter/resources/ScatterPlot3D.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1000, separatorBefore = 999),
     @ActionReference(path = "Toolbars/Arrange", position = 300),

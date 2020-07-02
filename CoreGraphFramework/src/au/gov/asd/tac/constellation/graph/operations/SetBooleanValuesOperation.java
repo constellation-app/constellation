@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.operations;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.BitSet;
@@ -37,14 +36,14 @@ public class SetBooleanValuesOperation extends GraphOperation {
     private int changeCount = 0;
     private final BitSet bitSet;
 
-    public SetBooleanValuesOperation(GraphReadMethods graph, GraphElementType elementType, int attribute) {
+    public SetBooleanValuesOperation(final GraphReadMethods graph, final GraphElementType elementType, final int attribute) {
         this.graph = graph;
         this.attribute = attribute;
         this.capacity = elementType.getElementCapacity(graph);
         this.bitSet = new BitSet(500);
     }
 
-    public void setValue(int element, boolean value) {
+    public void setValue(final int element, final boolean value) {
         boolean changed = value != graph.getBooleanValue(attribute, element);
         if (changed != bitSet.get(element)) {
             if (changed) {
@@ -57,14 +56,14 @@ public class SetBooleanValuesOperation extends GraphOperation {
     }
 
     @Override
-    public void execute(GraphWriteMethods graph) {
+    public void execute(final GraphWriteMethods graph) {
         for (int element = bitSet.nextSetBit(0); element >= 0; element = bitSet.nextSetBit(element + 1)) {
             graph.setBooleanValue(attribute, element, !graph.getBooleanValue(attribute, element));
         }
     }
 
     @Override
-    public void undo(GraphWriteMethods graph) {
+    public void undo(final GraphWriteMethods graph) {
         for (int element = bitSet.nextSetBit(0); element >= 0; element = bitSet.nextSetBit(element + 1)) {
             graph.setBooleanValue(attribute, element, !graph.getBooleanValue(attribute, element));
         }

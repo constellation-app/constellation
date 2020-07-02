@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,8 +61,8 @@ public class GaussianBlur {
 
     public static void gaussianBlurReal(final float[] sourceChannel, final float[] targetChannel,
             final int width, final int height, final int radius) {
-        if(sourceChannel.length == width * height){
-            if(sourceChannel.length <= targetChannel.length){
+        if (sourceChannel.length == width * height) {
+            if (sourceChannel.length <= targetChannel.length) {
                 final int rs = (int) Math.ceil(radius * 2.57);
                 for (int i = 0; i < height; i++) {
                     for (int j = 0; j < width; j++) {
@@ -87,8 +87,7 @@ public class GaussianBlur {
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
         }
-        
-        
+
     }
 
     public enum BoxBlurType {
@@ -99,9 +98,9 @@ public class GaussianBlur {
 
     public static void gaussianBlurBox(final float[] sourceChannel, float[] targetChannel,
             final int width, final int height, final int radius, final int passes, final BoxBlurType type) {
-        
-        if(sourceChannel.length == width * height){
-            if(sourceChannel.length <= targetChannel.length){
+
+        if (sourceChannel.length == width * height) {
+            if (sourceChannel.length <= targetChannel.length) {
                 float[] tempChannel = Arrays.copyOf(sourceChannel, sourceChannel.length);
                 int[] boxes = boxesForGauss(radius, passes);
                 for (int i = 0; i < passes; i++) {
@@ -128,7 +127,7 @@ public class GaussianBlur {
         } else {
             throw new IllegalArgumentException("Source channel does not have the dimensions provided.");
         }
-        
+
     }
 
     private static int[] boxesForGauss(final float sigma, final int n) {
@@ -272,7 +271,7 @@ public class GaussianBlur {
 
     public static void colorise(final float[] sourceChannel, final int[] targetChannel,
             final int threshold, final float severity) {
-        if(threshold >= 0 && threshold < 255){   
+        if (threshold >= 0 && threshold < 255) {
             GaussianBlur.normalise(sourceChannel, 255);
             for (int i = 0; i < sourceChannel.length; i++) {
                 final int paletteIndex = (int) Math.floor(sourceChannel[i]);

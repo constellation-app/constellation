@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.SceneBatcher;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ByteTextureBuffer;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import com.jogamp.common.nio.Buffers;
 import java.nio.ByteBuffer;
-import org.lwjgl.BufferUtils;
 
 /**
  *
@@ -50,23 +50,21 @@ public class VertexFlagsTexturiser {
     }
 
     public GLRenderableUpdateTask dispose() {
-//        return gl -> {
-//            if (vertexFlagsTexture != null) {
-//                vertexFlagsTexture.dispose(gl);
-//                vertexFlagsTexture = null;
-//            }
-//        };
-        return null;
+        return gl -> {
+            if (vertexFlagsTexture != null) {
+                vertexFlagsTexture.dispose(gl);
+                vertexFlagsTexture = null;
+            }
+        };
     }
 
     public GLRenderableUpdateTask createTexture(final VisualAccess access) {
-        final ByteBuffer flagsBuffer = BufferUtils.createByteBuffer(access.getVertexCount());
+        final ByteBuffer flagsBuffer = Buffers.newDirectByteBuffer(access.getVertexCount());
         for (int i = 0; i < access.getVertexCount(); i++) {
             bufferFlagsInfo(i, flagsBuffer, access);
         }
         flagsBuffer.flip();
-        //return gl -> vertexFlagsTexture = new ByteTextureBuffer(gl, flagsBuffer);
-        return null;
+        return gl -> vertexFlagsTexture = new ByteTextureBuffer(gl, flagsBuffer);
     }
 
     public GLRenderableUpdateTask updateFlags(final VisualAccess access, final VisualChange change) {
@@ -79,4 +77,5 @@ public class VertexFlagsTexturiser {
         flagsBuffer.put((byte) ((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0)));
         return pos;
     }
+
 }

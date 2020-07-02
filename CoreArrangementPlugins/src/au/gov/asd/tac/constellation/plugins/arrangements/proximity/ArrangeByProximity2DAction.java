@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.proximity;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -32,7 +32,9 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.misc.ArrangeByProximity2DAction")
-@ActionRegistration(displayName = "#CTL_ArrangeByProximity2DAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeByProximity2DAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/proximity/resources/arrangeByProximity.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 300),
     @ActionReference(path = "Shortcuts", name = "C-P")

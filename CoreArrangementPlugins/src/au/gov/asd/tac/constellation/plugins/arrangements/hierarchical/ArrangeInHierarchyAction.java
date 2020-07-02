@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hierarchical;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
-import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
+import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +43,9 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInHierarchyAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/hierarchical/resources/hierarchical.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInHierarchyAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/hierarchical/resources/arrangeInHierarchy.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 400),
     @ActionReference(path = "Shortcuts", name = "C-H")

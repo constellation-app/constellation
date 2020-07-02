@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class ManualGraphMonitor {
 
     public interface GraphMonitorListener {
 
-        public void graphChanged(GraphReadMethods graph);
+        public void graphChanged(final GraphReadMethods graph);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ManualGraphMonitor {
      *
      * @param listener the new listener.
      */
-    public final void setStructureListener(GraphMonitorListener listener) {
+    public final void setStructureListener(final GraphMonitorListener listener) {
         if (structureListener != null) {
             removeListener(structureListener);
         }
@@ -80,33 +80,33 @@ public class ManualGraphMonitor {
      *
      * @param listener the new listener.
      */
-    public final void setAttributeListener(GraphMonitorListener listener) {
+    public final void setAttributeListener(final GraphMonitorListener listener) {
         if (attributeListener != null) {
             removeListener(attributeListener);
         }
         attributeListener = listener == null ? null : addListener(listener);
     }
 
-    public void setAttributeListener(final GraphElementType elementType, final Collection<String> labels, GraphMonitorListener listener) {
-        for (String label : labels) {
+    public void setAttributeListener(final GraphElementType elementType, final Collection<String> labels, final GraphMonitorListener listener) {
+        for (final String label : labels) {
             setAttributeListener(elementType, label, listener);
         }
     }
 
-    public void setAttributeListener(final GraphElementType elementType, final String label, GraphMonitorListener listener) {
+    public void setAttributeListener(final GraphElementType elementType, final String label, final GraphMonitorListener listener) {
 
         if (label == null) {
             return;
         }
 
         // Create a key for this attribute
-        AttributeKey attributeKey = new AttributeKey(elementType, label);
+        final AttributeKey attributeKey = new AttributeKey(elementType, label);
 
         // Are we removing this attribute
         if (listener == null) {
 
             // Remove any existing attribute record
-            AttributeRecord attributeRecord = attributes.remove(attributeKey);
+            final AttributeRecord attributeRecord = attributes.remove(attributeKey);
             if (attributeRecord != null) {
                 removeListener(attributeRecord.listener);
                 if (attributeRecord.updateIndex >= 0) {
@@ -129,7 +129,7 @@ public class ManualGraphMonitor {
         }
     }
 
-    public final void setGraph(GraphReadMethods graph) {
+    public final void setGraph(final GraphReadMethods graph) {
         globalModificationCounter = graph.getGlobalModificationCounter();
         structureModificationCounter = graph.getStructureModificationCounter();
         attributeModificationCounter = graph.getAttributeModificationCounter();
@@ -155,7 +155,7 @@ public class ManualGraphMonitor {
      * @param graph the graph that this monitor is monitoring.
      * @param produceEvents should the update notify the listeners?
      */
-    public void update(GraphReadMethods graph, boolean produceEvents) {
+    public void update(final GraphReadMethods graph, final boolean produceEvents) {
 
         // Move on to the next update
         currentUpdate++;
@@ -201,14 +201,14 @@ public class ManualGraphMonitor {
         }
     }
 
-    private void resetAttributes(GraphReadMethods graph) {
+    private void resetAttributes(final GraphReadMethods graph) {
 
         if (VERBOSE) {
             System.out.println("GRAPH MONITOR: recreating attributes");
         }
 
         updateAttributesCount = 0;
-        for (Entry<AttributeKey, AttributeRecord> entry : attributes.entrySet()) {
+        for (final Entry<AttributeKey, AttributeRecord> entry : attributes.entrySet()) {
 
             AttributeRecord attributeRecord = entry.getValue();
 
@@ -225,10 +225,10 @@ public class ManualGraphMonitor {
         }
     }
 
-    private void updateAttributes(GraphReadMethods graph, boolean produceEvents) {
+    private void updateAttributes(final GraphReadMethods graph, final boolean produceEvents) {
         AttributeRecord[] copy = Arrays.copyOf(updateAttributes, updateAttributesCount);
 
-        for (AttributeRecord attributeRecord : copy) {
+        for (final AttributeRecord attributeRecord : copy) {
 
             // Has the modification counter changed?
             long oldModificationCounter = attributeRecord.modificationCounter;
@@ -251,7 +251,7 @@ public class ManualGraphMonitor {
         private final GraphElementType elementType;
         private final String label;
 
-        public AttributeKey(GraphElementType elementType, String label) {
+        public AttributeKey(final GraphElementType elementType, final String label) {
             this.elementType = elementType;
             this.label = label;
         }
@@ -262,7 +262,7 @@ public class ManualGraphMonitor {
         }
 
         @Override
-        public boolean equals(Object other) {
+        public boolean equals(final Object other) {
             if (other instanceof AttributeKey) {
                 AttributeKey attributeKey = (AttributeKey) other;
                 return elementType == attributeKey.elementType && label.equals(attributeKey.label);
@@ -283,7 +283,7 @@ public class ManualGraphMonitor {
         // the position in the updateAttributes array or -1 if no such attribute exists in the current graph
         private int updateIndex;
 
-        public AttributeRecord(GraphElementType elementType, String label, ListenerRecord listener) {
+        public AttributeRecord(final GraphElementType elementType, final String label, final ListenerRecord listener) {
             this.elementType = elementType;
             this.label = label;
             this.listener = listener;
@@ -296,23 +296,23 @@ public class ManualGraphMonitor {
         private long lastUpdate = -1;
         private int listenerCount = 1;
 
-        public ListenerRecord(GraphMonitorListener listener) {
+        public ListenerRecord(final GraphMonitorListener listener) {
             this.listener = listener;
         }
 
-        public void graphChanged(GraphReadMethods graph) {
+        public void graphChanged(final GraphReadMethods graph) {
             if (lastUpdate != currentUpdate) {
                 lastUpdate = currentUpdate;
                 listener.graphChanged(graph);
             }
         }
 
-        public void graphChangedAlways(GraphReadMethods graph) {
+        public void graphChangedAlways(final GraphReadMethods graph) {
             listener.graphChanged(graph);
         }
     }
 
-    protected ListenerRecord addListener(GraphMonitorListener listener) {
+    protected ListenerRecord addListener(final GraphMonitorListener listener) {
         ListenerRecord listenerRecord = listeners.get(listener);
         if (listenerRecord == null) {
             listenerRecord = new ListenerRecord(listener);
@@ -324,7 +324,7 @@ public class ManualGraphMonitor {
         }
     }
 
-    protected void removeListener(ListenerRecord listenerRecord) {
+    protected void removeListener(final ListenerRecord listenerRecord) {
         if (--listenerRecord.listenerCount == 0) {
             listeners.remove(listenerRecord.listener);
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,17 +209,18 @@ public enum CalculatorConstant {
         }
         return directoryString.toString();
     }
-    
+
     private class AnalysisConstants {
+
         private static final String GRAPH_ANALYSIS = "Graph Analysis";
         private static final String NODE_LINK_ANALYSIS = "Node Link Analysis";
         private static final String NODE_NEIGHBOUR_ANALYSIS = "Node Neighbour Analysis";
         private static final String TRANSACTION_ANALYSIS = "Transaction Analysis";
-        
+
         private static final String ARITHMETIC_OPERATORS = "Arithmetic Operators";
         private static final String COMPARISON_OPERATORS = "Comparison Operators";
         private static final String LOGICAL_OPERATORS = "Logical Operators";
-        
+
         private static final String DATETIME_PROCESSING = "DateTime Processing";
         private static final String LIST_METHODS = "List Methods";
         private static final String NUMERICAL_FUNCTIONS = "Numerical Functions";

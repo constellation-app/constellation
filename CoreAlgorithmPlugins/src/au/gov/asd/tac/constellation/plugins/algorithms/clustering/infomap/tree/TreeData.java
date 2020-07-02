@@ -73,7 +73,7 @@ public class TreeData {
     }
 
     public NodeBase getLeafNode(final int index) {
-        if(index < leafNodes.size()){
+        if (index < leafNodes.size()) {
             return leafNodes.get(index);
         } else {
             throw new IllegalArgumentException();

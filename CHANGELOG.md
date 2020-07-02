@@ -1,14 +1,35 @@
 # Constellation Changes
 
+## 2020-06-01 Changes in June 2020
+* Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 
+* Moved the creation of `QUERY_NAME_PARAMETER` and `DATETIME_RANGE_PARAMETER` within `CoreGlobalParameters` and can be accessed by direct reference; i.e. `CoreGlobalParameters.QUERY_NAME_PARAMETERS`.
+
 ## 2020-05-01 Changes in May 2020 
 * Added feedback for delimiter import.
+* Added basic support for MacOS.
+* Added `ProjectUpdater` which will manage adding dependencies to the `project.xml` file.
+    * The `ivy.xml` file is now located at `CoreDependencies/src/ivy.xml`.
+    * The `ivysettings.xml` file is now located at `ProjectUpdater/src/ivysettings.xml`.
+* Fixed a label rendering bug on MacOS.
+* Fixed a DPI scaling bug on MacOS and Windows.
 * Fixed a bug effecting the histogram scrolling.
 * Fixed a bug preventing v1 graphs from being open.
+* Moved `ImmutableObjectCache`, `IntHashSet` and `Timer` from the Graph Framework module to the Utilities module.
+* Removed deprecated methods from the graph API - `Graph#getWritableGraphOnEDT`, `Graph#undo`, `Graph#redo` and `GraphWriteMethods#addAttribute`.
+* Removed `GraphUtilites` from the Graph Framework module as it was unused.
+* Updated ReadableGraph to allow use with the try-with-resources pattern.
 * Updated ImportController's processImport function to return the list of files it has imported.
 * Updated parameter types for `OverviewPanel.setExtentPOV()` from longs to doubles.
 * Updated the `constellationapplication/netbeans-runner` docker image to `11.3.2` to include `python3` so that automation can be done via the `build-zip.sh` script in `constellation-app/constellation-applications`
 
+## 2020-04-03 Changes in April 2020
+* Added search feature to Table View Column Selection.
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
+
 ## 2020-04-01 Changes in April 2020
+* Fixed the mouse controls of the Map View to be consistent with the graph view.
+* Fixed a bug that caused custom markers to disappear
 * Added search feature to Table View Column Selection.
 * Added `functions.sh` to reuse common utility methods. This can be used by scripts related to Travis.
 * Added Layers view to the Experimental views tab.
@@ -34,7 +55,6 @@
 * Updated the java source detected by SonarQube to check for Java 11.
 * Updated `build.xml` and `.travis\build-zip.sh` with support for MacOSX and a temporary hardcoding of version numbers.
 * Updated `deobfuscate()` in `PasswordDeobfuscator` to now return a String instead of a CharSequence.
-
 
 ## 2020-03-01 Changes in March 2020
 * Added new module Core View Framework containing `AbstractTopComponent` and other related classes.

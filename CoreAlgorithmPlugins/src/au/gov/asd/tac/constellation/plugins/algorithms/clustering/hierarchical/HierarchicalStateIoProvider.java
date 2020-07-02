@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,7 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
-    
+
     private static final String MOD_COUNT = "mod_count";
     private static final String STRUC_MOD_COUNT = "struc_mod_count";
     private static final String INTERACTIVE = "interactive";
@@ -176,7 +176,6 @@ public class HierarchicalStateIoProvider extends AbstractGraphIOProvider {
                 for (final FastNewman.Group group : state.groups) {
                     if (group != null) {
                         jsonGenerator.writeStartObject();
-                        graph.getVertexPosition(state.steps);
                         jsonGenerator.writeNumberField("vertex", group.getVertex());
                         jsonGenerator.writeNumberField("merge_step", group.getMergeStep());
                         jsonGenerator.writeNumberField("single_step", group.getSingleStep());

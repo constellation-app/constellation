@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.ComponentSubgraph;
 
@@ -38,6 +39,6 @@ public final class GraphComponentArranger extends GraphTaxonomyArranger {
 
     @Override
     protected GraphTaxonomy getTaxonomy(final GraphWriteMethods wg) {
-        return GraphUtilities.getComponents(wg);
+        return ArrangementUtilities.getComponents(wg);
     }
 }

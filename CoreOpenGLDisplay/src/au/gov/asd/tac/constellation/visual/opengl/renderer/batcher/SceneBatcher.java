@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.Arrays;
-import org.lwjgl.BufferUtils;
 
 /**
  * An interface for classes that coordinate the creation, updating and drawing
@@ -60,7 +61,7 @@ public interface SceneBatcher {
      * @param mvMatrix the model-view matrix.
      * @param pMatrix the projection matrix.
      */
-    public void drawBatch(/*final GL30 gl, */final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix);
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix);
 
     /**
      * Create the shader with which to draw this SceneBatcher's {@link Batch}.
@@ -68,7 +69,7 @@ public interface SceneBatcher {
      * @param gl the current OpenGL context.
      * @throws IOException if an IO error occurs.
      */
-    public void createShader(/*final GL30 gl*/) throws IOException;
+    public void createShader(final GL3 gl) throws IOException;
 
     /**
      * Create a task to dispose of any held batches from a given GL context.
@@ -113,25 +114,25 @@ public interface SceneBatcher {
     @FunctionalInterface
     public static interface ByteBufferConnection {
 
-        ByteBuffer connect(/*final GL30 gl*/);
+        ByteBuffer connect(final GL3 gl);
     }
 
     @FunctionalInterface
     public static interface IntBufferConnection {
 
-        IntBuffer connect(/*final GL30 gl*/);
+        IntBuffer connect(final GL3 gl);
     }
 
     @FunctionalInterface
     public static interface FloatBufferConnection {
 
-        FloatBuffer connect(/*final GL30 gl*/);
+        FloatBuffer connect(final GL3 gl);
     }
 
     @FunctionalInterface
     public static interface BufferDisconnection {
 
-        void disconnect(/*final GL30 gl*/);
+        void disconnect(final GL3 gl);
     }
 
     public static GLRenderableUpdateTask updateIntBufferTask(final VisualChange change, final VisualAccess access, final IntBufferOperation operation, final IntBufferConnection connector, final BufferDisconnection disconnector, final int width) {
@@ -143,7 +144,7 @@ public interface SceneBatcher {
     public static GLRenderableUpdateTask updateIntBufferTask(final VisualChange change, final VisualAccess access, final IntBufferOperation operation, final IntBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final IntBuffer updateBuffer = BufferUtils.createIntBuffer(width * numChanges);
+        final IntBuffer updateBuffer = Buffers.newDirectIntBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -155,21 +156,20 @@ public interface SceneBatcher {
         }
         final int numUpdates = updatePos;
         updateBuffer.flip();
-//        return gl -> {
-//            final IntBuffer buffer = connector.connect(gl);
-//            for (int i = 0; i < numUpdates; i++) {
-//                buffer.position(bufferUpdatePositions[i] * width);
-//                for (boolean update : updateMask) {
-//                    if (update) {
-//                        buffer.put(updateBuffer.get());
-//                    } else {
-//                        buffer.get();
-//                    }
-//                }
-//            }
-//            disconnector.disconnect(gl);
-//        };
-return null;
+        return gl -> {
+            final IntBuffer buffer = connector.connect(gl);
+            for (int i = 0; i < numUpdates; i++) {
+                buffer.position(bufferUpdatePositions[i] * width);
+                for (boolean update : updateMask) {
+                    if (update) {
+                        buffer.put(updateBuffer.get());
+                    } else {
+                        buffer.get();
+                    }
+                }
+            }
+            disconnector.disconnect(gl);
+        };
     }
 
     public static GLRenderableUpdateTask updateFloatBufferTask(final VisualChange change, final VisualAccess access, final FloatBufferOperation operation, final FloatBufferConnection connector, final BufferDisconnection disconnector, final int width) {
@@ -181,7 +181,7 @@ return null;
     public static GLRenderableUpdateTask updateFloatBufferTask(final VisualChange change, final VisualAccess access, final FloatBufferOperation operation, final FloatBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final FloatBuffer updateBuffer = BufferUtils.createFloatBuffer(width * numChanges);
+        final FloatBuffer updateBuffer = Buffers.newDirectFloatBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -193,21 +193,20 @@ return null;
         }
         final int numUpdates = updatePos;
         updateBuffer.flip();
-//        return gl -> {
-//            final FloatBuffer buffer = connector.connect(gl);
-//            for (int i = 0; i < numUpdates; i++) {
-//                buffer.position(bufferUpdatePositions[i] * width);
-//                for (boolean update : updateMask) {
-//                    if (update) {
-//                        buffer.put(updateBuffer.get());
-//                    } else {
-//                        buffer.get();
-//                    }
-//                }
-//            }
-//            disconnector.disconnect(gl);
-//        };
-return null;
+        return gl -> {
+            final FloatBuffer buffer = connector.connect(gl);
+            for (int i = 0; i < numUpdates; i++) {
+                buffer.position(bufferUpdatePositions[i] * width);
+                for (boolean update : updateMask) {
+                    if (update) {
+                        buffer.put(updateBuffer.get());
+                    } else {
+                        buffer.get();
+                    }
+                }
+            }
+            disconnector.disconnect(gl);
+        };
     }
 
     public static GLRenderableUpdateTask updateByteBufferTask(final VisualChange change, final VisualAccess access, final ByteBufferOperation operation, final ByteBufferConnection connector, final BufferDisconnection disconnector, final int width) {
@@ -219,7 +218,7 @@ return null;
     public static GLRenderableUpdateTask updateByteBufferTask(final VisualChange change, final VisualAccess access, final ByteBufferOperation operation, final ByteBufferConnection connector, final BufferDisconnection disconnector, final boolean[] updateMask) {
         final int width = updateMask.length;
         final int numChanges = change.getSize();
-        final ByteBuffer updateBuffer = BufferUtils.createByteBuffer(width * numChanges);
+        final ByteBuffer updateBuffer = Buffers.newDirectByteBuffer(width * numChanges);
         final int[] bufferUpdatePositions = new int[numChanges];
         int updatePos = 0;
         for (int i = 0; i < numChanges; i++) {
@@ -231,20 +230,19 @@ return null;
         }
         final int numUpdates = updatePos;
         updateBuffer.flip();
-//        return gl -> {
-//            final ByteBuffer buffer = connector.connect(gl);
-//            for (int i = 0; i < numUpdates; i++) {
-//                buffer.position(bufferUpdatePositions[i] * width);
-//                for (boolean update : updateMask) {
-//                    if (update) {
-//                        buffer.put(updateBuffer.get());
-//                    } else {
-//                        buffer.get();
-//                    }
-//                }
-//            }
-//            disconnector.disconnect(gl);
-//        };
-        return null;
+        return gl -> {
+            final ByteBuffer buffer = connector.connect(gl);
+            for (int i = 0; i < numUpdates; i++) {
+                buffer.position(bufferUpdatePositions[i] * width);
+                for (boolean update : updateMask) {
+                    if (update) {
+                        buffer.put(updateBuffer.get());
+                    } else {
+                        buffer.get();
+                    }
+                }
+            }
+            disconnector.disconnect(gl);
+        };
     }
 }

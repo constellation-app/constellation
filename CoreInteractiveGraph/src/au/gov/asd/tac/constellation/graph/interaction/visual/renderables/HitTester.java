@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,15 @@
 package au.gov.asd.tac.constellation.graph.interaction.visual.renderables;
 
 import au.gov.asd.tac.constellation.graph.interaction.framework.HitState;
+import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.AutoDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
+import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
+import java.nio.FloatBuffer;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.BlockingDeque;
@@ -58,10 +63,8 @@ public final class HitTester implements GLRenderable {
     // The buffer to read from. This is hardcoded as their seems to be no real reason to change it,
     // but perhaps it should be looked up from the corersponding GraphRenderable. At the moment it simply
     // matches the buffer name used inside the if(doHitTesting) {} block of GraphRenderable's display method.
-    // TODO_TT: 
-    private final int hitTestBufferName = -1;
-//    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
-    private final CVKVisualProcessor parent;
+    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
+    private final GLVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
     private final BlockingDeque<HitTestRequest> requestQueue = new LinkedBlockingDeque<>();
@@ -71,7 +74,7 @@ public final class HitTester implements GLRenderable {
      *
      * @param parent
      */
-    public HitTester(final CVKVisualProcessor parent) {
+    public HitTester(final GLVisualProcessor parent) {
         this.parent = parent;
         hitTestFboName = new int[1];
         hitTestDepthBufferName = new int[1];
@@ -84,36 +87,33 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void init(final AutoDrawable drawable) {
-//        final GL30 gl = drawable.getGL().getGL3();
-//        // Hit testing.
-//        // Create an FBO name and bind a new FBO.
-//        // TODO_TT:
-////        gl.glGenFramebuffers(1, hitTestFboName, 0);
-//        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
-//
-//        // Create a depth buffer object and attach it.
-//        // TODO_TT:
-////        gl.glGenRenderbuffers(1, hitTestDepthBufferName, 0);
-//        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-//        GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_DEPTH_COMPONENT32F, width, height);
-//
-//        // Create an RBO and bind it.
-//        // TODO_TT:
-////        gl.glGenRenderbuffers(1, hitTestRboName, 0);
-//        GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestRboName[0]);
-//
-//        // Allocate memory to back the RBO.
-//        // Using R32F gives us plenty of unique values (2**22 in the mantissa without
-//        // worrying about floating point stuff).
-//        GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_R32F, width, height);
-//
-//        // Attach the render buffers.
-//        GL30.glFramebufferRenderbuffer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-//        GL30.glFramebufferRenderbuffer(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, GL30.GL_RENDERBUFFER, hitTestRboName[0]);
-//
-//        GLTools.checkFramebufferStatus(gl, "ht-check");
-//        parent.setHitTestFboName(hitTestFboName[0]);
+    public void init(final GLAutoDrawable drawable) {
+        final GL3 gl = drawable.getGL().getGL3();
+        // Hit testing.
+        // Create an FBO name and bind a new FBO.
+        gl.glGenFramebuffers(1, hitTestFboName, 0);
+        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
+
+        // Create a depth buffer object and attach it.
+        gl.glGenRenderbuffers(1, hitTestDepthBufferName, 0);
+        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32F, width, height);
+
+        // Create an RBO and bind it.
+        gl.glGenRenderbuffers(1, hitTestRboName, 0);
+        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+
+        // Allocate memory to back the RBO.
+        // Using R32F gives us plenty of unique values (2**22 in the mantissa without
+        // worrying about floating point stuff).
+        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+
+        // Attach the render buffers.
+        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+
+        GLTools.checkFramebufferStatus(gl, "ht-check");
+        parent.setHitTestFboName(hitTestFboName[0]);
     }
 
     /**
@@ -136,7 +136,7 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void update(final AutoDrawable drawable) {
+    public void update(final GLAutoDrawable drawable) {
         if (requestQueue != null && !requestQueue.isEmpty()) {
             requestQueue.forEach(request -> notificationQueues.add(request.getNotificationQueue()));
             hitTestRequest = requestQueue.getLast();
@@ -145,78 +145,76 @@ public final class HitTester implements GLRenderable {
     }
 
     @Override
-    public void display(final AutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
-//        final GL30 gl = drawable.getGL().getGL3();
-//        if (needsResize) {
-//            GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-//            GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_DEPTH_COMPONENT32, width, height);
-//
-//            GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, hitTestRboName[0]);
-//            GL30.glRenderbufferStorage(GL30.GL_RENDERBUFFER, GL30.GL_R32F, width, height);
-//
-//            GL30.glBindRenderbuffer(GL30.GL_RENDERBUFFER, 0);
-//            needsResize = false;
-//        }
-//        if (!notificationQueues.isEmpty()) {
-//            final int x = hitTestRequest.getX();
-//            final int y = hitTestRequest.getY();
-//            
-//             
-//            //  Windows-DPI-Scaling
-//            //
-//            // If JOGL is ever fixed or another solution is found, either change
-//            // needsManualDPIScaling to return false (so there is effectively no
-//            // DPI scaling here) or to remove dpiScaleY below.            
-//            float dpiScaleY = 1.0f;
-//            if (GLTools.needsManualDPIScaling()){
-//                dpiScaleY = parent.getDPIScaleY();
-//            }
-//            final int surfaceHeight = (int)(drawable.getSurfaceHeight() * dpiScaleY);
-//
-//            // Allocate 3 floats for RGB values.
-//            FloatBuffer fbuf = BufferUtils.createFloatBuffer(3);
-//
-//            GL30.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
-//            GL30.glReadBuffer(hitTestBufferName);
-//            GL30.glReadPixels(x, surfaceHeight - y, 1, 1, GL30.GL_RGB, GL30.GL_FLOAT, fbuf);
-//
-//            // There are enough colors in the buffer that we only need worry about
-//            // r component for now. That gives us 2**22 distinct values.
-//            final int r = (int) (fbuf.get(0));
-//
-//            final int id;
-//            final HitType currentHitType;
-//            if (r == 0) {
-//                currentHitType = HitType.NO_ELEMENT;
-//                id = -1;
-//            } else {
-//                currentHitType = r > 0 ? HitType.VERTEX : HitType.TRANSACTION;
-//                id = r > 0 ? r - 1 : -r - 1;
-//            }
-//
-//            final HitState hitState = hitTestRequest.getHitState();
-//            hitState.setCurrentHitId(id);
-//            hitState.setCurrentHitType(currentHitType);
-//            if (hitTestRequest.getFollowUpOperation() != null) {
-//                hitTestRequest.getFollowUpOperation().accept(hitState);
-//            }
-//            synchronized (this.notificationQueues) {
-//                while (!notificationQueues.isEmpty()) {
-//                    final Queue<HitState> queue = notificationQueues.remove();
-//                    if (queue != null) {
-//                        queue.add(hitState);
-//                    }
-//                }
-//            }
-//        }
+    public void display(final GLAutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
+        final GL3 gl = drawable.getGL().getGL3();
+        if (needsResize) {
+            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32, width, height);
+
+            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+
+            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, 0);
+            needsResize = false;
+        }
+        if (!notificationQueues.isEmpty()) {
+            final int x = hitTestRequest.getX();
+            final int y = hitTestRequest.getY();
+
+            //  Windows-DPI-Scaling
+            //
+            // If JOGL is ever fixed or another solution is found, either change
+            // needsManualDPIScaling to return false (so there is effectively no
+            // DPI scaling here) or to remove dpiScaleY below.            
+            float dpiScaleY = 1.0f;
+            if (GLTools.needsManualDPIScaling()) {
+                dpiScaleY = parent.getDPIScaleY();
+            }
+            final int surfaceHeight = (int) (drawable.getSurfaceHeight() * dpiScaleY);
+
+            // Allocate 3 floats for RGB values.
+            FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
+
+            gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
+            gl.glReadBuffer(hitTestBufferName);
+            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL3.GL_RGB, GL3.GL_FLOAT, fbuf);
+
+            // There are enough colors in the buffer that we only need worry about
+            // r component for now. That gives us 2**22 distinct values.
+            final int r = (int) (fbuf.get(0));
+
+            final int id;
+            final HitType currentHitType;
+            if (r == 0) {
+                currentHitType = HitType.NO_ELEMENT;
+                id = -1;
+            } else {
+                currentHitType = r > 0 ? HitType.VERTEX : HitType.TRANSACTION;
+                id = r > 0 ? r - 1 : -r - 1;
+            }
+
+            final HitState hitState = hitTestRequest.getHitState();
+            hitState.setCurrentHitId(id);
+            hitState.setCurrentHitType(currentHitType);
+            if (hitTestRequest.getFollowUpOperation() != null) {
+                hitTestRequest.getFollowUpOperation().accept(hitState);
+            }
+            synchronized (this.notificationQueues) {
+                while (!notificationQueues.isEmpty()) {
+                    final Queue<HitState> queue = notificationQueues.remove();
+                    if (queue != null) {
+                        queue.add(hitState);
+                    }
+                }
+            }
+        }
     }
 
     @Override
-    public void dispose(final AutoDrawable drawable) {
-        // TODO_TT: this whole func
-//        final GL30 gl = drawable.getGL().getGL3();
-//        gl.glDeleteRenderbuffers(1, hitTestRboName, 0);
-//        gl.glDeleteRenderbuffers(1, hitTestDepthBufferName, 0);
-//        gl.glDeleteFramebuffers(1, hitTestFboName, 0);
+    public void dispose(final GLAutoDrawable drawable) {
+        final GL3 gl = drawable.getGL().getGL3();
+        gl.glDeleteRenderbuffers(1, hitTestRboName, 0);
+        gl.glDeleteRenderbuffers(1, hitTestDepthBufferName, 0);
+        gl.glDeleteFramebuffers(1, hitTestFboName, 0);
     }
 }

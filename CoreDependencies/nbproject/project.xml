@@ -117,11 +117,66 @@
                 <package>com.jogamp.common.util.cache</package>
                 <package>com.jogamp.common.util.locks</package>
                 <package>com.jogamp.gluegen.runtime</package>
+                <package>com.jogamp.gluegen.runtime.opengl</package>
+                <package>com.jogamp.graph.curve</package>
+                <package>com.jogamp.graph.curve.opengl</package>
+                <package>com.jogamp.graph.curve.tess</package>
+                <package>com.jogamp.graph.font</package>
+                <package>com.jogamp.graph.geom</package>
                 <package>com.jogamp.nativewindow</package>
+                <package>com.jogamp.nativewindow.awt</package>
                 <package>com.jogamp.nativewindow.egl</package>
+                <package>com.jogamp.nativewindow.ios</package>
                 <package>com.jogamp.nativewindow.javafx</package>
+                <package>com.jogamp.nativewindow.macosx</package>
                 <package>com.jogamp.nativewindow.swt</package>
                 <package>com.jogamp.nativewindow.util</package>
+                <package>com.jogamp.nativewindow.windows</package>
+                <package>com.jogamp.nativewindow.x11</package>
+                <package>com.jogamp.newt</package>
+                <package>com.jogamp.newt.awt</package>
+                <package>com.jogamp.newt.awt.applet</package>
+                <package>com.jogamp.newt.event</package>
+                <package>com.jogamp.newt.event.awt</package>
+                <package>com.jogamp.newt.javafx</package>
+                <package>com.jogamp.newt.opengl</package>
+                <package>com.jogamp.newt.opengl.util</package>
+                <package>com.jogamp.newt.opengl.util.stereo</package>
+                <package>com.jogamp.newt.swt</package>
+                <package>com.jogamp.newt.util</package>
+                <package>com.jogamp.newt.util.applet</package>
+                <package>com.jogamp.opencl</package>
+                <package>com.jogamp.opencl.gl</package>
+                <package>com.jogamp.opencl.impl</package>
+                <package>com.jogamp.opencl.llb</package>
+                <package>com.jogamp.opencl.llb.impl</package>
+                <package>com.jogamp.opencl.spi</package>
+                <package>com.jogamp.opencl.util</package>
+                <package>com.jogamp.opencl.util.concurrent</package>
+                <package>com.jogamp.opengl</package>
+                <package>com.jogamp.opengl.awt</package>
+                <package>com.jogamp.opengl.egl</package>
+                <package>com.jogamp.opengl.fixedfunc</package>
+                <package>com.jogamp.opengl.glu</package>
+                <package>com.jogamp.opengl.glu.gl2</package>
+                <package>com.jogamp.opengl.glu.gl2es1</package>
+                <package>com.jogamp.opengl.math</package>
+                <package>com.jogamp.opengl.math.geom</package>
+                <package>com.jogamp.opengl.swt</package>
+                <package>com.jogamp.opengl.util</package>
+                <package>com.jogamp.opengl.util.av</package>
+                <package>com.jogamp.opengl.util.awt</package>
+                <package>com.jogamp.opengl.util.gl2</package>
+                <package>com.jogamp.opengl.util.glsl</package>
+                <package>com.jogamp.opengl.util.glsl.fixedfunc</package>
+                <package>com.jogamp.opengl.util.glsl.sdk</package>
+                <package>com.jogamp.opengl.util.packrect</package>
+                <package>com.jogamp.opengl.util.stereo</package>
+                <package>com.jogamp.opengl.util.stereo.generic</package>
+                <package>com.jogamp.opengl.util.texture</package>
+                <package>com.jogamp.opengl.util.texture.awt</package>
+                <package>com.jogamp.opengl.util.texture.spi</package>
+                <package>com.jogamp.opengl.util.texture.spi.awt</package>
                 <package>com.kenai.constantine</package>
                 <package>com.kenai.constantine.platform</package>
                 <package>com.kenai.jffi</package>
@@ -330,6 +385,47 @@
                 <package>it.geosolutions.io.input.adapter</package>
                 <package>it.geosolutions.io.output</package>
                 <package>it.geosolutions.io.output.adapter</package>
+                <package>it.geosolutions.jaiext</package>
+                <package>it.geosolutions.jaiext.affine</package>
+                <package>it.geosolutions.jaiext.algebra</package>
+                <package>it.geosolutions.jaiext.algebra.constant</package>
+                <package>it.geosolutions.jaiext.bandcombine</package>
+                <package>it.geosolutions.jaiext.bandmerge</package>
+                <package>it.geosolutions.jaiext.bandselect</package>
+                <package>it.geosolutions.jaiext.binarize</package>
+                <package>it.geosolutions.jaiext.border</package>
+                <package>it.geosolutions.jaiext.buffer</package>
+                <package>it.geosolutions.jaiext.classifier</package>
+                <package>it.geosolutions.jaiext.colorconvert</package>
+                <package>it.geosolutions.jaiext.colorindexer</package>
+                <package>it.geosolutions.jaiext.crop</package>
+                <package>it.geosolutions.jaiext.errordiffusion</package>
+                <package>it.geosolutions.jaiext.format</package>
+                <package>it.geosolutions.jaiext.imagefunction</package>
+                <package>it.geosolutions.jaiext.interpolators</package>
+                <package>it.geosolutions.jaiext.iterators</package>
+                <package>it.geosolutions.jaiext.iterators.nl</package>
+                <package>it.geosolutions.jaiext.jts</package>
+                <package>it.geosolutions.jaiext.lookup</package>
+                <package>it.geosolutions.jaiext.mosaic</package>
+                <package>it.geosolutions.jaiext.nullop</package>
+                <package>it.geosolutions.jaiext.numeric</package>
+                <package>it.geosolutions.jaiext.orderdither</package>
+                <package>it.geosolutions.jaiext.piecewise</package>
+                <package>it.geosolutions.jaiext.range</package>
+                <package>it.geosolutions.jaiext.rescale</package>
+                <package>it.geosolutions.jaiext.rlookup</package>
+                <package>it.geosolutions.jaiext.scale</package>
+                <package>it.geosolutions.jaiext.shadedrelief</package>
+                <package>it.geosolutions.jaiext.stats</package>
+                <package>it.geosolutions.jaiext.swing</package>
+                <package>it.geosolutions.jaiext.translate</package>
+                <package>it.geosolutions.jaiext.utilities</package>
+                <package>it.geosolutions.jaiext.utilities.shape</package>
+                <package>it.geosolutions.jaiext.vectorbin</package>
+                <package>it.geosolutions.jaiext.warp</package>
+                <package>it.geosolutions.jaiext.zonal</package>
+                <package>it.geosolutions.rendered.viewer</package>
                 <package>japplemenubar</package>
                 <package>javatests</package>
                 <package>javax.activation</package>
@@ -530,13 +626,94 @@
                 <package>jogamp.common.os.elf</package>
                 <package>jogamp.common.util</package>
                 <package>jogamp.common.util.locks</package>
+                <package>jogamp.graph.curve.opengl</package>
+                <package>jogamp.graph.curve.opengl.shader</package>
+                <package>jogamp.graph.curve.tess</package>
+                <package>jogamp.graph.font</package>
+                <package>jogamp.graph.font.typecast</package>
+                <package>jogamp.graph.font.typecast.ot</package>
+                <package>jogamp.graph.font.typecast.ot.mac</package>
+                <package>jogamp.graph.font.typecast.ot.table</package>
+                <package>jogamp.graph.font.typecast.t2</package>
+                <package>jogamp.graph.font.typecast.tt.engine</package>
+                <package>jogamp.graph.geom.plane</package>
                 <package>jogamp.nativetag.common.linux.amd64</package>
                 <package>jogamp.nativetag.common.linux.i586</package>
                 <package>jogamp.nativetag.common.macosx.universal</package>
                 <package>jogamp.nativetag.common.windows.amd64</package>
                 <package>jogamp.nativetag.common.windows.i586</package>
                 <package>jogamp.nativetag.nativewindow.windows.i586</package>
+                <package>jogamp.nativetag.newt.windows.i586</package>
+                <package>jogamp.nativetag.opencl.linux.amd64</package>
+                <package>jogamp.nativetag.opencl.linux.i586</package>
+                <package>jogamp.nativetag.opencl.macosx.universal</package>
+                <package>jogamp.nativetag.opencl.windows.amd64</package>
+                <package>jogamp.nativetag.opencl.windows.i586</package>
+                <package>jogamp.nativetag.opengl.linux.amd64</package>
+                <package>jogamp.nativetag.opengl.linux.i586</package>
+                <package>jogamp.nativetag.opengl.macosx.universal</package>
+                <package>jogamp.nativetag.opengl.windows.amd64</package>
+                <package>jogamp.nativetag.opengl.windows.i586</package>
                 <package>jogamp.nativewindow</package>
+                <package>jogamp.nativewindow.awt</package>
+                <package>jogamp.nativewindow.drm</package>
+                <package>jogamp.nativewindow.ios</package>
+                <package>jogamp.nativewindow.jawt</package>
+                <package>jogamp.nativewindow.jawt.macosx</package>
+                <package>jogamp.nativewindow.jawt.windows</package>
+                <package>jogamp.nativewindow.jawt.x11</package>
+                <package>jogamp.nativewindow.macosx</package>
+                <package>jogamp.nativewindow.windows</package>
+                <package>jogamp.nativewindow.x11</package>
+                <package>jogamp.nativewindow.x11.awt</package>
+                <package>jogamp.newt</package>
+                <package>jogamp.newt.awt</package>
+                <package>jogamp.newt.awt.event</package>
+                <package>jogamp.newt.driver</package>
+                <package>jogamp.newt.driver.awt</package>
+                <package>jogamp.newt.driver.bcm.vc.iv</package>
+                <package>jogamp.newt.driver.egl.gbm</package>
+                <package>jogamp.newt.driver.ios</package>
+                <package>jogamp.newt.driver.linux</package>
+                <package>jogamp.newt.driver.macosx</package>
+                <package>jogamp.newt.driver.opengl</package>
+                <package>jogamp.newt.driver.windows</package>
+                <package>jogamp.newt.driver.x11</package>
+                <package>jogamp.newt.event</package>
+                <package>jogamp.newt.javafx</package>
+                <package>jogamp.newt.swt</package>
+                <package>jogamp.newt.swt.event</package>
+                <package>jogamp.opencl</package>
+                <package>jogamp.opengl</package>
+                <package>jogamp.opengl.awt</package>
+                <package>jogamp.opengl.egl</package>
+                <package>jogamp.opengl.es1</package>
+                <package>jogamp.opengl.es3</package>
+                <package>jogamp.opengl.gl2</package>
+                <package>jogamp.opengl.gl4</package>
+                <package>jogamp.opengl.glu</package>
+                <package>jogamp.opengl.glu.error</package>
+                <package>jogamp.opengl.glu.gl2.nurbs</package>
+                <package>jogamp.opengl.glu.mipmap</package>
+                <package>jogamp.opengl.glu.nurbs</package>
+                <package>jogamp.opengl.glu.registry</package>
+                <package>jogamp.opengl.glu.tessellator</package>
+                <package>jogamp.opengl.ios.eagl</package>
+                <package>jogamp.opengl.macosx.cgl</package>
+                <package>jogamp.opengl.macosx.cgl.awt</package>
+                <package>jogamp.opengl.openal.av</package>
+                <package>jogamp.opengl.util</package>
+                <package>jogamp.opengl.util.av</package>
+                <package>jogamp.opengl.util.av.impl</package>
+                <package>jogamp.opengl.util.glsl</package>
+                <package>jogamp.opengl.util.glsl.fixedfunc</package>
+                <package>jogamp.opengl.util.jpeg</package>
+                <package>jogamp.opengl.util.pngj</package>
+                <package>jogamp.opengl.util.pngj.chunks</package>
+                <package>jogamp.opengl.util.stereo</package>
+                <package>jogamp.opengl.windows.wgl</package>
+                <package>jogamp.opengl.windows.wgl.awt</package>
+                <package>jogamp.opengl.x11.glx</package>
                 <package>net.opengis.fes20</package>
                 <package>net.opengis.fes20.impl</package>
                 <package>net.opengis.fes20.util</package>
@@ -1444,9 +1621,7 @@
                 <package>org.locationtech.jts.util</package>
                 <package>org.lwjgl</package>
                 <package>org.lwjgl.awthacks</package>
-                <package>org.lwjgl.glfw</package>
                 <package>org.lwjgl.opengl.awt</package>
-                <package>org.lwjgl.stb</package>
                 <package>org.lwjgl.system</package>
                 <package>org.lwjgl.system.dyncall</package>
                 <package>org.lwjgl.system.jawt</package>
@@ -1997,8 +2172,16 @@
                 <binary-origin>release/modules/ext/jaxb-api-2.4.0-b180830.0359.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/imageio-ext-tiff-1.3.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/imageio-ext-tiff-1.3.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-crop-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-crop-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/xmlbeans-3.1.0.jar</runtime-relative-path>
@@ -2029,12 +2212,20 @@
                 <binary-origin>release/modules/ext/swingx-1.6.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-orderdither-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-orderdither-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl3-awt-0.1.7-sources.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl3-awt-0.1.7-sources.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-opengis-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-opengis-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-rescale-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-rescale-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/stax-ex-1.8.jar</runtime-relative-path>
@@ -2057,12 +2248,24 @@
                 <binary-origin>release/modules/ext/javaee-api-7.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-rlookup-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-rlookup-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-natives-windows.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-gml2-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-xsd-gml2-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-piecewise-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-piecewise-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-warp-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-warp-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-javadoc.jar</runtime-relative-path>
@@ -2073,20 +2276,32 @@
                 <binary-origin>release/modules/ext/ejml-fsparse-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-bandselect-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandselect-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/SparseBitSet-1.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/SparseBitSet-1.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-shadedrelief-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-shadedrelief-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-buffer-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-buffer-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-core-0.39.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-core-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/net.opengis.ows-22.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/net.opengis.ows-22.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-sources.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/net.opengis.ows-22.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/net.opengis.ows-22.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jgridshift-core-1.2.jar</runtime-relative-path>
@@ -2111,6 +2326,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/ejml-all-0.39.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-all-0.39.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-linux-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-windows-amd64.jar</runtime-relative-path>
@@ -2153,6 +2376,10 @@
                 <binary-origin>release/modules/ext/imageio-ext-streams-1.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-mosaic-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-mosaic-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/worldwind-2.0.0.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/worldwind-2.0.0.jar</binary-origin>
             </class-path-extension>
@@ -2181,6 +2408,10 @@
                 <binary-origin>release/modules/ext/core.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-vectorbin-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-vectorbin-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-natives-windows.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
@@ -2193,12 +2424,16 @@
                 <binary-origin>release/modules/ext/gt-xsd-core-22.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-javadoc.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-javadoc.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-math3-3.6.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-math3-3.6.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/GeographicLib-Java-1.49.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/GeographicLib-Java-1.49.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/filters-2.0.235.jar</runtime-relative-path>
@@ -2217,6 +2452,10 @@
                 <binary-origin>release/modules/ext/jetty-server-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/newt-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-natives-macos.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-macos.jar</binary-origin>
             </class-path-extension>
@@ -2229,12 +2468,12 @@
                 <binary-origin>release/modules/ext/jts-core-1.16.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/rsyntaxtextarea-3.1.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/rsyntaxtextarea-3.1.1.jar</binary-origin>
+                <runtime-relative-path>ext/jogl-all-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-windows-i586.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-glfw-3.2.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-glfw-3.2.3.jar</binary-origin>
+                <runtime-relative-path>ext/rsyntaxtextarea-3.1.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/rsyntaxtextarea-3.1.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/json-simple-1.1.jar</runtime-relative-path>
@@ -2261,6 +2500,10 @@
                 <binary-origin>release/modules/ext/si-quantity-0.7.1.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-windows-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/jetty-util-9.4.27.v20200227.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jetty-util-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
@@ -2269,8 +2512,28 @@
                 <binary-origin>release/modules/ext/gluegen-rt.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-linux-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-iterators-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-iterators-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/net.opengis.fes-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/net.opengis.fes-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/newt.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/newt.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-colorindexer-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-colorindexer-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-translate-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-translate-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/javafx-web-11.0.2.jar</runtime-relative-path>
@@ -2301,6 +2564,10 @@
                 <binary-origin>release/modules/ext/javafx-controls-11.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-format-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-format-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-jxpath-1.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-jxpath-1.3.jar</binary-origin>
             </class-path-extension>
@@ -2325,16 +2592,20 @@
                 <binary-origin>release/modules/ext/ejml-dsparse-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
                 <runtime-relative-path>ext/gt-jdbc-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-jdbc-22.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-shapefile-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-shapefile-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-linux.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-linux.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-bandmerge-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandmerge-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-xsd-fes-22.3.jar</runtime-relative-path>
@@ -2357,6 +2628,18 @@
                 <binary-origin>release/modules/ext/ejml-simple-0.39.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-colorconvert-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-colorconvert-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-imagefunction-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-imagefunction-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-errordiffusion-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-errordiffusion-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/ejml-ddense-0.39.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/ejml-ddense-0.39.jar</binary-origin>
             </class-path-extension>
@@ -2377,44 +2660,44 @@
                 <binary-origin>release/modules/ext/org.w3.xlink-22.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-border-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-border-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/activation-1.1.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/activation-1.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-affine-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-affine-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jogl-all.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-utilities-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-utilities-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-text-1.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-text-1.8.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-linux-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-linux-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-sources.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-sources.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-shaderc-3.2.3-sources.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-shaderc-3.2.3-sources.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3-javadoc.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3-javadoc.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3-javadoc.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-javadoc.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3-sources.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-sources.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-linux.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-linux.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-macos.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-macos.jar</binary-origin>
-            </class-path-extension>
-            <class-path-extension>
-                <runtime-relative-path>ext/lwjgl-stb-3.2.3-natives-windows.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/lwjgl-stb-3.2.3-natives-windows.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
@@ -2425,8 +2708,20 @@
                 <binary-origin>release/modules/ext/gt-xsd-filter-22.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-3.2.3-natives-windows-x86.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-3.2.3-natives-windows-x86.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-xml-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-xml-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-nullop-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-nullop-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-scale2-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-scale2-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jetty-servlet-9.4.27.v20200227.jar</runtime-relative-path>
@@ -2449,8 +2744,16 @@
                 <binary-origin>release/modules/ext/FastInfoset-1.2.15.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jt-classifier-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-classifier-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gluegen-rt-natives-linux-amd64.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gluegen-rt-natives-linux-amd64.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-lookup-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-lookup-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/bigint-0.7.1.jar</runtime-relative-path>
@@ -2461,16 +2764,28 @@
                 <binary-origin>release/modules/ext/org.eclipse.emf.ecore.xmi-2.15.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/si-units-java8-0.7.1.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/si-units-java8-0.7.1.jar</binary-origin>
+                <runtime-relative-path>ext/jt-algebra-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-algebra-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-zonal-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-zonal-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/lwjgl-3.2.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/lwjgl-3.2.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/si-units-java8-0.7.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/si-units-java8-0.7.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/guava-28.2-jre.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/guava-28.2-jre.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-scale-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-scale-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/poi-ooxml-4.1.2.jar</runtime-relative-path>
@@ -2489,6 +2804,10 @@
                 <binary-origin>release/modules/ext/jetty-security-9.4.27.v20200227.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-windows-i586.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-windows-i586.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/uom-se-1.0.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/uom-se-1.0.8.jar</binary-origin>
             </class-path-extension>
@@ -2499,6 +2818,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/commons-compress-1.19.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-compress-1.19.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/lwjgl-vulkan-3.2.3-natives-macos.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/lwjgl-vulkan-3.2.3-natives-macos.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/jsr305-3.0.2.jar</runtime-relative-path>
@@ -2517,8 +2840,16 @@
                 <binary-origin>release/modules/ext/imageio-ext-geocore-1.3.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jocl.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/commons-csv-1.8.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/commons-csv-1.8.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-stats-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-stats-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/gt-referencing-22.3.jar</runtime-relative-path>
@@ -2527,6 +2858,14 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jackson-annotations-2.10.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jackson-annotations-2.10.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-bandcombine-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-bandcombine-1.1.14.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jt-binarize-1.1.14.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jt-binarize-1.1.14.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/checker-qual-2.10.0.jar</runtime-relative-path>
@@ -2561,6 +2900,10 @@
                 <binary-origin>release/modules/ext/javafx-media-11.0.2.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
+                <runtime-relative-path>ext/jogl-all-natives-macosx-universal.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jogl-all-natives-macosx-universal.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
                 <runtime-relative-path>ext/gt-metadata-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-metadata-22.3.jar</binary-origin>
             </class-path-extension>
@@ -2575,6 +2918,10 @@
             <class-path-extension>
                 <runtime-relative-path>ext/gt-cql-22.3.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/gt-cql-22.3.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/jocl-natives-windows-amd64.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/jocl-natives-windows-amd64.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/org.eclipse.emf.ecore-2.15.0.jar</runtime-relative-path>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class GraphRecordStore extends TabularRecordStore {
      * @param cacheStrings A flag indicating whether or not to create a cache
      * for {@link String} values to make lookup faster.
      */
-    public GraphRecordStore(boolean cacheStrings) {
+    public GraphRecordStore(final boolean cacheStrings) {
         super(cacheStrings);
     }
 
@@ -59,7 +59,7 @@ public class GraphRecordStore extends TabularRecordStore {
      * minimally created, effectively conserving memory.
      */
     @Override
-    protected Object[][] getColumn(String key) {
+    protected Object[][] getColumn(final String key) {
         Object[][] values = typedRecords.get(key);
         if (values == null) {
             values = records.get(key);
@@ -68,7 +68,7 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     @Override
-    protected void createColumn(String key, Object[][] values) {
+    protected void createColumn(final String key, final Object[][] values) {
         String typedKey;
         String untypedKey;
         int typeIndex = key.indexOf('<');
@@ -84,7 +84,7 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     @Override
-    public void set(int record, String key, String value) {
+    public void set(final int record, String key, String value) {
         if (key == null) {
             throw new IllegalArgumentException("Key cannot be null.");
         }
@@ -131,7 +131,7 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     @Override
-    public List<String> values(int record) {
+    public List<String> values(final int record) {
         List<String> values = new ArrayList<>(typedRecords.size());
         for (Object[][] v : typedRecords.values()) {
             values.add(TabularRecordStore.getValue(v, record));
@@ -146,7 +146,7 @@ public class GraphRecordStore extends TabularRecordStore {
      * GraphRecordStore.
      */
     @Override
-    public void add(RecordStore recordStore) {
+    public void add(final RecordStore recordStore) {
         if (recordStore instanceof GraphRecordStore) {
             final GraphRecordStore graphRecordStore = (GraphRecordStore) recordStore;
             for (int record = 0; record < graphRecordStore.size(); record++) {
@@ -182,7 +182,7 @@ public class GraphRecordStore extends TabularRecordStore {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }

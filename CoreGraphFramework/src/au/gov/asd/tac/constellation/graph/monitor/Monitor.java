@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public abstract class Monitor {
         modificationCounter = -1L;
     }
 
-    public MonitorTransition reset(GraphReadMethods graph) {
+    public MonitorTransition reset(final GraphReadMethods graph) {
         reset();
         return update(graph);
     }
@@ -56,10 +56,10 @@ public abstract class Monitor {
      * @param graph the graph to update from.
      * @return
      */
-    public abstract MonitorTransition update(GraphReadMethods graph);
+    public abstract MonitorTransition update(final GraphReadMethods graph);
 
-    public static void update(GraphReadMethods graph, Monitor... monitors) {
-        for (Monitor monitor : monitors) {
+    public static void update(final GraphReadMethods graph, final Monitor... monitors) {
+        for (final Monitor monitor : monitors) {
             monitor.update(graph);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -241,7 +241,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the vertex represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || vertexSelected) && vertexShape != null && !vertexShape.isEmpty() 
+                    if ((!selectedOnly || vertexSelected) && vertexShape != null && !vertexShape.isEmpty()
                             && Shape.isValidGeoJson(vertexShape)) {
                         shapes.put(vertexIdentifier, vertexShape);
                         shapeFound = true;
@@ -299,7 +299,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the transaction represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && transactionShape != null && !transactionShape.isEmpty() 
+                    if ((!selectedOnly || transactionSelected) && transactionShape != null && !transactionShape.isEmpty()
                             && Shape.isValidGeoJson(transactionShape)) {
                         shapes.put(transactionIdentifier, transactionShape);
                         shapeFound = true;
@@ -344,8 +344,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the source vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && sourceVertexShape != null && !sourceVertexShape.isEmpty() && 
-                            Shape.isValidGeoJson(sourceVertexShape)) {
+                    if ((!selectedOnly || transactionSelected) && sourceVertexShape != null && !sourceVertexShape.isEmpty()
+                            && Shape.isValidGeoJson(sourceVertexShape)) {
                         shapes.put(sourceVertexIdentifier, sourceVertexShape);
                         shapeFound = true;
                     } else if ((!selectedOnly || transactionSelected) && sourceVertexLatitude != null && sourceVertexLongitude != null) {
@@ -389,7 +389,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the destination vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && destinationVertexShape != null && !destinationVertexShape.isEmpty() 
+                    if ((!selectedOnly || transactionSelected) && destinationVertexShape != null && !destinationVertexShape.isEmpty()
                             && Shape.isValidGeoJson(destinationVertexShape)) {
                         shapes.put(destinationVertexIdentifier, destinationVertexShape);
                         shapeFound = true;

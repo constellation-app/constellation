@@ -17,7 +17,10 @@ package au.gov.asd.tac.constellation.visual.vulkan;
 
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChangeBuilder;
@@ -25,12 +28,12 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import au.gov.asd.tac.constellation.visual.Renderable;
-import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKLOGGER;
+import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.VkFailed;
 import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKAxesRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKFPSRenderable;
+import au.gov.asd.tac.constellation.visual.vulkan.renderables.CVKRenderable;
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -38,20 +41,30 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Logger;
 import org.lwjgl.vulkan.awt.VKData;
 
 
 public class CVKVisualProcessor extends VisualProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(CVKVisualProcessor.class.getName());
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
+    
+    protected static final float FIELD_OF_VIEW = 35;
+    private static final float PERSPECTIVE_NEAR = 1;
+    private static final float PERSPECTIVE_FAR = 500000;
+    
+    protected final BlockingQueue<CVKRenderable.CVKRenderableUpdateTask> taskQueue = new LinkedBlockingQueue<>();
+    
+    protected final CVKRenderer cvkRenderer;
+    protected final Frustum viewFrustum = new Frustum();
+    private final Matrix44f projectionMatrix = new Matrix44f();
+    private CVKIconTextureAtlas cvkIconTextureAtlas = null;    
 
-    protected CVKScene cvkScene;
+
     protected CVKCanvas cvkCanvas;
-    protected CVKRenderer cvkRenderer;
     
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
     //private GraphRenderable graphRenderable;
@@ -60,6 +73,11 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     private Camera camera;
     private boolean updating = false;
+    
+    
+    public Matrix44f GetProjectionMatrix() { return projectionMatrix; }
+    public CVKIconTextureAtlas GetTextureAtlas() { return cvkIconTextureAtlas; }
+    
 
     @Override
     protected final void destroyCanvas() {
@@ -191,9 +209,7 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected void initialise() {
-        //TODO_TT: the relationship should probably be event-listener
-        cvkScene = new CVKScene(cvkRenderer, this);
-        cvkRenderer.AddRenderEventListener(cvkScene);
+
     }
 
     @Override
@@ -324,7 +340,7 @@ public class CVKVisualProcessor extends VisualProcessor {
      *
      * @param renderable The {@link GLRenderable} to add.
      */
-    protected final void addRenderable(final Comparable<Renderable> renderable) {
+    protected final void addRenderable(final CVKRenderable renderable) {
         if (!isInitialised) {
            // cvkScene.Add(renderable);
             //TODO_TT
@@ -346,65 +362,25 @@ public class CVKVisualProcessor extends VisualProcessor {
         //TODO_TT
 //        graphRenderable.setHitTestFboName(hitTestBufferName);
     }
-
-    /**
-     * Construct a new GLVisualProcessor with a {@link GraphRenderable}, an
-     * {@link CVKAxesRenderable} and a {@link FPSRenderable}.
-     * <p>
-     * This processor will not use debugging or print GL capabilities.
-     */
-    public CVKVisualProcessor() {
-        this(false, false);
-    }
     
     /**
      * Notifies us that our canvas's parent component has been added to its parent.
      * <p>
- Our cvkCanvas belongs to a JPanel which in turn belongs to a tabbed control.
- When we are constructed as part of the VisualGraphOpener call chain that
- panel hasn't yet been added to it's parent.  In that state we cannot lock
- the cvkCanvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
- the surface we cannot initialise all the Vulkan resources we need.   
-     */
-    @Override 
-    protected void notifyParentAdded() {
-        // At this point VisualGraphTopCOmponent
-        cvkCanvas.InitSurface();
-        
-//        // We currently have a zero sized cvkCanvas, a Vulkan swapchain requires
-//        // a non zero sized cvkCanvas so we must defer the initialisation of Vulkan
-//        // objects until later.
-//        Rectangle bounds = cvkCanvas.getBounds();
-//        System.out.print(bounds);
-//        
-//        // The cvkCanvas surface is needed to finish initialising CVKRenderer
-//        cvkRenderer.Init(cvkCanvas.surface);        
-    }
 
-    /**
-     * Construct a new GLVisualProcessor with a {@link GraphRenderable} and an
-     * {@link CVKAxesRenderable} and a {@link FPSRenderable}.
-     *
-     * @param debugGl Whether or not to utilise a GLContext that includes
-     * debugging.
-     * @param printGlCapabilities Whether or not to print out a list of GL
-     * capabilities upon initialisation.
      */
-    public CVKVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
-        try {            
-            // VkInstance is setup in the constructor
-            cvkRenderer = new CVKRenderer(this);
-        } catch (Exception e) {
-            CVKLOGGER.severe(e.toString());
-        }
-        
+
+
+    public CVKVisualProcessor() throws Throwable {           
+        // VkInstance is setup in the constructor
+        cvkRenderer = new CVKRenderer(this);
+
         // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
         // in a VKData object and makes it private.  The result is we need to create it
         // here rather than have a CVKCanvas constructor that just takes the
         // renderer and pulls the instance from there.
         VKData vkData = new VKData();
         vkData.instance = cvkRenderer.GetVkInstance();
-        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);
+        cvkCanvas = new CVKCanvas(vkData, cvkRenderer);                   
     }
 
     @Override
@@ -543,20 +519,436 @@ public class CVKVisualProcessor extends VisualProcessor {
 
     @Override
     protected final VisualChangeProcessor getChangeProcessor(final VisualProperty property) {
-        // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
-        return cvkScene.getChangeProcessor(property);
+        switch (property) {
+            case VERTICES_REBUILD:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
+//                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
+//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
+//                    addTask(nodeLabelBatcher.setBottomLabelSizes(access));
+//                    addTask(xyzTexturiser.dispose());
+//                    addTask(xyzTexturiser.createTexture(access));
+//                    addTask(vertexFlagsTexturiser.dispose());
+//                    addTask(vertexFlagsTexturiser.createTexture(access));
+//                    addTask(iconBatcher.disposeBatch());
+//                    addTask(iconBatcher.createBatch(access));
+//                    addTask(nodeLabelBatcher.disposeBatch());
+//                    addTask(nodeLabelBatcher.createBatch(access));
+//                    addTask(blazeBatcher.disposeBatch());
+//                    addTask(blazeBatcher.createBatch(access));
+//                    addTask(gl -> {
+//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
+//                    });
+//                    final DrawFlags updatedDrawFlags = access.getDrawFlags();
+//                    addTask(gl -> {
+//                        drawFlags = updatedDrawFlags;
+//                    });
+                };
+            case CONNECTIONS_REBUILD:
+                return (change, access) -> {
+//                    addTask(connectionLabelBatcher.setLabelColors(access));
+//                    addTask(connectionLabelBatcher.setLabelSizes(access));
+//                    addTask(lineBatcher.disposeBatch());
+//                    addTask(lineBatcher.createBatch(access));
+//                    addTask(loopBatcher.disposeBatch());
+//                    addTask(loopBatcher.createBatch(access));
+//                    addTask(connectionLabelBatcher.disposeBatch());
+//                    addTask(connectionLabelBatcher.createBatch(access));
+                };
+            case BACKGROUND_COLOR:
+                return (change, access) -> {
+                    final ConstellationColor backgroundColor = access.getBackgroundColor();
+//                    addTask(gl -> {
+//                        graphBackgroundColor = new float[]{backgroundColor.getRed(), backgroundColor.getGreen(), backgroundColor.getBlue(), 1};
+//                    });
+//                    addTask(connectionLabelBatcher.setBackgroundColor(access));
+//                    addTask(nodeLabelBatcher.setBackgroundColor(access));
+                };
+            case HIGHLIGHT_COLOUR:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setHighlightColor(access));
+//                    addTask(connectionLabelBatcher.setHighlightColor(access));
+//                    addTask(lineBatcher.setHighlightColor(access));
+//                    addTask(iconBatcher.setHighlightColor(access));
+                };
+            case DRAW_FLAGS:
+                return (change, access) -> {
+                    final DrawFlags updatedDrawFlags = access.getDrawFlags();
+//                    addTask(gl -> {
+//                        drawFlags = updatedDrawFlags;
+//                    });
+                };
+            case BLAZE_SIZE:
+                return (change, access) -> {
+//                    addTask(blazeBatcher.updateSizeAndOpacity(access));
+                };
+            case CONNECTIONS_OPACITY:
+                return (change, access) -> {
+//                    addTask(lineBatcher.updateOpacity(access));
+                };
+            case BOTTOM_LABEL_COLOR:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
+                };
+            case BOTTOM_LABELS_REBUILD:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setBottomLabelColors(access));
+//                    addTask(nodeLabelBatcher.setBottomLabelSizes(access));
+//                    // Note that updating bottom labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+//                    addTask(nodeLabelBatcher.updateBottomLabels(access));
+                };
+            case CAMERA:
+                return (change, access) -> {
+                    final Camera updatedCamera = access.getCamera();
+//                    addTask(gl -> {
+//                        camera = updatedCamera;
+//                        parent.setDisplayCamera(camera);
+//                        Graphics3DUtilities.getModelViewMatrix(camera.lookAtEye, camera.lookAtCentre, camera.lookAtUp, parent.getDisplayModelViewMatrix());
+//                    });
+                };
+            case CONNECTION_LABEL_COLOR:
+                return (change, access) -> {
+//                    addTask(connectionLabelBatcher.setLabelColors(access));
+                };
+            case CONNECTION_LABELS_REBUILD:
+                return (change, access) -> {
+//                    addTask(connectionLabelBatcher.setLabelColors(access));
+//                    addTask(connectionLabelBatcher.setLabelSizes(access));
+//                    // Note that updating connection labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+//                    addTask(connectionLabelBatcher.updateLabels(access));
+                };
+            case TOP_LABEL_COLOR:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
+                };
+            case TOP_LABELS_REBUILD:
+                return (change, access) -> {
+//                    addTask(nodeLabelBatcher.setTopLabelColors(access));
+//                    addTask(nodeLabelBatcher.setTopLabelSizes(access));
+//                    // Note that updating top labels always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+//                    addTask(nodeLabelBatcher.updateTopLabels(access));
+                };
+            case CONNECTION_COLOR:
+                return (change, access) -> {
+//                    addTaskIfReady(loopBatcher.updateColors(access, change), loopBatcher);
+//                    addTaskIfReady(lineBatcher.updateColors(access, change), lineBatcher);
+                };
+            case CONNECTION_SELECTED:
+                return (change, access) -> {
+//                    addTaskIfReady(loopBatcher.updateInfo(access, change), loopBatcher);
+//                    addTaskIfReady(lineBatcher.updateInfo(access, change), lineBatcher);
+                };
+            case VERTEX_BLAZED:
+                return (change, access) -> {
+                    // Note that updating blazes always rebuilds from scratch, so it is not an issue if the batch was not 'ready'.
+//                    addTask(blazeBatcher.updateBlazes(access, change));
+                };
+            case VERTEX_COLOR:
+                return (change, access) -> {
+//                    addTaskIfReady(iconBatcher.updateColors(access, change), iconBatcher);
+                };
+            case VERTEX_FOREGROUND_ICON:
+                return (change, access) -> {
+//                    addTaskIfReady(iconBatcher.updateIcons(access, change), iconBatcher);
+//                    addTask(gl -> {
+//                        iconTextureArray = iconBatcher.updateIconTexture(gl);
+//                    });
+                };
+            case VERTEX_SELECTED:
+                return (change, access) -> {
+//                    if (vertexFlagsTexturiser.isReady()) {
+//                        addTask(vertexFlagsTexturiser.updateFlags(access, change));
+//                    } else {
+//                        addTask(vertexFlagsTexturiser.dispose());
+//                        addTask(vertexFlagsTexturiser.createTexture(access));
+//                    }
+                };
+            case VERTEX_X:
+                return (change, access) -> {
+//                    if (vertexFlagsTexturiser.isReady()) {
+//                        addTask(xyzTexturiser.updateXyzs(access, change));
+//                    } else {
+//                        addTask(xyzTexturiser.dispose());
+//                        addTask(xyzTexturiser.createTexture(access));
+//                    }
+                };
+            case EXTERNAL_CHANGE:
+            default:
+                return (change, access) -> {
+                };
+        }
     }
     
-    /**
-     * Windows-DPI-Scaling
-     * 
-     * This function is only needed by the fix for Windows DPI scaling to get 
-     * access to the GLCanvas which is a protected member.If JOGL is ever 
-     * updated to fix Windows DPI scaling this function should be removed.
-     * 
-     * @return DPI scale (float)
-     */
-    public float getDPIScaleY() {
-        return (float)((Graphics2D)(cvkCanvas).getGraphics()).getTransform().getScaleY();
-    }            
+    
+    public int DeviceInitialised(CVKDevice cvkDevice) {
+        int ret;
+        
+        // Scene knows about all renderable types so build the static descriptor layout
+        // for each class.
+        assert(cvkDevice != null && cvkDevice.GetDevice() != null);
+        
+        // Initialise the shared atlas texture
+        cvkIconTextureAtlas = new CVKIconTextureAtlas(cvkDevice);        
+        
+        // Static as the shader and descriptor layout doesn't change per instance of renderable or over the course of the program
+        ret = CVKAxesRenderable.LoadShaders(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }
+        ret = CVKFPSRenderable.LoadShaders(cvkDevice);      
+        if (VkFailed(ret)) {
+            return ret;
+        }        
+        ret = CVKAxesRenderable.CreateDescriptorLayout(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }        
+        ret = CVKFPSRenderable.CreateDescriptorLayout(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }        
+        
+
+        CVKAxesRenderable cvkAxes = new CVKAxesRenderable(this);        
+        cvkRenderer.AddRenderable(cvkAxes);
+                
+        CVKFPSRenderable cvkFPS = new CVKFPSRenderable(this);
+        ret = cvkFPS.Init();
+        if (VkFailed(ret)) {
+            return ret;
+        }          
+        cvkRenderer.AddRenderable(cvkFPS);              
+        
+      
+        
+        // Testing
+        boolean addExtraIcons = true;
+        if (addExtraIcons) {
+            cvkIconTextureAtlas.AddIcon("Internet.Ebay");
+            cvkIconTextureAtlas.AddIcon("Internet.Gmail");
+            cvkIconTextureAtlas.AddIcon("Internet.Bankin");
+            cvkIconTextureAtlas.AddIcon("Internet.Behance");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Dalek");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.HAL-9000");
+            cvkIconTextureAtlas.AddIcon("Character.Exclaimation Mark");
+            cvkIconTextureAtlas.AddIcon("User Interface.Connections");
+            cvkIconTextureAtlas.AddIcon("User Interface.Drag Word");
+            cvkIconTextureAtlas.AddIcon("Internet.Shopify");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Mr Squiggle");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Lock");
+            cvkIconTextureAtlas.AddIcon("Flag.Bahamas");
+            cvkIconTextureAtlas.AddIcon("Flag.Netherlands");
+            cvkIconTextureAtlas.AddIcon("User Interface.Remove");
+            cvkIconTextureAtlas.AddIcon("Flag.Aland Islands");
+            cvkIconTextureAtlas.AddIcon("Internet.Hangouts");
+            cvkIconTextureAtlas.AddIcon("Background.Flat Square");
+            cvkIconTextureAtlas.AddIcon("Communications.SIP Call");
+            cvkIconTextureAtlas.AddIcon("Flag.Marshall Islands");
+            cvkIconTextureAtlas.AddIcon("Flag.Chad");
+            cvkIconTextureAtlas.AddIcon("Flag.Palestine");
+            cvkIconTextureAtlas.AddIcon("Flag.Canada");
+            cvkIconTextureAtlas.AddIcon("Internet.Zello");
+            cvkIconTextureAtlas.AddIcon("Network.Cookie");
+            cvkIconTextureAtlas.AddIcon("Internet.Kakao Talk");
+            cvkIconTextureAtlas.AddIcon("Flag.Antigua and Barbuda");
+            cvkIconTextureAtlas.AddIcon("Flag.Kenya");
+            cvkIconTextureAtlas.AddIcon("Flag.Bhutan");
+            cvkIconTextureAtlas.AddIcon("Transport.Plane");
+            cvkIconTextureAtlas.AddIcon("Transport.Train");
+            cvkIconTextureAtlas.AddIcon("User Interface.Drag Drop");
+            cvkIconTextureAtlas.AddIcon("Internet.Pastebin");
+            cvkIconTextureAtlas.AddIcon("Pie Chart.11/16 Pie");
+            cvkIconTextureAtlas.AddIcon("Flag.Solomon Islands");
+            cvkIconTextureAtlas.AddIcon("Flag.Moldova");
+            cvkIconTextureAtlas.AddIcon("Internet.QQ");
+            cvkIconTextureAtlas.AddIcon("Flag.Chile");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Music");
+            cvkIconTextureAtlas.AddIcon("Flag.Lithuania");
+            cvkIconTextureAtlas.AddIcon("Internet.Codepen");
+            cvkIconTextureAtlas.AddIcon("Flag.Cook Islands");
+            cvkIconTextureAtlas.AddIcon("Communications.Email");
+            cvkIconTextureAtlas.AddIcon("Flag.Jordan");
+            cvkIconTextureAtlas.AddIcon("Flag.Isle of Man");
+            cvkIconTextureAtlas.AddIcon("User Interface.Columns");
+            cvkIconTextureAtlas.AddIcon("Flag.Kyrgyzstan");
+            cvkIconTextureAtlas.AddIcon("Network.Windows");
+            cvkIconTextureAtlas.AddIcon("Network.Router");
+            cvkIconTextureAtlas.AddIcon("Flag.Malaysia");
+            cvkIconTextureAtlas.AddIcon("Internet.Picasa");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Graph");
+            cvkIconTextureAtlas.AddIcon("Flag.Botswana");
+            cvkIconTextureAtlas.AddIcon("User Interface.Half Hop");
+            cvkIconTextureAtlas.AddIcon("Flag.Burkina Faso");
+            cvkIconTextureAtlas.AddIcon("Network.SD Card");
+            cvkIconTextureAtlas.AddIcon("Flag.Liechtenstein");
+            cvkIconTextureAtlas.AddIcon("User Interface.Information");
+            cvkIconTextureAtlas.AddIcon("Internet.Snapchat");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Bomb");
+            cvkIconTextureAtlas.AddIcon("Internet.Medium");
+            cvkIconTextureAtlas.AddIcon("User Interface.Expand");
+            cvkIconTextureAtlas.AddIcon("Flag.Sao Tome and Principe");
+            cvkIconTextureAtlas.AddIcon("Flag.Haiti");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (y)");
+            cvkIconTextureAtlas.AddIcon("Character.Semi-Colon");
+            cvkIconTextureAtlas.AddIcon("Flag.Djibouti");
+            cvkIconTextureAtlas.AddIcon("Flag.Kosovo");
+            cvkIconTextureAtlas.AddIcon("Communications.Call");
+            cvkIconTextureAtlas.AddIcon("Internet.Magento");
+            cvkIconTextureAtlas.AddIcon("Flag.Aruba");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-z)");
+            cvkIconTextureAtlas.AddIcon("Flag.Norway");
+            cvkIconTextureAtlas.AddIcon("Network.Network Interface Card");
+            cvkIconTextureAtlas.AddIcon("User Interface.Node Labels");
+            cvkIconTextureAtlas.AddIcon("Flag.Tunisia");
+            cvkIconTextureAtlas.AddIcon("Flag.Azerbaijan");
+            cvkIconTextureAtlas.AddIcon("Internet.Naver");
+            cvkIconTextureAtlas.AddIcon("Flag.Belarus");
+            cvkIconTextureAtlas.AddIcon("User Interface.Zoom In");
+            cvkIconTextureAtlas.AddIcon("Internet.Chrome");
+            cvkIconTextureAtlas.AddIcon("Pie Chart.7/16 Pie");
+            cvkIconTextureAtlas.AddIcon("Internet.Dailymotion");
+            cvkIconTextureAtlas.AddIcon("Internet.Feedly");
+            cvkIconTextureAtlas.AddIcon("Flag.India");
+            cvkIconTextureAtlas.AddIcon("User Interface.Connection Labels");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (x)");
+            cvkIconTextureAtlas.AddIcon("User Interface.Chevron Right Double");
+            cvkIconTextureAtlas.AddIcon("Flag.Oman");
+            cvkIconTextureAtlas.AddIcon("Flag.Turkmenistan");
+            cvkIconTextureAtlas.AddIcon("Flag.Saint Lucia");
+            cvkIconTextureAtlas.AddIcon("Flag.Argentina");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-y)");
+            cvkIconTextureAtlas.AddIcon("Flag.Czech Republic");
+            cvkIconTextureAtlas.AddIcon("Character.Smiley Face");
+            cvkIconTextureAtlas.AddIcon("Flag.South Africa");
+            cvkIconTextureAtlas.AddIcon("Flag.Costa Rica");
+            cvkIconTextureAtlas.AddIcon("Internet.Sina Weibo");
+            cvkIconTextureAtlas.AddIcon("Network.OSX");
+            cvkIconTextureAtlas.AddIcon("User Interface.Tag");
+            cvkIconTextureAtlas.AddIcon("Flag.Colombia");
+            cvkIconTextureAtlas.AddIcon("Flag.Equatorial Guinea");
+            cvkIconTextureAtlas.AddIcon("Flag.Germany");
+            cvkIconTextureAtlas.AddIcon("User Interface.Nodes");
+            cvkIconTextureAtlas.AddIcon("User Interface.Search");
+            cvkIconTextureAtlas.AddIcon("Character.Quotation Mark");
+            cvkIconTextureAtlas.AddIcon("User Interface.Labels");
+            cvkIconTextureAtlas.AddIcon("Flag.Guinea Bissau");
+            cvkIconTextureAtlas.AddIcon("Internet.Internet Explorer");
+            cvkIconTextureAtlas.AddIcon("Character.Full Stop");
+            cvkIconTextureAtlas.AddIcon("Internet.Vine");
+            cvkIconTextureAtlas.AddIcon("Network.Microprocessor");
+            cvkIconTextureAtlas.AddIcon("Internet.Periscope");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Cloud");
+            cvkIconTextureAtlas.AddIcon("Flag.Guernsey");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (-x)");
+            cvkIconTextureAtlas.AddIcon("User Interface.Add Alternate");
+            cvkIconTextureAtlas.AddIcon("Flag.Monaco");
+            cvkIconTextureAtlas.AddIcon("Flag.Uruguay");
+            cvkIconTextureAtlas.AddIcon("Flag.Mexico");
+            cvkIconTextureAtlas.AddIcon("Flag.Algeria");
+            cvkIconTextureAtlas.AddIcon("Internet.Bankin");
+            cvkIconTextureAtlas.AddIcon("Flag.Swaziland");
+            cvkIconTextureAtlas.AddIcon("Network.Webcam");
+            cvkIconTextureAtlas.AddIcon("Flag.Cambodia");
+            cvkIconTextureAtlas.AddIcon("User Interface.Axis (z)");
+            cvkIconTextureAtlas.AddIcon("Flag.Venezuela");
+            cvkIconTextureAtlas.AddIcon("Flag.Uganda");
+            cvkIconTextureAtlas.AddIcon("Internet.Dribbble");
+            cvkIconTextureAtlas.AddIcon("Internet.Imgur");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Globe");
+            cvkIconTextureAtlas.AddIcon("Flag.Lebanon");
+            cvkIconTextureAtlas.AddIcon("Flag.Estonia");
+            cvkIconTextureAtlas.AddIcon("Internet.Viber");
+            cvkIconTextureAtlas.AddIcon("Person.Person");
+            cvkIconTextureAtlas.AddIcon("User Interface.Zoom Out");
+            cvkIconTextureAtlas.AddIcon("Internet.Envato");
+            cvkIconTextureAtlas.AddIcon("Character.Opening Square Bracket");
+            cvkIconTextureAtlas.AddIcon("Flag.Eritrea");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Dalek");
+            cvkIconTextureAtlas.AddIcon("Flag.Montenegro");
+            cvkIconTextureAtlas.AddIcon("Flag.Seychelles");
+            cvkIconTextureAtlas.AddIcon("Communications.Group Chat");
+            cvkIconTextureAtlas.AddIcon("User Interface.Settings");
+            cvkIconTextureAtlas.AddIcon("Internet.Google+");
+            cvkIconTextureAtlas.AddIcon("Flag.Gambia");
+            cvkIconTextureAtlas.AddIcon("Flag.Ireland");
+            cvkIconTextureAtlas.AddIcon("Flag.Turkey");
+            cvkIconTextureAtlas.AddIcon("Flag.Mauritania");
+            cvkIconTextureAtlas.AddIcon("Internet.Jabber");
+            cvkIconTextureAtlas.AddIcon("Internet.Google");
+            cvkIconTextureAtlas.AddIcon("Internet.Instagram");
+            cvkIconTextureAtlas.AddIcon("Internet.Aim");
+            cvkIconTextureAtlas.AddIcon("Internet.Skype");
+            cvkIconTextureAtlas.AddIcon("Network.Linux");
+            cvkIconTextureAtlas.AddIcon("Flag.Greece");
+            cvkIconTextureAtlas.AddIcon("Flag.Bahrain");
+            cvkIconTextureAtlas.AddIcon("Internet.Whatsapp");
+            cvkIconTextureAtlas.AddIcon("Flag.Vanuatu");
+            cvkIconTextureAtlas.AddIcon("Transport.Tardis");
+            cvkIconTextureAtlas.AddIcon("Flag.Namibia");
+            cvkIconTextureAtlas.AddIcon("Flag.Paraguay");
+            cvkIconTextureAtlas.AddIcon("Flag.Burundi");
+            cvkIconTextureAtlas.AddIcon("Flag.Nauru");
+            cvkIconTextureAtlas.AddIcon("Internet.Product Hunt");
+            cvkIconTextureAtlas.AddIcon("Transport.Boat");
+            cvkIconTextureAtlas.AddIcon("Network.Speaker");
+            cvkIconTextureAtlas.AddIcon("Flag.Northern Mariana Islands");
+            cvkIconTextureAtlas.AddIcon("Internet.Deviantart");
+            cvkIconTextureAtlas.AddIcon("Network.Mouse");
+            cvkIconTextureAtlas.AddIcon("Flag.Myanmar");
+            cvkIconTextureAtlas.AddIcon("Internet.Telegram");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Map");
+            cvkIconTextureAtlas.AddIcon("Background.Edge Square");
+            cvkIconTextureAtlas.AddIcon("Flag.Guyana");
+            cvkIconTextureAtlas.AddIcon("Internet.Airbnb");
+            cvkIconTextureAtlas.AddIcon("Flag.Tonga");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Galaxy");
+            cvkIconTextureAtlas.AddIcon("Internet.Viadeo");
+            cvkIconTextureAtlas.AddIcon("Network.Internet");
+            cvkIconTextureAtlas.AddIcon("Flag.Romania");
+            cvkIconTextureAtlas.AddIcon("User Interface.Chevron Down");
+            cvkIconTextureAtlas.AddIcon("Flag.Suriname");
+            cvkIconTextureAtlas.AddIcon("Flag.Dominica");
+            cvkIconTextureAtlas.AddIcon("Internet.Bittorrent");
+            cvkIconTextureAtlas.AddIcon("Communications.Cell Tower");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Heart");
+            cvkIconTextureAtlas.AddIcon("Internet.Outlook");
+            cvkIconTextureAtlas.AddIcon("Internet.Paypal");
+            cvkIconTextureAtlas.AddIcon("Pie Chart.0/16 Pie");
+            cvkIconTextureAtlas.AddIcon("Flag.Uzbekistan");
+            cvkIconTextureAtlas.AddIcon("Internet.Scoopit");
+            cvkIconTextureAtlas.AddIcon("Miscellaneous.Shield");
+            cvkIconTextureAtlas.AddIcon("Internet.Lastfm");
+            cvkIconTextureAtlas.AddIcon("Flag.Latvia");
+            cvkIconTextureAtlas.AddIcon("User Interface.Key");
+        }
+        
+        
+        // The renderables above will have requested the icons they need for their initial state, we
+        // now need to generate the atlas texture and sampler before the renderables that rely on them
+        // create their descriptors
+        ret = cvkIconTextureAtlas.Init();
+        
+        return ret;
+    }    
+    
+
+    public void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain) {
+        
+        //  Windows-DPI-Scaling
+        //
+        // If JOGL is ever fixed or another solution is found, either change
+        // needsManualDPIScaling to return false (so there is effectively no
+        // DPI scaling here) or remove the scaled height and width below.         
+        float dpiScaleX = 1.0f;
+        float dpiScaleY = 1.0f;
+
+        
+        // These need to be final as they are used in the lambda function below
+        final int dpiScaledWidth = (int)(cvkSwapChain.GetWidth() * dpiScaleX);
+        final int dpiScaledHeight = (int)(cvkSwapChain.GetHeight() * dpiScaleY);
+        
+        // Create the projection matrix, and load it on the projection matrix stack.
+        viewFrustum.setPerspective(FIELD_OF_VIEW, (float) dpiScaledWidth / (float) dpiScaledHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);        
+        projectionMatrix.set(viewFrustum.getProjectionMatrix());
+    }    
 }

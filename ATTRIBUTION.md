@@ -16,8 +16,6 @@ The following is a list of assets used in the Constellation project and their pr
 
 The following is a list of third-party libraries used in the development of Constellation.
 
-* TODO_TT: add LWJGL jars and LWJGLX jars
-
 |Jar|License|Source
 |---|-------|-------
 |activation-1.1.jar| CDDL 1.0 |
@@ -78,6 +76,22 @@ The following is a list of third-party libraries used in the development of Cons
 |jetty-util-8.1.9.v20130131.jar| EPL 1.0, Apache2 |
 |jetty-websocket-8.1.9.v20130131.jar| EPL 1.0, Apache2 |
 |jline-2.11.jar| BSD | https://github.com/jline/jline2/blob/master/LICENSE.txt
+|jocl-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-linux-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-linux-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-macosx-universal-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-solaris-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-solaris-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-windows-amd64-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jocl-natives-windows-i586-2.3.2.jar| MIT | https://github.com/gpu/JOCL/blob/master/LICENSE.TXT
+|jogl-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-linux-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-linux-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-macosx-universal-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-solaris-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-solaris-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-windows-amd64-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
+|jogl-natives-windows-i586-2.3.2.jar| Jogl license | http://jogamp.org/git/?p=jogl.git;a=blob;f=LICENSE.txt
 |jscience-measure-4.3.1.jar| Apache2 | https://github.com/serso/jscience
 |json-simple-1.1.1.jar| Apache2 | https://github.com/fangyidong/json-simple/blob/master/LICENSE.txt
 |json4processing-0.9.6.jar|  |

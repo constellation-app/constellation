@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ public final class DrawFlags {
      * Draw in 2D mode
      */
     public static final int MODE_3D = 3;
-    
+
     private final int drawFlgs;
 
     public DrawFlags(final int drawFlags) {

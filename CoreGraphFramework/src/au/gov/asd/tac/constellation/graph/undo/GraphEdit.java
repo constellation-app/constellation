@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.graph.undo;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphIndexType;
-import au.gov.asd.tac.constellation.graph.GraphOperation;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 
 /**
@@ -28,23 +28,23 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
  */
 public interface GraphEdit {
 
-    public void execute(GraphWriteMethods graph);
+    public void execute(final GraphWriteMethods graph);
 
-    public void undo(GraphWriteMethods graph);
+    public void undo(final GraphWriteMethods graph);
 
-    public void addChild(GraphEdit childEdit);
+    public void addChild(final GraphEdit childEdit);
 
     public void finish();
 
-    public void setPrimaryKey(GraphElementType elementType, int[] oldKeys, int[] newKeys);
+    public void setPrimaryKey(final GraphElementType elementType, final int[] oldKeys, final int[] newKeys);
 
-    public void addVertex(int vertex);
+    public void addVertex(final int vertex);
 
-    public void removeVertex(int vertex);
+    public void removeVertex(final int vertex);
 
-    public void addTransaction(int sourceVertex, int destinationVertex, boolean directed, int transaction);
+    public void addTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, final int transaction);
 
-    public void removeTransaction(int sourceVertex, int destinationVertex, boolean directed, int transaction);
+    public void removeTransaction(final int sourceVertex, final int destinationVertex, final boolean directed, final int transaction);
 
     /**
      * Sets the source vertex of a transaction.
@@ -56,7 +56,8 @@ public interface GraphEdit {
      * transaction to be reversed to ensure that the source vertex is not
      * greater than the destination vertex (undirected transactions only).
      */
-    public void setTransactionSourceVertex(int transaction, int oldSourceVertex, int newSourceVertex, boolean reverseTransaction);
+    public void setTransactionSourceVertex(final int transaction, final int oldSourceVertex, 
+            final int newSourceVertex, final boolean reverseTransaction);
 
     /**
      * Sets the destination vertex of a transaction.
@@ -71,38 +72,41 @@ public interface GraphEdit {
      * transaction to be reversed to ensure that the source vertex is not
      * greater than the destination vertex (undirected transactions only).
      */
-    public void setTransactionDestinationVertex(int transaction, int oldDestinationVertex, int newDestinationVertex, boolean reverseTransaction);
+    public void setTransactionDestinationVertex(final int transaction, 
+            final int oldDestinationVertex, final int newDestinationVertex, final boolean reverseTransaction);
 
-    public void addAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue, String attributeMergerId, int attribute);
+    public void addAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId, final int attribute);
 
-    public void removeAttribute(GraphElementType elementType, String attributeType, String label, String description, Object defaultValue, String attributeMergerId, int attribute);
+    public void removeAttribute(final GraphElementType elementType, final String attributeType, final String label, 
+            final String description, final Object defaultValue, final String attributeMergerId, final int attribute);
 
-    public void updateAttributeName(int attribute, String oldName, String newName);
+    public void updateAttributeName(final int attribute, final String oldName, final String newName);
 
-    public void updateAttributeDescription(int attribute, String oldDescription, String newDescription);
+    public void updateAttributeDescription(final int attribute, final String oldDescription, final String newDescription);
 
-    public void updateAttributeDefaultValue(int attribute, Object oldObject, Object newObject);
+    public void updateAttributeDefaultValue(final int attribute, final Object oldObject, final Object newObject);
 
-    public void setByteValue(int attribute, int id, byte oldValue, byte newValue);
+    public void setByteValue(final int attribute, final int id, final byte oldValue, final byte newValue);
 
-    public void setShortValue(int attribute, int id, short oldValue, short newValue);
+    public void setShortValue(final int attribute, final int id, final short oldValue, final short newValue);
 
-    public void setIntValue(int attribute, int id, int oldValue, int newValue);
+    public void setIntValue(final int attribute, final int id, final int oldValue, final int newValue);
 
-    public void setLongValue(int attribute, int id, long oldValue, long newValue);
+    public void setLongValue(final int attribute, final int id, final long oldValue, final long newValue);
 
-    public void setFloatValue(int attribute, int id, float oldValue, float newValue);
+    public void setFloatValue(final int attribute, final int id, final float oldValue, final float newValue);
 
-    public void setDoubleValue(int attribute, int id, double oldValue, double newValue);
+    public void setDoubleValue(final int attribute, final int id, final double oldValue, final double newValue);
 
-    public void setBooleanValue(int attribute, int id, boolean oldValue, boolean newValue);
+    public void setBooleanValue(final int attribute, final int id, final boolean oldValue, final boolean newValue);
 
-    public void setCharValue(int attribute, int id, char oldValue, char newValue);
+    public void setCharValue(final int attribute, final int id, final char oldValue, final char newValue);
 
-    public void setObjectValue(int attribute, int id, Object oldValue, Object newValue);
+    public void setObjectValue(final int attribute, final int id, final Object oldValue, final Object newValue);
 
-    public void executeGraphOperation(GraphOperation operation);
+    public void executeGraphOperation(final GraphOperation operation);
 
-    public void setAttributeIndexType(int attribute, GraphIndexType oldValue, GraphIndexType newValue);
+    public void setAttributeIndexType(final int attribute, final GraphIndexType oldValue, final GraphIndexType newValue);
 
 }

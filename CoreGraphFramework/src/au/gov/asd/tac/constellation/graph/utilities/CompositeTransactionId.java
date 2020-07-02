@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ package au.gov.asd.tac.constellation.graph.utilities;
  * @author twilight_sparkle
  */
 public class CompositeTransactionId {
-    
+
     private static final String COMPOSITE = "composite:";
 
     private String originalSourceNode;
@@ -41,7 +41,7 @@ public class CompositeTransactionId {
         return originalSourceNode;
     }
 
-    public void setOriginalSourceNode(String originalSourceNode) {
+    public void setOriginalSourceNode(final String originalSourceNode) {
         this.originalSourceNode = originalSourceNode;
     }
 
@@ -49,7 +49,7 @@ public class CompositeTransactionId {
         return originalDestinationNode;
     }
 
-    public void setOriginalDestinationNode(String originalDestinationNode) {
+    public void setOriginalDestinationNode(final String originalDestinationNode) {
         this.originalDestinationNode = originalDestinationNode;
     }
 
@@ -57,7 +57,7 @@ public class CompositeTransactionId {
         return sourceContracted;
     }
 
-    public void setSourceContracted(boolean sourceContracted) {
+    public void setSourceContracted(final boolean sourceContracted) {
         this.sourceContracted = sourceContracted;
     }
 
@@ -65,10 +65,10 @@ public class CompositeTransactionId {
         return destContracted;
     }
 
-    public void setDestContracted(boolean destContracted) {
+    public void setDestContracted(final boolean destContracted) {
         this.destContracted = destContracted;
     }
-    
+
     public static CompositeTransactionId fromString(final String id) {
         if (id == null || !id.startsWith(COMPOSITE)) {
             return new CompositeTransactionId(null, null, id, false, false);

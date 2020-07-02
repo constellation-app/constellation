@@ -96,7 +96,7 @@ class PQNode {
 
     public void setPertinentLeafCount(int pertinentLeafCount) {
         this.pertinentLeafCount = pertinentLeafCount;
-    }  
+    }
 
     public int getVirtualNum() {
         return virtualNum;
@@ -113,7 +113,7 @@ class PQNode {
     public void setRealNum(int realNum) {
         this.realNum = realNum;
     }
-    
+
     public int numChildren() {
         return children.getSize();
     }

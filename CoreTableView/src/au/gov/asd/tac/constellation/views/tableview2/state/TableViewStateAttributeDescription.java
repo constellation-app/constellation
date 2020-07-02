@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = AttributeDescription.class)
 public class TableViewStateAttributeDescription extends ObjectAttributeDescription {
 
-    private static final String ATTRIBUTE_NAME = TableViewConcept.MetaAttribute.TABLE_VIEW_STATE.getAttributeType();
+    public static final String ATTRIBUTE_NAME = "table_view_state";
 
     public TableViewStateAttributeDescription() {
         super(ATTRIBUTE_NAME);

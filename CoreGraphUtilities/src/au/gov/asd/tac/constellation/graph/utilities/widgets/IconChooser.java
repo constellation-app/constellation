@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
             // If this is the selected icon, remember the details so we can present this icon as the default choice.
             // If the selected icon's name is an alias, then since an alias is just the last part of the dotted path,
             // the path will end with "."+alias.
-            if (selectedIconName != null && (icon.getName().equals(selectedIconName) 
+            if (selectedIconName != null && (icon.getName().equals(selectedIconName)
                     || icon.getExtendedName().endsWith(SeparatorConstants.PERIOD + selectedIconName))) {
                 selectedPath = path;
                 selectedFolder = tf;

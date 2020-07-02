@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import org.openide.windows.WindowManager;
 public class Startup implements Runnable {
 
     private static final String SYSTEM_ENVIRONMENT = "constellation.environment";
-    
+
     // DO NOT CHANGE THIS VALUE
     // continous integration scripts use this to update the version dynamically
     private static final String VERSION = "(under development)";

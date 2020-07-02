@@ -95,6 +95,7 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     protected final void displayResults(final AnalyticQuestion<?> question) {
         result = question.getResult() == null ? new EmptyResult() : question.getResult();
         result.setAnalyticController(analyticController);

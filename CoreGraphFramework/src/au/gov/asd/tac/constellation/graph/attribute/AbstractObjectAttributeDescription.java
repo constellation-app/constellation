@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public String getString(final int id) {
         return data[id] != null ? String.valueOf((T) data[id]) : null;
@@ -138,6 +139,7 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         data[id] = defaultValue;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public AttributeDescription copy(final GraphReadMethods graph) {
         final AbstractObjectAttributeDescription<T> attribute;
@@ -164,11 +166,13 @@ public abstract class AbstractObjectAttributeDescription<T extends Object> exten
         return data[id1] == null ? data[id2] == null : data[id1].equals(data[id2]);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void save(final int id, final ParameterWriteAccess access) {
         access.setObject((T) data[id]);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void restore(final int id, final ParameterReadAccess access) {
         data[id] = (T) access.getUndoObject();

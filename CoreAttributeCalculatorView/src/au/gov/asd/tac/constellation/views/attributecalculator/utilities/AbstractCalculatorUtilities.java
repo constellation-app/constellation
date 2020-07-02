@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,6 +67,7 @@ public abstract class AbstractCalculatorUtilities {
     // An object is true and contains non nulls if and only if:
     //  - it is not an iterable containing only objects which are null
     //  - is not itself false according to isTrueValue
+    @SuppressWarnings("unchecked")
     protected static boolean isTrueAndContainsNonNulls(PyObject obj) {
         if (obj instanceof PyList) {
             ((PyList) obj).removeIf((Object t) -> nullCheck(t));

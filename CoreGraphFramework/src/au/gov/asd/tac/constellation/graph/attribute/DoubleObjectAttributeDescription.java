@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import org.openide.util.lookup.ServiceProvider;
 
 /**
  * A Double Object attribute that can be null.
- * 
+ *
  * @author cygnus_x-1
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDescription<Double> {
-    
+
     public static final String ATTRIBUTE_NAME = "double_or_null";
     public static final Class<Double> NATIVE_CLASS = Double.class;
     public static final Double DEFAULT_VALUE = null;
@@ -33,7 +33,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     public DoubleObjectAttributeDescription() {
         super(ATTRIBUTE_NAME, NATIVE_CLASS, DEFAULT_VALUE);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked") //Casts are manually checked
     protected Double convertFromObject(final Object object) {
@@ -60,7 +60,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
             return Double.parseDouble(string);
         }
     }
-    
+
     @Override
     public byte getByte(final int id) {
         return data[id] != null ? ((Double) data[id]).byteValue() : (byte) 0;
@@ -70,8 +70,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     public void setByte(final int id, final byte value) {
         data[id] = (double) value;
     }
-    
-    
+
     @Override
     public short getShort(final int id) {
         return data[id] != null ? ((Double) data[id]).shortValue() : (short) 0;
@@ -91,7 +90,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     public void setInt(final int id, final int value) {
         data[id] = (double) value;
     }
-    
+
     @Override
     public long getLong(final int id) {
         return data[id] != null ? ((Double) data[id]).longValue() : 0L;
@@ -99,7 +98,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public void setLong(final int id, final long value) {
-        data[id] =(double) value;
+        data[id] = (double) value;
     }
 
     @Override
@@ -131,7 +130,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     public void setBoolean(final int id, final boolean value) {
         data[id] = value ? 1.0 : 0.0;
     }
-    
+
     @Override
     public char getChar(final int id) {
         return data[id] != null ? (char) (double) data[id] : (char) 0;
@@ -141,7 +140,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
     public void setChar(final int id, final char value) {
         data[id] = (double) value;
     }
-    
+
     @Override
     public int hashCode(final int id) {
         return data[id] == null ? nullHash : ((Double) data[id]).intValue();

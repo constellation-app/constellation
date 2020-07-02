@@ -151,7 +151,6 @@ public class CVKIconTextureAtlas {
     
     private void Destroy() {
         vkDestroyImageView(cvkDevice.GetDevice(), cvkAtlasImage.GetImageHandle(), null);
-        //vkDestroyImage(cvkDevice.GetDevice(), textureArray.image, nullptr);
         cvkAtlasImage.Destroy();
         vkDestroySampler(cvkDevice.GetDevice(), hAtlasSampler, null);    
     }
@@ -468,6 +467,10 @@ public class CVKIconTextureAtlas {
             lastTransferedIconCount = loadedIcons.size();  
         }
         return ret;
+    }
+    
+    public boolean NeedsCompleteHalt() {
+        return loadedIcons.size() > lastTransferedIconCount;
     }
     
     public int DisplayUpdate() {

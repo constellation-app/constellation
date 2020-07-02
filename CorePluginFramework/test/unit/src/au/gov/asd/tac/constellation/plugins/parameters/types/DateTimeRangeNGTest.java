@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.parameters.types;
 
-import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 import static org.testng.Assert.assertEquals;
@@ -35,7 +35,8 @@ import org.testng.annotations.Test;
  */
 public class DateTimeRangeNGTest {
 
-    private static final long ONE_DAY = 1000 * 60 * 60 * 24;
+    private static final long SECONDS_IN_ONE_DAY = 60 * 60 * 24;
+    private static final long MILLISECONDS_IN_ONE_DAY = 1000 * 60 * 60 * 24;
 
     TimeZone tz;
 
@@ -62,16 +63,16 @@ public class DateTimeRangeNGTest {
 
     @Test
     public void absoluteRange() {
-        final Date d0 = new Date(ONE_DAY);
-        final Date d1 = new Date(ONE_DAY + ONE_DAY);
+        final Date d0 = new Date(MILLISECONDS_IN_ONE_DAY);
+        final Date d1 = new Date(MILLISECONDS_IN_ONE_DAY + MILLISECONDS_IN_ONE_DAY);
         final DateTimeRange dtr = new DateTimeRange(d0, d1);
         assertEquals(dtr.toString(), "1970-01-02T00:00Z[UTC];1970-01-03T00:00Z[UTC]");
     }
 
     @Test
     public void absoluteRangePlus1Second() {
-        final Date d0 = new Date(ONE_DAY + 1000);
-        final Date d1 = new Date(ONE_DAY + ONE_DAY);
+        final Date d0 = new Date(MILLISECONDS_IN_ONE_DAY + 1000);
+        final Date d1 = new Date(MILLISECONDS_IN_ONE_DAY + MILLISECONDS_IN_ONE_DAY);
         final DateTimeRange dtr = new DateTimeRange(d0, d1);
         assertEquals(dtr.toString(), "1970-01-02T00:00:01Z[UTC];1970-01-03T00:00Z[UTC]");
     }
@@ -79,33 +80,33 @@ public class DateTimeRangeNGTest {
     @Test
     public void parseAbsoluteRangeUTC() {
         final DateTimeRange dtr = DateTimeRange.parse("1970-01-02T00:00:00Z[UTC];1970-01-03T00:00:00Z[UTC]");
-        final Date[] dates = dtr.getStartEnd();
-        assertEquals(dates[0].getTime(), ONE_DAY);
-        assertEquals(dates[1].getTime(), ONE_DAY + ONE_DAY);
+        final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+        assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+        assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
     }
 
     @Test
     public void parseAbsoluteRangeTZ() {
         final DateTimeRange dtr = DateTimeRange.parse("1970-01-02T00:00:00Z[UTC];1970-01-03T00:00:00Z[UTC]");
-        final Date[] dates = dtr.getStartEnd();
-        assertEquals(dates[0].getTime(), ONE_DAY);
-        assertEquals(dates[1].getTime(), ONE_DAY + ONE_DAY);
+        final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+        assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+        assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
     }
 
     @Test
     public void parseNewZ() {
         final DateTimeRange dtr = DateTimeRange.parse("1970-01-02T00:00:00Z;1970-01-03T00:00:00Z");
-        final Date[] dates = dtr.getStartEnd();
-        assertEquals(dates[0].getTime(), ONE_DAY);
-        assertEquals(dates[1].getTime(), ONE_DAY + ONE_DAY);
+        final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+        assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+        assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
     }
 
     @Test
     public void parseNewTZ() {
         final DateTimeRange dtr = DateTimeRange.parse("1970-01-02T10:00:00+10:00[Australia/Sydney];1970-01-03T10:00:00+10:00[Australia/Sydney]");
-        final Date[] dates = dtr.getStartEnd();
-        assertEquals(dates[0].getTime(), ONE_DAY);
-        assertEquals(dates[1].getTime(), ONE_DAY + ONE_DAY);
+        final ZonedDateTime[] dates = dtr.getZonedStartEnd();
+        assertEquals(dates[0].toEpochSecond(), SECONDS_IN_ONE_DAY);
+        assertEquals(dates[1].toEpochSecond(), SECONDS_IN_ONE_DAY + SECONDS_IN_ONE_DAY);
     }
 
     @Test

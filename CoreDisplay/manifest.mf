@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-AutoUpdate-Show-In-Client: true
-Bundle-Localization: au/gov/asd/tac/constellation/visual/Bundle
-Bundle-Name: %OpenIDE-Module-Name
-Bundle-SymbolicName: au.gov.asd.tac.constellation.visual
-Bundle-Version: 1.0
-

@@ -110,6 +110,7 @@ public class CVKImage {
         }
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         Destroy();        
@@ -202,18 +203,16 @@ public class CVKImage {
                 throw new IllegalArgumentException("Unsupported layout transition");
             }
             
-//            CVKCommandBuffer cvkBarrierCmd = CVKCommandBuffer.Create(cvkDevice, VK_COMMAND_BUFFER_LEVEL_PRIMARY);
-//            ret = cvkBarrierCmd.Begin(VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT);
-//            checkVKret(ret);
-            vkCmdPipelineBarrier(cvkCmdBuf.GetVKCommandBuffer(),
-                                 sourceStage,
-                                 destinationStage,
-                                 0,                 // dependency flags
-                                 null,              // memory barriers
-                                 null,              // buffer memory barriers
-                                 vkBarrier);        // image memory barriers
-//            ret = cvkBarrierCmd.EndAndSubmit();
-//            checkVKret(ret);                        
+            for (int iLayer = 0; iLayer < layers; ++iLayer) {
+                vkBarrier.subresourceRange().baseArrayLayer(iLayer);
+                vkCmdPipelineBarrier(cvkCmdBuf.GetVKCommandBuffer(),
+                                     sourceStage,
+                                     destinationStage,
+                                     0,                 // dependency flags
+                                     null,              // memory barriers
+                                     null,              // buffer memory barriers
+                                     vkBarrier);        // image memory barriers        
+            }
         }
         return ret;
     }

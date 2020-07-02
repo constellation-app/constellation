@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public abstract class SchemaUpdateProvider implements UpdateProvider {
         }
 
         @Override
-        public boolean appliesToGraph(StoreGraph graph) {
+        public boolean appliesToGraph(final StoreGraph graph) {
             return getSchema().getClass().isAssignableFrom(graph.getSchema().getFactory().getClass());
         }
 

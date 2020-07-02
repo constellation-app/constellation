@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 public class IgnoreSurvivingGraphElementMerger implements GraphElementMerger {
 
     @Override
-    public boolean mergeElement(GraphWriteMethods graph, GraphElementType elementType, int survivingElement, int mergedElement) {
+    public boolean mergeElement(final GraphWriteMethods graph, final GraphElementType elementType, final int survivingElement, final int mergedElement) {
 
         int elementAttributeCount = graph.getAttributeCount(elementType);
         for (int elementAttributePosition = 0; elementAttributePosition < elementAttributeCount; elementAttributePosition++) {

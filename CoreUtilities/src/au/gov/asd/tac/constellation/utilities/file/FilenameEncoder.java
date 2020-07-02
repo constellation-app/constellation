@@ -1,13 +1,24 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2020 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.utilities.file;
 
 /**
  * Manage the encode/decode of strings into filenames. This essentially ensures
  * the characters in the filename are within a valid set.
+ *
  * @author serpens24
  */
 public class FilenameEncoder {
@@ -18,7 +29,6 @@ public class FilenameEncoder {
     private FilenameEncoder() {
         throw new IllegalStateException("Invalid call to private default constructor");
     }
-    
 
     /**
      * Encode a String so it can be used as a filename. This method will
@@ -50,7 +60,7 @@ public class FilenameEncoder {
      */
     public static String decode(final String s) {
         final StringBuilder b = new StringBuilder();
-        
+
         // Loop through characters in source string. The normal case just adds
         // the next character to the destination string, but if a '_ is found,
         // it is treated asa marker which beigns a 4 character hex code - used

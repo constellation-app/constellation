@@ -47,7 +47,7 @@ public abstract class CVKRenderable implements Renderable{
     /*
         Cleanup
     */
-    public abstract void Destroy(CVKDevice cvkDevice);
+    public abstract void Destroy();
     
     /*
         Returns the command buffer for the current Image being sent
@@ -63,36 +63,28 @@ public abstract class CVKRenderable implements Renderable{
         Returns the handle to the graphics pipeline for this renderable
     */
     public long GetGraphicsPipeline(){return graphicsPipeline; }
-    
-    /*
-        Return true if this renderable needs to be updated
-    */
-    public boolean IsDirty(){ return isDirty; }
-    
-    public abstract int SwapChainRezied(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-    public abstract int DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
+   
+    public abstract int SwapChainRecreated(CVKSwapChain cvkSwapChain);
+    public abstract int DisplayUpdate(CVKSwapChain cvkSwapChain, int frameIndex);
     public abstract void IncrementDescriptorTypeRequirements(int descriptorTypeCounts[]);     
     
-    /*
-        Is this needed?
-    */
     public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
 
-    /*
-        Initialises the command buffer for this renderable
-    */
-    public abstract int InitCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-
-    /*
-        Record the display commands into the buffer
-    */
-    public abstract int RecordCommandBuffer(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
+    public abstract int RecordCommandBuffer(CVKSwapChain cvkSwapChain, VkCommandBufferInheritanceInfo inheritanceInfo, int index);
 
     /*
         Returns the number of vertices used in the vertex buffer
     */
     public abstract int GetVertexCount();
 
+    /*
+        Return true if this renderable needs to be updated
+    */
+    public abstract boolean IsDirty(){ return isDirty; }
+
+    public abstract int DeviceInitialised(CVKDevice cvkDevice);
+    
+    public abstract boolean NeedsCompleteHalt();
 
 
     /**

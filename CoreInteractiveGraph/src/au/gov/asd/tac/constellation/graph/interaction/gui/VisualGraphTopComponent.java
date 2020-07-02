@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -187,12 +187,12 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private static final Icon UNDIRECTED_ICON = UserInterfaceIconProvider.UNDIRECTED.buildIcon(16);
 
     private final GraphVisualManagerFactory graphVisualManagerFactory;
-    private final VisualManager visualManager;
-    private final InstanceContent content;
+    private VisualManager visualManager;
+    private InstanceContent content;
     private final Graph graph;
     private MySaveAs saveAs = null;
     private MySavable savable = null;
-    private final GraphNode graphNode;
+    private GraphNode graphNode;
 
     /**
      * The countBase is the value of the counter at the most recent save when
@@ -220,7 +220,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final UpdateController<GraphReadMethods> updateController = new UpdateController<>();
     private final GraphUpdateController graphUpdateController = new GraphUpdateController(updateController);
     private final GraphUpdateManager graphUpdateManager = new GraphUpdateManager(graphUpdateController, 2);
-    
+
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";
@@ -229,11 +229,8 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      * Initialise the TopComponent state.
      */
     private void init() {
-        // This call adds the AWTCanvas to the JPanel
         displayPanel.add(visualManager.getVisualComponent(), BorderLayout.CENTER);
-        //displayPanel.setVisible(true);
-        //displayPanel.transferFocus();
-        
+
         DropTargetAdapter dta = new DropTargetAdapter() {
             @Override
             public void dragEnter(DropTargetDragEvent dtde) {
@@ -407,13 +404,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
         this.graph = new DualGraph(null);
 
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
-        graphNode = new GraphNode(graph, gdo, this, visualManager);
-        content = new InstanceContent();
+        try {
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
+            graphNode = new GraphNode(graph, gdo, this, visualManager);
+            content = new InstanceContent();
 
-        init();
-        MemoryManager.newObject(VisualGraphTopComponent.class);
+            init();
+            MemoryManager.newObject(VisualGraphTopComponent.class);
+        } catch (Throwable t) {
+            visualManager = null;
+            graphNode = null;
+            content = null;
+        }
     }
 
     /**
@@ -429,30 +432,30 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         this.graph = graph;
         graphVisualManagerFactory = Lookup.getDefault().lookup(GraphVisualManagerFactory.class);
-        visualManager = graphVisualManagerFactory.constructVisualManager(graph);
-        visualManager.startProcessing();
+        try {
+            visualManager = graphVisualManagerFactory.constructVisualManager(graph);
+            visualManager.startProcessing();
 
-        Schema schema = graph.getSchema();
-        if (schema instanceof GraphNodeFactory) {
-            graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
-        } else {
-            graphNode = new GraphNode(graph, gdo, this, visualManager);
+            Schema schema = graph.getSchema();
+            if (schema instanceof GraphNodeFactory) {
+                graphNode = ((GraphNodeFactory) schema).createGraphNode(graph, gdo, this, visualManager);
+            } else {
+                graphNode = new GraphNode(graph, gdo, this, visualManager);
+            }
+
+            content = new InstanceContent();
+
+            init();
+            MemoryManager.newObject(VisualGraphTopComponent.class);
+        } catch (Throwable t) {
+            System.out.print(t);
         }
-
-        content = new InstanceContent();
-
-        init();
-        MemoryManager.newObject(VisualGraphTopComponent.class);
     }
 
     @Override
     public void requestActive() {
         super.requestActive();
         visualManager.getVisualComponent().requestFocusInWindow();
-    }
-    
-    public void notifyParentAdded() {
-        visualManager.notifyParentAdded();
     }
 
     /**
@@ -477,7 +480,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     public GraphNode getGraphNode() {
         return graphNode;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -645,16 +647,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final NotifyDescriptor d = new NotifyDescriptor(message, "Close", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
             final Object o = DialogDisplayer.getDefault().notify(d);
 
-            if (o.equals(CANCEL)) {
-                return false;
-            } else if (o.equals(DISCARD)) {
+            if (o.equals(DISCARD)) {
                 savable.setModified(false);
-            } else {
+            } else if (o.equals(SAVE)){
                 try {
                     savable.handleSave();
+                    if (!savable.isSaved()){
+                        return false;
+                    }
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+            } else {
+                return false;
             }
         }
 
@@ -863,6 +868,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private class MySavable extends AbstractSavable implements Icon {
 
         private boolean isModified;
+        private boolean isSaved = false;
 
         /**
          * Construct a new MySavable instance.
@@ -909,6 +915,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             return isModified;
         }
 
+        public boolean isSaved() {
+            return isSaved;
+        }
         /**
          * register the instance if in modified state
          */
@@ -948,6 +957,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                 SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
+                isSaved = action.isSaved();
                 return;
             }
 

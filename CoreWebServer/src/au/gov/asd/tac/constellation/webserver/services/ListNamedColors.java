@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,14 @@ import java.io.OutputStream;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * List the colors that CONSTELLATION knows the names of, and their values in HTML format.
+ * List the colors that CONSTELLATION knows the names of, and their values in
+ * HTML format.
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class ListNamedColors extends RestService {
+
     private static final String NAME = "list_named_colors";
 
     @Override
@@ -54,9 +56,9 @@ public class ListNamedColors extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         ConstellationColor.NAMED_COLOR_LIST
-            .forEach(cocol -> {
-                root.put(cocol.getName(), cocol.getHtmlColor());
-            });
+                .forEach(cocol -> {
+                    root.put(cocol.getName(), cocol.getHtmlColor());
+                });
 
         mapper.writeValue(out, root);
     }

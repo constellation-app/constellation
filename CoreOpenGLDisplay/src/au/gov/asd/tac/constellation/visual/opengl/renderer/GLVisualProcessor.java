@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
-import au.gov.asd.tac.constellation.visual.vulkan.CVKCanvas;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
@@ -26,19 +25,25 @@ import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor.VisualChangeProcessor;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProperty;
-import au.gov.asd.tac.constellation.visual.Renderable;
-import au.gov.asd.tac.constellation.visual.vulkan.CVKRenderer;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLException;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * A {@link VisualProcessor} that creates a 3D visualisation using OpenGL. This
@@ -62,28 +67,23 @@ import java.util.logging.Logger;
  */
 public class GLVisualProcessor extends VisualProcessor {
 
-    private static final Logger LOGGER = Logger.getLogger(GLVisualProcessor.class.getName());
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
 
     // The OpenGL canvas
-    protected CVKCanvas canvas;
-    
+    protected final GLCanvas canvas;
     // The GLEventListener for the OpenGL canvas. Contains the processing logic to update the canvas throughout the OpenGL life-cycle.
-    private GLRenderer renderer;
+    private final GLRenderer renderer;
     // The primary GLRenderable that performs the bulk of the visualisation. This renderable contains most of the actual logic to send data to the GL Context.
-    private GraphRenderable graphRenderable;
+    private final GraphRenderable graphRenderable;
     private final Matrix44f modelViewMatrix = new Matrix44f();
-    private CVKRenderer vkRenderer;
 
     private Camera camera;
     private boolean updating = false;
 
     @Override
     protected final void destroyCanvas() {
-        //TODO_TT: is this needed?
-        System.out.println("GLVisualProcessor.destroyCanvas called");        
-//        canvas.destroy();
+        canvas.destroy();
     }
 
     /**
@@ -194,24 +194,16 @@ public class GLVisualProcessor extends VisualProcessor {
     @Override
     public final void performVisualUpdate() {
         updating = true;
-        //TODO_TT: graphics is not used so null is 'ok' but it probably should be pulled from the canvas maybe,
-        // though why then pass that back in...
-        canvas.paint(null);
+        canvas.display();
     }
 
     @Override
     protected void initialise() {
-        //TODO_TT
-//        if (graphRenderable.getGraphDisplayer() == null) {
-//            graphRenderable.setGraphDisplayer(new GraphDisplayer());
-//        }
-//        canvas.addEventListener(renderer);
-//        canvas.addComponentListener(new ComponentAdapter() {
-//			public void componentResized(java.awt.event.ComponentEvent e) {
-//				canvas.repaint();
-//			};
-//		});
-        //canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
+        if (graphRenderable.getGraphDisplayer() == null) {
+            graphRenderable.setGraphDisplayer(new GraphDisplayer());
+        }
+        canvas.addGLEventListener(renderer);
+        canvas.setSharedAutoDrawable(SharedDrawable.getSharedAutoDrawable());
     }
 
     /**
@@ -226,15 +218,13 @@ public class GLVisualProcessor extends VisualProcessor {
      */
     protected void setGraphDisplayer(final GraphDisplayer graphDisplayer) {
         if (!isInitialised) {
-            //TODO_TT
-            //graphRenderable.setGraphDisplayer(graphDisplayer);
+            graphRenderable.setGraphDisplayer(graphDisplayer);
         }
     }
 
     @Override
     protected void cleanup() {
-        // TODO_TT:
-        //canvas.removeGLEventListener(renderer);
+        canvas.removeGLEventListener(renderer);
     }
 
     private final class GLExportToImageOperation implements VisualOperation {
@@ -247,19 +237,18 @@ public class GLVisualProcessor extends VisualProcessor {
 
         @Override
         public void apply() {
-            // TODO_TT: this whole func
-//            graphRenderable.addTask(drawable -> {
-//                final GL30 gl = drawable.getGL().getGL3();
-//                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
-//                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
-//                BufferedImage img = util.readPixelsToBufferedImage(gl, true);
-//                // Write the image out as a PNG.
-//                try {
-//                    ImageIO.write(img, "png", file);
-//                } catch (IOException ex) {
-//                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-//                }
-//            });
+            graphRenderable.addTask(drawable -> {
+                final GL3 gl = drawable.getGL().getGL3();
+                gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, 0);
+                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
+                BufferedImage img = util.readPixelsToBufferedImage(gl, true);
+                // Write the image out as a PNG.
+                try {
+                    ImageIO.write(img, "png", file);
+                } catch (IOException ex) {
+                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                }
+            });
         }
 
         @Override
@@ -301,15 +290,14 @@ public class GLVisualProcessor extends VisualProcessor {
 
         @Override
         public void apply() {
-            // TODO_TT: this whole func
-//            graphRenderable.addTask(drawable -> {
-//                final GL30 gl = drawable.getGL().getGL3();
-//                gl.glBindFramebuffer(GL30.GL_READ_FRAMEBUFFER, 0);
-//                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
-//                img1[0] = util.readPixelsToBufferedImage(gl, true);
-//
-//                waiter.release();
-//            });
+            graphRenderable.addTask(drawable -> {
+                final GL3 gl = drawable.getGL().getGL3();
+                gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, 0);
+                final AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(drawable.getGLProfile(), false);
+                img1[0] = util.readPixelsToBufferedImage(gl, true);
+
+                waiter.release();
+            });
         }
 
         @Override
@@ -359,9 +347,8 @@ public class GLVisualProcessor extends VisualProcessor {
      *
      * @param renderable The {@link GLRenderable} to add.
      */
-    protected final void addRenderable(final Comparable<Renderable> renderable) {
+    protected final void addRenderable(final GLRenderable renderable) {
         if (!isInitialised) {
-            //TODO_TT
             renderer.addRenderable(renderable);
         }
     }
@@ -389,30 +376,6 @@ public class GLVisualProcessor extends VisualProcessor {
     public GLVisualProcessor() {
         this(false, false);
     }
-    
-    /**
-     * Notifies us that our canvas's parent component has been added to its parent.
-     * <p>
-     * Our canvas belongs to a JPanel which in turn belongs to a tabbed control.
-     * When we are constructed as part of the VisualGraphOpener call chain that
-     * panel hasn't yet been added to it's parent.  In that state we cannot lock
-     * the canvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
-     * the surface we cannot initialise all the Vulkan resources we need.   
-     */
-//    @Override 
-//    protected void notifyParentAdded() {
-//        // At this point VisualGraphTopCOmponent
-//        canvas.InitSurface();
-//        
-//        // We currently have a zero sized canvas, a Vulkan swapchain requires
-//        // a non zero sized canvas so we must defer the initialisation of Vulkan
-//        // objects until later.
-//        Rectangle bounds = canvas.getBounds();
-//        System.out.print(bounds);
-//        
-//        // The canvas surface is needed to finish initialising CVKRenderer
-//        //vkRenderer.InitVKRenderer(canvas.surface);        
-//    }
 
     /**
      * Construct a new GLVisualProcessor with a {@link GraphRenderable} and an
@@ -424,39 +387,23 @@ public class GLVisualProcessor extends VisualProcessor {
      * capabilities upon initialisation.
      */
     public GLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
-//        try {            
-//            // VkInstance is setup in the constructor
-//            vkRenderer = new CVKRenderer();
-//        } catch (Exception e) {
-//            LOGGER.severe(e.toString());
-//        }
-//        
-//        // LWJGL structure needed to create AWTVKCanvas.  AWTVKCanvas wraps vkInstance
-//        // in a VKData object and makes it private.  The result is we need to create it
-//        // here rather than have a CVKCanvas constructor that just takes the
-//        // renderer and pulls the instance from there.
-//        VKData vkData = new VKData();
-//        vkData.instance = vkRenderer.GetVkInstance();
-//        canvas = new CVKCanvas(vkData, vkRenderer);    
-        //canvas.addEventListener(vkRenderer);
-        //canvas.InitSurface();
-        
-        // The canvas surface is needed to finish initialising CVKRenderer
-        //vkRenderer.InitVKRenderer(canvas.surface);
-        //vkRenderer.CreateSwapChain(canvas.surface);
-        
-//        graphRenderable = new GraphRenderable(this);
-//        final AxesRenderable axesRenderable = new AxesRenderable(this);
-//        final FPSRenderable fpsRenderable = new FPSRenderable(this);
-//        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);          
-        //canvas = new CVKCanvas(vkData);
+        graphRenderable = new GraphRenderable(this);
+        final AxesRenderable axesRenderable = new AxesRenderable(this);
+        final FPSRenderable fpsRenderable = new FPSRenderable(this);
+        renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);
+        try {
+            canvas = new GLCanvas(SharedDrawable.getGLCapabilities());
+        } catch (GLException ex) {
+            GLInfo.respondToIncompatibleHardwareOrGL(null);
+            throw ex;
+        }
     }
 
     @Override
     protected Component getCanvas() {
         return canvas;
     }
-    
+
     @Override
     public List<VisualChange> getFullRefreshSet(final VisualAccess access) {
         return Arrays.asList(
@@ -578,18 +525,16 @@ public class GLVisualProcessor extends VisualProcessor {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
         return graphRenderable.getChangeProcessor(property);
     }
-    
+
     /**
      * Windows-DPI-Scaling
-     * 
-     * This function is only needed by the fix for Windows DPI scaling to get 
-     * access to the GLCanvas which is a protected member.  If JOGL is ever 
+     *
+     * This function is only needed by the fix for Windows DPI scaling to get
+     * access to the GLCanvas which is a protected member. If JOGL is ever
      * updated to fix Windows DPI scaling this function should be removed.
      */
     public float getDPIScaleY() {
-        return (float)((Graphics2D)(canvas).getGraphics()).getTransform().getScaleY();
+        return (float) ((Graphics2D) (canvas).getGraphics()).getTransform().getScaleY();
     }
-    
-    @Override
-    public void notifyParentAdded() {}
+
 }

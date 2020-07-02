@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ public class StructureMonitor extends GlobalMonitor {
     public StructureMonitor() {
     }
 
-    public StructureMonitor(GraphReadMethods graph) {
+    public StructureMonitor(final GraphReadMethods graph) {
         update(graph);
     }
 
     @Override
-    protected long readModificationCounter(GraphReadMethods graph) {
+    protected long readModificationCounter(final GraphReadMethods graph) {
         return graph.getStructureModificationCounter();
     }
 

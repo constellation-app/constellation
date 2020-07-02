@@ -205,11 +205,15 @@ public class CVKDevice {
                 VkExtensionProperties.Buffer deviceExtensions = VkExtensionProperties.mallocStack(numExtensions, stack);
                 ret = vkEnumerateDeviceExtensionProperties(candidate, (String) null, pInt, deviceExtensions);
                 if (VkFailed(ret)) return ret;
+                
+                for (int iExtension = 0; iExtension < numExtensions; ++iExtension) {
+                    String extensionName = deviceExtensions.position(iExtension).extensionNameString();
+                    CVKLOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});                       
+                }             
 
                 // Enumerate extensions looking for swap chain support.  Stop once requirements met and physical device set.
                 for (int iExtension = 0; (iExtension < numExtensions) && vkPhysicalDevice == null; ++iExtension) {
                     String extensionName = deviceExtensions.position(iExtension).extensionNameString();
-                    CVKLOGGER.log(Level.INFO, "Vulkan: device {0} extension available: {1}", new Object[]{iExtension, extensionName});
                     if (VK_KHR_SWAPCHAIN_EXTENSION_NAME.equals(extensionName)) {
                         // Spapchain tick, now check the queue families for one that can peform graphics operations
                         pInt.put(0, 0);

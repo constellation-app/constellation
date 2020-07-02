@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,17 +124,6 @@ public final class Vector3f implements Serializable {
         a[2] = v.a[2];
     }
 
-    public float x() {
-        return a[0];
-    }
-    
-    public float y() {
-        return a[1];
-    }
-    
-    public float z() {
-        return a[2];
-    }
     /**
      * Rotate a given vector, storing the result in this instance.
      *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ public class MonitorTransitionFilter {
 
     private final int mask;
 
-    public MonitorTransitionFilter(MonitorTransition... transitions) {
+    public MonitorTransitionFilter(final MonitorTransition... transitions) {
         int updateMask = 0;
         for (MonitorTransition transition : transitions) {
             updateMask |= transition.getMask();
@@ -31,11 +31,11 @@ public class MonitorTransitionFilter {
         this.mask = updateMask;
     }
 
-    public boolean matchesTransition(MonitorTransition transition) {
+    public boolean matchesTransition(final MonitorTransition transition) {
         return (mask & transition.getMask()) != 0;
     }
 
-    public boolean matchesTransition(Monitor monitor) {
+    public boolean matchesTransition(final Monitor monitor) {
         return (mask & monitor.getTransition().getMask()) != 0;
     }
 
@@ -45,7 +45,7 @@ public class MonitorTransitionFilter {
      * @param monitors the monitors to test.
      * @return true if any of the specified monitors match this filter.
      */
-    public boolean matchesTransitions(AttributeValueMonitor... monitors) {
+    public boolean matchesTransitions(final AttributeValueMonitor... monitors) {
         for (Monitor monitor : monitors) {
             if (matchesTransition(monitor)) {
                 return true;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ package au.gov.asd.tac.constellation.graph.locking;
  */
 public interface ParameterWriteAccess {
 
-    public void setInt(int value);
+    public void setInt(final int value);
 
-    public void setLong(long value);
+    public void setLong(final long value);
 
-    public void setFloat(float value);
+    public void setFloat(final float value);
 
-    public void setDouble(double value);
+    public void setDouble(final double value);
 
-    public void setObject(Object value);
+    public void setObject(final Object value);
 }

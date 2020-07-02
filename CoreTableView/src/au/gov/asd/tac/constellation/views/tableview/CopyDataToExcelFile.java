@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.openide.util.Exceptions;
 public class CopyDataToExcelFile implements ActionListener, Action {
 
     private static final String EXCEL_EXTENSION = ".xlsx";
-    
+
     private final JTable table;
     private final String pluginName;
 

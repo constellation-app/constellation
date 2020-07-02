@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,11 +140,11 @@ public interface VisualInteraction {
      * bottom edges of the rectangle in camera coordinates.
      */
     public float[] windowBoxToCameraBox(final int left, final int right, final int top, final int bottom);
-    
+
     /**
-     * Returns the global DPI Scale factor used to convert mouse coordinates to 
+     * Returns the global DPI Scale factor used to convert mouse coordinates to
      * the correct values.
-     * 
+     *
      * @return A float value describing the scale factor
      */
     public float getDPIScalingFactor();

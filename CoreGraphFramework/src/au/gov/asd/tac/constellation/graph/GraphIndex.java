@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,14 @@ public interface GraphIndex {
      *
      * @param element the element id.
      */
-    public void addElement(int element);
+    public void addElement(final int element);
 
     /**
      * Removes the specified element from the index.
      *
      * @param element the element id.
      */
-    public void removeElement(int element);
+    public void removeElement(final int element);
 
     /**
      * Updates the index to reflect a change in the attribute value for the
@@ -45,7 +45,7 @@ public interface GraphIndex {
      *
      * @param element the element id.
      */
-    public void updateElement(int element);
+    public void updateElement(final int element);
 
     /**
      * Returns a graph index result holding all elements that have attribute
@@ -57,7 +57,7 @@ public interface GraphIndex {
      * values equal to the specified value, or null if this index is not capable
      * of performing this type of query.
      */
-    public GraphIndexResult getElementsWithAttributeValue(Object value);
+    public GraphIndexResult getElementsWithAttributeValue(final Object value);
 
     /**
      * Returns a graph index result holding all elements that have attribute
@@ -72,7 +72,7 @@ public interface GraphIndex {
      * values with in the specified range, or null if this index is not capable
      * of performing this type of query.
      */
-    public GraphIndexResult getElementsWithAttributeValueRange(Object start, Object end);
+    public GraphIndexResult getElementsWithAttributeValueRange(final Object start, final Object end);
 
     /**
      * Causes this index to expand its capacity to hold a greater number of
@@ -80,6 +80,6 @@ public interface GraphIndex {
      *
      * @param newCapacity the new capacity of the index.
      */
-    public void expandCapacity(int newCapacity);
+    public void expandCapacity(final int newCapacity);
 
 }

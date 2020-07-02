@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -112,7 +112,7 @@ public class TimelineChart extends XYChart<Number, Number> {
     private final StringProperty upperTimeExtentProperty = new SimpleStringProperty();
     private boolean isSelecting = false;
     private boolean firstaxisUpdate = false;
-    
+
     // <editor-fold defaultstate="collapsed" desc="Timeline Event Handlers">
     private final EventHandler<Event> timelineMouseHandler = new EventHandler<Event>() {
         @Override
@@ -407,6 +407,7 @@ public class TimelineChart extends XYChart<Number, Number> {
      * @param lowestObservedDisplayPos Sets the lowest yAxis value.
      * @param highestObservedDisplayPos Sets the highest yAxis value.
      */
+    @SuppressWarnings("unchecked")
     public void populate(final XYChart.Series<Number, Number> series, final long lowestObservedDisplayPos, final long highestObservedDisplayPos, final boolean selectedOnly, final ZoneId zoneId) {
         this.selectedOnly = selectedOnly;
         this.currentTimezone = TimeZone.getTimeZone(zoneId);

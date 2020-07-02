@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ public final class Vector2f {
         a = new float[LENGTH];
     }
     
-    public Vector2f(float x, float y) {
+    public Vector2f(final float x, final float y) {
         a = new float[LENGTH];
         set(x, y);
-    }
+    }    
 
     public void set(final float x, final float y) {
         a[0] = x;
@@ -50,15 +50,23 @@ public final class Vector2f {
         a[0] = v.a[0];
         a[1] = v.a[1];
     }
-
-    public float x() {
+    
+    public float getX() {
         return a[0];
     }
-    
-    public float y() {
+
+    public void setX(final float x) {
+        a[0] = x;
+    }
+
+    public float getY() {
         return a[1];
     }
-    
+
+    public void setY(final float y) {
+        a[1] = y;
+    }    
+
     public void scale(final float s) {
         a[0] *= s;
         a[1] *= s;

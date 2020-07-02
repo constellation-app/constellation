@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,9 @@ import org.openide.util.NbBundle.Messages;
  * @author twinkle2_little
  */
 @ActionID(category = "Schema", id = "au.gov.asd.tac.constellation.graph.schema.visual.plugin.CompleteSchemaAction")
-@ActionRegistration(displayName = "#CTL_CompleteSchemaAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CompleteSchemaAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/schema/visual/plugins/completeWithSchema.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Tools", position = 500, separatorBefore = 499),
     @ActionReference(path = "Shortcuts", name = "F5")

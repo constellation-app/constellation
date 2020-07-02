@@ -62,7 +62,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final int NUMBER_SPINNER_WIDTH = 55;
         private static final int MILLIS_SPINNER_WIDTH = 60;
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
-        
+
         private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
@@ -108,7 +108,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
             }
             return LocalDateTime.of(
                     datePicker.getValue(),
-                    LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(), 
+                    LocalTime.of(hourSpinner.getValue(), minSpinner.getValue(),
                             secSpinner.getValue(), milliSpinner.getValue() * NANOSECONDS_IN_MILLISECOND));
         }
 

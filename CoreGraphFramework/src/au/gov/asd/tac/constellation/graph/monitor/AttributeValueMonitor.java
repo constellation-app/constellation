@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,21 +36,21 @@ public class AttributeValueMonitor extends Monitor {
 
     private long attributeModificationCounter;
 
-    public AttributeValueMonitor(GraphElementType elementType, String attributeName) {
+    public AttributeValueMonitor(final GraphElementType elementType, final String attributeName) {
         this.elementType = elementType;
         this.name = attributeName;
     }
 
-    public AttributeValueMonitor(GraphElementType elementType, String attributeName, GraphReadMethods graph) {
+    public AttributeValueMonitor(final GraphElementType elementType, final String attributeName, final GraphReadMethods graph) {
         this(elementType, attributeName);
         update(graph);
     }
 
-    public AttributeValueMonitor(SchemaAttribute schemaAttribute) {
+    public AttributeValueMonitor(final SchemaAttribute schemaAttribute) {
         this(schemaAttribute.getElementType(), schemaAttribute.getName());
     }
 
-    public AttributeValueMonitor(SchemaAttribute schemaAttribute, GraphReadMethods graph) {
+    public AttributeValueMonitor(final SchemaAttribute schemaAttribute, final GraphReadMethods graph) {
         this(schemaAttribute);
         update(graph);
     }
@@ -79,7 +79,7 @@ public class AttributeValueMonitor extends Monitor {
     }
 
     @Override
-    public final MonitorTransition update(GraphReadMethods graph) {
+    public final MonitorTransition update(final GraphReadMethods graph) {
 
         // If we are passed a null graph then just go the the undefined state
         if (graph == null) {
@@ -116,7 +116,7 @@ public class AttributeValueMonitor extends Monitor {
         return transition;
     }
 
-    private void updateFromUndefined(GraphReadMethods graph) {
+    private void updateFromUndefined(final GraphReadMethods graph) {
         id = graph.getAttribute(elementType, name);
         attributeModificationCounter = graph.getAttributeModificationCounter();
         if (id == Graph.NOT_FOUND) {
@@ -128,7 +128,7 @@ public class AttributeValueMonitor extends Monitor {
         }
     }
 
-    private void updateFromMissing(GraphReadMethods graph) {
+    private void updateFromMissing(final GraphReadMethods graph) {
         final long currentAttributeModificationCounter = attributeModificationCounter;
         attributeModificationCounter = graph.getAttributeModificationCounter();
         if (currentAttributeModificationCounter == attributeModificationCounter) {
@@ -145,7 +145,7 @@ public class AttributeValueMonitor extends Monitor {
         }
     }
 
-    private void updateFromPresent(GraphReadMethods graph) {
+    private void updateFromPresent(final GraphReadMethods graph) {
 
         // Update the attribute modification counter
         final long currentAttributeModificationCounter = attributeModificationCounter;

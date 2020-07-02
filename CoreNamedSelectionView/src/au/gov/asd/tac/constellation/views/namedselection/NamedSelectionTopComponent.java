@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection;
 
+import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionListElement;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionModDescPanel;
 import au.gov.asd.tac.constellation.views.namedselection.panes.NamedSelectionProtectedPanel;
@@ -80,7 +81,7 @@ import org.openide.windows.TopComponent;
     "CTL_NamedSelectionAction=Named Selections",
     "CTL_NamedSelectionTopComponent=Named Selections",
     "HINT_NamedSelectionTopComponent=This window presents all named selections for an active graph."})
-public final class NamedSelectionTopComponent extends TopComponent {
+public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> {
     // Labels used to mask UI in the event of having no active graph:
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
@@ -143,6 +144,7 @@ public final class NamedSelectionTopComponent extends TopComponent {
     /**
      * Constructs a new <code>NamedSelectionTopComponent</code>.
      */
+    @SuppressWarnings("unchecked")
     public NamedSelectionTopComponent() {
         initComponents();
 
@@ -186,15 +188,10 @@ public final class NamedSelectionTopComponent extends TopComponent {
      * elements of this component are updated.
      */
     @Override
-    public void componentOpened() {
+    protected void handleComponentOpened() {
         // Ensure the manager is initialised and determine whether it is managing a graph:
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
-    }
-
-    @Override
-    public void componentClosed() {
-        // Method override required, intentionally left blank
     }
 
     /**
@@ -964,6 +961,11 @@ public final class NamedSelectionTopComponent extends TopComponent {
         final DialogDescriptor dd = new DialogDescriptor(panel, Bundle.ProtectedSelection());
         dd.setOptions(new Object[]{"Ok"});
         DialogDisplayer.getDefault().notify(dd);
+    }
+
+    @Override
+    protected JPanel createContent() {
+        return panelNoGraph;
     }
 
     /**

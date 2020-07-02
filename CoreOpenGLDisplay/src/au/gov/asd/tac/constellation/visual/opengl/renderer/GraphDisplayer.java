@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
-import au.gov.asd.tac.constellation.visual.AutoDrawable;
+import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
+import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -45,9 +50,9 @@ public class GraphDisplayer implements GLRenderable {
     private static final int VERTEX_BUFFER_WIDTH = 2;
 
     // Batch and batch targets
-//    private final Batch graphTextureBatch;
-//    private final int vertexTarget;
-//    private final int textureCoordinatesTarget;
+    private final Batch graphTextureBatch;
+    private final int vertexTarget;
+    private final int textureCoordinatesTarget;
 
     // GL Targets
     final int[] graphFboName = new int[1];
@@ -69,9 +74,9 @@ public class GraphDisplayer implements GLRenderable {
      * Creates a new GraphDisplayer.
      */
     public GraphDisplayer() {
-//        graphTextureBatch = new Batch(GL30.GL_TRIANGLE_STRIP);
-//        vertexTarget = graphTextureBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
-//        textureCoordinatesTarget = graphTextureBatch.newFloatBuffer(TEXTURE_COORDINATES_BUFFER_WIDTH, true);
+        graphTextureBatch = new Batch(GL3.GL_TRIANGLE_STRIP);
+        vertexTarget = graphTextureBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
+        textureCoordinatesTarget = graphTextureBatch.newFloatBuffer(TEXTURE_COORDINATES_BUFFER_WIDTH, true);
     }
 
     /**
@@ -103,7 +108,7 @@ public class GraphDisplayer implements GLRenderable {
      *
      * @param gl The GL Context on which to create shader locations.
      */
-    protected void createShaderLocations(/*final GL30 gl*/) {
+    protected void createShaderLocations(final GL3 gl) {
     }
 
     /**
@@ -113,62 +118,61 @@ public class GraphDisplayer implements GLRenderable {
      *
      * @param gl The GL Context on which to bind shader locations.
      */
-    protected void bindShaderLocations(/*final GL30 gl*/) {
+    protected void bindShaderLocations(final GL3 gl) {
     }
 
     @Override
-    public void init(AutoDrawable drawable) {
-        // TODO_TT: this whole func
-//        final GL30 gl = drawable.getGL().getGL3();
-//
-//        String graphVp = null;
-//        String graphFp = null;
-//        try {
-//            graphVp = getVertexShader();
-//            graphFp = getFragmentShader();
-//        } catch (final IOException ex) {
-//            LOGGER.log(Level.SEVERE, "Can''t read graph texture shaders", ex);
-//        }
-//        graphTextureShader = GLTools.loadShaderSourceWithAttributes(gl, "graphTex", graphVp, null, graphFp,
-//                vertexTarget, "position",
-//                textureCoordinatesTarget, "inputTextureCoordinates",
-//                ShaderManager.FRAG_BASE, "fragColor");
-//
-//        graphTextureBatch.initialise(GRAPH_TEXTURE_NUMBER_OF_VERTICES);
-//        graphTextureBatch.stage(vertexTarget, -1f, -1f);
-//        graphTextureBatch.stage(vertexTarget, 1f, -1f);
-//        graphTextureBatch.stage(vertexTarget, -1f, 1f);
-//        graphTextureBatch.stage(vertexTarget, 1f, 1f);
-//        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 0f);
-//        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 0f);
-//        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 1f);
-//        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 1f);
-//        graphTextureBatch.finalise(gl);
-//
-//        // Create the FBO to draw the graph onto.
-//        gl.glGenFramebuffers(1, graphFboName, 0);
-//        gl.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
-//
-//        // Create a texture for colour information.
-//        gl.glGenTextures(1, graphColorTextureName, 0);
-//        gl.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
-//        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-//        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-//        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, 10, 10, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
-//        gl.glFramebufferTexture(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_COLOR_ATTACHMENT0, graphColorTextureName[0], 0);
-//        graphDrawBuffers[0] = GL30.GL_COLOR_ATTACHMENT0;
-//
-//        // Create a texture for depth information and attach it.
-//        gl.glGenTextures(1, graphDepthTextureName, 0);
-//        gl.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
-//        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
-//        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
-//        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT16, 10, 10, 0, GL30.GL_DEPTH_COMPONENT, GL.GL_FLOAT, null);
-//        gl.glFramebufferTexture(GL30.GL_DRAW_FRAMEBUFFER, GL30.GL_DEPTH_ATTACHMENT, graphDepthTextureName[0], 0);
-//
-//        graphColorTextureShaderLocation = gl.glGetUniformLocation(graphTextureShader, "graphTexture");
-//        graphDepthTextureShaderLocation = gl.glGetUniformLocation(graphTextureShader, "depthTexture");
-//        createShaderLocations(gl);
+    public void init(GLAutoDrawable drawable) {
+        final GL3 gl = drawable.getGL().getGL3();
+
+        String graphVp = null;
+        String graphFp = null;
+        try {
+            graphVp = getVertexShader();
+            graphFp = getFragmentShader();
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Can''t read graph texture shaders", ex);
+        }
+        graphTextureShader = GLTools.loadShaderSourceWithAttributes(gl, "graphTex", graphVp, null, graphFp,
+                vertexTarget, "position",
+                textureCoordinatesTarget, "inputTextureCoordinates",
+                ShaderManager.FRAG_BASE, "fragColor");
+
+        graphTextureBatch.initialise(GRAPH_TEXTURE_NUMBER_OF_VERTICES);
+        graphTextureBatch.stage(vertexTarget, -1f, -1f);
+        graphTextureBatch.stage(vertexTarget, 1f, -1f);
+        graphTextureBatch.stage(vertexTarget, -1f, 1f);
+        graphTextureBatch.stage(vertexTarget, 1f, 1f);
+        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 0f);
+        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 0f);
+        graphTextureBatch.stage(textureCoordinatesTarget, 0f, 1f);
+        graphTextureBatch.stage(textureCoordinatesTarget, 1f, 1f);
+        graphTextureBatch.finalise(gl);
+
+        // Create the FBO to draw the graph onto.
+        gl.glGenFramebuffers(1, graphFboName, 0);
+        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
+
+        // Create a texture for colour information.
+        gl.glGenTextures(1, graphColorTextureName, 0);
+        gl.glBindTexture(GL3.GL_TEXTURE_2D, graphColorTextureName[0]);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA8, 10, 10, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, null);
+        gl.glFramebufferTexture(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, graphColorTextureName[0], 0);
+        graphDrawBuffers[0] = GL3.GL_COLOR_ATTACHMENT0;
+
+        // Create a texture for depth information and attach it.
+        gl.glGenTextures(1, graphDepthTextureName, 0);
+        gl.glBindTexture(GL3.GL_TEXTURE_2D, graphDepthTextureName[0]);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);
+        gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_NEAREST);
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT16, 10, 10, 0, GL3.GL_DEPTH_COMPONENT, GL.GL_FLOAT, null);
+        gl.glFramebufferTexture(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, graphDepthTextureName[0], 0);
+
+        graphColorTextureShaderLocation = gl.glGetUniformLocation(graphTextureShader, "graphTexture");
+        graphDepthTextureShaderLocation = gl.glGetUniformLocation(graphTextureShader, "depthTexture");
+        createShaderLocations(gl);
     }
 
     @Override
@@ -179,28 +183,28 @@ public class GraphDisplayer implements GLRenderable {
     }
 
     @Override
-    public void display(AutoDrawable drawable, Matrix44f pMatrix) {
+    public void display(GLAutoDrawable drawable, Matrix44f pMatrix) {
 
         // Draw the graph texture to the screen
-//        final GL30 gl = drawable.getGL().getGL3();
-//        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, 0);
-//        GL30.glActiveTexture(GL30.GL_TEXTURE0);
-//        GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
-//        GL30.glActiveTexture(GL30.GL_TEXTURE0 + 1);
-//        GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
-//        GL30.glUseProgram(graphTextureShader);
-//        GL30.glUniform1i(graphColorTextureShaderLocation, 0);
-//        GL30.glUniform1i(graphDepthTextureShaderLocation, 1);
-//        bindShaderLocations(gl);
-//        GL30.glDisable(GL30.GL_DEPTH_TEST);
-//        graphTextureBatch.draw(gl);
-//        GL30.glEnable(GL30.GL_DEPTH_TEST);
+        final GL3 gl = drawable.getGL().getGL3();
+        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, 0);
+        gl.glActiveTexture(GL3.GL_TEXTURE0);
+        gl.glBindTexture(GL3.GL_TEXTURE_2D, graphColorTextureName[0]);
+        gl.glActiveTexture(GL3.GL_TEXTURE0 + 1);
+        gl.glBindTexture(GL3.GL_TEXTURE_2D, graphDepthTextureName[0]);
+        gl.glUseProgram(graphTextureShader);
+        gl.glUniform1i(graphColorTextureShaderLocation, 0);
+        gl.glUniform1i(graphDepthTextureShaderLocation, 1);
+        bindShaderLocations(gl);
+        gl.glDisable(GL3.GL_DEPTH_TEST);
+        graphTextureBatch.draw(gl);
+        gl.glEnable(GL3.GL_DEPTH_TEST);
     }
 
     @Override
-    public void dispose(AutoDrawable drawable) {
-//        final GL30 gl = drawable.getGL().getGL3();
-//        graphTextureBatch.dispose(gl);
+    public void dispose(GLAutoDrawable drawable) {
+        final GL3 gl = drawable.getGL().getGL3();
+        graphTextureBatch.dispose(gl);
     }
 
     /**
@@ -210,20 +214,17 @@ public class GraphDisplayer implements GLRenderable {
      *
      * @param gl The GL Context on which to bind to this displayer's buffers.
      */
-    final void bindDisplayer(/*final GL30 gl*/) {
-//        GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
-//        // TODO_TT:
-//        //gl.glDrawBuffers(1, graphDrawBuffers, 0);
-//        if (needsResize) {
-//            GL30.glActiveTexture(GL30.GL_TEXTURE0);
-//            GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphColorTextureName[0]);
-//            // TODO_TT: compiler can't figure out what version to use
-//            //gl.glTexImage2D(STUB_GL.GL_TEXTURE_2D, 0, STUB_GL.GL_RGB8, width, height, 0, STUB_GL.GL_RGB, STUB_GL.GL_UNSIGNED_BYTE, null);
-//            GL30.glActiveTexture(GL30.GL_TEXTURE0 + 1);
-//            GL30.glBindTexture(GL30.GL_TEXTURE_2D, graphDepthTextureName[0]);
-//            // TODO_TT: compiler can't figure out what version to use
-//            //gl.glTexImage2D(STUB_GL.GL_TEXTURE_2D, 0, STUB_GL.GL_DEPTH_COMPONENT16, width, height, 0, GL30.GL_DEPTH_COMPONENT, STUB_GL.GL_FLOAT, null);
-//            needsResize = false;
-//        }
+    final void bindDisplayer(final GL3 gl) {
+        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
+        gl.glDrawBuffers(1, graphDrawBuffers, 0);
+        if (needsResize) {
+            gl.glActiveTexture(GL3.GL_TEXTURE0);
+            gl.glBindTexture(GL3.GL_TEXTURE_2D, graphColorTextureName[0]);
+            gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGB8, width, height, 0, GL.GL_RGB, GL.GL_UNSIGNED_BYTE, null);
+            gl.glActiveTexture(GL3.GL_TEXTURE0 + 1);
+            gl.glBindTexture(GL3.GL_TEXTURE_2D, graphDepthTextureName[0]);
+            gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_DEPTH_COMPONENT16, width, height, 0, GL3.GL_DEPTH_COMPONENT, GL.GL_FLOAT, null);
+            needsResize = false;
+        }
     }
 }

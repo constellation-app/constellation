@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
 
     public static final String NODE = "Node";
     public static final String TRANSACTION = "Transaction";
-    
+
     private static final String MISSING_PROPERTY_FORMAT = "%s property is missing";
 
     @Override
@@ -270,7 +270,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 switch (mode) {
                     case NODE:
                         destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
-                        if (subTypes.contains(destinationVertexType.getName())) {
+                        if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }
@@ -280,7 +280,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                         break;
                     case TRANSACTION:
                         transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
-                        if (subTypes.contains(transactionType.getName())) {
+                        if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
                             }

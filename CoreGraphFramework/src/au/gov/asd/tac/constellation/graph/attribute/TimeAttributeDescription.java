@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,8 +192,8 @@ public final class TimeAttributeDescription extends AbstractAttributeDescription
 
     @Override
     public Object getObject(final int id) {
-        return data[id] == DEFAULT_VALUE ? null 
-                : LocalTime.ofNanoOfDay(((long) data[id]) 
+        return data[id] == DEFAULT_VALUE ? null
+                : LocalTime.ofNanoOfDay(((long) data[id])
                         * TemporalConstants.NANOSECONDS_IN_MILLISECOND);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ public class IntValueUpdater2 implements ValueUpdater32 {
     public static final IntValueUpdater2 INSTANCE = new IntValueUpdater2();
 
     @Override
-    public int store(UndoGraphEditState state, int i) {
+    public int store(final UndoGraphEditState state, int i) {
         if (i != state.getCurrentInt()) {
             int intDelta = i - state.getCurrentInt();
             state.setCurrentInt(i);
@@ -45,64 +45,64 @@ public class IntValueUpdater2 implements ValueUpdater32 {
     }
 
     @Override
-    public void updateExecute(UndoGraphEditState state, int parameters) {
+    public void updateExecute(final UndoGraphEditState state, int parameters) {
         INT_GETTERS[parameters & 3].getExecute(state);
     }
 
     @Override
-    public void updateUndo(UndoGraphEditState state, int parameters) {
+    public void updateUndo(final UndoGraphEditState state, int parameters) {
         INT_GETTERS[parameters & 3].getUndo(state);
     }
 
     private static final ValueGetter[] INT_GETTERS = new ValueGetter[]{
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 // Default case when the position of the value getter is equal to 0
                 // It has been intentionally left blank
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 // Default case when the position of the value getter is equal to 0
                 // It has been intentionally left blank
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentInt(edit.getCurrentInt() + edit.getByteStack()[edit.getBytePointer()]);
                 edit.setBytePointer(edit.getBytePointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setBytePointer(edit.getBytePointer() - 1);
                 edit.setCurrentInt(edit.getCurrentInt() - edit.getByteStack()[edit.getBytePointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentInt(edit.getCurrentInt() + edit.getShortStack()[edit.getShortPointer()]);
                 edit.setShortPointer(edit.getShortPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setShortPointer(edit.getShortPointer() - 1);
                 edit.setCurrentInt(edit.getCurrentInt() - edit.getShortStack()[edit.getShortPointer()]);
             }
         },
         new ValueGetter() {
             @Override
-            public void getExecute(UndoGraphEditState edit) {
+            public void getExecute(final UndoGraphEditState edit) {
                 edit.setCurrentInt(edit.getCurrentInt() + edit.getIntStack()[edit.getIntPointer()]);
                 edit.setIntPointer(edit.getIntPointer() + 1);
             }
 
             @Override
-            public void getUndo(UndoGraphEditState edit) {
+            public void getUndo(final UndoGraphEditState edit) {
                 edit.setIntPointer(edit.getIntPointer() - 1);
                 edit.setCurrentInt(edit.getCurrentInt() - edit.getIntStack()[edit.getIntPointer()]);
             }

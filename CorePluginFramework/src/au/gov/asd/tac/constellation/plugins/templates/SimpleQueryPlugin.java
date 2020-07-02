@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ import org.openide.util.NbBundle.Messages;
 public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleQueryPlugin.class.getName());
-    
+
     private static final String READING_INTERACTION = "Reading...";
     private static final String QUERYING_INTERACTION = "Querying...";
     private static final String EDITING_INTERACTION = "Editing...";

@@ -71,7 +71,7 @@ public class CVKBuffer {
             vkMapMemory(cvkDevice.GetDevice(), GetMemoryBufferHandle(), destOffset, size, 0, data); //arg 5 is flags
             {
                 // Get a ByteBuffer representing the mapped memory, note offset is 0 as we offset in vkMapMemory
-                ByteBuffer dest = data.getByteBuffer(0, (int)size);
+                ByteBuffer dest = data.getByteBuffer(0, size);
                 
                 // Move to the source start position
                 pBytes.position(srcOffset);
@@ -132,6 +132,7 @@ public class CVKBuffer {
         }        
     }
     
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         Destroy();

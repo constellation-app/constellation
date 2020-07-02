@@ -43,27 +43,28 @@ public class CVKCanvas extends AWTVKCanvas{
         eventListeners.add(listener);
     }
     
-    /**  <P>
-
-      <B>Overrides:</B>
-      <DL><DD><CODE>reshape</CODE> in class <CODE>java.awt.Component</CODE></DD></DL> */
-//    @SuppressWarnings("deprecation")
-//    @Override
-//    public void reshape(final int x, final int y, final int width, final int height) {
-//        Rectangle current = this.getBounds();
-//        super.reshape(x, y, width, height);
-//        if (current.width != width || current.height != height) {
-//            
-//        }
-//        Rectangle newBounds = new Rectangle(x, y, width, height);
-//        LOGGER.log(Level.INFO, "Canvas resized from {0} to {1}", new Object[]{currentBounds, newBounds});
-//    }   
-    
     @Override
     public void paint(final Graphics g) {
         if (parentAdded) {
             super.paint(g);
         }
+    }
+    
+    /*    
+    * Our cvkCanvas belongs to a JPanel which in turn belongs to a tabbed control.
+    * When we are constructed as part of the VisualGraphOpener call chain that
+    * panel hasn't yet been added to it's parent.  In that state we cannot lock
+    * the cvkCanvas surface (JAWT_DrawingSurface_Lock returns an error).  Without
+    * the surface we cannot initialise all the Vulkan resources we need.   
+    *
+    * requestFocusInWindow is be called from the VisualTopComponent once the new tab has been created.  If
+    * we try to create the surface before that (which happens on the first paint) it will fail.    
+    */
+    @Override
+    public boolean requestFocusInWindow() {
+        boolean ret = super.requestFocusInWindow();
+        parentAdded = true;
+        return ret;
     }
     
     @Override

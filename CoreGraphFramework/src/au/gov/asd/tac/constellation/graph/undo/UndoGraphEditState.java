@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.undo;
 
-import au.gov.asd.tac.constellation.graph.GraphOperation;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -33,7 +33,7 @@ import java.util.Map;
 public class UndoGraphEditState {
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
-    
+
     private static final boolean PRINT_STATS = false;
 
     private static final int REPEAT_MASK = 3;
@@ -120,7 +120,7 @@ public class UndoGraphEditState {
 
         final Map<Integer, Class<?>> classMap = new HashMap<>();
         classMap.put(0, null);
-        
+
         objectCount = in.readInt();
         byte[] buffer = new byte[1024];
         for (int i = 0; i < objectCount; i++) {
@@ -140,7 +140,7 @@ public class UndoGraphEditState {
             classMap.put(objectClassIndex, objectClass);
             objectMap.put(objectClass, objectClassIndex);
         }
-        
+
         objectStack = new Object[objectCount];
         Arrays.setAll(objectStack, index -> classMap.get(index));
     }
@@ -272,7 +272,7 @@ public class UndoGraphEditState {
     public void setCurrentDouble(final long currentDouble) {
         this.currentDouble = currentDouble;
     }
-    
+
     public void addInstruction(final short operation) {
         if (currentOperation == operation) {
             operationStack[operationCount - 1] = (short) (operation | (++extraOperationsCount << REPEAT_SHIFT));

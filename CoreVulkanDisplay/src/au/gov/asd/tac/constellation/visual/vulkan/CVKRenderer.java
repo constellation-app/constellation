@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.visual.vulkan;
 
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
-import au.gov.asd.tac.constellation.visual.Renderer;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.CVKAssert;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.EndLogSection;
 import static au.gov.asd.tac.constellation.visual.vulkan.CVKUtils.GetRequiredVKPhysicalDeviceExtensions;
@@ -70,7 +69,7 @@ blah: anything else
 
 CODING STANDARDS
 helper classes should return error codes where possible
-controller classes like CVKRenderer and aggregation classes like CVKScene will need some other mechanism
+controller classes like CVKRenderer and aggregation classes like CVKVisualProcessor will need some other mechanism
 use MemoryStack to allocate nio buffers unless an allocation needs to last longer than function scope
 comment where ever code is not trivially simple
 make methods static whereever possible
@@ -78,16 +77,7 @@ TODO_TT: remember the reason for the Create factory patten in buffer and image
 
 */
 
-public class CVKRenderer extends Renderer implements ComponentListener {
-    public interface CVKRenderEventListener {
-        //TODO_TT: how do we handle errors from this?
-        public abstract void SwapChainRecreated(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain);
-        public abstract void DeviceInitialised(CVKDevice cvkDevice);
-        public abstract void DisplayUpdate(CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
-        
-        //TEMP TEMP TEMP
-        public abstract void Display(MemoryStack stack, CVKFrame frame, CVKRenderer cvkRenderer, CVKDevice cvkDevice, CVKSwapChain cvkSwapChain, int frameIndex);
-    }
+public class CVKRenderer implements ComponentListener {
     
     // TODO_TT: explain why this may be less than imageCount
     protected static final int MAX_FRAMES_IN_FLIGHT = 2;
@@ -106,17 +96,9 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     // the swapchain is transient we store these counts in the renderer so that
     // we can account for our scene being populated before we've created the swapchain.    
     protected CVKSynchronizedDescriptorTypeCounts desiredPoolDescriptorTypeCounts = new CVKSynchronizedDescriptorTypeCounts();   
-    
-    
-//    // What is the minimum size the pool needs to accomodate?
-//    protected int desiredPoolDescriptorTypeCounts[] = null;    
-          
-    
-    protected List<CVKRenderEventListener> renderEventListeners = new ArrayList<>();     
+       
 
-    // hack - replace with a getRenderables function from the scene
     public List<CVKRenderable> renderables = new ArrayList<>();
-    protected CVKScene scene = null;
     
     private static float clrChange = 0.01f;
     private static int curClrEl = 0;
@@ -125,10 +107,11 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     
     public void AddRenderable(CVKRenderable renderable) {
         renderables.add(renderable);
-    }
-    
-    public void AddRenderEventListener(CVKRenderEventListener e) {
-        renderEventListeners.add(e);
+        
+        // TODO_TT: this code sucks, make it not
+        int[] descriptorTypeCounts = new int[11];
+        renderables.forEach(r -> {r.IncrementDescriptorTypeRequirements(descriptorTypeCounts);});    
+        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);        
     }
     
     public CVKDevice GetDevice() {
@@ -148,7 +131,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     protected BlockingQueue<CVKRendererUpdateTask> pendingUpdates = new LinkedBlockingQueue<>();
 
     /**
-     *
+     * This is called by the canvas once it has been created and has a valid surface handle.
      *
      *
      * @param surfaceHandle
@@ -159,11 +142,20 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     public int Init(long surfaceHandle) {
         cvkDevice = new CVKDevice(cvkInstance, surfaceHandle);
         int ret = cvkDevice.Init();
+        if (VkFailed(ret)) {
+            return ret;
+        }        
         
-        if (VkSucceeded(ret)) {
-            renderEventListeners.forEach(listener -> {
-                listener.DeviceInitialised(cvkDevice);
-            });
+        ret = parent.DeviceInitialised(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }
+        
+        for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
+            ret = renderables.get(i).DeviceInitialised(cvkDevice);
+        if (VkFailed(ret)) {
+            return ret;
+        }            
         }
         
         return ret;
@@ -171,11 +163,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
     
     
     protected int RecreateSwapChain() {
-//        if (!Thread.currentThread().getName().contains("AWT")) {
-//            CVKLOGGER.log(Level.INFO, "{0}: RecreateSwapChain (releasing frames)", 
-//                    Thread.currentThread().getName());
-//            LogStackTrace();            
-//        }
+        VerifyInRenderThread();
         
         int ret = VK_NOT_READY;
         if (parent.surfaceReady()) {
@@ -200,9 +188,13 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                     cvkFrames.add(new CVKFrame(cvkDevice.GetDevice()));
                 }
                 
-                renderEventListeners.forEach(listener -> {
-                    listener.SwapChainRecreated(cvkDevice, cvkSwapChain);
-                });
+                // Update the parent (CVKVisualProcessor) so it can update the shared viewport and frustum
+                parent.SwapChainRecreated(cvkDevice, cvkSwapChain);
+                
+                // Give each renderable a chance to recreate swapchain depedent resources
+                for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
+                    ret = renderables.get(i).SwapChainRecreated(cvkSwapChain);
+                }                
             }
         } else {
             CVKLOGGER.info("Unable to recreate swap chain, surface not ready.");
@@ -230,11 +222,12 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         EndLogSection("VKRenderer ctor");
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public void finalize() throws Throwable {
         cvkInstance.Deinit();
         cvkInstance = null;
-        
+        super.finalize();
     }
     
     /**
@@ -251,11 +244,7 @@ public class CVKRenderer extends Renderer implements ComponentListener {
         CVKAssert(frame.GetImageAcquireSemaphoreHandle() != VK_NULL_HANDLE);
         CVKAssert(pImageIndex != null);
         
-        int ret;
-        
-        ret = frame.WaitResetRenderFence();
-        if (VkFailed(ret)) return ret;
-        
+        int ret;            
         ret = vkAcquireNextImageKHR(cvkDevice.GetDevice(),
                                     cvkSwapChain.GetSwapChainHandle(),
                                     UINT64_MAX,
@@ -420,9 +409,27 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                 IntBuffer pImageIndex = stack.mallocInt(1);
                 CVKAssert(currentFrame < cvkFrames.size());
                 CVKFrame frame = cvkFrames.get(currentFrame);
+                
+                // If any renderable holds a resource shared across frames then to
+                // recreate it we need to a complete halt, that is we need all in
+                // flight images to have been presented and all fences available.
+                // Note the one liner was created by Netbeans, I am not convinced it's
+                // very clear.
+                boolean needFullHalt = false;
+                needFullHalt = renderables.stream().map(el -> el.NeedsCompleteHalt()).reduce(needFullHalt, (accumulator, _item) -> accumulator | _item);
+                
+                // Wait on either all fences, or just the one for the frame we want to use.
+                needFullHalt = false;
+                if (needFullHalt) {
+                    cvkFrames.forEach(f -> {
+                        f.WaitResetRenderFence();
+                    });
+                } else {
+                    ret = frame.WaitResetRenderFence();
+                }
   
                 // Wait for fence to signal that all command buffers are ready
-                //vkWaitForFences(cvkDevice.GetDevice(), frame.GetRenderFence(), true, UINT64_MAX);
+
                 
                 ret = AcquireImageFromSwapchain(frame, pImageIndex);
                 if (ret == CVKMissingEnums.VkResult.VK_SUBOPTIMAL_KHR.Value()
@@ -442,9 +449,9 @@ public class CVKRenderer extends Renderer implements ComponentListener {
                          
 
                     // Update everything that needs updating - drawables 
-                    renderEventListeners.forEach(listener->{
-                            listener.DisplayUpdate(cvkDevice, cvkSwapChain, imageIndex);
-                        });
+                    for (int i = 0; VkSucceeded(ret) && (i < renderables.size()); ++i) {
+                        ret = renderables.get(i).DisplayUpdate(cvkSwapChain, imageIndex);
+                    }                    
                     
                     // TODO ERROR needing to wait for fence here
                     RecordCommandBuffer(stack, frame, cvkSwapChain.GetCommandBuffer(imageIndex), imageIndex);
@@ -549,21 +556,6 @@ public class CVKRenderer extends Renderer implements ComponentListener {
 //        }
 //    }
     
-    public void RenderableAdded(CVKScene cvkScene, CVKRenderable renderable) {
-        assert(cvkScene != null);
-        
-        int[] descriptorTypeCounts = new int[11];
-        cvkScene.GetDescriptorTypeRequirements(descriptorTypeCounts);         
-        desiredPoolDescriptorTypeCounts.Set(descriptorTypeCounts);
-
-        scene = cvkScene;
-        
-        // TEMP TEMP TEMP
-        renderables.add(renderable);
-        
-        
-//        pendingUpdates.add(new CVKUpdateDescriptorTypeRequirements(cvkScene, renderableAdded));
-    }
     
 
     

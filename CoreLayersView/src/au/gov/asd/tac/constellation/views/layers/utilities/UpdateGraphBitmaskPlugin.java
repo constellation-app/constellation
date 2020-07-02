@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 
 /**
  * Write a given bitmask to the active graph.
- * 
+ *
  * @author aldebaran30701
  */
 public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {
@@ -36,7 +36,7 @@ public final class UpdateGraphBitmaskPlugin extends SimpleEditPlugin {
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
-        final int bitmaskAttributeId = VisualConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        final int bitmaskAttributeId = LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
         graph.setIntValue(bitmaskAttributeId, 0, bitmask);
     }
 
