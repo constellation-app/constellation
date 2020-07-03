@@ -24,7 +24,8 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Quality Control Auto Vetter Test
+ * 
  * @author arcturus
  */
 public class QualityControlAutoVetterNGTest {
@@ -48,134 +49,20 @@ public class QualityControlAutoVetterNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//
-//    /**
-//     * Test of newActiveGraph method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testNewActiveGraph() {
-//        System.out.println("newActiveGraph");
-//        Graph graph = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.newActiveGraph(graph);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of graphChanged method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testGraphChanged() {
-//        System.out.println("graphChanged");
-//        GraphChangeEvent event = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.graphChanged(event);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-
     /**
      * Test of updateQualityControlState method, of class QualityControlAutoVetter.
      */
     @Test
     public void testUpdateQualityControlStateWithNoGraph() {
         final Graph graph = null;
+        
+        final QualityControlState stateBefore = QualityControlAutoVetter.getInstance().getQualityControlState();
         QualityControlAutoVetter.updateQualityControlState(graph);
+        final QualityControlState stateAfter = QualityControlAutoVetter.getInstance().getQualityControlState();
+        
+        assertEquals(stateBefore, stateAfter);
     }
 
-//    /**
-//     * Test of getQualityControlState method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testGetQualityControlState() {
-//        System.out.println("getQualityControlState");
-//        QualityControlAutoVetter instance = null;
-//        QualityControlState expResult = null;
-//        QualityControlState result = instance.getQualityControlState();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of setQualityControlState method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testSetQualityControlState() {
-//        System.out.println("setQualityControlState");
-//        QualityControlState state = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.setQualityControlState(state);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of addListener method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testAddListener() {
-//        System.out.println("addListener");
-//        QualityControlListener listener = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.addListener(listener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of invokeListener method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testInvokeListener() {
-//        System.out.println("invokeListener");
-//        QualityControlListener listener = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.invokeListener(listener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeListener method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testRemoveListener() {
-//        System.out.println("removeListener");
-//        QualityControlListener listener = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.removeListener(listener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of addObserver method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testAddObserver() {
-//        System.out.println("addObserver");
-//        QualityControlAutoVetterListener buttonListener = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.addObserver(buttonListener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeObserver method, of class QualityControlAutoVetter.
-//     */
-//    @Test
-//    public void testRemoveObserver() {
-//        System.out.println("removeObserver");
-//        QualityControlAutoVetterListener buttonListener = null;
-//        QualityControlAutoVetter instance = null;
-//        instance.removeObserver(buttonListener);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
     /**
      * Test of getInstance method, of class QualityControlAutoVetter.
      */

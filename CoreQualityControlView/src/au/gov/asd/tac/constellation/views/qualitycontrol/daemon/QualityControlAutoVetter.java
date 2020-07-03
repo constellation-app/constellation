@@ -91,10 +91,10 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     @Override
     public void graphClosed(final Graph graph) {
         newActiveGraph(null);
-        
+
         // remove dangling reference to the graph
         currentGraph = null;
-        
+
         // inform all listeners to clear any Quality Control data
         setQualityControlState(null);
     }
@@ -206,6 +206,9 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * quality control state changes.
      * <p>
      * The listener will immediately be called back with the current state.
+     * <p>
+     * When calling this method, a separate call to {@code init()} should also
+     * be made if you want the listener to pickup existing graphs.
      *
      * @param listener The listener to register.
      */
