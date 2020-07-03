@@ -55,6 +55,7 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
             } catch (final RestServiceException ex) {
                 response.reset();
                 response.sendError(ex.getHttpCode(), ex.getMessage());
+                LOGGER.log(Level.INFO, "in doGet", ex);
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());

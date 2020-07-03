@@ -114,7 +114,7 @@ public class RunPlugin extends RestService {
                 Thread.currentThread().interrupt();
                 throw new RestServiceException(ex);
             } catch (final PluginException | IllegalArgumentException ex) {
-                throw new RestServiceException(ex);
+                throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
             }
         } else {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
