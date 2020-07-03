@@ -49,13 +49,13 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
-        final InfoMapContext context = new InfoMapContext(config, wg);
         if (wg.getVertexCount() <= 0) {
             interaction.notify(PluginNotificationLevel.ERROR, "The graph must have atleast one vertex to run clustering on");
             LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
             return;
         }
+        final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
+        final InfoMapContext context = new InfoMapContext(config, wg);
         context.getInfoMap().run();
 
         final int clusterAttrId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(wg);
