@@ -166,7 +166,9 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         ).executeLater(graph);
 
         try {
-            stateFuture.get();
+            if (stateFuture != null) {
+                stateFuture.get();
+            }
         } catch (InterruptedException ex) {
             Exceptions.printStackTrace(ex);
             Thread.currentThread().interrupt();
