@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2019 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,6 +86,11 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = true;
+    /**
+     * Welcome window.
+     */
+    public static final String WELCOME_ON_STARTUP = "welcomeMode";
+    public static final boolean WELCOME_ON_STARTUP_DEFAULT = true;
     /**
      * Freeze graph view.
      */
