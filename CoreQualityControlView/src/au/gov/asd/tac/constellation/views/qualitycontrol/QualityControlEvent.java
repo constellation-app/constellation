@@ -61,7 +61,7 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
      * @param rules the list of rules to consider.
      * @return a list of rules that are relevant.
      */
-    private List<String> updateEvent(final List<QualityControlRule> rules) {
+    private void updateEvent(final List<QualityControlRule> rules) {
         for (final QualityControlRule rule : rules) {
             if (rule.getResults().contains(vertex)) {
                 reasons.add(rule.getName());
@@ -70,8 +70,6 @@ public class QualityControlEvent implements Comparable<QualityControlEvent> {
                 }
             }
         }
-
-        return Collections.unmodifiableList(reasons);
     }
 
     /**
