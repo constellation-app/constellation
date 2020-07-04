@@ -50,7 +50,7 @@ public class InfoMapPlugin extends SimpleEditPlugin {
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         if (wg.getVertexCount() <= 0) {
-            interaction.notify(PluginNotificationLevel.ERROR, "The graph must have atleast one vertex to run clustering on");
+            interaction.notify(PluginNotificationLevel.ERROR, "The graph must have at least one vertex to run clustering on");
             LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
             return;
         }
