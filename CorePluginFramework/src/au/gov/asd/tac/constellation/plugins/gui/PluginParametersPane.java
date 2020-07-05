@@ -741,20 +741,14 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public final LabelDescriptionBox buildParameterLabel(final PluginParameter<?> parameter) {
-            final Label label = new Label(parameter.getName() + ":");
+            final Label label = new Label(parameter.getName());
             final Label description = new Label(parameter.getDescription());
-            label.setMinWidth(120);
-            label.setPrefWidth(200);
-            label.setMaxWidth(400);
+            label.setMinWidth(35);
             label.setWrapText(true);
             description.setStyle("-fx-font-size: 80%;");
             description.getStyleClass().add("description-label");
-            description.setMinWidth(120);
-            description.setPrefWidth(200);
-            description.setMaxWidth(400);
             description.setWrapText(true);
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
-            labels.setStyle("-fx-padding: " + PADDING);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());
             parameter.setVisible(parameter.isVisible());

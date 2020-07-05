@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.geospatial;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -35,6 +35,7 @@ import org.openide.util.NbBundle;
         id = "au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoPackage")
 @ActionRegistration(
         displayName = "#CTL_ExportToGeoPackageAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/geospatial/exportToGeoPackage.png",
         surviveFocusChange = true)
 @ActionReference(
         path = "Menu/File/Export",

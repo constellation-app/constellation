@@ -45,7 +45,9 @@ import org.openide.util.NbBundle.Messages;
  * @author twilight_sparkle
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.graph.node.templates.SaveTemplateAction")
-@ActionRegistration(displayName = "#CTL_SaveTemplateAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SaveTemplateAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/node/templates/saveTemplate.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 600, separatorBefore = 599)
 })

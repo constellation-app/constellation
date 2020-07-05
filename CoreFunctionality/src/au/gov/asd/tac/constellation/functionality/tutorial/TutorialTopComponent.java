@@ -18,10 +18,12 @@ package au.gov.asd.tac.constellation.functionality.tutorial;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
 
@@ -51,16 +53,21 @@ import org.openide.windows.TopComponent;
 @ActionReferences({
     @ActionReference(path = "Menu/Help", position = 1)
 })
+@ActionRegistration(
+        displayName = "#CTL_TutorialTopComponentAction",
+        iconBase = "au/gov/asd/tac/constellation/functionality/tutorial/resources/tutorialPage.png"
+)
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_TutorialTopComponentAction",
         preferredID = "TutorialTopComponent"
 )
 @Messages({
     "CTL_TutorialTopComponentAction=Tutorial Page",
+    "CTL_TutorialTopComponentIconBase=au/gov/asd/tac/constellation/functionality/tutorial/resources/tutorialPage.png",
     "CTL_TutorialTopComponentTopComponent=Tutorial Page",
     "HINT_TutorialTopComponentTopComponent=Tutorial Page"
 })
-public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewPane> {
+public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewPane> implements java.awt.event.ActionListener {
 
     private TutorialViewPane pane;
 
@@ -152,5 +159,10 @@ public final class TutorialTopComponent extends JavaFxTopComponent<TutorialViewP
     @Override
     protected TutorialViewPane createContent() {
         return pane;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
