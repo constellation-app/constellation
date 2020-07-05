@@ -18,8 +18,9 @@ package au.gov.asd.tac.constellation.views.layers.utilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -29,11 +30,16 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.ArrayList;
 import java.util.List;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
+ * Layers Dual Graph Sync Test
  *
  * @author aldebaran30701
  */
@@ -42,69 +48,80 @@ public class LayersDualGraphSyncNGTest {
     private int layerMaskV, layerMaskT, layerVisibilityV, layerVisibilityT, selectedV, selectedT, colorV, colorT;
     private int vxId1, vxId2, vxId3;
     private ConstellationColor vx1Color, vx2Color, vx3Color;
-    private StoreGraph graph;
+    private DualGraph graph;
+    private List<String> queries;
 
-    private final List<String> queries = new ArrayList();
-
-    public LayersDualGraphSyncNGTest() {
+    @BeforeClass
+    public static void setUpClass() throws Exception {
     }
 
-    public void setupGraph() {
-        graph = new StoreGraph();
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+    }
 
-        // Create LayerMask attributes
-        layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-        if (layerMaskT == Graph.NOT_FOUND) {
-            fail();
+    @BeforeMethod
+    public void setUpMethod() throws Exception {
+        queries = new ArrayList();
+        graph = new DualGraph(null);
+
+        final WritableGraph writableGraph = graph.getWritableGraph("test", true);
+        try {
+            // Create LayerMask attributes
+            layerMaskV = LayersConcept.VertexAttribute.LAYER_MASK.ensure(writableGraph);
+            if (layerMaskV == Graph.NOT_FOUND) {
+                fail();
+            }
+            layerMaskT = LayersConcept.TransactionAttribute.LAYER_MASK.ensure(writableGraph);
+            if (layerMaskT == Graph.NOT_FOUND) {
+                fail();
+            }
+
+            // Create LayerVisilibity Attributes
+            layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(writableGraph);
+            if (layerVisibilityV == Graph.NOT_FOUND) {
+                fail();
+            }
+            layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(writableGraph);
+            if (layerVisibilityT == Graph.NOT_FOUND) {
+                fail();
+            }
+
+            // Create Selected Attributes
+            selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(writableGraph);
+            if (selectedV == Graph.NOT_FOUND) {
+                fail();
+            }
+            selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(writableGraph);
+            if (selectedT == Graph.NOT_FOUND) {
+                fail();
+            }
+
+            // Create Color Attributes
+            colorV = VisualConcept.VertexAttribute.COLOR.ensure(writableGraph);
+            if (colorV == Graph.NOT_FOUND) {
+                fail();
+            }
+
+            colorT = VisualConcept.TransactionAttribute.COLOR.ensure(writableGraph);
+            if (colorT == Graph.NOT_FOUND) {
+                fail();
+            }
+
+            vx1Color = ConstellationColor.getColorValue("#ed76b1");
+            vx2Color = ConstellationColor.getColorValue("#eb78b2");
+            vx3Color = ConstellationColor.getColorValue("#ee71b3");
+
+            // Adding 2 Vertices layer 1, visible
+            vxId1 = writableGraph.addVertex();
+            vxId2 = writableGraph.addVertex();
+            vxId3 = writableGraph.addVertex();
+            writableGraph.setObjectValue(colorV, vxId1, vx1Color);
+            writableGraph.setObjectValue(colorV, vxId2, vx2Color);
+            writableGraph.setObjectValue(colorV, vxId3, vx3Color);
+        } finally {
+            writableGraph.commit();
         }
 
-        // Create LayerVisilibity Attributes
-        layerVisibilityV = LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityV == Graph.NOT_FOUND) {
-            fail();
-        }
-        layerVisibilityT = LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
-        if (layerVisibilityT == Graph.NOT_FOUND) {
-            fail();
-        }
-
-        // Create Selected Attributes
-        selectedV = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        if (selectedV == Graph.NOT_FOUND) {
-            fail();
-        }
-        selectedT = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-        if (selectedT == Graph.NOT_FOUND) {
-            fail();
-        }
-
-        // Create Color Attributes
-        colorV = VisualConcept.VertexAttribute.COLOR.ensure(graph);
-        if (colorV == Graph.NOT_FOUND) {
-            fail();
-        }
-
-        colorT = VisualConcept.TransactionAttribute.COLOR.ensure(graph);
-        if (colorT == Graph.NOT_FOUND) {
-            fail();
-        }
-
-        // Adding 2 Vertices layer 1, visible
-        vxId1 = graph.addVertex();
-        vxId2 = graph.addVertex();
-        vxId3 = graph.addVertex();
-
-        vx1Color = ConstellationColor.getColorValue("#ed76b1");
-        vx2Color = ConstellationColor.getColorValue("#eb78b2");
-        vx3Color = ConstellationColor.getColorValue("#ee71b3");
-
-        graph.setObjectValue(colorV, vxId1, vx1Color);
-        graph.setObjectValue(colorV, vxId2, vx2Color);
-        graph.setObjectValue(colorV, vxId3, vx3Color);
 //        graph.setIntValue(layerMaskV, vxId1, 1);
 //        graph.setFloatValue(layerVisibilityV, vxId1, 1.0f);
 //        graph.setBooleanValue(selectedV, vxId1, false);
@@ -115,41 +132,59 @@ public class LayersDualGraphSyncNGTest {
 //        graph.setBooleanValue(selectedV, vxId2, false);
     }
 
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+    }
+
     @Test
     public void dynamicLayerChangeTest() throws InterruptedException, PluginException {
-        setupGraph();
-
         // Check Vertex set correctly
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        ReadableGraph readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 1.0f);
+        } finally {
+            readableGraph.release();
+        }
+
         queries.clear();
         queries.add("Default");
         queries.add("color == " + vx1Color.toString());
 
-        LayersConcept.GraphAttribute.LAYER_QUERIES.ensure(graph);
-        LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(graph);
+        final WritableGraph writableGraph = graph.getWritableGraph("test", true);
+        try {
+            LayersConcept.GraphAttribute.LAYER_QUERIES.ensure(writableGraph);
+            LayersConcept.GraphAttribute.LAYER_PREFERENCES.ensure(writableGraph);
+        } finally {
+            writableGraph.commit();
+        }
 
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b10)).executeNow(graph);
 
         // Check Vertex set correctly
-        assertTrue(3 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(vx1Color.toString().equals(graph.getObjectValue(colorV, vxId1).toString()));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId1), 3);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId1), 1.0f);
+            assertEquals(vx1Color.toString(), (readableGraph.getObjectValue(colorV, vxId1).toString()));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(vx2Color.toString().equals(graph.getObjectValue(colorV, vxId2).toString()));
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId2), 1);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId2), 0.0f);
+            assertEquals(vx2Color.toString(), (readableGraph.getObjectValue(colorV, vxId2).toString()));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId3));
-        assertTrue(vx3Color.toString().equals(graph.getObjectValue(colorV, vxId3).toString()));
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId3), 0.0f);
+            assertEquals(vx3Color.toString(), (readableGraph.getObjectValue(colorV, vxId3).toString()));
+        } finally {
+            readableGraph.release();
+        }
 
         // change an attribute to trigger switching of graph object within dual graph
         PluginExecution.withPlugin(new SimpleEditPlugin("Test: change attribute value") {
@@ -158,32 +193,42 @@ public class LayersDualGraphSyncNGTest {
                 final int maxTransactionsId = VisualConcept.GraphAttribute.MAX_TRANSACTIONS.ensure(graph);
                 graph.setIntValue(maxTransactionsId, 0, 9);
             }
-        }).executeNow(GraphManager.getDefault().getActiveGraph());
+        }).executeNow(graph);
 
         // Check Vertex set correctly on second graph of dualgraph
-        assertTrue(3 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-        assertTrue(vx1Color.toString().equals(graph.getObjectValue(colorV, vxId1).toString()));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId1), 3);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId1), 1.0f);
+            assertEquals(vx1Color.toString(), (readableGraph.getObjectValue(colorV, vxId1).toString()));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-        assertTrue(vx2Color.toString().equals(graph.getObjectValue(colorV, vxId2).toString()));
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId2), 1);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId2), 0.0f);
+            assertEquals(vx2Color.toString(), (readableGraph.getObjectValue(colorV, vxId2).toString()));
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId3));
-        assertTrue(vx3Color.toString().equals(graph.getObjectValue(colorV, vxId3).toString()));
+            assertEquals((int) readableGraph.getObjectValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getObjectValue(layerVisibilityV, vxId3), 0.0f);
+            assertEquals(vx3Color.toString(), (readableGraph.getObjectValue(colorV, vxId3).toString()));
+        } finally {
+            readableGraph.release();
+        }
 
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(1)).executeNow(graph);
 
-        assertTrue(3 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 3);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 1.0f);
+        } finally {
+            readableGraph.release();
+        }
 
         queries.clear();
         queries.add("Default");
@@ -193,26 +238,36 @@ public class LayersDualGraphSyncNGTest {
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b100)).executeNow(graph);
 
-        assertTrue(3 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 3);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 0.0f);
 
-        assertTrue(0b101 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 0b101);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 0.0f);
+        } finally {
+            readableGraph.release();
+        }
 
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(1)).executeNow(graph);
 
-        assertTrue(3 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 3);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 1.0f);
 
-        assertTrue(0b101 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 0b101);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 1.0f);
+        } finally {
+            readableGraph.release();
+        }
 
         queries.clear();
         queries.add("Default");
@@ -222,14 +277,19 @@ public class LayersDualGraphSyncNGTest {
         PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
         PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b10)).executeNow(graph);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 0.0f);
 
-        assertTrue(0b111 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 0b111);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 0.0f);
+        } finally {
+            readableGraph.release();
+        }
 
         PluginExecution.withPlugin(new SimpleEditPlugin("Test: change attribute value") {
             @Override
@@ -237,21 +297,25 @@ public class LayersDualGraphSyncNGTest {
                 final int maxTransactionsId = VisualConcept.GraphAttribute.MAX_TRANSACTIONS.ensure(graph);
                 graph.setIntValue(maxTransactionsId, 0, 9);
             }
-        }).executeNow(GraphManager.getDefault().getActiveGraph());
+        }).executeNow(graph);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId1));
+        readableGraph = graph.getReadableGraph();
+        try {
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId1), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId1), 0.0f);
 
-        assertTrue(0b111 == graph.getIntValue(layerMaskV, vxId2));
-        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId2), 0b111);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId2), 1.0f);
 
-        assertTrue(1 == graph.getIntValue(layerMaskV, vxId3));
-        assertTrue(0.0f == graph.getFloatValue(layerVisibilityV, vxId3));
+            assertEquals(readableGraph.getIntValue(layerMaskV, vxId3), 1);
+            assertEquals(readableGraph.getFloatValue(layerVisibilityV, vxId3), 0.0f);
+        } finally {
+            readableGraph.release();
+        }
     }
 
     @Test
     public void addRemoveTwoElementsSelectedTest() throws InterruptedException, PluginException {
-//        setupGraph();
 //        // Check Vertex set correctly
 //        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
 //        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
