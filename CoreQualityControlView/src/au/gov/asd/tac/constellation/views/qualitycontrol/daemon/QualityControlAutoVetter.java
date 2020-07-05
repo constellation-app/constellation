@@ -80,6 +80,18 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * Add a listener for the current open graph, if any
      */
     public void init() {
+        initWithRefresh(false);
+    }
+    
+    /**
+     * Add a listener for the current open graph, if any
+     *
+     * @param forceRefresh force the view to refresh
+     */
+    public void initWithRefresh(final boolean forceRefresh) {
+        if (forceRefresh) {
+            currentGraph = null;
+        }
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
     }
 

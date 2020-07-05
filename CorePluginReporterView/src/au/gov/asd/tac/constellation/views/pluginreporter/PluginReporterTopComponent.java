@@ -128,6 +128,12 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     void readProperties(java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
     }
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }  
 
     @Override
     protected void handleNewGraph(final Graph graph) {
@@ -140,12 +146,6 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
                 }
             });
         }
-    }
-
-    @Override
-    protected void componentShowing() {
-        this.setComponentVisible(true);
-        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     @Override

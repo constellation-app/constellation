@@ -345,7 +345,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
 
     @Override
     protected void componentShowing() {
-        this.setComponentVisible(true);
+        super.componentShowing();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 

@@ -244,7 +244,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void componentShowing() {
-        this.setComponentVisible(true);
+        super.componentShowing();
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 

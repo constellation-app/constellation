@@ -558,7 +558,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     @Override
     protected void componentShowing() {
-        this.setComponentVisible(true);
+        super.componentShowing();
         if (renderer != null) {
             renderer.updateMarkers(currentGraph, markerState);
         }
