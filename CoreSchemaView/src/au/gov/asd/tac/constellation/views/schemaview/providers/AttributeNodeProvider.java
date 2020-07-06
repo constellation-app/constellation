@@ -25,8 +25,8 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -103,6 +103,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
         final RadioButton containsRb = new RadioButton("Contains");
         containsRb.setToggleGroup(tg);
         containsRb.setPadding(new Insets(0, 0, 0, 5));
+        filterText.getStyleClass().add("schemaview-filter");
 
         tg.selectedToggleProperty().addListener((ov, oldValue, newValue) -> {
             filter(table, filterText.getText(), startsWithRb.isSelected());
