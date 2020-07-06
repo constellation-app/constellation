@@ -69,32 +69,25 @@ public class UncollideArrangement implements Arranger {
 
         if (vxCount > 0) {
             if (dimensions == 2) {
-                final Orb2D[] orbs = new Orb2D[vxCount];
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = wg.getVertex(position);
-
-                    orbs[position] = new Orb2D(wg.getFloatValue(xId, vxId), wg.getFloatValue(yId, vxId), rId != Graph.NOT_FOUND ? wg.getFloatValue(rId, vxId) : 1);
-                }
-
-                uncollide2d(orbs, wg, 2000);
+                uncollide2d(wg, 2000);
 
                 // Move x,y,z to x2,y2,z2.
                 // Set x,y to uncollided x,y.
                 // Deliberately leave the z value alone: someone may be doing a 2D uncollide on a 3D graph.
-                for (int position = 0; position < vxCount; position++) {
-                    final int vxId = wg.getVertex(position);
-
-                    final Orb2D orb = orbs[position];
-
-                    if (setXyz2) {
-                        wg.setFloatValue(x2Id, vxId, wg.getFloatValue(xId, vxId));
-                        wg.setFloatValue(y2Id, vxId, wg.getFloatValue(yId, vxId));
-                        wg.setFloatValue(z2Id, vxId, wg.getFloatValue(zId, vxId));
-                    }
-
-                    wg.setFloatValue(xId, vxId, orb.getX());
-                    wg.setFloatValue(yId, vxId, orb.getY());
-                }
+//                for (int position = 0; position < vxCount; position++) {
+//                    final int vxId = wg.getVertex(position);
+//
+//                    final Orb2D orb = orbs[position];
+//
+//                    if (setXyz2) {
+//                        wg.setFloatValue(x2Id, vxId, wg.getFloatValue(xId, vxId));
+//                        wg.setFloatValue(y2Id, vxId, wg.getFloatValue(yId, vxId));
+//                        wg.setFloatValue(z2Id, vxId, wg.getFloatValue(zId, vxId));
+//                    }
+//
+//                    wg.setFloatValue(xId, vxId, orb.getX());
+//                    wg.setFloatValue(yId, vxId, orb.getY());
+//                }
             } else {
                 final Orb3D[] orbs = new Orb3D[vxCount];
                 for (int position = 0; position < vxCount; position++) {
@@ -130,15 +123,13 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void uncollide2d(final Orb2D[] orbs, final GraphWriteMethods wg, final int iter) throws InterruptedException {
+    private void uncollide2d(final GraphWriteMethods wg, final int iter) throws InterruptedException {
         int maxCollided = -1;
         boolean isEnd = false;
         for (int i = 0; i < iter && !isEnd; i++) {
             final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
-            final QuadTree qt = new QuadTree(bb);
-            for (final Orb2D orb : orbs) {
-                qt.insert(orb);
-            }
+            final QuadTree qt = new QuadTree(bb, wg);
+            qt.insertAll();
 
             // Vary the padding to see if we can make things use fewer steps.
             final float padding = 1;
@@ -147,11 +138,7 @@ public class UncollideArrangement implements Arranger {
 //            final float padding = prevCollisions<0 ? 1 : 1+prevCollisions/orbs.length;
 //                    final float padding = 0;
 
-            int totalCollided = 0;
-            for (final Orb2D orb : orbs) {
-                final int collided = qt.uncollide(orb, Math.max(padding, minPadding));
-                totalCollided += collided;
-            }
+            int totalCollided = qt.uncollideAll(Math.max(padding, minPadding));
 
             if (interaction != null) {
                 maxCollided = Math.max(maxCollided, totalCollided);

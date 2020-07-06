@@ -15,6 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.BoundingBox2D.Box2D;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,24 +37,42 @@ public class QuadTree {
     private static final int TOP_L = 1;
     private static final int BOT_L = 2;
     private static final int BOT_R = 3;
+    
+    private static int XID; 
+    private static int YID;
+    private static int ZID;
+    private static int RID;
+    private static int X2ID;
+    private static int Y2ID;
+    private static int Z2ID;
 
     private final int level;
-    private final List<Orb2D> objects;
+    private final List<Integer> objects;
     private final Box2D box;
+    private final GraphWriteMethods wg;
     private QuadTree[] nodes;
 
-    public QuadTree(final Box2D box) {
-        this(0, box);
+    public QuadTree(final Box2D box, final GraphWriteMethods wg) {
+        this(0, box, wg);
     }
 
     /*
      * Constructor
      */
-    public QuadTree(final int level, final Box2D box) {
+    public QuadTree(final int level, final Box2D box, final GraphWriteMethods wg) {
         this.level = level;
         this.box = box;
         objects = new ArrayList<>();
         nodes = null;
+        
+        this.wg = wg;
+        XID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+        YID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        ZID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        RID = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        X2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        Y2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        Z2ID = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
     }
 
     public List<Box2D> getSubs() {
@@ -101,10 +123,10 @@ public class QuadTree {
         final float midy = miny + (maxy - miny) / 2;
 
         nodes = new QuadTree[4];
-        nodes[TOP_R] = new QuadTree(level + 1, new Box2D(midx, miny, maxx, midy));
-        nodes[TOP_L] = new QuadTree(level + 1, new Box2D(minx, miny, midx, midy));
-        nodes[BOT_L] = new QuadTree(level + 1, new Box2D(minx, midy, midx, maxy));
-        nodes[BOT_R] = new QuadTree(level + 1, new Box2D(midx, midy, maxx, maxy));
+        nodes[TOP_R] = new QuadTree(level + 1, new Box2D(midx, miny, maxx, midy), wg);
+        nodes[TOP_L] = new QuadTree(level + 1, new Box2D(minx, miny, midx, midy), wg);
+        nodes[BOT_L] = new QuadTree(level + 1, new Box2D(minx, midy, midx, maxy), wg);
+        nodes[BOT_R] = new QuadTree(level + 1, new Box2D(midx, midy, maxx, maxy), wg);
     }
 
     /*
@@ -114,24 +136,24 @@ public class QuadTree {
      * <p>
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
-    private int getIndex(final Orb2D orb) {
+    private int getIndex(final int vxId) {
         int index = -1;
         final double midx = box.minx + ((box.maxx - box.minx) / 2f);
         final double midy = box.miny + ((box.maxy - box.miny) / 2f);
 
         // Object can completely fit within the top/bottom quadrants.
-        final boolean topQuadrant = orb.getY() + orb.r < midy;
-        final boolean bottomQuadrant = orb.getY() - orb.r > midy;
+        final boolean topQuadrant = wg.getFloatValue(YID, vxId) + wg.getFloatValue(RID, vxId) < midy;
+        final boolean bottomQuadrant = wg.getFloatValue(YID, vxId) - wg.getFloatValue(RID, vxId) > midy;
 
         // Object can completely fit within the left quadrants.
-        if (orb.getX() + orb.r < midx) {
+        if (wg.getFloatValue(XID, vxId) + wg.getFloatValue(RID, vxId) < midx) {
             if (topQuadrant) {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
             }
         } // Object can completely fit within the right quadrants.
-        else if (orb.getX() - orb.r > midx) {
+        else if (wg.getFloatValue(XID, vxId) - wg.getFloatValue(RID, vxId) > midx) {
             if (topQuadrant) {
                 index = TOP_R;
             } else if (bottomQuadrant) {
@@ -146,18 +168,18 @@ public class QuadTree {
      * Insert the object into the quadtree. If the node exceeds the capacity, it will split and add
      * objects that fit to their corresponding nodes.
      */
-    public void insert(final Orb2D orb) {
+    private void insert(final int vxId) {
         if (nodes != null) {
-            int index = getIndex(orb);
+            int index = getIndex(vxId);
 
             if (index != -1) {
-                nodes[index].insert(orb);
+                nodes[index].insert(vxId);
 
                 return;
             }
         }
 
-        objects.add(orb);
+        objects.add(vxId);
 
         if (objects.size() > MAX_OBJECTS && level < MAX_LEVELS) {
             if (nodes == null) {
@@ -175,15 +197,22 @@ public class QuadTree {
             }
         }
     }
+    
+    public void insertAll() {
+        clear();
+        for (int position = 0; position < wg.getVertexCount(); position++) {
+            insert(wg.getVertex(position));
+        }
+    }
 
     /*
      * Return all objects that could collide with the given object.
      */
-    public List<Orb2D> getPossibleColliders(final List<Orb2D> colliders, final Orb2D orb) {
+    private List<Integer> getPossibleColliders(final List<Integer> colliders, final int vxId) {
         // Recursively find all child colliders...
-        final int index = getIndex(orb);
+        final int index = getIndex(vxId);
         if (index != -1 && nodes != null) {
-            nodes[index].getPossibleColliders(colliders, orb);
+            nodes[index].getPossibleColliders(colliders, vxId);
         }
 
         // ...and colliders at this level.
@@ -200,40 +229,48 @@ public class QuadTree {
      * of each neighbor.
      * @return the number of collisions.
      */
-    public int uncollide(final Orb2D orb, final float padding) {
-        final List<Orb2D> possibles = new ArrayList<>();
-        getPossibleColliders(possibles, orb);
+    public int uncollide(final int subject, final float padding) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
 
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
         float perturbation = 1e-4f;
         int collided = 0;
-        for (final Orb2D possible : possibles) {
-            if (orb != possible) {
-                float x = orb.getX() - possible.getX();
-                float y = orb.getY() - possible.getY();
-                final double ll = x * x + y * y;
-                final double r = possible.r + orb.r + padding;
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+                final double ll = DeltaX * DeltaX + DeltaY * DeltaY;
+                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;
                     final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1f;
-                    x *= nudge;
-                    x += perturbation;
-                    y *= nudge;
-                    y += perturbation;
+                    DeltaX *= nudge;
+                    DeltaX += perturbation;
+                    DeltaY *= nudge;
+                    DeltaY += perturbation;
                     perturbation = -perturbation;
 //                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
-                    orb.setX(orb.getX() - x);
-                    orb.setY(orb.getY() - y);
-                    possible.setX(possible.getX() + x);
-                    possible.setY(possible.getY() + y);
+                    wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - DeltaX);
+                    wg.setFloatValue(YID, subject, wg.getFloatValue(YID, subject) - DeltaY);
+                    wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + DeltaX);
+                    wg.setFloatValue(YID, possible, wg.getFloatValue(YID, possible) + DeltaY);
                 }
             }
         }
 
         return collided;
+    }
+    
+    public int uncollideAll(final float padding){
+        int totalCollided = 0;
+        for (int position = 0; position < wg.getVertexCount(); position++) {
+            totalCollided += uncollide(wg.getVertex(position), padding);
+        }
+        return totalCollided;
     }
 
     @Override
