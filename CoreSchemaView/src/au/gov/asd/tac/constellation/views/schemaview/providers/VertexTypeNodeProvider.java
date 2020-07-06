@@ -201,6 +201,7 @@ public class VertexTypeNodeProvider implements SchemaViewNodeProvider, GraphMana
         final RadioButton containsRadioButton = new RadioButton("Contains");
         containsRadioButton.setToggleGroup(toggleGroup);
         containsRadioButton.setPadding(new Insets(0, 0, 0, 5));
+        filterText.getStyleClass().add("schemaview-filter");
 
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             populateTree();
