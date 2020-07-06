@@ -103,7 +103,7 @@ public class TSVDropper implements GraphDropper {
                             String line = reader.readLine();
                             while (line != null) {
 
-                                String[] fields = line.split("\t");
+                                String[] fields = line.split(SeparatorConstants.TAB);
 
                                 if (columnHeaders == null) {
                                     columnHeaders = fields;

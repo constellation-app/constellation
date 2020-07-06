@@ -9,7 +9,7 @@
             targetPage = "" + window.location.search;
             if (targetPage != "" && targetPage != "undefined")
                 targetPage = targetPage.substring(1);
-            if (targetPage.indexOf(":") != -1 || (targetPage != "" && !validURL(targetPage)))
+            if (targetPage.indexOf(SeparatorConstants.COLON) != -1 || (targetPage != "" && !validURL(targetPage)))
                 targetPage = "undefined";
             function validURL(url) {
                 try {

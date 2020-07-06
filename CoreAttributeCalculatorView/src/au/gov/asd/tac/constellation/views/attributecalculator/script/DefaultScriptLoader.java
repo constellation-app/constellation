@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributecalculator.script;
 
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
@@ -86,7 +87,7 @@ public class DefaultScriptLoader extends AbstractScriptLoader {
                         if (line == null) {
                             break;
                         }
-                        w.append(line + "\n");
+                        w.append(line + SeparatorConstants.NEWLINE);
                     }
                 }
                 fileName = tempFile.getPath();

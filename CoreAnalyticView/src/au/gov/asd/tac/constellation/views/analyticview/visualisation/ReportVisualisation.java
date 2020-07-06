@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
 import javafx.scene.Node;
@@ -90,7 +91,7 @@ public class ReportVisualisation extends InternalVisualisation {
 
     public void extendReport(final String extensionTitle, final String extensionContent) {
         final HBox spacerReportBox = new HBox();
-        final Label spacerLabel = new Label("\n");
+        final Label spacerLabel = new Label(SeparatorConstants.NEWLINE);
         spacerReportBox.getChildren().add(spacerLabel);
 
         final HBox extensionReportBox = new HBox();
