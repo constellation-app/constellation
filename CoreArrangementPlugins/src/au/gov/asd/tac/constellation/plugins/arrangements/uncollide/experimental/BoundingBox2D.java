@@ -15,22 +15,38 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+
 /**
  *
  * @author algol
  */
 public class BoundingBox2D {
 
-    public static Box2D getBox(final Orb2D[] orbs) {
-        final Orb2D orb0 = orbs[0];
-        float minx = orb0.getX();
-        float miny = orb0.getY();
+    public static Box2D getBox(final GraphWriteMethods wg) {
+        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
+        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
+        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
+        final int rId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
+        final int x2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "x2", "x2", 0, null);
+        final int y2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "y2", "y2", 0, null);
+        final int z2Id = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "z2", "z2", 0, null);
+
+        float minx = wg.getFloatValue(xId, wg.getVertex(0));
+        float miny = wg.getFloatValue(yId, wg.getVertex(0));
         float maxx = minx;
         float maxy = miny;
 
-        for (final Orb2D orb : orbs) {
-            final float x = orb.getX();
-            final float y = orb.getY();
+        final int vxCount = wg.getVertexCount();
+                
+        for (int position = 1; position < vxCount; position++) {
+            final int vxId = wg.getVertex(position);
+
+            final float x = wg.getFloatValue(xId, vxId);
+            final float y = wg.getFloatValue(yId, vxId);
             if (x < minx) {
                 minx = x;
             }

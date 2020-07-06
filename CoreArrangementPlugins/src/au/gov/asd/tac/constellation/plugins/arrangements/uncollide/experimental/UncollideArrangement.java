@@ -76,7 +76,7 @@ public class UncollideArrangement implements Arranger {
                     orbs[position] = new Orb2D(wg.getFloatValue(xId, vxId), wg.getFloatValue(yId, vxId), rId != Graph.NOT_FOUND ? wg.getFloatValue(rId, vxId) : 1);
                 }
 
-                uncollide2d(orbs, 2000);
+                uncollide2d(orbs, wg, 2000);
 
                 // Move x,y,z to x2,y2,z2.
                 // Set x,y to uncollided x,y.
@@ -130,11 +130,11 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void uncollide2d(final Orb2D[] orbs, final int iter) throws InterruptedException {
+    private void uncollide2d(final Orb2D[] orbs, final GraphWriteMethods wg, final int iter) throws InterruptedException {
         int maxCollided = -1;
         boolean isEnd = false;
         for (int i = 0; i < iter && !isEnd; i++) {
-            final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(orbs);
+            final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
             final QuadTree qt = new QuadTree(bb);
             for (final Orb2D orb : orbs) {
                 qt.insert(orb);
