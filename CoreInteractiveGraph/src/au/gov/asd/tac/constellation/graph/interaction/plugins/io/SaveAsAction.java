@@ -111,7 +111,8 @@ import org.openide.windows.WindowManager;
  *
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.save.SaveAsAction")
-@ActionRegistration(displayName = "#MSG_SaveAs_SaveAsAction", lazy = false)
+@ActionRegistration(displayName = "#MSG_SaveAs_SaveAsAction",
+        lazy = false)
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 1100)
 })

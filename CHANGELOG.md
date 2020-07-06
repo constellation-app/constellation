@@ -1,5 +1,8 @@
 # Constellation Changes
 
+## 2020-07-01 Changes in July 2020
+* Updated `QualityControlAutoVetter` to improve performance by using a `SimpleReadPlugin` internally.
+
 ## 2020-06-01 Changes in June 2020
 * Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 
 * Moved the creation of `QUERY_NAME_PARAMETER` and `DATETIME_RANGE_PARAMETER` within `CoreGlobalParameters` and can be accessed by direct reference; i.e. `CoreGlobalParameters.QUERY_NAME_PARAMETERS`.

@@ -63,6 +63,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
 
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
+        QualityControlAutoVetter.getInstance().init();
     }
 
     @Override

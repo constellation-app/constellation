@@ -73,7 +73,7 @@ public class CoreGlobalParameters extends GlobalParameters {
         final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = DATETIME_RANGE_PARAMETER;
         datetimeRangeParameter.setName("Range");
         datetimeRangeParameter.setDescription("The date and time range to query");
-        datetimeRangeParameter.setHelpID(this.getClass().getCanonicalName());
+        datetimeRangeParameter.setHelpID(CoreGlobalParameters.class.getName());
 
         final List<PositionalPluginParameter> positionalPluginParametersList = new ArrayList<>();
         positionalPluginParametersList.add(QUERY_NAME_PARAMETER_ID_INDEX, new PositionalPluginParameter(queryNameParameter, 0));

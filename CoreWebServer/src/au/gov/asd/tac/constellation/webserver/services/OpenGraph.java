@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -108,8 +109,8 @@ public class OpenGraph extends RestService {
             root.put("name", GraphNode.getGraphNode(graph.getId()).getDisplayName());
             root.put("schema", graph.getSchema().getFactory().getName());
             mapper.writeValue(out, root);
-        } catch (final GraphParseException ex) {
-            throw new RestServiceException(ex);
+        } catch (final GraphParseException | FileNotFoundException ex) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
         }
     }
 }
