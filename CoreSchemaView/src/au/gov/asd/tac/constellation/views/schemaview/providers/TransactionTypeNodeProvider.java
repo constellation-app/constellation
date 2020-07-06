@@ -158,6 +158,7 @@ public class TransactionTypeNodeProvider implements SchemaViewNodeProvider, Grap
         containsRadioButton.setToggleGroup(toggleGroup);
         containsRadioButton.setPadding(new Insets(0, 0, 0, 5));
         filterText.getStyleClass().add("schemaview-filter");
+
         toggleGroup.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
             populateTree();
         });
