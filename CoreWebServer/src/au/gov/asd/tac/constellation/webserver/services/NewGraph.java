@@ -97,7 +97,7 @@ public class NewGraph extends RestService {
         }
 
         if (schemaName == null) {
-            throw new RestServiceException(String.format("Unknown schema %s", schemaParam));
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, String.format("Unknown schema %s", schemaParam));
         }
 
         // Creating a new graph is asynchronous; we want to hide this from the client.

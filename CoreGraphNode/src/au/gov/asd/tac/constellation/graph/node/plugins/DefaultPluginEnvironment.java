@@ -58,6 +58,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+            return null;
+        }
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
@@ -170,6 +174,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -236,6 +243,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     @Override
     public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -293,6 +304,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();

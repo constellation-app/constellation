@@ -182,7 +182,7 @@ public class PluginRegistry {
         }
 
         // Throw a RunTimeException if an invalid name was passed.
-        throw new IllegalArgumentException(String.format("No such plugin as '%s'!", name));
+        throw new IllegalArgumentException(String.format("No such plugin as %s!", name));
     }
 
     /**

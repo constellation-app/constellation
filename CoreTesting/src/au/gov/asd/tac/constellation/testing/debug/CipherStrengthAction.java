@@ -28,7 +28,8 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.CipherStrengthAction")
-@ActionRegistration(displayName = "#CTL_CipherStrengthAction")
+@ActionRegistration(displayName = "#CTL_CipherStrengthAction",
+        iconBase = "au/gov/asd/tac/constellation/testing/debug/cipherStrength.png")
 @ActionReference(path = "Menu/Help", position = 1450)
 @Messages("CTL_CipherStrengthAction=Cipher Strength")
 public final class CipherStrengthAction implements ActionListener {

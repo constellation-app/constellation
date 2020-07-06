@@ -102,6 +102,8 @@ public class RestServiceServlet extends ConstellationApiServlet {
             response.setContentType(rs.getMimeType());
             response.setStatus(HttpServletResponse.SC_OK);
             rs.callService(parameters, request.getInputStream(), response.getOutputStream());
+        } catch (final RestServiceException ex) {
+            throw ex;
         } catch (final IOException | RuntimeException ex) {
             throw new ServletException(ex);
         }

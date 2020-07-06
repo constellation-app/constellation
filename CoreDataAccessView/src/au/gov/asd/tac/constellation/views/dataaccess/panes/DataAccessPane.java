@@ -180,7 +180,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .addListener((oldValue, newValue) -> update());
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.paddingProperty().set(HELP_INSETS);
+        helpButton.paddingProperty().set(new Insets(0, 8, 0, 64));
         helpButton.setTooltip(new Tooltip("Display help for Data Access"));
         helpButton.setOnAction(event -> {
             new HelpCtx(DataAccessViewTopComponent.class.getName()).display();

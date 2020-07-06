@@ -136,6 +136,9 @@ public class GetRecordStore extends RestService {
         ioph.progress("Building RecordStore...");
         final GraphRecordStore recordStore;
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         final ReadableGraph rg = graph.getReadableGraph();
         try {
             if ((vx && tx) || !(vx || tx)) {

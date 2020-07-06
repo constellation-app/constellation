@@ -32,7 +32,8 @@ import org.openide.util.NbBundle.Messages;
         id = "au.gov.asd.tac.constellation.utilities.log.LogAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_LogAction"
+        displayName = "#CTL_LogAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/log/showLogs.png"
 )
 @ActionReference(path = "Menu/Help", position = 940)
 @Messages("CTL_LogAction=Show Logs")
