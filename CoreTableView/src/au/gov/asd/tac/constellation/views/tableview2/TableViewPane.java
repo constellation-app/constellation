@@ -57,6 +57,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -147,8 +148,9 @@ public final class TableViewPane extends BorderPane {
 
     private final TableView<ObservableList<String>> table;
     private TableFilter<ObservableList<String>> filter;
+    private Pagination pagination;
     private final BorderPane progress;
-    private List<ObservableList<String>> rowList;
+    private SortedList<ObservableList<String>> sortedRowList;
     private List<ObservableList<String>> filteredRowList;
 
     private Button columnVisibilityButton;
@@ -188,7 +190,7 @@ public final class TableViewPane extends BorderPane {
         table.itemsProperty().addListener((v, o, n) -> table.refresh());
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setPadding(new Insets(5));      
-        paginate(rowList);
+        paginate(sortedRowList);
 
         // TODO: experiment with caching
         table.setCache(false);
@@ -952,15 +954,29 @@ public final class TableViewPane extends BorderPane {
         if (rows != null) {
             final int fromIndex = pageIndex * MAX_ROWS_PER_PAGE;
             final int toIndex = Math.min(fromIndex + MAX_ROWS_PER_PAGE, rows.size());
-
+            
+            //get the previous sort details so that we don't lose it upon switching pages
+            TableColumn<ObservableList<String>, ?> sortCol = null;
+            TableColumn.SortType sortType = null;
+            if (!table.getSortOrder().isEmpty()) {
+                sortCol = table.getSortOrder().get(0);
+                sortType = sortCol.getSortType();
+            }
+            
             table.setItems(FXCollections.observableArrayList(rows.subList(fromIndex, toIndex)));
+            
+            //restore the sort details
+            if (sortCol != null) {
+                table.getSortOrder().add(sortCol);
+                sortCol.setSortType(sortType);
+            }
         }
         
-        return new BorderPane(table);
+        return table;
     }
     
     private void paginate(final List<ObservableList<String>> rows) {
-        final Pagination pagination = new Pagination(rows == null ? 1 : rows.size() / MAX_ROWS_PER_PAGE + 1);
+        pagination = new Pagination(rows == null ? 1 : rows.size() / MAX_ROWS_PER_PAGE + 1);
         pagination.setPageFactory(index -> createPage(index, rows));
         Platform.runLater(() -> {
             setCenter(pagination);
@@ -1073,9 +1089,9 @@ public final class TableViewPane extends BorderPane {
                     selectedProperty.removeListener(tableSelectionListener);
 
                     // add table data to table
-                    rowList = rows;
-                    table.setItems(FXCollections.observableArrayList(rowList));
-                    paginate(rowList);
+                    sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
+                    sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+                    paginate(sortedRowList);
 
                     // add user defined filter to the table
                     filter = TableFilter.forTableView(table).lazy(true).apply();
@@ -1088,7 +1104,7 @@ public final class TableViewPane extends BorderPane {
                     });
                     filter.getFilteredList().predicateProperty().addListener((v, o, n) -> {
                         table.refresh();
-                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(rowList), filter.getFilteredList().getPredicate());
+                        filteredRowList = new FilteredList<>(FXCollections.observableArrayList(sortedRowList), filter.getFilteredList().getPredicate());
                         paginate(filteredRowList);
                     });
                     updateDataLatch.countDown();
