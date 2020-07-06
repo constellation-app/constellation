@@ -80,6 +80,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     public void handleComponentOpened() {
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
+        QualityControlAutoVetter.getInstance().init();
         PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
@@ -95,7 +96,13 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
             qualityControlViewPane.refreshQualityControlView(state);
         }
     }
-
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        QualityControlAutoVetter.getInstance().initWithRefresh(true);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

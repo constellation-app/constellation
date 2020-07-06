@@ -89,6 +89,10 @@ public class SetGraphValues extends RestService {
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         // We want to read a JSON document that looks like:
         //
         // {"columns":["A","B"],"data":[[1,"a"]]}
@@ -99,11 +103,11 @@ public class SetGraphValues extends RestService {
         final JsonNode json = mapper.readTree(in);
 
         if (!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
-            throw new RestServiceException("Could not find columns object containing column names");
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "Could not find columns object containing column names");
         }
 
         if (!json.hasNonNull("data") || !json.get("data").isArray()) {
-            throw new RestServiceException("Could not find data object containing data rows");
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "Could not find data object containing data rows");
         }
         final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final ArrayNode data = (ArrayNode) json.get("data");
@@ -120,12 +124,10 @@ public class SetGraphValues extends RestService {
             throw new RestServiceException("Column names do not match data row");
         }
 
-        setGraphAttributes(graphId, columns, row);
+        setGraphAttributes(graph, columns, row);
     }
 
-    private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-
+    private static void setGraphAttributes(final Graph graph, final ArrayNode columns, final ArrayNode row) {
         final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
             @Override
             protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {

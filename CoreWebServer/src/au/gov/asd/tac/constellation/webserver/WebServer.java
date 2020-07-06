@@ -99,7 +99,7 @@ public class WebServer {
             final String header = request.getHeader(SECRET_HEADER);
             final boolean ok = header != null && SECRET.equals(header);
             if (!ok) {
-                final String msg = String.format("REST API secret %s not provided.", SECRET_HEADER);
+                final String msg = String.format("REST API secret %s is invalid.", SECRET_HEADER);
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, msg);
 
                 final String msg2 = String.format("<html>REST API secret %s not provided.<br>Please download the external scripting Python client again.</html>",

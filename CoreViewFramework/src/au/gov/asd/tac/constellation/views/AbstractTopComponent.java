@@ -73,27 +73,29 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentOpened() {
-        isVisible = true;
         super.componentOpened();
+        
+        isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
     }
 
     @Override
     protected void componentClosed() {
-        isVisible = false;
         super.componentClosed();
+        
+        isVisible = false;
         ConstellationLogger.getDefault().viewStopped(this);
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        
         isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Minimised");
-            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Docked");
         }
@@ -101,8 +103,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentHidden() {
-        isVisible = true;
         super.componentHidden();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
@@ -116,8 +119,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentActivated() {
-        isVisible = true;
         super.componentActivated();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
@@ -130,8 +134,9 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     @Override
     protected void componentDeactivated() {
-        isVisible = true;
         super.componentDeactivated();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
