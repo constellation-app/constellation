@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
