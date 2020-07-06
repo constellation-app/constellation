@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.infomap.InfomapBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.io.Config;
@@ -48,6 +49,11 @@ public class InfoMapPlugin extends SimpleEditPlugin {
 
     @Override
     protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        if (wg.getVertexCount() <= 0) {
+            interaction.notify(PluginNotificationLevel.ERROR, "The graph must have at least one vertex to run clustering on");
+            LOGGER.log(Level.WARNING, "{0} run on Empty Graph", Bundle.InfoMapPlugin());
+            return;
+        }
         final Config config = (Config) parameters.getParameters().get(CONFIG_PARAMETER_ID).getObjectValue();
         final InfoMapContext context = new InfoMapContext(config, wg);
         context.getInfoMap().run();
