@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.awt.geom.Point2D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ class FR2DArranger implements Arranger {
     private boolean maintainMean;
 
     private final PluginInteraction interaction;
-    
+
     private final SecureRandom r = new SecureRandom();
 
     /**
@@ -72,7 +72,7 @@ class FR2DArranger implements Arranger {
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         this.graph = wg;
 
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         vxCount = wg.getVertexCount();
         if (vxCount > 0) {
@@ -83,7 +83,7 @@ class FR2DArranger implements Arranger {
             writeBackXYZ();
 
             if (maintainMean) {
-                GraphUtilities.moveMean(wg, oldMean);
+                ArrangementUtilities.moveMean(wg, oldMean);
             }
         }
     }

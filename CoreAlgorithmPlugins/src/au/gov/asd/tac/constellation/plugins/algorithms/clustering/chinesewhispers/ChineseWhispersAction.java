@@ -15,14 +15,14 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
@@ -38,7 +38,9 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Cluster", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispersAction")
-@ActionRegistration(displayName = "#CTL_ChineseWhispersAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ChineseWhispersAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/chinesewhispers/chineseWhispers.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Tools/Cluster", position = 300)
 })

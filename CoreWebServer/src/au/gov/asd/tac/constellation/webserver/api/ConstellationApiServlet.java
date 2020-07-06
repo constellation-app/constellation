@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,6 +52,10 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 get(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
+                LOGGER.log(Level.INFO, "in doGet", ex);
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -70,6 +75,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 post(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -89,6 +97,9 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
 
             try {
                 put(request, response);
+            } catch (final RestServiceException ex) {
+                response.reset();
+                response.sendError(ex.getHttpCode(), ex.getMessage());
             } catch (final IOException | ServletException ex) {
                 response.reset();
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
@@ -102,7 +113,8 @@ public class ConstellationApiServlet extends ConstellationHttpServlet {
     }
 
     /**
-     * Display the incoming REST request to provide some confidence to the user and debugging for the developer :-).
+     * Display the incoming REST request to provide some confidence to the user
+     * and debugging for the developer :-).
      *
      * @param method request.getMethod()
      * @param path request.getServletPath()

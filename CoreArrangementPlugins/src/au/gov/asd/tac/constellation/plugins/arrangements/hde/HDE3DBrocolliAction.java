@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.hde;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -32,7 +32,9 @@ import org.openide.util.NbBundle;
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.hde.HDE3DBrocolliAction")
-@ActionRegistration(displayName = "#CTL_HDE3DBrocolliAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_HDE3DBrocolliAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/hde/resources/HDE.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 1500),
     @ActionReference(path = "Shortcuts", name = "C-A-G")

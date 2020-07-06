@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class ListPlugins extends RestService {
+
     private static final String NAME = "list_plugins";
     private static final String ALIAS_PARAMETER_ID = "alias";
 
@@ -72,9 +73,11 @@ public class ListPlugins extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final ArrayNode root = mapper.createArrayNode();
         PluginRegistry.getPluginClassNames()
-            .stream()
-            .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-            .forEachOrdered(name -> {root.add(name);});
+                .stream()
+                .map(name -> alias ? PluginRegistry.getAlias(name) : name)
+                .forEachOrdered(name -> {
+                    root.add(name);
+                });
 
         mapper.writeValue(out, root);
     }

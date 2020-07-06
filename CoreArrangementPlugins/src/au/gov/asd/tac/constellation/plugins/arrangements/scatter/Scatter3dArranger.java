@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.time.ZonedDateTime;
 import java.util.BitSet;
@@ -97,7 +97,7 @@ public class Scatter3dArranger implements Arranger {
         boolean firstVals = true;
 
         if (vxCount > 0) {
-            final BitSet vertices = GraphUtilities.vertexBits(wg);
+            final BitSet vertices = ArrangementUtilities.vertexBits(wg);
             int vxPos = 0;
             final int[] vxOrder = new int[vxCount];
             for (int vxId = vertices.nextSetBit(0); vxId >= 0; vxId = vertices.nextSetBit(vxId + 1)) {

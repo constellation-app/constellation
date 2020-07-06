@@ -15,15 +15,15 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
+import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
@@ -34,7 +34,9 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Cluster", id = "au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.InfoMapAction")
-@ActionRegistration(displayName = "#CTL_InfoMapAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_InfoMapAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/algorithms/clustering/infomap/resources/infoMap.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/Tools/Cluster", position = 400)
 @Messages("CTL_InfoMapAction=Info Map")
 public final class InfoMapAction implements ActionListener {

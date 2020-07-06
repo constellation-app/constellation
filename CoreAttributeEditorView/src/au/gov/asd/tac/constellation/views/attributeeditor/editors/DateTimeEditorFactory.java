@@ -74,7 +74,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         private static final int MILLIS_SPINNER_WIDTH = 60;
         private static final int NANOSECONDS_IN_MILLISECOND = 1000000;
         private static final int MILLISECONDS_IN_SECOND = 1000;
-        
+
         private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
@@ -202,7 +202,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
         private HBox createTimeSpinners() {
             datePicker = new DatePicker();
             datePicker.setConverter(new LocalDateStringConverter(
-                TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
+                    TemporalFormatting.DATE_FORMATTER, TemporalFormatting.DATE_FORMATTER));
             datePicker.getEditor().textProperty().addListener((v, o, n) -> {
                 update();
                 updateTimeZoneList();

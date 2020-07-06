@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public interface RecordStore extends Record {
      *
      * @param recordStore The RecordStore to add all records from.
      */
-    public void add(RecordStore recordStore);
+    public void add(final RecordStore recordStore);
 
     /**
      * Get the index of the current record.
@@ -106,7 +106,7 @@ public interface RecordStore extends Record {
      * @return True if the specified record exists and has a value for the given
      * key. False otherwise.
      */
-    public boolean hasValue(int record, String key);
+    public boolean hasValue(final int record, final String key);
 
     /**
      * Get a value from the specified record.
@@ -116,7 +116,7 @@ public interface RecordStore extends Record {
      * @return The String value associated with the key for the specified
      * record, if hasValue(record, key) is true. Null otherwise.
      */
-    public String get(int record, String key);
+    public String get(final int record, final String key);
 
     /**
      * Set a key/value pair for the specified record.
@@ -125,7 +125,7 @@ public interface RecordStore extends Record {
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    public void set(int record, String key, String value);
+    public void set(final int record, final String key, final String value);
 
     /**
      * Set a key/value pair for the specified record with an Object value. This
@@ -138,7 +138,7 @@ public interface RecordStore extends Record {
      * @param key The key whose value is being set
      * @param value The value to set.
      */
-    public default void set(int record, String key, Object value) {
+    public default void set(final int record, final String key, final Object value) {
         set(record, key, value == null ? null : value.toString());
     }
 
@@ -148,7 +148,7 @@ public interface RecordStore extends Record {
      * @param record the index of the record to return values for
      * @return A list of the string values for the specified record
      */
-    public List<String> values(int record);
+    public List<String> values(final int record);
 
     /**
      * Return a list containing the values for a specified key for all records.
@@ -158,7 +158,7 @@ public interface RecordStore extends Record {
      * @param key The string key to return values for
      * @return A list of string values for the specified key
      */
-    public List<String> getAll(String key);
+    public List<String> getAll(final String key);
 
     /**
      * Return the number of records in this RecordStore.

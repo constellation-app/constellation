@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.visual.opengl.JoglVersionAction")
-@ActionRegistration(displayName = "#CTL_JoglVersionAction")
+@ActionRegistration(displayName = "#CTL_JoglVersionAction",
+        iconBase = "au/gov/asd/tac/constellation/visual/opengl/versionsJOGL.png")
 @ActionReference(path = "Menu/Help", position = 1400, separatorBefore = 1350)
 @Messages("CTL_JoglVersionAction=JOGL Version")
 public final class JoglVersionAction implements ActionListener {

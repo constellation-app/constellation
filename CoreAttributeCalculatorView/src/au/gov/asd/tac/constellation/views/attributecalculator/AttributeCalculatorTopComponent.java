@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.attributecalculator;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.attributecalculator.panes.AttributeCalculatorController;
 import au.gov.asd.tac.constellation.views.attributecalculator.panes.AttributeCalculatorPane;
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.graph.Graph;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -69,7 +69,7 @@ public final class AttributeCalculatorTopComponent extends JavaFxTopComponent<At
         initContent();
 
         addAttributeCountChangeHandler(graph -> {
-            if (attributeCalculatorPane != null && graph != null) {
+            if (needsUpdate() && attributeCalculatorPane != null && graph != null) {
                 attributeCalculatorPane.updateAttributes(graph);
             }
         });
@@ -87,7 +87,7 @@ public final class AttributeCalculatorTopComponent extends JavaFxTopComponent<At
 
     @Override
     protected void handleNewGraph(Graph graph) {
-        if (attributeCalculatorPane != null && graph != null) {
+        if (needsUpdate() && attributeCalculatorPane != null && graph != null) {
             attributeCalculatorPane.updateAttributes(graph);
         }
     }

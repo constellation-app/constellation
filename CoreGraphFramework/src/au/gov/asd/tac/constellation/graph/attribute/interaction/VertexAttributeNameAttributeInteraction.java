@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import org.openide.util.lookup.ServiceProvider;
 /**
  * AttributeInteraction for attributes described by
  * {@link au.gov.asd.tac.constellation.graph.attribute.VertexAttributeNameAttributeDescription}
- * 
+ *
  * @author twilight_sparkle
  */
 @ServiceProvider(service = AbstractAttributeInteraction.class)
@@ -33,7 +33,7 @@ public class VertexAttributeNameAttributeInteraction extends AbstractAttributeIn
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
         return (String) value;
     }
 

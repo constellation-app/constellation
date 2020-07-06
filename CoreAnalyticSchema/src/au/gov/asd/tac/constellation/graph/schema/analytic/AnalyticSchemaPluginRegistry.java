@@ -20,11 +20,11 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.plugins.CreateVertexTy
 
 /**
  * Analytic Schema Plugin Registry.
- * 
+ *
  * @author cygnus_x-1
  */
 public class AnalyticSchemaPluginRegistry {
-    
+
     public static final String CREATE_TRANSACTION_TYPE = CreateTransactionTypePlugin.class.getName();
     public static final String CREATE_VERTEX_TYPE = CreateVertexTypePlugin.class.getName();
 }

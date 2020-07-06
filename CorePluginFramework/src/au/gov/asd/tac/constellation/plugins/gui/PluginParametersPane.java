@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -565,6 +565,7 @@ public final class PluginParametersPane extends GridPane {
                     if (label != null) {
                         paramGroupPane.add(label, 0, row);
                         GridPane.setValignment(label, VPos.TOP);
+                        GridPane.setHgrow(label, Priority.ALWAYS);
                         GridPane.setFillHeight(label, false);
 
                         label.bindDescriptionToProperty(descriptionWidth);
@@ -740,16 +741,14 @@ public final class PluginParametersPane extends GridPane {
 
         @Override
         public final LabelDescriptionBox buildParameterLabel(final PluginParameter<?> parameter) {
-            final Label label = new Label(parameter.getName() + ":");
+            final Label label = new Label(parameter.getName());
             final Label description = new Label(parameter.getDescription());
+            label.setMinWidth(35);
             label.setWrapText(true);
-            label.setMaxWidth(100);
             description.setStyle("-fx-font-size: 80%;");
             description.getStyleClass().add("description-label");
-            description.setPrefWidth(100);
             description.setWrapText(true);
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
-            labels.setStyle("-fx-padding: " + PADDING);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());
             parameter.setVisible(parameter.isVisible());
@@ -777,7 +776,7 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                         break;
                     default:
-                    // do nothing
+                        // do nothing
                         break;
                 }
             });
@@ -798,7 +797,7 @@ public final class PluginParametersPane extends GridPane {
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
-                    // do nothing
+                        // do nothing
                         break;
                 }
             });

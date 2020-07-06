@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.preferences.utilities.UserDirectoryAction")
-@ActionRegistration(displayName = "#CTL_UserDirectoryAction")
+@ActionRegistration(displayName = "#CTL_UserDirectoryAction",
+        iconBase = "au/gov/asd/tac/constellation/preferences/utilities/userDirectory.png")
 @ActionReference(path = "Menu/Help", position = 325)
 @Messages("CTL_UserDirectoryAction=User Directory")
 public final class UserDirectoryAction implements ActionListener {

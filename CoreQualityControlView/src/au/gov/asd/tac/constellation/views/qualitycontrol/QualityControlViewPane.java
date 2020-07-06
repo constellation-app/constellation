@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -302,7 +302,9 @@ public final class QualityControlViewPane extends BorderPane {
                 qualityTable.setItems(FXCollections.observableArrayList(state.getQualityControlEvents()));
             }
 
-            final String displayName = graphId != null ? GraphNode.getGraphNode(graphId).getDisplayName() : "a graph";
+            final String displayName = graphId != null && GraphNode.getGraphNode(graphId) != null 
+                    ? GraphNode.getGraphNode(graphId).getDisplayName() 
+                    : "a graph";
             qualityTable.setPlaceholder(wrappedLabel(String.format(Bundle.MSG_SelectSomething(), displayName)));
 
             setCenter(qualityTable);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.display;
 
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.awt.event.ActionEvent;
 import java.util.prefs.Preferences;
 import javax.swing.AbstractAction;
@@ -37,7 +37,7 @@ import org.openide.util.NbPreferences;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.graph.interaction.plugins.display.ToggleFreezeGraphViewAction")
 @ActionRegistration(displayName = "#CTL_FreezeGraphViewListenerAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/display/resources/snowflake_alternate.png",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/display/resources/freezeGraphViewAlternate.png",
         surviveFocusChange = true, lazy = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Display", position = 500),
@@ -49,8 +49,8 @@ import org.openide.util.NbPreferences;
 })
 public final class ToggleFreezeGraphViewAction extends AbstractAction {
 
-    private static final String ICON_ON_RESOURCE = "resources/snowflake.png";
-    private static final String ICON_OFF_RESOURCE = "resources/snowflake_alternate.png";
+    private static final String ICON_ON_RESOURCE = "resources/freezeGraphView.png";
+    private static final String ICON_OFF_RESOURCE = "resources/freezeGraphViewAlternate.png";
     private static final ImageIcon ICON_ON = new ImageIcon(ToggleFreezeGraphViewAction.class.getResource(ICON_ON_RESOURCE));
     private static final ImageIcon ICON_OFF = new ImageIcon(ToggleFreezeGraphViewAction.class.getResource(ICON_OFF_RESOURCE));
 

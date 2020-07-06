@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -146,13 +146,13 @@ public class SourcePane extends GridPane {
                     fileChooser.setSelectedExtensionFilter(extensionFilter);
                 }
             }
-            fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
             List<File> newFiles = fileChooser.showOpenMultipleDialog(SourcePane.this.getScene().getWindow());
 
             if (newFiles != null) {
                 if (!newFiles.isEmpty()) {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
+                    SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
                 ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
                 for (File file : newFiles) {
@@ -177,6 +177,10 @@ public class SourcePane extends GridPane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
+
+            if (files.isEmpty()) {
+                SourcePane.this.importFileParserComboBox.setDisable(false);
+            }
         });
 
         Label destinationLabel = new Label("Destination:");

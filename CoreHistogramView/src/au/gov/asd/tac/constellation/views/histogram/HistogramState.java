@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class HistogramState {
             this.binFormatter.updateParameters(this.binFormatterParameters);
             this.binSelectionMode = original.binSelectionMode;
 
-            this.filters = Arrays.copyOf(original.filters, original.filters.length); 
+            this.filters = Arrays.copyOf(original.filters, original.filters.length);
         }
     }
 

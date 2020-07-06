@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
@@ -37,8 +38,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class GetAttributes extends RestService {
+
     private static final String NAME = "get_attributes";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
 
@@ -74,6 +76,9 @@ public class GetAttributes extends RestService {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
 

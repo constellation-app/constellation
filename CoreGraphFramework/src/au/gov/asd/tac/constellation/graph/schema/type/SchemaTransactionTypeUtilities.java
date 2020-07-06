@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,15 +182,15 @@ public class SchemaTransactionTypeUtilities {
         if (name.equals(defaultType.getName())) {
             return defaultType;
         }
-        
+
         SchemaTransactionType type = SchemaTransactionTypeUtilities.getType(name);
         if (type.equals(defaultType)) {
             type = new SchemaTransactionType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            SchemaTransactionTypeUtilities.addCustomType(type, false);
+            //SchemaTransactionTypeUtilities.addCustomType(type, false);
         }
-        
+
         return type;
     }
 

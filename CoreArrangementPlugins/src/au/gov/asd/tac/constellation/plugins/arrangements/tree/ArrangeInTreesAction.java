@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -35,7 +35,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.tree.ArrangeInTreesAction")
 @ActionRegistration(
         displayName = "#CTL_ArrangeInTreesAction",
-        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/tree/resources/tree.png",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/tree/resources/arrangeInTree.png",
         surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 200),

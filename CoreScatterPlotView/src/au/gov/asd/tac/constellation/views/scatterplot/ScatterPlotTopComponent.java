@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
     private AttributeValueMonitor xAttributeMonitor;
     private AttributeValueMonitor yAttributeMonitor;
     private AttributeValueMonitor selectedAttributeMonitor;
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
 
     public ScatterPlotTopComponent() {
@@ -155,11 +155,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
      * execution.
      */
     public ScatterPlotState getState() throws InterruptedException {
-        if (currentGraph == null) {
-            return getState(null);
-        } else {
-            return getState(currentGraph);
-        }
+        return getState(currentGraph);
     }
 
     /**
@@ -217,6 +213,9 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected void handleNewGraph(Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         if (graph == null) {
             scatterPlotPane.getOptionsPane().disableOptions();
             refreshHandler.accept(graph);
@@ -227,6 +226,12 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             scatterPlotPane.getOptionsPane().enableOptions();
             scatterPlotPane.getOptionsPane().refreshOptions(currentState);
         }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     /**

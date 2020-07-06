@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -524,4 +525,16 @@ public class GLVisualProcessor extends VisualProcessor {
         // If certain changes requried other renderables to be updated, eg. an attribute that set the size of the axes to draw, we could delgeate that here rather than this being a trivial operation.
         return graphRenderable.getChangeProcessor(property);
     }
+
+    /**
+     * Windows-DPI-Scaling
+     *
+     * This function is only needed by the fix for Windows DPI scaling to get
+     * access to the GLCanvas which is a protected member. If JOGL is ever
+     * updated to fix Windows DPI scaling this function should be removed.
+     */
+    public float getDPIScaleY() {
+        return (float) ((Graphics2D) (canvas).getGraphics()).getTransform().getScaleY();
+    }
+
 }

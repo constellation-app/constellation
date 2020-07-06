@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.MostRecentModuleAction")
-@ActionRegistration(displayName = "#CTL_MostRecentModuleAction")
+@ActionRegistration(displayName = "#CTL_MostRecentModuleAction",
+        iconBase = "au/gov/asd/tac/constellation/testing/debug/versions.png")
 @ActionReference(path = "Menu/Help", position = 1375)
 @Messages("CTL_MostRecentModuleAction=Module Versions")
 public final class MostRecentModuleAction implements ActionListener {

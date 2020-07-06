@@ -29,7 +29,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.TableVisual
 public abstract class AbstractTableTranslator<R extends AnalyticResult<?>, C> extends InternalVisualisationTranslator<R, TableVisualisation<?>> {
 
     protected static class UnrecognisedColumnException extends RuntimeException {
-        
+
         private static final String UNRECOGNISED_COLUMN_EXCEPTION_STRING = "Column not recognised: ";
 
         public UnrecognisedColumnException(final String columnName) {

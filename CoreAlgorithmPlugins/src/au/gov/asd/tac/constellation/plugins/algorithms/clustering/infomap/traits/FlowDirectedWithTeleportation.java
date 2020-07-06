@@ -80,7 +80,7 @@ public class FlowDirectedWithTeleportation implements FlowBase {
     public double getTeleportSourceFlow() {
         return teleportSourceFlow;
     }
-    
+
     @Override
     public void add(final FlowBase other) {
         final FlowDirectedWithTeleportation f = (FlowDirectedWithTeleportation) other;

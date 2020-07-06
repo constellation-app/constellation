@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.operations;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphOperation;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import java.util.Arrays;
@@ -39,7 +38,7 @@ public class SetFloatValuesOperation extends GraphOperation {
     private int highestChange = Integer.MIN_VALUE;
     private int offset;
 
-    public SetFloatValuesOperation(GraphReadMethods graph, GraphElementType elementType, int attribute) {
+    public SetFloatValuesOperation(final GraphReadMethods graph, final GraphElementType elementType, final int attribute) {
         this.graph = graph;
         this.attribute = attribute;
         changes = new int[elementType.getElementCapacity(graph)];
@@ -51,7 +50,7 @@ public class SetFloatValuesOperation extends GraphOperation {
      * @param id The id of the element
      * @param value The value of the element
      */
-    public void setValue(int id, float value) {
+    public void setValue(final int id, final float value) {
         float currentValue = graph.getFloatValue(attribute, id);
         if (currentValue != value) {
             if (changes[id] == 0) {
@@ -85,7 +84,7 @@ public class SetFloatValuesOperation extends GraphOperation {
     }
 
     @Override
-    public void execute(GraphWriteMethods graph) {
+    public void execute(final GraphWriteMethods graph) {
         for (int i = 0; i < changes.length; i++) {
             if (changes[i] != 0) {
                 int element = offset + i;
@@ -95,7 +94,7 @@ public class SetFloatValuesOperation extends GraphOperation {
     }
 
     @Override
-    public void undo(GraphWriteMethods graph) {
+    public void undo(final GraphWriteMethods graph) {
         for (int i = 0; i < changes.length; i++) {
             if (changes[i] != 0) {
                 int element = offset + i;

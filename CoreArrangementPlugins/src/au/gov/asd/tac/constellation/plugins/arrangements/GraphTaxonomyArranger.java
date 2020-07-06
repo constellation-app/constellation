@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements;
 
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -117,7 +118,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
      */
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
         int singletonsKey = Graph.NOT_FOUND;
         int doubletsKey = Graph.NOT_FOUND;
 
@@ -201,7 +202,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         }
 
         if (maintainMean) {
-            GraphUtilities.moveMean(wg, oldMean);
+            ArrangementUtilities.moveMean(wg, oldMean);
         }
 
         if (interaction != null) {

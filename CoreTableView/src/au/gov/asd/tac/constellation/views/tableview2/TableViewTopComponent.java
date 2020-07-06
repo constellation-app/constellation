@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -75,7 +76,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     private TableViewState currentState;
     private final TableViewPane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;
-    
+
     private static final String UPDATE_DATA = "Table View: Update Data";
     private static final String UPDATE_SELECTION = "Table View: Update Selection";
 
@@ -90,6 +91,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         initContent();
 
         addStructureChangeHandler(graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             final Thread thread = new Thread(UPDATE_DATA) {
                 @Override
                 public void run() {
@@ -100,17 +104,13 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeCountChangeHandler(graph -> {
-            final Thread thread = new Thread(UPDATE_DATA) {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            thread.start();
+            if (needsUpdate()) {
+                pane.updateTable(graph, currentState);
+            }
         });
 
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
-            if (currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.VERTEX) {
                 if (currentState.isSelectedOnly()) {
                     final Thread thread = new Thread(UPDATE_DATA) {
                         @Override
@@ -132,7 +132,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(VisualConcept.TransactionAttribute.SELECTED, graph -> {
-            if (currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
+            if (needsUpdate() && currentState != null && currentState.getElementType() == GraphElementType.TRANSACTION) {
                 final Thread thread;
                 if (currentState.isSelectedOnly()) {
                     thread = new Thread(UPDATE_DATA) {
@@ -155,6 +155,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
         });
 
         addAttributeValueChangeHandler(TableViewConcept.MetaAttribute.TABLE_VIEW_STATE, graph -> {
+            if (!needsUpdate()) {
+                return;
+            }
             final TableViewState previousState = currentState;
             updateState(graph);
             final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
@@ -173,13 +176,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 });
             }
 
-            final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-                @Override
-                public void run() {
-                    pane.updateTable(graph, currentState);
-                }
-            };
-            tableUpdateThread.start();
+            pane.updateTable(graph, currentState);
 
             if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
                 columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -188,11 +185,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                             attributeTuple.getSecond().getName(),
                             g -> {
                                 final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                    @Override
-                                    public void run() {
-                                        pane.updateData(g, currentState);
-                                    }
-                                };
+                            @Override
+                            public void run() {
+                                pane.updateData(g, currentState);
+                            }
+                        };
                                 dataUpdateThread.start();
                             }));
                 });
@@ -230,17 +227,17 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                 while (stateLock != null && currentState == stateSnapshot) {
                     try {
                         // TODO: remove sleep
-                        // ...but there is an async issue which needs to be 
-                        // resolved first. When showSelected() is called, the 
-                        // order of operations is to update the Table View 
-                        // state (if required) and then to select the rows in 
-                        // the table based on the current graph selection. The 
-                        // issue is that the state is updated by writing a 
-                        // TableViewState object to the graph and letting a 
-                        // Table View listener respond to that. Unfortunately, 
-                        // there is no obvious way for this operation to know 
-                        // when the Table View listener has finished responding, 
-                        // so for now we just wait until the currentState object 
+                        // ...but there is an async issue which needs to be
+                        // resolved first. When showSelected() is called, the
+                        // order of operations is to update the Table View
+                        // state (if required) and then to select the rows in
+                        // the table based on the current graph selection. The
+                        // issue is that the state is updated by writing a
+                        // TableViewState object to the graph and letting a
+                        // Table View listener respond to that. Unfortunately,
+                        // there is no obvious way for this operation to know
+                        // when the Table View listener has finished responding,
+                        // so for now we just wait until the currentState object
                         // matches the state object we updated it to.
                         Thread.sleep(10);
                     } catch (final InterruptedException ex) {
@@ -347,7 +344,16 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
     }
 
     @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }
+
+    @Override
     protected void handleNewGraph(final Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         final TableViewState previousState = currentState;
         updateState(graph);
         final Tuple<Set<Tuple<String, Attribute>>, Set<Tuple<String, Attribute>>> columnAttributeChanges = getColumnAttributeChanges(previousState, currentState);
@@ -366,13 +372,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
             });
         }
 
-        final Thread tableUpdateThread = new Thread("Table View: Update Table") {
-            @Override
-            public void run() {
-                pane.updateTable(graph, currentState);
-            }
-        };
-        tableUpdateThread.start();
+        pane.updateTable(graph, currentState);
 
         if (currentState != null && currentState.getColumnAttributes() != null && !columnAttributeChanges.getSecond().isEmpty()) {
             columnAttributeChanges.getSecond().forEach(attributeTuple -> {
@@ -381,11 +381,11 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TableViewPan
                         attributeTuple.getSecond().getName(),
                         g -> {
                             final Thread dataUpdateThread = new Thread(UPDATE_DATA) {
-                                @Override
-                                public void run() {
-                                    pane.updateData(g, currentState);
-                                }
-                            };
+                        @Override
+                        public void run() {
+                            pane.updateData(g, currentState);
+                        }
+                    };
                             dataUpdateThread.start();
                         }));
             });

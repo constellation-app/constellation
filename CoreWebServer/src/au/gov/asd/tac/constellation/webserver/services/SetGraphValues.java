@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,12 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class SetGraphValues extends RestService {
+
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
-    
+
     private static final String COLUMNS = "columns";
 
     @Override
@@ -88,6 +89,10 @@ public class SetGraphValues extends RestService {
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         // We want to read a JSON document that looks like:
         //
         // {"columns":["A","B"],"data":[[1,"a"]]}
@@ -97,34 +102,32 @@ public class SetGraphValues extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
-        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
-            throw new RestServiceException("Could not find columns object containing column names");
+        if (!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "Could not find columns object containing column names");
         }
 
         if (!json.hasNonNull("data") || !json.get("data").isArray()) {
-            throw new RestServiceException("Could not find data object containing data rows");
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "Could not find data object containing data rows");
         }
         final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final ArrayNode data = (ArrayNode) json.get("data");
 
         // Do we have one and only one row of data?
-        if(data.size() != 1) {
+        if (data.size() != 1) {
             throw new RestServiceException("Must have one row of data");
         }
 
         final ArrayNode row = (ArrayNode) data.get(0);
 
         // Do the number of column headers and the number of data elements in the row match?
-        if(columns.size() != row.size()) {
+        if (columns.size() != row.size()) {
             throw new RestServiceException("Column names do not match data row");
         }
 
-        setGraphAttributes(graphId, columns, row);
+        setGraphAttributes(graph, columns, row);
     }
 
-    private static void setGraphAttributes(final String graphId, final ArrayNode columns, final ArrayNode row) {
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-
+    private static void setGraphAttributes(final Graph graph, final ArrayNode columns, final ArrayNode row) {
         final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
             @Override
             protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {

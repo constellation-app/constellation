@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.tree.SpanningTree;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
-import au.gov.asd.tac.constellation.plugins.arrangements.GraphUtilities;
+import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3d;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +65,7 @@ public class BubbleTreeArranger implements Arranger {
      */
     @Override
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
-        final float[] oldMean = maintainMean ? GraphUtilities.getXyzMean(wg) : null;
+        final float[] oldMean = maintainMean ? ArrangementUtilities.getXyzMean(wg) : null;
 
         // Find a root.
         int root = Graph.NOT_FOUND;
@@ -159,7 +159,7 @@ public class BubbleTreeArranger implements Arranger {
         }
 
         if (maintainMean) {
-            GraphUtilities.moveMean(wg, oldMean);
+            ArrangementUtilities.moveMean(wg, oldMean);
         }
     }
 
@@ -256,13 +256,13 @@ public class BubbleTreeArranger implements Arranger {
             Arrays.sort(index, (lhsIx, rhsIx) -> {
                 final double lhs = realCircleRadius[lhsIx];
                 final double rhs = realCircleRadius[rhsIx];
-                
+
                 if (lhs < rhs) {
                     return 1;
                 } else if (lhs > rhs) {
                     return -1;
                 }
-                
+
                 return 0;
             });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,6 @@ public class MapViewTileRenderer extends PApplet {
     private int boxOriginY;
     private int boxDeltaX;
     private int boxDeltaY;
-
     private boolean updating = false;
 
     public MapViewTileRenderer(final MapViewTopComponent parent) {
@@ -233,6 +232,9 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     public void updateMarkers(final Graph graph, final MarkerState markerState) {
+        if (!parent.shouldUpdate()) {
+            return;
+        }
         updating = true;
 
         final Thread thread = new Thread("Map View: Update Markers") {
@@ -347,6 +349,9 @@ public class MapViewTileRenderer extends PApplet {
         map.setTweening(true);
 
         dispatcher = MapUtils.createDefaultEventDispatcher(this, map);
+        // The map library, Unfolding Maps, defaults to a hard-coded left click pan
+        dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+        dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
 
         layers = Lookup.getDefault().lookupAll(MapLayer.class);
         layers.forEach(layer -> layer.initialise(this, map));
@@ -377,18 +382,6 @@ public class MapViewTileRenderer extends PApplet {
             layers.forEach(layer -> layer.setGraph(parent.getCurrentGraph()));
             layers.forEach(layer -> layer.draw());
 
-            final boolean ignoreMapInteractions = overlays.stream().anyMatch(overlay
-                    -> overlay.isEnabled()
-                    && mouseX > overlay.getX() && mouseY > overlay.getY()
-                    && mouseX < overlay.getX() + overlay.getWidth()
-                    && mouseY < overlay.getY() + overlay.getHeight());
-            if (ignoreMapInteractions) {
-                dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
-                dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
-            } else {
-                dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
-                dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
-            }
             overlays.forEach(overlay -> overlay.setDebug(currentProvider.isDebug()));
             overlays.forEach(overlay -> overlay.draw());
 
@@ -433,11 +426,11 @@ public class MapViewTileRenderer extends PApplet {
                     .stream().map(marker -> (ConstellationAbstractMarker) marker).collect(Collectors.toList());
         }
 
-        if (event.getButton() == PConstants.RIGHT) {
+        if (event.getButton() == PConstants.LEFT) {
             // select markers
-            if (hitMarkers.isEmpty()) {
+            if (event.getCount() == 2) {
                 handleMouseSelection(event, new HashSet<>());
-            } else {
+            } else if (!hitMarkers.isEmpty()) {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
             }
         }
@@ -449,10 +442,21 @@ public class MapViewTileRenderer extends PApplet {
     public void mousePressed(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        if (event.getButton() == PConstants.CENTER || event.getButton() == PConstants.RIGHT) {
+        if (event.getButton() == PConstants.CENTER || event.getButton() == PConstants.LEFT) {
             // zoom to box
             boxOriginX = event.getX();
             boxOriginY = event.getY();
+        } else if (event.getButton() == PConstants.RIGHT && event.getCount() == 2) {
+            dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
+            // Pan + Zoom (order is important)
+            final PanMapEvent panMapEvent = new PanMapEvent(this, map.getId());
+            final Location location = map.getLocation(mouseX, mouseY);
+            panMapEvent.setToLocation(location);
+            dispatcher.fireMapEvent(panMapEvent);
+            final ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL, 1);
+            zoomMapEvent.setTransformationCenterLocation(location);
+            dispatcher.fireMapEvent(zoomMapEvent);
+            dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
         }
 
         overlays.forEach(overlay -> overlay.mousePressed(event));
@@ -462,16 +466,45 @@ public class MapViewTileRenderer extends PApplet {
     public void mouseDragged(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        if (event.getButton() == PConstants.CENTER) {
-            // zoom to box
-            boxZoomEnabled = true;
-            boxDeltaX = event.getX();
-            boxDeltaY = event.getY();
-        } else if (event.getButton() == PConstants.RIGHT) {
-            // select markers
-            boxSelectionEnabled = true;
-            boxDeltaX = event.getX();
-            boxDeltaY = event.getY();
+        final boolean isOverlayActive = overlays.stream().anyMatch(overlay -> overlay.isActive());
+        final boolean isInteractionWithOverlay = overlays.stream().anyMatch(overlay
+                -> overlay.isEnabled()
+                && mouseX > overlay.getX() && mouseY > overlay.getY()
+                && mouseX < overlay.getX() + overlay.getWidth()
+                && mouseY < overlay.getY() + overlay.getHeight());
+
+        switch (event.getButton()) {
+            case PConstants.CENTER:
+                // zoom to box
+                boxZoomEnabled = true;
+                boxDeltaX = event.getX();
+                boxDeltaY = event.getY();
+                break;
+            case PConstants.RIGHT:
+                // select markers
+                boxSelectionEnabled = false;
+
+                if (!isInteractionWithOverlay) {
+                    // triggers a pan event for a right click & drag if within map
+                    dispatcher.register(map, PanMapEvent.TYPE_PAN, map.getId());
+                    final Location oldLocation = map.getLocation(pmouseX, pmouseY);
+                    final Location newLocation = map.getLocation(mouseX, mouseY);
+                    final PanMapEvent panMapEvent = new PanMapEvent(this, map.getId(), PanMapEvent.PAN_BY);
+                    panMapEvent.setFromLocation(oldLocation);
+                    panMapEvent.setToLocation(newLocation);
+                    dispatcher.fireMapEvent(panMapEvent);
+                    dispatcher.unregister(map, PanMapEvent.TYPE_PAN, map.getId());
+                }
+                break;
+            case PConstants.LEFT:
+                if (!isInteractionWithOverlay && !isOverlayActive) {
+                    boxSelectionEnabled = true;
+                    boxDeltaX = event.getX();
+                    boxDeltaY = event.getY();
+                }
+                break;
+            default:
+                break;
         }
 
         layers.forEach(layer -> layer.mouseDragged(event));
@@ -518,7 +551,7 @@ public class MapViewTileRenderer extends PApplet {
                 boxDeltaY = -1;
                 boxZoomEnabled = false;
             }
-        } else if (event.getButton() == PConstants.RIGHT && boxSelectionEnabled) {
+        } else if (event.getButton() == PConstants.LEFT && boxSelectionEnabled) {
             // select markers
             // update the box
             boxDeltaX = event.getX();
@@ -540,9 +573,33 @@ public class MapViewTileRenderer extends PApplet {
     @Override
     public void mouseWheel(final MouseEvent event) {
         assert !SwingUtilities.isEventDispatchThread();
-
+        dispatcher.register(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
         layers.forEach(layer -> layer.mouseWheel(event));
         overlays.forEach(overlay -> overlay.mouseWheel(event));
+
+        final boolean isInteractionWithOverlay = overlays.stream().anyMatch(overlay
+                -> overlay.isEnabled()
+                && mouseX > overlay.getX() && mouseY > overlay.getY()
+                && mouseX < overlay.getX() + overlay.getWidth()
+                && mouseY < overlay.getY() + overlay.getHeight());
+
+        if (!isInteractionWithOverlay) {
+            final ZoomMapEvent zoomMapEvent = new ZoomMapEvent(this, map.getId(), ZoomMapEvent.ZOOM_BY_LEVEL);
+
+            // Use location as zoom center, so listening maps can zoom correctly
+            final Location location = map.getLocation(mouseX, mouseY);
+            zoomMapEvent.setTransformationCenterLocation(location);
+            int delta = event.getCount();
+            // Zoom in or out
+            if (delta < 0) {
+                zoomMapEvent.setZoomLevelDelta(1);
+            } else if (delta > 0) {
+                zoomMapEvent.setZoomLevelDelta(-1);
+            }
+            dispatcher.fireMapEvent(zoomMapEvent);
+        }
+
+        dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
     }
 
     @Override
@@ -644,7 +701,10 @@ public class MapViewTileRenderer extends PApplet {
     private void handleMouseSelection(final MouseEvent event, final Set<ConstellationAbstractMarker> markers) {
         assert !SwingUtilities.isEventDispatchThread();
 
-        if (event == null || markers == null) {
+        // Is the measuring tool currently active
+        final boolean isOverlayActive = overlays.stream().anyMatch(overlay -> overlay.isActive());
+
+        if (event == null || markers == null || isOverlayActive) {
             return;
         }
 

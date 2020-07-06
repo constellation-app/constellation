@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,9 +58,13 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+            return null;
+        }
         return pluginExecutor.submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
-            
+
             // If a Future has been specified, don't do anything until the Future has completed.
             // A typical use-case is an arrangement followed by a camera reset: obviously doing the reset before the
             // vertices have been relocated is not sensible.
@@ -78,26 +82,26 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     }
                 }
             }
-            
+
             final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
             final boolean alwaysSilent = callingConstraints.isAlwaysSilent() || callingConstraints.getSilentCount() > 0;
-            
+
             PluginReport currentReport = null;
             GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
             if (graphReport != null) {
                 currentReport = graphReport.addPluginReport(plugin);
                 callingConstraints.setCurrentReport(currentReport);
             }
-            
+
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
             } catch (Exception ex) {
             }
-            
+
             PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, synchronizer);
             PluginGraphs graphs = new DefaultPluginGraphs(manager);
             PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
-            
+
             try {
                 if (parameters != null) {
                     plugin.updateParameters(graph, parameters);
@@ -156,13 +160,13 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     callingConstraints.setCurrentReport(null);
                     currentReport.firePluginReportChangedEvent();
                 }
-                
+
                 try {
                     ConstellationLogger.getDefault().pluginStopped(plugin, parameters);
                 } catch (Exception ex) {
                 }
             }
-            
+
             return null;
         });
     }
@@ -170,6 +174,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -236,6 +243,10 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     @Override
     public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
+
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();
@@ -293,6 +304,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     @Override
     public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
+        if (graph == null) {
+            LOGGER.log(Level.WARNING, plugin.getName() + " plugin was executed on a graph which was null");
+        }
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         final int silentCount = callingConstraints.getSilentCount();
         final boolean alwaysSilent = callingConstraints.isAlwaysSilent();

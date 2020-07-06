@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -28,12 +28,14 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * Arranging components in a grid of grids.
+ * Arranging components in a grid.
  *
  * @author algol
  */
 @ActionID(category = "Arrange", id = "au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridAction")
-@ActionRegistration(displayName = "#CTL_ArrangeInGridAction", iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/grid.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ArrangeInGridAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/arrangements/grid/resources/arrangeInGrid.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/Arrange", position = 0),
     @ActionReference(path = "Toolbars/Arrange", position = 0),
@@ -55,7 +57,12 @@ public final class ArrangeInGridAction extends AbstractAction {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+        PluginExecutor.startWith(ArrangementPluginRegistry.GRID_GENERAL)
+                .set(ArrangeInGridGeneralPlugin.GRID_CHOICE_PARAMETER_ID, GridChoice.SQUARE.toString())
+                .set(ArrangeInGridGeneralPlugin.SIZE_GAIN_PARAMETER_ID, 1.25f)
+                .set(ArrangeInGridGeneralPlugin.HORIZONTAL_GAP_PARAMETER_ID, 1)
+                .set(ArrangeInGridGeneralPlugin.VERTICAL_GAP_PARAMETER_ID, 1)
+                .set(ArrangeInGridGeneralPlugin.OFFSET_ROWS_PARAMETER_ID, false)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeWriteLater(context.getGraph(), Bundle.CTL_ArrangeInGridAction());
     }

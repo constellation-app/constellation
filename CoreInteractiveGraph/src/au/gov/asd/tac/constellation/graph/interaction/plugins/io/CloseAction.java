@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ import org.openide.util.NbBundle.Messages;
  * @author antares
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.functionality.CloseAction")
-@ActionRegistration(displayName = "#CTL_CloseAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_CloseAction",
+        iconBase = "au/gov/asd/tac/constellation/graph/interaction/plugins/io/closeGraph.png",
+        surviveFocusChange = true)
 @ActionReferences({
     @ActionReference(path = "Menu/File", position = 500),
     @ActionReference(path = "Shortcuts", name = "C-W")

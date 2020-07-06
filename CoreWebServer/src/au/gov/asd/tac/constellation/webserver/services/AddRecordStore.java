@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,8 +56,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class AddRecordStore extends RestService {
+
     private static final String NAME = "add_recordstore";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
     private static final String COMPLETE_PARAMETER_ID = "complete_with_schema";
@@ -69,7 +70,7 @@ public class AddRecordStore extends RestService {
     private static final String TX_SOURCE = GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE;
 
     private static final String COLUMNS = "columns";
-    
+
     @Override
     public String getName() {
         return NAME;
@@ -135,38 +136,42 @@ public class AddRecordStore extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final JsonNode json = mapper.readTree(in);
 
+        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
         // We want to read a JSON document that looks like:
         //
         // {"columns":["A","B"],"data":[[1,"a"],[2,"b"],[3,"c"]]}
         //
         // which is what is output by pandas.to_json(..., orient="split').
         // (We ignore the index array.)
-        if(!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
+        if (!json.hasNonNull(COLUMNS) || !json.get(COLUMNS).isArray()) {
             throw new RestServiceException("Could not find columns object containing column names");
         }
 
-        if(!json.hasNonNull("data") || !json.get("data").isArray()) {
+        if (!json.hasNonNull("data") || !json.get("data").isArray()) {
             throw new RestServiceException("Could not find data object containing data rows");
         }
 
         final ArrayNode columns = (ArrayNode) json.get(COLUMNS);
         final String[] headers = new String[columns.size()];
-        for(int i = 0; i < headers.length; i++) {
+        for (int i = 0; i < headers.length; i++) {
             headers[i] = columns.get(i).asText();
         }
 
         final ArrayNode data = (ArrayNode) json.get("data");
-        for(final Iterator<JsonNode> i = data.elements(); i.hasNext();) {
+        for (final Iterator<JsonNode> i = data.elements(); i.hasNext();) {
             final ArrayNode jrow = (ArrayNode) i.next();
             rs.add();
             boolean txFound = false;
             boolean txSourceFound = false;
-            for(int ix = 0; ix < headers.length; ix++) {
+            for (int ix = 0; ix < headers.length; ix++) {
                 final String h = headers[ix];
                 final JsonNode jn = jrow.get(ix);
                 if (!jn.isNull()) {
-                    if(jn.getNodeType()==JsonNodeType.ARRAY) {
-                        rs.set(h, RestServiceUtilities.toList((ArrayNode)jn));
+                    if (jn.getNodeType() == JsonNodeType.ARRAY) {
+                        rs.set(h, RestServiceUtilities.toList((ArrayNode) jn));
                     } else {
                         rs.set(h, jn.asText());
                     }
@@ -180,12 +185,10 @@ public class AddRecordStore extends RestService {
             }
         }
 
-        addToGraph(graphId, rs, completeWithSchema, arrange, resetView);
+        addToGraph(graph, rs, completeWithSchema, arrange, resetView);
     }
 
-    private static void addToGraph(final String graphId, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-
+    private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
         final Plugin p = new SimpleEditPlugin("Import from REST API") {
             @Override
             protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
@@ -199,18 +202,18 @@ public class AddRecordStore extends RestService {
                 // but then it becomes the malicious user's fault.
                 //
                 try {
-                    if(arrange == null) {
+                    if (arrange == null) {
                         PluginExecutor
                                 .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                                 .followedBy(ArrangementPluginRegistry.PENDANTS)
                                 .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
                                 .executeNow(graph);
-                    } else if(arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
+                    } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
                         // Don't do anything.
                     } else {
                         PluginExecution.withPlugin(arrange).executeNow(graph);
                     }
-                } catch(final PluginException ex) {
+                } catch (final PluginException ex) {
                     Exceptions.printStackTrace(ex);
                 }
             }
@@ -218,16 +221,16 @@ public class AddRecordStore extends RestService {
 
         PluginExecutor pe = PluginExecutor.startWith(p);
 
-        if(resetView) {
+        if (resetView) {
             pe = pe.followedBy(InteractiveGraphPluginRegistry.RESET_VIEW);
         }
 
         try {
             pe.executeNow(graph);
-        } catch(final InterruptedException ex) {
+        } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             throw new RestServiceException(ex);
-        } catch(final PluginException ex) {
+        } catch (final PluginException ex) {
             throw new RestServiceException(ex);
         }
     }

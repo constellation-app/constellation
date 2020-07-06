@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,6 @@ import processing.event.MouseEvent;
 public class ToolsOverlay extends MapOverlay {
 
     private static final Logger LOGGER = Logger.getLogger(ToolsOverlay.class.getName());
-    
     private static final String DISABLED = "Disabled";
 
     private enum MeasurementSystem {
@@ -103,10 +102,6 @@ public class ToolsOverlay extends MapOverlay {
     private int drawOriginY = -1;
     private int drawDeltaX = -1;
     private int drawDeltaY = -1;
-
-    public ToolsOverlay() {
-        this.enabled = false;
-    }
 
     @Override
     public String getName() {
@@ -363,6 +358,8 @@ public class ToolsOverlay extends MapOverlay {
                 }
             }
         }
+        
+        active = measureActive || drawActive;
     }
 
     @Override

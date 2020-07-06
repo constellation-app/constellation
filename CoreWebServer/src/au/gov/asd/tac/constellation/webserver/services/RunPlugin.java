@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,8 +42,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class RunPlugin extends RestService {
+
     private static final String NAME = "run_plugin";
     private static final String PLUGIN_NAME_PARAMETER_ID = "plugin_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
@@ -97,22 +98,26 @@ public class RunPlugin extends RestService {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
 
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
-        try {
-            final ObjectMapper mapper = new ObjectMapper();
-            final JsonNode json = mapper.readTree(in);
-            if(json.size() > 0) {
-                final Plugin plugin = PluginRegistry.get(pluginName);
-                final PluginParameters pluginParameters = plugin.createParameters();
-                RestServiceUtilities.parametersFromJson((ObjectNode)json, pluginParameters);
-                PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
-            } else {
-                PluginExecution.withPlugin(pluginName).executeNow(graph);
+        if (graph != null) {
+            try {
+                final ObjectMapper mapper = new ObjectMapper();
+                final JsonNode json = mapper.readTree(in);
+                if (json.size() > 0) {
+                    final Plugin plugin = PluginRegistry.get(pluginName);
+                    final PluginParameters pluginParameters = plugin.createParameters();
+                    RestServiceUtilities.parametersFromJson((ObjectNode) json, pluginParameters);
+                    PluginExecution.withPlugin(plugin).withParameters(pluginParameters).executeNow(graph);
+                } else {
+                    PluginExecution.withPlugin(pluginName).executeNow(graph);
+                }
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                throw new RestServiceException(ex);
+            } catch (final PluginException | IllegalArgumentException ex) {
+                throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
             }
-        } catch (final InterruptedException ex) {
-            Thread.currentThread().interrupt();
-            throw new RestServiceException(ex);
-        } catch (final PluginException | IllegalArgumentException ex) {
-            throw new RestServiceException(ex);
+        } else {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
         }
     }
 }

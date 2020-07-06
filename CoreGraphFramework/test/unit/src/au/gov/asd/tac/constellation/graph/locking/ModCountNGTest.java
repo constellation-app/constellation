@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -181,7 +181,7 @@ public class ModCountNGTest {
             long modCount;
             WritableGraph wg = g.getWritableGraph("", true);
             int attribute, vertex;
-            final double value = 1, defaultValue = 0;
+            final double value = 1, defaultValue = -1;
             try {
                 vertex = wg.addVertex();
                 attribute = wg.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "name", "description", defaultValue, null);

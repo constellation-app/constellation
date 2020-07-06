@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -122,9 +122,9 @@ public class CopyGraphUtilities {
         final int[] linkTranslation = new int[original.getLinkCapacity()];
         for (int position = 0; position < original.getTransactionCount(); position++) {
             final int originalTransaction = original.getTransaction(position);
-            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalTransaction)) 
-                    || (vertexSelected != Graph.NOT_FOUND 
-                    && (!original.getBooleanValue(vertexSelected, original.getTransactionSourceVertex(originalTransaction)) 
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalTransaction))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getTransactionSourceVertex(originalTransaction))
                     || !original.getBooleanValue(vertexSelected, original.getTransactionDestinationVertex(originalTransaction)))))) {
                 continue;
             }
@@ -153,9 +153,9 @@ public class CopyGraphUtilities {
         // Copy the edges
         for (int position = 0; position < original.getEdgeCount(); position++) {
             final int originalEdge = original.getEdge(position);
-            if (! copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalEdge)) 
-                    || (vertexSelected != Graph.NOT_FOUND 
-                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalEdge)) 
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalEdge))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalEdge))
                     || !original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalEdge)))))) {
                 continue;
             }
@@ -170,9 +170,9 @@ public class CopyGraphUtilities {
         // Copy the links
         for (int position = 0; position < original.getLinkCount(); position++) {
             final int originalLink = original.getLink(position);
-            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalLink)) 
-                    || (vertexSelected != Graph.NOT_FOUND 
-                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalLink)) 
+            if (!copyAll && ((transactionSelected != Graph.NOT_FOUND && !original.getBooleanValue(transactionSelected, originalLink))
+                    || (vertexSelected != Graph.NOT_FOUND
+                    && (!original.getBooleanValue(vertexSelected, original.getEdgeSourceVertex(originalLink))
                     || !original.getBooleanValue(vertexSelected, original.getEdgeDestinationVertex(originalLink)))))) {
                 continue;
             }

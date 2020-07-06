@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @ServiceProvider(service = GraphDropper.class, position = 10000)
 public class ImageIconDropper implements GraphDropper {
-    
+
     private static final Logger LOGGER = Logger.getLogger(ImageIconDropper.class.getName());
 
     private static final DataFlavor IMAGE_FLAVOR;

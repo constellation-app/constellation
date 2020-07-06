@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -72,6 +73,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
     private final CheckComboBox<String> ignoredTagsComboBox = new CheckComboBox<>();
 
+    private final PluginReporterTopComponent pluginReporterTopComponent;
+
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
     // bar is due to the user or an increase in the report box height.
@@ -89,7 +92,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     // the JavaFX thread from running out of memory
     private static final int MAXIMUM_REPORT_PANES = 300;
 
-    public PluginReporterPane() {
+    public PluginReporterPane(final PluginReporterTopComponent topComponent) {
+
+        this.pluginReporterTopComponent = topComponent;
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
@@ -278,7 +283,9 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     public synchronized void setGraphReport(GraphReport graphReport) {
         this.graphReport = graphReport;
         reportBoxHeight = -1;
-        updateReports(true);
+        if (pluginReporterTopComponent.shouldUpdate()) {
+            updateReports(true);
+        }
     }
 
     private PluginReportFilter defaultReportFilter = new PluginReportFilter() {

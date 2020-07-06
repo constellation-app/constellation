@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public final class Vector4d {
     public void setA(double[] a) {
         this.a = a;
     }
-    
+
     public void set(final double x, final double y, final double z, final double w) {
         a[0] = x;
         a[1] = y;

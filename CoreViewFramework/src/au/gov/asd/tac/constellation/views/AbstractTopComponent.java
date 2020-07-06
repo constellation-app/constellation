@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,22 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
 
     protected P content;
 
+    private boolean isVisible;
+
+    /**
+     * Checks if the view will need an update when a graph changes based on if
+     * the view is visible currently.
+     *
+     * @return true if the view is visible and needs updating
+     */
+    protected boolean needsUpdate() {
+        return isVisible;
+    }
+
+    protected void setComponentVisible(final boolean visibility) {
+        isVisible = visibility;
+    }
+
     /**
      * Builds and initialises the content for this top component. You should
      * call this method in the constructor of your TopComponent implementation
@@ -58,18 +74,24 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentOpened() {
         super.componentOpened();
+        
+        isVisible = true;
         ConstellationLogger.getDefault().viewStarted(this);
     }
 
     @Override
     protected void componentClosed() {
         super.componentClosed();
+        
+        isVisible = false;
         ConstellationLogger.getDefault().viewStopped(this);
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Showing / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
@@ -82,22 +104,29 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentHidden() {
         super.componentHidden();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Hidden / Docked");
+
         }
     }
 
     @Override
     protected void componentActivated() {
         super.componentActivated();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Activated / Docked");
         }
@@ -106,10 +135,13 @@ public abstract class AbstractTopComponent<P> extends TopComponent {
     @Override
     protected void componentDeactivated() {
         super.componentDeactivated();
+        
+        isVisible = true;
         if (WindowManager.getDefault().isTopComponentFloating(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Floating");
         } else if (WindowManager.getDefault().isTopComponentMinimized(this)) {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Minimised");
+            isVisible = false;
         } else {
             ConstellationLogger.getDefault().viewInfo(this, "Deactivated / Docked");
         }

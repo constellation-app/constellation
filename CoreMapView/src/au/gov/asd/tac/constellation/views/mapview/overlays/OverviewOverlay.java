@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,6 @@ public class OverviewOverlay extends MapOverlay {
 
     public OverviewOverlay() {
         super();
-        this.enabled = false;
     }
 
     @Override
@@ -106,6 +105,7 @@ public class OverviewOverlay extends MapOverlay {
     @Override
     public void mousePressed(final MouseEvent event) {
         if (viewport.isOver(renderer.mouseX, renderer.mouseY)) {
+            active = true;
             viewport.isDragging = true;
             deltaX = renderer.mouseX - viewport.x;
             deltaY = renderer.mouseY - viewport.y;
@@ -124,6 +124,7 @@ public class OverviewOverlay extends MapOverlay {
 
     @Override
     public void mouseReleased(final MouseEvent event) {
+        active = false;
         viewport.isDragging = false;
     }
 

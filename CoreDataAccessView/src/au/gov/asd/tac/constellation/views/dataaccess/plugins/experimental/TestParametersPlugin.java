@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
-import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRangeParameterType.DateTimeRangeParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
@@ -130,7 +129,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
     public static final String INTERACTION_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "interaction");
     public static final String LEVEL_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "level");
     public static final String SLEEP_PARAMETER_ID = PluginParameter.buildId(TestParametersPlugin.class, "sleep");
-    
+
     //Debug Levels
     private static final String NONE = "None";
     private static final String DEBUG = "Debug";
@@ -178,10 +177,10 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         selected.setDescription("Only use selected elements");
         params.addParameter(selected);
 
-        final PluginParameter<StringParameterValue> queryName = StringParameterType.build(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID);
+        final PluginParameter<StringParameterValue> queryName = CoreGlobalParameters.QUERY_NAME_PARAMETER;
         params.addParameter(queryName);
 
-        final PluginParameter<DateTimeRangeParameterValue> dt = DateTimeRangeParameterType.build(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID);
+        final PluginParameter<DateTimeRangeParameterValue> dt = CoreGlobalParameters.DATETIME_RANGE_PARAMETER;
         params.addParameter(dt);
 
         final PluginParameter<StringParameterValue> string1 = StringParameterType.build(TEST1_PARAMETER_ID);

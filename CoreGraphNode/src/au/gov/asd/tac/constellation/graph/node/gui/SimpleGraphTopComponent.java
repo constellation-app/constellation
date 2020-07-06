@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,15 +107,15 @@ public final class SimpleGraphTopComponent extends CloneableTopComponent impleme
         graphChanged(null);
 
         graphNode = new GraphNode(graph, gdo, this, null);
-        
+
         content = new InstanceContent();
         content.add(getActionMap());
         content.add(graphNode.getDataObject());
         content.add(graph);
         content.add(graphNode);
-        
+
         associateLookup(new AbstractLookup(content));
-        
+
         setActivatedNodes(new Node[]{
             graphNode
         });

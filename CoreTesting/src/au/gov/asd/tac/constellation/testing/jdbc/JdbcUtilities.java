@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class JdbcUtilities {
      * @throws IllegalAccessException
      * @throws MalformedURLException
      */
-    static Connection getConnection(final File jarFile, final String driverName, final String url, final String username, final char[] password) 
+    static Connection getConnection(final File jarFile, final String driverName, final String url, final String username, final char[] password)
             throws MalformedURLException, ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException, SQLException {
         final URL[] searchPath = new URL[]{new URL("file:///" + jarFile.getAbsolutePath())};
         final ClassLoader clloader = URLClassLoader.newInstance(searchPath);

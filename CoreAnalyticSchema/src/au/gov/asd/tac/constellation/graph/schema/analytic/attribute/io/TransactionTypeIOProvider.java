@@ -25,7 +25,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;

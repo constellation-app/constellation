@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.io.Serializable;
  */
 public abstract class Operation<T> implements Serializable {
 
-    public abstract void execute(T target, ParameterReadAccess access);
+    public abstract void execute(final T target, final ParameterReadAccess access);
 
-    public abstract void undo(T target, ParameterReadAccess access);
+    public abstract void undo(final T target, final ParameterReadAccess access);
 }

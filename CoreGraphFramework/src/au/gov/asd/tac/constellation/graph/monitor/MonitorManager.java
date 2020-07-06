@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         this(1);
     }
 
-    public MonitorManager(int requiredStartCount) {
+    public MonitorManager(final int requiredStartCount) {
         this.requiredStartCount = requiredStartCount;
     }
 
@@ -71,12 +71,12 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     }
 
     @Override
-    public void graphOpened(Graph graph) {
+    public void graphOpened(final Graph graph) {
         // Required for implementation of GraphManagerListener
     }
 
     @Override
-    public void graphClosed(Graph graph) {
+    public void graphClosed(final Graph graph) {
         // Required for implementation of GraphManagerListener
     }
 
@@ -85,7 +85,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     }
 
     @Override
-    public void newActiveGraph(Graph graph) {
+    public void newActiveGraph(final Graph graph) {
         if (VERBOSE) {
             System.out.println("@@MONITOR_MANAGER::newActiveGraph()");
         }
@@ -105,7 +105,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     }
 
     @Override
-    public void graphChanged(GraphChangeEvent event) {
+    public void graphChanged(final GraphChangeEvent event) {
         if (VERBOSE) {
             System.out.println("@@MONITOR_MANAGER::graphChanged()");
         }
@@ -116,22 +116,22 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         }
     }
 
-    private void updateMonitors(Graph graph, boolean newGraph) {
+    private void updateMonitors(final Graph graph, final boolean newGraph) {
         if (VERBOSE) {
             System.out.println("@@MONITOR_MANAGER::updateMonitors()");
         }
         final ReadableGraph rg = graph == null ? null : graph.getReadableGraph();
         try {
-            for (MonitorEntry monitorEntry : monitorEntries) {
+            for (final MonitorEntry monitorEntry : monitorEntries) {
                 if (VERBOSE) {
                     System.out.println("@@MONITOR_MANAGER::updatingMonitor(" + monitorEntry.monitor + ")");
                 }
                 monitorEntry.monitor.update(rg);
             }
 
-            for (ListenerEntry listenerEntry : listenerEntries) {
+            for (final ListenerEntry listenerEntry : listenerEntries) {
                 int updateCount = 0;
-                for (MonitorTest test : listenerEntry.tests) {
+                for (final MonitorTest test : listenerEntry.tests) {
                     if (VERBOSE) {
                         System.out.println("@@MONITOR_MANAGER::testingMonitor(" + test.listenerEntry.listener + ", " + test.monitorEntry.monitor + ", " + test.filter + ")");
                     }
@@ -150,11 +150,11 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         }
     }
 
-    public void addMonitorListener(MonitorListener listener, MonitorTransitionFilter filter, Monitor... monitors) {
+    public void addMonitorListener(final MonitorListener listener, final MonitorTransitionFilter filter, final Monitor... monitors) {
 
         // Find the listener entry or create a new one
         ListenerEntry listenerEntry = null;
-        for (ListenerEntry entry : listenerEntries) {
+        for (final ListenerEntry entry : listenerEntries) {
             if (entry.listener == listener) {
                 listenerEntry = entry;
                 break;
@@ -165,10 +165,9 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
             listenerEntries.add(listenerEntry);
         }
 
-        for (Monitor monitor : monitors) {
-
+        for (final Monitor monitor : monitors) {
             MonitorEntry monitorEntry = null;
-            for (MonitorEntry entry : monitorEntries) {
+            for (final MonitorEntry entry : monitorEntries) {
                 if (entry.monitor == monitor) {
                     monitorEntry = entry;
                     break;
@@ -179,22 +178,22 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
                 monitorEntries.add(monitorEntry);
             }
 
-            MonitorTest test = new MonitorTest(listenerEntry, monitorEntry, filter);
+            final MonitorTest test = new MonitorTest(listenerEntry, monitorEntry, filter);
             monitorEntry.tests.add(test);
             listenerEntry.tests.add(test);
         }
     }
 
-    public void removeMonitorListener(MonitorListener listener) {
+    public void removeMonitorListener(final MonitorListener listener) {
         ListenerEntry listenerEntry = null;
-        for (ListenerEntry entry : listenerEntries) {
+        for (final ListenerEntry entry : listenerEntries) {
             if (entry.listener == listener) {
                 listenerEntry = entry;
                 break;
             }
         }
         if (listenerEntry != null) {
-            for (MonitorTest test : listenerEntry.tests) {
+            for (final MonitorTest test : listenerEntry.tests) {
                 test.monitorEntry.tests.remove(test);
                 if (test.monitorEntry.tests.isEmpty()) {
                     monitorEntries.remove(test.monitorEntry);
@@ -204,16 +203,16 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         }
     }
 
-    public void removeMonitor(Monitor monitor) {
+    public void removeMonitor(final Monitor monitor) {
         MonitorEntry monitorEntry = null;
-        for (MonitorEntry entry : monitorEntries) {
+        for (final MonitorEntry entry : monitorEntries) {
             if (entry.monitor == monitor) {
                 monitorEntry = entry;
                 break;
             }
         }
         if (monitorEntry != null) {
-            for (MonitorTest test : monitorEntry.tests) {
+            for (final MonitorTest test : monitorEntry.tests) {
                 test.listenerEntry.tests.remove(test);
                 if (test.listenerEntry.tests.isEmpty()) {
                     listenerEntries.remove(test.listenerEntry);
@@ -228,7 +227,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         private final Monitor monitor;
         private List<MonitorTest> tests = new ArrayList<>();
 
-        public MonitorEntry(Monitor monitor) {
+        public MonitorEntry(final Monitor monitor) {
             this.monitor = monitor;
         }
     }
@@ -238,7 +237,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         private final MonitorListener listener;
         private List<MonitorTest> tests = new ArrayList<>();
 
-        public ListenerEntry(MonitorListener listener) {
+        public ListenerEntry(final MonitorListener listener) {
             this.listener = listener;
         }
     }
@@ -249,7 +248,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
         private final MonitorEntry monitorEntry;
         private final MonitorTransitionFilter filter;
 
-        public MonitorTest(ListenerEntry listenerEntry, MonitorEntry monitorEntry, MonitorTransitionFilter filter) {
+        public MonitorTest(final ListenerEntry listenerEntry, final MonitorEntry monitorEntry, final MonitorTransitionFilter filter) {
             this.listenerEntry = listenerEntry;
             this.monitorEntry = monitorEntry;
             this.filter = filter;

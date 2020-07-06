@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlState;
@@ -80,6 +80,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
     public void handleComponentOpened() {
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
+        QualityControlAutoVetter.getInstance().init();
         PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
     }
 
@@ -91,9 +92,17 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
 
     @Override
     public void qualityControlChanged(QualityControlState state) {
-        qualityControlViewPane.refreshQualityControlView(state);
+        if (needsUpdate()) {
+            qualityControlViewPane.refreshQualityControlView(state);
+        }
     }
-
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        QualityControlAutoVetter.getInstance().initWithRefresh(true);
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

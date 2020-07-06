@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,7 +160,17 @@ public final class HitTester implements GLRenderable {
         if (!notificationQueues.isEmpty()) {
             final int x = hitTestRequest.getX();
             final int y = hitTestRequest.getY();
-            final int surfaceHeight = drawable.getSurfaceHeight();
+
+            //  Windows-DPI-Scaling
+            //
+            // If JOGL is ever fixed or another solution is found, either change
+            // needsManualDPIScaling to return false (so there is effectively no
+            // DPI scaling here) or to remove dpiScaleY below.            
+            float dpiScaleY = 1.0f;
+            if (GLTools.needsManualDPIScaling()) {
+                dpiScaleY = parent.getDPIScaleY();
+            }
+            final int surfaceHeight = (int) (drawable.getSurfaceHeight() * dpiScaleY);
 
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);

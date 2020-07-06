@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -509,8 +509,8 @@ public interface AttributeDescription {
      * that can be used to set values of this attribute directly through calls
      * to {@link NativeAttributeType#set}.
      *
-     * @param object an attribute value represented as an Object, ie. a
-     * value obtained from a call to {@link #getObject}
+     * @param object an attribute value represented as an Object, ie. a value
+     * obtained from a call to {@link #getObject}
      * @return An attribute value represented natively.
      */
     public Object convertToNativeValue(final Object object);

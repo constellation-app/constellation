@@ -58,7 +58,7 @@ public class HighDimensionEmbeddingArranger implements Arranger {
     private double[][] X;
 
     private static final boolean PART_ONLY = false;
-    
+
     private final SecureRandom random = new SecureRandom();
 
     public HighDimensionEmbeddingArranger(final int dimensions) {

@@ -17,9 +17,9 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.DrawFlagsAttributeDescription;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.DefaultGetter;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.operations.EditOperation;
-import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.VBox;
@@ -71,8 +71,8 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
 
         @Override
         protected DrawFlags getValueFromControls() {
-            return new DrawFlags(drawNodesCheckBox.isSelected(), 
-                    drawConnectionsCheckBox.isSelected(), drawNodeLabelsCheckBox.isSelected(), 
+            return new DrawFlags(drawNodesCheckBox.isSelected(),
+                    drawConnectionsCheckBox.isSelected(), drawNodeLabelsCheckBox.isSelected(),
                     drawConnectionLabelsCheckBox.isSelected(), drawBlazesCheckBox.isSelected());
         }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
+import static au.gov.asd.tac.constellation.webserver.restapi.RestService.HTTP_UNPROCESSABLE_ENTITY;
+import au.gov.asd.tac.constellation.webserver.restapi.RestServiceException;
 import static au.gov.asd.tac.constellation.webserver.restapi.RestServiceUtilities.IMAGE_PNG;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -35,8 +37,9 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@ServiceProvider(service=RestService.class)
+@ServiceProvider(service = RestService.class)
 public class GetGraphImage extends RestService {
+
     private static final String NAME = "get_graph_image";
 
     @Override
@@ -57,6 +60,9 @@ public class GetGraphImage extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph is opened in Constellation");
+        }
 
         // This is asynchronous, so we need a Semaphore.
         //
@@ -64,7 +70,7 @@ public class GetGraphImage extends RestService {
         final VisualManager visualManager = graphNode.getVisualManager();
         final BufferedImage[] img1 = new BufferedImage[1];
 
-        if(visualManager!=null) {
+        if (visualManager != null) {
             final Semaphore waiter = new Semaphore(0);
             visualManager.exportToBufferedImage(img1, waiter);
             waiter.acquireUninterruptibly();

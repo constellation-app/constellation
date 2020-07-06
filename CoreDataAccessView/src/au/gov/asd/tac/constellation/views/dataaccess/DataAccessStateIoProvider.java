@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.io.AbstractGraphIOProvider;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteReader;
 import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
-import au.gov.asd.tac.constellation.graph.utilities.ImmutableObjectCache;
+import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.GLOBAL_OBJECT;
 import static au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIOUtilities.PLUGINS_OBJECT;
 import com.fasterxml.jackson.core.JsonGenerator;

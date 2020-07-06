@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ import org.openide.util.NbBundle.Messages;
         id = "au.gov.asd.tac.constellation.utilities.log.LogAction"
 )
 @ActionRegistration(
-        displayName = "#CTL_LogAction"
+        displayName = "#CTL_LogAction",
+        iconBase = "au/gov/asd/tac/constellation/utilities/log/showLogs.png"
 )
 @ActionReference(path = "Menu/Help", position = 940)
 @Messages("CTL_LogAction=Show Logs")

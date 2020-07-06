@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,23 +24,29 @@ import java.io.OutputStream;
 /**
  * The definition of a REST service.
  * <p>
- * REST services are accessed via the internal web server by REST clients.
- * They are not otherwise available from the CONSTELLATION user interface.
+ * REST services are accessed via the internal web server by REST clients. They
+ * are not otherwise available from the CONSTELLATION user interface.
  * <p>
  * Services use createParameters() just like plugins. A PluginParameters
  * instance is populated by reading from the URL, no matter whether GET, POST,
- * or whatever is used. Service parameters are expected to be fairly simple,
- * so this shouldn't be a problem. Anything complex probably belongs in
- * a plugin, which you then use the run_plugin service to run.
+ * or whatever is used. Service parameters are expected to be fairly simple, so
+ * this shouldn't be a problem. Anything complex probably belongs in a plugin,
+ * which you then use the run_plugin service to run.
  * <p>
  * The descriptive get() methods in RestService and PluginParameter are used to
  * dynamically build a Swagger config file: see SwaggerServlet for details.
  * <p>
  * All services are accessed via RestServiceServlet; see that for more details.
  *
+ * This also stores status codes that are not available in the HttpURLConnection
+ * class.
+ *
  * @author algol
  */
 public abstract class RestService {
+
+    // Status codes that are not available in the HttpURLConnection class
+    public static final int HTTP_UNPROCESSABLE_ENTITY = 422;
 
     /**
      * The name of the service as it appears in the URL to be called.
@@ -62,7 +68,8 @@ public abstract class RestService {
     /**
      * Return a list of tags for this service.
      *
-     * Tags are used through out Constellation to categorise and filter services.
+     * Tags are used through out Constellation to categorise and filter
+     * services.
      *
      * @return a list of tags for this service.
      */
@@ -95,11 +102,12 @@ public abstract class RestService {
     /**
      * A generic REST service.
      *
-     * REST services accept URL parameters and arbitrary data as input,
-     * and return arbitrary data as output. Typically, the input and output
-     * may very well be JSON.
+     * REST services accept URL parameters and arbitrary data as input, and
+     * return arbitrary data as output. Typically, the input and output may very
+     * well be JSON.
      *
-     * @param parameters The parameters passed from the service request to the service.
+     * @param parameters The parameters passed from the service request to the
+     * service.
      * @param in The body of the HTTP request.
      * @param out The body of the HTTP response.
      *

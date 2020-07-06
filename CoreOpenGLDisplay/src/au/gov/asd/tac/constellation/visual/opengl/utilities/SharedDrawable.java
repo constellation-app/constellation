@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -213,12 +213,9 @@ public final class SharedDrawable {
      * shared context.
      */
     public static void updateGlyphTextureController(final GL3 glCurrent) {
-        if (Utilities.isMac())
-        {
+        if (Utilities.isMac()) {
             glyphTextureController.update(glCurrent);
-        }
-        else
-        {
+        } else {
             glCurrent.getContext().release();
             try {
                 final int result = gl.getContext().makeCurrent();

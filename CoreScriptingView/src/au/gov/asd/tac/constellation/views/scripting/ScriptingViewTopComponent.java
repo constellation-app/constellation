@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.scripting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import javax.swing.ScrollPaneConstants;
 import org.openide.awt.ActionID;
@@ -80,7 +81,15 @@ public final class ScriptingViewTopComponent extends SwingTopComponent {
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        scriptingViewPane.update(graph);
+        if (needsUpdate()) {
+            scriptingViewPane.update(graph);
+        }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     /**

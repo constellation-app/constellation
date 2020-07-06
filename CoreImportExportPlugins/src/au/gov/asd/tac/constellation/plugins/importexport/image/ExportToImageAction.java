@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.image;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -32,7 +32,9 @@ import org.openide.util.NbBundle.Messages;
  * export current graph as an image
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.plugins.importexport.image.ExportToImage")
-@ActionRegistration(displayName = "#CTL_ExportToImage", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExportToImage",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/image/exportToImage.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 0)
 @Messages("CTL_ExportToImage=To Image...")
 public final class ExportToImageAction implements ActionListener {

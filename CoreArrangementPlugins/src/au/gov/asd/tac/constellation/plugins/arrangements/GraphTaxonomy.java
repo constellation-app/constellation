@@ -72,7 +72,7 @@ import java.util.Set;
  * @author algol
  */
 public final class GraphTaxonomy {
-    
+
     // Record the original x,y,z of the condensed graph.
     private static final String X_ORIG = "xorig";
     private static final String Y_ORIG = "yorig";

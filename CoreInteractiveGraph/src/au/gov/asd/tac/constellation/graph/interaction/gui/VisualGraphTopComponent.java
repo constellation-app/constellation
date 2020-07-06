@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,7 +220,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private final UpdateController<GraphReadMethods> updateController = new UpdateController<>();
     private final GraphUpdateController graphUpdateController = new GraphUpdateController(updateController);
     private final GraphUpdateManager graphUpdateManager = new GraphUpdateManager(graphUpdateController, 2);
-    
+
     private static final String SAVE = "Save";
     private static final String DISCARD = "Discard";
     private static final String CANCEL = "Cancel";
@@ -637,16 +637,19 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final NotifyDescriptor d = new NotifyDescriptor(message, "Close", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
             final Object o = DialogDisplayer.getDefault().notify(d);
 
-            if (o.equals(CANCEL)) {
-                return false;
-            } else if (o.equals(DISCARD)) {
+            if (o.equals(DISCARD)) {
                 savable.setModified(false);
-            } else {
+            } else if (o.equals(SAVE)){
                 try {
                     savable.handleSave();
+                    if (!savable.isSaved()){
+                        return false;
+                    }
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+            } else {
+                return false;
             }
         }
 
@@ -855,6 +858,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     private class MySavable extends AbstractSavable implements Icon {
 
         private boolean isModified;
+        private boolean isSaved = false;
 
         /**
          * Construct a new MySavable instance.
@@ -901,6 +905,9 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             return isModified;
         }
 
+        public boolean isSaved() {
+            return isSaved;
+        }
         /**
          * register the instance if in modified state
          */
@@ -940,6 +947,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                 SaveAsAction action = new SaveAsAction();
                 action.actionPerformed(null);
+                isSaved = action.isSaved();
                 return;
             }
 

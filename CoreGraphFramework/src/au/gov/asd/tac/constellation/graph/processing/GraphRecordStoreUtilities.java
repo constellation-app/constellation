@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,14 +64,16 @@ public class GraphRecordStoreUtilities {
     public static final String DIRECTED_KEY = "[directed]<string>";
     public static final String COMPLETE_WITH_SCHEMA_KEY = "[complete_with_schema]<string>";
     public static final String DELETE_KEY = "[delete]<string>";
-    
+
     private static final String SELECTED_ATTRIBUTE_NAME = "selected";
     private static final String FALSE = "false";
     private static final String NUMBER_STRING_STRING_FORMAT = "%d:%s:%s";
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
-    private static int addVertex(GraphWriteMethods graph, Map<String, String> values, Map<String, Integer> vertexMap, boolean initializeWithSchema, boolean completeWithSchema, List<Integer> newVertices, Set<Integer> ghostVertices, List<String> vertexIdAttributes) {
+    private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values, 
+            final Map<String, Integer> vertexMap, final boolean initializeWithSchema, boolean completeWithSchema, 
+            final List<Integer> newVertices, final Set<Integer> ghostVertices, final List<String> vertexIdAttributes) {
         String idValue = values.remove(ID);
 
         // If the idValue has not been set and we have vertexIdAttributes then create an idValue automatically
@@ -147,7 +149,8 @@ public class GraphRecordStoreUtilities {
         return vertex;
     }
 
-    private static int getVertex(GraphWriteMethods graph, String id, Map<String, Integer> vertexMap, boolean initializeWithSchema, List<Integer> newVertices) {
+    private static int getVertex(final GraphWriteMethods graph, final String id, 
+            final Map<String, Integer> vertexMap, final boolean initializeWithSchema, final List<Integer> newVertices) {
         if (id != null && !id.isEmpty()) {
             try {
                 Integer vertex = Integer.parseInt(id);
@@ -181,7 +184,8 @@ public class GraphRecordStoreUtilities {
         return vertex;
     }
 
-    private static int addTransaction(GraphWriteMethods graph, int source, int destination, Map<String, String> values, Map<String, Integer> transactionMap, boolean initializeWithSchema, boolean completeWithSchema) {
+    private static int addTransaction(final GraphWriteMethods graph, final int source, final int destination, final Map<String, String> values, 
+            final Map<String, Integer> transactionMap, final boolean initializeWithSchema, boolean completeWithSchema) {
         final String type = values.get(TYPE_KEY);
         final String directedValue = values.get(DIRECTED_KEY);
         boolean directed = true;
@@ -220,7 +224,8 @@ public class GraphRecordStoreUtilities {
         return transaction;
     }
 
-    private static int getTransaction(GraphWriteMethods graph, String id, int source, int destination, boolean directed, Map<String, Integer> transactionMap, boolean initializeWithSchema) {
+    private static int getTransaction(final GraphWriteMethods graph, final String id, final int source, final int destination, 
+            final boolean directed, final Map<String, Integer> transactionMap, final boolean initializeWithSchema) {
         if (id != null && !id.isEmpty()) {
             try {
                 final Integer transaction = Integer.parseInt(id);
@@ -252,7 +257,8 @@ public class GraphRecordStoreUtilities {
         return transaction;
     }
 
-    private static void copyValues(GraphWriteMethods graph, GraphElementType elementType, int element, Map<String, String> values) {
+    private static void copyValues(final GraphWriteMethods graph, 
+            final GraphElementType elementType, final int element, final Map<String, String> values) {
         /**
          * check whether a transaction type is inconsistent with the direction
          * attribute, if so make a custom type
@@ -323,7 +329,8 @@ public class GraphRecordStoreUtilities {
      * @return A {@link List} of {@link Integer} objects representing the vertex
      * id's of the newly added vertices.
      */
-    public static List<Integer> addRecordStoreToGraph(GraphWriteMethods graph, RecordStore recordStore, boolean initializeWithSchema, boolean completeWithSchema, List<String> vertexIdAttributes) {
+    public static List<Integer> addRecordStoreToGraph(final GraphWriteMethods graph, final RecordStore recordStore, 
+            final boolean initializeWithSchema, final boolean completeWithSchema, final List<String> vertexIdAttributes) {
         return addRecordStoreToGraph(graph, recordStore, initializeWithSchema, completeWithSchema, vertexIdAttributes, null, null);
     }
 
@@ -351,7 +358,9 @@ public class GraphRecordStoreUtilities {
      * @return A {@link List} of {@link Integer} objects representing the vertex
      * id's of the newly added vertices.
      */
-    public static List<Integer> addRecordStoreToGraph(GraphWriteMethods graph, RecordStore recordStore, boolean initializeWithSchema, boolean completeWithSchema, List<String> vertexIdAttributes, Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
+    public static List<Integer> addRecordStoreToGraph(final GraphWriteMethods graph, final RecordStore recordStore, 
+            final boolean initializeWithSchema, final boolean completeWithSchema, final List<String> vertexIdAttributes, 
+            Map<String, Integer> vertexMap, Map<String, Integer> transactionMap) {
         final List<Integer> newVertices = new ArrayList<>();
         final Set<Integer> ghostVertices = new HashSet<>();
 
@@ -438,7 +447,7 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's vertices and
      * transactions.
      */
-    public static GraphRecordStore getAll(final GraphReadMethods graph, boolean selectedOnly, boolean disassociateIds) {
+    public static GraphRecordStore getAll(final GraphReadMethods graph, final boolean selectedOnly, final boolean disassociateIds) {
         return getAll(graph, false, selectedOnly, disassociateIds);
     }
 
@@ -458,7 +467,8 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's vertices and
      * transactions.
      */
-    public static GraphRecordStore getAll(final GraphReadMethods graph, boolean singletonsOnly, boolean selectedOnly, boolean disassociateIds) {
+    public static GraphRecordStore getAll(final GraphReadMethods graph, 
+            final boolean singletonsOnly, final boolean selectedOnly, final boolean disassociateIds) {
         final GraphRecordStore recordstore = getVertices(graph, singletonsOnly, selectedOnly, disassociateIds);
         recordstore.add(getTransactions(graph, selectedOnly, disassociateIds));
         return recordstore;
@@ -492,7 +502,8 @@ public class GraphRecordStoreUtilities {
      * elements on the graph.
      * @return A {@link RecordStore} representing the graph's vertices.
      */
-    public static GraphRecordStore getVertices(final GraphReadMethods graph, boolean singletonsOnly, boolean selectedOnly, boolean disassociateIds) {
+    public static GraphRecordStore getVertices(final GraphReadMethods graph, 
+            final boolean singletonsOnly, final boolean selectedOnly, final boolean disassociateIds) {
         return getVertices(graph, singletonsOnly, selectedOnly, disassociateIds, new int[]{0}, -1);
     }
 
@@ -518,7 +529,8 @@ public class GraphRecordStoreUtilities {
      * to collect.
      * @return A {@link RecordStore} representing the graph's vertices.
      */
-    public static GraphRecordStore getVertices(final GraphReadMethods graph, boolean singletonsOnly, boolean selectedOnly, boolean disassociateIds, final int[] offset, final int limit) {
+    public static GraphRecordStore getVertices(final GraphReadMethods graph, final boolean singletonsOnly, 
+            final boolean selectedOnly, final boolean disassociateIds, final int[] offset, final int limit) {
         final GraphRecordStore recordStore = new GraphRecordStore();
 
         final int attributeCount = graph.getAttributeCount(GraphElementType.VERTEX);
@@ -718,7 +730,7 @@ public class GraphRecordStoreUtilities {
      * transactions on the graph.
      * @return A {@link RecordStore} representing the graph's transactions.
      */
-    public static GraphRecordStore getTransactions(final GraphReadMethods graph, boolean selectedOnly, boolean disassociateIds) {
+    public static GraphRecordStore getTransactions(final GraphReadMethods graph, final boolean selectedOnly, final boolean disassociateIds) {
         final GraphRecordStore recordStore = new GraphRecordStore();
 
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
@@ -804,7 +816,7 @@ public class GraphRecordStoreUtilities {
      * can be added to another graph. This will be the supplied
      * {@link RecordStore} if it was not null.
      */
-    public static RecordStore copySelectedTransactions(GraphReadMethods graph, RecordStore recordStore, BitSet vertices) {
+    public static RecordStore copySelectedTransactions(final GraphReadMethods graph, RecordStore recordStore, final BitSet vertices) {
         if (recordStore == null) {
             recordStore = new GraphRecordStore();
         }
@@ -865,7 +877,8 @@ public class GraphRecordStoreUtilities {
      * the original source and destination vertices of transactions connected to
      * composite nodes.
      */
-    public static void copyTransactionsFromComposite(final GraphReadMethods graph, RecordStore recordStore, final int compositeVxId, final String compositeStoredId, final List<String> toIds, final Attribute uniqueIdAttr) {
+    public static void copyTransactionsFromComposite(final GraphReadMethods graph, final RecordStore recordStore, 
+            final int compositeVxId, final String compositeStoredId, final List<String> toIds, final Attribute uniqueIdAttr) {
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
         final Attribute[] transactionAttributes = new Attribute[transactionAttributeCount];
         for (int a = 0; a < transactionAttributeCount; a++) {
@@ -950,7 +963,8 @@ public class GraphRecordStoreUtilities {
      * the original source and destination vertices of transactions connected to
      * composite nodes.
      */
-    public static void copyTransactionsToComposite(final GraphReadMethods graph, RecordStore recordStore, final int expandedVxId, final String expandedId, final Set<Integer> expandedIds, final String toId, final Attribute uniqueIdAttr) {
+    public static void copyTransactionsToComposite(final GraphReadMethods graph, final RecordStore recordStore, 
+            final int expandedVxId, final String expandedId, final Set<Integer> expandedIds, final String toId, final Attribute uniqueIdAttr) {
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
         final Attribute[] transactionAttributes = new Attribute[transactionAttributeCount];
         for (int a = 0; a < transactionAttributeCount; a++) {
@@ -1030,7 +1044,8 @@ public class GraphRecordStoreUtilities {
      * @param toId The id of the first composite constituent to be used in the
      * {@link RecordStore}.
      */
-    public static void copyTransactionsBetweenVertices(final GraphReadMethods graph, RecordStore recordStore, final int fromVxId, final int toVxId, final String fromId, final String toId) {
+    public static void copyTransactionsBetweenVertices(final GraphReadMethods graph, final RecordStore recordStore, 
+            final int fromVxId, final int toVxId, final String fromId, final String toId) {
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
         final Attribute[] transactionAttributes = new Attribute[transactionAttributeCount];
         for (int a = 0; a < transactionAttributeCount; a++) {
@@ -1072,7 +1087,7 @@ public class GraphRecordStoreUtilities {
      * @param vertex An integer value representing the id of a vertex from which
      * to copy primary key values.
      */
-    public static void setSourceKeys(GraphReadMethods graph, RecordStore recordStore, int vertex) {
+    public static void setSourceKeys(final GraphReadMethods graph, final RecordStore recordStore, int vertex) {
         for (int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             recordStore.set(SOURCE + graph.getAttributeName(key), graph.getStringValue(key, vertex));
         }
@@ -1088,7 +1103,7 @@ public class GraphRecordStoreUtilities {
      * @param vertex An integer value representing the id of a vertex from which
      * to copy primary key values.
      */
-    public static void setDestinationKeys(GraphReadMethods graph, RecordStore recordStore, int vertex) {
+    public static void setDestinationKeys(final GraphReadMethods graph, final RecordStore recordStore, int vertex) {
         for (int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             recordStore.set(DESTINATION + graph.getAttributeName(key), graph.getStringValue(key, vertex));
         }
@@ -1105,7 +1120,7 @@ public class GraphRecordStoreUtilities {
      * @param transaction An integer value representing the id of a transaction
      * from which to copy primary key values.
      */
-    public static void setTransactionKeys(GraphReadMethods graph, RecordStore recordStore, int transaction) {
+    public static void setTransactionKeys(final GraphReadMethods graph, final RecordStore recordStore, int transaction) {
         setSourceKeys(graph, recordStore, graph.getTransactionSourceVertex(transaction));
         setDestinationKeys(graph, recordStore, graph.getTransactionDestinationVertex(transaction));
         for (int key : graph.getPrimaryKey(GraphElementType.TRANSACTION)) {
@@ -1122,7 +1137,7 @@ public class GraphRecordStoreUtilities {
      * @param recordStore The {@link RecordStore} in which to set an undirected
      * transaction.
      */
-    public static void setUndirected(RecordStore recordStore) {
+    public static void setUndirected(final RecordStore recordStore) {
         recordStore.set(TRANSACTION + DIRECTED_KEY, FALSE);
     }
 
@@ -1200,11 +1215,4 @@ public class GraphRecordStoreUtilities {
 
         return rs;
     }
-
-//    public static boolean isCurrentRecordTransaction(final GraphRecordStore recordstore, final int index) {
-//        return recordstore.get.keys().stream().anyMatch(key -> {
-//            System.out.println("@@GTU key=> " + key);
-//            return key.startsWith(GraphRecordStoreUtilities.TRANSACTION) || key.startsWith(GraphRecordStoreUtilities.DESTINATION);
-//        });
-//    }
 }

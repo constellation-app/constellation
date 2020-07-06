@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.json;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -29,7 +29,9 @@ import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.plugins.importexport.json.ExportToJsonAction")
-@ActionRegistration(displayName = "#CTL_ExportToJsonAction", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_ExportToJsonAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/json/exportToJSON.png",
+        surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 100)
 @Messages("CTL_ExportToJsonAction=To JSON...")
 public final class ExportToJsonAction implements ActionListener {

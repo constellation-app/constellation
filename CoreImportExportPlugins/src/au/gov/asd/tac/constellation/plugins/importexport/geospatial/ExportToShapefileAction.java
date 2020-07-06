@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2019 Australian Signals Directorate
+ * Copyright 2010-2020 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 package au.gov.asd.tac.constellation.plugins.importexport.geospatial;
 
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.awt.ActionID;
@@ -35,6 +35,7 @@ import org.openide.util.NbBundle;
         id = "au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefile")
 @ActionRegistration(
         displayName = "#CTL_ExportToShapefileAction",
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/geospatial/exportToShapeFile.png",
         surviveFocusChange = true)
 @ActionReference(
         path = "Menu/File/Export",
