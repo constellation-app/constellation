@@ -92,6 +92,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         if (forceRefresh) {
             currentGraph = null;
         }
+
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
     }
 
