@@ -155,11 +155,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
      * execution.
      */
     public ScatterPlotState getState() throws InterruptedException {
-        if (currentGraph == null) {
-            return getState(null);
-        } else {
-            return getState(currentGraph);
-        }
+        return getState(currentGraph);
     }
 
     /**
@@ -217,6 +213,9 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected void handleNewGraph(Graph graph) {
+        if (!needsUpdate()) {
+            return;
+        }
         if (graph == null) {
             scatterPlotPane.getOptionsPane().disableOptions();
             refreshHandler.accept(graph);
@@ -227,6 +226,12 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
             scatterPlotPane.getOptionsPane().enableOptions();
             scatterPlotPane.getOptionsPane().refreshOptions(currentState);
         }
+    }
+
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
     }
 
     /**
