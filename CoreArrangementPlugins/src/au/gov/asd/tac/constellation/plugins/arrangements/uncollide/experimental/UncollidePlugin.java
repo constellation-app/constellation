@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.*;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.SelectedInclusionGraph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;

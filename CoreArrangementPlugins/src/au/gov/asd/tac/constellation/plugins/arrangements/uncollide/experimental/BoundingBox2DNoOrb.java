@@ -15,11 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
+import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.*;
+
 /**
  *
  * @author algol
  */
-public class BoundingBox2D {
+public class BoundingBox2DNoOrb {
 
     public static Box2D getBox(final Orb2D[] orbs) {
         final Orb2D orb0 = orbs[0];

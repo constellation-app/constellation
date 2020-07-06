@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental;
 
-import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.*;
-import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d2.BoundingBox2D.Box2D;
+import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.BoundingBox2D.Box2D;
 import java.util.ArrayList;
 import java.util.List;
 
