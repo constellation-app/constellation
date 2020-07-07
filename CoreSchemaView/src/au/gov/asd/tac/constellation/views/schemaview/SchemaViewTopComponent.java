@@ -81,6 +81,15 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
         schemaViewPane.clear();
     }
 
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+
+        // TODO: this is very cpu intensive, slow and inefficient. Come up with a better way!
+        schemaViewPane.clear();
+        schemaViewPane.populate();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

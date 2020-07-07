@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
@@ -73,7 +74,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         initContent();
 
         addAttributeCountChangeHandler(graph -> {
-            if (dataAccessViewPane != null) {
+            if (needsUpdate() && dataAccessViewPane != null) {
                 dataAccessViewPane.update(graph);
             }
         });
@@ -113,10 +114,16 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
         QualityControlAutoVetter.getInstance().removeObserver(dataAccessViewPane);
     }
+    
+    @Override
+    protected void componentShowing() {
+        super.componentShowing();
+        handleNewGraph(GraphManager.getDefault().getActiveGraph());
+    }    
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        if (dataAccessViewPane != null) {
+        if (needsUpdate() && dataAccessViewPane != null) {
             dataAccessViewPane.update(graph);
             Platform.runLater(() -> {
                 ParameterIOUtilities.loadDataAccessState(dataAccessViewPane, graph);

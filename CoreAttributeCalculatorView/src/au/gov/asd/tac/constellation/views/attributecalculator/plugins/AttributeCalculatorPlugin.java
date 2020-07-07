@@ -155,7 +155,7 @@ public final class AttributeCalculatorPlugin extends SimpleEditPlugin {
                 testExpressionScript.eval();
                 compiledScript = ((Compilable) engine).compile(script);
             } catch (ScriptException e) {
-                final String functionWrappedScript = "def __script__():\n " + script.replace("\n", "\n ") + "\n";
+                final String functionWrappedScript = "def __script__():\n " + script.replace(SeparatorConstants.NEWLINE, "\n ") + SeparatorConstants.NEWLINE;
                 LOGGER.log(Level.INFO, "processedScript::{0}", functionWrappedScript);
                 compiledScript = ((Compilable) engine).compile(functionWrappedScript);
                 functionWrapperScript = ((Compilable) engine).compile("__script__()");

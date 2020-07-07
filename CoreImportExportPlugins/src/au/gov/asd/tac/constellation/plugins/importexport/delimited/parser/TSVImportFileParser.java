@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +48,7 @@ public class TSVImportFileParser extends ImportFileParser {
 
             String line = reader.readLine();
             while (line != null) {
-                result.add(line.split("\t", -1));
+                result.add(line.split(SeparatorConstants.TAB, -1));
                 line = reader.readLine();
             }
         }
@@ -64,7 +65,7 @@ public class TSVImportFileParser extends ImportFileParser {
             int currentRow = 0;
             String line = reader.readLine();
             while ((line != null) && (currentRow < limit)) {
-                result.add(line.split("\t", -1));
+                result.add(line.split(SeparatorConstants.TAB, -1));
                 line = reader.readLine();
                 currentRow++;
             }

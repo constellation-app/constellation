@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory;
@@ -527,7 +528,7 @@ public class AttributeEditorPanel extends BorderPane {
             } else {
                 colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + SeparatorConstants.SEMICOLON);
         } else if (!attribute.isSchema()) {
             final String colour;
             if (hidden) {
@@ -537,13 +538,13 @@ public class AttributeEditorPanel extends BorderPane {
             } else {
                 colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + SeparatorConstants.SEMICOLON);
         } else if (hidden) {
             final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColour + SeparatorConstants.SEMICOLON);
         } else {
             final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColour + ";");
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColour + SeparatorConstants.SEMICOLON);
         }
 
         if (!multiValue) {
@@ -731,7 +732,7 @@ public class AttributeEditorPanel extends BorderPane {
                 buffer.append(interaction.getDisplayText(item));
             }
             return item;
-        }).forEach(_item -> buffer.append("\n"));
+        }).forEach(_item -> buffer.append(SeparatorConstants.NEWLINE));
 
         ClipboardUtilities.copyToClipboard(buffer.toString());
     }
@@ -1033,7 +1034,7 @@ public class AttributeEditorPanel extends BorderPane {
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
         //Title
-        return new Text(attributeTitle + ":");
+        return new Text(attributeTitle + SeparatorConstants.COLON);
 //        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
     }
 }

@@ -57,6 +57,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class PasswordObfuscator {
 
+    public static final String KEYGEN_SYMBOL = "-";
+
     /**
      * Obfuscate a password.
      *
@@ -114,7 +116,7 @@ public class PasswordObfuscator {
         System.out.flush();
         final String password = input.readLine();
         if (password != null) {
-            if (password.equals("-")) { // Key gen mode
+            if (password.equals(KEYGEN_SYMBOL)) { // Key gen mode
                 final byte[] encodedKey = PasswordUtilities.generateKey();
                 System.out.print("new byte[] {");
                 int i = 0;

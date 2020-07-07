@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLContext;
@@ -124,7 +125,7 @@ public final class GLTools {
             String line;
             while ((line = reader.readLine()) != null) {
                 buf.append(line);
-                buf.append("\n");
+                buf.append(SeparatorConstants.NEWLINE);
             }
         }
 

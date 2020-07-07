@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -90,7 +91,7 @@ public class ActionPane extends BorderPane {
                         noOfRows += Files.lines(path).count();
                     }
                     displayAlert("Success", "Successfully imported " + noOfRows
-                            + " rows from the following file(s):\n" + String.join("\n", filenames), true);
+                            + " rows from the following file(s)" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE + String.join(SeparatorConstants.NEWLINE, filenames), true);
 
                 } catch (final IOException | PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);

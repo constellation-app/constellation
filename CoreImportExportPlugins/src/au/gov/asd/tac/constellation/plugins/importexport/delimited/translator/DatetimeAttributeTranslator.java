@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.DateTimeException;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -136,7 +137,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
 
     @Override
     public void setParameterValues(final PluginParameters parameters, final String values) {
-        final String[] vals = values.split("\n");
+        final String[] vals = values.split(SeparatorConstants.NEWLINE);
         for (final String val : vals) {
             if (val.startsWith("d:")) {
                 parameters.getParameters().get(FORMAT_PARAMETER_ID).setStringValue(val.substring(2));

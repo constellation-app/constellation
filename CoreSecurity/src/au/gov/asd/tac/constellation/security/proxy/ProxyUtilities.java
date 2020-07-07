@@ -41,6 +41,7 @@ public class ProxyUtilities implements PreferenceChangeListener {
     private static final Logger LOGGER = Logger.getLogger(ProxyUtilities.class.getName());
     private static final ProxySelector DEFAULT_PROXY_SELECTOR = new ConstellationHttpProxySelector();
     public static final String PROXY_SEPARATOR = "\n";
+    public static final String SEMICOLON = ";";
 
     public ProxyUtilities() {
         NbPreferences.forModule(ProxyPreferenceKeys.class)

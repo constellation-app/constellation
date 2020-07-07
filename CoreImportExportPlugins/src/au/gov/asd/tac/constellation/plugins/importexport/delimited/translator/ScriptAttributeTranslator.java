@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.HashMap;
 import java.util.Map;
 import javax.script.Bindings;
@@ -113,7 +114,7 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
     @Override
     public String getParameterValues(final PluginParameters parameters) {
         String script = parameters.getParameters().get(SCRIPT_PARAMETER_ID).getStringValue();
-        return PYTHON_LANGUAGE + "\t" + script;
+        return PYTHON_LANGUAGE + SeparatorConstants.TAB + script;
     }
 
     @Override
