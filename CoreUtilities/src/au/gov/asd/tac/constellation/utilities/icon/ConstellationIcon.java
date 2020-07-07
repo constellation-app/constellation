@@ -429,7 +429,7 @@ public class ConstellationIcon {
         }
 
         public Builder addAlias(final String alias) {
-            if (StringUtils.isNoneBlank(alias)) {
+            if (StringUtils.isNotBlank(alias)) {
                 this.aliases.add(alias);
             }
             return this;
@@ -443,7 +443,7 @@ public class ConstellationIcon {
         }
 
         public Builder addCategory(final String category) {
-            if (StringUtils.isNoneBlank(category)) {
+            if (StringUtils.isNotBlank(category)) {
                 this.categories.add(category);
             }
             return this;

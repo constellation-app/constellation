@@ -138,7 +138,7 @@ public class NumberInputPane<T> extends Pane {
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
-                        if (StringUtils.isNoneBlank(currentTextValue) && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
+                        if (StringUtils.isNotBlank(currentTextValue) && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
                             try {
                                 parameter.setError(null);
                                 switch (parameter.getType().getId()) {

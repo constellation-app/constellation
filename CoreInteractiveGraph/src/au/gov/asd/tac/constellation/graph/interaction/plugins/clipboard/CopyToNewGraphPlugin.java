@@ -127,7 +127,7 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
      * it is running.
      */
     public static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
-        final Schema schema = StringUtils.isNoneBlank(newSchemaName) ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
+        final Schema schema = StringUtils.isNotBlank(newSchemaName) ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
         final Graph dualGraph = new DualGraph(schema == null ? null : schema.getFactory().createSchema());
 
         final WritableGraph graph = dualGraph.getWritableGraph("Make Graph", true);

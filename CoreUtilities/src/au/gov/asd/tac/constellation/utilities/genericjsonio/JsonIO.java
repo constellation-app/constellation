@@ -220,7 +220,7 @@ public class JsonIO {
         // chop off ".json" from the filenames
         for (int i = 0; i < names.length; i++) {
             final String nextName = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
-            if (StringUtils.isNoneBlank(nextName)) {
+            if (StringUtils.isNotBlank(nextName)) {
                 names[i] = nextName;
                 // Hide any file prefix which the user didn't see when saving
                 if (!filePrefix.isEmpty()) {

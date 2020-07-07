@@ -38,7 +38,7 @@ public class SelectNamedSelectionPanel extends javax.swing.JPanel {
         final DefaultListModel<String> listModel = new DefaultListModel<>();
         for (final NamedSelection ns : namedSelections) {
             final String descr = ns.getDescription();
-            final String s = StringUtils.isNoneBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
+            final String s = StringUtils.isNotBlank(descr) ? String.format("%s: %s", ns.getName(), ns.getDescription()) : ns.getName();
             listModel.addElement(s);
         }
 

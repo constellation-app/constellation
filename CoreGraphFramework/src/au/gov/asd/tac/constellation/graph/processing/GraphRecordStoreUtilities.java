@@ -152,7 +152,7 @@ public class GraphRecordStoreUtilities {
 
     private static int getVertex(final GraphWriteMethods graph, final String id,
             final Map<String, Integer> vertexMap, final boolean initializeWithSchema, final List<Integer> newVertices) {
-        if (StringUtils.isNoneBlank(id)) {
+        if (StringUtils.isNotBlank(id)) {
             try {
                 Integer vertex = Integer.parseInt(id);
                 if (graph.vertexExists(vertex)) {
@@ -227,7 +227,7 @@ public class GraphRecordStoreUtilities {
 
     private static int getTransaction(final GraphWriteMethods graph, final String id, final int source, final int destination,
             final boolean directed, final Map<String, Integer> transactionMap, final boolean initializeWithSchema) {
-        if (StringUtils.isNoneBlank(id)) {
+        if (StringUtils.isNotBlank(id)) {
             try {
                 final Integer transaction = Integer.parseInt(id);
                 if (graph.transactionExists(transaction)) {

@@ -418,7 +418,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     public static GraphLabelsAndDecoratorsV0 fromString(String decoratorsAndLabelsString) {
         GraphLabelsAndDecoratorsV0 thisGraphLabelsAndDecorators = new GraphLabelsAndDecoratorsV0();
 
-        if (StringUtils.isNoneBlank(decoratorsAndLabelsString)) {
+        if (StringUtils.isNotBlank(decoratorsAndLabelsString)) {
             Set<Character> splitChar = new HashSet<>();
             splitChar.add(' ');
 

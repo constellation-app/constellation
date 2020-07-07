@@ -241,7 +241,7 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
     private void updateIcon(final String icon) {
         currentIcon = icon;
 
-        if (StringUtils.isNoneBlank(currentIcon)) {
+        if (StringUtils.isNotBlank(currentIcon)) {
             lblIconText.setText(currentIcon);
         } else {
             lblIconText.setText(Bundle.No_Icon());

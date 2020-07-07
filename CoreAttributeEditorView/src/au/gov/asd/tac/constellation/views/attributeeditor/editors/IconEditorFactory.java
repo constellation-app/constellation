@@ -164,7 +164,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeRoot.getChildren().clear();
             treeRoot.getChildren().add(builtInItem);
             treeRoot.getChildren().add(userItem);
-            if (StringUtils.isNoneBlank(iconFile)) {
+            if (StringUtils.isNotBlank(iconFile)) {
                 TreeItem<IconNode> currentIcon = findIconNode(treeRoot, iconFile);
                 treeView.getSelectionModel().select(currentIcon);
             }

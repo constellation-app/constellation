@@ -91,7 +91,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DELETE_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String deleteTemplateName = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (StringUtils.isNoneBlank(deleteTemplateName)) {
+                if (StringUtils.isNotBlank(deleteTemplateName)) {
                     templateNames.remove(deleteTemplateName);
                     deletedTemplates.add(deleteTemplateName);
                     SingleChoiceParameterType.setOptions(templateParam, templateNames);
@@ -111,7 +111,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DEFAULT_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (StringUtils.isNoneBlank(chosenTemplate)) {
+                if (StringUtils.isNotBlank(chosenTemplate)) {
                     parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(chosenTemplate);
                 }
             }

@@ -105,7 +105,7 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
             final File jarFile = new File(data.jar);
             try (final Connection conn = JdbcUtilities.getConnection(jarFile, data.driverName, data.url, data.username, data.password)) {
                 final String vxTable = panel.getVxTable() != null ? panel.getVxTable().trim() : null;
-                if (StringUtils.isNoneBlank(vxTable)) {
+                if (StringUtils.isNotBlank(vxTable)) {
                     getColumns(conn, vxTable, vxColumns);
                 }
                 if (vxTable != null && !vxTable.equals(data.vxTable)) {
@@ -115,7 +115,7 @@ public class TablesPanelController implements WizardDescriptor.ExtendedAsynchron
                 data.vxColumns = vxColumns;
 
                 final String txTable = panel.getTxTable() != null ? panel.getTxTable().trim() : null;
-                if (StringUtils.isNoneBlank(txTable)) {
+                if (StringUtils.isNotBlank(txTable)) {
                     getColumns(conn, txTable, txColumns);
                 }
                 if (txTable != null && !txTable.equals(data.txTable)) {

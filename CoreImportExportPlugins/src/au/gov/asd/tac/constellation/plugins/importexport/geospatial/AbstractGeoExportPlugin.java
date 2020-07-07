@@ -242,7 +242,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the vertex represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || vertexSelected) && StringUtils.isNoneBlank(vertexShape)
+                    if ((!selectedOnly || vertexSelected) && StringUtils.isNotBlank(vertexShape)
                             && Shape.isValidGeoJson(vertexShape)) {
                         shapes.put(vertexIdentifier, vertexShape);
                         shapeFound = true;
@@ -300,7 +300,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the transaction represents a valid geospatial shape, record it
                     boolean shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && StringUtils.isNoneBlank(transactionShape)
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(transactionShape)
                             && Shape.isValidGeoJson(transactionShape)) {
                         shapes.put(transactionIdentifier, transactionShape);
                         shapeFound = true;
@@ -345,7 +345,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the source vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && StringUtils.isNoneBlank(sourceVertexShape)
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(sourceVertexShape)
                             && Shape.isValidGeoJson(sourceVertexShape)) {
                         shapes.put(sourceVertexIdentifier, sourceVertexShape);
                         shapeFound = true;
@@ -390,7 +390,7 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
 
                     // if the destination vertex represents a valid geospatial shape, record it
                     shapeFound = false;
-                    if ((!selectedOnly || transactionSelected) && StringUtils.isNoneBlank(destinationVertexShape)
+                    if ((!selectedOnly || transactionSelected) && StringUtils.isNotBlank(destinationVertexShape)
                             && Shape.isValidGeoJson(destinationVertexShape)) {
                         shapes.put(destinationVertexIdentifier, destinationVertexShape);
                         shapeFound = true;

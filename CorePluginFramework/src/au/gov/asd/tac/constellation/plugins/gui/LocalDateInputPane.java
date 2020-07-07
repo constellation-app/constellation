@@ -62,7 +62,7 @@ public class LocalDateInputPane extends Pane {
 
             @Override
             public LocalDate fromString(final String s) {
-                return StringUtils.isNoneBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
+                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
             }
         });
 

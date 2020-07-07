@@ -62,7 +62,7 @@ public class RawData implements Comparable<RawData> {
      * @return true if this RawData has a rawIdentifier property.
      */
     public boolean hasRawIdentifier() {
-        return StringUtils.isNoneBlank(rawIdentifier);
+        return StringUtils.isNotBlank(rawIdentifier);
     }
 
     /**
@@ -80,7 +80,7 @@ public class RawData implements Comparable<RawData> {
      * @return true if this RawData has a rawType property.
      */
     public boolean hasRawType() {
-        return StringUtils.isNoneBlank(rawType);
+        return StringUtils.isNotBlank(rawType);
     }
 
     /**
@@ -165,11 +165,11 @@ public class RawData implements Comparable<RawData> {
     public String toString() {
         final StringBuilder repr = new StringBuilder();
 
-        if (StringUtils.isNoneBlank(rawIdentifier)) {
+        if (StringUtils.isNotBlank(rawIdentifier)) {
             repr.append(rawIdentifier);
         }
 
-        if (StringUtils.isNoneBlank(rawType)) {
+        if (StringUtils.isNotBlank(rawType)) {
             repr.append("<").append(rawType).append(">");
         }
 

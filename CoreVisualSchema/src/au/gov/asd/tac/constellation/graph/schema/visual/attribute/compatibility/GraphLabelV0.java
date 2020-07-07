@@ -121,7 +121,7 @@ public final class GraphLabelV0 implements Serializable {
         String thisLabel = null;
         ConstellationColor thisColor = null;
         Float thisRadius = null;
-        if (StringUtils.isNoneBlank(graphLabelString)) {
+        if (StringUtils.isNotBlank(graphLabelString)) {
             Set<Character> splitChar = new HashSet<>();
             splitChar.add(';');
             List<String> graphLabelComponents = StringUtilities.splitLabelsWithEscapeCharacters(graphLabelString.substring(graphLabelString.indexOf(':') + 1, graphLabelString.lastIndexOf(']')), splitChar);

@@ -130,14 +130,14 @@ public class TutorialViewPane extends BorderPane {
                             event.preventDefault();
 
                             final String href = ((Element) event.getTarget()).getAttribute("href");
-                            if (StringUtils.isNoneBlank(href)) {
+                            if (StringUtils.isNotBlank(href)) {
                                 PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
                                         .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
                                         .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
                                         .executeLater(null);
                             } else {
                                 final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
-                                if (StringUtils.isNoneBlank(helpId)) {
+                                if (StringUtils.isNotBlank(helpId)) {
                                     new HelpCtx(helpId).display();
                                 }
                             }

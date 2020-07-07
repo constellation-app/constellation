@@ -138,7 +138,7 @@ public class ConnectionPanel extends JPanel {
     private void getDrivers(final String jarfile) {
         try {
             final ArrayList<String> driverList = new ArrayList<>();
-            if (StringUtils.isNoneBlank(jarfile)) {
+            if (StringUtils.isNotBlank(jarfile)) {
                 try (final JarFile jf = new JarFile(jarfile)) {
                     final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
                     if (ze != null) {

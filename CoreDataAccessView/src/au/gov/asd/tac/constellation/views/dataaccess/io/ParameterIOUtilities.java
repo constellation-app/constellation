@@ -186,7 +186,7 @@ public class ParameterIOUtilities {
                 globalParams.add(id);
 
                 // Remember the first non-null, non-blank query name.
-                if (queryName == null && id.equals(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID) && StringUtils.isNoneBlank(value)) {
+                if (queryName == null && id.equals(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID) && StringUtils.isNotBlank(value)) {
                     queryName = value;
                 }
             }
