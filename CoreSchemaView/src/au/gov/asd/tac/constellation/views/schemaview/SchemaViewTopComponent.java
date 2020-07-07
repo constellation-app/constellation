@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.schemaview;
 
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -48,7 +49,7 @@ import org.openide.windows.TopComponent;
 public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewPane> {
 
     private final SchemaViewPane schemaViewPane;
-
+    
     public SchemaViewTopComponent() {
         super();
 
@@ -84,10 +85,6 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     @Override
     protected void componentShowing() {
         super.componentShowing();
-
-        // TODO: this is very cpu intensive, slow and inefficient. Come up with a better way!
-        schemaViewPane.clear();
-        schemaViewPane.populate();
     }
 
     /**
