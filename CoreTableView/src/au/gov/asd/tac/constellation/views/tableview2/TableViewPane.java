@@ -963,6 +963,8 @@ public final class TableViewPane extends BorderPane {
                 sortType = sortCol.getSortType();
             }
             
+            sortedRowList.comparatorProperty().unbind();
+            
             table.setItems(FXCollections.observableArrayList(rows.subList(fromIndex, toIndex)));
             
             //restore the sort details
@@ -970,6 +972,8 @@ public final class TableViewPane extends BorderPane {
                 table.getSortOrder().add(sortCol);
                 sortCol.setSortType(sortType);
             }
+            
+            sortedRowList.comparatorProperty().bind(table.comparatorProperty());
         }
         
         return table;
@@ -1091,6 +1095,7 @@ public final class TableViewPane extends BorderPane {
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
                     sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+                    sortedRowList.comparatorProperty().addListener((observable, oldValue, newValue) -> paginate(sortedRowList));
                     paginate(sortedRowList);
 
                     // add user defined filter to the table
