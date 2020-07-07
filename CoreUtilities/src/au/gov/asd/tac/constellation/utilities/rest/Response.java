@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -193,7 +194,7 @@ public abstract class Response {
         if (json != null) {
             try {
                 b.append(jsonToString(json));
-                b.append("\n");
+                b.append(SeparatorConstants.NEWLINE);
                 jsonShown = true;
             } catch (IOException ex) {
             }

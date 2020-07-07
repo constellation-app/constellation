@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.namedselection.panes;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+
 /**
  * JPanel that is used in dialogs to capture description changes for
  * <code>NamedSelection</code> objects.
@@ -35,7 +37,7 @@ public class NamedSelectionModDescPanel extends javax.swing.JPanel {
     public NamedSelectionModDescPanel(final String name, final String existingDesc) {
         initComponents();
 
-        lblTitle.setText("Set description of " + name + ":");
+        lblTitle.setText("Set description of " + name + SeparatorConstants.COLON);
         txtDescription.setText(existingDesc);
         txtDescription.setSelectionStart(0);
         txtDescription.setSelectionEnd(existingDesc.length());

@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+
 /**
  *
  * @author twilight_sparkle
@@ -87,11 +89,11 @@ public class CompositeTransactionId {
         if (originalSourceNode == null && originalDestinationNode == null) {
             return suffix;
         } else if (originalSourceNode == null) {
-            return COMPOSITE + sourceContracted + ":" + destContracted + "[->" + originalDestinationNode + "]_" + suffix;
+            return COMPOSITE + sourceContracted + SeparatorConstants.COLON + destContracted + "[->" + originalDestinationNode + "]_" + suffix;
         } else if (originalDestinationNode == null) {
-            return COMPOSITE + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->]_" + suffix;
+            return COMPOSITE + sourceContracted + SeparatorConstants.COLON + destContracted + "[" + originalSourceNode + "->]_" + suffix;
         } else {
-            return COMPOSITE + sourceContracted + ":" + destContracted + "[" + originalSourceNode + "->" + originalDestinationNode + "]_" + suffix;
+            return COMPOSITE + sourceContracted + SeparatorConstants.COLON + destContracted + "[" + originalSourceNode + "->" + originalDestinationNode + "]_" + suffix;
         }
     }
 }

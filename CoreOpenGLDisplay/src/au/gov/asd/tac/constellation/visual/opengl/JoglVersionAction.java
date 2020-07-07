@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl;
 
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
@@ -38,7 +39,8 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.visual.opengl.JoglVersionAction")
-@ActionRegistration(displayName = "#CTL_JoglVersionAction")
+@ActionRegistration(displayName = "#CTL_JoglVersionAction",
+        iconBase = "au/gov/asd/tac/constellation/visual/opengl/versionsJOGL.png")
 @ActionReference(path = "Menu/Help", position = 1400, separatorBefore = 1350)
 @Messages("CTL_JoglVersionAction=JOGL Version")
 public final class JoglVersionAction implements ActionListener {
@@ -78,7 +80,7 @@ public final class JoglVersionAction implements ActionListener {
 
         sb.append("\nGL Strings\n");
         JoglVersion.getGLStrings(gl, sb, true);
-        sb.append("\n");
+        sb.append(SeparatorConstants.NEWLINE);
 
         final InfoTextPanel itp = new InfoTextPanel(sb.toString());
         final NotifyDescriptor.Message msg = new NotifyDescriptor.Message(itp);

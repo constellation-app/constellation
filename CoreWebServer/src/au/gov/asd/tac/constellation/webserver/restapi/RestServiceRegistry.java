@@ -139,7 +139,7 @@ public class RestServiceRegistry {
 
         // Throw a RunTimeException if an invalid name was passed.
         //
-        throw new IllegalArgumentException(String.format("No such service as '%s' (%s)!", name, httpMethod));
+        throw new IllegalArgumentException(String.format("No such service as %s (%s)!", name, httpMethod));
     }
 
     /**

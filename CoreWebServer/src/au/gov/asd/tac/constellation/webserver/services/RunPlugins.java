@@ -112,11 +112,14 @@ public class RunPlugins extends RestService {
     public void callService(final PluginParameters parameters, InputStream in, OutputStream out) throws IOException {
         final String graphId = parameters.getStringValue(GRAPH_ID_PARAMETER_ID);
         final Graph graph = graphId == null ? RestUtilities.getActiveGraph() : GraphNode.getGraph(graphId);
+        if (graph == null) {
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, "No graph with id " + graphId);
+        }
 
         final String runStyle = parameters.getStringValue(RUN_IN_PARAMETER_ID);
         if (!RUN_STYLE_SERIES.equals(runStyle) && !RUN_STYLE_PARALLEL.equals(runStyle)) {
             final String msg = String.format("%s must be '%s' or '%s'", RUN_IN_PARAMETER_ID, RUN_STYLE_SERIES, RUN_STYLE_PARALLEL);
-            throw new RestServiceException(msg);
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, msg);
         }
 
         // First, collect all the plugins and their optional arguments.
@@ -125,7 +128,7 @@ public class RunPlugins extends RestService {
         final JsonNode json = mapper.readTree(in);
         if (!json.isArray()) {
             final String msg = String.format("Argument for %s must be a list", NAME);
-            throw new RestServiceException(msg);
+            throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, msg);
         }
 
         final ConcurrentLinkedQueue<PluginError> errorQueue = new ConcurrentLinkedQueue<>();
@@ -135,7 +138,7 @@ public class RunPlugins extends RestService {
         pluginList.forEach(pluginItem -> {
             if (!pluginItem.has(PLUGIN_NAME) || !pluginItem.get(PLUGIN_NAME).isTextual()) {
                 final String msg = String.format("Each plugin argument must have %s", PLUGIN_NAME);
-                throw new RestServiceException(msg);
+                throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, msg);
             }
 
             final String pluginName = pluginItem.get(PLUGIN_NAME).textValue();
