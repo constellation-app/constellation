@@ -29,11 +29,9 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.layers.layer.LayerDescription;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphBitmaskPlugin;
-import au.gov.asd.tac.constellation.views.layers.utilities.UpdateGraphQueriesPlugin;
+import au.gov.asd.tac.constellation.views.layers.utilities.UpdateLayerSelectionPlugin;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Future;
 
 /**
  * Controls interaction of UI to layers and filtering of nodes and transactions.
@@ -87,10 +85,7 @@ public class LayersViewController {
         // if the newBitmask is 1, it means none of the boxes are checked. therefore display default layer 1 (All nodes)
         newBitmask = (newBitmask == 0) ? 0b1 : (newBitmask > 1) ? newBitmask & ~0b1 : newBitmask;
 
-        Future<?> layerQueryFuture = PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(layerQueries))
-                .executeLater(GraphManager.getDefault().getActiveGraph());
-
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(newBitmask)).waitingFor(layerQueryFuture)
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(layerQueries, newBitmask))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 

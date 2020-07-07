@@ -165,8 +165,7 @@ public class LayersDualGraphSyncNGTest {
             writableGraph.commit();
         }
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b10)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 0b10)).executeNow(graph);
 
         // Check Vertex set correctly
         readableGraph = graph.getReadableGraph();
@@ -213,8 +212,7 @@ public class LayersDualGraphSyncNGTest {
             readableGraph.release();
         }
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(1)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 1)).executeNow(graph);
 
         readableGraph = graph.getReadableGraph();
         try {
@@ -235,8 +233,7 @@ public class LayersDualGraphSyncNGTest {
         queries.add("color == " + vx1Color.toString());
         queries.add("color == " + vx2Color.toString());
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b100)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 0b100)).executeNow(graph);
 
         readableGraph = graph.getReadableGraph();
         try {
@@ -252,8 +249,7 @@ public class LayersDualGraphSyncNGTest {
             readableGraph.release();
         }
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(1)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 1)).executeNow(graph);
 
         readableGraph = graph.getReadableGraph();
         try {
@@ -274,8 +270,7 @@ public class LayersDualGraphSyncNGTest {
         queries.add("color == " + vx2Color.toString());
         queries.add("color == " + vx2Color.toString());
 
-        PluginExecution.withPlugin(new UpdateGraphQueriesPlugin(queries)).executeNow(graph);
-        PluginExecution.withPlugin(new UpdateGraphBitmaskPlugin(0b10)).executeNow(graph);
+        PluginExecution.withPlugin(new UpdateLayerSelectionPlugin(queries, 0b10)).executeNow(graph);
 
         readableGraph = graph.getReadableGraph();
         try {
@@ -312,71 +307,5 @@ public class LayersDualGraphSyncNGTest {
         } finally {
             readableGraph.release();
         }
-    }
-
-    @Test
-    public void addRemoveTwoElementsSelectedTest() throws InterruptedException, PluginException {
-//        // Check Vertex set correctly
-//        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-//        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
-//
-//        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-//        assertTrue(false == graph.getBooleanValue(selectedV, vxId2));
-//
-//        // Check Transaction set correctly
-//        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-//        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
-//
-//        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-//        assertTrue(false == graph.getBooleanValue(selectedT, txId2));
-//
-//        // Setting Vertex and Transacion 2 to selected.
-//        graph.setBooleanValue(selectedT, txId2, true);
-//        graph.setBooleanValue(selectedV, vxId2, true);
-//
-//        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(0b10, LayerAction.ADD)).executeNow(graph);
-//
-//        // Check Vertex values
-//        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-//        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
-//
-//        assertTrue(0b11 == graph.getIntValue(layerMaskV, vxId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-//        assertTrue(true == graph.getBooleanValue(selectedV, vxId2));
-//
-//        // Check Transaction values
-//        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-//        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
-//
-//        assertTrue(0b11 == graph.getIntValue(layerMaskT, txId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-//        assertTrue(true == graph.getBooleanValue(selectedT, txId2));
-//
-//        // Remove from layers
-//        PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(0b10, LayerAction.REMOVE)).executeNow(graph);
-//
-//        // check vertices set correctly
-//        assertTrue(1 == graph.getIntValue(layerMaskV, vxId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId1));
-//        assertTrue(false == graph.getBooleanValue(selectedV, vxId1));
-//
-//        assertTrue(1 == graph.getIntValue(layerMaskV, vxId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityV, vxId2));
-//        assertTrue(true == graph.getBooleanValue(selectedV, vxId2));
-//
-//        // Check Transaction set correctly
-//        assertTrue(1 == graph.getIntValue(layerMaskT, txId1));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId1));
-//        assertTrue(false == graph.getBooleanValue(selectedT, txId1));
-//
-//        assertTrue(1 == graph.getIntValue(layerMaskT, txId2));
-//        assertTrue(1.0f == graph.getFloatValue(layerVisibilityT, txId2));
-//        assertTrue(true == graph.getBooleanValue(selectedT, txId2));
     }
 }
