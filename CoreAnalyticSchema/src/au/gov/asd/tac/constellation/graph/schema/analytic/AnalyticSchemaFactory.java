@@ -188,7 +188,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             // set the identifier - preference is identifier > raw > label > unknown
-            if (identifier == null || identifier.isEmpty()) {
+            if (StringUtils.isBlank(identifier)) {
                 identifier = "unknown";
                 if (StringUtils.isNoneBlank(raw.getRawIdentifier())) {
                     identifier = raw.getRawIdentifier();
@@ -312,7 +312,7 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             }
 
             // set the identifier - preference is identifier > label > unknown
-            if (identifier == null || identifier.isEmpty()) {
+            if (StringUtils.isBlank(identifier)) {
                 identifier = "unknown";
                 if (StringUtils.isNoneBlank(label)) {
                     final RawData rawLabel = new RawData(label);
