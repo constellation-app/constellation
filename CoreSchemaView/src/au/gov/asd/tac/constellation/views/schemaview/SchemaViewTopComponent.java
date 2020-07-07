@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.schemaview;
 
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -80,11 +79,6 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     @Override
     protected void handleComponentClosed() {
         schemaViewPane.clear();
-    }
-
-    @Override
-    protected void componentShowing() {
-        super.componentShowing();
     }
 
     /**
