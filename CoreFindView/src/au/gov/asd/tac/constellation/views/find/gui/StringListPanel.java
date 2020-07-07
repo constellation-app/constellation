@@ -47,7 +47,7 @@ public class StringListPanel extends javax.swing.JPanel {
         lblStringDelimiter.setVisible(false);
         txtStringDelimiter.setVisible(false);
 
-        txtContent.setText(content.replace(',', '\n'));
+        txtContent.setText(content.replace(SeparatorConstants.COMMA, SeparatorConstants.NEWLINE));
         txtContent.setCaretPosition(content.length());
     }
 
@@ -59,7 +59,7 @@ public class StringListPanel extends javax.swing.JPanel {
      * ",".
      */
     public String getContent() {
-        return txtContent.getText().replace('\n', ',');
+        return txtContent.getText().replace(SeparatorConstants.NEWLINE, SeparatorConstants.COMMA);
     }
 
     /**
@@ -158,13 +158,13 @@ public class StringListPanel extends javax.swing.JPanel {
     {//GEN-HEADEREND:event_splitLinesButtonActionPerformed
         final String delim;
         if (delimiter.equals(COMMA)) {
-            delim = ",";
+            delim = SeparatorConstants.COMMA;
         } //        else if (delimiter.equals(NEW_LINE))
         //        {
-        //            delim = "\n";
+        //            delim = SeparatorConstants.NEWLINE;
         //        }
         else if (delimiter.equals(TAB)) {
-            delim = "\t";
+            delim = SeparatorConstants.TAB;
         } else if (delimiter.equals(SEMI_COLON)) {
             delim = SeparatorConstants.SEMICOLON;
         } else {
@@ -175,7 +175,7 @@ public class StringListPanel extends javax.swing.JPanel {
         final StringBuilder b = new StringBuilder();
         for (final String line : lines) {
             if (b.length() > 0) {
-                b.append('\n');
+                b.append(SeparatorConstants.NEWLINE);
             }
 
             b.append(line);

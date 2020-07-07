@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
 import java.util.BitSet;
 import java.util.Collections;
@@ -116,7 +117,7 @@ public class ScatterChartPane extends BorderPane {
                         final StringBuilder tooltipText = new StringBuilder();
                         for (final ScatterData data : selectedData) {
                             tooltipText.append(data.getElementLabel());
-                            tooltipText.append("\n");
+                            tooltipText.append(SeparatorConstants.NEWLINE);
                         }
                         tooltip.setText(tooltipText.toString());
 
@@ -382,7 +383,7 @@ public class ScatterChartPane extends BorderPane {
                         continue;
                     }
 
-                    @SuppressWarnings("unchecked") // getData will return data of type number and number 
+                    @SuppressWarnings("unchecked") // getData will return data of type number and number
                     Data<Number, Number> data2 = (Data<Number, Number>) data.getData();
                     Node dataNode = data2.getNode();
                     dataNode.setEffect(null);

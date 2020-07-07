@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.attributecalculator.plugins.CalculatorVariable;
 import au.gov.asd.tac.constellation.views.attributecalculator.script.ScriptIO;
 import au.gov.asd.tac.constellation.views.attributecalculator.tutorial.AbstractCalculatorTutorial;
@@ -412,12 +413,12 @@ public final class AttributeCalculatorPane extends GridPane {
         InsertListCategory category = insertComboBox.getSelectionModel().getSelectedItem();
         if (category != null) {
             final String categoryName = category.name;
-            final Text categoryHeadingText = new Text(categoryName + ":\t");
+            final Text categoryHeadingText = new Text(categoryName + SeparatorConstants.COLON + SeparatorConstants.TAB);
             categoryHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
             categoryHeadingText.setFill(Color.web(TEXT_COLOR));
             templateCategoryHelp.getChildren().add(categoryHeadingText);
             final String categoryContext = category.contextName;
-            final Text categoryContextText = new Text(categoryContext + "\n");
+            final Text categoryContextText = new Text(categoryContext + SeparatorConstants.NEWLINE);
             categoryContextText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 14));
             categoryContextText.setFill(Color.WHITE);
             templateCategoryHelp.getChildren().add(categoryContextText);
@@ -430,7 +431,7 @@ public final class AttributeCalculatorPane extends GridPane {
             for (final String str : descriptionStrs) {
                 final Text categoryDescritpionText;
                 if (!firstDescription) {
-                    categoryDescritpionText = new Text("\n\n" + str);
+                    categoryDescritpionText = new Text(SeparatorConstants.NEWLINE + SeparatorConstants.NEWLINE + str);
                 } else {
                     categoryDescritpionText = new Text(str);
                     firstDescription = false;
@@ -463,13 +464,13 @@ public final class AttributeCalculatorPane extends GridPane {
 
         templateObjectHelp.getChildren().clear();
 
-        final Text objectNameText = new Text(itemName + ":\n");
+        final Text objectNameText = new Text(itemName + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
         objectNameText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
         objectNameText.setFill(Color.web(TEXT_COLOR));
         templateObjectHelp.getChildren().add(objectNameText);
 
-        String objDescrip = "   " + itemDescription + "\n";
-        final Text objectDescripText = new Text(objDescrip + "\n");
+        String objDescrip = "   " + itemDescription + SeparatorConstants.NEWLINE;
+        final Text objectDescripText = new Text(objDescrip + SeparatorConstants.NEWLINE);
         objectDescripText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 12));
         objectDescripText.setFill(Color.WHITE);
         objectDescripText.setFontSmoothingType(FontSmoothingType.LCD);
@@ -485,52 +486,52 @@ public final class AttributeCalculatorPane extends GridPane {
             return;
         }
 
-        final Text objectNameText = new Text(description.templateName + ":\n");
+        final Text objectNameText = new Text(description.templateName + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
         objectNameText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
         objectNameText.setFill(Color.web(TEXT_COLOR));
         templateObjectHelp.getChildren().add(objectNameText);
 
-        StringBuilder objUsage = new StringBuilder("Usage(s):\n");
+        StringBuilder objUsage = new StringBuilder("Usage(s)" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
         for (String str : description.getUsage()) {
-            objUsage.append("\t").append(str).append("\n");
+            objUsage.append(SeparatorConstants.TAB).append(str).append(SeparatorConstants.NEWLINE);
         }
-        final Text objectUsageText = new Text(objUsage.toString() + "\n");
+        final Text objectUsageText = new Text(objUsage.toString() + SeparatorConstants.NEWLINE);
         objectUsageText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 14));
         objectUsageText.setFill(Color.WHITE);
         templateObjectHelp.getChildren().add(objectUsageText);
 
-        String objDescrip = "   " + description.description + "\n";
-        final Text objectDescripText = new Text(objDescrip + "\n");
+        String objDescrip = "   " + description.description + SeparatorConstants.NEWLINE;
+        final Text objectDescripText = new Text(objDescrip + SeparatorConstants.NEWLINE);
         objectDescripText.setFont(Font.font(FONT_FAMILY, FontWeight.BOLD, 12));
         objectDescripText.setFill(Color.WHITE);
         objectDescripText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectDescripText);
 
         if (description.getArguments().length != 0) {
-            StringBuilder objArguments = new StringBuilder("Arguments:\n");
+            StringBuilder objArguments = new StringBuilder("Arguments" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
             for (String str : description.getArguments()) {
-                objArguments.append("\t").append(str).append("\n");
+                objArguments.append(SeparatorConstants.TAB).append(str).append(SeparatorConstants.NEWLINE);
             }
-            final Text objectArgumentsText = new Text(objArguments.toString() + "\n");
+            final Text objectArgumentsText = new Text(objArguments.toString() + SeparatorConstants.NEWLINE);
             objectArgumentsText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
             objectArgumentsText.setFill(Color.WHITE);
             objectArgumentsText.setFontSmoothingType(FontSmoothingType.LCD);
             templateObjectHelp.getChildren().add(objectArgumentsText);
         }
 
-        String objReturn = "Returns:\n\t" + description.returns + "\n";
-        final Text objectReturnsText = new Text(objReturn + "\n");
+        String objReturn = "Returns" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE + SeparatorConstants.TAB + description.returns + SeparatorConstants.NEWLINE;
+        final Text objectReturnsText = new Text(objReturn + SeparatorConstants.NEWLINE);
         objectReturnsText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
         objectReturnsText.setFill(Color.WHITE);
         objectReturnsText.setFontSmoothingType(FontSmoothingType.LCD);
         templateObjectHelp.getChildren().add(objectReturnsText);
 
         if (description.getNotes().length != 0) {
-            StringBuilder objNotes = new StringBuilder("Notes:\n");
+            StringBuilder objNotes = new StringBuilder("Notes" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
             for (String str : description.getNotes()) {
-                objNotes.append("\t- ").append(str).append("\n");
+                objNotes.append(SeparatorConstants.TAB + SeparatorConstants.HYPHEN + " ").append(str).append(SeparatorConstants.NEWLINE);
             }
-            final Text objectNotesText = new Text(objNotes.toString() + "\n");
+            final Text objectNotesText = new Text(objNotes.toString() + SeparatorConstants.NEWLINE);
             objectNotesText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 12));
             objectNotesText.setFill(Color.WHITE);
             objectNotesText.setFontSmoothingType(FontSmoothingType.LCD);
@@ -542,7 +543,7 @@ public final class AttributeCalculatorPane extends GridPane {
     private void updateAttributeDescriptionHelp(String attributeName, String attributeDescription, String attributeType) {
         Platform.runLater(() -> {
             attributeDescriptionHelp.getChildren().clear();
-            final Text attributeHeadingText = new Text("Attribute to set:\n");
+            final Text attributeHeadingText = new Text("Attribute to set" + SeparatorConstants.COLON + SeparatorConstants.NEWLINE);
             attributeHeadingText.setFont(Font.font(FONT_FAMILY, FontWeight.NORMAL, 16));
             attributeHeadingText.setFill(Color.web(TEXT_COLOR));
             final Text attributeLabelText = new Text(attributeName);

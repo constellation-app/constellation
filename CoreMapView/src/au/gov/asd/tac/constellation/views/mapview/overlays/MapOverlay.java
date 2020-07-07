@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.overlays;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview.MapViewTileRenderer;
 import de.fhpotsdam.unfolding.UnfoldingMap;
 import de.fhpotsdam.unfolding.events.EventDispatcher;
@@ -212,7 +213,7 @@ public abstract class MapOverlay {
                 buffer = buffer.substring(0, bufferIndex);
             }
 
-            if (buffer.contains("\n")) {
+            if (buffer.contains(SeparatorConstants.NEWLINE)) {
                 bufferIndex = buffer.indexOf('\n') + 1;
                 buffer = buffer.substring(0, bufferIndex);
             }

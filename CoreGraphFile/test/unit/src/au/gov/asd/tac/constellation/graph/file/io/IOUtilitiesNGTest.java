@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.file.io;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -98,7 +99,7 @@ public class IOUtilitiesNGTest {
 
     @Test
     public void escapeTab() {
-        assertEquals("Tab", "\\t", IoUtilities.escape("\t"));
+        assertEquals("Tab", "\\t", IoUtilities.escape(SeparatorConstants.TAB));
     }
 
     @Test
@@ -110,28 +111,28 @@ public class IOUtilitiesNGTest {
 
     @Test
     public void unescapeTab() {
-        assertEquals("Tab", "\t", IoUtilities.unescape("\\t"));
+        assertEquals("Tab", SeparatorConstants.TAB, IoUtilities.unescape("\\t"));
     }
 
     @Test
     public void roundTripTab() {
-        final String in = "\t";
+        final String in = SeparatorConstants.TAB;
         assertEquals("Roundtrip tab", in, IoUtilities.unescape(IoUtilities.escape(in)));
     }
 
     @Test
     public void escapeNL() {
-        assertEquals("New line", "\\n", IoUtilities.escape("\n"));
+        assertEquals("New line", "\\n", IoUtilities.escape(SeparatorConstants.NEWLINE));
     }
 
     @Test
     public void unescapeNL() {
-        assertEquals("New line", "\n", IoUtilities.unescape("\\n"));
+        assertEquals("New line", SeparatorConstants.NEWLINE, IoUtilities.unescape("\\n"));
     }
 
     @Test
     public void roundTripNL() {
-        final String in = "\n";
+        final String in = SeparatorConstants.NEWLINE;
         assertEquals("Roundtrip NL", in, IoUtilities.unescape(IoUtilities.escape(in)));
     }
 

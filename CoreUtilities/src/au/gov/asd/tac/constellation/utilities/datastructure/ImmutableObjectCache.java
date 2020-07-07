@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.datastructure;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -105,13 +106,13 @@ public class ImmutableObjectCache {
             final StringBuilder out = new StringBuilder();
             out.append("ImmutableObjectCache[entries = ").append(cache.size()).append("]\n");
             for (Entry<Class<?>, int[]> e : results.entrySet()) {
-                out.append("    ").append(e.getKey().getCanonicalName()).append(":");
+                out.append("    ").append(e.getKey().getCanonicalName()).append(SeparatorConstants.COLON);
                 out.append(" new = ").append(e.getValue()[0]);
                 out.append(", old = ").append(e.getValue()[1]);
                 out.append(", dedupe = ").append(e.getValue()[2]);
-                out.append("\n");
+                out.append(SeparatorConstants.NEWLINE);
             }
-            out.append("    saved String bytes = ").append(savedStringBytes).append("\n");
+            out.append("    saved String bytes = ").append(savedStringBytes).append(SeparatorConstants.NEWLINE);
             return out.toString();
         } else {
             return "ImmutableObjectCache[entries = " + cache.size() + "]";

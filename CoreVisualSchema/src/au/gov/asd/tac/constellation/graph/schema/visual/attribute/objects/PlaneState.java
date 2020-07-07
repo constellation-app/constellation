@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -119,7 +120,7 @@ public final class PlaneState {
         b.append("%s[\n");
         for (final Plane plane : planes) {
             b.append(plane.toString());
-            b.append("\n");
+            b.append(SeparatorConstants.NEWLINE);
         }
 
         b.append("]");

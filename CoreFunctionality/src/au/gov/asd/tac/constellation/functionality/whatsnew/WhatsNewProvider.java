@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.functionality.whatsnew;
 
 import au.gov.asd.tac.constellation.functionality.tutorial.TutorialTopComponent;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -139,7 +140,7 @@ public abstract class WhatsNewProvider {
                 }
             } else {
                 text.append(line);
-                text.append("\n");
+                text.append(SeparatorConstants.NEWLINE);
             }
         }
 
