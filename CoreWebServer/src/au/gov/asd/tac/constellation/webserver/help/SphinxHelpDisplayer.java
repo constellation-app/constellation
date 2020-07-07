@@ -73,6 +73,9 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     // run.args.extra="-J-Dconstellation.help=http://localhost:8000"
     // run.args.extra="-J-Dconstellation.help=https://example.com"
     //
+    // Set the value to the following github url to have the pages served from readthedocs.io
+    //
+    // run.args.extra="-J-Dconstellation.help=https://github.com/constellation-app/constellation/raw/master/docs"
     //
     private static final String CONSTELLATION_HELP = "constellation.help";
 
@@ -93,6 +96,12 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
     // The mapping of helpIds to page paths.
     //
     private static Map<String, String> helpMap;
+
+    // A special case to use the readthedocs.io website if the HELP_MAP file is
+    // in the official GitHub repository
+    //
+    private static final String OFFICIAL_GITHUB_REPOSITORY = "https://github.com/constellation-app/constellation";
+    private static final String READ_THE_DOCS = "https://constellation.readthedocs.io/en/latest/%s";
 
     /**
      * Read an entry from the zip file HELP_ZIP stored as an internal resource.
@@ -167,7 +176,7 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
         HttpURLConnection connection = null;
         try {
             connection = url.startsWith("https")
-                    ? HttpsConnection.withUrl(url).withReadTimeout(10 * 1000).get()
+                    ? HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).get() // not checking for a user certiticate
                     : HttpsConnection.withInsecureUrl(url).withReadTimeout(10 * 1000).insecureGet();
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 try (final BufferedReader reader = new BufferedReader(
@@ -287,6 +296,10 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
                 //
                 final int port = WebServer.start();
                 url = String.format("http://localhost:%d/help/html/%s", port, part);
+            } else if (helpSource.startsWith(OFFICIAL_GITHUB_REPOSITORY)) {
+                // If the helpSource points to github contellation-app/constellation then
+                // we are going to use read the docs to serve the help pages
+                url = String.format(READ_THE_DOCS, part);
             } else {
                 // The help source is an external web server, so we just
                 // assemble the URL and disavow all knowledge.
@@ -295,16 +308,27 @@ public class SphinxHelpDisplayer implements HelpCtx.Displayer {
             }
 
             LOGGER.log(Level.INFO, "help url {0}", url);
-            try {
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    Desktop.getDesktop().browse(new URI(url));
-                    return true;
-                }
-            } catch (final URISyntaxException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                // Run in a different thread, not the JavaFX thread
+                new Thread(() -> {
+                    Thread.currentThread().setName("Browse Help");
+                    try {
+                        Desktop.getDesktop().browse(new URI(url));
+                    } catch (URISyntaxException | IOException ex) {
+                        LOGGER.log(Level.SEVERE, "Tried to browse a url.", ex);
+                        final String msg = "Unable to browse to that location.";
+                        NotificationDisplayer.getDefault().notify("Help displayer",
+                                UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
+                                msg,
+                                null
+                        );
+                    }
+                }).start();
+                
+                return true;
             }
         } else {
-            final String msg = "Help not available; see logs for reason.";
+            final String msg = "Help not available; see logs for the reason.";
             NotificationDisplayer.getDefault().notify("Help displayer",
                     UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.RED.getJavaColor()),
                     msg,
