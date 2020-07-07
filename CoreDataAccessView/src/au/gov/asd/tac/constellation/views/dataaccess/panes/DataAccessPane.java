@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.DateTimeRange;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
@@ -426,8 +427,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         });
 
         if (selectedPlugins.isEmpty()) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("No plugins selected.", NotifyDescriptor.WARNING_MESSAGE);
         } else {
             final StringBuilder message = new StringBuilder(300);
             message.append("Add or remove plugins from your favourites category.\n\n");

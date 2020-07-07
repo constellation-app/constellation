@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.attributecalculator.script;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.attributecalculator.panes.AttributeCalculatorPane;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -215,8 +216,7 @@ public class ScriptIO {
     public static void deleteScript(final String fileName, final AttributeCalculatorPane acp) {
         File f = new File(fileName);
         if (f.getPath().contains("_inbuilt_script")) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("Can't delete inbuilt script.", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("Can't delete inbuilt script.", NotifyDescriptor.ERROR_MESSAGE);
         } else {
             final String msg = String.format("Are you sure you want to delete '%s'?",
                     FilenameEncoder.decode(f.getName().substring(0, f.getName().length() - 5)));

@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.file.io.GraphFileConstants;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +35,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -491,8 +491,7 @@ public class MappingPanel extends javax.swing.JPanel {
     {//GEN-HEADEREND:event_saveButtonActionPerformed
         final String label = labelText.getText().trim();
         if (label.isEmpty()) {
-            final NotifyDescriptor nderr = new NotifyDescriptor.Message("A label must be specified for saving", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nderr);
+            NotifyDisplayer.display("A label must be specified for saving", NotifyDescriptor.ERROR_MESSAGE);
         } else {
             final MappingTableModel vxModel = (MappingTableModel) vxTable.getModel();
             data.vxMappings = JdbcData.copy(vxModel.values);

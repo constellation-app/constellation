@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -160,8 +161,7 @@ public class JsonIO {
                 }
             }
         } else {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("There must be a valid preference name.", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("There must be a valid preference name.", NotifyDescriptor.ERROR_MESSAGE);
         }
     }
 
