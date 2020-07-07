@@ -75,6 +75,7 @@ public class SourcePane extends GridPane {
     private final ComboBox<ImportFileParser> importFileParserComboBox;
     private final CheckBox schemaCheckBox;
     private final Pane parametersPane = new Pane();
+    private final ListView<File> fileListView = new ListView<>();
 
     //    private final ImportController importController;
     public SourcePane(final ImportController importController) {
@@ -100,7 +101,6 @@ public class SourcePane extends GridPane {
         Label fileLabel = new Label("Files:");
         GridPane.setConstraints(fileLabel, 0, 0, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final ListView<File> fileListView = new ListView<>();
         fileListView.setMinHeight(0);
         fileListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileListView.setMaxWidth(Double.MAX_VALUE);
@@ -269,6 +269,16 @@ public class SourcePane extends GridPane {
             PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
             parametersPane.getChildren().add(pluginParametersPane);
         }
+    }
+    
+    /** Allow a file to be removed from fileListView. This would be triggered by code in InputController if the file
+     * was found to be missing or invalid - these checks are triggered when a new file is selected in the fileListView.
+     * @param file The file to remove.
+     */
+    public void removeFile(File file) {
+        ObservableList<File> files = fileListView.getItems();
+        files.remove(file);
+        fileListView.setItems(files);
     }
 
     /**

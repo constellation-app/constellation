@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.Import
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,6 +44,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -58,6 +61,7 @@ public class ImportController {
      * Pseudo-attribute to indicate directed transactions.
      */
     public static final String DIRECTED = "__directed__";
+    private static final Logger LOGGER = Logger.getLogger(ImportController.class.getName());
 
     /**
      * Limit the number of rows shown in the preview.
@@ -449,9 +453,21 @@ public class ImportController {
                 currentColumns = new String[columns.length + 1];
                 System.arraycopy(columns, 0, currentColumns, 1, columns.length);
                 currentColumns[0] = "Row";
-            } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(ex.getMessage(), NotifyDescriptor.WARNING_MESSAGE);
+            } catch (FileNotFoundException ex) {
+                String errorMsg = sampleFile.getPath() + " could not be found. removing from file list.";
+                LOGGER.log(Level.INFO, errorMsg.toString());
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
                 DialogDisplayer.getDefault().notify(nd);
+                files.remove(sampleFile);
+                stage.getSourcePane().removeFile(sampleFile);
+            }
+            catch (IOException ex) {
+                String errorMsg = sampleFile.getPath() + " could not be parsed. removing from file list.";
+                LOGGER.log(Level.INFO, errorMsg.toString());
+                final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
+                DialogDisplayer.getDefault().notify(nd);
+                files.remove(sampleFile);
+                stage.getSourcePane().removeFile(sampleFile);
             }
         }
 
