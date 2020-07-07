@@ -21,10 +21,12 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.ImportFileParser;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javafx.collections.FXCollections;
@@ -52,6 +54,8 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  * The SourcePane provides the UI necessary to allow the user to specify where
@@ -63,6 +67,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class SourcePane extends GridPane {
 
     private static File DEFAULT_DIRECTORY = new File(System.getProperty("user.home"));
+    private static final Logger LOGGER = Logger.getLogger(SourcePane.class.getName());
 
     private final ComboBox<ImportDestination<?>> graphComboBox;
     private final ComboBox<ImportFileParser> importFileParserComboBox;
@@ -72,7 +77,6 @@ public class SourcePane extends GridPane {
     //    private final ImportController importController;
     public SourcePane(final ImportController importController) {
 
-//        this.importController = importController;
         setMinHeight(USE_PREF_SIZE);
         setMinWidth(0);
         setPadding(new Insets(5));
@@ -146,19 +150,33 @@ public class SourcePane extends GridPane {
                     fileChooser.setSelectedExtensionFilter(extensionFilter);
                 }
             }
+            fileChooser.getExtensionFilters().add(new ExtensionFilter("All Files", "*.*"));
 
             List<File> newFiles = fileChooser.showOpenMultipleDialog(SourcePane.this.getScene().getWindow());
 
             if (newFiles != null) {
                 if (!newFiles.isEmpty()) {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
-                    SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
                 ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                String errorMsg = "The following files could not be parsed and have been excluded from import set:";
+                boolean foundInvalidFile = false;
                 for (File file : newFiles) {
-                    if (!files.contains(file)) {
+                    // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
+                    // set of files to import.
+                    try {
+                        parser.preview(new InputSource(file), null, 100);
                         files.add(file);
+                    } catch (IOException ex) {
+                        foundInvalidFile = true;
+                        LOGGER.log(Level.INFO, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
+                        errorMsg = errorMsg + "\n    " + file.toString();
                     }
+                }
+                // If at least one file was found to be invalid then raise a dialog to indicate to user of import failures.
+                if (foundInvalidFile) {
+                    final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
+                    DialogDisplayer.getDefault().notify(nd);
                 }
                 fileListView.setItems(files);
                 if (!newFiles.isEmpty()) {
@@ -177,10 +195,6 @@ public class SourcePane extends GridPane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
-
-            if (files.isEmpty()) {
-                SourcePane.this.importFileParserComboBox.setDisable(false);
-            }
         });
 
         Label destinationLabel = new Label("Destination:");
@@ -238,14 +252,12 @@ public class SourcePane extends GridPane {
 
         final ToolBar optionsBox = new ToolBar();
         optionsBox.setMinWidth(0);
-//        optionsBox.setHgap(10);
-//        optionsBox.setVgap(10);
         GridPane.setConstraints(optionsBox, 0, 1, 3, 1);
         optionsBox.getItems().addAll(destinationLabel, graphComboBox, importFileParserLabel, importFileParserComboBox, schemaLabel, schemaCheckBox);
         getChildren().add(optionsBox);
     }
 
-    public void setParameters(final PluginParameters parameters) {
+    public void setParameters(final PluginParameters parameters) {      
         parametersPane.getChildren().clear();
         if (parameters != null) {
             PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
