@@ -54,12 +54,14 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
 
     private final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+    
+    private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
     @Override
     public Future<?> executePluginLater(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive, final List<Future<?>> async, final PluginSynchronizer synchronizer) {
 
         if (graph == null) {
-            LOGGER.log(Level.FINE, "{0} plugin was executed on a graph which was null", plugin.getName());
+            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
         
         return pluginExecutor.submit(() -> {
@@ -175,7 +177,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executePluginNow(final Graph graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
         if (graph == null) {
-            LOGGER.log(Level.FINE, "{0} plugin was executed on a graph which was null", plugin.getName());
+            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
         
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
@@ -246,7 +248,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executeEditPluginNow(final GraphWriteMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
         if (graph == null) {
-            LOGGER.log(Level.FINE, "{0} plugin was executed on a graph which was null", plugin.getName());
+            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
         
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
@@ -307,7 +309,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     public Object executeReadPluginNow(final GraphReadMethods graph, final Plugin plugin, final PluginParameters parameters, final boolean interactive) throws InterruptedException, PluginException {
 
         if (graph == null) {
-            LOGGER.log(Level.FINE, "{0} plugin was executed on a graph which was null", plugin.getName());
+            LOGGER.log(Level.FINE, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
         
         final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
