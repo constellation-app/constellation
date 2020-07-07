@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -141,7 +142,7 @@ public class StringParameterType extends PluginParameterType<StringParameterValu
 
     @Override
     public String validateString(PluginParameter<StringParameterValue> param, String stringValue) {
-        if (stringValue != null && !stringValue.isEmpty() && stringValue.trim().isEmpty()) {
+        if (StringUtils.isNoneBlank(stringValue) && stringValue.trim().isEmpty()) {
             return "Parameter is Empty!";
         }
         return null;

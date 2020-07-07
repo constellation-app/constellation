@@ -31,6 +31,7 @@ import javafx.scene.image.Image;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A ConstellationIcon manages data related to a single icon in CONSTELLATION,
@@ -428,7 +429,7 @@ public class ConstellationIcon {
         }
 
         public Builder addAlias(final String alias) {
-            if (alias != null && !alias.isEmpty()) {
+            if (StringUtils.isNoneBlank(alias)) {
                 this.aliases.add(alias);
             }
             return this;
@@ -442,7 +443,7 @@ public class ConstellationIcon {
         }
 
         public Builder addCategory(final String category) {
-            if (category != null && !category.isEmpty()) {
+            if (StringUtils.isNoneBlank(category)) {
                 this.categories.add(category);
             }
             return this;

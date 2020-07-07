@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -219,7 +220,7 @@ public class JsonIO {
         // chop off ".json" from the filenames
         for (int i = 0; i < names.length; i++) {
             final String nextName = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
-            if (nextName != null && !nextName.isEmpty()) {
+            if (StringUtils.isNoneBlank(nextName)) {
                 names[i] = nextName;
                 // Hide any file prefix which the user didn't see when saving
                 if (!filePrefix.isEmpty()) {

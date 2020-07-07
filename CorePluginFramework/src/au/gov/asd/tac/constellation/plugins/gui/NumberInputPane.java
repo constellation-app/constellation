@@ -30,6 +30,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A NumberSpinner allowing numeric entries, which is the GUI element
@@ -137,7 +138,7 @@ public class NumberInputPane<T> extends Pane {
             Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
-                        if (currentTextValue != null && !currentTextValue.isEmpty() && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
+                        if (StringUtils.isNoneBlank(currentTextValue) && (!currentTextValue.equals(parameter.getStringValue()) || parameter.getError() != null)) {
                             try {
                                 parameter.setError(null);
                                 switch (parameter.getType().getId()) {

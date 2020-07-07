@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.logging.DefaultConstellationLogger;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The PasswordParameterType defines {@link PluginParameter} objects that hold
@@ -77,7 +78,7 @@ public class PasswordParameterType extends PluginParameterType<PasswordParameter
 
     @Override
     public String validateString(PluginParameter<PasswordParameterValue> param, String stringValue) {
-        if (stringValue != null && !stringValue.isEmpty() && stringValue.trim().isEmpty()) {
+        if (StringUtils.isNoneBlank(stringValue) && stringValue.trim().isEmpty()) {
             return "Parameter is Empty!";
         }
         return null;

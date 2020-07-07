@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
@@ -240,7 +241,7 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
     private void updateIcon(final String icon) {
         currentIcon = icon;
 
-        if (currentIcon != null && !currentIcon.isEmpty()) {
+        if (StringUtils.isNoneBlank(currentIcon)) {
             lblIconText.setText(currentIcon);
         } else {
             lblIconText.setText(Bundle.No_Icon());

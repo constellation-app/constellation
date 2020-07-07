@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An object that holds the descriptions of node and connections labels and node
@@ -417,7 +418,7 @@ public final class GraphLabelsAndDecoratorsV0 implements Serializable {
     public static GraphLabelsAndDecoratorsV0 fromString(String decoratorsAndLabelsString) {
         GraphLabelsAndDecoratorsV0 thisGraphLabelsAndDecorators = new GraphLabelsAndDecoratorsV0();
 
-        if (decoratorsAndLabelsString != null && !decoratorsAndLabelsString.isEmpty()) {
+        if (StringUtils.isNoneBlank(decoratorsAndLabelsString)) {
             Set<Character> splitChar = new HashSet<>();
             splitChar.add(' ');
 

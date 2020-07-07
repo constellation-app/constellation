@@ -41,6 +41,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValu
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import java.util.Arrays;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -126,7 +127,7 @@ public class CopyToNewGraphPlugin extends SimpleReadPlugin {
      * it is running.
      */
     public static Graph makeGraph(final GraphReadMethods original, final String newSchemaName, final boolean copyKeys, final boolean copyAll) throws InterruptedException {
-        final Schema schema = newSchemaName != null && !newSchemaName.isEmpty() ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
+        final Schema schema = StringUtils.isNoneBlank(newSchemaName) ? SchemaFactoryUtilities.getSchemaFactory(newSchemaName).createSchema() : original.getSchema();
         final Graph dualGraph = new DualGraph(schema == null ? null : schema.getFactory().createSchema());
 
         final WritableGraph graph = dualGraph.getWritableGraph("Make Graph", true);

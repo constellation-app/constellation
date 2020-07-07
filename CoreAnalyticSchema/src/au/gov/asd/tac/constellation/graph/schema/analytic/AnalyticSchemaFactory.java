@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -174,11 +175,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             // set the type - preference is type > raw > label > unknown
             if (type == null) {
                 type = SchemaVertexTypeUtilities.getDefaultType();
-                if (raw.getRawType() != null && !raw.getRawType().isEmpty()) {
+                if (StringUtils.isNoneBlank(raw.getRawType())) {
                     type = graph.getSchema().resolveVertexType(raw.getRawType());
-                } else if (label != null && !label.isEmpty()) {
+                } else if (StringUtils.isNoneBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawType() != null && !rawLabel.getRawType().isEmpty()) {
+                    if (StringUtils.isNoneBlank(rawLabel.getRawType())) {
                         type = graph.getSchema().resolveVertexType(rawLabel.getRawType());
                     }
                 }
@@ -189,11 +190,11 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             // set the identifier - preference is identifier > raw > label > unknown
             if (identifier == null || identifier.isEmpty()) {
                 identifier = "unknown";
-                if (raw.getRawIdentifier() != null && !raw.getRawIdentifier().isEmpty()) {
+                if (StringUtils.isNoneBlank(raw.getRawIdentifier())) {
                     identifier = raw.getRawIdentifier();
-                } else if (label != null && !label.isEmpty()) {
+                } else if (StringUtils.isNoneBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawIdentifier() != null && !rawLabel.getRawIdentifier().isEmpty()) {
+                    if (StringUtils.isNoneBlank(rawLabel.getRawIdentifier())) {
                         identifier = rawLabel.getRawIdentifier();
                     }
                 }
@@ -298,9 +299,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
 
             // set the type - preference is type > label > unknown
             if (type == null) {
-                if (label != null && !label.isEmpty()) {
+                if (StringUtils.isNoneBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawType() != null && !rawLabel.getRawType().isEmpty()) {
+                    if (StringUtils.isNoneBlank(rawLabel.getRawType())) {
                         type = resolveTransactionType(rawLabel.getRawType());
                     }
                 } else {
@@ -313,9 +314,9 @@ public class AnalyticSchemaFactory extends VisualSchemaFactory {
             // set the identifier - preference is identifier > label > unknown
             if (identifier == null || identifier.isEmpty()) {
                 identifier = "unknown";
-                if (label != null && !label.isEmpty()) {
+                if (StringUtils.isNoneBlank(label)) {
                     final RawData rawLabel = new RawData(label);
-                    if (rawLabel.getRawIdentifier() != null && !rawLabel.getRawIdentifier().isEmpty()) {
+                    if (StringUtils.isNoneBlank(rawLabel.getRawIdentifier())) {
                         identifier = rawLabel.getRawIdentifier();
                     }
                 }

@@ -559,7 +559,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
      */
     private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly) {
         final List<Pattern> patterns = new ArrayList<>();
-        if (words != null && !words.isEmpty()) {
+        if (StringUtils.isNoneBlank(words)) {
             for (String word : words.split("\n")) {
                 if (word == null || word.isEmpty()) {
                     continue;
