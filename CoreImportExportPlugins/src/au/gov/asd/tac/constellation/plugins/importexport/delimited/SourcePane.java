@@ -259,7 +259,7 @@ public class SourcePane extends GridPane {
         getChildren().add(optionsBox);
     }
 
-    public void setParameters(final PluginParameters parameters) {      
+    public void setParameters(final PluginParameters parameters) {
         parametersPane.getChildren().clear();
         if (parameters != null) {
             PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(parameters, null);
