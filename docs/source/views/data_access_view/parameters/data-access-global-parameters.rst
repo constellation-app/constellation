@@ -20,4 +20,4 @@ When the timezone changes, the time instant of each absolute datetime remains th
 The date range is highlighted in green to indicate whether a relative or absolute range is being used.
 
 
-.. help-id: au.gov.asd.tac.constellation.views.dataaccess.GlobalCoreParameters
+.. help-id: au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters
