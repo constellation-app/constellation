@@ -328,7 +328,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             //
             final List<Pattern> patterns = new ArrayList<>();
             if (StringUtils.isNotBlank(words)) {
-                for (String word : words.split("\n")) {
+                for (String word : words.split(SeparatorConstants.NEWLINE)) {
                     word = word.strip();
                     if (!word.isEmpty()) {
                         final Pattern pattern = Pattern.compile(word);
@@ -560,7 +560,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
     private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly) {
         final List<Pattern> patterns = new ArrayList<>();
         if (StringUtils.isNoneBlank(words)) {
-            for (String word : words.split("\n")) {
+            for (String word : words.split(SeparatorConstants.NEWLINE)) {
                 if (word == null || word.isEmpty()) {
                     continue;
                 }
@@ -598,7 +598,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 .replace("\\}", "}")
                 .replace("\\(", ")")
                 .replace("\\(", ")")
-                .replace("\\|", "|")
+                .replace("\\|", SeparatorConstants.PIPE)
                 .replace("\\?", "?")
                 .replace("\\+", "+")
                 .replace("\\*", "*")
@@ -613,7 +613,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 .replace("}", "\\}")
                 .replace("(", "\\)")
                 .replace("(", "\\)")
-                .replace("|", "\\|")
+                .replace(SeparatorConstants.PIPE, "\\|")
                 .replace("?", "\\?")
                 .replace("+", "\\+")
                 .replace("*", "\\*");

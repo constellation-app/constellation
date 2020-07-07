@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.text.TextPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -103,7 +103,7 @@ public class SplitNodesPluginNGTest {
         final PluginInteraction interaction = new TextPluginInteraction();
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(":");
+        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(SeparatorConstants.COLON);
 
         final RecordStore result = instance.query(query, interaction, parameters);
         assertEquals(result, expResult);
@@ -136,7 +136,7 @@ public class SplitNodesPluginNGTest {
         final PluginInteraction interaction = new TextPluginInteraction();
         final SplitNodesPlugin instance = new SplitNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(":");
+        parameters.getParameters().get(SplitNodesPlugin.SPLIT_PARAMETER_ID).setStringValue(SeparatorConstants.COLON);
         parameters.getParameters().get(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID).setBooleanValue(true);
 
         final RecordStore result = instance.query(query, interaction, parameters);

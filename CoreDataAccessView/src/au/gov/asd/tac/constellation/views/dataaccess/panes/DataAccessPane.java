@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
@@ -433,7 +434,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             message.append("Add or remove plugins from your favourites category.\n\n");
             message.append("The following plugins were selected:\n");
             selectedPlugins.stream().forEach(plugin -> {
-                message.append(plugin).append("\n");
+                message.append(plugin).append(SeparatorConstants.NEWLINE);
             });
             message.append("\nNote that you need to restart before changes take effect.");
 
