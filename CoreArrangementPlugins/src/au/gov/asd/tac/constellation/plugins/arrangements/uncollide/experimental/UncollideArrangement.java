@@ -19,13 +19,18 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.BoundingBox3D;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Octree;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.d3.Orb3D;
+import org.openide.util.Exceptions;
 
 public class UncollideArrangement implements Arranger {
 
@@ -69,11 +74,12 @@ public class UncollideArrangement implements Arranger {
 
         if (vxCount > 0) {
             if (dimensions == 2) {
-                uncollide2d(wg, 2000);
-
-                // Move x,y,z to x2,y2,z2.
-                // Set x,y to uncollided x,y.
-                // Deliberately leave the z value alone: someone may be doing a 2D uncollide on a 3D graph.
+                try {
+                    uncollide2d(wg, 2000);
+                    
+                    // Move x,y,z to x2,y2,z2.
+                    // Set x,y to uncollided x,y.
+                    // Deliberately leave the z value alone: someone may be doing a 2D uncollide on a 3D graph.
 //                for (int position = 0; position < vxCount; position++) {
 //                    final int vxId = wg.getVertex(position);
 //
@@ -88,6 +94,9 @@ public class UncollideArrangement implements Arranger {
 //                    wg.setFloatValue(xId, vxId, orb.getX());
 //                    wg.setFloatValue(yId, vxId, orb.getY());
 //                }
+                } catch (PluginException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             } else {
                 final Orb3D[] orbs = new Orb3D[vxCount];
                 for (int position = 0; position < vxCount; position++) {
@@ -123,7 +132,7 @@ public class UncollideArrangement implements Arranger {
         }
     }
 
-    private void uncollide2d(final GraphWriteMethods wg, final int iter) throws InterruptedException {
+    private void uncollide2d(final GraphWriteMethods wg, final int iter) throws InterruptedException, PluginException {
         int maxCollided = -1;
         boolean isEnd = false;
         for (int i = 0; i < iter && !isEnd; i++) {
@@ -131,27 +140,28 @@ public class UncollideArrangement implements Arranger {
             final QuadTree qt = new QuadTree(bb, wg);
             qt.insertAll();
 
-            // Vary the padding to see if we can make things use fewer steps.
-            final float padding = 1;
-//                    final float padding = 9-i%10;
-//                    final float padding = prevCollisions<0 ? 1 : 1+2*prevCollisions/orbs.length;
-//            final float padding = prevCollisions<0 ? 1 : 1+prevCollisions/orbs.length;
-//                    final float padding = 0;
-
-            int totalCollided = qt.uncollideAll(Math.max(padding, minPadding));
+            int verticiesBeforeCollision = qt.findCollision(minPadding);
 
             if (interaction != null) {
-                maxCollided = Math.max(maxCollided, totalCollided);
-                final String msg = String.format("2D step %3d; pad %f; collisions %6d of %6d", i, padding, maxCollided - totalCollided, maxCollided);
-                interaction.setProgress(maxCollided - totalCollided, maxCollided, msg, true);
+                final String msg = String.format("2D step %3d; pad %f; minimum uncollided verticies %6d of %6d", i, minPadding, verticiesBeforeCollision, wg.getVertexCount());
+                interaction.setProgress(verticiesBeforeCollision, wg.getVertexCount(), msg, true);
             }
+            
+            PluginExecution.withPlugin(ArrangementPluginRegistry.EXPAND_GRAPH).executeNow(wg);
 
-            isEnd = totalCollided == 0;
+            isEnd = verticiesBeforeCollision == 0;
 
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
         }
+        
+        
+        
+        final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
+        final QuadTree qt = new QuadTree(bb, wg);
+        qt.insertAll();
+        qt.nudgeAllTwins(minPadding);
     }
 
     private void uncollide3d(final Orb3D[] orbs, final int iter) throws InterruptedException {

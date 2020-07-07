@@ -22,6 +22,9 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.arrangements.uncollide.experimental.BoundingBox2D.Box2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import org.python.core.PyObject;
+import org.python.modules.math;
 
 /**
  * http://gamedev.tutsplus.com/tutorials/implementation/quick-tip-use-quadtrees-to-detect-likely-collisions-in-2d-space/
@@ -51,6 +54,7 @@ public class QuadTree {
     private final Box2D box;
     private final GraphWriteMethods wg;
     private QuadTree[] nodes;
+    private static final Logger LOG = Logger.getLogger(QuadTree.class.getName());
 
     public QuadTree(final Box2D box, final GraphWriteMethods wg) {
         this(0, box, wg);
@@ -264,6 +268,96 @@ public class QuadTree {
 
         return collided;
     }
+    /**
+     * Returns boolean indicating whether or not the vertex collides with any
+     * other verticies. Two verticies in exactly the same spot are not counted
+     * as overlapping.
+     *
+     * @param subject The vertex to check for collisions.
+     * @param padding The minimum distance between the vertex's edge and the edges
+     * of each neighbor.
+     * @return the number of collisions.
+     */
+    public boolean nodeCollides(final int subject, final float padding) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
+
+        // We need to deal with pathological cases such as everything at the same x,y point,
+        // or everything co-linear.
+        // We add a perturbation so points go different ways at different stages.
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+                final double l = DeltaX * DeltaX + DeltaY * DeltaY;
+                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
+                if (0 < l && l <= r*r) {
+//                    LOG.info("l:" + l + "    r:" + r);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Nudges two nodes in exactly the same place so that they do not overlap.
+     *
+     * @param subject The vertex to check for twins.
+     * @param padding The minimum distance between the vertex's edge and the edges
+     * of each neighbor.
+     */
+    private void nudgeTwins(final int subject, final float padding) {
+        final List<Integer> possibles = new ArrayList<>();
+        getPossibleColliders(possibles, subject);
+
+        // We need to deal with pathological cases such as everything at the same x,y point,
+        // or everything co-linear.
+        // We add a perturbation so points go different ways at different stages.
+        for (final int possible : possibles) {
+            if (subject != possible) {
+                float DeltaX = wg.getFloatValue(XID, subject) - wg.getFloatValue(XID, possible);
+                float DeltaY = wg.getFloatValue(YID, subject) - wg.getFloatValue(YID, possible);
+                final double ll = DeltaX * DeltaX + DeltaY * DeltaY;
+                final double r = wg.getFloatValue(RID, possible) + wg.getFloatValue(RID, subject) + padding;
+                if (ll == 0) {
+                    final float nudge = (float) (math.sqrt(r)/1.4); // sqrt(2A^2) = R then A = r/sqrt(2). The nudge needed to not overlap if moving both nodes away form each by the same value.
+
+                    // The two nodes will be immediately alongside each other.
+                    wg.setFloatValue(XID, subject, wg.getFloatValue(XID, subject) - nudge);
+                    wg.setFloatValue(XID, possible, wg.getFloatValue(XID, possible) + nudge);
+                }
+            }
+        }
+    }
+    
+    
+    public void nudgeAllTwins(final float padding){
+        for (int position = 0; position < wg.getVertexCount(); position++) {
+            nudgeTwins(wg.getVertex(position), padding);
+        }
+    }
+    
+    /**
+     * Check the entire graph for collisions. Return the number of verticies
+     * checked before finding a collision.
+     * Returns 0 if no collision is found.
+     *
+     * @param subject The vertex to check for collisions.
+     * @param padding The minimum distance between the vertex's edge and the edges
+     * of each neighbor.
+     * @return the number of collisions.
+     */
+    public int findCollision(final float padding){
+        int verticiesChecked = 1;
+        for (int position = 0; position < wg.getVertexCount(); position++) {
+            if(nodeCollides(wg.getVertex(position), padding)) {
+                return verticiesChecked;
+            } else {
+                verticiesChecked += 1;
+            }      
+        }
+        return 0;
+    }
     
     public int uncollideAll(final float padding){
         int totalCollided = 0;
@@ -272,6 +366,7 @@ public class QuadTree {
         }
         return totalCollided;
     }
+
 
     @Override
     public String toString() {
