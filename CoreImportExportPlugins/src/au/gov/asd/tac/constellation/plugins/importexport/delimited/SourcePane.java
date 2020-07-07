@@ -159,6 +159,7 @@ public class SourcePane extends GridPane {
             if (newFiles != null) {
                 if (!newFiles.isEmpty()) {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
+                    SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
                 ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
                 String errorMsg = "The following files could not be parsed and have been excluded from import set:";
@@ -197,6 +198,9 @@ public class SourcePane extends GridPane {
             files.removeAll(selectedFiles);
             fileListView.setItems(files);
             importController.setFiles(files, null);
+            if (files.isEmpty()) {	
+                SourcePane.this.importFileParserComboBox.setDisable(false);	
+            }
         });
 
         Label destinationLabel = new Label("Destination:");
