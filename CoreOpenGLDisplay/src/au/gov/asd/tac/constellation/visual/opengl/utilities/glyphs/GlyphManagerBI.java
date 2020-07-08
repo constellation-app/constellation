@@ -316,7 +316,7 @@ public final class GlyphManagerBI implements GlyphManager {
      * @param text The text top be rendered.
      */
     @Override
-    public void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
+    public synchronized void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
         if (text == null || text.isEmpty()) {
             return;
         }
