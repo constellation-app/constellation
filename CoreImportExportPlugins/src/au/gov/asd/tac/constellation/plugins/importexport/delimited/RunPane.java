@@ -62,6 +62,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A RunPane displays the UI necessary to allow the user to drag and drop
@@ -390,7 +391,7 @@ public class RunPane extends BorderPane implements KeyListener {
             }
 
             // Show the column heading
-            if (columnLabel == null || columnLabel.length() == 0) {
+            if (StringUtils.isBlank(columnLabel)) {
                 column.setPrefWidth(50);
             } else {
                 column.setPrefWidth(columnLabel.length() * 12.1); // the magic number
@@ -457,7 +458,7 @@ public class RunPane extends BorderPane implements KeyListener {
     public ImportDefinition createDefinition() {
 
         RowFilter rf = rowFilter;
-        if (filter == null || filter.isEmpty()) {
+        if (StringUtils.isBlank(filter)) {
             rf = null;
         } else {
             rf.setColumns(currentColumnLabels);

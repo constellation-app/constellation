@@ -187,7 +187,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         params.addController(WORDS_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String words = master.getStringValue();
-                if (words == null || words.isEmpty()) {
+                if (StringUtils.isBlank(words)) {
                     parameters.get(USE_REGEX_PARAMETER_ID).setEnabled(false);
                     parameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).setEnabled(false);
                     parameters.get(MIN_WORD_LENGTH_PARAMETER_ID).setEnabled(true);
@@ -559,9 +559,9 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
      */
     private static List<Pattern> patternsFromWords(final String words, final boolean useRegex, final boolean wholeWordOnly) {
         final List<Pattern> patterns = new ArrayList<>();
-        if (words != null && !words.isEmpty()) {
+        if (StringUtils.isNotBlank(words)) {
             for (String word : words.split(SeparatorConstants.NEWLINE)) {
-                if (word == null || word.isEmpty()) {
+                if (StringUtils.isBlank(word)) {
                     continue;
                 }
                 /*

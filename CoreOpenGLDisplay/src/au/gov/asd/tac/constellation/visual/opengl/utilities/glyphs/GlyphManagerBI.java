@@ -41,6 +41,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Convert text into images that can be passed to OpenGL.
@@ -317,7 +318,7 @@ public final class GlyphManagerBI implements GlyphManager {
      */
     @Override
     public synchronized void renderTextAsLigatures(final String text, GlyphStream glyphStream) {
-        if (text == null || text.isEmpty()) {
+        if (StringUtils.isBlank(text)) {
             return;
         }
 

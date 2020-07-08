@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPreferenceKeys;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.io.ImportDelimitedIO;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -44,7 +45,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbPreferences;
@@ -100,8 +100,7 @@ public class DelimitedFileImporterStage extends Stage {
             if (importController.hasFiles()) {
                 ImportDelimitedIO.loadParameters(this, importController);
             } else {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message("Select a file first.", NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                NotifyDisplayer.display("Select a file first.", NotifyDescriptor.WARNING_MESSAGE);
             }
         });
 
