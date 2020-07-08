@@ -34,6 +34,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The DefaultConversationSenderProvider creates a sender display based on the
@@ -71,7 +72,7 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
 
                 for (int senderAttributeId : senderAttributeIds) {
                     final String senderLabel = graph.getStringValue(senderAttributeId, message.getSender());
-                    if (senderLabel == null || senderLabel.isEmpty()) {
+                    if (StringUtils.isBlank(senderLabel)) {
                         senderLabels.add(SeparatorConstants.HYPHEN);
                     } else {
                         senderLabels.add(senderLabel);

@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -31,7 +32,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -94,8 +94,7 @@ public class SendToEmailClientPlugin extends SimplePlugin {
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);
         } catch (IOException | URISyntaxException ex) {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("Could not send email\n" + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("Could not send email\n" + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
         }
     }
 

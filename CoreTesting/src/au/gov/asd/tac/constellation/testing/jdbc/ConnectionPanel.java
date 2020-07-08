@@ -46,6 +46,7 @@ import java.util.zip.ZipEntry;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -137,7 +138,7 @@ public class ConnectionPanel extends JPanel {
     private void getDrivers(final String jarfile) {
         try {
             final ArrayList<String> driverList = new ArrayList<>();
-            if (jarfile != null && !jarfile.isEmpty()) {
+            if (StringUtils.isNotBlank(jarfile)) {
                 try (final JarFile jf = new JarFile(jarfile)) {
                     final ZipEntry ze = jf.getEntry("META-INF/services/java.sql.Driver");
                     if (ze != null) {

@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -45,7 +46,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
@@ -91,8 +91,7 @@ public class FileDropper implements GraphDropper {
                                         }
                                     } catch (final IOException | GraphParseException ex) {
                                         Logger.getLogger(FileDropper.class.getName()).log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
-                                        final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                        DialogDisplayer.getDefault().notify(nderr);
+                                        NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                     }
                                 }
                             }).executeLater(graph);

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An object which represents both the identifier and type of some entity. This
@@ -61,7 +62,7 @@ public class RawData implements Comparable<RawData> {
      * @return true if this RawData has a rawIdentifier property.
      */
     public boolean hasRawIdentifier() {
-        return rawIdentifier != null && !rawIdentifier.isEmpty();
+        return StringUtils.isNotBlank(rawIdentifier);
     }
 
     /**
@@ -79,7 +80,7 @@ public class RawData implements Comparable<RawData> {
      * @return true if this RawData has a rawType property.
      */
     public boolean hasRawType() {
-        return rawType != null && !rawType.isEmpty();
+        return StringUtils.isNotBlank(rawType);
     }
 
     /**
@@ -164,11 +165,11 @@ public class RawData implements Comparable<RawData> {
     public String toString() {
         final StringBuilder repr = new StringBuilder();
 
-        if (rawIdentifier != null && !rawIdentifier.isEmpty()) {
+        if (StringUtils.isNotBlank(rawIdentifier)) {
             repr.append(rawIdentifier);
         }
 
-        if (rawType != null && !rawType.isEmpty()) {
+        if (StringUtils.isNotBlank(rawType)) {
             repr.append("<").append(rawType).append(">");
         }
 
