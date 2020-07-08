@@ -48,7 +48,7 @@ import org.openide.windows.TopComponent;
 public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewPane> {
 
     private final SchemaViewPane schemaViewPane;
-
+    
     public SchemaViewTopComponent() {
         super();
 
@@ -79,15 +79,6 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
     @Override
     protected void handleComponentClosed() {
         schemaViewPane.clear();
-    }
-
-    @Override
-    protected void componentShowing() {
-        super.componentShowing();
-
-        // TODO: this is very cpu intensive, slow and inefficient. Come up with a better way!
-        schemaViewPane.clear();
-        schemaViewPane.populate();
     }
 
     /**
