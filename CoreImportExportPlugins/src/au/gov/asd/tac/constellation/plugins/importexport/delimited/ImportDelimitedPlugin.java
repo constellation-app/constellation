@@ -125,7 +125,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
      * @param invalidFilenames List of files that couldn't be opened/parsed. We try to limit this possibility by pre-screening
      *                         files during the initial file selection.
      */
-    private void displaySummaryAlert(int importedRows, List<String> validFilenames, List<String> invalidFilenames) {
+    private void displaySummaryAlert(final int importedRows, final List<String> validFilenames, final List<String> invalidFilenames) {
         Platform.runLater(() -> {
             final Alert dialog;
             dialog = new Alert(Alert.AlertType.INFORMATION, "", ButtonType.OK);
@@ -179,8 +179,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         final PluginParameters parserParameters = (PluginParameters) parameters.getParameters().get(PARSER_PARAMETER_IDS_PARAMETER_ID).getObjectValue();
         final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
-        List<String> validFiles = new ArrayList<>();
-        List<String> invalidFiles = new ArrayList<>();
+        final List<String> validFiles = new ArrayList<>();
+        final List<String> invalidFiles = new ArrayList<>();
         int importRows = 0;
 
         for (final File file : files) {
@@ -193,11 +193,11 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 validFiles.add(file.getPath());
                 LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.getPath(), importRows});
             } catch (FileNotFoundException ex) {
-                String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
+                final String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
                 invalidFiles.add(file.getPath());
             } catch (IOException ex) {
-                String errorMsg = file.getPath() + " could not be parsed. Removing file during import.";
+                final String errorMsg = file.getPath() + " could not be parsed. Removing file during import.";
                 LOGGER.log(Level.INFO, errorMsg);
                 invalidFiles.add(file.getPath());
             }

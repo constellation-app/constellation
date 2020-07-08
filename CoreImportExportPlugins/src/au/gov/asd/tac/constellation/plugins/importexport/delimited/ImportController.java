@@ -471,14 +471,14 @@ public class ImportController {
                 System.arraycopy(columns, 0, currentColumns, 1, columns.length);
                 currentColumns[0] = "Row";
             } catch (FileNotFoundException ex) {
-                String warningMsg = "The following file could not be found and has been excluded from the import set:\n  " + sampleFile.getPath();
+                final String warningMsg = "The following file could not be found and has been excluded from the import set:\n  " + sampleFile.getPath();
                 LOGGER.log(Level.INFO, warningMsg);
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
                 stage.getSourcePane().removeFile(sampleFile);
             }
             catch (IOException ex) {
-                String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
+                final String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
                 LOGGER.log(Level.INFO, warningMsg);
                 displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);

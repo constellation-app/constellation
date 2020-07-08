@@ -160,10 +160,10 @@ public class SourcePane extends GridPane {
                     DEFAULT_DIRECTORY = newFiles.get(0).getParentFile();
                     SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
-                ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
+                final ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
                 String warningMsg = "The following files could not be parsed and have been excluded from import set:";
                 boolean foundInvalidFile = false;
-                for (File file : newFiles) {
+                for (final File file : newFiles) {
                     // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
                     // set of files to import.
                     try {
@@ -274,7 +274,7 @@ public class SourcePane extends GridPane {
      * @param file The file to remove.
      */
     public void removeFile(File file) {
-        ObservableList<File> files = fileListView.getItems();
+        final ObservableList<File> files = fileListView.getItems();
         files.remove(file);
         fileListView.setItems(files);
     }
