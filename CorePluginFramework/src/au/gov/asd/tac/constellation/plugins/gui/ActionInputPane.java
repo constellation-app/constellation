@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A button which is the GUI element corresponding to a {@link PluginParameter}
@@ -48,7 +49,7 @@ public class ActionInputPane extends Pane {
     public ActionInputPane(final PluginParameter<?> parameter) {
         field = new Button();
         String label = parameter.getStringValue();
-        if (label == null || label.isEmpty()) {
+        if (StringUtils.isBlank(label)) {
             label = parameter.getName();
         }
         field.setText(label);

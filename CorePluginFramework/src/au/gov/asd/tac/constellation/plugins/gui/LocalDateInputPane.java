@@ -26,6 +26,7 @@ import javafx.application.Platform;
 import javafx.scene.control.DatePicker;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A Date Picker, which is the GUI element corresponding to a
@@ -61,7 +62,7 @@ public class LocalDateInputPane extends Pane {
 
             @Override
             public LocalDate fromString(final String s) {
-                return s != null && !s.isEmpty() ? LocalDate.parse(s, DATE_FORMATTER) : null;
+                return StringUtils.isNotBlank(s) ? LocalDate.parse(s, DATE_FORMATTER) : null;
             }
         });
 

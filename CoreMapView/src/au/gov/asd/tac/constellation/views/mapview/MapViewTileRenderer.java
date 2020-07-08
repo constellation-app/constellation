@@ -56,6 +56,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.ThreadUtils;
 import org.openide.util.Lookup;
 import processing.core.PApplet;
@@ -636,7 +637,7 @@ public class MapViewTileRenderer extends PApplet {
         assert !SwingUtilities.isEventDispatchThread();
 
         final String resourcePath = "modules/ext/data/";
-        if (where == null || where.isEmpty()) {
+        if (StringUtils.isBlank(where)) {
             return new File(resourcePath);
         }
 

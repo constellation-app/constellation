@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.genericjsonio;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -33,6 +34,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
@@ -160,8 +162,7 @@ public class JsonIO {
                 }
             }
         } else {
-            final NotifyDescriptor nd = new NotifyDescriptor.Message("There must be a valid preference name.", NotifyDescriptor.ERROR_MESSAGE);
-            DialogDisplayer.getDefault().notify(nd);
+            NotifyDisplayer.display("There must be a valid preference name.", NotifyDescriptor.ERROR_MESSAGE);
         }
     }
 
@@ -219,7 +220,7 @@ public class JsonIO {
         // chop off ".json" from the filenames
         for (int i = 0; i < names.length; i++) {
             final String nextName = FilenameEncoder.decode(names[i].substring(0, names[i].length() - 5));
-            if (nextName != null && !nextName.isEmpty()) {
+            if (StringUtils.isNotBlank(nextName)) {
                 names[i] = nextName;
                 // Hide any file prefix which the user didn't see when saving
                 if (!filePrefix.isEmpty()) {

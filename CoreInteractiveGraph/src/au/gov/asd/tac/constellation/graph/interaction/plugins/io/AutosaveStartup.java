@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -92,8 +93,7 @@ public final class AutosaveStartup implements Runnable {
                                             AutosaveUtilities.deleteAutosave(f);
                                         } catch (GraphParseException | IOException ex) {
                                             LOGGER.log(Level.WARNING, "Error loading graph", ex);
-                                            final NotifyDescriptor nderr = new NotifyDescriptor.Message("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                            DialogDisplayer.getDefault().notify(nderr);
+                                            NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                         }
                                     }
                                 }.start();
