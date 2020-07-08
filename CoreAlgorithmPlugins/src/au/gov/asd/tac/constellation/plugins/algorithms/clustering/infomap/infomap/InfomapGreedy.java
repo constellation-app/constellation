@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.L
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.MultiMap;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -610,7 +611,7 @@ public abstract class InfomapGreedy extends InfomapBase {
                 for (int j = 0; j < numModuleLinks - 1; ++j) {
                     Logf.printf("%d ", moduleDeltaEnterExit[j].getModule());
                 }
-                Logf.printf("\n");
+                Logf.printf(SeparatorConstants.NEWLINE);
             }
 
             // Randomize link order for optimized search.
@@ -841,7 +842,7 @@ public abstract class InfomapGreedy extends InfomapBase {
             for (final NodeBase child : parent.getChildren()) {
                 Logf.printf("[%d]", child.getId());
             }
-            Logf.printf("\n");
+            Logf.printf(SeparatorConstants.NEWLINE);
         }
 
         for (final NodeBase child : parent.getChildren()) {

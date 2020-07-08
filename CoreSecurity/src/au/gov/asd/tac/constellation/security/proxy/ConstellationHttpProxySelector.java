@@ -189,9 +189,9 @@ public class ConstellationHttpProxySelector extends ProxySelector {
     public String toString() {
         final StringBuilder sb = new StringBuilder();
         sb.append(bypassProxyHosts.toString());
-        sb.append(";");
+        sb.append(ProxyUtilities.SEMICOLON);
         sb.append(additionalProxies.toString());
-        sb.append(";");
+        sb.append(ProxyUtilities.SEMICOLON);
         sb.append(defaultProxy.toString());
 
         return sb.toString();

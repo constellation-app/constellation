@@ -46,7 +46,7 @@ public final class MemoryAction implements ActionListener {
 //        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {
 //            b.append(memoryPoolMXBeans.getName());
 //            b.append(memoryPoolMXBeans.getUsage());
-//            b.append("\n");
+//            b.append(SeparatorConstants.NEWLINE);
 //        }
         final NotifyDescriptor nd = new NotifyDescriptor.Message(b.toString(), NotifyDescriptor.INFORMATION_MESSAGE);
         DialogDisplayer.getDefault().notify(nd);

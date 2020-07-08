@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.clipboard.ConstellationClipboardOwner;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -90,7 +91,7 @@ public class GraphCopyUtilities {
                     int vxId = rg.getVertex(i);
                     if (rg.getBooleanValue(selectedAttr, vxId)) {
                         buf.append(rg.getStringValue(aliasAttr, vxId));
-                        buf.append("\n");
+                        buf.append(SeparatorConstants.NEWLINE);
                     }
                 }
             }

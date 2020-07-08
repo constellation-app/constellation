@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -209,7 +210,7 @@ public class ListStore implements Serializable {
                 out.append(getElementCategory(element));
                 out.append(')');
             }
-            out.append("\n");
+            out.append(SeparatorConstants.NEWLINE);
         }
 
         return out.toString();

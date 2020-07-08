@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -54,7 +55,7 @@ public class GraphReportManager {
         final String filteredTagString = prefs.get(IGNORED_TAGS_KEY, "LOW LEVEL").trim();
         IGNORED_TAGS = new HashSet<>();
         if (!filteredTagString.isEmpty()) {
-            IGNORED_TAGS.addAll(Arrays.asList(filteredTagString.split("\t", 0)));
+            IGNORED_TAGS.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
         }
 
         GraphManager.getDefault().addGraphManagerListener(new GraphManagerListener() {
@@ -120,7 +121,7 @@ public class GraphReportManager {
         final StringBuilder b = new StringBuilder();
         IGNORED_TAGS.stream().forEach(tag -> {
             if (b.length() > 0) {
-                b.append("\t");
+                b.append(SeparatorConstants.TAB);
             }
             b.append(tag);
         });

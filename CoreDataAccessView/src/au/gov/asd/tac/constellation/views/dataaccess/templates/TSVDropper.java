@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -103,7 +104,7 @@ public class TSVDropper implements GraphDropper {
                             String line = reader.readLine();
                             while (line != null) {
 
-                                String[] fields = line.split("\t");
+                                String[] fields = line.split(SeparatorConstants.TAB);
 
                                 if (columnHeaders == null) {
                                     columnHeaders = fields;

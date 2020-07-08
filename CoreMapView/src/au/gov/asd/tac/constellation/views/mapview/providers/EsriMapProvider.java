@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview.providers;
 import de.fhpotsdam.unfolding.core.Coordinate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import processing.core.PApplet;
 import processing.core.PImage;
 
@@ -76,7 +77,7 @@ public abstract class EsriMapProvider extends MapProvider {
                 break;
         }
 
-        if (url == null || url.isEmpty()) {
+        if (StringUtils.isBlank(url)) {
             LOGGER.log(Level.WARNING, "Tile URL, {0}, is invalid", url);
         }
 
