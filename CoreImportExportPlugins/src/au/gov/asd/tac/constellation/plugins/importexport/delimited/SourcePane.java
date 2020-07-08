@@ -38,6 +38,7 @@ import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -56,8 +57,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
 
 /**
  * The SourcePane provides the UI necessary to allow the user to specify where
@@ -162,7 +161,7 @@ public class SourcePane extends GridPane {
                     SourcePane.this.importFileParserComboBox.setDisable(true);
                 }
                 ObservableList<File> files = FXCollections.observableArrayList(fileListView.getItems());
-                String errorMsg = "The following files could not be parsed and have been excluded from import set:";
+                String warningMsg = "The following files could not be parsed and have been excluded from import set:";
                 boolean foundInvalidFile = false;
                 for (File file : newFiles) {
                     // Iterate over files and attempt to parse/preview, if a failure is detected don't add the file to the
@@ -173,13 +172,12 @@ public class SourcePane extends GridPane {
                     } catch (IOException ex) {
                         foundInvalidFile = true;
                         LOGGER.log(Level.INFO, "Unable to parse the file {0}, excluding from import set.", new Object[]{file.toString()});
-                        errorMsg = errorMsg + "\n    " + file.toString();
+                        warningMsg = warningMsg + "\n    " + file.toString();
                     }
                 }
                 // If at least one file was found to be invalid then raise a dialog to indicate to user of import failures.
                 if (foundInvalidFile) {
-                    final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
-                    DialogDisplayer.getDefault().notify(nd);
+                    importController.displayAlert("Invalid file(s) found", warningMsg, Alert.AlertType.WARNING);
                 }
                 fileListView.setItems(files);
                 if (!newFiles.isEmpty()) {

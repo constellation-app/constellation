@@ -47,8 +47,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.openide.DialogDisplayer;
-import org.openide.NotifyDescriptor;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.openide.util.NbPreferences;
 
 /**
@@ -119,7 +119,24 @@ public class ImportController {
 
         keys = new HashSet<>();
     }
-
+    
+    /**
+     * Common handling of user alerts/dialogs for the Delimited File Importer.
+     * 
+     * @param header Text to place in header bar (immediately below title bar).
+     * @param message Main message to display.
+     * @param alertType Type of alert being displayed, range from undefined, info through
+     *                  to warnings and errors.
+     */
+    public void displayAlert(String header, String message, Alert.AlertType alertType) {
+        final Alert dialog;
+        dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.setTitle("Delimited Importer");
+        dialog.setHeaderText(header);
+        dialog.setContentText(message);
+        dialog.showAndWait();
+    }
+    
     public DelimitedFileImporterStage getStage() {
         return stage;
     }
@@ -454,18 +471,16 @@ public class ImportController {
                 System.arraycopy(columns, 0, currentColumns, 1, columns.length);
                 currentColumns[0] = "Row";
             } catch (FileNotFoundException ex) {
-                String errorMsg = sampleFile.getPath() + " could not be found. removing from file list.";
-                LOGGER.log(Level.INFO, errorMsg.toString());
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                String warningMsg = "The following file could not be found and has been excluded from the import set:\n  " + sampleFile.getPath();
+                LOGGER.log(Level.INFO, warningMsg.toString());
+                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
                 stage.getSourcePane().removeFile(sampleFile);
             }
             catch (IOException ex) {
-                String errorMsg = sampleFile.getPath() + " could not be parsed. removing from file list.";
-                LOGGER.log(Level.INFO, errorMsg.toString());
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(errorMsg, NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                String warningMsg = "The following file could not be parsed and has been excluded from the import set:\n  " + sampleFile.getPath();
+                LOGGER.log(Level.INFO, warningMsg.toString());
+                displayAlert("Invalid file selected", warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
                 stage.getSourcePane().removeFile(sampleFile);
             }

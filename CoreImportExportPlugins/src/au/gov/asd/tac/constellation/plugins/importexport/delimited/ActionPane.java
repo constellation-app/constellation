@@ -80,18 +80,8 @@ public class ActionPane extends BorderPane {
             @Override
             public void handle(ActionEvent t) {
                 try {
-
-                    final List<File> importedFiles = importController.processImport();
-                    final String[] filenames = new String[importedFiles.size()];
-                    long noOfRows = 0;
-                    for (int i = 0; i < importedFiles.size(); i++) {
-                        filenames[i] = importedFiles.get(i).getName();
-                        Path path = importedFiles.get(i).toPath();
-                        noOfRows += Files.lines(path).count();
-                    }
-                    displayAlert("Success", "Successfully imported " + noOfRows
-                            + " rows from the following file(s):\n" + String.join("\n", filenames), true);
-
+                    importController.processImport();
+                    
                 } catch (final IOException | PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     displayAlert("Import Failed", ex.getLocalizedMessage(), false);
