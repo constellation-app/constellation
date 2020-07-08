@@ -196,8 +196,8 @@ public class AnalyticConfigurationPane extends VBox {
             };
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            currentQuestion = newValue;
             Platform.runLater(() -> {
-                currentQuestion = newValue;
                 @SuppressWarnings("unchecked") //AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
                 final PluginParameter<SingleChoiceParameterValue> aggregator = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
                 SingleChoiceParameterType.getOptionsData(aggregator).forEach(aggregatorParameterValue -> {
