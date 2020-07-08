@@ -191,14 +191,14 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 data = parser.parse(new InputSource(file), parserParameters);
                 importRows = importRows + data.size() - 1;
                 validFiles.add(file.getPath());
-                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.toString(), importRows});
+                LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1}. {2} total rows imported", new Object[]{(data.size() - 1), file.getPath(), importRows});
             } catch (FileNotFoundException ex) {
                 String errorMsg = file.getPath() + " could not be found. Ignoring file during import.";
-                LOGGER.log(Level.INFO, errorMsg.toString());
+                LOGGER.log(Level.INFO, errorMsg);
                 invalidFiles.add(file.getPath());
             } catch (IOException ex) {
                 String errorMsg = file.getPath() + " could not be parsed. Removing file during import.";
-                LOGGER.log(Level.INFO, errorMsg.toString());
+                LOGGER.log(Level.INFO, errorMsg);
                 invalidFiles.add(file.getPath());
             }
 
