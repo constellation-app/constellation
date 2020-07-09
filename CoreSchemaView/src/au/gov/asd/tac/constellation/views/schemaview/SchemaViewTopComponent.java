@@ -48,7 +48,7 @@ import org.openide.windows.TopComponent;
 public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewPane> {
 
     private final SchemaViewPane schemaViewPane;
-
+    
     public SchemaViewTopComponent() {
         super();
 

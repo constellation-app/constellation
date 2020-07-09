@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.processing;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
@@ -44,7 +45,7 @@ public class RecordStoreUtilities {
     private static final Logger LOGGER = Logger.getLogger(RecordStoreUtilities.class.getName());
 
     private static String[] parseTsvRow(final String line) {
-        final String[] fields = line.split("\t", -1);
+        final String[] fields = line.split(SeparatorConstants.TAB, -1);
         for (int f = 0; f < fields.length; f++) {
             final String field = fields[f];
             if (field.isEmpty()) {
@@ -284,7 +285,7 @@ public class RecordStoreUtilities {
                     line.append(",");
                 }
                 line.setLength(line.length() > 0 ? line.length() - 1 : 0);
-                line.append("\n");
+                line.append(SeparatorConstants.NEWLINE);
                 columnsWritten = true;
 
                 try {
@@ -308,7 +309,7 @@ public class RecordStoreUtilities {
                 line.append(",");
             }
             line.setLength(line.length() > 0 ? line.length() - 1 : 0);
-            line.append("\n");
+            line.append(SeparatorConstants.NEWLINE);
 
             try {
                 outputStream.write(line.toString().getBytes(StandardCharsets.UTF_8.name()));

@@ -19,13 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.plugins.templates.Bundle;
 import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.util.NbBundle;
@@ -84,7 +84,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
                         throw e;
                     } catch (Exception e) {
                         final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + "\n" + e.getMessage());
+                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
                         LOGGER.log(Level.WARNING, msg, e);
                     }
 
@@ -118,7 +118,7 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
                     throw e;
                 } catch (Exception e) {
                     final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                    interaction.notify(PluginNotificationLevel.ERROR, msg + "\n" + e.getMessage());
+                    interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
                     LOGGER.log(Level.WARNING, msg, e);
                 }
 

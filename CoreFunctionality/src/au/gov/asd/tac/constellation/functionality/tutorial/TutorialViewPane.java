@@ -42,6 +42,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebView;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -129,14 +130,14 @@ public class TutorialViewPane extends BorderPane {
                             event.preventDefault();
 
                             final String href = ((Element) event.getTarget()).getAttribute("href");
-                            if (href != null && !href.isEmpty()) {
+                            if (StringUtils.isNotBlank(href)) {
                                 PluginExecution.withPlugin(CorePluginRegistry.OPEN_IN_BROWSER)
                                         .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open Tutorial Link")
                                         .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, href)
                                         .executeLater(null);
                             } else {
                                 final String helpId = ((Element) event.getTarget()).getAttribute("helpId");
-                                if (helpId != null && !helpId.isEmpty()) {
+                                if (StringUtils.isNotBlank(helpId)) {
                                     new HelpCtx(helpId).display();
                                 }
                             }

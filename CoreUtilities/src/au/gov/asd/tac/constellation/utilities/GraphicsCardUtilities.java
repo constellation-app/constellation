@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -89,7 +90,7 @@ public class GraphicsCardUtilities {
                         String line = in.readLine();
                         while (line != null) {
                             builder.append(line);
-                            builder.append("\n");
+                            builder.append(SeparatorConstants.NEWLINE);
 
                             if (graphicsCard == null) {
                                 int cardNameIndex = line.indexOf("Card name: ");
