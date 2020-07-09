@@ -2,6 +2,7 @@
 
 ## 2020-07-01 Changes in July 2020
 * Updated `QualityControlAutoVetter` to improve performance by using a `SimpleReadPlugin` internally.
+* Added utility class `NotifyDisplayer` and static method `NotifyDisplayer#display` for use when displaying a `NotifyDescriptor` message box.
 
 ## 2020-06-01 Changes in June 2020
 * Added `LayerConcept` to group all of the layer mask and layer visibility attributes together. 

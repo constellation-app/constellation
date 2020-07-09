@@ -24,6 +24,7 @@ import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -184,7 +185,7 @@ public final class TimeAttributeDescriptionV0 extends AbstractAttributeDescripti
      * @return A Calendar representing the input datetime.
      */
     public static int parseTime(final String time) {
-        if (time == null || time.isEmpty()) {
+        if (StringUtils.isBlank(time)) {
             return NULL_VALUE;
         }
 

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * An object that holds the descriptions of node and connections labels and node
@@ -86,7 +87,7 @@ public final class GraphLabels {
     }
 
     public static GraphLabels valueOf(final String graphLabelsString) {
-        if (graphLabelsString == null || graphLabelsString.isEmpty()) {
+        if (StringUtils.isBlank(graphLabelsString)) {
             return NO_LABELS;
         }
 

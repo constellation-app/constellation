@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.prefs.Preferences;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -90,7 +91,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DELETE_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String deleteTemplateName = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (deleteTemplateName != null && !deleteTemplateName.isEmpty()) {
+                if (StringUtils.isNotBlank(deleteTemplateName)) {
                     templateNames.remove(deleteTemplateName);
                     deletedTemplates.add(deleteTemplateName);
                     SingleChoiceParameterType.setOptions(templateParam, templateNames);
@@ -110,7 +111,7 @@ public class ManageTemplatesPlugin extends SimplePlugin {
         params.addController(DEFAULT_TEMPLATE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.NO_CHANGE) { // button pressed
                 final String chosenTemplate = parameters.get(TEMPLATE_NAME_PARAMETER_ID).getStringValue();
-                if (chosenTemplate != null && !chosenTemplate.isEmpty()) {
+                if (StringUtils.isNotBlank(chosenTemplate)) {
                     parameters.get(CURRENT_DEFAULT_PARAMETER_ID).setStringValue(chosenTemplate);
                 }
             }

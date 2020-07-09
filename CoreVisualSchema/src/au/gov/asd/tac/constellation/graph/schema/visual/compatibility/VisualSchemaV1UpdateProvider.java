@@ -20,17 +20,18 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
-import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
-import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility.GraphLabelV0;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility.GraphLabelsAndDecoratorsV0;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.versioning.SchemaUpdateProvider;
+import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -143,6 +144,6 @@ public class VisualSchemaV1UpdateProvider extends SchemaUpdateProvider {
     }
 
     private static String updateDecoratorAttr(final String attr) {
-        return attr == null || attr.isEmpty() || attr.equals("null") ? null : attr;
+        return StringUtils.isBlank(attr) || attr.equals("null") ? null : attr;
     }
 }

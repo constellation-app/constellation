@@ -54,6 +54,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -163,7 +164,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             treeRoot.getChildren().clear();
             treeRoot.getChildren().add(builtInItem);
             treeRoot.getChildren().add(userItem);
-            if (iconFile != null && !iconFile.isEmpty()) {
+            if (StringUtils.isNotBlank(iconFile)) {
                 TreeItem<IconNode> currentIcon = findIconNode(treeRoot, iconFile);
                 treeView.getSelectionModel().select(currentIcon);
             }

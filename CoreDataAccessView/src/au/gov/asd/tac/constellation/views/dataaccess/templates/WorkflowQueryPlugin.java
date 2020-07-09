@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.ArrayList;
 import java.util.List;
@@ -126,9 +127,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         // if there were any errors, collect them and display them to the user
         if (!exceptions.isEmpty()) {
             final StringBuilder entireException = new StringBuilder();
-            entireException.append(workerFailCount[0]).append(" workers failed.").append("\n");
+            entireException.append(workerFailCount[0]).append(" workers failed.").append(SeparatorConstants.NEWLINE);
             exceptions.forEach(ex -> {
-                entireException.append(ex.getMessage()).append("\n");
+                entireException.append(ex.getMessage()).append(SeparatorConstants.NEWLINE);
             });
             throw new PluginException(PluginNotificationLevel.ERROR, entireException.toString());
         }

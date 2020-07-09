@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
-import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import static au.gov.asd.tac.constellation.graph.GraphConstants.NOT_FOUND;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
@@ -25,12 +23,15 @@ import au.gov.asd.tac.constellation.graph.locking.GraphOperationMode;
 import au.gov.asd.tac.constellation.graph.locking.LockingTarget;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
+import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
 import au.gov.asd.tac.constellation.utilities.query.QueryEvaluator;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -532,7 +533,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 if (existingElement < 0) {
                     removed.remove(element);
 
-                // If the element was not unique then attempt a merge
+                    // If the element was not unique then attempt a merge
                 } else {
                     if (allowMerging && graphElementMerger != null) {
                         if (graphElementMerger.mergeElement(this, elementType, existingElement, element)) {
@@ -2106,10 +2107,10 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
                 // build the string to evaluate
                 if (ruleSegment.equals("&&")) {
-                    evaluatedResult += "&&" + ":";
+                    evaluatedResult += "&&" + SeparatorConstants.COLON;
                     ignoreResult = true;
                 } else if (ruleSegment.equals("||")) {
-                    evaluatedResult += "||" + ":";
+                    evaluatedResult += "||" + SeparatorConstants.COLON;
                     ignoreResult = true;
                 }
             }
@@ -2118,13 +2119,13 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             if (ignoreResult) {
                 ignoreResult = false;
             } else {
-                evaluatedResult += finalResult + ":";
+                evaluatedResult += finalResult + SeparatorConstants.COLON;
             }
         }
 
         evaluatedResult = evaluatedResult.length() == 0 ? evaluatedResult
                 : evaluatedResult.substring(0, evaluatedResult.length() - 1);
-        final String[] resultComponents = evaluatedResult.split(":");
+        final String[] resultComponents = evaluatedResult.split(SeparatorConstants.COLON);
 
         String expression = "";
         for (final String resultComponent : resultComponents) {
@@ -2330,7 +2331,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
             }
         }
 
-        // if selected visible layers has changed then recalculate visibility of all objects, 
+        // if selected visible layers has changed then recalculate visibility of all objects,
         // otherwise check if the change impacts an objects visibility
         if (attribute == layerMaskSelectedAttributeId && layerMaskSelectedAttributeId != Graph.NOT_FOUND) {
             // one node changes, pass to change list then only iterate that?

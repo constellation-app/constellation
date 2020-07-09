@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.namedselection.state.NamedSelectionState;
 import au.gov.asd.tac.constellation.views.namedselection.utilities.SelectNamedSelectionPanel;
 import java.awt.event.ActionEvent;
@@ -101,8 +102,7 @@ public class ArrangeInBubbleTreeAction extends AbstractAction {
             }
 
             if (nsState == null) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message("There must be a named selection to specify the tree roots", NotifyDescriptor.WARNING_MESSAGE);
-                DialogDisplayer.getDefault().notify(nd);
+                NotifyDisplayer.display("There must be a named selection to specify the tree roots", NotifyDescriptor.WARNING_MESSAGE);
             }
         } finally {
             rg.release();

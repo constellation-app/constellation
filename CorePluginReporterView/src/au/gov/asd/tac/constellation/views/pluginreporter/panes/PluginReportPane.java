@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -202,12 +203,12 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     private void saveToClipboard() {
         CharArrayWriter writer = new CharArrayWriter();
         try (PrintWriter out = new PrintWriter(writer)) {
-            out.append("Name: " + pluginReport.getPluginName() + "\n");
-            out.append("Description: " + pluginReport.getPluginDescription() + "\n");
-            out.append("Message: " + pluginReport.getMessage() + "\n");
-            out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + "\n");
-            out.append("Start: " + FORMAT.format(new Date(pluginReport.getStartTime())) + "\n");
-            out.append("Stop: " + FORMAT.format(new Date(pluginReport.getStopTime())) + "\n");
+            out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
+            out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
+            out.append("Message: " + pluginReport.getMessage() + SeparatorConstants.NEWLINE);
+            out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
+            out.append("Start: " + FORMAT.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
+            out.append("Stop: " + FORMAT.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
 
             if (pluginReport.getError() != null) {
                 out.append("Error: " + pluginReport.getError().getMessage() + "\n\n");
@@ -221,7 +222,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         clipboard.setContent(content);
 
         // TODO: can't do this because of circular dependancy
-//        ClipboardUtilities.copyToClipboard(writer.toString()); 
+//        ClipboardUtilities.copyToClipboard(writer.toString());
         PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
             @Override
             protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {

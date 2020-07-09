@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import au.gov.asd.tac.constellation.utilities.gui.JNumberedTextArea;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.ConstellationLabelFonts;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontInfo;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.FontStyle;
@@ -313,7 +314,7 @@ final class LabelFontsOptionsPanel extends javax.swing.JPanel {
 
     private void validateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validateButtonActionPerformed
         final String text = fontListTextArea.getText();
-        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split("\n"), GlyphManagerBI.DEFAULT_FONT_SIZE);
+        final FontInfo.ParsedFontInfo pfi = FontInfo.parseFontInfo(text.split(SeparatorConstants.NEWLINE), GlyphManagerBI.DEFAULT_FONT_SIZE);
         if (pfi.messages.isEmpty()) {
             validateLabel.setText("OK");
             validateLabel.setForeground(Color.GREEN.darker());
