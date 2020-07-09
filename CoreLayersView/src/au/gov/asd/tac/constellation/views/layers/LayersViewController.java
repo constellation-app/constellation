@@ -133,7 +133,7 @@ public class LayersViewController {
      */
     private static final class LayersViewStateReader extends SimpleReadPlugin {
 
-        private LayersViewPane pane;
+        private final LayersViewPane pane;
 
         public LayersViewStateReader(final LayersViewPane pane) {
             this.pane = pane;
@@ -168,7 +168,7 @@ public class LayersViewController {
      */
     private static final class LayersViewStateWriter extends SimpleEditPlugin {
 
-        private List<LayerDescription> layers;
+        private final List<LayerDescription> layers;
 
         public LayersViewStateWriter(final List<LayerDescription> layers) {
             this.layers = layers;

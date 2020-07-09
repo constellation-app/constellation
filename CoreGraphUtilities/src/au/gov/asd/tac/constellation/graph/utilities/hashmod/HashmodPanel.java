@@ -48,10 +48,9 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private static final String HASHMOD_CSV_FILE = "user.home";
     private String hashmodCSVFileStr = "";
-    private String hashmodCSVChainStr = "";
     private Boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
-    private Hashmod[] chainedHashmods = new Hashmod[10];
+    private final Hashmod[] chainedHashmods = new Hashmod[10];
 
     /**
      * Creates new form HashmodPanel.

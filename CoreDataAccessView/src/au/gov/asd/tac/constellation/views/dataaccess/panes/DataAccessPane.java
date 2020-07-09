@@ -136,7 +136,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
     private final Button executeButton = new Button(EXECUTE_GO);
 
     // search plugins
-    private TextField searchPluginTextField;
+    private final TextField searchPluginTextField;
 
     // favourites
     private static final String ADD_FAVOURITE = "Add";

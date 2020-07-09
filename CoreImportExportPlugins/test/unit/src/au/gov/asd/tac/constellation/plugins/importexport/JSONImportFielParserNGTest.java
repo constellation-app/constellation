@@ -15,18 +15,15 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport;
 
-import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.JSONImportFileParser;
 import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.InputSource;
+import au.gov.asd.tac.constellation.plugins.importexport.delimited.parser.JSONImportFileParser;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.netbeans.api.templates.FileBuilder;
 import org.testng.Assert;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,11 +32,11 @@ import org.testng.annotations.Test;
 
 /**
  * Test code exercising JSONImportFileParser
- * 
+ *
  * @author serpens24
  */
 public class JSONImportFielParserNGTest {
-    
+
     // Refelction used to view private fields in class under test.
     static JSONImportFileParser instance = new JSONImportFileParser();
     static Field private_invalidJSONField = null;
@@ -55,8 +52,8 @@ public class JSONImportFielParserNGTest {
         private_noValidListField = JSONImportFileParser.class.getDeclaredField("WARN_NO_VALID_LIST");
         private_invalidJSONField.setAccessible(true);
         private_noValidListField.setAccessible(true);
-        private_invalidJSONMsg = (String)private_invalidJSONField.get(instance);
-        private_noValidListMsg = (String)private_noValidListField.get(instance);
+        private_invalidJSONMsg = (String) private_invalidJSONField.get(instance);
+        private_noValidListMsg = (String) private_noValidListField.get(instance);
     }
 
     @AfterClass
@@ -326,7 +323,7 @@ public class JSONImportFielParserNGTest {
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 Assert.assertEquals(data.get(idx), expectedData.get(idx));
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -347,7 +344,7 @@ public class JSONImportFielParserNGTest {
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 Assert.assertEquals(data.get(idx), expectedData.get(idx));
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -366,7 +363,7 @@ public class JSONImportFielParserNGTest {
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 Assert.assertEquals(data.get(idx), expectedData.get(idx));
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -385,7 +382,7 @@ public class JSONImportFielParserNGTest {
             Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 Assert.assertEquals(data.get(idx), expectedData.get(idx));
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -401,14 +398,14 @@ public class JSONImportFielParserNGTest {
             expectedData.add(new String[]{"name", "age", "address.town", "address.state", "address.postcode", "address.commercial", "address.history.est", "address.history.population", "description", "address.latitude", "address.longitude"});
             expectedData.add(new String[]{"record1", "45", "Darwin", "NT", "0800", "[\"pub\",\"shop\"]", "2025", "600", null, null, null});
             final List<String[]> data = parser.preview(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-processNestedObjects.json").getFile())), null, 1);
-            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");            
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 String[] dataRow = data.get(idx);
                 String[] expectedRow = expectedData.get(idx);
                 IntStream.range(0, dataRow.length).forEach(jdx -> {
                     Assert.assertEquals(dataRow[jdx], expectedRow[jdx]);
                 });
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }
@@ -425,14 +422,14 @@ public class JSONImportFielParserNGTest {
             expectedData.add(new String[]{"record1", "45", "Darwin", "NT", "0800", "[\"pub\",\"shop\"]", "2025", "600", null, null, null});
             expectedData.add(new String[]{"record2", null, "Hobart", "TAS", "7000", null, null, null, "this is a description", "-42.8821", "147.3272"});
             final List<String[]> data = parser.parse(new InputSource(new File(this.getClass().getResource("./resources/JSON-nested-processNestedObjects.json").getFile())), null);
-            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");            
+            Assert.assertEquals(data.size(), expectedData.size(), "Returned results size is not as expected");
             IntStream.range(0, data.size()).forEach(idx -> {
                 String[] dataRow = data.get(idx);
                 String[] expectedRow = expectedData.get(idx);
                 IntStream.range(0, dataRow.length).forEach(jdx -> {
                     Assert.assertEquals(dataRow[jdx], expectedRow[jdx]);
                 });
-           });     
+            });
         } catch (Exception ex) {
             Assert.fail("Unexpected exception received: " + ex.getClass().getName());
         }

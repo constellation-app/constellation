@@ -155,10 +155,10 @@ public final class TableViewPane extends BorderPane {
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
 
     // Store details of sort order changes made upon column order change or table
-    // preference loading - these are used to reinstate the sorting after data update 
+    // preference loading - these are used to reinstate the sorting after data update
     private String sortByColumnName = "";
     private TableColumn.SortType sortByType = TableColumn.SortType.ASCENDING;
-    
+
     private final ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
 
@@ -200,7 +200,7 @@ public final class TableViewPane extends BorderPane {
         };
         this.selectedProperty = table.getSelectionModel().selectedItemProperty();
         selectedProperty.addListener(tableSelectionListener);
-        
+
         this.scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
 
@@ -460,13 +460,14 @@ public final class TableViewPane extends BorderPane {
         splitTransactionButton.getItems().add(columnFilterTransaction);
 
         columnIndex.forEach(columnTuple -> {
-            if (columnTuple.getFirst() == "source.") {
+            final String columnHeading = columnTuple.getFirst();
+            if ("source.".equals(columnHeading)) {
                 columnCheckboxesSource.add(getColumnVisibility(columnTuple));
 
-            } else if (columnTuple.getFirst() == "destination.") {
+            } else if ("destination.".equals(columnHeading)) {
                 columnCheckboxesDestination.add(getColumnVisibility(columnTuple));
 
-            } else if (columnTuple.getFirst() == "transaction.") {
+            } else if ("transaction.".equals(columnHeading)) {
                 columnCheckboxesTransaction.add(getColumnVisibility(columnTuple));
             }
         });
@@ -933,7 +934,7 @@ public final class TableViewPane extends BorderPane {
                                     return col;
                                 }
                             }
-                            // THe following can only happen 
+                            // THe following can only happen
                             return columnIndex.get(newColumnOrder.indexOf(c));
                         }).collect(Collectors.toList());
                 saveSortDetails(tablePrefs.getSecond().getFirst(), tablePrefs.getSecond().getSecond());
