@@ -136,10 +136,12 @@ public class UncollideArrangement implements Arranger {
         int maxCollided = -1;
         boolean isEnd = false;
         for (int i = 0; i < iter && !isEnd; i++) {
-            final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
-            final QuadTree qt = new QuadTree(bb, wg);
-            qt.insertAll();
+            QuadTree qt = putAllVerticiesInQT(wg);
 
+            qt.nudgeAllTwins(minPadding);
+                    
+            qt = putAllVerticiesInQT(wg);
+            
             int verticiesBeforeCollision = qt.findCollision(minPadding);
 
             if (interaction != null) {
@@ -154,14 +156,12 @@ public class UncollideArrangement implements Arranger {
             if (Thread.interrupted()) {
                 throw new InterruptedException();
             }
-        }
+        }      
         
-        
-        
-        final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
-        final QuadTree qt = new QuadTree(bb, wg);
-        qt.insertAll();
-        qt.nudgeAllTwins(minPadding);
+//        final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
+//        final QuadTree qt = new QuadTree(bb, wg);
+//        qt.insertAll();
+//        qt.nudgeAllTwins(minPadding);
     }
 
     private void uncollide3d(final Orb3D[] orbs, final int iter) throws InterruptedException {
@@ -199,6 +199,13 @@ public class UncollideArrangement implements Arranger {
                 throw new InterruptedException();
             }
         }
+    }
+    
+    private QuadTree putAllVerticiesInQT(GraphWriteMethods wg) {
+        final BoundingBox2D.Box2D bb = BoundingBox2D.getBox(wg);
+        final QuadTree qt = new QuadTree(bb, wg);
+        qt.insertAll();
+        return qt;
     }
 
     @Override
