@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,7 +42,7 @@ public class MeanScoreAggregator implements AnalyticAggregator<ScoreResult> {
     public ScoreResult aggregate(final List<ScoreResult> results) {
         final ScoreResult aggregateResult = new ScoreResult();
 
-        if (results == null || results.isEmpty()) {
+        if (CollectionUtils.isEmpty(results)) {
             return aggregateResult;
         }
 

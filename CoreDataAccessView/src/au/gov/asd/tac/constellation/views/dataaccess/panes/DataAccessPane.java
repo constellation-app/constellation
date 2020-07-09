@@ -89,6 +89,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import org.apache.commons.collections.CollectionUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
@@ -241,7 +242,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
             }
             // run the selected queries
             final ObservableList<Tab> tabs = dataAccessTabPane.getTabs();
-            if (tabs != null && currentGraphState != null && !tabs.isEmpty() && currentGraphState.goButtonIsGo) {
+            if (CollectionUtils.isNotEmpty(tabs) && currentGraphState != null && currentGraphState.goButtonIsGo) {
                 setExecuteButtonToStop();
                 graphState.get(GraphManager.getDefault().getActiveGraph().getId()).queriesRunning = true;
 
@@ -1017,7 +1018,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                         final String id = param.getKey();
                         final Object obj = param.getValue().getObjectValue();
                         if (obj != null && obj.toString() != null && !obj.toString().isEmpty()) {
-                            String value = param.getValue().getStringValue();
+                            final String value = param.getValue().getStringValue();
                             RecentParameterValues.storeRecentValue(id, value);
                         }
                     }

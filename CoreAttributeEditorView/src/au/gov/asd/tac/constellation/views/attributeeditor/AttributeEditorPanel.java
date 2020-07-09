@@ -122,6 +122,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import org.apache.commons.collections4.CollectionUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -366,7 +367,7 @@ public class AttributeEditorPanel extends BorderPane {
                             for (final SchemaAttribute attribute : schemaFactory.getRegisteredAttributes(elementType).values()) {
                                 if (attribute.get(rg) == Graph.NOT_FOUND) {
                                     final Collection<SchemaConcept> concepts = SchemaConceptUtilities.getAttributeConcepts(attribute);
-                                    if (concepts == null || concepts.isEmpty()) {
+                                    if (CollectionUtils.isEmpty(concepts)) {
                                         otherAttributes.add(attribute);
                                     } else {
                                         for (final SchemaConcept concept : concepts) {

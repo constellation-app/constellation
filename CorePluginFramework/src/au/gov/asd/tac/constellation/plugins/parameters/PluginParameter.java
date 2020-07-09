@@ -37,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * A PluginParameter is the object that holds the current state of a single
@@ -126,7 +127,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param name The String name to set.
      */
-    public final void setName(String name) {
+    public final void setName(final String name) {
         if (!Objects.equals(name, this.name)) {
             this.name = name == null ? "" : name;
             fireChangeEvent(ParameterChange.NAME);
@@ -149,7 +150,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param visible A boolean indicating the visibility of the parameter.
      */
-    public void setVisible(boolean visible) {
+    public void setVisible(final boolean visible) {
         if (this.visible != visible) {
 
             this.visible = visible;
@@ -187,7 +188,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @param event the {@link ParameterChange} event to check
      * @return true if the event is suppressed, false otherwise
      */
-    public boolean eventIsSuppressed(ParameterChange event) {
+    public boolean eventIsSuppressed(final ParameterChange event) {
         return suppressedEvents.contains(event) && isSuppressed;
     }
 
@@ -210,7 +211,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @param enabled A boolean indicating whether or not this parameter should
      * be enabled.
      */
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         if (this.enabled != enabled) {
             this.enabled = enabled;
             fireChangeEvent(ParameterChange.ENABLED);
@@ -223,7 +224,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @param key The String name of the property to retrieve.
      * @return The current value of the desired property for this parameter.
      */
-    public Object getProperty(String key) {
+    public Object getProperty(final String key) {
         return properties.get(key);
     }
 
@@ -235,8 +236,8 @@ public class PluginParameter<V extends ParameterValue> {
      * @param key The String name of the property to set.
      * @param value the value of the property to set.
      */
-    public void setProperty(String key, Object value) {
-        Object currentObject = properties.get(key);
+    public void setProperty(final String key, final Object value) {
+        final Object currentObject = properties.get(key);
         if (value == null) {
             if (currentObject != null) {
                 properties.remove(key);
@@ -290,7 +291,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param description The String description to set for this parameter.
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         if (!Objects.equals(description, this.description)) {
             this.description = description;
             fireChangeEvent(ParameterChange.DESCRIPTION);
@@ -349,8 +350,8 @@ public class PluginParameter<V extends ParameterValue> {
      * @return True if recent values were found, false otherwise.
      */
     public boolean loadToRecentValue() {
-        List<String> recentValues = RecentParameterValues.getRecentValues(id);
-        if (recentValues != null && !recentValues.isEmpty()) {
+        final List<String> recentValues = RecentParameterValues.getRecentValues(id);
+        if (CollectionUtils.isNotEmpty(recentValues)) {
             setStringValue(recentValues.get(0));
             return true;
         } else {
@@ -381,7 +382,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param error A String containing the error message to be set.
      */
-    public final void setError(String error) {
+    public final void setError(final String error) {
         if (!Objects.equals(error, this.error)) {
             boolean errorChange = true;
             if (error != null && this.error != null) {
@@ -400,7 +401,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param listener The {@link PluginParameterListener} to add.
      */
-    public void addListener(PluginParameterListener listener) {
+    public void addListener(final PluginParameterListener listener) {
         if (listener != null) {
             listeners.add(listener);
         }
@@ -411,7 +412,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param listener The {@link PluginParameterListener} to remove.
      */
-    public void removeListener(PluginParameterListener listener) {
+    public void removeListener(final PluginParameterListener listener) {
         listeners.remove(listener);
     }
 
@@ -549,7 +550,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @return A String containing the error message if the supplied value was
      * invalid for this parameter. Otherwise, null.
      */
-    public final String validateString(String stringValue) {
+    public final String validateString(final String stringValue) {
         return value.validateString(stringValue);
 //        return type.validateString(this, stringValue);
     }
@@ -571,7 +572,7 @@ public class PluginParameter<V extends ParameterValue> {
      *
      * @param enclosingParameter the enclosing parameter.
      */
-    public void setEnclosingParameter(PluginParameter<?> enclosingParameter) {
+    public void setEnclosingParameter(final PluginParameter<?> enclosingParameter) {
         this.enclosingParameter = enclosingParameter;
     }
 
@@ -583,7 +584,7 @@ public class PluginParameter<V extends ParameterValue> {
      * @param change The {@link ParameterChange} event to fire. NO_EVENT will
      * not fire an event
      */
-    public void fireChangeEvent(ParameterChange change) {
+    public void fireChangeEvent(final ParameterChange change) {
         if (!eventIsSuppressed(change)) {
             listeners.stream().forEach(listener -> listener.parameterChanged(this, change));
             if (enclosingParameter != null && !change.equals(ParameterChange.ERROR)) {
