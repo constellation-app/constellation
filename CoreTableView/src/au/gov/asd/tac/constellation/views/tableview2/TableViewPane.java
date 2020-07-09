@@ -954,6 +954,8 @@ public final class TableViewPane extends BorderPane {
             final int fromIndex = pageIndex * MAX_ROWS_PER_PAGE;
             final int toIndex = Math.min(fromIndex + MAX_ROWS_PER_PAGE, rows.size());
             
+            selectedProperty.removeListener(tableSelectionListener);
+                        
             //get the previous sort details so that we don't lose it upon switching pages
             TableColumn<ObservableList<String>, ?> sortCol = null;
             TableColumn.SortType sortType = null;
@@ -973,6 +975,7 @@ public final class TableViewPane extends BorderPane {
             }
             
             sortedRowList.comparatorProperty().bind(table.comparatorProperty());
+            selectedProperty.addListener(tableSelectionListener);
         }
         
         return table;
@@ -1094,7 +1097,7 @@ public final class TableViewPane extends BorderPane {
                     // add table data to table
                     sortedRowList = new SortedList<>(FXCollections.observableArrayList(rows));
                     sortedRowList.comparatorProperty().bind(table.comparatorProperty());
-                    sortedRowList.comparatorProperty().addListener((observable, oldValue, newValue) -> paginate(sortedRowList));
+                    sortedRowList.comparatorProperty().addListener((v, o, n) -> paginate(sortedRowList));
                     paginate(sortedRowList);
 
                     // add user defined filter to the table
