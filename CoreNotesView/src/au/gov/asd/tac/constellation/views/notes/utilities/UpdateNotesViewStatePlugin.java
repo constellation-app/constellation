@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.view.notes.state.NotesViewState;
 
 /**
- * Write a given bitmask to the active graph.
+ * Write a given state to the active graph.
  *
  * @author sol695510
  */
@@ -39,7 +39,7 @@ public final class UpdateNotesViewStatePlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) {
         // TODO Change attribute name
-        final int stateAttributeId = NotesConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
+        final int stateAttributeId = NotesConcept.GraphAttribute.NOTES_VIEW_STATE.ensure(graph);
         graph.setObjectValue(stateAttributeId, 0, state);
     }
 
@@ -51,6 +51,6 @@ public final class UpdateNotesViewStatePlugin extends SimpleEditPlugin {
     @Override
     public String getName() {
          // TODO Change attribute name
-        return "Layers View: Update Graph Bitmask";
+        return "Notes View: Update State";
     }
 }

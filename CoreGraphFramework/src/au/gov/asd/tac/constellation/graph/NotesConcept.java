@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph;
 
-import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
+import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ import java.util.Set;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Attribute provider for attributes specific to the Layers View.
+ * Attribute provider for attributes specific to the Notes View.
  *
  * @author sol695510
  */
@@ -37,7 +36,7 @@ public class NotesConcept extends SchemaConcept {
 
     @Override
     public String getName() {
-        return "Layers";
+        return "Notes";
     }
 
     @Override
@@ -53,9 +52,9 @@ public class NotesConcept extends SchemaConcept {
             throw new IllegalStateException("Concept class");
         }
 
-        public static final SchemaAttribute LAYER_MASK_SELECTED = new SchemaAttribute.Builder(GraphElementType.GRAPH, IntegerAttributeDescription.ATTRIBUTE_NAME, "layer_bitmask_selected")
-                .setDescription("The layers currently enabled for display")
-                .setDefaultValue(1)
+        public static final SchemaAttribute NOTES_VIEW_STATE = new SchemaAttribute.Builder(GraphElementType.GRAPH, ObjectAttributeDescription.ATTRIBUTE_NAME, "notes_view_state")
+                .setDescription("The current Notes View State")
+                .setDefaultValue(null)
                 .create()
                 .build();
     }
@@ -63,7 +62,7 @@ public class NotesConcept extends SchemaConcept {
     @Override
     public Collection<SchemaAttribute> getSchemaAttributes() {
         final List<SchemaAttribute> schemaAttributes = new ArrayList<>();
-        schemaAttributes.add(GraphAttribute.LAYER_MASK_SELECTED);
+        schemaAttributes.add(GraphAttribute.NOTES_VIEW_STATE);
         return Collections.unmodifiableCollection(schemaAttributes);
     }
 }

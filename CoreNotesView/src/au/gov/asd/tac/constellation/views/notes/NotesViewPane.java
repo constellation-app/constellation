@@ -18,6 +18,10 @@ public class NotesViewPane extends BorderPane {
     private final NotesViewController controller;
     private final VBox layersViewPane;
 
+//    Create buttons and panes to show notes
+//    TODO tabs to show both Auto and User generated notes
+//    TODO get data about plugin use from PluginReporter
+    
     public NotesViewPane(final NotesViewController controller) {
 
         // create controller

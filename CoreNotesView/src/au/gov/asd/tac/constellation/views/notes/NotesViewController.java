@@ -7,7 +7,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.LayersConcept;
+import au.gov.asd.tac.constellation.graph.NotesConcept;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -26,8 +26,8 @@ public class NotesViewController {
         this.parent = parent;
     }
 
-        /**
-     * Add attributes required by the Layers View for it to function
+    /**
+     * Add attributes required by the Notes View for it to function
      */
     public void addAttributes() {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
@@ -35,11 +35,7 @@ public class NotesViewController {
             PluginExecution.withPlugin(new SimpleEditPlugin("Notes View: Add Required Attributes") {
                 @Override
                 public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-//                    LayersConcept.GraphAttribute.LAYER_MASK_SELECTED.ensure(graph);
-//                    LayersConcept.VertexAttribute.LAYER_MASK.ensure(graph);
-//                    LayersConcept.VertexAttribute.LAYER_VISIBILITY.ensure(graph);
-//                    LayersConcept.TransactionAttribute.LAYER_MASK.ensure(graph);
-//                    LayersConcept.TransactionAttribute.LAYER_VISIBILITY.ensure(graph);
+                    NotesConcept.GraphAttribute.NOTES_VIEW_STATE.ensure(graph);
                 }
             }).executeLater(activeGraph);
         }
