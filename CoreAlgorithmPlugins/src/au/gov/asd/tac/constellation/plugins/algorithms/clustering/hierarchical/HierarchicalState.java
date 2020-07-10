@@ -22,19 +22,19 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical;
  */
 public final class HierarchicalState {
 
-    int steps;
-    int currentStep;
-    int optimumStep = 1;
-    FastNewman.Group[] groups;
-    boolean excludeSingleVertices;
-    boolean excludedElementsDimmed;
-    int[] clusterNumbers;
-    int[] clusterSeenBefore;
-    int redrawCount = 0;
-    transient long modificationCounter = -1;
-    transient long strucModificationCount = -1;
-    boolean interactive = true;
-    boolean colored = true;
+    public int steps;
+    public int currentStep;
+    public int optimumStep = 1;
+    public FastNewman.Group[] groups;
+    public boolean excludeSingleVertices;
+    public boolean excludedElementsDimmed;
+    public int[] clusterNumbers;
+    public int[] clusterSeenBefore;
+    public int redrawCount = 0;
+    public transient long modificationCounter = -1;
+    public transient long strucModificationCount = -1;
+    public boolean interactive = true;
+    public boolean colored = true;
 
     /**
      * Required for AbstractGraphIOProvider.
@@ -59,7 +59,7 @@ public final class HierarchicalState {
 
     public int getCurrentNumOfClusters() {
         int numClusters = 0;
-        for (FastNewman.Group group : groups) {
+        for (final FastNewman.Group group : groups) {
             if (group != null && group.getMergeStep() > currentStep) {
                 numClusters++;
             }

@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms;
 
-import org.openide.DialogDisplayer;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import org.openide.NotifyDescriptor;
 
 /**
@@ -35,7 +35,6 @@ public class AlgorithmicError extends RuntimeException {
      * @param message the error message
      */
     public static void createDialog(final String message) {
-        final NotifyDescriptor nd = new NotifyDescriptor.Message(message, NotifyDescriptor.WARNING_MESSAGE);
-        DialogDisplayer.getDefault().notify(nd);
+        NotifyDisplayer.display(message, NotifyDescriptor.WARNING_MESSAGE);
     }
 }

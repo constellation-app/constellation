@@ -57,13 +57,13 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     private final JScrollPane scrollManager;
     private final HierarchicalControllerTopComponent controller;
 
-    public NestedHierarchicalDisplayPanel(HierarchicalControllerTopComponent controller, JScrollPane scrollManager) {
+    public NestedHierarchicalDisplayPanel(final HierarchicalControllerTopComponent controller, final JScrollPane scrollManager) {
         this.controller = controller;
         this.scrollManager = scrollManager;
         fitToScrollManager();
     }
 
-    public void setState(HierarchicalState state) {
+    public void setState(final HierarchicalState state) {
         this.state = state;
         if (state != null) {
             stepLimit = state.steps > 10 ? (int) Math.floor(state.steps * 1.1) : state.steps + 1;
@@ -83,7 +83,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     public void updateColorsAndBar() {
         progress_x = (state.currentStep * getWidth()) / (stepLimit == 0 ? 1 : stepLimit);
 
-        for (LinePositioning line : lines) {
+        for (final LinePositioning line : lines) {
             GroupTreeNode node = line.n;
             while (node != null && node.mergeStep <= state.currentStep) {
                 node = node.parent;
@@ -96,12 +96,12 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(final Graphics g) {
         if (lines == null) {
             return;
         }
 
-        Graphics2D g2 = (Graphics2D) g;
+        final Graphics2D g2 = (Graphics2D) g;
         g2.setBackground(new Color(44, 44, 44));
         g2.clearRect(0, 0, getWidth(), getHeight());
 
@@ -116,11 +116,11 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         }
 
         g2.setColor(new Color(0xB0, 0xB0, 0xB0));
-        int arrowTop = scrollManager.getViewport().getViewPosition().y;
-        int arrowBottom = arrowTop + Math.min(neededHeight, scrollManager.getViewport().getExtentSize().height);
-        int[] xpoints = {progress_x - 6, progress_x + 8, progress_x + 1};
-        int[] ypoints_top = {arrowTop, arrowTop, arrowTop + 10};
-        int[] ypoints_bottom = {arrowBottom, arrowBottom, arrowBottom - 10};
+        final int arrowTop = scrollManager.getViewport().getViewPosition().y;
+        final int arrowBottom = arrowTop + Math.min(neededHeight, scrollManager.getViewport().getExtentSize().height);
+        final int[] xpoints = {progress_x - 6, progress_x + 8, progress_x + 1};
+        final int[] ypoints_top = {arrowTop, arrowTop, arrowTop + 10};
+        final int[] ypoints_bottom = {arrowBottom, arrowBottom, arrowBottom - 10};
         g2.fillPolygon(xpoints, ypoints_top, 3);
         g2.fillPolygon(xpoints, ypoints_bottom, 3);
         g2.setColor(new Color(0xB0, 0xB0, 0xB0, 130));
@@ -136,19 +136,19 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         private GroupTreeNode parent;
         private int childSpan; // will determine height of vertical line
 
-        public GroupTreeNode(int vertNum, int mergeStep, Color color) {
+        public GroupTreeNode(final int vertNum, final int mergeStep, final Color color) {
             this.vertNum = vertNum;
             this.mergeStep = mergeStep;
             this.color = color;
         }
 
         @Override
-        public int compareTo(GroupTreeNode other) {
+        public int compareTo(final GroupTreeNode other) {
             return mergeStep == other.mergeStep ? compare(vertNum, other.vertNum) : compare(mergeStep, other.mergeStep);
         }
 
         // TODO: copied from JDK1.7 so compareTo() will work in JDK1.6 - fix when possible.
-        public static int compare(int x, int y) {
+        public static int compare(final int x, final int y) {
             return (x < y) ? -1 : ((x == y) ? 0 : 1);
         }
     }
@@ -171,18 +171,18 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
             return;
         }
 
-        int numOfVerts = state.groups.length;
+        final int numOfVerts = state.groups.length;
 
-        List<GroupTreeNode> treeRoots = new LinkedList<>();
-        Map<Integer, GroupTreeNode> treeNodes = new HashMap<>();
+        final List<GroupTreeNode> treeRoots = new LinkedList<>();
+        final Map<Integer, GroupTreeNode> treeNodes = new HashMap<>();
 
         // Build a tree of children, calculating nodes' x positions
         for (int i = 0; i < numOfVerts; i++) {
-            FastNewman.Group node = state.groups[i];
+            final FastNewman.Group node = state.groups[i];
             if (node == null) {
                 continue;
             }
-            int nodeMergeStep = node.getMergeStep() == Integer.MAX_VALUE ? stepLimit : node.getMergeStep();
+            final int nodeMergeStep = node.getMergeStep() == Integer.MAX_VALUE ? stepLimit : node.getMergeStep();
 
             GroupTreeNode treeNode = treeNodes.get(node.getVertex());
             if (treeNode == null) {
@@ -190,12 +190,12 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
                 treeNodes.put(node.getVertex(), treeNode);
             }
 
-            FastNewman.Group parentGroup = node.getParent();
+            final FastNewman.Group parentGroup = node.getParent();
             if (parentGroup != null) {
-                int parentVertex = parentGroup.getVertex();
-                int parentMergeStep = parentGroup.getMergeStep() == Integer.MAX_VALUE ? stepLimit : parentGroup.getMergeStep();
+                final int parentVertex = parentGroup.getVertex();
+                final int parentMergeStep = parentGroup.getMergeStep() == Integer.MAX_VALUE ? stepLimit : parentGroup.getMergeStep();
                 if (!treeNodes.containsKey(parentVertex)) {
-                    GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.getColor().getJavaColor());
+                    final GroupTreeNode parentTreeNode = new GroupTreeNode(parentVertex, parentMergeStep, parentGroup.getColor().getJavaColor());
                     treeNodes.put(parentVertex, parentTreeNode);
                 }
                 if (treeNodes.get(parentVertex).children == null) {
@@ -210,7 +210,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
 
         // Calculate the nodes' y positions and heights.
         sortedNodes = new LinkedList<>();
-        for (GroupTreeNode node : treeRoots) {
+        for (final GroupTreeNode node : treeRoots) {
             if (!sortedNodes.contains(node)) {
                 addNodeAndAllChildren(sortedNodes, 0, node);
             }
@@ -231,7 +231,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         final boolean verticalScrolling = prefHeight < sortedNodes.size() * minimum_yseparation + (VERTICAL_GAP * 2);
         neededHeight = verticalScrolling ? sortedNodes.size() * minimum_yseparation + (VERTICAL_GAP * 2) : prefHeight;
         setSize(getWidth(), neededHeight);
-        int yseparation = verticalScrolling ? minimum_yseparation : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
+        final int yseparation = verticalScrolling ? minimum_yseparation : (int) Math.floor(prefHeight / ((double) sortedNodes.size() + 1));
         setPreferredSize(new Dimension(getWidth(), neededHeight));
 
         // We do not want to draw on the border around the step slider
@@ -239,8 +239,8 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         xseparation = sliderLabeledWidth / (double) stepLimit;
 
         for (int i = 0; i < sortedNodes.size(); i++) {
-            GroupTreeNode node = sortedNodes.get(i);
-            LinePositioning r = new LinePositioning();
+            final GroupTreeNode node = sortedNodes.get(i);
+            final LinePositioning r = new LinePositioning();
             r.xstop = (int) Math.floor(node.mergeStep * xseparation);
             r.ystart = i * yseparation;
             r.ystop = (i - node.childSpan) * yseparation;
@@ -251,12 +251,12 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
         updateColorsAndBar();
     }
 
-    private int addNodeAndAllChildren(List<GroupTreeNode> sortedNodes, int spanSoFar, GroupTreeNode node) {
+    private int addNodeAndAllChildren(final List<GroupTreeNode> sortedNodes, final int spanSoFar, final GroupTreeNode node) {
         sortedNodes.add(node);
         node.childSpan = spanSoFar;
         int numDescendants = 0;
         if (node.children != null) {
-            for (GroupTreeNode child : node.children) {
+            for (final GroupTreeNode child : node.children) {
                 if (child.mergeStep != 0) {
                     numDescendants++;
                     numDescendants += addNodeAndAllChildren(sortedNodes, numDescendants, child);
@@ -273,7 +273,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     }
 
     private void fitToScrollManager() {
-        int dpWidth = scrollManager.getWidth() - scrollManager.getVerticalScrollBar().getWidth();
+        final int dpWidth = scrollManager.getWidth() - scrollManager.getVerticalScrollBar().getWidth();
         setSize(dpWidth, neededHeight);
         setPreferredSize(new Dimension(dpWidth, neededHeight));
     }
@@ -318,7 +318,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             leftClickDown = true;
-            int x = Math.max(0, e.getX());
+            final int x = Math.max(0, e.getX());
             state.currentStep = Math.min(state.steps, (x * stepLimit) / getWidth());
             controller.updateSlider();
         }
@@ -327,7 +327,7 @@ public class NestedHierarchicalDisplayPanel extends JPanel implements ComponentL
     @Override
     public void mouseDragged(MouseEvent e) {
         if (leftClickDown) {
-            int x = Math.max(0, e.getPoint().x);
+            final int x = Math.max(0, e.getPoint().x);
             state.currentStep = Math.min(state.steps, (x * stepLimit) / getWidth());
             controller.updateSlider();
         }
