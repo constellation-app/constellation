@@ -100,7 +100,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                 final ObjectNode paths = (ObjectNode) root.get("paths");
                 RestServiceRegistry.getServices().forEach(serviceKey -> {
                     final ObjectNode path = paths.putObject(String.format(SERVICE_PATH, serviceKey.name));
-                    final ObjectNode httpMethod = path.putObject(serviceKey.httpMethod.name().toLowerCase(Locale.US));
+                    final ObjectNode httpMethod = path.putObject(serviceKey.httpMethod.name().toLowerCase(Locale.ENGLISH));
 
                     final RestService rs = RestServiceRegistry.get(serviceKey);
 
@@ -123,9 +123,9 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
                         final PluginParameter<?> pp = entry.getValue();
 
-                        if (pp.getName().toLowerCase(Locale.US).contains("(body)")) {
+                        if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
                             final ObjectNode requestBody = httpMethod.putObject("requestBody");
-                            requestBody.put(DESCRIPTION, pp.getDescription());
+                            requestBody.put(DESCRIPTION, pp.getName().replace("(body)", " - ") + pp.getDescription());
                             requestBody.put("required", false); //fix in the other ticket
                             final ObjectNode content = requestBody.putObject("content");
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
@@ -162,7 +162,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         schema.put("format", "binary");
                     } else if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
                         // Make a wild guess about the response.
-                        if (serviceKey.name.toLowerCase(Locale.US).startsWith("list")) {
+                        if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
                             schema.put("type", "array");
                             final ObjectNode items = schema.putObject("items");
                             items.put("type", "object");
