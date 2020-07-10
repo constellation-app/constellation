@@ -196,8 +196,8 @@ public class AnalyticConfigurationPane extends VBox {
             };
         });
         questionList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            currentQuestion = newValue;
             Platform.runLater(() -> {
-                currentQuestion = newValue;
                 @SuppressWarnings("unchecked") //AGGREGATOR_PARAMETER_ID is always a SingleChoiceParameter
                 final PluginParameter<SingleChoiceParameterValue> aggregator = (PluginParameter<SingleChoiceParameterValue>) globalAnalyticParameters.getParameters().get(AGGREGATOR_PARAMETER_ID);
                 SingleChoiceParameterType.getOptionsData(aggregator).forEach(aggregatorParameterValue -> {
@@ -702,7 +702,7 @@ public class AnalyticConfigurationPane extends VBox {
             }
 
             // Utilized for Question pane - TODO: when multiple tabs + saving of
-            // questions is supported, link this currentquestion variable with 
+            // questions is supported, link this currentquestion variable with
             // the saved/loaded question
             analyticConfigurationPane.lock.lock();
             try {
