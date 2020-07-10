@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.timeline.components;
 
 import au.gov.asd.tac.constellation.views.timeline.GraphManager;
-import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;

@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
