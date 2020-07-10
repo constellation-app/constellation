@@ -18,16 +18,16 @@
 <p>A bug preventing running the Clustering %gt; Info Map plugins has been fixed.</p>
 
 == 2020-06-09 Select Top N Bug Fixed
-<p>A bug preventing running the <strong>Select Top N</strong> from the Data Access View has been fixed.</p>
+<p>A bug preventing running the <strong>Select Top N</strong> plugin from the Data Access View has been fixed.</p>
 
 == 2020-05-21 Schema View
 <p>The Node and Transaction type tabs in the Schema View are now searchable.</p>
 
 == 2020-05-21 Hierarchical Clustering Improvements
-<p>A bug preventing the running of the hierachical clustering sometimes has been fixed.</p>
+<p>A bug preventing the running of the hierachical clustering plugin sometimes has been fixed.</p>
 
 == 2020-05-21 Merge Nodes by Geospatial Distance
-<p>A bug preventing running the <strong>Merge Nodes</strong> &gt; <strong>Geospatial Distance</strong> from the Data Access View has been fixed.</p>
+<p>A bug preventing running the <strong>Merge Nodes</strong> &gt; <strong>Geospatial Distance</strong> plugin from the Data Access View has been fixed.</p>
 
 == 2020-05-18 Map Controls
 <p>We have updated the Map View mouse controls to be consistent with the graph view.</p>
@@ -49,7 +49,7 @@
 <p>Added feedback dialogs for the Delimiter importer, showing information about a successful import and any failures.</p>
 
 == 2020-05-11 Timeline View
-<p>A bug resulting in the summary box shrinking when dragged passed the summary bounds has been fixed.</p>
+<p>A bug resulting in the summary box shrinking when dragged past the summary bounds has been fixed.</p>
 
 == 2020-05-05 Layer by Time
 <p>A bug preventing the running of the Arrange &gt; Layer By Time occasionally has been fixed.</p>
