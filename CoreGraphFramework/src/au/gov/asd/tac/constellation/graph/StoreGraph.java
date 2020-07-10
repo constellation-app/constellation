@@ -36,6 +36,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,13 +146,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private int currentVisibleMask = 1;
     private boolean avoidLayerUpdate = false;
 
-    // 0000
-    // first two bits are not used XX00
-    // second bit from right is boolean for if you have to display the layer 00X0
-    // last bit on right is whether it is a dynamic layer 000X
-    private final List<Byte> layerPrefs = new ArrayList<>();
-    private final List<String> layerQueries = new ArrayList<>();
-
     /**
      * Creates a new StoreGraph with the specified capacities.
      *
@@ -175,37 +169,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     @Override
     public boolean isRecordingEdit() {
         return graphEdit != null;
-    }
-
-    @Override
-    public void setLayerQueries(final List<String> queries) {
-        int count = 0;
-        for (final String query : queries) {
-            // if old query was not null (dynamic), and old query is different from new (query updated)
-            if (count < layerQueries.size() && layerQueries.get(count) != null
-                    && !layerQueries.get(count).equals(DEFAULT_LAYER_PLACEHOLDER)
-                    && !layerQueries.get(count).equals(query)) {
-                // iterate all elements, remove that mask
-                // Loop through all vertexes and remove bitmasks
-                final int vertexCount = getVertexCount();
-                for (int i = 0; i < vertexCount; i++) {
-                    int bitmask = getIntValue(vertexLayerMaskAttribureId, i);
-                    bitmask = bitmask & ~(1 << count); // set bit to false
-                    setIntValue(vertexLayerMaskAttribureId, i, bitmask);
-                }
-
-                // Loop through all transactions and remove bitmasks
-                final int transactionCount = getTransactionCount();
-                for (int i = 0; i < transactionCount; i++) {
-                    int bitmask = getIntValue(transactionLayerMaskAttrId, i);
-                    bitmask = bitmask & ~(1 << count); // set bit to false
-                    setIntValue(transactionLayerMaskAttrId, i, bitmask);
-                }
-            }
-            count++;
-        }
-        layerQueries.clear();
-        layerQueries.addAll(queries);
     }
 
     /**
@@ -470,9 +433,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         this.vertexSelectedAttributeId = original.vertexSelectedAttributeId;
         this.transactionSelectedAttributeId = original.transactionSelectedAttributeId;
         this.cameraAttributeId = original.cameraAttributeId;
-        this.layerPrefs.addAll(original.layerPrefs);
-
-        StoreGraph.this.setLayerQueries(original.layerQueries);
 
         MemoryManager.newObject(StoreGraph.class);
     }
@@ -1949,6 +1909,30 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
     }
 
+    private List<String> getQueries() {
+        final int queriesId = LayersConcept.GraphAttribute.LAYER_QUERIES.get(this);
+        if (queriesId == Graph.NOT_FOUND) {
+            return Collections.emptyList();
+        }
+        final Object queriesObject = getObjectValue(queriesId, 0);
+        if (queriesObject == null) {
+            return Collections.emptyList();
+        }
+        return (List<String>) queriesObject;
+    }
+
+    private List<Byte> getLayerPreferences() {
+        final int preferencesId = LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this);
+        if (preferencesId == Graph.NOT_FOUND) {
+            return Collections.emptyList();
+        }
+        final Object preferencesObject = getObjectValue(preferencesId, 0);
+        if (preferencesObject == null) {
+            return Collections.emptyList();
+        }
+        return (List<Byte>) preferencesObject;
+    }
+
     /**
      * Recalculates layer visibilities with respect to which layers are toggled.
      * Loops over all queries and determines if they are dynamic, static,
@@ -1970,18 +1954,24 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
      * </ul>
      */
     private void recalculateLayerVisibilities() {
-        for (int i = 0; i < layerQueries.size(); i++) {
+        final List<String> queries = getQueries();
+        final List<Byte> preferences = getLayerPreferences();
+
+        for (int i = 0; i < queries.size(); i++) {
             // if current mask has bit set, recheck
             if ((currentVisibleMask & (1 << (i))) > 0) {
-                if (layerQueries.get(i) == null || layerQueries.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
-                    layerPrefs.remove(i);
-                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
+                if (queries.get(i) == null || queries.get(i).equals(DEFAULT_LAYER_PLACEHOLDER)) {
+                    // Used correctly as loop does not iterate the preferences list
+                    preferences.remove(i);
+                    preferences.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b10 : (byte) 0b0);
                 } else {
-                    layerPrefs.remove(i);
-                    layerPrefs.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b11 : (byte) 0b1);
+                    // Used correctly as loop does not iterate the preferences list
+                    preferences.remove(i);
+                    preferences.add(i, (currentVisibleMask & (1 << (i))) > 0 ? (byte) 0b11 : (byte) 0b1);
                 }
             }
         }
+        setObjectValue(LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this), 0, preferences);
     }
 
     /**
@@ -2008,11 +1998,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         }
 
         synchronized (this) {
-            for (int i = 0; i < layerQueries.size(); i++) {
-                // calculate bitmask for dynamic layers that are displayed
-                if (i < layerPrefs.size() && (layerPrefs.get(i) & 0b11) == 3 && layerQueries.get(i) != null) {
-                    bitmask = (evaluateLayerQuery(elementType, elementId, QueryEvaluator.tokeniser(layerQueries.get(i)))
-                            ? bitmask | (1 << i) : bitmask & ~(1 << i)); // set bit to false
+            final List<String> queries = getQueries();
+            final List<Byte> preferences = getLayerPreferences();
+            if (!preferences.isEmpty()) {
+                for (int i = 0; i < queries.size(); i++) {
+                    // calculate bitmask for dynamic layers that are displayed
+                    if (i < preferences.size() && (preferences.get(i) & 0b11) == 3 && queries.get(i) != null) {
+                        if (evaluateLayerQuery(elementType, elementId, QueryEvaluator.tokeniser(queries.get(i)))) {
+                            bitmask = bitmask | (1 << i);
+                        } else {
+                            bitmask = bitmask & ~(1 << i);
+                        }
+                    }
                 }
             }
         }
@@ -2149,23 +2146,19 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
 
                 if (attributeId != vertexLayerMaskAttribureId) { // set filter bitmask when not updating (prevents infinite loop)
                     avoidLayerUpdate = true; // cancels out the re-update when setting the int vals
-                    setIntValue(vertexLayerMaskAttribureId, elementId, bitmask);
+                    setLayerMask(vertexLayerMaskAttribureId, elementId, bitmask);
                     avoidLayerUpdate = false;
                 }
                 final float existingVisibility = getFloatValue(vertexLayerVisibilityAttributeId, elementId);
                 if ((bitmask & currentVisibleMask) > 0) {
                     // A value > 0 indicates the object is mapped to at least one visible layer
                     if (existingVisibility != 1.0f) {
-                        attributeDescriptions[vertexLayerVisibilityAttributeId].setFloat(elementId, 1.0f);
-                        attributeIndices[vertexLayerVisibilityAttributeId].updateElement(elementId);
-                        attributeModificationCounters[vertexLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
+                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 1.0f);
                     }
                 } else {
                     // A value = 0 indicates the object is not mapped to at least one visible layer
                     if (existingVisibility != 0.0f) {
-                        attributeDescriptions[vertexLayerVisibilityAttributeId].setFloat(elementId, 0.0f);
-                        attributeIndices[vertexLayerVisibilityAttributeId].updateElement(elementId);
-                        attributeModificationCounters[vertexLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
+                        setLayerVisibility(vertexLayerVisibilityAttributeId, elementId, 0.0f);
                     }
                 }
             }
@@ -2174,21 +2167,17 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 && transactionLayerVisibilityAttributeId != Graph.NOT_FOUND) {
             if (attributeId != transactionLayerMaskAttrId) {
                 avoidLayerUpdate = true;
-                setIntValue(transactionLayerMaskAttrId, elementId, bitmask);
+                setLayerMask(transactionLayerMaskAttrId, elementId, bitmask);
                 avoidLayerUpdate = false;
             }
             final float existingVisibility = getFloatValue(transactionLayerVisibilityAttributeId, elementId);
             if ((bitmask & currentVisibleMask) > 0) {
                 if (existingVisibility != 1.0f) {
-                    attributeDescriptions[transactionLayerVisibilityAttributeId].setFloat(elementId, 1.0f);
-                    attributeIndices[transactionLayerVisibilityAttributeId].updateElement(elementId);
-                    attributeModificationCounters[transactionLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
+                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 1.0f);
                 }
             } else {
                 if (existingVisibility != 0.0f) {
-                    attributeDescriptions[transactionLayerVisibilityAttributeId].setFloat(elementId, 0.0f);
-                    attributeIndices[transactionLayerVisibilityAttributeId].updateElement(elementId);
-                    attributeModificationCounters[transactionLayerVisibilityAttributeId] += operationMode.getModificationIncrement();
+                    setLayerVisibility(transactionLayerVisibilityAttributeId, elementId, 0.0f);
                 }
             }
         }
@@ -2208,12 +2197,19 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                     ? getIntValue(layerMaskSelectedAttributeId, 0) : 1;
             final GraphElementType elementType = getAttributeElementType(attributeId);
 
+            final int layerPrefId = LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this);
+            if (layerPrefId == Graph.NOT_FOUND) {
+                return;
+            }
+            List<Byte> preferences = getLayerPreferences();
             // preload layerPrefs jit if it hasn't been instantiated
-            if (layerPrefs.isEmpty()) {
+            if (preferences.isEmpty()) {
+                preferences = new ArrayList<>();
                 for (int i = 0; i < 31; i++) {
-                    layerPrefs.add((byte) 0b0);
+                    preferences.add((byte) 0b0);
                 }
             }
+            setObjectValue(layerPrefId, 0, preferences);
 
             updateLayerMask(attributeId, elementType, elementid, currentVisibleMask);
         }
@@ -2237,6 +2233,18 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         for (int i = 0; i < transactionCount; i++) {
             updateLayerMask(-1, GraphElementType.TRANSACTION, tStore.getElement(i), currentVisibleMask);
         }
+    }
+
+    private void setLayerVisibility(final int attributeId, final int elementId, final float floatValue) {
+        attributeDescriptions[attributeId].setFloat(elementId, floatValue);
+        attributeIndices[attributeId].updateElement(elementId);
+        attributeModificationCounters[attributeId] += operationMode.getModificationIncrement();
+    }
+
+    private void setLayerMask(final int attributeId, final int elementId, final int intValue) {
+        attributeDescriptions[attributeId].setInt(elementId, intValue);
+        attributeIndices[attributeId].updateElement(elementId);
+        attributeModificationCounters[attributeId] += operationMode.getModificationIncrement();
     }
 
     @Override
@@ -2469,10 +2477,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        // ignore selected attributes
-        if (attribute != vertexSelectedAttributeId && attribute != transactionSelectedAttributeId) {
-            updateLayerMask(attribute, id);
-        }
+        updateLayerMask(attribute, id);
 
     }
 
@@ -2566,8 +2571,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
                 }
             }
         }
-        // ignore camera attribute
-        if (attribute != cameraAttributeId) {
+        // ignore camera attribute and layerPreferences attribute
+        if (attribute != cameraAttributeId && attribute != LayersConcept.GraphAttribute.LAYER_PREFERENCES.get(this)) {
             updateLayerMask(attribute, id);
         }
     }
