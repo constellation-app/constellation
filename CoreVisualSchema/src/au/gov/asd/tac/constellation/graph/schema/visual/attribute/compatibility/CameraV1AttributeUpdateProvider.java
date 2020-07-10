@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.graph.schema.visual.attribute.compatibility;
 
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttributeDescription;
 import au.gov.asd.tac.constellation.graph.versioning.AttributeUpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.CameraAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

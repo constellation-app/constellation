@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.schema.analytic.attribute.interaction;
 
+import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.RawAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.objects.RawData;
-import au.gov.asd.tac.constellation.graph.attribute.interaction.AbstractAttributeInteraction;
 import org.openide.util.lookup.ServiceProvider;
 
 /**

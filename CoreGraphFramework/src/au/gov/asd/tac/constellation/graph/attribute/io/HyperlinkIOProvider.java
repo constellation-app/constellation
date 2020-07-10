@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute.io;
 
-import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.HyperlinkAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
